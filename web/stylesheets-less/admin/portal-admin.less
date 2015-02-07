@@ -39,10 +39,11 @@ nav#dp_content_tabs {
 	position: relative;
 }
 
-.dp-p .dp-template {
+// Hidden block is one detected to have no height (eg. a script tag)
+.dp-p.dp-template.dp-p-block-hidden {
 	min-height: 35px;
 }
-.dp-p .dp-template .dp-drag-overlay {
+.dp-p.dp-template.dp-p-block-hidden .dp-drag-overlay {
 	border: 1px dotted #bbb;
 }
 

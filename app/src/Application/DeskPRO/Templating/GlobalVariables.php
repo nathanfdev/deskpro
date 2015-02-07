@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Templating;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Service\JIRA;
 use DeskPRO\Kernel\License;
 use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables as BaseGlobalVariables;
 
@@ -81,6 +82,11 @@ class GlobalVariables extends BaseGlobalVariables
     public function isPortalEnabled()
     {
         return App::$container->getSetting('user.portal_enabled');
+    }
+
+    public function getJira()
+    {
+        return App::$container->get(JIRA::NAME);
     }
 
     public function getSettingGroup($group)
@@ -341,13 +347,7 @@ class GlobalVariables extends BaseGlobalVariables
     public function getReturnUrl()
     {
         $request = App::getRequest();
-
-        // Cant recreate a post, so back to home
-        if ($request->getMethod() == 'POST') {
-            return App::getSetting('core.deskpro_url');
-        }
-
-        return $request->getRequestUri();
+        return $request->getReturnParam() ?: $request->getRequestUri();
     }
 
     public function isCloud()

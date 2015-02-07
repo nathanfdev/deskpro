@@ -51,19 +51,27 @@ use Symfony\Component\HttpFoundation\Response;
  */
 abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Controller\Controller
 {
+    protected $_services = array();
+
     public function __get($prop)
     {
+        if (isset($this->_services[$prop])) {
+            return $this->_services[$prop];
+        }
+
         switch ($prop) {
-            case 'em': return $this->get('doctrine.orm.entity_manager');
-            case 'db': return $this->get('database_connection');
-            case 'in': return $this->get('deskpro.core.input_reader');
-            case 'cleaner': return $this->get('deskpro.core.input_cleaner');
-            case 'settings': return $this->get('deskpro.core.settings');
-            case 'session': return $this->get('session');
-            case 'tpl': return $this->get('templating');
+            case 'em': $service = $this->get('doctrine.orm.entity_manager');break;
+            case 'db': $service = $this->get('database_connection');break;
+            case 'in': $service = $this->get('deskpro.core.input_reader');break;
+            case 'cleaner': $service = $this->get('deskpro.core.input_cleaner');break;
+            case 'settings': $service = $this->get('deskpro.core.settings');break;
+            case 'session': $service = $this->get('session');break;
+            case 'tpl': $service = $this->get('templating');break;
             default:
                 throw new \InvalidArgumentException("Unknown property {$prop}");
         }
+
+        return $this->_services[$prop] = $service;
     }
 
     /**
@@ -98,6 +106,10 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
             $in_token = $_SERVER[$header_name];
         } else {
             $in_token = '';
+        }
+
+        if (!is_string($in_token)) {
+            return false;
         }
 
         $in_token = trim($in_token);
@@ -301,7 +313,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {
             if ($sso_result->isRedirectRequired()) {
 
-                $return = $this->in->getString('return');
+                $return = $this->request->getReturnParam();
                 $this->session->set('auth_return', $return);
                 $this->session->save();
 

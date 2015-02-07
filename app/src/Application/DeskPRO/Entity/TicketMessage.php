@@ -127,6 +127,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var string
      */
+    protected $hostname = '';
+
+    /**
+     * @var string
+     */
     protected $geo_country = null;
 
     /**
@@ -431,8 +436,24 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         return $message;
     }
 
+    public function getMessageFullText()
+    {
+        if (!$this->message_full) {
+            return '';
+        }
+
+        $message = $this->message_full;
+        $message = strip_tags($message);
+        $message = \Orb\Util\Strings::htmlEntityDecodeUtf8($message);
+
+        return $message;
+    }
+
     public function getMessageFull()
     {
+        if (!$this->message_full) {
+            return '';
+        }
         return $this->procInlineAttach($this->message_full);
     }
 
@@ -502,6 +523,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
             $geoip = App::getSystemService('geo_ip');
             $geo = $geoip->lookup($this->ip_address);
             $this['geo_country'] = !empty($geo['country']) ? $geo['country'] : '';
+        }
+
+        if ($this->ip_address && !$this->hostname) {
+            $rdns = App::getSystemService('TicketMessageHostnameLookup');
+            $v = $rdns->lookupForMessage($this);
+            $this['hostname'] = $v ?: '';
         }
     }
 
@@ -575,7 +602,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $hashes = array();
-        $hashes[] = sha1($this->message . ($this->person ? $this->person->id : 'noperson'));
+
+        $hashable_msg = $this->message;
+        $hashable_msg = preg_replace('#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#', '$3', $hashable_msg);
+
+        $hashes[] = sha1($hashable_msg . ($this->person ? $this->person->id : 'noperson'));
 
         foreach ($this->attachments as $a) {
             $hashes[] = $a->blob['blob_hash'];
@@ -586,6 +617,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
         $this->message_hash = sha1(implode('', $hashes));
         $this->_onPropertyChanged('message_hash', '', $this->message_hash);
+    }
+
+    public function resetHashCode()
+    {
+        $this->message_hash = null;
+        $this->initHashCode();
     }
 
     /**
@@ -634,6 +671,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'is_agent_note', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent_note', ));
         $metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system', ));
         $metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address', ));
+        $metadata->mapField(array( 'fieldName' => 'hostname', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'hostname', ));
         $metadata->mapField(array( 'fieldName' => 'geo_country', 'type' => 'string', 'length' => 10, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_country', ));
         $metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email', ));
         $metadata->mapField(array( 'fieldName' => 'message_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message_hash', ));

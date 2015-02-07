@@ -8,11 +8,10 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @settings = null
 
     initialLoad: ->
-      data_promise = @Api.sendDataGet({
-        'settings': '/registration_settings'
-      }).then( (res) =>
-        @$scope.settings = res.data.settings.registration_settings
+      data_promise = @Api.sendGet('/registration_settings', {rate_limit_context: 'user'}).then( (res) =>
+        @$scope.settings = res.data.registration_settings
         @settings = angular.copy(@$scope.settings)
+        @$scope.rate_limit_settings = res.data.rate_limit_settings
       )
 
       return @$q.all([data_promise])
@@ -27,6 +26,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     save: ->
       postData = {
         registration_settings: @$scope.settings
+        rate_limit_settings: @$scope.rate_limit_settings
+        rate_limit_context: 'user'
       }
 
       if postData.registration_settings.reg_enabled == "1" or postData.registration_settings.reg_enabled == 1 or postData.registration_settings.reg_enabled == true

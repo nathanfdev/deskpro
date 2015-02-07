@@ -95,20 +95,6 @@ $collection->create('api_docs_get', array(
 # General
 ########################################################################################################################
 
-$collection->create('api_labels_settings_get', array(
-    'path'          => '/labels/{type}/settings',
-    'controller'    => 'ApiBundle:Labels:getSettings',
-    'methods'       => array('GET'),
-    'requirements'  => array('type' => implode('|', \Application\DeskPRO\EntityRepository\LabelDef::valid())),
-));
-
-$collection->create('api_labels_settings_set', array(
-    'path'          => '/labels/{type}/settings',
-    'controller'    => 'ApiBundle:Labels:setSettings',
-    'methods'       => array('PUT'),
-    'requirements'  => array('type' => implode('|', \Application\DeskPRO\EntityRepository\LabelDef::valid())),
-));
-
 $collection->create('api_labels_definitions', array(
     'path'          => '/labels/definitions',
     'controller'    => 'ApiBundle:Labels:listDefinitions',
@@ -395,6 +381,13 @@ $collection->create('api_tickets_ticket_label_delete', array(
     'methods'       => array('DELETE'),
 ));
 
+$collection->create('api_tickets_update_dates', array(
+    'path'          => '/tickets/{ticket_id}/update_dates',
+    'controller'    => 'ApiBundle:Ticket:updateTicketDates',
+    'requirements'  => array('ticket_id' => '\\d+'),
+    'methods'       => array('PUT'),
+));
+
 $collection->create('api_tickets_fields', array(
     'path'        => '/tickets/fields',
     'controller'  => 'ApiBundle:Ticket:getFields',
@@ -467,28 +460,28 @@ $collection->create('api_textsnippets_list', array(
 $collection->create('api_textsnippets_new', array(
     'path'        => '/text-snippets/{typename}',
     'controller'  => 'ApiBundle:TextSnippets:saveSnippet',
-    'defaults'    => array('snippet_id' => '0'),
+    'defaults'    => array('id' => '0'),
     'methods'     => array('POST'),
 ));
 
 $collection->create('api_textsnippets_edit', array(
-    'path'          => '/text-snippets/{typename}/{snippet_id}',
+    'path'          => '/text-snippets/{typename}/{id}',
     'controller'    => 'ApiBundle:TextSnippets:saveSnippet',
-    'requirements'  => array('snippet_id' => '\\d+'),
+    'requirements'  => array('id' => '\\d+'),
     'methods'       => array('POST'),
 ));
 
 $collection->create('api_textsnippets_del', array(
-    'path'          => '/text-snippets/{typename}/{snippet_id}',
+    'path'          => '/text-snippets/{typename}/{id}',
     'controller'    => 'ApiBundle:TextSnippets:deleteSnippet',
-    'requirements'  => array('snippet_id' => '\\d+'),
+    'requirements'  => array('id' => '\\d+'),
     'methods'       => array('DELETE'),
 ));
 
 $collection->create('api_textsnippets_get', array(
-    'path'          => '/text-snippets/{typename}/{snippet_id}',
+    'path'          => '/text-snippets/{typename}/{id}',
     'controller'    => 'ApiBundle:TextSnippets:getSnippet',
-    'requirements'  => array('snippet_id' => '\\d+'),
+    'requirements'  => array('id' => '\\d+'),
     'methods'       => array('GET'),
 ));
 
@@ -501,28 +494,28 @@ $collection->create('api_textsnippets_cats_list', array(
 $collection->create('api_textsnippets_cats_new', array(
     'path'        => '/text-snippets/{typename}/categories',
     'controller'  => 'ApiBundle:TextSnippets:saveCategory',
-    'defaults'    => array('category_id' => '0'),
+    'defaults'    => array('id' => '0'),
     'methods'     => array('POST'),
 ));
 
 $collection->create('api_textsnippets_cats_edit', array(
-    'path'          => '/text-snippets/{typename}/categories/{category_id}',
+    'path'          => '/text-snippets/{typename}/categories/{id}',
     'controller'    => 'ApiBundle:TextSnippets:saveCategory',
-    'requirements'  => array('category_id' => '\\d+'),
+    'requirements'  => array('id' => '\\d+'),
     'methods'       => array('POST'),
 ));
 
 $collection->create('api_textsnippets_cats_get', array(
-    'path'          => '/text-snippets/{typename}/categories/{category_id}',
+    'path'          => '/text-snippets/{typename}/categories/{id}',
     'controller'    => 'ApiBundle:TextSnippets:getCategory',
-    'requirements'  => array('category_id' => '\\d+'),
+    'requirements'  => array('id' => '\\d+'),
     'methods'       => array('GET'),
 ));
 
 $collection->create('api_textsnippets_cats_del', array(
-    'path'          => '/text-snippets/{typename}/categories/{category_id}',
+    'path'          => '/text-snippets/{typename}/categories/{id}',
     'controller'    => 'ApiBundle:TextSnippets:deleteCategory',
-    'requirements'  => array('category_id' => '\\d+'),
+    'requirements'  => array('id' => '\\d+'),
     'methods'       => array('DELETE'),
 ));
 

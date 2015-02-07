@@ -298,6 +298,22 @@
     'core.emails.attach_user_not_exts' => null,
 
     /**
+     * Number of emails that trigger the rate limit
+     */
+    'core.emails.rate_count'     => 15,
+
+    /**
+     * The time in which the above number of emails are submitted
+     * before we lock.
+     */
+    'core.emails.rate_time'      => 600,
+
+    /**
+     * How long to lock for once the limit is passed.
+     */
+    'core.emails.rate_locktime'  => 900,
+
+    /**
      * True to have the DeskPRO local user source enabled
      */
     'core.deskpro_source_enabled' => true,
@@ -427,19 +443,6 @@
     'core.agent_translate_debug' => false,
     'core.agent_enable_kb_shortcuts' => true,
 
-    /**#@+
-     * If agents can create various labels
-     */
-    'labels.downloads.agent_can_create'     => true,
-    'labels.feedback.agent_can_create'      => true,
-    'labels.articles.agent_can_create'      => true,
-    'labels.news.agent_can_create'          => true,
-    'labels.organizations.agent_can_create' => true,
-    'labels.people.agent_can_create'        => true,
-    'labels.tickets.agent_can_create'       => true,
-    'labels.chat.agent_can_create'          => true,
-    /**#@-*/
-
     ####################################################################################################################
     # core_tickets
     ####################################################################################################################
@@ -565,6 +568,27 @@
      * How often to clean up scheduled task log
      */
     'core_misc.cleanup_task_logs' => 604800, // 7 days
+
+    /**
+     * Server to use for rDNS lookups
+     */
+    'rdns_server' => '8.8.8.8',
+
+    /**
+     * How long to cache rdns lookups
+     */
+    'rdns_timeout' => '18000',
+
+    /**
+     * True to enable rdns on ticket messages when an IP is available
+     */
+    'rdns_ticket_messages' => false,
+
+    /**
+     * True to have hostnames visible on the ticket in a list rather that just
+     * in the hover area
+     */
+    'rdns_ticket_showprops' => false,
 
     ####################################################################################################################
     # core_email
@@ -829,6 +853,19 @@
     'agent.ip_security.enabled'            => false,
     'agent.ip_security.mode'               => 'agents,admins',
     'agent.ip_security.whitelist_lifetime' => 1814400,
+
+    ####################################################################################################################
+    # login rate limit
+    ####################################################################################################################
+
+    'user.login_rate_limit.enabled'         => true,
+    'user.login_rate_limit.attempts'        => 20,
+    'user.login_rate_limit.attempts_time'   => 900,
+    'user.login_rate_limit.lock_time'       => 900,
+    'agent.login_rate_limit.enabled'        => true,
+    'agent.login_rate_limit.attempts'       => 20,
+    'agent.login_rate_limit.attempts_time'  => 900,
+    'agent.login_rate_limit.lock_time'      => 900,
 
     ####################################################################################################################
     # user_style

@@ -101,7 +101,7 @@ pageMeta.baseId = '{{ baseId }}';
 			data-select-width="auto"
 			data-placeholder="Add a label"
 			value="{% for label in article.labels %}{{ label.label }},{% endfor %}"
-            data-allow-new="{{ app.getSetting('labels.articles.agent_can_create') }}"
+			data-allow-new="{% if app.user.hasPerm('agent_publish.articles_create_labels') %}1{% endif %}"
 		/>
 	</div>
 	<br class="clear" />
@@ -196,10 +196,12 @@ pageMeta.baseId = '{{ baseId }}';
 							</dd>
 						{% endif %}
 
-						<dt>URL Slug</dt>
+						<dt>{{ phrase('agent.publish.slug') }}</dt>
 						<dd>
 							<span id="{{ baseId }}_slug">{{ article.slug }}</span>
-							<button class="clean-white" id="{{ baseId }}_editslug">Edit Slug</button>
+							<button class="clean-white" id="{{ baseId }}_editslug" data-prompt="{{ phrase('agent.publish.slug_edit_prompt') }}">
+								{{ phrase('agent.publish.slug_edit') }}
+							</button>
 						</dd>
 
 						<dt>{{ phrase('agent.general.rating') }}</dt>
@@ -227,7 +229,7 @@ pageMeta.baseId = '{{ baseId }}';
 								{% set phrase_part2 %}
 									<time>{{article.date_created|date('fulltime')}}</time>
 								{% endset %}
-								{{ phrase('agent.publish.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name,'date':phrase_part2}, true) }}
+								{{ phrase('agent.publish.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name|escape,'date':phrase_part2}, true) }}
 							</dd>
 						{% else %}
 							<dt>{{ phrase('agent.general.date_created') }}:</dt>
@@ -238,7 +240,7 @@ pageMeta.baseId = '{{ baseId }}';
 								{% set phrase_part2 %}
 								<time>{{article.date_created|date('fulltime')}}</time>
 								{% endset %}
-								{{ phrase('agent.publish.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name,'date':phrase_part2}, true) }}
+								{{ phrase('agent.publish.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name|escape,'date':phrase_part2}, true) }}
 							</dd>
 
 							{# Makes sure its not a future date, which means auto-publish sometime in the future #}
@@ -296,7 +298,9 @@ pageMeta.baseId = '{{ baseId }}';
 						<div class="showing-rendered-fields">
 							{% if custom_fields|length %}<button class="clean-white edit-fields-trigger noedit-hide"><span>{{ phrase('agent.general.edit_properties') }}</span></button>{% endif %}
 							<button class="clean-white delete nodelete-hide" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.general.delete') }}</button>
-							<button class="clean-white permalink">{{ phrase('agent.general.copy_permalink') }}</button>
+							<button class="clean-white permalink" data-prompt="{{ phrase('agent.publish.permalink_copy_prompt') }}">
+								{{ phrase('agent.general.copy_permalink') }}
+							</button>
 							<button class="clean-white view-user-interface">{{ phrase('agent.general.view_in_user_interface') }}</button>
 							<a target="_blank" href="{{ path('agent_kb_article', {'article_id': article.id,'pdf': 1, '_rt': security_token('request_token', 10800)}) }}"><button class="clean-white">{{ phrase('agent.general.download_pdf') }}</button></a>
 						</div>

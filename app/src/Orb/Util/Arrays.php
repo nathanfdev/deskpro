@@ -596,9 +596,10 @@ class Arrays
      *
      * @param  array $array
      * @param  bool  $map_to_array True if the inner array (the thing being mapped to) should itself be an array
+     * @param  bool  $with_key     When $map_to_array is used, $with_key will key the innser arary with the value itself (so you can do isset() checks on it)
      * @return array
      */
-    public static function reverseLookupArray($array, $map_to_array = false)
+    public static function reverseLookupArray($array, $map_to_array = false, $with_key = false)
     {
         $new = array();
 
@@ -610,7 +611,11 @@ class Arrays
                             $new[$inner_id] = array();
                         }
 
-                        $new[$inner_id][] = $outer_id;
+                        if ($with_key) {
+                            $new[$inner_id][$outer_id] = $outer_id;
+                        } else {
+                            $new[$inner_id][] = $outer_id;
+                        }
                     } else {
                         $new[$inner_id] = $outer_id;
                     }
@@ -621,7 +626,11 @@ class Arrays
                         $new[$inner] = array();
                     }
 
-                    $new[$inner][] = $outer_id;
+                    if ($with_key) {
+                        $new[$inner][$outer_id] = $outer_id;
+                    } else {
+                        $new[$inner][] = $outer_id;
+                    }
                 } else {
                     $new[$inner] = $outer_id;
                 }

@@ -220,8 +220,7 @@ class ProcessReply extends ProcessAbstract
             $has_reply_codes = true;
         }
 
-        $message->message_hash = null;
-        $message->initHashCode();
+        $message->resetHashCode();
 
         // - Only add the message if we have an actual message
         // This allows email replies with action codes but no reply,

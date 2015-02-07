@@ -135,6 +135,10 @@ class KbController extends AbstractController
             $this->em->flush($article);
         }
 
+        $glossary = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
+        $glossary_words = $glossary->findWords($article->content);
+        $word_defs = $glossary->getWordDefs($glossary_words);
+
         $vars = array(
             'article'              => $article,
             'trans_langs'          => $trans_langs,
@@ -152,6 +156,9 @@ class KbController extends AbstractController
             'glossary_words'       => $glossary_words,
             'perms'                => $perms,
             'user_view_count'      => $user_view_count,
+
+            'glossary_words'       => $glossary_words,
+            'word_defs'            => $word_defs,
         );
 
         if($is_pdf) {
@@ -479,7 +486,11 @@ class KbController extends AbstractController
 
             case 'content':
 
-                $content_info = Strings::parseImageDataUrls($this->in->getCleanValue('content', 'string', null, array('noclean' => true)));
+                $content = $this->person->hasPerm('agent_publish.can_insert_html')
+                    ? $this->in->getCleanValue('content', 'string', null, array('noclean' => true))
+                    : $this->in->getCleanValue('content', 'string');
+
+                $content_info = Strings::parseImageDataUrls($content);
 
                 if (!empty($content_info['files'])) {
                     foreach ($content_info['files'] as $file_info) {

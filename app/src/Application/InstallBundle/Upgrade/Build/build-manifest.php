@@ -1669,4 +1669,24 @@
 		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1419340526'
 	),
 
+	1420541683 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1420541683.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1420541683'
+	),
+
+	1420543837 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1420543837.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1420543837'
+	),
+
+	1421925247 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1421925247.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1421925247'
+	),
+
+	1422460026 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1422460026.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1422460026'
+	),
+
 );

@@ -584,6 +584,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		if (this.pauseSend) {
 			window.setTimeout(this.submit.bind(this), 250);
+			return;
 		}
 
 		this.getEl('action').val(this.getEl('reply_as_type').data('type'));
@@ -1095,19 +1096,20 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				defaultIsHtml: true,
 				inlineHiddenPosition: this.getEl('is_html_reply'),
 				callback: function(obj) {
-					obj.addBtnFirst('dp_attach', 'Click here to attach a file. You may also drag a file from your computer desktop into this reply area to upload attachments faster.', function(){});
-					obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function(){
+					var $translations = self.getEl('editor_translations');
+					obj.addBtnFirst('dp_attach', $translations.data('attach-description'), function(){});
+					obj.addBtnAfter('dp_attach', 'dp_snippets', $translations.data('snippets-description'), function(){
 						self.openSnippetsViewer();
 					});
 					obj.addBtnSeparatorAfter('dp_attach');
 					obj.addBtnSeparatorAfter('dp_snippets');
 
 					var snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
-					snippetBtn.addClass('snippets').find('a').html('<span class="show-key-shortcut">S</span>nippets');
+					snippetBtn.addClass('snippets').find('a').text($translations.data('snippets-title'));
 
 					var attachBtn = obj.$toolbar.find('.redactor_btn_dp_attach').closest('li');
 					attachBtn.addClass('attach');
-					attachBtn.find('a').text('Attach').append('<input type="file" class="file" name="file-upload" />');
+					attachBtn.find('a').text($translations.data('attach-title')).append('<input type="file" class="file" name="file-upload" />');
 				}
 			});
 			this.getEl('is_html_reply').val(1);
@@ -1167,9 +1169,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					lastH = ed.height();
 					self.doScrollBottom = true;
 					window.setTimeout(function() {
-						if (self.page) {
-							self.page.updateUi();
-						}
+						self.updateUi();
 					}, 50);
 				}
 			});
@@ -1214,7 +1214,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 								url: BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
 								dataType: 'json',
 								complete: function () {
-									if (self.page) self.page.pauseSend = false;
+									self.pauseSend = false;
 								},
 								success: function (data) {
 

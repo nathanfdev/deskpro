@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO;
 
+use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PersonGuest;
 use Orb\Util\Arrays;
 
@@ -198,7 +199,7 @@ class App
 
 
     /**
-     * @return \Symfony\Component\HttpFoundation\Request
+     * @return Request
      */
     public static function getRequest()
     {

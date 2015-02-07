@@ -1729,6 +1729,8 @@ class TicketSearch extends SearcherAbstract
                         $this->affected_fields[] = 'tickets_flagged';
                         $joins[] = 'tickets_flagged';
 
+                        $this->used_person_context = true;
+
                         $color = $choice;
                         if ($color == 'any') {
                             $wheres[] = 'tickets_flagged.person_id = '. $this->person->id;
@@ -1806,6 +1808,10 @@ class TicketSearch extends SearcherAbstract
 
                                 if (is_array($choice)) {
                                     $choice = array_pop($choice);
+                                }
+
+                                if ($choice === null){
+                                    $choice = 'DP_NO_SELECTION';
                                 }
 
                                 $joins[] = array(
@@ -2438,8 +2444,14 @@ class TicketSearch extends SearcherAbstract
             $status = $data['options']['status'];
         }
 
-        if(isset($status) && $op == 'is' && $status != 'awaiting_agent') {
-            return false;
+        if (isset($status)) {
+            if (!is_array($status)) {
+                $status = array($status);
+            }
+
+            if (isset($status) && $op == 'is' && !in_array('awaiting_agent', $status)) {
+                return false;
+            }
         }
 
         return true;

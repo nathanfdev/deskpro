@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
   class Admin_Apps_Ctrl_EditInstance extends Admin_Ctrl_Base
     @CTRL_ID   = 'Admin_Apps_Ctrl_EditInstance'
     @CTRL_AS   = 'Ctrl'
-    @DEPS      = ['$http', 'dpTemplateManager']
+    @DEPS      = ['$http', 'dpTemplateManager', '$q']
 
     init: ->
       @instanceId = parseInt(@$stateParams.id)
@@ -16,18 +16,55 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
       d = @$q.defer()
       d2 = @$q.defer()
 
+      service = {
+        groups: @DataService.get('AgentGroups'),
+        agents: @DataService.get('Agents')
+      }
+
       @Api.sendDataGet({
         app: '/apps/instances/' + @instanceId
       }).then( (result) =>
         @app = result.data.app.app;
         @$scope.appId = @app.id
 
-        @Api.sendDataGet({
+        getData = {
           pack: '/apps/packages/' + @app.package_name
-        }).then( (result) =>
+        }
+
+        if @app.with_permissions
+          service.agents.all();
+          service.groups.all();
+
+        @Api.sendDataGet(getData).then( (result) =>
           @pack = result.data.pack['package']
           @packageName = @pack.name
-          d.resolve()
+
+          if not @app.with_permissions
+            d.resolve()
+          else
+            @$q.all([service.agents.all(), service.groups.all()]).then( (res) =>
+              @$scope.perms = {}
+              @$scope.perms.type = @app.perm_type
+              @$scope.perms.usergroups = res[1].map((x) =>
+                return {
+                  id: x.id,
+                  name: x.title,
+                  checked: @app.permissions.usergroup_ids.indexOf(x.id) != -1
+                }
+              )
+              @$scope.perms.agents = res[0].map((x) =>
+                return {
+                  id: x.id,
+                  name: x.display_name,
+                  checked: @app.permissions.person_ids.indexOf(x.id) != -1
+                }
+              )
+
+              @$scope.selected_agents_count = => @$scope.perms.agents.filter((x) -> x.checked).length
+              @$scope.selected_groups_count = => @$scope.perms.usergroups.filter((x) -> x.checked).length
+
+              d.resolve()
+            )
         )
       )
 
@@ -103,8 +140,19 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
         )
 
     doSaveSettings: ->
+
+      if @app.with_permissions and @$scope.perms.type? and @$scope.perms.type == 'set'
+        perms = {
+          type: 'set',
+          usergroup_ids: @$scope.perms.usergroups.filter((x) -> x.checked).map((x) -> x.id)
+          person_ids: @$scope.perms.agents.filter((x) -> x.checked).map((x) -> x.id)
+        }
+      else
+        perms = { type: 'global' }
+
       postData = {
-        settings: @$scope.setting_values
+        settings: @$scope.setting_values,
+        permissions: perms
       }
 
       @Api.sendPostJson("/apps/instances/#{@instanceId}", postData).then(=>

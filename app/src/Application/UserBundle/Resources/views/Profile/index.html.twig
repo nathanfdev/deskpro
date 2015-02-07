@@ -156,22 +156,22 @@
 	<div class="dp-content-block dp-profile-block">
 
 		<div class="dp-content-wrapper">
-			{% if app.session.hasFlash('resent_validation_email') %}
+			{% if app.session.getFlash('resent_validation_email') %}
 				<div class="dp-alert">
 					{{ phrase('user.profile.validation_resent_to', {'email': app.session.getFlash('resent_validation_email').value }) }}
 				</div>
 			{% endif %}
-			{% if app.session.hasFlash('removed_email') %}
+			{% if app.session.getFlash('removed_email') %}
 				<div class="dp-alert">
 					{{ phrase('user.profile.email_was_removed', {'email': app.session.getFlash('removed_email').value }) }}
 				</div>
 			{% endif %}
-			{% if app.session.hasFlash('new_email') %}
+			{% if app.session.getFlash('new_email') %}
 				<div class="dp-alert">
 					{{ phrase('user.profile.email_was_added', {'email': app.session.getFlash('removed_email').value }) }}
 				</div>
 			{% endif %}
-			{% if app.session.hasFlash('new_email_validating') %}
+			{% if app.session.getFlash('new_email_validating') %}
 				<div class="dp-alert">
 					{{ phrase('user.profile.email_was_added_validate_it', {'email': app.session.getFlash('removed_email').value }) }}
 				</div>
@@ -196,9 +196,9 @@
 									{% if email.id == app.user.primary_email.id %}
 										{{ phrase('user.profile.primary_address') }}
 									{% else %}
-										<a href="{{ path('user_profile_emails_setdefault', {'email_id': email.id}) }}">{{ phrase('user.profile.set_as_primary_address') }}</a>
+										<a href="{{ path('user_profile_emails_setdefault', {'email_id': email.id, '_rt': security_token('request_token')}) }}">{{ phrase('user.profile.set_as_primary_address') }}</a>
 										&bull;
-										<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_remove', {'email_id': email.id}) }}">{{ phrase('user.profile.ucfirst_delete') }}</a>
+										<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_remove', {'email_id': email.id, '_rt': security_token('request_token') }) }}">{{ phrase('user.profile.ucfirst_delete') }}</a>
 									{% endif %}
 								</div>
 								{{ email.email }}
@@ -209,9 +209,9 @@
 						<tr class="validating">
 							<td>
 								<div class="dp-controls">
-									<a href="{{ path('user_profile_emails_validate_sendlink', {'email_id': email.id}) }}">{{ phrase('user.profile.resend_validation_email') }}</a>
+									<a href="{{ path('user_profile_emails_validate_sendlink', {'email_id': email.id, '_rt': security_token('request_token') }) }}">{{ phrase('user.profile.resend_validation_email') }}</a>
 									&bull;
-									<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_validate_remove', {'email_id': email.id}) }}">{{ phrase('user.profile.ucfirst_delete') }}</a>
+									<a class="remove" title="{{ phrase('user.profile.remove_email_address') }}" href="{{ path('user_profile_emails_validate_remove', {'email_id': email.id, '_rt': security_token('request_token')}) }}">{{ phrase('user.profile.ucfirst_delete') }}</a>
 								</div>
 								{{ email.email }} <em>{{ phrase('user.profile.awaiting_validation') }}</em>
 							</td>

@@ -363,6 +363,7 @@ class PersonSearch extends SearcherAbstract
                     break;
                 case self::TERM_USERGROUP:
                     $choice = array_map('intval', (array)$choice);
+                    if (!$choice) $choice = array(0);
                     $person_ids = App::getDbRead('search.filter.people')->fetchAllCol("
                         SELECT person_id
                         FROM person2usergroups
@@ -633,6 +634,10 @@ class PersonSearch extends SearcherAbstract
 
                             if (is_array($choice)) {
                                 $choice = array_pop($choice);
+                            }
+
+                            if ($choice === null){
+                                $choice = 'DP_NO_SELECTION';
                             }
 
                             $field = 'custom_data_person_'.$join_id.'.'.$search_type;

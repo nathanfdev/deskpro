@@ -170,6 +170,16 @@ class MiscController extends AbstractController
             $attempt_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
             if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email')) {
                 $message = $this->container->getMailer()->createMessage();
+
+                // Make sure we dont show the current URL in email
+                // because that could leak password attempts because
+                // it's possible it's a GET request
+                if ($v = $this->session->getVisitor()) {
+                    if ($v->visit_track) {
+                        $v->visit_track->page_url = '[api]';
+                    }
+                }
+
                 $message->setTemplate('DeskPRO:emails_agent:login-alert.html.twig', array('success' => false, 'session' => $this->session->getEntity()));
                 $message->setTo($attempt_person->getPrimaryEmailAddress(), $attempt_person->getDisplayName());
                 $this->container->getMailer()->send($message);
@@ -304,7 +314,7 @@ class MiscController extends AbstractController
 
         $path = $this->in->getString('path');
         if ($path && strpos($path, 'dp_file:icons:') === 0) {
-            $path = preg_replace('#^dp_file:icons:.*?/web/#', DP_WEB_ROOT . '/web/', $path);
+            $path = preg_replace('#^dp_file:icons:(\.\./){4}#', DP_WEB_ROOT . '/web/', $path);
             $path = str_replace('\\', '/', $path);
             $path = realpath($path);
             if (!$path || !is_file($path) || strpos($path, DP_WEB_ROOT) !== 0 || Strings::getExtension($path) != 'png') {

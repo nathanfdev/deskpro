@@ -38,7 +38,7 @@
     'admin.languages.phrasegroup_admin_templates'          => 'Template Phrases',
     'admin.languages.phrasegroup_admin_tickets'            => 'Ticket Phrases',
     'admin.languages.phrasegroup_admin_twitter'            => 'Twitter Phrases',
-    'admin.languages.phrasegroup_admin_user_groups'        => 'User Group Phrases',
+    'admin.languages.phrasegroup_admin_user_groups'        => 'Usergroup Phrases',
     'admin.languages.phrasegroup_admin_user_registration'  => 'Registration Phrases',
     'admin.languages.phrasegroup_admin_user_rules'         => 'User Rules Phrases',
     'admin.languages.phrasegroup_agent'                    => 'Agent Interface Phrases',

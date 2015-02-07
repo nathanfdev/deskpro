@@ -42,6 +42,7 @@ use Orb\Util\Strings;
 /**
  * @property int $id
  * @property AppPackage $package
+ * @property string $perm_type
  * @property string $title
  * @property string $auth_key
  * @property string $secret_key
@@ -50,6 +51,9 @@ use Orb\Util\Strings;
  */
 class AppInstance extends DomainObject
 {
+	const PERM_TYPE_GLOBAL = 'set';
+	const PERM_TYPE_SET    = 'global';
+
 	/**
 	 * @var int
 	 */
@@ -59,6 +63,11 @@ class AppInstance extends DomainObject
 	 * @var \Application\DeskPRO\Entity\AppPackage
 	 */
 	protected $package;
+
+	/**
+	 * @var string
+	 */
+	protected $perm_type = 'global';
 
 	/**
 	 * @var string
@@ -216,6 +225,7 @@ class AppInstance extends DomainObject
 		$data['id']              = $this->id;
 		$data['package_name']    = $this->package->name;
 		$data['title']           = $this->title;
+		$data['perm_type']       = $this->perm_type;
 		$data['secret_key']      = $this->secret_key;
 		$data['auth_key']        = $this->auth_key;
 		$data['settings']        = $this->settings ?: array();
@@ -249,6 +259,14 @@ class AppInstance extends DomainObject
 			'fieldName'  => 'id',
 			'type'       => 'integer',
 			'id'         => true,
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'perm_type',
+			'fieldName'  => 'perm_type',
+			'type'       => 'string',
+			'length'     => 15,
 			'nullable'   => false,
 		));
 

@@ -318,7 +318,7 @@ HTML;
 
     public function quickSetLanguageAction()
     {
-        if ($return = $this->in->getString('return')) {
+        if ($return = $this->request->getReturnParam()) {
             $return = preg_replace('#(\?|&)?language_id=\d+#', '', $return);
 
             return $this->redirect($return);

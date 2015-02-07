@@ -76,7 +76,7 @@ pageMeta.baseId = '{{ baseId }}';
 						data-select-width="auto"
 						data-placeholder="Add a label"
 						value="{% for label in download.labels %}{{ label.label }},{% endfor %}"
-						data-allow-new="{{ app.getSetting('labels.downloads.agent_can_create') }}"
+						data-allow-new="{% if app.user.hasPerm('agent_publish.downloads_create_labels') %}1{% endif %}"
 					/>
 				</div>
 			</td>
@@ -142,10 +142,12 @@ pageMeta.baseId = '{{ baseId }}';
 		<section class="description-area">
 			<dl class="info-list">
 
-				<dt>URL Slug</dt>
+				<dt>{{ phrase('agent.publish.slug') }}</dt>
 				<dd>
 					<span id="{{ baseId }}_slug">{{ download.slug }}</span>
-					<button class="clean-white" id="{{ baseId }}_editslug">Edit Slug</button>
+					<button class="clean-white" id="{{ baseId }}_editslug" data-prompt="{{ phrase('agent.publish.slug_edit_prompt') }}">
+						{{ phrase('agent.publish.slug_edit') }}
+					</button>
 				</dd>
 
 				<dt>{{ phrase('agent.general.rating') }}</dt>
@@ -161,7 +163,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<dd>
 					{{ phrase('agent.general.created_timeago_by_x_on_y', {
 					'timeago': '<time class="timeago" datetime="' ~ download.date_created|date('c', 'UTC') ~'"></time>',
-					'name': download.person.display_name,
+					'name': download.person.display_name|escape,
 					'date': '<time>' ~ download.date_created|date('fulltime') ~ '</time>'
 				}, true) }}
 				</dd>
@@ -183,7 +185,9 @@ pageMeta.baseId = '{{ baseId }}';
 
 			<div class="controls" id="{{baseId}}_action_buttons">
 				<button class="clean-white delete nodelete-hide" {% if download.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.general.delete') }}</button>
-				<button class="clean-white permalink">{{ phrase('agent.general.copy_permalink') }}</button>
+				<button class="clean-white permalink" data-prompt="{{ phrase('agent.publish.permalink_copy_prompt') }}">
+					{{ phrase('agent.general.copy_permalink') }}
+				</button>
 				<button class="clean-white view-user-interface">{{ phrase('agent.general.view_in_user_interface') }}</button>
 				<br class="clear" />
 			</div>

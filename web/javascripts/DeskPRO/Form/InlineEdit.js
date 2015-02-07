@@ -271,7 +271,7 @@ DeskPRO.Form.InlineEdit = new Class({
 					value_bits.push(v.value);
 				});
 
-				html = value_bits.join(', ');
+				html = Orb.escapeHtml(value_bits.join(', '));
 			}
 
 			// Remove old rendered value
