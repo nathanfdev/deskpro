@@ -1937,7 +1937,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function setPriority(TicketPriority $priority = null)
     {
-        $this->priority = $priority;
+        $this->setModelField('priority', $priority);
         return $this;
     }
 

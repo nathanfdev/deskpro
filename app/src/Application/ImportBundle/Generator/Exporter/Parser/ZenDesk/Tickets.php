@@ -28,7 +28,9 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
+use Application\DeskPRO\Entity as DeskPROEntity;
 use DateTime;
+use Exception;
 
 /**
  * ZenDesk tickets parser
@@ -36,14 +38,35 @@ use DateTime;
  * Class Tickets
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-final class Tickets extends AbstractParser
+final class Tickets extends AbstractParser implements PeopleStorageAwareInterface
 {
+    const STATUS_NEW     = 'new';
+    const STATUS_OPEN    = 'open';
+    const STATUS_PENDING = 'pending';
+    const STATUS_HOLD    = 'hold';
+    const STATUS_SOLVED  = 'solved';
+    const STATUS_CLOSED  = 'closed';
+
+    /**
+     * @var PeopleStorage
+     */
+    private $people_storage;
+
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
         return Entity\EntityInterface::TYPE_TICKET;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setPeopleStorage(PeopleStorageInterface $storage)
+    {
+        $this->people_storage = $storage;
+        return $this;
     }
 
     /**
@@ -61,21 +84,38 @@ final class Tickets extends AbstractParser
     {
         $collection = new Entity\Collection();
         $tickets    = $this->reader->getTickets();
+        $people     = $this->getPeople($this->getPeopleIds($tickets));
 
         foreach ($tickets as $num => $ticket) {
-            var_dump($ticket);
             $this->advanceProgressBar();
 
             if ($this->hasRequiredTicketColumns($ticket) === false) {
                 $this->logWarning(sprintf('Invalid ticket record found (Skipping): %d', $num));
             } else {
+                if (empty($people[$ticket['submitter_id']]['email'])) {
+                    $this->logWarning(sprintf('Submitter record not found (Skipping): %d', $num));
+                    continue;
+                }
+                if (empty($people[$ticket['assignee_id']]['email'])) {
+                    $this->logWarning(sprintf('Agent record not found (Skipping): %d', $num));
+                    continue;
+                }
+
                 $entity = new Entity\Ticket();
                 $entity
                     ->setDestination('ticket_' . $ticket['id'])
                     ->setOid($ticket['id'])
+                    ->setRef($ticket['id'])
+                    ->setPersonEmail($people[$ticket['submitter_id']]['email'])
+                    ->setAgentEmail($people[$ticket['assignee_id']]['email'])
                     ->setSubject($ticket['subject'])
-                    ->setDateCreated(new DateTime($ticket['created_at']))
-                ;
+                    ->setStatus($this->getStatus($ticket['status']))
+                    ->setPriority($ticket['priority'])
+                    ->setDateCreated(new DateTime($ticket['created_at']));
+
+                foreach ($ticket['tags'] as $label) {
+                    $entity->addLabel($label);
+                }
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
@@ -100,10 +140,79 @@ final class Tickets extends AbstractParser
     {
         $columns = array(
             'id',
+            'submitter_id',
             'subject',
+            'status',
+            'priority',
             'created_at',
+            'custom_fields',
+            'tags',
         );
 
         return $this->hasRequiredColumns($ticket, $columns);
+    }
+
+    /**
+     * Returns all unique people ids
+     *
+     * @param array $tickets
+     * @return array
+     */
+    private function getPeopleIds(array $tickets)
+    {
+        $people_ids = array();
+        foreach ($tickets as $ticket) {
+            $people_ids[] = $ticket['submitter_id'];
+            $people_ids[] = $ticket['assignee_id'];
+        }
+
+        return array_unique($people_ids);
+    }
+
+    /**
+     * Returns people from reader by ids
+     *
+     * @param array $ids
+     * @return array
+     */
+    private function getPeople($ids)
+    {
+        $result = $this->reader->getPeopleByIds($ids);
+        $people = array();
+
+        foreach ($result as $person) {
+            $people[$person['id']] = $person;
+        }
+        if ($this->people_storage) {
+            $this->people_storage->addPeople($people);
+        }
+
+        return $people;
+    }
+
+    /**
+     * Get DeskPro status by ZenDesk status
+     *
+     * @param string $status
+     *
+     * @return string
+     * @throws Exception
+     */
+    private function getStatus($status)
+    {
+        $map = array(
+            self::STATUS_NEW     => DeskPROEntity\Ticket::STATUS_AWAITING_AGENT,
+            self::STATUS_OPEN    => DeskPROEntity\Ticket::STATUS_AWAITING_AGENT,
+            self::STATUS_PENDING => DeskPROEntity\Ticket::STATUS_AWAITING_AGENT,
+            self::STATUS_HOLD    => DeskPROEntity\Ticket::STATUS_AWAITING_USER,
+            self::STATUS_SOLVED  => DeskPROEntity\Ticket::STATUS_RESOLVED,
+            self::STATUS_CLOSED  => DeskPROEntity\Ticket::STATUS_ARCHIVED,
+        );
+
+        if (isset($map[$status])) {
+            return $map[$status];
+        }
+
+        throw new Exception(sprintf('Ticket status `%s` not found', $status));
     }
 }

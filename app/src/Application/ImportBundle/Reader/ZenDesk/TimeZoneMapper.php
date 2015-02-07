@@ -25,7 +25,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
+namespace Application\ImportBundle\Reader\ZenDesk;
 
 use Exception;
 
@@ -33,7 +33,7 @@ use Exception;
  * ZenDesk timezone mapper
  *
  * Class TimeZoneMapper
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
+ * @package Application\ImportBundle\Reader\ZenDesk
  */
 class TimeZoneMapper
 {

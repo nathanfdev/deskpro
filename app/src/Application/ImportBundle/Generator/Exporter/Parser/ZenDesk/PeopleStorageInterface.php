@@ -25,49 +25,36 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Reader\ZenDesk;
+namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 /**
- * ZenDesk reader interface
+ * People reader storage interface
  *
- * Interface ZenDeskReaderInterface
- * @package Application\ImportBundle\Reader\ZenDesk
+ * Interface PeopleStorageInterface
+ * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-interface ZenDeskReaderInterface
+interface PeopleStorageInterface
 {
     /**
-     * Returns total users count
+     * Set users collection
      *
-     * @return int
+     * @param array $people
+     * @return $this
      */
-    public function getPeopleCount();
+    public function setPeople(array $people);
 
     /**
-     * Returns batch of the users collection
+     * Add users collection
+     *
+     * @param array $people
+     * @return $this
+     */
+    public function addPeople(array $people);
+
+    /**
+     * Get stored users collection
      *
      * @return array
      */
     public function getPeople();
-
-    /**
-     * Returns batch of the users collection of certain ids
-     *
-     * @param array $ids
-     * @return array
-     */
-    public function getPeopleByIds(array $ids);
-
-    /**
-     * Returns total tickets count
-     *
-     * @return int
-     */
-    public function getTicketsCount();
-
-    /**
-     * Returns batch tickets collection
-     *
-     * @return array
-     */
-    public function getTickets();
 }

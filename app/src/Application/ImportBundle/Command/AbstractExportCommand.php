@@ -68,6 +68,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
     /**
      * Creates a new generator config instance
+     * The export is executing in the order of the entity type collection
      *
      * @param InputInterface $input
      *
@@ -78,13 +79,13 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     {
         $config = new GeneratorConfig();
         $config
+            ->addEntityType(Entity\EntityInterface::TYPE_TICKET)
             ->addEntityType(Entity\EntityInterface::TYPE_PERSON)
             ->addEntityType(Entity\EntityInterface::TYPE_ARTICLE)
             ->addEntityType(Entity\EntityInterface::TYPE_DOWNLOAD)
             ->addEntityType(Entity\EntityInterface::TYPE_FEEDBACK)
             ->addEntityType(Entity\EntityInterface::TYPE_ARTICLE)
-            ->addEntityType(Entity\EntityInterface::TYPE_NEWS)
-            ->addEntityType(Entity\EntityInterface::TYPE_TICKET);
+            ->addEntityType(Entity\EntityInterface::TYPE_NEWS);
 
         $this->setParamsByDeskProConfig($config);
         $this->setParamsByInputInterface($config, $input);

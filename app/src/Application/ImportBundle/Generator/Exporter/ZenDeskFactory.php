@@ -26,6 +26,7 @@
 \**************************************************************************/
 
 namespace Application\ImportBundle\Generator\Exporter;
+
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 
 /**
@@ -41,6 +42,8 @@ class ZenDeskFactory extends AbstractFactory
     {
         /** @var ZenDeskReaderInterface $reader */
         $reader  = $this->container->get('deskpro.import.zen_desk_reader');
+        $storage = new Parser\ZenDesk\PeopleStorage();
+
         $parsers = new Parser\Collection();
         $parsers
             ->attach(new Parser\ZenDesk\Downloads($reader))
@@ -49,6 +52,12 @@ class ZenDeskFactory extends AbstractFactory
             ->attach(new Parser\ZenDesk\News($reader))
             ->attach(new Parser\ZenDesk\People($reader))
             ->attach(new Parser\ZenDesk\Tickets($reader));
+
+        foreach ($parsers as $parser) {
+            if ($parser instanceof Parser\ZenDesk\PeopleStorageAwareInterface) {
+                $parser->setPeopleStorage($storage);
+            }
+        }
 
         return new ZenDesk($parsers);
     }

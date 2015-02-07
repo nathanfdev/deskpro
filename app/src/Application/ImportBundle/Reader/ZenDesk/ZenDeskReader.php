@@ -94,6 +94,22 @@ class ZenDeskReader implements ZenDeskReaderInterface
 
     /**
      * {@inheritdoc}
+     */
+    public function getPeopleByIds(array $ids)
+    {
+        $people = array();
+        $result = $this->client->users()->find(array('id' => $ids));
+        if (is_array($result->users)) {
+            foreach ($result->users as $person) {
+                $people[] = (array)$person;
+            }
+        }
+
+        return $people;
+    }
+
+    /**
+     * {@inheritdoc}
      *
      * There is no method count(), but method findAll() returns total collection count value
      */

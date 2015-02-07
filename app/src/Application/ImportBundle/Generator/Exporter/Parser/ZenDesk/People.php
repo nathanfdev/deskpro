@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Reader\ZenDesk\TimeZoneMapper;
 use DateTime;
 use DateTimeZone;
 
@@ -39,11 +40,16 @@ use DateTimeZone;
  * Class People
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-final class People extends AbstractParser
+final class People extends AbstractParser implements PeopleStorageAwareInterface
 {
     const ROLE_END_USER = 'end-user';
     const ROLE_AGENT    = 'agent';
     const ROLE_ADMIN    = 'admin';
+
+    /**
+     * @var PeopleStorage
+     */
+    private $people_storage;
 
     /**
      * {@inheritdoc}
@@ -51,6 +57,15 @@ final class People extends AbstractParser
     public function getEntityType()
     {
         return Entity\EntityInterface::TYPE_PERSON;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setPeopleStorage(PeopleStorageInterface $storage)
+    {
+        $this->people_storage = $storage;
+        return $this;
     }
 
     /**
@@ -81,8 +96,7 @@ final class People extends AbstractParser
                     ->setOid($person['id'])
                     ->setName($person['name'])
                     ->setTimezone(new DateTimeZone(TimeZoneMapper::getTimeZoneName($person['time_zone'])))
-                    ->setDateCreated(new DateTime($person['created_at']))
-                ;
+                    ->setDateCreated(new DateTime($person['created_at']));
 
                 switch ($person['role']) {
                     case self::ROLE_ADMIN:
