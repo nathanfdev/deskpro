@@ -7,6 +7,9 @@
  * Describes a single physical address for a contact item.
  *
  * @package php-ews\Types
+ *
+ * @todo Create a common EntryType class.
+ * @todo Create a common TextEntryType class.
  */
 class EWSType_PhysicalAddressDictionaryEntryType extends EWSType
 {

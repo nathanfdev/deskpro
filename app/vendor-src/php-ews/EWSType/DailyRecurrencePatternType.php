@@ -7,6 +7,8 @@
  * Describes the frequency, in days, in which a calendar item or a task recurs.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_IntervalRecurrencePatternBaseType.
  */
 class EWSType_DailyRecurrencePatternType extends EWSType
 {

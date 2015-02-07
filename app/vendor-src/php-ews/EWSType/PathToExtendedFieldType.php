@@ -26,21 +26,6 @@ class EWSType_PathToExtendedFieldType extends EWSType
     public $DistinguishedPropertySetId;
 
     /**
-     * Identifies an extended property by its name.
-     *
-     * This property must be coupled with either DistinguishedPropertySetId or
-     * PropertySetId. If this attribute is used, the PropertyId and PropertyTag
-     * attributes cannot be used.
-     *
-     * This attribute is optional.
-     *
-     * @since Exchange 2007
-     *
-     * @var string
-     */
-    public $PropertyName;
-
-    /**
      * Identifies an extended property by its dispatch ID.
      *
      * The dispatch ID can be identified in either decimal or hexadecimal
@@ -55,6 +40,21 @@ class EWSType_PathToExtendedFieldType extends EWSType
      * @var string
      */
     public $PropertyId;
+
+    /**
+     * Identifies an extended property by its name.
+     *
+     * This property must be coupled with either DistinguishedPropertySetId or
+     * PropertySetId. If this attribute is used, the PropertyId and PropertyTag
+     * attributes cannot be used.
+     *
+     * This attribute is optional.
+     *
+     * @since Exchange 2007
+     *
+     * @var string
+     */
+    public $PropertyName;
 
     /**
      * Identifies a MAPI extended property set or namespace by its identifying
