@@ -76,7 +76,6 @@ class NTLMSoapClient extends SoapClient
         curl_setopt($this->ch, CURLOPT_POSTFIELDS, $request);
         curl_setopt($this->ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
         curl_setopt($this->ch, CURLOPT_USERPWD, $this->user.':'.$this->password);
-        curl_setopt($this->ch, CURLOPT_VERBOSE, 1);
 
         /**
          * hack to prevent invalid NTLM handling by server
