@@ -29,8 +29,11 @@
 namespace Application\ImportBundle\Reader\ZenDesk;
 
 use Zendesk\API\Client;
+use Exception;
 
 /**
+ * ZenDesk reader factory
+ *
  * Class ZenDeskReaderFactory
  * @package Application\ImportBundle\Reader\ZenDesk
  */
@@ -40,15 +43,27 @@ class ZenDeskReaderFactory
      * Create a zenDesk reader
      *
      * @return ZenDeskReader
+     * @throws Exception
      */
     public function createReader()
     {
-        $config = new ZenDeskConfig(
-            'syastrebov',
-            'syastrebov',
-            'QxT7xUIUZCJUkOAm2iqLpg2wiGBfpOpr9RgN3O6l'
-        );
+        $dp_config = dp_get_config('zendesk_import');
+        if (empty($dp_config)) {
+            throw new Exception('Deskpro zendesk import config is not defined');
+        }
 
-        return new ZenDeskReader(new Client($config->getSubdomain(), $config->getUsername()));
+        $config = new ZenDeskConfig($dp_config['subdomain'], $dp_config['username']);
+        if (isset($dp_config['password'])) {
+            $config->setPassword($dp_config['password']);
+        }
+        if (isset($dp_config['api_token'])) {
+            $config->setApiToken($dp_config['api_token']);
+        }
+
+
+        $client = new Client($config->getSubdomain(), $config->getUsername());
+        $client->setAuth($config->getAuthType(), $config->getAuthValue());
+
+        return new ZenDeskReader($client);
     }
 }

@@ -51,4 +51,70 @@ class ZenDeskReader implements ZenDeskReaderInterface
     {
         $this->client = $client;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPeopleCount()
+    {
+//        $this->client->views()->count();
+
+        return 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPeople()
+    {
+        $people = array();
+        $result = $this->client->users()->findAll(array(
+            'page'       => 1,
+            'per_page'   => 1,
+            'sort_by'    => 'id',
+            'sort_order' => 'desc',
+            'start_time' => time(), // todo see https://support.zendesk.com/hc/en-us/articles/204232743
+        ));
+
+        var_dump($result->next_page);
+        var_dump($result->previous_page);
+        var_dump($result->count);
+
+        if (is_array($result->users)) {
+            foreach ($result->users as $person) {
+                $people[] = (array)$person;
+            }
+        }
+
+        return $people;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTicketsCount()
+    {
+        return 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTickets()
+    {
+        $tickets = array();
+        $result  = $this->client->tickets()->findAll();
+
+        var_dump($result->next_page);
+        var_dump($result->previous_page);
+        var_dump($result->count);
+
+        if (is_array($result->tickets)) {
+            foreach ($result->tickets as $ticket) {
+                $tickets[] = (array)$ticket;
+            }
+        }
+
+        return $tickets;
+    }
 }

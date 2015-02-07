@@ -35,5 +35,23 @@ namespace Application\ImportBundle\Reader\ZenDesk;
  */
 interface ZenDeskReaderInterface
 {
+    /**
+     * @return int
+     */
+    public function getPeopleCount();
 
+    /**
+     * @return array
+     */
+    public function getPeople();
+
+    /**
+     * @return int
+     */
+    public function getTicketsCount();
+
+    /**
+     * @return array
+     */
+    public function getTickets();
 }

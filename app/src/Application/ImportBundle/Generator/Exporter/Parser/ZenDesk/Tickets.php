@@ -58,6 +58,13 @@ final class Tickets extends AbstractParser
      */
     public function export()
     {
-        return new Entity\Collection();
+        $collection = new Entity\Collection();
+        $tickets    = $this->reader->getTickets();
+
+        foreach ($tickets as $num => $ticket) {
+//            var_dump($ticket);
+        }
+
+        return $collection;
     }
 }

@@ -58,6 +58,13 @@ final class People extends AbstractParser
      */
     public function export()
     {
-        return new Entity\Collection();
+        $collection = new Entity\Collection();
+        $people     = $this->reader->getPeople();
+
+        foreach ($people as $num => $person) {
+//            var_dump($person);
+        }
+
+        return $collection;
     }
 }

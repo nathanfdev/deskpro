@@ -28,11 +28,16 @@
 namespace Application\ImportBundle\Reader\ZenDesk;
 
 /**
+ * ZenDesk reader config
+ *
  * Class ZenDeskConfig
  * @package Application\ImportBundle\Reader\ZenDesk
  */
 class ZenDeskConfig
 {
+    const AUTH_TYPE_PASSWORD = 'password';
+    const AUTH_TYPE_TOKEN    = 'token';
+
     /**
      * @var string
      */
@@ -42,6 +47,11 @@ class ZenDeskConfig
      * @var string
      */
     private $username;
+
+    /**
+     * @var string
+     */
+    private $password;
 
     /**
      * @var string
@@ -85,13 +95,11 @@ class ZenDeskConfig
      *
      * @param string $subdomain
      * @param string $username
-     * @param string $api_token
      */
-    public function __construct($subdomain, $username, $api_token)
+    public function __construct($subdomain, $username)
     {
         $this->subdomain = $subdomain;
         $this->username  = $username;
-        $this->api_token = $api_token;
     }
 
     /**
@@ -111,10 +119,74 @@ class ZenDeskConfig
     }
 
     /**
+     * @param string $api_token
+     * @return $this
+     */
+    public function setApiToken($api_token)
+    {
+        $this->api_token = $api_token;
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getApiToken()
     {
         return $this->api_token;
+    }
+
+    /**
+     * @param string $password
+     * @return $this
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * Returns a text value indicating the type of authorization configured
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function getAuthType()
+    {
+        if ($this->api_token) {
+            return self::AUTH_TYPE_TOKEN;
+        }
+        if ($this->password) {
+            return self::AUTH_TYPE_PASSWORD;
+        }
+
+        throw new \Exception('Auth credentials is not set up');
+    }
+
+    /**
+     * Returns auth password or token by auth type
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function getAuthValue()
+    {
+        if ($this->api_token) {
+            return $this->api_token;
+        }
+        if ($this->password) {
+            return $this->password;
+        }
+
+        throw new \Exception('Auth credentials is not set up');
     }
 }
