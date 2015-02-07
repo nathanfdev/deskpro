@@ -75,10 +75,28 @@ class NTLMSoapClient extends SoapClient
         curl_setopt($this->ch, CURLOPT_POST, true );
         curl_setopt($this->ch, CURLOPT_POSTFIELDS, $request);
         curl_setopt($this->ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-        curl_setopt($this->ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC | CURLAUTH_NTLM);
         curl_setopt($this->ch, CURLOPT_USERPWD, $this->user.':'.$this->password);
+        curl_setopt($this->ch, CURLOPT_VERBOSE, 1);
 
-        $response = curl_exec($this->ch);
+        /**
+         * hack to prevent invalid NTLM handling by server
+         *
+            < HTTP/1.1 401 Unauthorized
+            < Server: Microsoft-IIS/7.5
+            < Set-Cookie: exchangecookie=9460cebb32db43dba904c8df696b7c4d; expires=Sun, 07-Feb-2016 12:16:08 GMT; path=/; HttpOnly
+            * gss_init_sec_context() failed: : Credentials cache file '/tmp/krb5cc_1000' not found< WWW-Authenticate: Negotiate
+            < WWW-Authenticate: NTLM
+            < WWW-Authenticate: Basic realm="connect.emailsrvr.com"
+            < X-Powered-By: ASP.NET
+         */
+        foreach (array(CURLAUTH_NTLM, CURLAUTH_BASIC) as $auth) {
+            curl_setopt($this->ch, CURLOPT_HTTPAUTH, $auth);
+            $response = curl_exec($this->ch);
+
+            if (curl_getinfo($this->ch, CURLINFO_HTTP_CODE) != 401) {
+                break;
+            }
+        }
 
         // TODO: Add some real error handling.
         // If the response if false than there was an error and we should throw
