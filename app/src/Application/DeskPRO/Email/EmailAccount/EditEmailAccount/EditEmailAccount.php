@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount;
 
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\NoopConfig;
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\ExchangeConfig;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
@@ -103,6 +104,11 @@ class EditEmailAccount
      * @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig
      */
     public $out_smtp_account;
+
+    /**
+     * @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\ExchangeConfig
+     */
+    public $out_exchange_account;
 
     /**
      * @var \Application\DeskPRO\Entity\EmailAccount
@@ -244,6 +250,9 @@ class EditEmailAccount
 
             case 'php_mail':
                 return new PhpMailConfig();
+
+            case 'exchange':
+                return $this->out_exchange_account;
 
             default;
 

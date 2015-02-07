@@ -16,6 +16,7 @@ define [
       @form.outgoing_type     = 'php_mail'
       @form.out_gmail_account = {}
       @form.out_smtp_account  = {}
+      @form.out_exchange_account  = {}
 
       @form.in_pop3_account.secure_mode = "ssl"
       @form.in_imap_account.secure_mode = "ssl"
@@ -131,8 +132,15 @@ define [
           if @form.out_smtp_account.secure_mode and @form.out_smtp_account.secure_mode != ''
             @form.out_smtp_account.secure = true
 
-        else if @form.outgoing_type == 'gmail'
+        if @form.outgoing_type == 'gmail'
           @form.out_gmail_account.password = @account.outgoing_account.password
+
+        if @form.outgoing_type == 'exchange'
+          @form.out_exchange_account.host        = @account.outgoing_account.host
+          @form.out_exchange_account.user        = @account.outgoing_account.user
+          @form.out_exchange_account.password    = @account.outgoing_account.password
+
+
 
     getFormData: ->
 

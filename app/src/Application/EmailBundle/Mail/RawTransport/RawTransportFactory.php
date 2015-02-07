@@ -36,6 +36,7 @@ namespace Application\EmailBundle\Mail\RawTransport;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount;
+use Application\EmailBundle\Mail\RawMessage\Rfc2822Decoder;
 use Application\EmailBundle\SwiftMailer\Plugins\TransportLogger;
 use Psr\Log\LoggerInterface;
 
@@ -65,6 +66,7 @@ class RawTransportFactory
             case 'smtp':     $tr = $this->createSmtpTransport($config); break;
             case 'gmail':    $tr = $this->createGmailTransport($config); break;
             case 'php_mail': $tr = $this->createPhpMailTransport($config); break;
+            case 'exchange': $tr = $this->createExchangeTransport($config); break;
             default:
                 $this->logger->error("Unknown account type: %s", $config->getType());
                 throw new \InvalidArgumentException("Unknown account type: {$config->getType()}");
@@ -128,5 +130,15 @@ class RawTransportFactory
         $tr->registerPlugin(new TransportLogger($this->logger));
 
         return $tr;
+    }
+
+    /**
+     * @param  OutgoingAccount\ExchangeConfig           $config
+     * @return RawExchangeTransport
+     */
+    public function createExchangeTransport(OutgoingAccount\ExchangeConfig $config)
+    {
+        $decoder = new Rfc2822Decoder();
+        return new RawExchangeTransport($config, $decoder, $this->logger);
     }
 }

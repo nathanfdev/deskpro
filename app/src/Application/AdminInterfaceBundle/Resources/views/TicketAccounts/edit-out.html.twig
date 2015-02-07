@@ -22,6 +22,7 @@
 				<option value="php_mail">Send mail using PHP mail()</option>
 				<option value="smtp">SMTP</option>
 				<option value="gmail">GMail or Google Apps</option>
+				<option value="exchange">MS Exchange</option>
 			</select>
 		</div>
 
@@ -112,6 +113,36 @@
 					<tr>
 						<th>Password</th>
 						<td><input type="password" class="form-control" name="title" ng-model="form.out_gmail_account.password" style="width: 50%;" /></td>
+					</tr>
+					<tr>
+						<th>&nbsp;</th>
+						<td>
+							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+
+		{############}
+		{# Exchange    #}
+		{############}
+
+		<div class="ng-hide" ng-show="form.outgoing_type == 'exchange'">
+			<div class="inner-group">
+				<table width="100%" class="inner-form-table">
+					<tr>
+						<th width="75">Host</th>
+						<td><input type="text" class="form-control" name="title" ng-model="form.out_exchange_account.host" style="width: 50%;" placeholder="localhost" /></td>
+					</tr>
+					<tr>
+						<th>Username</th>
+						<td><input type="text" class="form-control" name="title" ng-model="form.out_exchange_account.user" style="width: 50%;" /></td>
+					</tr>
+					<tr>
+						<th>Password</th>
+						<td><input type="password" class="form-control" name="title" ng-model="form.out_exchange_account.password" style="width: 50%;" /></td>
 					</tr>
 					<tr>
 						<th>&nbsp;</th>
