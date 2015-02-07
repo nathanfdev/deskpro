@@ -28,15 +28,23 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
+use DateTime;
+use DateTimeZone;
 
 /**
  * ZenDesk people parser
+ *
+ * see https://developer.zendesk.com/rest_api/docs/core/users#time-zone
  *
  * Class People
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
 final class People extends AbstractParser
 {
+    const ROLE_END_USER = 'end-user';
+    const ROLE_AGENT    = 'agent';
+    const ROLE_ADMIN    = 'admin';
+
     /**
      * {@inheritdoc}
      */
@@ -50,7 +58,7 @@ final class People extends AbstractParser
      */
     public function getCount()
     {
-        return 0;
+        return $this->reader->getPeopleCount();
     }
 
     /**
@@ -62,9 +70,80 @@ final class People extends AbstractParser
         $people     = $this->reader->getPeople();
 
         foreach ($people as $num => $person) {
-//            var_dump($person);
+            $this->advanceProgressBar();
+
+            if ($this->hasRequiredPersonColumns($person) === false) {
+                $this->logWarning(sprintf('Invalid person record found (Skipping): %d', $num));
+            } else {
+                $entity = new Entity\Person();
+                $entity
+                    ->setDestination('ticket_' . $person['id'])
+                    ->setOid($person['id'])
+                    ->setName($person['name'])
+                    ->setTimezone(new DateTimeZone(TimeZoneMapper::getTimeZoneName($person['time_zone'])))
+                    ->setDateCreated(new DateTime($person['created_at']))
+                ;
+
+                switch ($person['role']) {
+                    case self::ROLE_ADMIN:
+                        $entity
+                            ->setAsAgent(true)
+                            ->setAsAdmin(true);
+                        break;
+
+                    case self::ROLE_AGENT:
+                        $entity->setAsAgent(true);
+                        break;
+
+                    case self::ROLE_END_USER:
+                        $entity->setAsUser(true);
+                        break;
+                }
+
+                $entity->addEmail($person['email']);
+
+                $user_fields = (array)$person['user_fields'];
+                foreach ($user_fields as $user_field) {
+                    $entity->addCustomField($this->exportCustomField($user_field));
+                }
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+            }
         }
 
         return $collection;
+    }
+
+    /**
+     * Exports person custom field
+     *
+     * @param $user_field
+     * @return Entity\CustomField
+     */
+    private function exportCustomField($user_field)
+    {
+        return new Entity\CustomField();
+    }
+
+    /**
+     * Check if person has all required columns
+     *
+     * @param array $person
+     * @return bool
+     */
+    private function hasRequiredPersonColumns(array $person)
+    {
+        $columns = array(
+            'id',
+            'name',
+            'email',
+            'time_zone',
+            'role',
+            'created_at',
+            'user_fields',
+        );
+
+        return $this->hasRequiredColumns($person, $columns);
     }
 }

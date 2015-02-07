@@ -122,12 +122,6 @@ final class People extends AbstractParser
      */
     private function isAgent(array $person)
     {
-        if (isset($person['is_agent'])) {
-            if ($person['is_agent'] === 'true' || (int)$person['is_agent'] === 1) {
-                return true;
-            }
-        }
-
-        return false;
+        return isset($person['is_agent']) && ($person['is_agent'] === 'true' || (int)$person['is_agent'] === 1);
     }
 }

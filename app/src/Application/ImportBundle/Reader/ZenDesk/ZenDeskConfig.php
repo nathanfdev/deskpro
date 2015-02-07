@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Exception;
+
 /**
  * ZenDesk reader config
  *
@@ -103,6 +105,8 @@ class ZenDeskConfig
     }
 
     /**
+     * Returns the subdomain
+     *
      * @return string
      */
     public function getSubdomain()
@@ -111,6 +115,8 @@ class ZenDeskConfig
     }
 
     /**
+     * Returns the username or email
+     *
      * @return int
      */
     public function getUsername()
@@ -119,6 +125,8 @@ class ZenDeskConfig
     }
 
     /**
+     * Set the auth api token
+     *
      * @param string $api_token
      * @return $this
      */
@@ -129,6 +137,8 @@ class ZenDeskConfig
     }
 
     /**
+     * Returns the api token if it's defined
+     *
      * @return string
      */
     public function getApiToken()
@@ -137,6 +147,8 @@ class ZenDeskConfig
     }
 
     /**
+     * Set the auth password
+     *
      * @param string $password
      * @return $this
      */
@@ -147,6 +159,8 @@ class ZenDeskConfig
     }
 
     /**
+     * Returns the api password if it's defined
+     *
      * @return string
      */
     public function getPassword()
@@ -158,7 +172,7 @@ class ZenDeskConfig
      * Returns a text value indicating the type of authorization configured
      *
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function getAuthType()
     {
@@ -169,14 +183,14 @@ class ZenDeskConfig
             return self::AUTH_TYPE_PASSWORD;
         }
 
-        throw new \Exception('Auth credentials is not set up');
+        throw new Exception('Auth credentials is not set up');
     }
 
     /**
      * Returns auth password or token by auth type
      *
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function getAuthValue()
     {
@@ -187,6 +201,6 @@ class ZenDeskConfig
             return $this->password;
         }
 
-        throw new \Exception('Auth credentials is not set up');
+        throw new Exception('Auth credentials is not set up');
     }
 }

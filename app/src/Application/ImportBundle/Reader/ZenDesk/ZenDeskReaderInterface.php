@@ -36,21 +36,29 @@ namespace Application\ImportBundle\Reader\ZenDesk;
 interface ZenDeskReaderInterface
 {
     /**
+     * Returns total users count
+     *
      * @return int
      */
     public function getPeopleCount();
 
     /**
+     * Returns batch users collection
+     *
      * @return array
      */
     public function getPeople();
 
     /**
+     * Returns total tickets count
+     *
      * @return int
      */
     public function getTicketsCount();
 
     /**
+     * Returns batch tickets collection
+     *
      * @return array
      */
     public function getTickets();

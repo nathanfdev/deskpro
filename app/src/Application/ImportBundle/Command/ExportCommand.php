@@ -84,6 +84,7 @@ class ExportCommand extends AbstractExportCommand
 
         } catch (Generator\GeneratorException $e) {
             $output->writeln('');
+            $output->writeln('');
             foreach ($e->getExceptions() as $exception) {
                 /** @var Generator\Validator\ValidatorConstraintException $exception */
                 $logger->critical($exception);
@@ -96,6 +97,8 @@ class ExportCommand extends AbstractExportCommand
             }
 
         } catch (\Exception $e) {
+            $output->writeln('');
+            $output->writeln('');
             $logger->critical($e->getMessage());
             $output->writeln(sprintf(
                 'An error has occurred while importing. Look at the log file `%s` to see details.',

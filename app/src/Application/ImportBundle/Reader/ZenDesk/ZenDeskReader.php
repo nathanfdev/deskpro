@@ -32,6 +32,8 @@ use Zendesk\API\Client;
 /**
  * ZenDesk reader
  *
+ * see https://developer.zendesk.com/rest_api/docs/core/incremental_export
+ *
  * Class ZenDeskReader
  * @package Application\ImportBundle\Reader\ZenDesk
  */
@@ -54,12 +56,13 @@ class ZenDeskReader implements ZenDeskReaderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * There is no method count(), but method findAll() returns total collection count value
      */
     public function getPeopleCount()
     {
-//        $this->client->views()->count();
-
-        return 0;
+        $result = $this->client->users()->findAll(array('per_page' => 1));
+        return $result->count;
     }
 
     /**
@@ -70,15 +73,15 @@ class ZenDeskReader implements ZenDeskReaderInterface
         $people = array();
         $result = $this->client->users()->findAll(array(
             'page'       => 1,
-            'per_page'   => 1,
+            'per_page'   => 100,
             'sort_by'    => 'id',
             'sort_order' => 'desc',
             'start_time' => time(), // todo see https://support.zendesk.com/hc/en-us/articles/204232743
         ));
 
-        var_dump($result->next_page);
-        var_dump($result->previous_page);
-        var_dump($result->count);
+//        var_dump($result->next_page);
+//        var_dump($result->previous_page);
+//        var_dump($result->count);
 
         if (is_array($result->users)) {
             foreach ($result->users as $person) {
@@ -91,10 +94,13 @@ class ZenDeskReader implements ZenDeskReaderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * There is no method count(), but method findAll() returns total collection count value
      */
     public function getTicketsCount()
     {
-        return 0;
+        $result = $this->client->tickets()->findAll(array('per_page' => 1));
+        return $result->count;
     }
 
     /**
@@ -104,10 +110,6 @@ class ZenDeskReader implements ZenDeskReaderInterface
     {
         $tickets = array();
         $result  = $this->client->tickets()->findAll();
-
-        var_dump($result->next_page);
-        var_dump($result->previous_page);
-        var_dump($result->count);
 
         if (is_array($result->tickets)) {
             foreach ($result->tickets as $ticket) {

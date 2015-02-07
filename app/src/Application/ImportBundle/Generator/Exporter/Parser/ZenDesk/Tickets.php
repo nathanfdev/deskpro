@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
+use DateTime;
 
 /**
  * ZenDesk tickets parser
@@ -50,7 +51,7 @@ final class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        return 0;
+        return $this->reader->getTicketsCount();
     }
 
     /**
@@ -62,9 +63,47 @@ final class Tickets extends AbstractParser
         $tickets    = $this->reader->getTickets();
 
         foreach ($tickets as $num => $ticket) {
-//            var_dump($ticket);
+            var_dump($ticket);
+            $this->advanceProgressBar();
+
+            if ($this->hasRequiredTicketColumns($ticket) === false) {
+                $this->logWarning(sprintf('Invalid ticket record found (Skipping): %d', $num));
+            } else {
+                $entity = new Entity\Ticket();
+                $entity
+                    ->setDestination('ticket_' . $ticket['id'])
+                    ->setOid($ticket['id'])
+                    ->setSubject($ticket['subject'])
+                    ->setDateCreated(new DateTime($ticket['created_at']))
+                ;
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+            }
         }
 
         return $collection;
+    }
+
+    public function exportMessage()
+    {
+
+    }
+
+    /**
+     * Check if ticket has all required columns
+     *
+     * @param array $ticket
+     * @return bool
+     */
+    private function hasRequiredTicketColumns(array $ticket)
+    {
+        $columns = array(
+            'id',
+            'subject',
+            'created_at',
+        );
+
+        return $this->hasRequiredColumns($ticket, $columns);
     }
 }
