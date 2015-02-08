@@ -631,7 +631,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function setRef($ref)
     {
-        $this->ref = $ref;
+        $this->setModelField('ref', $ref);
         return $this;
     }
 
@@ -914,6 +914,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     public function resetParticipants()
     {
         $this->participants = new ArrayCollection();
+        $this->_onPropertyChanged('participants', null, $this->participants);
+
         return $this;
     }
 
@@ -1328,6 +1330,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     public function resetMessages()
     {
         $this->messages = new ArrayCollection();
+        $this->_onPropertyChanged('messages', null, $this->messages);
+
         return $this;
     }
 
@@ -1622,6 +1626,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     public function resetLabels()
     {
         $this->labels = new ArrayCollection();
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
         return $this;
     }
 
@@ -1747,7 +1753,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function setOrganization(Organization $organization = null)
     {
-        $this->organization = $organization;
+        $this->setModelField('organization', $organization);
         return $this;
     }
 
@@ -1812,7 +1818,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function setDepartment(Department $department = null)
     {
-        $this->department = $department;
+        $this->setModelField('department', $department);
         return $this;
     }
 
@@ -1885,7 +1891,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function setCategory(TicketCategory $category = null)
     {
-        $this->category = $category;
+        $this->setModelField('category', $category);
         return $this;
     }
 
@@ -2437,7 +2443,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function setDateCreated(\DateTime $date_created)
     {
-        $this->date_created = $date_created;
+        $this->setModelField('date_created', $date_created);
         return $this;
     }
 
@@ -2449,7 +2455,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function setDateResolved(\DateTime $date_resolved = null)
     {
-        $this->date_resolved = $date_resolved;
+        $this->setModelField('date_resolved', $date_resolved);
         return $this;
     }
 
@@ -2461,7 +2467,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function setDateArchived(\DateTime $date_archived = null)
     {
-        $this->date_archived = $date_archived;
+        $this->setModelField('date_archived', $date_archived);
         return $this;
     }
 

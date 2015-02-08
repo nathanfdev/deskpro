@@ -1883,7 +1883,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     public function resetEmails()
     {
         $this->emails = new ArrayCollection();
-        $this->_onPropertyChanged('emails', $this->emails, $this->emails);
+        $this->_onPropertyChanged('emails', null, $this->emails);
 
         return $this;
     }
@@ -1962,7 +1962,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     public function resetUsergroups()
     {
         $this->usergroups = new ArrayCollection();
-        $this->_onPropertyChanged('usergroups', $this->usergroups, $this->usergroups);
+        $this->_onPropertyChanged('usergroups', null, $this->usergroups);
 
         return $this;
     }
@@ -2009,7 +2009,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     public function resetLabels()
     {
         $this->labels = new ArrayCollection();
-        $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+        $this->_onPropertyChanged('labels', null, $this->labels);
 
         return $this;
     }

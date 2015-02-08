@@ -199,7 +199,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function setSlug($slug)
     {
         if ($slug) {
-            $this->setModelField('title', $slug);
+            $this->setModelField('slug', $slug);
         }
 
         return $this;
