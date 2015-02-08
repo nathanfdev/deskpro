@@ -57,4 +57,19 @@ interface PeopleStorageInterface
      * @return array
      */
     public function getPeople();
+
+    /**
+     * Returns all contained people ids
+     *
+     * @return int[]
+     */
+    public function getPeopleIds();
+
+    /**
+     * Returns the list of ids that not found in the storage
+     *
+     * @param int[] $request_ids
+     * @return int[]
+     */
+    public function getNotContainsIds(array $request_ids);
 }

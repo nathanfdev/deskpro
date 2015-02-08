@@ -71,26 +71,59 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * The export is executing in the order of the entity type collection
      *
      * @param InputInterface $input
+     * @param array          $supported_types
      *
      * @return GeneratorConfig
      * @throws Exception
      */
-    protected function createGeneratorConfig(InputInterface $input)
+    protected function createGeneratorConfig(InputInterface $input, array $supported_types)
     {
         $config = new GeneratorConfig();
-        $config
-            ->addEntityType(Entity\EntityInterface::TYPE_TICKET)
-            ->addEntityType(Entity\EntityInterface::TYPE_PERSON)
-            ->addEntityType(Entity\EntityInterface::TYPE_ARTICLE)
-            ->addEntityType(Entity\EntityInterface::TYPE_DOWNLOAD)
-            ->addEntityType(Entity\EntityInterface::TYPE_FEEDBACK)
-            ->addEntityType(Entity\EntityInterface::TYPE_ARTICLE)
-            ->addEntityType(Entity\EntityInterface::TYPE_NEWS);
 
         $this->setParamsByDeskProConfig($config);
         $this->setParamsByInputInterface($config, $input);
 
+        foreach ($supported_types as $type) {
+            $config->addEntityType($type);
+        }
+
         return $config;
+    }
+
+    /**
+     * Returns a collection of supported entity types that should be exported in this order
+     *
+     * @return array
+     */
+    protected function exportEntityTypesQueue()
+    {
+        return array(
+            Entity\EntityInterface::TYPE_TICKET,
+            Entity\EntityInterface::TYPE_PERSON,
+            Entity\EntityInterface::TYPE_ARTICLE,
+            Entity\EntityInterface::TYPE_DOWNLOAD,
+            Entity\EntityInterface::TYPE_FEEDBACK,
+            Entity\EntityInterface::TYPE_ARTICLE,
+            Entity\EntityInterface::TYPE_NEWS,
+        );
+    }
+
+    /**
+     * Returns a collection of supported entity types that should be imported in this order
+     *
+     * @return array
+     */
+    protected function importEntityTypesQueue()
+    {
+        return array(
+            Entity\EntityInterface::TYPE_PERSON,
+            Entity\EntityInterface::TYPE_TICKET,
+            Entity\EntityInterface::TYPE_ARTICLE,
+            Entity\EntityInterface::TYPE_DOWNLOAD,
+            Entity\EntityInterface::TYPE_FEEDBACK,
+            Entity\EntityInterface::TYPE_ARTICLE,
+            Entity\EntityInterface::TYPE_NEWS,
+        );
     }
 
     /**

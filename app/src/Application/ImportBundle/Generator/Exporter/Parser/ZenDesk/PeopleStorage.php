@@ -68,4 +68,29 @@ class PeopleStorage implements PeopleStorageInterface
     {
         return $this->people;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPeopleIds()
+    {
+        return array_keys($this->people);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNotContainsIds(array $request_ids)
+    {
+        $not_exist_ids = array();
+        $exist_ids     = $this->getPeopleIds();
+
+        foreach ($request_ids as $id) {
+            if ( ! in_array($id, $exist_ids)) {
+                $not_exist_ids[] = $id;
+            }
+        }
+
+        return $not_exist_ids;
+    }
 }

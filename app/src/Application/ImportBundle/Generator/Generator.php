@@ -92,10 +92,11 @@ class Generator extends AbstractGenerator implements GeneratorInterface
      */
     public function generate()
     {
+        $exporter     = $this->getExporter();
         $outputWriter = $this->getWriter();
 
         foreach ($this->config->getEntityTypes() as $type) {
-            $collection = $this->getExportingCollectionByRecordType($type);
+            $collection = $exporter->exportByType($type);
             $exceptions = $this->validateExportingCollection($type, $collection);
             if (count($exceptions) > 0) {
                 throw new GeneratorException($exceptions);
@@ -113,10 +114,11 @@ class Generator extends AbstractGenerator implements GeneratorInterface
      */
     public function validate()
     {
+        $exporter   = $this->getExporter();
         $exceptions = new Validator\ExceptionCollection();
 
         foreach ($this->config->getEntityTypes() as $type) {
-            $collection = $this->getExportingCollectionByRecordType($type);
+            $collection = $exporter->exportByType($type);
             $exceptions->merge($this->validateExportingCollection($type, $collection));
         }
 
@@ -131,7 +133,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
      */
     private function getExporter()
     {
-        if (!$this->config) {
+        if ( ! $this->config) {
             throw new Exception('Generator configuration is not set up');
         }
 
@@ -149,6 +151,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
                     $exporter->setProgressBarHelper($this->progress_bar);
                 }
 
+                $this->logNotice(sprintf('Get `%s` exporter', $exporter->getType()));
                 return $exporter;
             }
         }
@@ -164,7 +167,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
      */
     private function getWriter()
     {
-        if (!$this->config) {
+        if ( ! $this->config) {
             throw new Exception('Generator configuration is not set up');
         }
 
@@ -182,24 +185,12 @@ class Generator extends AbstractGenerator implements GeneratorInterface
                     $writer->setProgressBarHelper($this->progress_bar);
                 }
 
+                $this->logNotice(sprintf('Get `%s` writer', $writer->getType()));
                 return $writer;
             }
         }
 
         throw new Exception(sprintf('Generator writer `%s` not found', $this->config->getExporterType()));
-    }
-
-    /**
-     * Get exporting collection by type
-     *
-     * @param string $type
-     *
-     * @return Entity\Collection
-     * @throws Exception
-     */
-    private function getExportingCollectionByRecordType($type)
-    {
-       return $this->getExporter()->exportByType($type);
     }
 
     /**

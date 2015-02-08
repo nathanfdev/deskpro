@@ -82,7 +82,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     public function export()
     {
         $collection = new Entity\Collection();
-        $people     = $this->reader->getPeople();
+        $people     = $this->getPeople();
 
         foreach ($people as $num => $person) {
             $this->advanceProgressBar();
@@ -90,19 +90,20 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
             if ($this->hasRequiredPersonColumns($person) === false) {
                 $this->logWarning(sprintf('Invalid person record found (Skipping): %d', $num));
             } else {
+                $date_created = new DateTime($person['created_at']);
+                $timezone     = new DateTimeZone(TimeZoneMapper::getTimeZoneName($person['time_zone']));
+
                 $entity = new Entity\Person();
                 $entity
-                    ->setDestination('ticket_' . $person['id'])
+                    ->setDestination('person_' . $person['id'])
                     ->setOid($person['id'])
                     ->setName($person['name'])
-                    ->setTimezone(new DateTimeZone(TimeZoneMapper::getTimeZoneName($person['time_zone'])))
-                    ->setDateCreated(new DateTime($person['created_at']));
+                    ->setTimezone($timezone)
+                    ->setDateCreated($date_created);
 
                 switch ($person['role']) {
                     case self::ROLE_ADMIN:
-                        $entity
-                            ->setAsAgent(true)
-                            ->setAsAdmin(true);
+                        $entity->setAsAgent(true)->setAsAdmin(true);
                         break;
 
                     case self::ROLE_AGENT:
@@ -138,6 +139,25 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     private function exportCustomField($user_field)
     {
         return new Entity\CustomField();
+    }
+
+    /**
+     * Returns a collection of people to be exported
+     * Gets a collection of people from the storage if it's defined or uses the ZenDesk reader
+     *
+     * @return array
+     */
+    private function getPeople()
+    {
+        $people = array();
+        if ($this->people_storage) {
+            $people = $this->people_storage->getPeople();
+        }
+        if (empty($people)) {
+            $people = $this->reader->getPeople();
+        }
+
+        return $people;
     }
 
     /**

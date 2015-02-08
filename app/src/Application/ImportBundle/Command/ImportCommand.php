@@ -55,10 +55,10 @@ class ImportCommand extends AbstractExportCommand
     {
         $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
 
-        $config = $this->createGeneratorConfig($input);
+        $config = $this->createGeneratorConfig($input, $this->importEntityTypesQueue());
         $config->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO);
-        if (!$config->getInputPath()) {
-            throw new \Exception('Input path must be set up');
+        if ( ! $config->getInputPath()) {
+            throw new \Exception('Input path must be specified');
         }
 
         $logger    = $this->createLogger($config, $output);

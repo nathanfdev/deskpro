@@ -587,7 +587,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface
      */
     public function toArray()
     {
-        if (!$this->date_created) {
+        if ( ! $this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 

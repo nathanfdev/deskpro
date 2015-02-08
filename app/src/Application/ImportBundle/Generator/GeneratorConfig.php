@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Generator;
 
+use Exception;
+
 /**
  * Configuration of generator importer service
  *
@@ -147,6 +149,27 @@ class GeneratorConfig
     public function getInputPath()
     {
         return $this->input_path;
+    }
+
+    /**
+     * Some of exporters need an input path
+     * Returns true if the input path must be specified
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function needInputPath()
+    {
+        if ( ! $this->exporter_type) {
+            throw new Exception('Exporter type is not defined');
+        }
+
+        $types = array(
+            Exporter\ExporterInterface::TYPE_CSV,
+            Exporter\ExporterInterface::TYPE_JSON,
+        );
+
+        return in_array($this->exporter_type, $types, true);
     }
 
     /**

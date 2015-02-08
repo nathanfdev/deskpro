@@ -58,7 +58,7 @@ class CheckExportCommand extends AbstractExportCommand
     {
         $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
 
-        $config     = $this->createGeneratorConfig($input);
+        $config     = $this->createGeneratorConfig($input, $this->exportEntityTypesQueue());
         $logger     = $this->createLogger($config, $output);
         $generator  = $this->createGenerator($config, $output, $logger);
 

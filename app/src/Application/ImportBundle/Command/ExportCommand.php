@@ -31,6 +31,7 @@ use Application\ImportBundle\Generator;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Exception;
 
 /**
  * Export command
@@ -65,10 +66,18 @@ class ExportCommand extends AbstractExportCommand
     {
         $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
 
-        $config = $this->createGeneratorConfig($input);
+        $config = $this->createGeneratorConfig($input, $this->exportEntityTypesQueue());
         $config->setWriterType(Generator\Writer\WriterInterface::TYPE_JSON);
-        if ($config->getInputPath() === $config->getOutputPath()) {
-            throw new \Exception('Output path must be different from input path');
+        if ( ! $config->getOutputPath()) {
+            throw new Exception('Output path must be specified');
+        }
+        if ($config->needInputPath()) {
+            if ( ! $config->getInputPath()) {
+                throw new Exception('Input path must be specified');
+            }
+            if ($config->getInputPath() === $config->getOutputPath()) {
+                throw new Exception('Output path must be different from input path');
+            }
         }
 
         $logger    = $this->createLogger($config, $output);
@@ -96,7 +105,7 @@ class ExportCommand extends AbstractExportCommand
                 ));
             }
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln('');
             $output->writeln('');
             $logger->critical($e->getMessage());

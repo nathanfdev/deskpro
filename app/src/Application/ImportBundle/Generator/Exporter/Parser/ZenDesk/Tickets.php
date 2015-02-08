@@ -84,7 +84,7 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
     {
         $collection = new Entity\Collection();
         $tickets    = $this->reader->getTickets();
-        $people     = $this->getPeople($this->getPeopleIds($tickets));
+        $people     = $this->getPeople($this->getTicketsPeopleIds($tickets));
 
         foreach ($tickets as $num => $ticket) {
             $this->advanceProgressBar();
@@ -101,17 +101,34 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
                     continue;
                 }
 
+                $person_email = $people[$ticket['submitter_id']]['email'];
+                $agent_email  = $people[$ticket['assignee_id']]['email'];
+                $date_created = new DateTime($ticket['created_at']);
+
                 $entity = new Entity\Ticket();
                 $entity
                     ->setDestination('ticket_' . $ticket['id'])
                     ->setOid($ticket['id'])
                     ->setRef($ticket['id'])
-                    ->setPersonEmail($people[$ticket['submitter_id']]['email'])
-                    ->setAgentEmail($people[$ticket['assignee_id']]['email'])
+                    ->setPersonEmail($person_email)
+                    ->setAgentEmail($agent_email)
                     ->setSubject($ticket['subject'])
                     ->setStatus($this->getStatus($ticket['status']))
                     ->setPriority($ticket['priority'])
-                    ->setDateCreated(new DateTime($ticket['created_at']));
+                    ->setDateCreated($date_created)
+                    ->addMessage($this->exportMessage($ticket, $person_email));
+
+                switch ($ticket['status']) {
+                    case self::STATUS_HOLD:
+                        $entity->setAsHold(true);
+                        break;
+                    case self::STATUS_SOLVED:
+                        $entity->setDateResolved(new DateTime());
+                        break;
+                    case self::STATUS_CLOSED:
+                        $entity->setDateArchived(new DateTime());
+                        break;
+                }
 
                 foreach ($ticket['tags'] as $label) {
                     $entity->addLabel($label);
@@ -125,9 +142,24 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
         return $collection;
     }
 
-    public function exportMessage()
+    /**
+     * Exports the ticket message
+     *
+     * @param array  $ticket
+     * @param string $person_email
+     *
+     * @return Entity\TicketMessage
+     */
+    public function exportMessage(array $ticket, $person_email)
     {
+        $entity = new Entity\TicketMessage();
+        $entity
+            ->setOid($ticket['id'])
+            ->setPersonEmail($person_email)
+            ->setMessageText($ticket['description'])
+            ->setDateCreated(new DateTime($ticket['created_at']));
 
+        return $entity;
     }
 
     /**
@@ -142,6 +174,7 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
             'id',
             'submitter_id',
             'subject',
+            'description',
             'status',
             'priority',
             'created_at',
@@ -153,17 +186,21 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
     }
 
     /**
-     * Returns all unique people ids
+     * Returns all unique people ids of the found ZenDesk tickets
      *
      * @param array $tickets
      * @return array
      */
-    private function getPeopleIds(array $tickets)
+    private function getTicketsPeopleIds(array $tickets)
     {
         $people_ids = array();
         foreach ($tickets as $ticket) {
-            $people_ids[] = $ticket['submitter_id'];
-            $people_ids[] = $ticket['assignee_id'];
+            if ($ticket['submitter_id'] > 0) {
+                $people_ids[] = $ticket['submitter_id'];
+            }
+            if ($ticket['assignee_id'] > 0) {
+                $people_ids[] = $ticket['assignee_id'];
+            }
         }
 
         return array_unique($people_ids);
@@ -177,7 +214,8 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
      */
     private function getPeople($ids)
     {
-        $result = $this->reader->getPeopleByIds($ids);
+        $request_ids = $this->people_storage ? $this->people_storage->getNotContainsIds($ids) : $ids;
+        $result = $this->reader->getPeopleByIds($request_ids);
         $people = array();
 
         foreach ($result as $person) {
