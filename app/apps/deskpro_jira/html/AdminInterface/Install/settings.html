@@ -34,7 +34,7 @@
                         <i class="fa fa-refresh fa-spin"></i> API check in progress...
                     </div>
 
-                    <div ng-if="error.type">
+                    <div ng-show="error.type">
                         <div class="text-danger" ng-show="'jira' == error.type">
                             JIRA responded with error:
                         </div>
@@ -50,7 +50,6 @@
                             <div ng-if="error.additional" ng-bind-html="error.additional"></div>
                         </div>
                     </div>
-
 
                     <div ng-show="error.token">
                         <p>

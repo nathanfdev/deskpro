@@ -25,10 +25,9 @@ define(function () {
         function (res) {
           $scope.loading_meta = false;
           $scope.Ctrl.stopSpinner('saving_settings');
+          $scope.error = res.data.error;
 
-          if (res.data.error) {
-            $scope.error = res.data.error;
-          } else {
+          if (!$scope.error) {
             $scope.meta = res.data;
 
             $scope.meta_defaults = {
@@ -39,8 +38,9 @@ define(function () {
             };
           }
         },
-        function () {
+        function (res) {
           $scope.loading_meta = false;
+          $scope.error = res.data.error;
           $scope.Ctrl.stopSpinner('saving_settings');
         }
       );
