@@ -30,7 +30,6 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
-use RuntimeException;
 
 /**
  * DeskPro person importer

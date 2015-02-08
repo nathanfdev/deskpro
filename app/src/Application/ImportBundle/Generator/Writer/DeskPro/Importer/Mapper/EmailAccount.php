@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 
 /**
+ * Email account record mapper
+ *
  * Class EmailAccount
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
@@ -63,7 +65,11 @@ final class EmailAccount implements MapperInterface
      */
     public function findOneBy(array $criteria, $throw_exception = true)
     {
-        $record = $this->manager->findAccountForEmailAddress($criteria, $criteria);
+        if (count($criteria) !== 1 || empty($criteria['email'])) {
+            throw new \Exception('Invalid criteria');
+        }
+
+        $record = $this->manager->findAccountForEmailAddress($criteria['email']);
         if ( ! $record && $throw_exception) {
             throw new MapperException('Email account not found', $criteria);
         }
@@ -82,11 +88,6 @@ final class EmailAccount implements MapperInterface
      */
     public function findOneByEmail($email, $throw_exception = true)
     {
-        $record = $this->manager->findAccountForEmailAddress($email);
-        if ( ! $record && $throw_exception) {
-            throw new MapperException(sprintf('Email account `%s` not found', $email), array('email' => $email));
-        }
-
-        return $record;
+        return $this->findOneBy(array('email' => $email), $throw_exception);
     }
 }
