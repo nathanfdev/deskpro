@@ -32,6 +32,7 @@ use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\ImportBundle\Generator\Writer\AbstractFactory;
 use Application\ImportBundle\Generator\Writer\DeskPro\Importer\BlobAdapter;
+use Exception;
 
 /**
  * Generator deskpro writer factory
@@ -94,6 +95,12 @@ class DeskProWriterFactory extends AbstractFactory
         /** @var EntityRepository\Usergroup $user_group_repository */
         $user_group_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Usergroup');
 
+        if ($this->container instanceof DeskproContainer) {
+            $email_account_manager = $this->container->getEmailAccountManager();
+        } else {
+            throw new Exception('Unable to get the email account manager');
+        }
+
         $mappers = new Importer\Mapper\Collection();
         $mappers
             ->attach(new Importer\Mapper\Article($article_repository))
@@ -118,14 +125,15 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\TicketDepartment($departmentRepository))
             ->attach(new Importer\Mapper\TicketWorkflow($ticket_workflow_repository))
             ->attach(new Importer\Mapper\UserGroup($user_group_repository))
-            ->attach(new Importer\Mapper\BlobData());
+            ->attach(new Importer\Mapper\BlobData())
+            ->attach(new Importer\Mapper\EmailAccount($email_account_manager));
 
         /** @var DeskproBlobStorage $blob_storage */
         if ($this->container instanceof DeskproContainer) {
             $blob_storage = $this->container->getBlobStorage();
             $blob_adapter = new BlobAdapter($blob_storage, new Importer\Mapper\BlobData());
         } else {
-            throw new \Exception('Unable to get a blob storage');
+            throw new Exception('Unable to get the blob storage');
         }
 
         $importers = new Importer\Collection();

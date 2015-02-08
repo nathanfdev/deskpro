@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
+use RuntimeException;
 
 /**
  * DeskPro person importer
@@ -52,7 +53,6 @@ final class Person extends AbstractImporter
      *
      * @var Entity\Person $importing_entity
      *
-     * todo reset deskpro entities property update (reset methods - resetEmails, resetLabels, resetUsergroups)?
      * todo is_user is false by default and it = true in the setPassword method, can we set it = true without a password
      */
     public function getDoctrineEntities(Entity\EntityInterface $importing_entity)
@@ -82,11 +82,15 @@ final class Person extends AbstractImporter
             $person->setPassword($importing_entity->getPassword());
         }
         foreach ($importing_entity->getEmails() as $num => $email) {
-            $person->addEmailAddress($this->findOrCreatePersonEmail($email));
-            $this->logInfo(sprintf(
-                $num ? 'Set email `%s`' : 'Set primary email `%s`',
-                $importing_entity->getFirstEmail()
-            ));
+            if ($this->getEmailAccountMapper()->findOneByEmail($email, false)) {
+                $this->logError(sprintf('Email `%s` is an a gateway account address', $email));
+            } else {
+                $person->addEmailAddress($this->findOrCreatePersonEmail($email));
+                $this->logInfo(sprintf(
+                    $num ? 'Set email `%s`' : 'Set primary email `%s`',
+                    $importing_entity->getFirstEmail()
+                ));
+            }
         }
         foreach ($importing_entity->getLabels() as $label) {
             $person->addLabel($this->createPersonLabel($label));
@@ -239,6 +243,17 @@ final class Person extends AbstractImporter
     private function getPersonEmailMapper()
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON_EMAIL);
+    }
+
+    /**
+     * Returns the email account mapper
+     *
+     * @return Mapper\EmailAccount
+     * @throws \Exception
+     */
+    private function getEmailAccountMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_EMAIL_ACCOUNT);
     }
 
     /**

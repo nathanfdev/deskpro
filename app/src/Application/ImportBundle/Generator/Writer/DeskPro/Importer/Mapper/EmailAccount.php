@@ -27,29 +27,27 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 
-use Application\DeskPRO\EntityRepository;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 
 /**
- * Person record mapper
- *
- * Class Person
+ * Class EmailAccount
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-final class Person implements MapperInterface
+final class EmailAccount implements MapperInterface
 {
     /**
-     * @var EntityRepository\Person
+     * @var EmailAccountManager
      */
-    private $repository;
+    private $manager;
 
     /**
      * Constructor
      *
-     * @param EntityRepository\Person $repository
+     * @param EmailAccountManager $manager
      */
-    public function __construct(EntityRepository\Person $repository)
+    public function __construct(EmailAccountManager $manager)
     {
-        $this->repository = $repository;
+        $this->manager = $manager;
     }
 
     /**
@@ -57,7 +55,7 @@ final class Person implements MapperInterface
      */
     public function getType()
     {
-        return self::TYPE_PERSON;
+        return self::TYPE_EMAIL_ACCOUNT;
     }
 
     /**
@@ -65,49 +63,30 @@ final class Person implements MapperInterface
      */
     public function findOneBy(array $criteria, $throw_exception = true)
     {
-        $record = $this->repository->findOneBy($criteria);
+        $record = $this->manager->findAccountForEmailAddress($criteria, $criteria);
         if ( ! $record && $throw_exception) {
-            throw new MapperException('Person not found', $criteria);
+            throw new MapperException('Email account not found', $criteria);
         }
 
         return $record;
     }
 
     /**
-     * Returns the existing person by email
+     * Returns the existing email account by email
      *
      * @param string $email
      * @param bool   $throw_exception
      *
-     * @return \Application\DeskPRO\Entity\Person
+     * @return \Application\DeskPRO\Entity\EmailAccount|null
      * @throws MapperException
      */
     public function findOneByEmail($email, $throw_exception = true)
     {
-        $record = $this->repository->findOneByEmail($email);
+        $record = $this->manager->findAccountForEmailAddress($email);
         if ( ! $record && $throw_exception) {
-            throw new MapperException('Person not found', array('email' => $email));
+            throw new MapperException(sprintf('Email account `%s` not found', $email), array('email' => $email));
         }
 
         return $record;
-    }
-
-    /**
-     * Returns the existing person by list of emails
-     *
-     * @param array $emails
-     * @param bool  $throw_exception
-     *
-     * @return \Application\DeskPRO\Entity\Person
-     * @throws MapperException
-     */
-    public function findOneByEmails(array $emails, $throw_exception = true)
-    {
-        $records = $this->repository->findByEmails($emails);
-        if (empty($records) && $throw_exception) {
-            throw new MapperException('Person not found', array('email' => $emails));
-        }
-
-        return array_shift($records);
     }
 }

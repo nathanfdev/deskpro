@@ -129,4 +129,40 @@ abstract class AbstractGenerator
             $this->logger->warning($message);
         }
     }
+
+    /**
+     * Log alert message if logger is defined
+     *
+     * @param string $message
+     */
+    protected function logAlert($message)
+    {
+        if ($this->logger) {
+            $this->logger->alert($message);
+        }
+    }
+
+    /**
+     * Log error message if logger is defined
+     *
+     * @param string $message
+     */
+    protected function logError($message)
+    {
+        if ($this->logger) {
+            $this->logger->error($message);
+        }
+    }
+
+    /**
+     * Log critical message if logger is defined
+     *
+     * @param string $message
+     */
+    protected function logCritical($message)
+    {
+        if ($this->logger) {
+            $this->logger->critical($message);
+        }
+    }
 }

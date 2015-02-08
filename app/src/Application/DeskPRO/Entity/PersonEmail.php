@@ -253,6 +253,7 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @param Person $person
+     * @return $this
      */
     public function setPerson(Person $person)
     {

@@ -72,47 +72,54 @@ final class Ticket extends AbstractImporter
      */
     public function getDoctrineEntities(Entity\EntityInterface $importing_entity)
     {
-        $this->records = new ArrayCollection();
-        $ticket = new DeskPROEntity\Ticket();
-        $ticket
-            ->setRef($this->getOrCreateTicketRef($importing_entity->getRef()))
-            ->setSubject($importing_entity->getSubject())
-            ->setPerson($this->getPersonMapper()->findOneByEmail($importing_entity->getPersonEmail()))
-            ->setOrganization($this->findOrCreateOrganization($importing_entity->getOrganization()))
-            ->setLanguageId($this->findLanguageId($importing_entity->getLanguage()))
-            ->setDepartment($this->findOrCreateTicketDepartment($importing_entity->getDepartment()))
-            ->setPriority($this->findOrCreateTicketPriority($importing_entity->getPriority()))
-            ->setCategory($this->findOrCreateTicketCategory($importing_entity->getCategory()))
-            ->setStatus($importing_entity->getStatus())
-            ->setDateCreated($importing_entity->getDateCreated())
-            ->setDateResolved($importing_entity->getDateResolved())
-            ->setDateArchived($importing_entity->getDateArchived())
-            ->resetMessages()
-            ->resetParticipants()
-            ->resetLabels();
+        try {
+            $this->records = new ArrayCollection();
+            $ticket = new DeskPROEntity\Ticket();
+            $ticket
+                ->setRef($this->getOrCreateTicketRef($importing_entity->getRef()))
+                ->setSubject($importing_entity->getSubject())
+                ->setPerson($this->getPersonMapper()->findOneByEmail($importing_entity->getPersonEmail()))
+                ->setOrganization($this->findOrCreateOrganization($importing_entity->getOrganization()))
+                ->setLanguageId($this->findLanguageId($importing_entity->getLanguage()))
+                ->setDepartment($this->findOrCreateTicketDepartment($importing_entity->getDepartment()))
+                ->setPriority($this->findOrCreateTicketPriority($importing_entity->getPriority()))
+                ->setCategory($this->findOrCreateTicketCategory($importing_entity->getCategory()))
+                ->setStatus($importing_entity->getStatus())
+                ->setDateCreated($importing_entity->getDateCreated())
+                ->setDateResolved($importing_entity->getDateResolved())
+                ->setDateArchived($importing_entity->getDateArchived())
+                ->resetMessages()
+                ->resetParticipants()
+                ->resetLabels();
 
-        if ($importing_entity->getAgentEmail()) {
-            $this->logInfo(sprintf('Applying ticket agent `%s`', $importing_entity->getAgentEmail()));
-            $agent = $this->getPersonMapper()->findOneByEmail($importing_entity->getAgentEmail());
-            if (!$agent->isAgent()) {
-                throw new ImporterException(sprintf('Person `%s` is not an agent', $agent->getEmailAddress()));
+            if ($importing_entity->getAgentEmail()) {
+                $this->logInfo(sprintf('Ticket has agent `%s`', $importing_entity->getAgentEmail()));
+                $ticket->setAgentId($this->getPersonMapper()->findOneByEmail($importing_entity->getAgentEmail())->getId());
             }
-        }
-        foreach ($importing_entity->getMessages() as $message) {
-            $ticket->addMessage($this->createTicketMessage($message));
-        }
-        foreach ($importing_entity->getParticipants() as $participant) {
-            $ticket->addParticipant($this->createParticipant($participant));
-        }
-        foreach ($importing_entity->getLabels() as $label) {
-            $ticket->addLabel($this->createTicketLabel($label));
-        }
-        foreach ($importing_entity->getCustomFields() as $custom_field) {
-            $ticket->addCustomData($this->createCustomData($custom_field));
-        }
+            foreach ($importing_entity->getMessages() as $message) {
+                $ticket->addMessage($this->createTicketMessage($message));
+            }
+            foreach ($importing_entity->getParticipants() as $participant) {
+                $ticket->addParticipant($this->createParticipant($participant));
+            }
+            foreach ($importing_entity->getLabels() as $label) {
+                $ticket->addLabel($this->createTicketLabel($label));
+            }
+            foreach ($importing_entity->getCustomFields() as $custom_field) {
+                $ticket->addCustomData($this->createCustomData($custom_field));
+            }
 
-        $this->records->add($ticket);
-        return $this->records;
+            $this->records->add($ticket);
+            return $this->records;
+
+        } catch(Mapper\MapperException $e) {
+            $this->logWarning(sprintf(
+                'Unable to create ticket `%s`. Reason %s',
+                $importing_entity->getOid(), $e->__toString()
+            ));
+
+            return new ArrayCollection();
+        }
     }
 
     /**
