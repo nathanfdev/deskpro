@@ -86,7 +86,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
         $scope.openAddWidget saved
 
     $scope.openAddWidget = (widget) ->
-
       modalInstance = $modal.open {
         templateUrl: 'ReportsInterfaceBundle:Dashboard/Modal:add-widget.html',
         controller: 'Reports.Dashboards.Modals.AddWidget'
@@ -96,8 +95,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       }
 
       modalInstance.result.then (result) ->
-        if result.widget.changeType? and result.widget.changeType == true
-          result.widget.changeType = false
-          $scope.typeWidgetModal result.report, result.widget
-
+        if result.changeType? and result.changeType == true
+          $scope.openWidgetChoose result.widget
   ]
