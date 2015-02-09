@@ -5,7 +5,7 @@ services:
         arguments:
             - @settings_resolver
             - @doctrine.orm.default_entity_manager
-            - @cache.simple_array
+            - @cache.one_day
             - @portal_usergroup_decider
             - @portal_permissions_loader
 

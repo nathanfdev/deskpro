@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Controller;
 
 
+use Application\DeskPRO\Cache\Adapter\ExpiringDoctrineCache;
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
