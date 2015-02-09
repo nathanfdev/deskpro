@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\AuthBundle\Security\AgentImpersonateToken;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleComment;
@@ -69,7 +70,18 @@ class CommonController extends AbstractController
      */
     public function alertsAction(TagRequest $tag_request)
     {
-        return $this->renderThemeView('Theme:Common:alerts.html.twig');
+        $agent = null;
+        if ($token = $this->get('security.token_storage')->getToken()) {
+            if ($token instanceof AgentImpersonateToken) {
+                $agent_id = $token->getAttribute(AgentImpersonateToken::ATTR_AGENT_IMPERSONATE);
+                $agent = $this->getPersonDataService()->getPerson($agent_id);
+            }
+        }
+
+        return $this->renderThemeView('Theme:Common:alerts.html.twig', array(
+            'impersonator' => $agent,
+            'user' => $this->getUser()
+        ));
     }
 
     /**
