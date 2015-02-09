@@ -131,16 +131,15 @@ class PortalController extends AbstractController
             );
         }
 
-        $ticket_count = $this->getDoctrine()->getRepository('DeskPRO:Ticket')->getTicketCountForPerson($user); //TODO: data service
-
         return $this->renderThemeView(
             'Theme:Portal:Tag/sidebar_user.html.twig',
             array(
-                'has_tickets' => $ticket_count > 0,
-                'ugs' => $this->get('portal_usergroup_decider')->getUsergroupIdsForPerson($user),
-                'ug_key' => $this->get('portal_permissions_manager')->getCacheKeyForPerson($user),
-                'user_hash' => $this->get('portal_cache_helper')->getUserContextHash(),
-                'perms' => $this->get('portal_permissions_manager')->getPermissionsBagForPerson($user)->toArray()
+                'user' => $user,
+                'ticket_count' => $this->getTicketsDataService()->getTicketCount($user),
+                //'ugs' => $this->get('portal_usergroup_decider')->getUsergroupIdsForPerson($user),
+                //'ug_key' => $this->get('portal_permissions_manager')->getCacheKeyForPerson($user),
+                //'user_hash' => $this->get('portal_cache_helper')->getUserContextHash(),
+                //'perms' => $this->get('portal_permissions_manager')->getPermissionsBagForPerson($user)->toArray()
             )
         );
     }
@@ -150,10 +149,14 @@ class PortalController extends AbstractController
      */
     public function smallUserInfoAction(TagRequest $tag_request)
     {
+        $user = $this->getUser();
+
         return $this->renderThemeView(
             'Theme:Portal:Tag/small_user_info.html.twig',
             array(
-                'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible()
+                'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
+                'ticket_count' => $user ? $this->getTicketsDataService()->getTicketCount($user) : 0,
+                'user' => $user
             )
         );
     }

@@ -51,6 +51,15 @@ class PersonDataService extends AbstractDataService
     }
 
     /**
+     * @param mixed $person right now only ID is useful
+     * @return Person|null
+     */
+    public function getPerson($person)
+    {
+        return $this->getPersonRepo()->find($person);
+    }
+
+    /**
      * @param $email
      * @return Person|null
      */

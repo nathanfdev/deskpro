@@ -178,7 +178,7 @@ class TicketsDataService extends AbstractDataService
 
         return $this->generateAndCache(
             array(
-                'hasTickets',
+                'getTicketCount',
                 $person,
                 $status
             ),

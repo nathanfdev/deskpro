@@ -9,9 +9,9 @@
     {#{{ dump(perms) }}#}
 
     <ul class="user-info" style="margin-bottom: 40px;">
-        {% if has_tickets %}
+        {% if ticket_count > 0 %}
             <li>
-                <a href="{{ path('portal_tickets') }}">My Tickets</a>
+                <a href="{{ path('portal_tickets') }}">My Tickets ({{ ticket_count }})</a>
             </li>
         {% endif %}
 
