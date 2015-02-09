@@ -38,6 +38,9 @@ $collection->create('portal_kb_view', array(
 $collection->create('portal_kb_unsubscribe_all', array(
     'path' => '/kb/articles/subscriptions/unsubscribe'
 ));
+$collection->create('portal_agent_login', array(
+    'path' => ' /impersonate/agent-login/{code}'
+));
 
 
 

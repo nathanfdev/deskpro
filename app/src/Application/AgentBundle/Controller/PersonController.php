@@ -1315,7 +1315,7 @@ class PersonController extends AbstractController
         $this->em->persist($tmp);
         $this->em->flush();
 
-        return $this->redirectRoute('user_login_agentlogin', array('code' => $tmp->getCode()));
+        return $this->redirectRoute('portal_agent_login', array('code' => $tmp->getCode()));
     }
 
     ############################################################################

@@ -32,25 +32,57 @@
  * @subpackage
  */
 
-namespace Application\AuthBundle\DependencyInjection;
+namespace Application\AuthBundle\Security;
 
+use Application\DeskPRO\Entity\Person;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\Extension;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-
-class AuthExtension extends Extension
+class AgentImpersonateToken extends AbstractToken
 {
-    public function load(array $config, ContainerBuilder $container)
+    const ATTR_AGENT_IMPERSONATE = 'impersonating_agent_id';
+
+    /**
+     * @var string
+     */
+    protected $auth;
+
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $agent;
+
+    public function __construct($auth)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-        $loader->load('security_services.yml');
-        $loader->load('security_handlers.yml');
-        $loader->load('portal_permissions.yml');
-        $loader->load('portal_voters.yml');
-        $loader->load('dp_form_login.yml');
-        $loader->load('agent_impersonate.yml');
-        $loader->load('validator_services.yml');
+        parent::__construct(array('ROLE_USER'));
+
+        $this->auth = $auth;
+        // this will get set if valid $auth in AgentImpersonateProvider
+        // $this->setUser(null);
+        $this->setAuthenticated(false);
+    }
+
+    public function getAuth()
+    {
+        return $this->auth;
+    }
+
+    public function setAgent(Person $agent)
+    {
+        $this->agent = $agent;
+        // set the attribute so we can always know who the impersonating agent is
+        // only this attrbiute is useful in subsequent requests (session)
+        // so don't do ->getAgent(), instead get the attribute id and fetch the agent Person object yourslef
+        $this->setAttribute(self::ATTR_AGENT_IMPERSONATE, $agent->getId());
+    }
+
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    public function getCredentials()
+    {
+        return null;
     }
 }

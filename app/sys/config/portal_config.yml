@@ -48,6 +48,7 @@ security:
         portal:
             pattern: ^/
             provider: dp_person_user_provider
+            agent_impersonate: ~
             deskpro_form_login:
                 failure_path: /login?retry=auth
                 login_path: /login

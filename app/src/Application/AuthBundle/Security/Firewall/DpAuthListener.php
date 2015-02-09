@@ -34,6 +34,7 @@
 
 namespace Application\AuthBundle\Security\Firewall;
 
+use Application\AuthBundle\Security\AgentImpersonateToken;
 use Application\AuthBundle\Security\DpFormLoginToken;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Person;
@@ -64,7 +65,13 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
     protected function requiresAuthentication(Request $request)
     {
-        $security_routes = array('portal_login_submit', 'portal_login_authenticate', 'portal_login_callback', 'portal_login_usersource_sso');
+        $security_routes = array(
+            'portal_login_submit',
+            'portal_login_authenticate',
+            'portal_login_callback',
+            'portal_login_usersource_sso',
+            'portal_agent_login'
+        );
 
         return in_array($request->attributes->get('_route'), $security_routes);
     }
@@ -84,6 +91,8 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
         if ('portal_login_submit' == $request->attributes->get('_route')) {
             $tokenOrResponse = new DpFormLoginToken($request->get('username'), $request->get('password'));
+        } elseif ('portal_agent_login' == $request->attributes->get('_route')) {
+            $tokenOrResponse = new AgentImpersonateToken($request->attributes->get('code'));
         } elseif ('portal_login_authenticate' == $request->attributes->get('_route')) {
             $tokenOrResponse = $this->getAuthRedirect($request);
         } elseif ('portal_login_callback' == $request->attributes->get('_route')) {

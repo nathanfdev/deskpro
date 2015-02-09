@@ -3,6 +3,9 @@ saml_sls:
 saml_metadata:
     path: /saml/metadata/{usersource_id}.xml
 
+portal_agent_login:
+    path: /impersonate/agent-login/{code}
+
   # only temporarily here, until other interfaces stop relying on the routes of UserBundle
 user_saml_sls:
     path: /saml/sls/{usersource_id}
