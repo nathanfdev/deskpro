@@ -161,7 +161,57 @@ class TicketsDataService extends AbstractDataService
                 $pager->setCurrentPage($page);
 
                 return $pager;
-            });
+            }
+        );
+    }
+
+    /**
+     * Returns the count of tickets that can be seen by the user by default. You can optionally provide a status to count on.
+     *
+     * @param Person $person
+     * @param string $status
+     * @return int|null
+     */
+    public function getTicketCount(Person $person, $status = 'all')
+    {
+        $em = $this->em;
+
+        return $this->generateAndCache(
+            array(
+                'hasTickets',
+                $person,
+                $status
+            ),
+            function () use ($em, $person, $status) {
+                $qb = $em->createQueryBuilder();
+
+                if ('all' !== $status){
+                    $status_list = array($status);
+                } else {
+                    $status_list = array(
+                        Ticket::STATUS_AWAITING_AGENT,
+                        Ticket::STATUS_RESOLVED,
+                        Ticket::STATUS_AWAITING_USER
+                    );
+                }
+
+                $qb->select('COUNT(t)')
+                    ->from('DeskPRO:Ticket', 't')
+                    ->andWhere('t.status IN (:status_list)')->setParameter('status_list', $status_list)
+                ;
+
+                if ($person->is_agent) {
+                    $qb->andWhere('t.person = :person')->setParameter('person', $person);
+                } else {
+                    $qb->leftJoin('t.participants', 'part');
+                    $qb->andWhere('t.person = :person OR part.person = :person')->setParameter('person', $person);
+                }
+
+                $qb->distinct(true);
+
+                return $qb->getQuery()->getSingleScalarResult();
+            }
+        );
     }
 
     /**
