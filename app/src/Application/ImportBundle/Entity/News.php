@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Entity;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use DateTime;
+use Orb\Util\Strings;
 
 /**
  * Exporting news entity
@@ -157,7 +158,11 @@ final class News extends AbstractEntity implements SlugAwareInterface, PersonAwa
      */
     public function getSlug()
     {
-        return $this->slug;
+        if ($this->slug) {
+            return $this->slug;
+        }
+
+        return Strings::slugifyTitle($this->title);
     }
 
     /**

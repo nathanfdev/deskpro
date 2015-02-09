@@ -45,6 +45,9 @@ interface SlugAwareInterface
     /**
      * Get an acceptable URL slug
      *
+     * Turns a string into an acceptable URL slug.
+     * "My Great Title!" becomes "my-great-title"
+     *
      * @param string $slug
      * @return $this
      */

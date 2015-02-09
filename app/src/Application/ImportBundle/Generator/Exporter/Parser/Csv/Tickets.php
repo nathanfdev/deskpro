@@ -78,7 +78,7 @@ final class Tickets extends AbstractParser
                     ->setPersonEmail($ticket['user'])
                     ->setAgentEmail(isset($ticket['agent']) ? $ticket['agent'] : null)
                     ->setStatus(isset($ticket['status']) ? $ticket['status'] : DeskPROEntity\Ticket::STATUS_AWAITING_AGENT)
-                    ->setDateCreated(isset($ticket['date_created']) ? new DateTime($ticket['date_created']) : new DateTime());
+                    ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['date_created']));
 
                 foreach ($messages as $message_entity) {
                     /** @var Entity\TicketMessage $message_entity */
@@ -109,12 +109,14 @@ final class Tickets extends AbstractParser
             if ($this->hasRequiredTicketMessageColumns($message) === false) {
                 $this->logWarning(sprintf('Invalid ticket message record found (Skipping): %d', $num));
             } else {
+                $date_created = isset($message['date_created']) ? new DateTime($message['date_created']) : new DateTime();
+
                 $entity = new Entity\TicketMessage();
                 $entity
                     ->setDestination('ticket_' . trim($message['ticket_id']))
                     ->setPersonEmail($message['user'])
                     ->setMessageText($message['message_text'])
-                    ->setDateCreated(isset($message['date_created']) ? new DateTime($message['date_created']) : new DateTime());
+                    ->setDateCreated($date_created);
 
                 $collection->attach($entity);
             }
@@ -131,7 +133,7 @@ final class Tickets extends AbstractParser
      */
     private function hasRequiredTicketColumns(array $ticket)
     {
-        return $this->hasRequiredColumns($ticket, array('id', 'subject', 'user'));
+        return $this->hasRequiredColumns($ticket, array('id', 'subject', 'user', 'date_created'));
     }
 
     /**

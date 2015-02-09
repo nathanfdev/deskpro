@@ -49,10 +49,10 @@ interface ImporterInterface
     /**
      * Returns a collection of the importing DeskPro doctrine entities
      *
-     * @param Entity\EntityInterface $importing_entity
+     * @param Entity\EntityInterface $entity
      *
      * @return ArrayCollection
      * @throws \Exception
      */
-    public function getDoctrineEntities(Entity\EntityInterface $importing_entity);
+    public function getDoctrineEntities(Entity\EntityInterface $entity);
 }

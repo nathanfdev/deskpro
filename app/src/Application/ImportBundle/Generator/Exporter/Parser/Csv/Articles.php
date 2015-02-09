@@ -32,7 +32,7 @@ use Application\ImportBundle\Entity;
 /**
  * Articles csv file parser
  *
- * Class Kb
+ * Class Articles
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
 final class Articles extends AbstractParser
@@ -58,7 +58,55 @@ final class Articles extends AbstractParser
      */
     public function export()
     {
-        return new Entity\Collection();
+        $collection = new Entity\Collection();
+        $articles   = $this->reader->getData($this->getConfig());
+
+        foreach ($articles as $num => $article) {
+            $this->advanceProgressBar();
+
+            if ($this->hasRequiredArticleColumns($article) === false) {
+                $this->logWarning(sprintf('Invalid article record found (Skipping): %d', $num));
+            } else {
+                $entity = new Entity\Article();
+                $entity
+                    ->setDestination('article_' . $num)
+                    ->setOid($num)
+                    ->setPersonEmail($article['person'])
+                    ->setTitle($article['title'])
+                    ->setContent($article['content'])
+                    ->setSlug($article['slug'])
+                    ->setLanguage($article['language'])
+                    ->setDateCreated($this->getFromStringOrCurrentDateTime($article['date_created']))
+                    ->setStatus($article['status'])
+                    ->addCategory($article['category'])
+                    ->addLabel($article['label']);
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Check if article has all required columns
+     *
+     * @param array $article
+     * @return bool
+     */
+    private function hasRequiredArticleColumns(array $article)
+    {
+        return $this->hasRequiredColumns($article, array(
+            'person',
+            'title',
+            'content',
+            'slug',
+            'language',
+            'status',
+            'category',
+            'label',
+        ));
     }
 
     /**
@@ -68,6 +116,6 @@ final class Articles extends AbstractParser
      */
     private function getConfig()
     {
-        return $this->getReaderConfig(self::FILE_KB);
+        return $this->getReaderConfig(self::FILE_ARTICLES);
     }
 }

@@ -27,7 +27,6 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
-use Application\ImportBundle\Generator\Exporter\Parser\ParserException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 use Orb\Util\Strings;
@@ -78,6 +77,7 @@ final class Downloads extends AbstractParser
                     ->setPersonEmail($download['person'])
                     ->setTitle($download['title'])
                     ->setContent($download['content'])
+                    ->setSlug($download['slug'])
                     ->setLanguage($download['language'])
                     ->setTotalRating($download['total_rating'])
                     ->setNumComments($download['num_comments'])
@@ -88,11 +88,6 @@ final class Downloads extends AbstractParser
                     ->setStatus($download['status'])
                     ->setDateCreated(new DateTime($download['date_created']));
 
-                if ($download['slug']) {
-                    $entity->setSlug($download['slug']);
-                } else {
-                    $entity->setSlug(Strings::slugifyTitle($download['title']));
-                }
                 if ($download['date_published']) {
                     $entity->setDatePublished(new DateTime($download['date_published']));
                 }
@@ -167,6 +162,7 @@ final class Downloads extends AbstractParser
             'person',
             'title',
             'content',
+            'slug',
             'language',
             'total_rating',
             'num_comments',

@@ -61,7 +61,8 @@ final class People extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $people = $this->reader->getData($this->getConfig());
+        $people     = $this->reader->getData($this->getConfig());
+
         foreach ($people as $num => $person) {
             $this->advanceProgressBar();
 

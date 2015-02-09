@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 use Application\ImportBundle\Generator\AbstractGenerator;
+use DateTime;
 
 /**
  * Abstract generator exporter parser
@@ -54,5 +55,16 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
         }
 
         return true;
+    }
+
+    /**
+     * Returns date time object from string or current date time if the format is empty
+     *
+     * @param string $format
+     * @return DateTime
+     */
+    protected function getFromStringOrCurrentDateTime($format)
+    {
+        return $format ? new DateTime($format) : new DateTime();
     }
 }

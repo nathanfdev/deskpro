@@ -58,7 +58,59 @@ final class News extends AbstractParser
      */
     public function export()
     {
-        return new Entity\Collection();
+        $collection = new Entity\Collection();
+        $news_list  = $this->reader->getData($this->getConfig());
+
+        foreach ($news_list as $num => $news) {
+            $this->advanceProgressBar();
+
+            if ($this->hasRequiredNewsColumns($news) === false) {
+                $this->logWarning(sprintf('Invalid news record found (Skipping): %d', $num));
+            } else {
+                $entity = new Entity\News();
+                $entity
+                    ->setDestination('news_' . $num)
+                    ->setOid($num)
+                    ->setPersonEmail($news['person'])
+                    ->setLanguage($news['language'])
+                    ->setSlug($news['slug'])
+                    ->setTitle($news['title'])
+                    ->setContent($news['content'])
+                    ->setSlug($news['slug'])
+                    ->setStatus($news['status'])
+                    ->setDateCreated($this->getFromStringOrCurrentDateTime($news['date_created']))
+                    ->setDatePublished($this->getFromStringOrCurrentDateTime($news['date_published']))
+                    ->setCategory($news['category'])
+                    ->addLabel($news['label']);
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Check if news has all required columns
+     *
+     * @param array $news
+     * @return bool
+     */
+    private function hasRequiredNewsColumns(array $news)
+    {
+        return $this->hasRequiredColumns($news, array(
+            'oid',
+            'person',
+            'language',
+            'title',
+            'content',
+            'status',
+            'date_created',
+            'date_published',
+            'category',
+            'label',
+        ));
     }
 
     /**

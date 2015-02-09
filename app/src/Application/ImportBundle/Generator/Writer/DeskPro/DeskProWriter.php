@@ -32,6 +32,7 @@ use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
 use Application\ImportBundle\Generator\LoggerAwareInterface;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
+use Application\ImportBundle\Generator\Writer\DeskPro\Importer\SkipDuplicateInterface;
 use Application\ImportBundle\Generator\Writer\WriterException;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -80,7 +81,12 @@ class DeskProWriter extends AbstractWriter
     public function writeData(EntityInterface $entity)
     {
         try {
-            $records = $this->getImporter($entity)->getDoctrineEntities($entity);
+            $importer = $this->getImporter($entity);
+            if ($importer instanceof SkipDuplicateInterface) {
+                $importer->checkAlreadyExists($entity);
+            }
+
+            $records = $importer->getDoctrineEntities($entity);
             foreach ($records as $record) {
                 $this->entity_manager->persist($record);
             }
@@ -88,9 +94,15 @@ class DeskProWriter extends AbstractWriter
             $this->entity_manager->flush();
 
         } catch (Importer\Mapper\MapperException $e) {
-            throw new WriterException(sprintf(
-                'Unable to write entity `%s`. %s',
-                $entity->getDestination(), $e
+            $this->logWarning(sprintf(
+                'Unable to create `%s` with oid `%s`. Reason %s',
+                $entity->getType(), $entity->getOid(), $e->__toString()
+            ));
+
+        } catch (Importer\DuplicateException $e) {
+            $this->logError(sprintf(
+                'Duplicate entity `%s` with oid `%s` (Skipping)',
+                $entity->getType(), $entity->getOid()
             ));
         }
 

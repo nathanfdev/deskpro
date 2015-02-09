@@ -58,7 +58,34 @@ final class Downloads extends AbstractParser
      */
     public function export()
     {
-        return new Entity\Collection();
+        $collection = new Entity\Collection();
+        $downloads  = $this->reader->getData($this->getConfig());
+
+        foreach ($downloads as $num => $download) {
+            $this->advanceProgressBar();
+
+            if ($this->hasRequiredDownloadColumns($download) === false) {
+                $this->logWarning(sprintf('Invalid download record found (Skipping): %d', $num));
+            } else {
+                $entity = new Entity\Download();
+                $entity
+                    ->setDestination('download_' . $num)
+                    ->setOid($num)
+                    ->setPersonEmail($download['person'])
+                    ->setTitle($download['title'])
+                    ->setContent($download['content'])
+                    ->setSlug($download['slug'])
+                    ->setLanguage($download['language'])
+                    ->setCategory($download['category'])
+                    ->setStatus($download['status'])
+                    ->setDateCreated($this->getFromStringOrCurrentDateTime($download['date_created']));
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+            }
+        }
+
+        return $collection;
     }
 
     /**
@@ -69,5 +96,26 @@ final class Downloads extends AbstractParser
     private function getConfig()
     {
         return $this->getReaderConfig(self::FILE_DOWNLOADS);
+    }
+
+    /**
+     * Check if download has all required columns
+     *
+     * @param array $download
+     * @return bool
+     */
+    private function hasRequiredDownloadColumns(array $download)
+    {
+        return $this->hasRequiredColumns($download, array(
+            'person',
+            'title',
+            'content',
+            'slug',
+            'language',
+            'category',
+            'status',
+            'date_created',
+            'label',
+        ));
     }
 }

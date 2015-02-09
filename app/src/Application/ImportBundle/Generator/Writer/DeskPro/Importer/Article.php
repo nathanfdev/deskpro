@@ -55,41 +55,45 @@ final class Article extends AbstractImporter
      * $record['num_comments'] = $kbval->num_comments;
      * $record['num_ratings']  = $kbval->num_ratings;
      *
-     * @var Entity\Article $importing_entity
+     * @var Entity\Article $entity
      */
-    public function getDoctrineEntities(Entity\EntityInterface $importing_entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
         $this->records = new ArrayCollection();
-        $exist_article = $this->getArticleMapper()->findOneByTitle($importing_entity->getTitle(), false);
-        if ($exist_article) {
-            $this->logWarning(sprintf(
-                'An Article with the title `%s` already exists (skipping)',
-                $importing_entity->getTitle()
-            ));
-        } else {
-            $article = new DeskPROEntity\Article();
-            $article
-                ->setTitle($importing_entity->getTitle())
-                ->setContent($importing_entity->getContent())
-                ->setSlug($importing_entity->getSlug())
-                ->setStatus($importing_entity->getStatus())
-                ->setPerson($this->getPersonMapper()->findOneByEmail($importing_entity->getPersonEmail()))
-                ->setLanguage($this->findLanguage($importing_entity->getLanguage()))
-                ->setDateCreated($importing_entity->getDateCreated())
-                ->setDatePublished($importing_entity->getDatePublished())
-                ->setDateEnd($importing_entity->getDateEnd());
 
-            foreach ($importing_entity->getCategories() as $category) {
-                $article->addToCategory($this->findOrCreateArticleCategory($category));
-            }
-            foreach ($importing_entity->getLabels() as $label) {
-                $article->addLabel($this->createArticleLabel($label));
-            }
+        $article = new DeskPROEntity\Article();
+        $article
+            ->setTitle($entity->getTitle())
+            ->setContent($entity->getContent())
+            ->setSlug($entity->getSlug())
+            ->setStatus($entity->getStatus())
+            ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
+            ->setLanguage($this->findLanguage($entity->getLanguage()))
+            ->setDateCreated($entity->getDateCreated())
+            ->setDatePublished($entity->getDatePublished())
+            ->setDateEnd($entity->getDateEnd());
 
-            $this->records->add($article);
+        foreach ($entity->getCategories() as $category) {
+            $article->addToCategory($this->findOrCreateArticleCategory($category));
+        }
+        foreach ($entity->getLabels() as $label) {
+            $article->addLabel($this->createArticleLabel($label));
         }
 
+        $this->records->add($article);
         return $this->records;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @var Entity\Article $entity
+     */
+    public function checkAlreadyExists(Entity\EntityInterface $entity)
+    {
+        if ($this->getArticleMapper()->findOneByTitle($entity->getTitle(), false)) {
+            throw new DuplicateException();
+        }
     }
 
     /**

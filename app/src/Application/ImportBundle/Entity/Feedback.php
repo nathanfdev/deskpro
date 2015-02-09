@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Entity;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use DateTime;
+use Orb\Util\Strings;
 
 /**
  * Exporting feedback entity
@@ -199,7 +200,11 @@ final class Feedback extends AbstractEntity implements SlugAwareInterface, Perso
      */
     public function getSlug()
     {
-        return $this->slug;
+        if ($this->slug) {
+            return $this->slug;
+        }
+
+        return Strings::slugifyTitle($this->title);
     }
 
     /**

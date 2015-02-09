@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
-use Orb\Util\Strings;
 use DateTime;
 
 /**
@@ -72,25 +71,22 @@ final class News extends AbstractParser
             } else {
                 $entity = new Entity\News();
                 $entity
+                    ->setDestination('news_' . $news['oid'])
                     ->setOid($news['oid'])
                     ->setPersonEmail($news['person'])
                     ->setLanguage($news['language'])
                     ->setSlug($news['slug'])
                     ->setTitle($news['title'])
                     ->setContent($news['content'])
+                    ->setSlug($news['slug'])
                     ->setViewCount($news['view_count'])
                     ->setTotalRating($news['total_rating'])
                     ->setNumComments($news['num_comments'])
                     ->setNumRatings($news['num_ratings'])
                     ->setStatus($news['status'])
-                    ->setDateCreated($news['date_created'])
+                    ->setDateCreated(new DateTime($news['date_created']))
                     ->setCategory($news['category']);
 
-                if ($news['slug']) {
-                    $entity->setSlug($news['slug']);
-                } else {
-                    $entity->setSlug(Strings::slugifyTitle($news['title']));
-                }
                 if ($news['date_published']) {
                     $entity->setDatePublished(new DateTime($news['date_published']));
                 }

@@ -37,7 +37,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Class Download
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-final class Download extends AbstractImporter
+final class Download extends AbstractImporter implements SkipDuplicateInterface
 {
     /**
      * @var BlobAdapterInterface
@@ -67,7 +67,7 @@ final class Download extends AbstractImporter
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Download $importing_entity
+     * @var Entity\Download $entity
      *
      * todo add referred objects
      * 'total_rating'   => $dval->total_rating,
@@ -76,36 +76,40 @@ final class Download extends AbstractImporter
      * 'view_count'     => $dval->view_count,
      * 'num_downloads'  => $dval->num_downloads,
      */
-    public function getDoctrineEntities(Entity\EntityInterface $importing_entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
         $this->records = new ArrayCollection();
-        $exist_download = $this->getDownloadMapper()->findOneByTitle($importing_entity->getTitle(), false);
-        if ($exist_download) {
-            $this->logWarning(sprintf(
-                'An Download with the title `%s` already exists (skipping)',
-                $importing_entity->getTitle()
-            ));
-        } else {
-            $download = new DeskPROEntity\Download();
-            $download
-                ->setTitle($importing_entity->getTitle())
-                ->setContent($importing_entity->getContent())
-                ->setSlug($importing_entity->getSlug())
-                ->setPerson($this->getPersonMapper()->findOneByEmail($importing_entity->getPersonEmail()))
-                ->setLanguage($this->findLanguage($importing_entity->getLanguage()))
-                ->setBlob($this->blob_adapter->createByAttachment($importing_entity->getAttachment()))
-                ->setCategory($this->findOrCreateDownloadCategory($importing_entity->getCategory()))
-                ->setDateCreated($importing_entity->getDateCreated())
-                ->setDatePublished($importing_entity->getDatePublished());
 
-            foreach ($importing_entity->getLabels() as $label) {
-                $download->addLabel($this->createDownloadLabel($label));
-            }
+        $download = new DeskPROEntity\Download();
+        $download
+            ->setTitle($entity->getTitle())
+            ->setContent($entity->getContent())
+            ->setSlug($entity->getSlug())
+            ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
+            ->setLanguage($this->findLanguage($entity->getLanguage()))
+            ->setBlob($this->blob_adapter->createByAttachment($entity->getAttachment()))
+            ->setCategory($this->findOrCreateDownloadCategory($entity->getCategory()))
+            ->setDateCreated($entity->getDateCreated())
+            ->setDatePublished($entity->getDatePublished());
 
-            $this->records->add($download);
+        foreach ($entity->getLabels() as $label) {
+            $download->addLabel($this->createDownloadLabel($label));
         }
 
+        $this->records->add($download);
         return $this->records;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @var Entity\Download $entity
+     */
+    public function checkAlreadyExists(Entity\EntityInterface $entity)
+    {
+        if ($this->getDownloadMapper()->findOneByTitle($entity->getTitle(), false)) {
+            throw new DuplicateException();
+        }
     }
 
     /**

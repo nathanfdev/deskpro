@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,50 +25,15 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
-
-use Application\ImportBundle\Reader\Csv\CsvConfig;
-use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
+namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
 /**
- * Abstract csv parser
+ * Duplicate exception
  *
- * Class AbstractCsv
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
+ * Class DuplicateException
+ * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
+final class DuplicateException extends \Exception
 {
-    const FILE_ARTICLES        = 'articles.csv';
-    const FILE_DOWNLOADS       = 'downloads.csv';
-    const FILE_FEEDBACK        = 'feedback.csv';
-    const FILE_NEWS            = 'news.csv';
-    const FILE_PEOPLE          = 'people.csv';
-    const FILE_TICKETS         = 'tickets.csv';
-    const FILE_TICKET_MESSAGES = 'messages.csv';
 
-    /**
-     * @var CsvReaderInterface
-     */
-    protected $reader;
-
-    /**
-     * Constructor
-     *
-     * @param CsvReaderInterface $reader
-     */
-    public function __construct(CsvReaderInterface $reader)
-    {
-        $this->reader = $reader;
-    }
-
-    /**
-     * Get csv reader config
-     *
-     * @param string $record_type
-     * @return CsvConfig
-     */
-    protected function getReaderConfig($record_type)
-    {
-        return new CsvConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
-    }
 }

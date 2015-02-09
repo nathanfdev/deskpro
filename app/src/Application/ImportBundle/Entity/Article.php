@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Entity;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use DateTime;
+use Orb\Util\Strings;
 
 /**
  * Exporting kb entity
@@ -180,7 +181,11 @@ final class Article extends AbstractEntity implements SlugAwareInterface, Person
      */
     public function getSlug()
     {
-        return $this->slug;
+        if ($this->slug) {
+            return $this->slug;
+        }
+
+        return Strings::slugifyTitle($this->title);
     }
 
     /**

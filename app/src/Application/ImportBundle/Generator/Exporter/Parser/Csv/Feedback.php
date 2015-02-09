@@ -58,7 +58,59 @@ final class Feedback extends AbstractParser
      */
     public function export()
     {
-        return new Entity\Collection();
+        $collection     = new Entity\Collection();
+        $feedback_items = $this->reader->getData($this->getConfig());
+
+        foreach ($feedback_items as $num => $feedback) {
+            $this->advanceProgressBar();
+
+            if ($this->hasRequiredFeedbackColumns($feedback) === false) {
+                $this->logWarning(sprintf('Invalid feedback record found (Skipping): %d', $num));
+            } else {
+                $entity = new Entity\Feedback();
+                $entity
+                    ->setDestination('feedback_' . $num)
+                    ->setOid($num)
+                    ->setPersonEmail($feedback['person'])
+                    ->setLanguage($feedback['language'])
+                    ->setTitle($feedback['title'])
+                    ->setContent($feedback['content'])
+                    ->setSlug($feedback['slug'])
+                    ->setPopularity($feedback['popularity'])
+                    ->setStatus($feedback['status'])
+                    ->setCategory($feedback['category'])
+                    ->setDateCreated($this->getFromStringOrCurrentDateTime($feedback['date_created']))
+                    ->setDatePublished($this->getFromStringOrCurrentDateTime($feedback['date_published']));
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Check if feedback has all required columns
+     *
+     * @param array $feedback
+     * @return bool
+     */
+    private function hasRequiredFeedbackColumns(array $feedback)
+    {
+        return $this->hasRequiredColumns($feedback, array(
+            'person',
+            'language',
+            'title',
+            'content',
+            'slug',
+            'popularity',
+            'status',
+            'category',
+            'label',
+            'date_created',
+            'date_published',
+        ));
     }
 
     /**

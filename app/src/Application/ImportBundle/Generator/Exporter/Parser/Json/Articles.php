@@ -29,13 +29,12 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
-use Orb\Util\Strings;
 use DateTime;
 
 /**
  * Articles json file parser
  *
- * Class Kb
+ * Class Articles
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
 final class Articles extends AbstractParser
@@ -62,43 +61,40 @@ final class Articles extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $kbs = $this->reader->getData($this->getConfig());
+        $articles = $this->reader->getData($this->getConfig());
 
-        foreach ($kbs as $num => $kb) {
+        foreach ($articles as $num => $article) {
             $this->advanceProgressBar();
 
-            if ($this->hasRequiredKbColumns($kb) === false) {
+            if ($this->hasRequiredArticleColumns($article) === false) {
                 $this->logWarning(sprintf('Invalid kb record found (Skipping): %d', $num));
             } else {
                 $entity = new Entity\Article();
                 $entity
-                    ->setOid($kb['oid'])
-                    ->setPersonEmail($kb['person'])
-                    ->setTitle($kb['title'])
-                    ->setContent($kb['content'])
-                    ->setLanguage($kb['language'])
-                    ->setEndAction($kb['end_action'])
-                    ->setTotalRating($kb['total_rating'])
-                    ->setNumComments($kb['num_comments'])
-                    ->setNumRatings($kb['num_ratings'])
-                    ->setStatus($kb['status'])
-                    ->setDateCreated(new DateTime($kb['date_created']));
+                    ->setDestination('news_' . $article['oid'])
+                    ->setOid($article['oid'])
+                    ->setPersonEmail($article['person'])
+                    ->setTitle($article['title'])
+                    ->setContent($article['content'])
+                    ->setSlug($article['slug'])
+                    ->setLanguage($article['language'])
+                    ->setEndAction($article['end_action'])
+                    ->setTotalRating($article['total_rating'])
+                    ->setNumComments($article['num_comments'])
+                    ->setNumRatings($article['num_ratings'])
+                    ->setStatus($article['status'])
+                    ->setDateCreated(new DateTime($article['date_created']));
 
-                if ($kb['slug']) {
-                    $entity->setSlug($kb['slug']);
-                } else {
-                    $entity->setSlug(Strings::slugifyTitle($kb['title']));
+                if ($article['date_published']) {
+                    $entity->setDatePublished(new DateTime($article['date_published']));
                 }
-                if ($kb['date_published']) {
-                    $entity->setDatePublished(new DateTime($kb['date_published']));
+                if ($article['date_end']) {
+                    $entity->setDateEnd(new DateTime($article['date_end']));
                 }
-                if ($kb['date_end']) {
-                    $entity->setDateEnd(new DateTime($kb['date_end']));
-                }
-                foreach ($kb['categories'] as $category) {
+                foreach ($article['categories'] as $category) {
                     $entity->addCategory($category);
                 }
-                foreach ($kb['labels'] as $label) {
+                foreach ($article['labels'] as $label) {
                     $entity->addLabel($label);
                 }
 
@@ -117,22 +113,23 @@ final class Articles extends AbstractParser
      */
     private function getConfig()
     {
-        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_KB_PATH);
+        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_ARTICLE_PATH);
     }
 
     /**
-     * Check if kb has all required columns
+     * Check if article has all required columns
      *
-     * @param array $kb
+     * @param array $article
      * @return bool
      */
-    private function hasRequiredKbColumns(array $kb)
+    private function hasRequiredArticleColumns(array $article)
     {
         $columns = array(
             'oid',
             'person',
             'title',
             'content',
+            'slug',
             'language',
             'end_action',
             'total_rating',
@@ -146,8 +143,8 @@ final class Articles extends AbstractParser
             'labels',
         );
 
-        return $this->hasRequiredColumns($kb, $columns)
-            && is_array($kb['categories'])
-            && is_array($kb['labels']);
+        return $this->hasRequiredColumns($article, $columns)
+            && is_array($article['categories'])
+            && is_array($article['labels']);
     }
 }

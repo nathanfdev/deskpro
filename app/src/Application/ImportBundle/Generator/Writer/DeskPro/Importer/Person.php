@@ -50,54 +50,55 @@ final class Person extends AbstractImporter
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Person $importing_entity
+     * @var Entity\Person $entity
      *
      * todo is_user is false by default and it = true in the setPassword method, can we set it = true without a password
      */
-    public function getDoctrineEntities(Entity\EntityInterface $importing_entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
         $this->records = new ArrayCollection();
-        if ($importing_entity->isAgent()) {
-            $this->logWarning(sprintf('Importing agent `%s`', $importing_entity->getFirstEmail()));
+
+        if ($entity->isAgent()) {
+            $this->logWarning(sprintf('Importing agent `%s`', $entity->getFirstEmail()));
         }
 
-        $person = $this->findOrCreatePerson($importing_entity->getEmails());
+        $person = $this->findOrCreatePerson($entity->getEmails());
         $person
-            ->setName($importing_entity->getName())
-            ->setFirstName($importing_entity->getFirstName())
-            ->setLastName($importing_entity->getLastName())
-            ->setTimezone($importing_entity->getTimezone())
-            ->setIsAgent($importing_entity->isAgent())
-            ->setCanAdmin($importing_entity->isAdmin())
-            ->setDateCreated($importing_entity->getDateCreated())
-            ->setLanguageId($this->findLanguageId($importing_entity->getLanguage()))
-            ->setOrganization($this->findOrCreateOrganization($importing_entity->getOrganization()))
-            ->setOrganizationPosition($importing_entity->getOrganizationPosition())
+            ->setName($entity->getName())
+            ->setFirstName($entity->getFirstName())
+            ->setLastName($entity->getLastName())
+            ->setTimezone($entity->getTimezone())
+            ->setIsAgent($entity->isAgent())
+            ->setCanAdmin($entity->isAdmin())
+            ->setDateCreated($entity->getDateCreated())
+            ->setLanguageId($this->findLanguageId($entity->getLanguage()))
+            ->setOrganization($this->findOrCreateOrganization($entity->getOrganization()))
+            ->setOrganizationPosition($entity->getOrganizationPosition())
             ->resetEmails()
             ->resetLabels()
             ->resetUsergroups();
 
-        if ($importing_entity->getPassword() && $importing_entity->isPlainPasswordScheme()) {
-            $person->setPassword($importing_entity->getPassword());
+        if ($entity->getPassword() && $entity->isPlainPasswordScheme()) {
+            $person->setPassword($entity->getPassword());
         }
-        foreach ($importing_entity->getEmails() as $num => $email) {
+        foreach ($entity->getEmails() as $num => $email) {
             if ($this->getEmailAccountMapper()->findOneByEmail($email, false)) {
                 $this->logError(sprintf('Email `%s` is an a gateway account address', $email));
             } else {
                 $person->addEmailAddress($this->findOrCreatePersonEmail($email));
                 $this->logInfo(sprintf(
                     $num ? 'Set email `%s`' : 'Set primary email `%s`',
-                    $importing_entity->getFirstEmail()
+                    $entity->getFirstEmail()
                 ));
             }
         }
-        foreach ($importing_entity->getLabels() as $label) {
+        foreach ($entity->getLabels() as $label) {
             $person->addLabel($this->createPersonLabel($label));
         }
-        foreach ($importing_entity->getUserGroups() as $user_group) {
+        foreach ($entity->getUserGroups() as $user_group) {
             $person->addUsergroup($this->getUserGroupMapper()->findOneByTitle($user_group));
         }
-        foreach ($importing_entity->getCustomFields() as $custom_field) {
+        foreach ($entity->getCustomFields() as $custom_field) {
             $person->addCustomData($this->createCustomData($custom_field));
         }
 

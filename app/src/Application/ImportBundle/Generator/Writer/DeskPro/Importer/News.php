@@ -37,7 +37,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Class News
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-final class News extends AbstractImporter
+final class News extends AbstractImporter implements SkipDuplicateInterface
 {
     /**
      * {@inheritdoc}
@@ -56,37 +56,41 @@ final class News extends AbstractImporter
      * 'num_ratings'    => $nval->num_ratings,
      * 'view_count'     => $nval->view_count
      *
-     * @var Entity\News $importing_entity
+     * @var Entity\News $entity
      */
-    public function getDoctrineEntities(Entity\EntityInterface $importing_entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
         $this->records = new ArrayCollection();
-        $exist_news    = $this->getNewsMapper()->findOneByTitle($importing_entity->getTitle(), false);
-        if ($exist_news) {
-            $this->logWarning(sprintf(
-                'A News item with the title `%s` already exists (skipping)',
-                $importing_entity->getTitle()
-            ));
-        } else {
-            $news = new DeskPROEntity\News();
-            $news
-                ->setTitle($importing_entity->getTitle())
-                ->setContent($importing_entity->getContent())
-                ->setSlug($importing_entity->getSlug())
-                ->setPerson($this->getPersonMapper()->findOneByEmail($importing_entity->getPersonEmail()))
-                ->setLanguage($this->findLanguage($importing_entity->getLanguage()))
-                ->setCategory($this->findOrCreateNewsCategory($importing_entity->getCategory()))
-                ->setDateCreated($importing_entity->getDateCreated())
-                ->setDatePublished($importing_entity->getDatePublished());
 
-            foreach ($importing_entity->getLabels() as $label) {
-                $news->addLabel($this->createNewsLabel($label));
-            }
+        $news = new DeskPROEntity\News();
+        $news
+            ->setTitle($entity->getTitle())
+            ->setContent($entity->getContent())
+            ->setSlug($entity->getSlug())
+            ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
+            ->setLanguage($this->findLanguage($entity->getLanguage()))
+            ->setCategory($this->findOrCreateNewsCategory($entity->getCategory()))
+            ->setDateCreated($entity->getDateCreated())
+            ->setDatePublished($entity->getDatePublished());
 
-            $this->records->add($news);
+        foreach ($entity->getLabels() as $label) {
+            $news->addLabel($this->createNewsLabel($label));
         }
 
+        $this->records->add($news);
         return $this->records;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @var Entity\News $entity
+     */
+    public function checkAlreadyExists(Entity\EntityInterface $entity)
+    {
+        if ($this->getNewsMapper()->findOneByTitle($entity->getTitle(), false)) {
+            throw new DuplicateException();
+        }
     }
 
     /**

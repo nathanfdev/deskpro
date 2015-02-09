@@ -61,10 +61,10 @@ final class Feedback extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $feedbacks  = $this->reader->getData($this->getConfig());
+        $collection     = new Entity\Collection();
+        $feedback_items = $this->reader->getData($this->getConfig());
 
-        foreach ($feedbacks as $num => $feedback) {
+        foreach ($feedback_items as $num => $feedback) {
             $this->advanceProgressBar();
 
             if ($this->hasRequiredFeedbackColumns($feedback) === false) {
@@ -78,6 +78,7 @@ final class Feedback extends AbstractParser
                     ->setLanguage($feedback['language'])
                     ->setTitle($feedback['title'])
                     ->setContent($feedback['content'])
+                    ->setSlug($feedback['slug'])
                     ->setPopularity($feedback['popularity'])
                     ->setStatus($feedback['status'])
                     ->setTotalRating($feedback['total_rating'])
@@ -87,11 +88,6 @@ final class Feedback extends AbstractParser
                     ->setCategory($feedback['category'])
                     ->setDateCreated(new DateTime($feedback['date_created']));
 
-                if ($feedback['slug']) {
-                    $entity->setSlug($feedback['slug']);
-                } else {
-                    $entity->setSlug(Strings::slugifyTitle($feedback['title']));
-                }
                 if ($feedback['date_published']) {
                     $entity->setDatePublished(new DateTime($feedback['date_published']));
                 }

@@ -37,7 +37,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Class Feedback
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-final class Feedback extends AbstractImporter
+final class Feedback extends AbstractImporter implements SkipDuplicateInterface
 {
     /**
      * {@inheritdoc}
@@ -57,37 +57,41 @@ final class Feedback extends AbstractImporter
      * $record['view_count']		= $fval->view_count;
      * $record['popularity']		= $fval->popularity;
      *
-     * @var Entity\Feedback $importing_entity
+     * @var Entity\Feedback $entity
      */
-    public function getDoctrineEntities(Entity\EntityInterface $importing_entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
-        $this->records  = new ArrayCollection();
-        $exist_feedback = $this->getFeedbackMapper()->findOneByTitle($importing_entity->getTitle(), false);
-        if ($exist_feedback) {
-            $this->logWarning(sprintf(
-                'A Feedback item with the title `%s` already exists (skipping)',
-                $importing_entity->getTitle()
-            ));
-        } else {
-            $feedback = new DeskPROEntity\Feedback();
-            $feedback
-                ->setTitle($importing_entity->getTitle())
-                ->setContent($importing_entity->getContent())
-                ->setSlug($importing_entity->getSlug())
-                ->setPerson($this->getPersonMapper()->findOneByEmail($importing_entity->getPersonEmail()))
-                ->setLanguage($this->findLanguage($importing_entity->getLanguage()))
-                ->setCategory($this->findOrCreateFeedbackCategory($importing_entity->getCategory()))
-                ->setDateCreated($importing_entity->getDateCreated())
-                ->setDatePublished($importing_entity->getDatePublished());
+        $this->records = new ArrayCollection();
 
-            foreach ($importing_entity->getLabels() as $label) {
-                $feedback->addLabel($this->createFeedbackLabel($label));
-            }
+        $feedback = new DeskPROEntity\Feedback();
+        $feedback
+            ->setTitle($entity->getTitle())
+            ->setContent($entity->getContent())
+            ->setSlug($entity->getSlug())
+            ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
+            ->setLanguage($this->findLanguage($entity->getLanguage()))
+            ->setCategory($this->findOrCreateFeedbackCategory($entity->getCategory()))
+            ->setDateCreated($entity->getDateCreated())
+            ->setDatePublished($entity->getDatePublished());
 
-            $this->records->add($feedback);
+        foreach ($entity->getLabels() as $label) {
+            $feedback->addLabel($this->createFeedbackLabel($label));
         }
 
+        $this->records->add($feedback);
         return $this->records;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @var Entity\Feedback $entity
+     */
+    public function checkAlreadyExists(Entity\EntityInterface $entity)
+    {
+        if ($this->getFeedbackMapper()->findOneByTitle($entity->getTitle(), false)) {
+            throw new DuplicateException();
+        }
     }
 
     /**
