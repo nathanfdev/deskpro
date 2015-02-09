@@ -202,6 +202,14 @@ $definition->setClass('Application\\DeskPRO\\Cache\\Adapter\\SimpleArrayCache');
 $definition->setArguments(array());
 $container->setDefinition('cache.simple_array', $definition);
 
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Cache\\Adapter\\ExpiringDoctrineCache');
+$seconds_in_one_day = 86400;
+$definition->setArguments(array(new Reference('doctrine.orm.default_entity_manager'), $seconds_in_one_day));
+$container->setDefinition('cache.one_day_doctrine', $definition);
+
+// make an alias so we can easily swap out the underlying adapter for a diff implementation of the same concept
+$container->setAlias('cache.one_day', 'cache.one_day_doctrine');
 
 ############################################################################
 # Swiftmailer Configuration
