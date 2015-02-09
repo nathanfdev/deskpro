@@ -54,7 +54,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
         return false
 
     $scope.defaultDashboardsFilter = (value) -> value.is_default
-    $scope.customDashboardsFilter  = (value) -> value.is_default
+    $scope.customDashboardsFilter  = (value) -> !value.is_default
 
     ####################################################################################################################
     # MODAL HANDLERS

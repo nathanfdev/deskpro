@@ -35,7 +35,7 @@
                     <a ng-click="openCreate()"><i class="fa fa-plus"></i> Create</a>
                     <span>Custom Dashboards</span>
                 </li>
-                <li ng-repeat="db in (dashboards|filter:defaultDashboardsFilter) track by $index">
+                <li ng-repeat="db in (dashboards|filter:customDashboardsFilter) track by $index">
                     <a class='link-pointer' ui-sref-active="current" dp-dropdown-item ui-sref="reports.dashboards.view.index({ dashboard_id: db.id })">
                         {{ ng_var('db.title') }}
                     </a>
