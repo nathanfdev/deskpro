@@ -65,10 +65,26 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       )
     )
 
+    ####################################################################################################################
+    # UI handlers
+    ####################################################################################################################
+
     $scope.toggleLayoutEdit = () ->
       $scope.gridsterOptions.draggable.enabled = !$scope.gridsterOptions.draggable.enabled
       $scope.gridsterOptions.resizable.enabled = !$scope.gridsterOptions.resizable.enabled
       $scope.layoutEditing = !$scope.layoutEditing
+
+    ###
+    # Staff for removing widget from dashboard. Works if and only if the dashboard.layoutEditing is switched on
+    ###
+    $scope.removeWidget = (widget) ->
+      if $scope.layoutEditing
+        index = DashboardWidgetService.getIndexById $scope.report.widgets, widget.id
+        DashboardWidgetService
+        .removeWidget(widget)
+        .then () ->
+          $scope.dashboard.reports_version_id++
+          $scope.report.widgets.splice(index, 1)
 
     ####################################################################################################################
     # MODAL HANDLERS
@@ -97,4 +113,15 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       modalInstance.result.then (result) ->
         if result.changeType? and result.changeType == true
           $scope.openWidgetChoose result.widget
+
+    $scope.openEditWidget = (widget) ->
+      modalInstance = $modal.open {
+        templateUrl: "ReportsInterfaceBundle:Dashboard/Modal:edit-widget.html",
+        controller: 'Reports.Dashboards.Modals.EditWidget'
+        resolve:
+          widget: () ->
+            widget
+      }
+      modalInstance.result.then (result) ->
+        DashboardWidgetService.saveWidget result
   ]
