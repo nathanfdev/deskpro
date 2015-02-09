@@ -85,7 +85,8 @@ class TicketsDataService extends AbstractDataService
                 $qb->select('t')
                     ->from('DeskPRO:Ticket', 't')
                     ->join('t.person', 'p')
-                    ->where('t.status != :hidden')->setParameter('hidden', Ticket::STATUS_HIDDEN);
+                    ->where('t.status != :hidden')->setParameter('hidden', Ticket::STATUS_HIDDEN)
+                ;
 
                 // type
                 if (TicketFilter::TYPE_OWN === $filter->getType()) {
@@ -195,7 +196,7 @@ class TicketsDataService extends AbstractDataService
                     );
                 }
 
-                $qb->select('COUNT(t)')
+                $qb->select($qb->expr()->countDistinct('t.id'))
                     ->from('DeskPRO:Ticket', 't')
                     ->andWhere('t.status IN (:status_list)')->setParameter('status_list', $status_list)
                 ;
