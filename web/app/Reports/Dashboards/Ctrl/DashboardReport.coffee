@@ -69,4 +69,35 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       $scope.gridsterOptions.draggable.enabled = !$scope.gridsterOptions.draggable.enabled
       $scope.gridsterOptions.resizable.enabled = !$scope.gridsterOptions.resizable.enabled
       $scope.layoutEditing = !$scope.layoutEditing
+
+    ####################################################################################################################
+    # MODAL HANDLERS
+    ####################################################################################################################
+
+    $scope.openWidgetChoose = (widget) ->
+      modalInstance = $modal.open({
+        templateUrl: 'ReportsInterfaceBundle:Dashboard/Modal:widget-type-choose.html',
+        controller: 'Reports.Dashboards.Modals.ChooseWidget'
+        resolve:
+          report_id: -> report_id
+          widget: -> return if widget? then widget else null
+      })
+      modalInstance.result.then (saved) ->
+        $scope.openAddWidget saved
+
+    $scope.openAddWidget = (widget) ->
+
+      modalInstance = $modal.open {
+        templateUrl: 'ReportsInterfaceBundle:Dashboard/Modal:add-widget.html',
+        controller: 'Reports.Dashboards.Modals.AddWidget'
+        resolve:
+          report_id: -> report_id
+          widget: -> widget
+      }
+
+      modalInstance.result.then (result) ->
+        if result.widget.changeType? and result.widget.changeType == true
+          result.widget.changeType = false
+          $scope.typeWidgetModal result.report, result.widget
+
   ]

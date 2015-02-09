@@ -6,6 +6,8 @@ define [
   'Reports/Dashboards/Ctrl/DashboardReport',
   'Reports/Dashboards/Ctrl/DashboardView',
   'Reports/Dashboards/ModalCtrl/EditDashboard',
+  'Reports/Dashboards/ModalCtrl/ChooseWidget',
+  'Reports/Dashboards/ModalCtrl/AddWidget',
 
   'Reports/Stats/Ctrl/StatsMain',
   'Reports/Stats/Ctrl/StatsHome',
@@ -63,6 +65,8 @@ define [
   Reports_Dashboards_Ctrl_DashboardReport,
   Reports_Dashboards_Ctrl_DashboardView,
   Reports_Dashboards_ModalCtrl_EditDashboard,
+  Reports_Dashboards_ModalCtrl_ChooseWidget,
+  Reports_Dashboards_ModalCtrl_AddWidget,
 
   Reports_Stats_Ctrl_StatsMain,
   Reports_Stats_Ctrl_StatsHome,
@@ -107,6 +111,8 @@ define [
   ReportsApp.controller('Reports.App.DashboardReport',             Reports_Dashboards_Ctrl_DashboardReport)
   ReportsApp.controller('Reports.App.DashboardView',               Reports_Dashboards_Ctrl_DashboardView)
   ReportsApp.controller('Reports.Dashboards.Modals.EditDashboard', Reports_Dashboards_ModalCtrl_EditDashboard)
+  ReportsApp.controller('Reports.Dashboards.Modals.ChooseWidget',  Reports_Dashboards_ModalCtrl_ChooseWidget)
+  ReportsApp.controller('Reports.Dashboards.Modals.AddWidget',     Reports_Dashboards_ModalCtrl_AddWidget)
 
   ReportsApp.controller('Reports.Stats.StatsMain',                 Reports_Stats_Ctrl_StatsMain)
   ReportsApp.controller('Reports.Stats.StatsHome',                 Reports_Stats_Ctrl_StatsHome)

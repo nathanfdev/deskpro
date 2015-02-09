@@ -146,5 +146,10 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
       .saveDashboard dashboard
       .then (saved) ->
         d.resolve saved
+
+#      window.setTimeout(->
+#        d.resolve()
+#      , 1800)
+
       d.promise
   ]

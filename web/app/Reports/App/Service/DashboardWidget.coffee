@@ -1,5 +1,6 @@
 define ['DeskPRO/Util/Arrays',], (Arrays) ->
   class DashboardWidgetService
+
     constructor: (Api, $q) ->
       @Api = Api
       @$q = $q
