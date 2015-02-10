@@ -167,6 +167,6 @@ class QueueProc
                 return null;
         }
 
-        return new \DateTime("-$time_offset seconds");
+        return new \DateTime("+$time_offset seconds");
     }
 }

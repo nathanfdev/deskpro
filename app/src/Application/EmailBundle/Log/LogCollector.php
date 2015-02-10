@@ -106,7 +106,7 @@ class LogCollector implements HandlerInterface, LogCollectorInterface
         if (!isset($this->msg_lines[$id])) {
             $this->msg_lines[$id] = array();
             while (count($this->msg_lines) > $this->max_msg_keep) {
-                array_shift($this->msg_lines[$id]);
+                array_shift($this->msg_lines);
             }
         }
 

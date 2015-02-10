@@ -71,6 +71,6 @@ class RedisPendingQueuer implements PendingQueuerInterface
             $data['dpc_site_id'] = DPC_SITE_ID;
         }
 
-        $this->client->sadd($this->key, array(json_encode($data)));
+        $this->client->rpush($this->key, array(json_encode($data)));
     }
 }

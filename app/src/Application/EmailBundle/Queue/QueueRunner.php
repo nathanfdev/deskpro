@@ -83,6 +83,11 @@ class QueueRunner
     private $proc_time_limit = 180;
 
     /**
+     * @var array
+     */
+    private $done_ids = array();
+
+    /**
      * @param Connection $db
      * @param QueueProc $queue_proc
      * @param SourceMapperInterface $source_mapper
@@ -299,17 +304,25 @@ class QueueRunner
     {
         $this->db->beginTransaction();
 
+        if (!$this->done_ids) {
+            $this->done_ids = array(0);
+        }
+
         $batch = $this->db->fetchAll("
             SELECT *
             FROM sendmail_sources
-            WHERE status IN ('pending', 'retry') AND (date_next_attempt < ? OR date_next_attempt IS NULL)
+            WHERE
+              status IN ('pending', 'retry')
+              AND (date_next_attempt < ? OR date_next_attempt IS NULL)
+              AND id NOT IN (?)
             ORDER BY status ASC, id ASC
             LIMIT {$this->per_batch}
             FOR UPDATE
-        ", array(date('Y-m-d H:i:s', time())));
+        ", array(date('Y-m-d H:i:s'), $this->done_ids), array(\PDO::PARAM_STR, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY));
 
         if ($batch) {
             $batch_ids = array_map(function($r) { return $r['id']; }, $batch);
+            $this->done_ids = array_merge($this->done_ids, $batch_ids);
             $this->db->executeUpdate("
                 UPDATE sendmail_sources
                 SET status = 'processing', date_status = ?
