@@ -119,14 +119,16 @@ class PortalController extends AbstractController
     public function userSidebarAction(TagRequest $tag_request)
     {
         if (!$user = $this->getUser()) {
-            //TODO: dont pass the auth manager into the template...
+            $auth_manager = $this->get('dp_authentication_manager.user');
             return $this->renderThemeView(
                 'Theme:Portal:Tag/sidebar_login.html.twig',
                 array(
-                    'auth_manager' => $this->get('dp_authentication_manager.user'),
-                    'ugs' => $this->get('portal_usergroup_decider')->getUsergroupIdsForGuest(),
-                    'user_hash' => $this->get('portal_cache_helper')->getUserContextHash(),
-                    'perms' => $this->get('portal_permissions_manager')->getPermissionsBagForGuest()->toArray()
+                    'login_text_button_usersources' => $auth_manager->getLoginTextButtonUsersources(),
+                    'login_icon_usersources' => $auth_manager->getLoginIconUsersources(),
+                    'show_forgot_password' => $auth_manager->isForgotPasswordVisible(),
+                    'show_remember_me' => $auth_manager->isRememberMeEnabled(),
+                    'show_login_form' => $auth_manager->isLoginFormVisible(),
+                    'show_auth' => $auth_manager->isAuthVisible(),
                 )
             );
         }
@@ -135,11 +137,7 @@ class PortalController extends AbstractController
             'Theme:Portal:Tag/sidebar_user.html.twig',
             array(
                 'user' => $user,
-                'ticket_count' => $this->getTicketsDataService()->getTicketCount($user),
-                //'ugs' => $this->get('portal_usergroup_decider')->getUsergroupIdsForPerson($user),
-                //'ug_key' => $this->get('portal_permissions_manager')->getCacheKeyForPerson($user),
-                //'user_hash' => $this->get('portal_cache_helper')->getUserContextHash(),
-                //'perms' => $this->get('portal_permissions_manager')->getPermissionsBagForPerson($user)->toArray()
+                'ticket_count' => $this->getTicketsDataService()->getTicketCount($user)
             )
         );
     }

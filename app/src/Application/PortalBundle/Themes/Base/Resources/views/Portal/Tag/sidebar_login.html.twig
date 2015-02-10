@@ -1,13 +1,9 @@
 {# NOTE: despite the template name, this is part of the sidebar_user tag #}
-{% if (not is_granted('ROLE_USER')) and auth_manager.isAuthVisible %}
+{% if (not is_granted('ROLE_USER')) and show_auth %}
     <div class="small-form">
         <h1>Log in</h1>
 
-        {#{{ dump(ugs|join(',')) }}#}
-        {#{{ user_hash }}#}
-        {#{{ dump(perms) }}#}
-
-        {% if auth_manager.isLoginFormVisible %}
+        {% if show_login_form %}
             <form action="{{ path('portal_login_submit') }}" method="post">
                 <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
                 <label>
@@ -20,7 +16,7 @@
                     <input type="password" tabindex="2" placeholder="Your password" name="password">
                 </label>
 
-                {% if auth_manager.isRememberMeEnabled %}
+                {% if show_remember_me %}
                     <div class="permanent-login">
                         <label>Stay Logged In? <input tabindex="2" type="checkbox" name="remember_me"></label>
                     </div>
@@ -28,7 +24,7 @@
 
                 <button type="submit" tabindex="2">Log In</button>
 
-                {% if auth_manager.isForgotPasswordVisible %}
+                {% if show_forgot_password %}
                     <div class="secondary-action">
                         <a href="{{ path('portal_reset_password') }}">Forgot your password?</a>
                     </div>
@@ -37,15 +33,15 @@
         {% endif %}
 
         {# twitter, facebook, google (the old "icon" usersources) #}
-        {% if auth_manager.hasLoginIconUsersources %}
-            {% for usersource in auth_manager.getLoginIconUsersources %}
+        {% if login_icon_usersources|length > 0 %}
+            {% for usersource in login_icon_usersources %}
                 <a href="{{ path('portal_login_authenticate', {'usersource_id': usersource.id}) }}" class="button auth-{{ usersource.adapter.codeName|lower }}"><i class="fa fa-{{ usersource.adapter.codeName|lower }}"></i> Login with {{ usersource.adapter.codeName|title }}</a>
             {% endfor %}
         {% endif %}
 
         {# the newer "text button" usersources #}
-        {% if auth_manager.hasLoginTextButtonUsersources %}
-                {% for usersource in auth_manager.getLoginTextButtonUsersources %}
+        {% if login_text_button_usersources|length > 0 %}
+                {% for usersource in login_text_button_usersources %}
                     <a href="{{ path('portal_login_authenticate', {'usersource_id': usersource.id}) }}" class="button">{{ usersource.options.login_custom_text }}</a>
                 {% endfor %}
         {% endif %}
