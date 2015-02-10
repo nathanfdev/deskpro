@@ -820,24 +820,6 @@ class FilestorageLoader extends LoaderAbstract
             $sth->execute(array('id' => $blob_id));
             $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
-            // Try to detect bad css file and reload it automatically
-            if ($filename == 'main.css') {
-                $is_css = false;
-                $q = $this->getPdoRead()->query("SELECT css_blob_id FROM styles");
-                while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
-                    if ($r['css_blob_id'] == $blob_id) {
-                        $is_css = true;
-                        break;
-                    }
-                }
-
-                if ($is_css) {
-                    $this->getPdo()->exec("UPDATE styles SET css_blob_id = NULL");
-                    $this->userCssAction();
-                    exit;
-                }
-            }
-
             // Fallback on DB check, it may have been moved
             if ($blob['storage_loc'] != 'fs') {
                 $this->showBlob($blob_id, $size);

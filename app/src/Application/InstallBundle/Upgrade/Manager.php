@@ -157,9 +157,6 @@ class Manager
 
         \Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
 
-        // Clear old CSS blob so it's regenerated
-        $this->container->getDb()->executeUpdate("UPDATE styles SET css_blob_id = NULL, css_blob_rtl_id = NULL");
-
         // Update lang titles and has_agent flags
         $langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
 
