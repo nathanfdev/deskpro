@@ -4,18 +4,26 @@ php:
   - 5.4
   - 5.5
   - 5.6
+  - hhvm
+
 before_script:
-  - app/testing/travis-ci/before_script.sh
+  - app/tests/travis-ci/before-script
+
 after_failure:
-  - app/testing/travis-ci/after_failure.sh
+  - app/tests/travis-ci/after-failure
+
 after_success:
-  - app/testing/travis-ci/after_success.sh
-script: app/testing/bin/run-tests
-notifications:
-  hipchat:
-    rooms:
-      secure: bqrfROrUT4nmOdLkMRRS09BgIJ6CwGUcND76j5dRkwdGzKrsDYU/FyvLr3sjMZ611ehHOGz/cScBY1ZyuYNBAdqzBL8K1RtbvdukX0Ktt+BUJPepIXfV1T8wtvce0DhVvc2ILzoBynoCsmts1/qQNcKDI+4/5z0rA1GK8m9u7ao=
+  - app/tests/travis-ci/after-success
+
+script: app/tests/bin/run-tests
+
+#notifications:
+#  hipchat:
+#    rooms:
+#      secure: bqrfROrUT4nmOdLkMRRS09BgIJ6CwGUcND76j5dRkwdGzKrsDYU/FyvLr3sjMZ611ehHOGz/cScBY1ZyuYNBAdqzBL8K1RtbvdukX0Ktt+BUJPepIXfV1T8wtvce0DhVvc2ILzoBynoCsmts1/qQNcKDI+4/5z0rA1GK8m9u7ao=
+
 cache:
   apt: true
+
 services:
   - elasticsearch

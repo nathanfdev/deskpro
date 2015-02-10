@@ -39,13 +39,6 @@ $DP_CONFIG['debug']['mail']['save_to_file'] = true;
 $DP_CONFIG['debug']['mail']['disable_send'] = true;
 $DP_CONFIG['debug']['mail']['force_to'] = '';
 
-$DP_CONFIG['cache']['page_cache'] = array();
-$DP_CONFIG['cache']['page_cache']['enable'] = false;
-$DP_CONFIG['cache']['page_cache']['ttl'] = 900;
-$DP_CONFIG['cache']['page_cache']['max_size'] = 10000000;
-$DP_CONFIG['cache']['page_cache']['enable_hit_log'] = false;
-$DP_CONFIG['cache']['page_cache']['hit_log_file'] = '';
-
 $DP_CONFIG['debug']['dev']                     = true;
 $DP_CONFIG['debug']['raw_assets']              = array('all');
 $DP_CONFIG['debug']['no_report_errors']        = true;

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $SCRIPT_DIR
+cd ..
+
+IS_ERROR=0
+
+bin/phpspec run
+
+if [[ $? -ne 0 ]] ; then
+	echo "
+!!! phpspec failed !!!
+"
+	IS_ERROR=1
+fi
+
+if [[ "$IS_ERROR" -eq "0" ]] ; then
+    exec travis-ci/after-success
+fi
