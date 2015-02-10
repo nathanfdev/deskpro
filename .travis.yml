@@ -17,10 +17,10 @@ after_success:
 
 script: app/tests/bin/run-tests
 
-#notifications:
-#  hipchat:
-#    rooms:
-#      secure: bqrfROrUT4nmOdLkMRRS09BgIJ6CwGUcND76j5dRkwdGzKrsDYU/FyvLr3sjMZ611ehHOGz/cScBY1ZyuYNBAdqzBL8K1RtbvdukX0Ktt+BUJPepIXfV1T8wtvce0DhVvc2ILzoBynoCsmts1/qQNcKDI+4/5z0rA1GK8m9u7ao=
+notifications:
+  hipchat:
+    rooms:
+      secure: bqrfROrUT4nmOdLkMRRS09BgIJ6CwGUcND76j5dRkwdGzKrsDYU/FyvLr3sjMZ611ehHOGz/cScBY1ZyuYNBAdqzBL8K1RtbvdukX0Ktt+BUJPepIXfV1T8wtvce0DhVvc2ILzoBynoCsmts1/qQNcKDI+4/5z0rA1GK8m9u7ao=
 
 cache:
   apt: true
