@@ -36,13 +36,9 @@ namespace Application\EmailBundle\Queue;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
-use Application\EmailBundle\Mail\RawMessage\Rfc2822Decoder;
-use Application\EmailBundle\Mail\RawTransport\RawSmtpTransport;
-use Application\EmailBundle\Mail\RawTransport\RawSwiftmailerTransport;
 use Application\EmailBundle\Mail\RawTransport\RawTransportException;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog;
-use Orb\Logger\ContextDecorator;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 use Psr\Log\LoggerInterface;
@@ -63,13 +59,6 @@ class SourceSender
      * @var LoggerInterface
      */
     private $logger;
-
-    /**
-     * Used by the logger context
-     * @var array
-     * @internal
-     */
-    public $__dp_current_sendmail = null;
 
     /**
      * @param EmailAccountManager $email_accounts
@@ -95,8 +84,6 @@ class SourceSender
      */
     public function send(array $sendmail)
     {
-        $this->__dp_current_sendmail = $sendmail;
-
         if (empty($sendmail['email_account_id']) || !$sendmail['email_account_id']) {
             $this->logger->error(sprintf("The email account that this email was sent with no longer exists"));
             return 0;

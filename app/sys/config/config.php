@@ -271,9 +271,6 @@ $container->loadFromExtension('framework', array(
 // Monolog default logging, turn off unless specifically enabled (eg in some _dev configs)
 $container->loadFromExtension('monolog', array(
     'handlers' => array(
-        'main' => array(
-            'type' => 'null'
-        ),
         'email_log_collector' => array(
             'type' => 'service',
             'id' => 'email.log_collector',
