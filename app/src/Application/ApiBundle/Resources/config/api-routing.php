@@ -4424,6 +4424,34 @@ $collection->create('api_import_csv_status', array(
 ));
 
 ########################################################################################################################
+# CRM Export CSV
+########################################################################################################################
+
+$collection->create('api_export_csv_start', array(
+    'path'        => '/export/start',
+    'controller'  => 'ApiBundle:CsvExport:start',
+    'methods'     => array('POST'),
+));
+
+$collection->create('api_export_csv_stop', array(
+    'path'        => '/export/stop',
+    'controller'  => 'ApiBundle:CsvExport:stop',
+    'methods'     => array('POST'),
+));
+
+$collection->create('api_export_csv_status', array(
+    'path'        => '/export/status',
+    'controller'  => 'ApiBundle:CsvExport:status',
+    'methods'     => array('GET'),
+));
+
+$collection->create('api_export_list_files', array(
+    'path'        => '/export/list',
+    'controller'  => 'ApiBundle:CsvExport:list',
+    'methods'     => array('GET'),
+));
+
+########################################################################################################################
 # CRM User Rules
 ########################################################################################################################
 

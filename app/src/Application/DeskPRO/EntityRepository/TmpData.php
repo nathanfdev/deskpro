@@ -58,9 +58,22 @@ class TmpData extends AbstractEntityRepository
      * @param  string        $name
      * @return TmpDataEntity
      */
-    public function getByName($name)
+    public function getByName($name, $expired = null)
     {
-        return $this->findOneBy(array('name' => $name));
+        $q = 'select t from DeskPRO:TmpData t where t.name = :name ';
+        $params = array('name' => $name);
+
+        if (true === $expired) {
+            $q .= 'and t.date_expire <= :date';
+            $params['date'] = new \DateTime();
+        }
+
+        if (false === $expired) {
+            $q .= 'and t.date_expire > :date';
+            $params['date'] = new \DateTime();
+        }
+
+        return $this->getEntityManager()->createQuery($q)->setParameters($params)->getResult();
     }
 
     /**

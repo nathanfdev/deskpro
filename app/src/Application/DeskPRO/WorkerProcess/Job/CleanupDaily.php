@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\TmpData;
 
 class CleanupDaily extends AbstractJob
 {
@@ -245,6 +246,34 @@ class CleanupDaily extends AbstractJob
             }
 
             $this->logStatus("Cleaned up $x of " . count($cleanup_list) . " old files");
+        }
+
+        #------------------------------
+        # Clean old exports
+        #------------------------------
+
+        $q = App::getOrm()->createQuery('
+            SELECT t FROM DeskPRO:TmpData t
+            WHERE t.name = :name and t.date_expire < :date
+        ')->setParameters(array(
+            'name' => 'csv_export.file',
+            'date' => date('Y-m-d H:i:s'),
+        ));
+        $num = 0;
+
+        foreach ($q->getResult() as $entry) {
+            /** @var $entry TmpData */
+            $file = $entry->getData('file');
+            if (!file_exists($file)) continue;
+
+            unlink($file);
+            App::getOrm()->remove($entry);
+            $num++;
+        }
+
+        if ($num) {
+            App::getOrm()->flush();
+            $this->logStatus("Cleaned up $num old exports");
         }
     }
 }
