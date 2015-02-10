@@ -11,11 +11,11 @@ use MyProject\Proxies\__CG__\OtherProject\Proxies\__CG__\stdClass;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class ArbitratyHasherSpec extends ObjectBehavior
+class ArbitraryHasherSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType('Application\AppBundle\Helper\ArbitratyHasher');
+        $this->shouldHaveType('Application\AppBundle\Helper\ArbitraryHasher');
     }
 
     function it_can_hash_a_single_scalar()
