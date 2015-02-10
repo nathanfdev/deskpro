@@ -7,6 +7,8 @@
  * Represents a reply to a post item.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_PostReplyItemBaseType.
  */
 class EWSType_PostReplyItemType extends EWSType
 {
@@ -273,15 +275,6 @@ class EWSType_PostReplyItemType extends EWSType
     public $IsReadReceiptRequested;
 
     /**
-     * Indicates whether a response to an e-mail message is requested.
-     *
-     * @since Exchange 2007
-     *
-     * @var boolean
-     */
-    public $IsResponseRequested;
-
-    /**
      * Indicates whether the item had previously been sent.
      *
      * @since Exchange 2007
@@ -289,6 +282,15 @@ class EWSType_PostReplyItemType extends EWSType
      * @var boolean
      */
     public $IsResend;
+
+    /**
+     * Indicates whether a response to an e-mail message is requested.
+     *
+     * @since Exchange 2007
+     *
+     * @var boolean
+     */
+    public $IsResponseRequested;
 
     /**
      * Indicates whether an item has been submitted to the Outbox default

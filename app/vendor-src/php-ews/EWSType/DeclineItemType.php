@@ -7,6 +7,8 @@
  * Represents a Decline reply to a meeting request.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_WellKnownResponseObjectType.
  */
 class EWSType_DeclineItemType extends EWSType
 {

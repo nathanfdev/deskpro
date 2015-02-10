@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount;
 
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\NoopConfig;
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\ExchangeConfig;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
@@ -75,6 +76,11 @@ class EditEmailAccount
     public $in_gmail_account;
 
     /**
+     * @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365Config
+     */
+    public $in_office365_account;
+
+    /**
      * @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config
      */
     public $in_pop3_account;
@@ -100,9 +106,19 @@ class EditEmailAccount
     public $out_gmail_account;
 
     /**
+     * @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\Office365Config
+     */
+    public $out_office365_account;
+
+    /**
      * @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig
      */
     public $out_smtp_account;
+
+    /**
+     * @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\ExchangeConfig
+     */
+    public $out_exchange_account;
 
     /**
      * @var \Application\DeskPRO\Entity\EmailAccount
@@ -221,6 +237,9 @@ class EditEmailAccount
             case 'gmail':
                 return $this->in_gmail_account;
 
+            case 'office365':
+                return $this->in_office365_account;
+
             case 'noop':
                 return new NoopConfig();
 
@@ -242,8 +261,14 @@ class EditEmailAccount
             case 'gmail':
                 return $this->out_gmail_account;
 
+            case 'office365':
+                return $this->out_office365_account;
+
             case 'php_mail':
                 return new PhpMailConfig();
+
+            case 'exchange':
+                return $this->out_exchange_account;
 
             default;
 

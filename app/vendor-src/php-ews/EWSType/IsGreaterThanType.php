@@ -9,13 +9,15 @@
  * greater.
  *
  * @package php-ews\Types
+ *
+ * EWSType_TwoOperandExpressionType
  */
 class EWSType_IsGreaterThanType extends EWSType
 {
     /**
      * Identifies MAPI properties.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var EWSType_PathToExtendedFieldType
      */
@@ -24,7 +26,7 @@ class EWSType_IsGreaterThanType extends EWSType
     /**
      * Identifies frequently referenced properties by URI.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var EWSType_PathToUnindexedFieldType
      */
@@ -34,7 +36,7 @@ class EWSType_IsGreaterThanType extends EWSType
      * Represents either a property or a constant value to be used when
      * comparing with another property.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var EWSType_FieldURIOrConstantType
      */
@@ -43,7 +45,7 @@ class EWSType_IsGreaterThanType extends EWSType
     /**
      * Identifies individual members of a dictionary.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var EWSType_PathToIndexedFieldType
      */

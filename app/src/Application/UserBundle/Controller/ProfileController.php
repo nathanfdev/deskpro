@@ -503,7 +503,6 @@ class ProfileController extends AbstractController implements RequireUserInterfa
             $message = $container->getMailer()->createMessage();
             $message->setTo($validating_email->getEmail(), $person->getDisplayName());
             $message->setTemplate('DeskPRO:emails_user:new-email-validate.html.twig', $vars);
-            $message->enableQueueHint();
 
             $container->getMailer()->send($message);
         });

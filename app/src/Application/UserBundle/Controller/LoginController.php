@@ -1016,7 +1016,6 @@ HTML;
                 $message = $this->container->getMailer()->createMessage();
                 $message->setTemplate('DeskPRO:emails_agent:admin-noreset-password.html.twig', $vars);
                 $message->setTo($email, $person->getDisplayName());
-                $message->disableQueueHint();
                 $this->container->getMailer()->send($message);
 
                 if ($_format == 'json') {
@@ -1047,7 +1046,6 @@ HTML;
         $message = $this->container->getMailer()->createMessage();
         $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
         $message->setTo($email, $person->getDisplayName());
-        $message->disableQueueHint();
 
         $this->container->getMailer()->send($message);
 

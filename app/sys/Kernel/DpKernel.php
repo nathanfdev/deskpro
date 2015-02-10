@@ -345,6 +345,7 @@ class DpKernel extends AbstractKernel
             new \FOS\ElasticaBundle\FOSElasticaBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
+            new \Application\EmailBundle\EmailBundle(),
             new \Application\AdminInterfaceBundle\AdminInterfaceBundle(),
             new \Application\AgentBundle\AgentBundle(),
             new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),

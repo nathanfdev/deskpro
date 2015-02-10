@@ -13,7 +13,7 @@ class EWSType_ArrayOfEmailAddressesType extends EWSType
     /**
      * Represents a fully resolved e-mail address.
      *
-     * @since Exchnage 2010 SP1
+     * @since Exchange 2010
      *
      * @var EWSType_EmailAddressType
      */

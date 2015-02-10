@@ -148,6 +148,11 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
             $data['out_gmail_account'] = $data['in_gmail_account'];
         }
 
+        if ($data['incoming_type'] == 'office365') {
+            $data['outgoing_type']     = 'office365';
+            $data['out_office365_account'] = $data['in_office365_account'];
+        }
+
         $form->submit($data);
         $edit_account->apply();
 

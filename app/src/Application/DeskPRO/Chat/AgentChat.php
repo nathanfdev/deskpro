@@ -140,7 +140,6 @@ class AgentChat
                         'message' => $chat_message
                     ));
                     $email_message->setToPerson($part);
-                    $email_message->enableQueueHint();
                     App::getMailer()->send($email_message);
                 }
             }

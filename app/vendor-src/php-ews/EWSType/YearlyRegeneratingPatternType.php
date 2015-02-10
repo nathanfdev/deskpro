@@ -7,6 +7,8 @@
  * Describes the frequency, in years, in which a task is regenerated.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_RegeneratingPatternBaseType.
  */
 class EWSType_YearlyRegeneratingPatternType extends EWSType
 {

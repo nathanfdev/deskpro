@@ -221,14 +221,20 @@
     'core.email_source_storetime_rejection' => 1296000, // 15 days
 
     /**
+     * How long to store sendmail sources
+     */
+    'core.sendmail_source_storetime' => 1728000, // 20 days
+    'core.sendmail_source_storetime_error' => 3456000, // 40 days
+
+    /**
+     * Adapter to store log files under.
+     */
+    'core.filestorage_method_logs' => 'db',
+
+    /**
      * How long to store ticket manager logs for
      */
     'core.ticket_manager_log_storetime' => 604800, // 7 days
-
-    /**
-     * When to use the mail queue: never, hint, always
-     */
-    'core.use_mail_queue'  => 'hint',
 
     //'core.disqus_shortname' => '',
     //'core.facebook_comments_num_posts' => 10,

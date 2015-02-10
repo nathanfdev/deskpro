@@ -7,6 +7,8 @@
  * Represents a file that is attached to an item in the Exchange store.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_AttachmentType.
  */
 class EWSType_FileAttachmentType extends EWSType
 {
