@@ -48,6 +48,11 @@ use Monolog;
 
 class SendSourceCommand extends ContainerAwareCommand
 {
+    const RETURN_NOT_FOUND      = 404;
+    const RETURN_EXPECT_PENDING = 417;
+    const RETURN_STATUS_PREVENT = 423;
+    const RETURN_SEND_FAILURE   = 500;
+
     /**
      * {@inheritDoc}
      */
@@ -57,6 +62,7 @@ class SendSourceCommand extends ContainerAwareCommand
         $this->addOption('info', 'i', InputOption::VALUE_NONE, "Do not actually process the source, just output info");
         $this->addOption('source', 'u', InputOption::VALUE_NONE, "Output raw source. When used with --info, it will output info and the source at once.");
         $this->addOption('force', 'f', InputOption::VALUE_NONE, "Normally messages will only send if they are marked as 'pending' or 'retry'. Use --force if you want to send it even if it has some other status.");
+        $this->addOption('expect-pending', 'g', InputOption::VALUE_NONE, "Expect the status of the source to be PENDING. Use this when email messages are being queued and run from a queue server, and the queue server is executing this command.");
         $this->addArgument('id', InputArgument::REQUIRED, "The record ID to send.");
         $this->setHelp("Attempts to send an stored email source");
     }
@@ -78,7 +84,7 @@ class SendSourceCommand extends ContainerAwareCommand
         $source = $this->getContainer()->getEm()->find('EmailBundle:SendmailSource', $input->getArgument('id'));
         if (!$source) {
             $output->writeln("<error>Unknown SendmailSource ID</error>");
-            return 1;
+            return self::RETURN_NOT_FOUND;
         }
 
         ################################################################################################################
@@ -130,11 +136,18 @@ class SendSourceCommand extends ContainerAwareCommand
         # Send
         ################################################################################################################
 
+        if ($input->getOption('expect-pending') && $source->getStatus() != SendmailSource::STATUS_PENDING) {
+            $output->writeln(sprintf("<info>Source is marked as %s</info>", $source->getStatus()));
+            $output->writeln("<error>Expected PENDING</error>.");
+            $output->writeln("Aborting. Use --force if you want to send this email anyway.");
+            return self::RETURN_EXPECT_PENDING;
+        }
+
         if ($source->getStatus() != SendmailSource::STATUS_PENDING && $source->getStatus() != SendmailSource::STATUS_RETRY) {
             $output->writeln(sprintf("<info>Source is marked as %s</info>", $source->getStatus()));
             if (!$input->getOption('force')) {
                 $output->writeln("Aborting. Use --force if you want to send this email anyway.");
-                return 1;
+                return self::RETURN_STATUS_PREVENT;
             }
         }
 
@@ -158,10 +171,10 @@ class SendSourceCommand extends ContainerAwareCommand
 
         $this->getContainer()->getEm()->refresh($source);
 
-        if ($source->getStatus() == SendmailSource::STATUS_COMPLETE) {
-            return 1;
-        } else {
-            return 0;
+        if ($source->getStatus() != SendmailSource::STATUS_COMPLETE) {
+            return self::RETURN_SEND_FAILURE;
         }
+
+        return 0;
     }
 }

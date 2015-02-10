@@ -35,23 +35,24 @@
 
 namespace Application\EmailBundle\Command;
 
+use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
+use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Monolog;
 
-class GenTestEmailCommand extends ContainerAwareCommand
-{
-    /**
+class ProcessQueueCommand extends ContainerAwareCommand
+{/**
      * {@inheritDoc}
      */
     protected function configure()
     {
-        $this->setName('dp:email:gen-test-email');
-        $this->addOption('from', 'm', InputOption::VALUE_REQUIRED, "The address that the email sholud be sent from. This must be an existing outgoing account in DeskPRO.");
-        $this->addOption('to', 't', InputOption::VALUE_REQUIRED, "Who to send the email to");
-        $this->addOption('as-pending', 'g', InputOption::VALUE_NONE, "Insert the source as PENDING instead of ABORTED.");
-        $this->setHelp("Generates a new email and adds it to the sendmail queue.");
+        $this->setName('dp:email:process-queue');
+        $this->addOption('limit', 'l', InputOption::VALUE_REQUIRED, 'Max number of emails to send in one go');
+        $this->addOption('time', 'm', InputOption::VALUE_REQUIRED, 'Max time (seconds) before the process quits');
+        $this->setHelp("Processes the email queue");
     }
 
     /**
@@ -67,53 +68,29 @@ class GenTestEmailCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $mailer = $this->getContainer()->getMailer();
+        $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
-        $date = date('D, jS M Y g:ia');
-        $to = $input->getOption('to');
-        $from = $input->getOption('from');
-
-        if (empty($to)) {
-            $output->writeln("<error>You must specify the --to option");
-            return 1;
+        // Force console output
+        foreach (array(
+             'dp.email.out.queue',
+             'dp.email.out.transport',
+             'dp.email.out.mailer',
+             'dp.email.out.raw_transport'
+         ) as $n) {
+            $console_handler = new ConsoleHandler($output);
+            $console_handler->setFormatter(new ConsoleFormatter("%start_tag%[%datetime%] %channel%.%level_name%: %message%%end_tag%\n"));
+            $this->getContainer()->get('monolog.logger.'.$n)->pushHandler($console_handler);
         }
 
-        if (empty($from)) {
-            $email_accounts = $this->getContainer()->getEmailAccountManager();
-            $account = $email_accounts->getDefaultOutAccount();
-            if ($account) {
-                $from = $account->getUseEmailAddress();
-            }
-        }
+        $runner = $this->getContainer()->get('email.queue_runner');
+        $runner->setLimits(
+            intval($input->getOption('limit')) ?: 40,
+            intval($input->getOption('time')) ?: 20
+        );
 
-        if (empty($from)) {
-            $from = 'deskpro@' . php_uname('n');
-        }
+        $count = $runner->run();
 
-        $message = $mailer->createMessage();
-        $message->setTo($to);
-        $message->setFrom($from);
-        $message->setSubject("Test Email - $date");
-        $message->setBody("This is a test message sent at $date");
-        $message->addPart("This is a test message sent at <strong>$date</strong>", 'text/html');
-
-        if ($input->getOption('as-pending')) {
-            $id = $mailer->queueMessage($message);
-            $output->writeln("<info>Inserted email source: $id</info>\n");
-
-            $output->writeln("The email was inserted with the 'pending' state and WILL BE SENT on the next queue run.");
-        } else {
-            $id = $mailer->insertMessage($message);
-
-            $this->getContainer()->getDb()->update('sendmail_sources', array(
-                'status' => 'aborted'
-            ), array('id' => $id));
-
-            $output->writeln("<info>Inserted email source: $id</info>\n");
-            $output->writeln("The email was inserted with the 'aborted' state and will not be sent automatically.");
-            $output->writeln("You may with to manually send this email using the following command:");
-            $output->writeln("\tphp cmd.php dp:email:sendsource $id\n");
-        }
+        $output->writeln(sprintf("<info>Sent %d messages</info>", $count));
 
         return 0;
     }

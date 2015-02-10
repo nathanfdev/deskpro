@@ -81,6 +81,12 @@ class SendmailSource implements NotifyPropertyChanged
     const STATUS_ABORTED    = 'aborted';
 
     /**
+     * Indicates a problem while queueing an email with an external service.
+     * (Used when ExternalPendingQueue is used in source mapper)
+     */
+    const ERR_ENQUEUE_FAILED = 'enqueue_failed';
+
+    /**
      * @var int
      *
      */

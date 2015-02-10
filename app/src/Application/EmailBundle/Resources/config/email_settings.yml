@@ -49,8 +49,10 @@ services:
       - { name: monolog.logger, channel: dp.email.out.queue }
 
   email.source_mapper:
-    class: Application\EmailBundle\SourceMapper\DatabaseSourceMapper
-    arguments: [@database_connection, @deskpro.blob_storage, @email.email_account_manager, @email.log_collector]
+    class: Application\EmailBundle\SourceMapper\SourceMapperInterface
+    factory_class: Application\EmailBundle\SourceMapper\DeskproSourceMapperFactory
+    factory_method: getSourceMapper
+    arguments: [@service_container]
 
   email.source_sender:
       class: Application\EmailBundle\Queue\SourceSender
