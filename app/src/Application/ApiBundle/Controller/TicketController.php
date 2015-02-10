@@ -2511,64 +2511,6 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/tickets/slas/{sla_id}/people",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets list of people that automatically apply this SLA.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="sla_id",
-     *				description="ID of the SLA that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="There is no SLA with ID")
-     * 	)
-     * )
-     */
-    public function getSlaPeopleAction($sla_id)
-    {
-        $sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
-        if (!$sla) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no SLA with ID $sla_id");
-        }
-
-        return $this->createApiResponse(array('people' => $this->getApiData($sla->people)));
-    }
-
-    /**
-     * @SWG\Api(
-     * 	path="/tickets/slas/{sla_id}/organizations",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets list of organizations that automatically apply this SLA.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="sla_id",
-     *				description="ID of the SLA that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		@SWG\ResponseMessage(code=404, message="There is no SLA with ID")
-     * 	)
-     * )
-     */
-    public function getSlaOrganizationsAction($sla_id)
-    {
-        $sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
-        if (!$sla) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no SLA with ID $sla_id");
-        }
-
-        return $this->createApiResponse(array('organizations' => $this->getApiData($sla->organizations)));
-    }
-
-    /**
      * @param  integer                                                       $id
      * @return \Application\DeskPRO\Entity\Ticket
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
