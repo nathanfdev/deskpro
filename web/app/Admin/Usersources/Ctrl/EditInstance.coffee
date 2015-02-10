@@ -5,6 +5,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
     @CTRL_AS   = 'Ctrl'
     @DEPS      = ['$http', 'dpTemplateManager']
 
+
+
     init: ->
       @instanceId = @$stateParams.id
       @permission_groups = [];
@@ -14,11 +16,21 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
       @usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state);
       @presaveCallback = null
       @app = null
-      return
+
+
 
     initialLoad: ->
       d = @$q.defer()
       d2 = @$q.defer()
+
+      @listCtrl().refresh().then =>
+        enabled = 0
+        @listCtrl().usersources.map (source) =>
+          s = source.usersource
+          return if 'agent' != s.type
+          return if 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO' == s.source_type
+          enabled++ if s.is_enabled
+        @$scope.can_disable_deskpro = enabled > 0
 
       @Api.sendDataGet({
         app: '/apps/instances/' + @instanceId
@@ -113,7 +125,10 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
             @$scope.default_form = true
             d2.resolve()
       )
+
       return d2.promise
+
+
 
     saveSettings: ->
       @startSpinner('saving_settings')
@@ -130,6 +145,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
           @stopSpinner('saving_settings', true)
         )
 
+
+
     doSaveSettings: ->
       postData = {
         settings: @$scope.setting_values
@@ -141,10 +158,12 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
           console.log @$scope.usersource_details
         )
         @stopSpinner('saving_settings').then(=>
-          @$scope.$parent?.ListCtrl?.refresh()
+          @listCtrl().refresh()
           @Growl.success(@getRegisteredMessage('saved_settings'))
         )
       )
+
+
 
     saveUsersource: ->
       @startSpinner('saving_settings')
@@ -154,15 +173,20 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
         is_enabled: @usersource.is_enabled
       }
 
-      @Api.sendPostJson('/usersources/' + @usersourceType + '/' + @usersourceId, postData).then(=>
-        @stopSpinner('saving_settings').then(=>
-          @$scope.$parent?.ListCtrl?.refresh()
-          @Growl.success(@getRegisteredMessage('saved_settings'))
-        )
-      )
+      @Api.sendPostJson('/usersources/' + @usersourceType + '/' + @usersourceId, postData).then(
+        =>
+          @listCtrl().refresh()
+          @Growl.success @getRegisteredMessage 'saved_settings'
+        (res) =>
+          msg = @getRegisteredMessage(res.data.error_code) || res.data.error_message || ''
+          @Growl.error msg
+      ).finally => @stopSpinner 'saving_settings'
+
+
 
     cannotDeleteUsersource: ->
       alert "The DeskPRO usersource cannot be uninstalled. However, you can disable it by unchecking the box on the form and saving."
+
 
 
     ###
@@ -184,6 +208,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
       })
 
 
+
     ###
     # SHow delete modal
     ###
@@ -193,8 +218,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 
           # If we are viewing with the parent list, we need to remove this
           # app from the list
-          if @$scope.$parent?.ListCtrl?
-            @$scope.$parent?.ListCtrl?.refresh()
+          @listCtrl().refresh()
 
           # close this view
           @$state.go('^')
@@ -218,5 +242,12 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
             return @app
         }
       });
+
+
+
+    listCtrl: ->
+      @$scope.$parent?.ListCtrl || {refresh: =>}
+
+
 
   Admin_Usersources_Ctrl_EditInstance.EXPORT_CTRL()
