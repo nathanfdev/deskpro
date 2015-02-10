@@ -35,7 +35,6 @@
 namespace Application\EmailBundle\Queue;
 
 use Application\DeskPRO\DBAL\Connection;
-use Application\EmailBundle\SwiftMailer\Mailer;
 use Application\EmailBundle\SourceMapper\SourceMapperInterface;
 use Psr\Log\LoggerInterface;
 use Monolog;
@@ -53,9 +52,9 @@ class QueueRunner
     private $db;
 
     /**
-     * @var Mailer
+     * @var QueueProc
      */
-    private $mailer;
+    private $queue_proc;
 
     /**
      * @var SourceMapperInterface
@@ -84,27 +83,18 @@ class QueueRunner
 
     /**
      * @param Connection $db
-     * @param Mailer $mailer
+     * @param QueueProc $queue_proc
      * @param SourceMapperInterface $source_mapper
      * @param SourceSender $source_sender
-     */
-    public function __construct(Connection $db, Mailer $mailer, SourceMapperInterface $source_mapper, SourceSender $source_sender)
-    {
-        $this->db            = $db;
-        $this->mailer        = $mailer;
-        $this->source_mapper = $source_mapper;
-        $this->source_sender = $source_sender;
-
-        $this->logger = new Monolog\Logger('Sendmail.QueueRunner');
-        $this->logger->pushHandler(new Monolog\Handler\NullHandler());
-    }
-
-    /**
      * @param LoggerInterface $logger
      */
-    public function setLogger(LoggerInterface $logger)
+    public function __construct(Connection $db, QueueProc $queue_proc, SourceMapperInterface $source_mapper, SourceSender $source_sender, LoggerInterface $logger)
     {
-        $this->logger = $logger;
+        $this->db            = $db;
+        $this->queue_proc    = $queue_proc;
+        $this->source_mapper = $source_mapper;
+        $this->source_sender = $source_sender;
+        $this->logger        = $logger;
     }
 
     /**
@@ -116,7 +106,6 @@ class QueueRunner
         $this->proc_limit      = $proc_limit;
         $this->proc_time_limit = $time_limit;
     }
-
 
     /**
      * Timeout sources that have been marked as processing too long.
@@ -131,15 +120,43 @@ class QueueRunner
         do {
             $did = false;
 
-            $this->db->beginTransaction();
+            #----
+            # Retry state
+            #----
 
-            // Finds emails that have been 'processing' too long
+            // Finds emails that have been 'processing' too long and mark for retry
             $batch = $this->db->fetchAllKeyed("
                 SELECT * FROM sendmail_sources
-                WHERE
-                  status IN ('inserted', 'processing')
-                  AND date_status < ?
-                  LIMIT 100
+                WHERE status = 'processing' AND date_status < ? AND exec_count <= 3
+                LIMIT 100
+            ", array(date('Y-m-d H:i:s', time() -  1200)));
+
+            $count += count($batch);
+
+            // Appends to log file about the timeout
+            foreach ($batch as $r) {
+                $d = \DateTime::createFromFormat('Y-m-d H:i:s', $r['date_status']);
+                $msg = sprintf(
+                    '[%s] RETRY: Detected process timeout. Stuck at %s since %s (%s mins). Retrying.',
+                    date('Y-m-d H:i:s'),
+                    $r['status'],
+                    $r['date_status'],
+                    ceil((time() - $d->getTimestamp()) / 60)
+                );
+                $this->source_mapper->markSourceRetry($r, $msg, new \DateTime("+30 minutes"));
+
+                $did = true;
+            }
+
+            #----
+            # Error state
+            #----
+
+            // Remining ones are ones we should mark for failure
+            $batch = $this->db->fetchAllKeyed("
+                SELECT * FROM sendmail_sources
+                WHERE status IN ('inserted', 'processing') AND date_status < ?
+                LIMIT 100
             ", array(date('Y-m-d H:i:s', time() -  1200)));
 
             $count += count($batch);
@@ -149,8 +166,6 @@ class QueueRunner
                 SET status = 'error', error_code = 'timeout'
                 WHERE id IN (?)
             ", array(array_keys($batch)), array(Connection::PARAM_INT_ARRAY));
-
-            $this->db->commit();
 
             // Appends to log file about the timeout
             foreach ($batch as $r) {
@@ -192,9 +207,10 @@ class QueueRunner
 
         if ($batch) {
             while ($r = array_shift($batch)) {
+                $proc->process($r);
                 $count++;
 
-                if ($count > $this->proc_limit) {
+                if ($count >= $this->proc_limit) {
                     $this->logger->info("Reached limit, breaking");
                     break;
                 }
@@ -203,8 +219,6 @@ class QueueRunner
                     $this->logger->info("Reached time limit, breaking");
                     break;
                 }
-
-                $proc->process($r);
             }
         }
 
@@ -227,7 +241,7 @@ class QueueRunner
     {
         $this->db->beginTransaction();
 
-        $batch = $this->db->fetchAllKeyed("
+        $batch = $this->db->fetchAll("
             SELECT *
             FROM sendmail_sources
             WHERE status IN ('pending', 'retry') AND (date_next_attempt < ? OR date_next_attempt IS NULL)
@@ -236,11 +250,12 @@ class QueueRunner
         ", array(date('Y-m-d H:i:s', time())));
 
         if ($batch) {
+            $batch_ids = array_map(function($r) { return $r['id']; }, $batch);
             $this->db->executeUpdate("
                 UPDATE sendmail_sources
                 SET status = 'processing', date_status = ?
                 WHERE id IN (?)
-            ", array(array_keys($batch), date('Y-m-d H:i:s')), array(Connection::PARAM_INT_ARRAY));
+            ", array(date('Y-m-d H:i:s'), $batch_ids), array(\PDO::PARAM_STR, Connection::PARAM_INT_ARRAY));
         }
 
         $this->db->commit();
@@ -267,10 +282,10 @@ class QueueRunner
         $as_pending = array();
         $as_retry = array();
 
-        foreach ($batch as $id => $info) {
+        foreach ($batch as $info) {
             switch ($info['status']) {
-                case 'pending': $as_pending[] = $id; break;
-                case 'retry':   $as_retry[] = $id; break;
+                case 'pending': $as_pending[] = $info['id']; break;
+                case 'retry':   $as_retry[] = $info['id']; break;
             }
         }
 
@@ -279,14 +294,14 @@ class QueueRunner
                 UPDATE sendmail_sources
                 SET status = 'pending'
                 WHERE id IN (?)
-            ", array(array_keys($as_pending)), array(Connection::PARAM_INT_ARRAY));
+            ", array($as_pending), array(Connection::PARAM_INT_ARRAY));
         }
         if ($as_retry) {
             $this->db->executeUpdate("
                 UPDATE sendmail_sources
                 SET status = 'retry'
                 WHERE id IN (?)
-            ", array(array_keys($as_retry)), array(Connection::PARAM_INT_ARRAY));
+            ", array($as_retry), array(Connection::PARAM_INT_ARRAY));
         }
 
         $this->db->commit();

@@ -29,33 +29,15 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
-use Application\DeskPRO\App;
-use Monolog;
+namespace Application\InstallBundle\Upgrade\Build;
 
-/**
- * Goes through queued messages
- */
-class SendmailQueue extends AbstractJob
+class Build1423244643 extends AbstractBuild
 {
-    const DEFAULT_INTERVAL = 60;
-
     public function run()
     {
-        @ini_set('memory_limit', DP_MAX_MEMSIZE);
-        $runner = App::getContainer()->get('email.queue_runner');
-        $count_problems = $runner->detectProblems();
-        $count = $runner->run();
-        @ini_set('memory_limit', DP_SET_MEMSIZE);
-
-        if ($count_problems) {
-            $this->logStatus("Detected {$count_problems} probelms in queue. Marked those as error:timeout.");
-        }
-        if ($count) {
-            $this->logStatus("Processed {$count} emails in queue.");
-        }
+        $this->execSlowAlterTable('blobs', "DROP date_cleanup, ADD INDEX date_created_idx (date_created, is_temp)");
     }
 }

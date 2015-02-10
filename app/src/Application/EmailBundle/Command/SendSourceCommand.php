@@ -56,6 +56,7 @@ class SendSourceCommand extends ContainerAwareCommand
         $this->setName('dp:email:sendsource');
         $this->addOption('info', 'i', InputOption::VALUE_NONE, "Do not actually process the source, just output info");
         $this->addOption('source', 'u', InputOption::VALUE_NONE, "Output raw source. When used with --info, it will output info and the source at once.");
+        $this->addOption('force', 'f', InputOption::VALUE_NONE, "Normally messages will only send if they are marked as 'pending' or 'retry'. Use --force if you want to send it even if it has some other status.");
         $this->addArgument('id', InputArgument::REQUIRED, "The record ID to send.");
         $this->setHelp("Attempts to send an stored email source");
     }
@@ -128,6 +129,14 @@ class SendSourceCommand extends ContainerAwareCommand
         ################################################################################################################
         # Send
         ################################################################################################################
+
+        if ($source->getStatus() != SendmailSource::STATUS_PENDING && $source->getStatus() != SendmailSource::STATUS_RETRY) {
+            $output->writeln(sprintf("<info>Source is marked as %s</info>", $source->getStatus()));
+            if (!$input->getOption('force')) {
+                $output->writeln("Aborting. Use --force if you want to send this email anyway.");
+                return 1;
+            }
+        }
 
         $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 

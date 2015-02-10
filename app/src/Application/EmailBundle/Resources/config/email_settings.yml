@@ -36,6 +36,12 @@ services:
     tags:
       - { name: monolog.logger, channel: dp.email.out.raw_transport }
 
+  email.queue_runner:
+    class: Application\EmailBundle\Queue\QueueRunner
+    arguments: [@database_connection, @email.queue_processor, @email.source_mapper, @email.source_sender, @logger]
+    tags:
+      - { name: monolog.logger, channel: dp.email.out.queue }
+
   email.queue_processor:
     class: Application\EmailBundle\Queue\QueueProc
     arguments: [@email.source_mapper, @email.source_sender, @logger]
