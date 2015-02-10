@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 
 /**
  * Feedback csv file parser
@@ -50,7 +51,7 @@ final class Feedback extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getRowsCount($this->getConfig());
+        return $this->getReaderCount($this->getConfig());
     }
 
     /**
@@ -59,14 +60,14 @@ final class Feedback extends AbstractParser
     public function export()
     {
         $collection     = new Entity\Collection();
-        $feedback_items = $this->reader->getData($this->getConfig());
+        $feedback_items = $this->getReaderData($this->getConfig());
 
         foreach ($feedback_items as $num => $feedback) {
             $this->advanceProgressBar();
 
-            if ($this->hasRequiredFeedbackColumns($feedback) === false) {
-                $this->logWarning(sprintf('Invalid feedback record found (Skipping): %d', $num));
-            } else {
+            try {
+                $this->validateFeedback($feedback);
+
                 $entity = new Entity\Feedback();
                 $entity
                     ->setDestination('feedback_' . $num)
@@ -84,6 +85,12 @@ final class Feedback extends AbstractParser
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid feedback record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
@@ -96,9 +103,9 @@ final class Feedback extends AbstractParser
      * @param array $feedback
      * @return bool
      */
-    private function hasRequiredFeedbackColumns(array $feedback)
+    private function validateFeedback(array $feedback)
     {
-        return $this->hasRequiredColumns($feedback, array(
+        $columns = array(
             'person',
             'language',
             'title',
@@ -110,7 +117,9 @@ final class Feedback extends AbstractParser
             'label',
             'date_created',
             'date_published',
-        ));
+        );
+
+        return $this->hasRequiredColumns($feedback, $columns);
     }
 
     /**

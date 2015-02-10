@@ -29,7 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
-use DateTime;
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 
 /**
  * Tickets csv file parser
@@ -39,6 +39,9 @@ use DateTime;
  */
 final class Tickets extends AbstractParser
 {
+    const TICKET_PREFIX  = 'ticket_';
+    const MESSAGE_PREFIX = 'message_';
+
     /**
      * {@inheritdoc}
      */
@@ -52,7 +55,7 @@ final class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getRowsCount($this->getTicketsConfig());
+        return $this->getReaderCount($this->getTicketsConfig());
     }
 
     /**
@@ -61,23 +64,23 @@ final class Tickets extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $tickets    = $this->reader->getData($this->getTicketsConfig());
+        $tickets    = $this->getReaderData($this->getTicketsConfig());
         $messages   = $this->exportMessages();
 
         foreach ($tickets as $num => $ticket) {
             $this->advanceProgressBar();
 
-            if ($this->hasRequiredTicketColumns($ticket) === false) {
-                $this->logWarning(sprintf('Invalid ticket record found (Skipping): %d', $num));
-            } else {
+            try {
+                $this->validateTicket($ticket);
+
                 $entity = new Entity\Ticket();
                 $entity
-                    ->setDestination('ticket_' . trim($ticket['id']))
+                    ->setDestination(self::TICKET_PREFIX . $ticket['id'])
                     ->setRef($ticket['id'])
                     ->setSubject($ticket['subject'])
                     ->setPersonEmail($ticket['user'])
-                    ->setAgentEmail(isset($ticket['agent']) ? $ticket['agent'] : null)
-                    ->setStatus(isset($ticket['status']) ? $ticket['status'] : DeskPROEntity\Ticket::STATUS_AWAITING_AGENT)
+                    ->setAgentEmail($ticket['agent'])
+                    ->setStatus($ticket['status'] ? : DeskPROEntity\Ticket::STATUS_AWAITING_AGENT)
                     ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['date_created']));
 
                 foreach ($messages as $message_entity) {
@@ -89,6 +92,12 @@ final class Tickets extends AbstractParser
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid ticket record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
@@ -102,27 +111,50 @@ final class Tickets extends AbstractParser
      */
     private function exportMessages()
     {
-        $collection = new Entity\Collection();
-        $messages   = $this->reader->getData($this->getTiketMessagesConfig());
+        $collection  = new Entity\Collection();
+        $messages    = $this->getReaderData($this->getTicketMessagesConfig());
+        $attachments = $this->exportTicketAttachments();
 
         foreach ($messages as $num => $message) {
-            if ($this->hasRequiredTicketMessageColumns($message) === false) {
-                $this->logWarning(sprintf('Invalid ticket message record found (Skipping): %d', $num));
-            } else {
-                $date_created = isset($message['date_created']) ? new DateTime($message['date_created']) : new DateTime();
+            try {
+                $this->validateMessage($message);
 
                 $entity = new Entity\TicketMessage();
                 $entity
-                    ->setDestination('ticket_' . trim($message['ticket_id']))
+                    ->setDestination(self::TICKET_PREFIX . $message['ticket_id'])
+                    ->setOid($message['message_id'])
                     ->setPersonEmail($message['user'])
                     ->setMessageText($message['message_text'])
-                    ->setDateCreated($date_created);
+                    ->setDateCreated($this->getFromStringOrCurrentDateTime($message['date_created']));
+
+                foreach ($attachments as $attachment) {
+                    /** @var Entity\Attachment $attachment */
+                    if ($attachment->getDestination() === self::MESSAGE_PREFIX . $entity->getOid()) {
+                        $entity->addAttachment($attachment);
+                    }
+                }
 
                 $collection->attach($entity);
+
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid ticket message record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
         return $collection;
+    }
+
+    /**
+     * Returns a collection of ticket attachments
+     *
+     * @return Entity\Collection
+     */
+    private function exportTicketAttachments()
+    {
+        return $this->exportAttachments($this->getTicketAttachmentsConfig(), self::MESSAGE_PREFIX, 'message_id');
     }
 
     /**
@@ -131,9 +163,18 @@ final class Tickets extends AbstractParser
      * @param array $ticket
      * @return bool
      */
-    private function hasRequiredTicketColumns(array $ticket)
+    private function validateTicket(array $ticket)
     {
-        return $this->hasRequiredColumns($ticket, array('id', 'subject', 'user', 'date_created'));
+        $columns = array(
+            'id',
+            'subject',
+            'user',
+            'agent',
+            'status',
+            'date_created',
+        );
+
+        return $this->hasRequiredColumns($ticket, $columns);
     }
 
     /**
@@ -142,13 +183,20 @@ final class Tickets extends AbstractParser
      * @param array $message
      * @return bool
      */
-    private function hasRequiredTicketMessageColumns(array $message)
+    private function validateMessage(array $message)
     {
-        return $this->hasRequiredColumns($message, array('ticket_id', 'message_text', 'user'));
+        $columns = array(
+            'ticket_id',
+            'message_id',
+            'message_text',
+            'user',
+        );
+
+        return $this->hasRequiredColumns($message, $columns);
     }
 
     /**
-     * Returns reader of ticket records config
+     * Returns reader config of ticket records
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
@@ -158,12 +206,22 @@ final class Tickets extends AbstractParser
     }
 
     /**
-     * Returns reader of ticket message records config
+     * Returns reader config of ticket message records
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
-    private function getTiketMessagesConfig()
+    private function getTicketMessagesConfig()
     {
         return $this->getReaderConfig(self::FILE_TICKET_MESSAGES);
+    }
+
+    /**
+     * Returns reader config of ticket attachment records
+     *
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     */
+    private function getTicketAttachmentsConfig()
+    {
+        return $this->getReaderConfig(self::FILE_TICKET_ATTACHMENTS);
     }
 }

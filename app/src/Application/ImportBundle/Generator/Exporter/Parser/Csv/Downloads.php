@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 
 /**
  * Downloads csv file parser
@@ -37,6 +38,8 @@ use Application\ImportBundle\Entity;
  */
 final class Downloads extends AbstractParser
 {
+    const DOWNLOAD_PREFIX = 'download_';
+
     /**
      * {@inheritdoc}
      */
@@ -50,7 +53,7 @@ final class Downloads extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getRowsCount($this->getConfig());
+        return $this->getReaderCount($this->getConfig());
     }
 
     /**
@@ -58,19 +61,20 @@ final class Downloads extends AbstractParser
      */
     public function export()
     {
-        $collection = new Entity\Collection();
-        $downloads  = $this->reader->getData($this->getConfig());
+        $collection  = new Entity\Collection();
+        $downloads   = $this->getReaderData($this->getConfig());
+        $attachments = $this->exportDownloadAttachments();
 
         foreach ($downloads as $num => $download) {
             $this->advanceProgressBar();
 
-            if ($this->hasRequiredDownloadColumns($download) === false) {
-                $this->logWarning(sprintf('Invalid download record found (Skipping): %d', $num));
-            } else {
+            try {
+                $this->validateDownload($download);
+
                 $entity = new Entity\Download();
                 $entity
-                    ->setDestination('download_' . $num)
-                    ->setOid($num)
+                    ->setDestination(self::DOWNLOAD_PREFIX . $download['id'])
+                    ->setOid($download['id'])
                     ->setPersonEmail($download['person'])
                     ->setTitle($download['title'])
                     ->setContent($download['content'])
@@ -80,12 +84,59 @@ final class Downloads extends AbstractParser
                     ->setStatus($download['status'])
                     ->setDateCreated($this->getFromStringOrCurrentDateTime($download['date_created']));
 
+                foreach ($attachments as $attachment) {
+                    /** @var Entity\Attachment $attachment */
+                    if ($attachment->getDestination() === $entity->getDestination()) {
+                        $entity->setAttachment($attachment);
+                    }
+                }
+
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid download record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
         return $collection;
+    }
+
+    /**
+     * Returns a collection of download attachments
+     *
+     * @return Entity\Collection
+     */
+    private function exportDownloadAttachments()
+    {
+        return $this->exportAttachments($this->getDownloadAttachmentsConfig(), self::DOWNLOAD_PREFIX, 'download_id');
+    }
+
+    /**
+     * Check if download has all required columns
+     *
+     * @param array $download
+     * @return bool
+     */
+    private function validateDownload(array $download)
+    {
+        $columns = array(
+            'id',
+            'person',
+            'title',
+            'content',
+            'slug',
+            'language',
+            'category',
+            'status',
+            'date_created',
+            'label',
+        );
+
+        return $this->hasRequiredColumns($download, $columns);
     }
 
     /**
@@ -99,23 +150,12 @@ final class Downloads extends AbstractParser
     }
 
     /**
-     * Check if download has all required columns
+     * Returns reader of download attachments records config
      *
-     * @param array $download
-     * @return bool
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
-    private function hasRequiredDownloadColumns(array $download)
+    private function getDownloadAttachmentsConfig()
     {
-        return $this->hasRequiredColumns($download, array(
-            'person',
-            'title',
-            'content',
-            'slug',
-            'language',
-            'category',
-            'status',
-            'date_created',
-            'label',
-        ));
+        return $this->getReaderConfig(self::FILE_DOWNLOAD_ATTACHMENTS);
     }
 }

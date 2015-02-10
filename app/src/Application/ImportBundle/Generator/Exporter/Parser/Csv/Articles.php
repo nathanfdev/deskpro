@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 
 /**
  * Articles csv file parser
@@ -50,7 +51,7 @@ final class Articles extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getRowsCount($this->getConfig());
+        return $this->getReaderCount($this->getConfig());
     }
 
     /**
@@ -59,14 +60,14 @@ final class Articles extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $articles   = $this->reader->getData($this->getConfig());
+        $articles   = $this->getReaderData($this->getConfig());
 
         foreach ($articles as $num => $article) {
             $this->advanceProgressBar();
 
-            if ($this->hasRequiredArticleColumns($article) === false) {
-                $this->logWarning(sprintf('Invalid article record found (Skipping): %d', $num));
-            } else {
+            try {
+                $this->validateArticle($article);
+
                 $entity = new Entity\Article();
                 $entity
                     ->setDestination('article_' . $num)
@@ -83,6 +84,12 @@ final class Articles extends AbstractParser
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid article record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
@@ -95,9 +102,9 @@ final class Articles extends AbstractParser
      * @param array $article
      * @return bool
      */
-    private function hasRequiredArticleColumns(array $article)
+    private function validateArticle(array $article)
     {
-        return $this->hasRequiredColumns($article, array(
+        $columns = array(
             'person',
             'title',
             'content',
@@ -106,7 +113,9 @@ final class Articles extends AbstractParser
             'status',
             'category',
             'label',
-        ));
+        );
+
+        return $this->hasRequiredColumns($article, $columns);
     }
 
     /**

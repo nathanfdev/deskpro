@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 
 /**
  * News csv file parser
@@ -50,7 +51,7 @@ final class News extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getRowsCount($this->getConfig());
+        return $this->getReaderCount($this->getConfig());
     }
 
     /**
@@ -59,14 +60,14 @@ final class News extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $news_list  = $this->reader->getData($this->getConfig());
+        $news_list  = $this->getReaderData($this->getConfig());
 
         foreach ($news_list as $num => $news) {
             $this->advanceProgressBar();
 
-            if ($this->hasRequiredNewsColumns($news) === false) {
-                $this->logWarning(sprintf('Invalid news record found (Skipping): %d', $num));
-            } else {
+            try {
+                $this->validateNews($news);
+
                 $entity = new Entity\News();
                 $entity
                     ->setDestination('news_' . $num)
@@ -85,6 +86,12 @@ final class News extends AbstractParser
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid news record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
@@ -97,9 +104,9 @@ final class News extends AbstractParser
      * @param array $news
      * @return bool
      */
-    private function hasRequiredNewsColumns(array $news)
+    private function validateNews(array $news)
     {
-        return $this->hasRequiredColumns($news, array(
+        $columns = array(
             'oid',
             'person',
             'language',
@@ -110,7 +117,9 @@ final class News extends AbstractParser
             'date_published',
             'category',
             'label',
-        ));
+        );
+
+        return $this->hasRequiredColumns($news, $columns);
     }
 
     /**

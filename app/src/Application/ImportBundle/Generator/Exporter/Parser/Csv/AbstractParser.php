@@ -27,8 +27,11 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
 use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
+use Application\ImportBundle\Entity;
+use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 /**
  * Abstract csv parser
@@ -38,13 +41,15 @@ use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
  */
 abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
 {
-    const FILE_ARTICLES        = 'articles.csv';
-    const FILE_DOWNLOADS       = 'downloads.csv';
-    const FILE_FEEDBACK        = 'feedback.csv';
-    const FILE_NEWS            = 'news.csv';
-    const FILE_PEOPLE          = 'people.csv';
-    const FILE_TICKETS         = 'tickets.csv';
-    const FILE_TICKET_MESSAGES = 'messages.csv';
+    const FILE_ARTICLES             = 'articles.csv';
+    const FILE_DOWNLOADS            = 'downloads.csv';
+    const FILE_DOWNLOAD_ATTACHMENTS = 'downloads_attachments.csv';
+    const FILE_FEEDBACK             = 'feedback.csv';
+    const FILE_NEWS                 = 'news.csv';
+    const FILE_PEOPLE               = 'people.csv';
+    const FILE_TICKETS              = 'tickets.csv';
+    const FILE_TICKET_MESSAGES      = 'ticket_messages.csv';
+    const FILE_TICKET_ATTACHMENTS   = 'ticket_attachments.csv';
 
     /**
      * @var CsvReaderInterface
@@ -70,5 +75,106 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected function getReaderConfig($record_type)
     {
         return new CsvConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
+    }
+
+    /**
+     * Returns rows count of csv file
+     *
+     * @param CsvConfig $config
+     * @return int
+     */
+    protected function getReaderCount(CsvConfig $config)
+    {
+        try {
+            return $this->reader->getRowsCount($config);
+
+        } catch (NotFoundResourceException $e) {
+            $this->logWarning(sprintf('Resource `%s` not found (Skipping)', $config->getResource()));
+        }
+
+        return 0;
+    }
+
+    /**
+     * Returns a collection of exporting data
+     *
+     * @param CsvConfig $config
+     * @return array
+     */
+    protected function getReaderData(CsvConfig $config)
+    {
+        try {
+            return $this->reader->getData($config);
+
+        } catch (NotFoundResourceException $e) {
+            $this->logWarning(sprintf('Resource `%s` not found (Skipping)', $config->getResource()));
+        }
+
+        return array();
+    }
+
+    /**
+     * Returns a collection of attachments
+     *
+     * @param CsvConfig $config
+     * @param string    $destination_prefix
+     * @param string    $ref_column
+     *
+     * @return Entity\Collection
+     */
+    protected function exportAttachments(CsvConfig $config, $destination_prefix, $ref_column)
+    {
+        $collection  = new Entity\Collection();
+        $attachments = $this->getReaderData($config);
+
+        foreach ($attachments as $num => $attachment) {
+            try {
+                $this->validateAttachment($attachment, $ref_column);
+
+                $entity = new Entity\Attachment();
+                $entity
+                    ->setDestination($destination_prefix . $attachment[$ref_column])
+                    ->setOid($attachment[$ref_column])
+                    ->setPersonEmail($attachment['user'])
+                    ->setBlobUrl($attachment['blob_url'])
+                    ->setBlobPath($attachment['blob_path'])
+                    ->setFileName($attachment['file_name'])
+                    ->setContentType($attachment['content_type'])
+                    ->setAsInline($this->isBooleanTrue($attachment['is_inline']));
+
+                $collection->attach($entity);
+
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid attachment record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Check if an attachment has all required columns
+     *
+     * @param array  $attachment
+     * @param string $ref_column
+     *
+     * @return bool
+     */
+    protected function validateAttachment(array $attachment, $ref_column)
+    {
+        $columns = array(
+            $ref_column,
+            'person',
+            'blob_url',
+            'blob_path',
+            'file_name',
+            'content_type',
+            'is_inline',
+        );
+
+        return $this->hasRequiredColumns($attachment, $columns);
     }
 }

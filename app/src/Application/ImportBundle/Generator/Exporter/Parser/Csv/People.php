@@ -27,8 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
-use Application\ImportBundle\Generator\GeneratorInterface;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use DateTime;
 
 /**
@@ -52,7 +52,7 @@ final class People extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getRowsCount($this->getConfig());
+        return $this->getReaderCount($this->getConfig());
     }
 
     /**
@@ -61,14 +61,15 @@ final class People extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $people     = $this->reader->getData($this->getConfig());
+        $people     = $this->getReaderData($this->getConfig());
 
         foreach ($people as $num => $person) {
             $this->advanceProgressBar();
 
-            if ($this->hasRequiredPersonColumns($person) === false) {
-                $this->logWarning(sprintf('Invalid person record found (Skipping): %d', $num));
-            } else {
+            try {
+                $this->validatePerson($person);
+
+                // todo move logic to entity
                 if (empty($person['name'])) {
                     $e = explode('@', $person['email'], 2);
                     $person['name'] = $e[0];
@@ -88,6 +89,12 @@ final class People extends AbstractParser
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid person record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
@@ -100,7 +107,7 @@ final class People extends AbstractParser
      * @param array $person
      * @return bool
      */
-    private function hasRequiredPersonColumns(array $person)
+    private function validatePerson(array $person)
     {
         return $this->hasRequiredColumns($person, array('name', 'email'));
     }
@@ -123,6 +130,6 @@ final class People extends AbstractParser
      */
     private function isAgent(array $person)
     {
-        return isset($person['is_agent']) && ($person['is_agent'] === 'true' || (int)$person['is_agent'] === 1);
+        return isset($person['is_agent']) && $this->isBooleanTrue($person['is_agent']);
     }
 }

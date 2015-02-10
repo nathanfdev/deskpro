@@ -93,7 +93,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
-     * Check if ticket message attachment has all required columns
+     * Check if an attachment has all required columns
      *
      * @param array $attachment
      * @return bool
