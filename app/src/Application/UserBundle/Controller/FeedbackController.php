@@ -40,9 +40,12 @@ use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Feedback\FeedbackCollection;
+use Application\DeskPRO\HttpFoundation\Request;
+use Application\DeskPRO\Service\RateLimit;
 use Application\UserBundle\Controller\Helper\Comments;
 use Application\UserBundle\Controller\Helper\FacebookLike;
 use Application\UserBundle\Form\NewFeedbackType;
+use Application\UserBundle\Validator\NewCommentValidator;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
@@ -119,9 +122,12 @@ class FeedbackController extends AbstractController
             $category_path = array();
         }
 
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
         $captcha = null;
         $captcha_html = '';
-        if ($this->container->getSetting('user.publish_captcha') && ($this->container->getSetting('user.always_show_captcha') || !$this->person->getId())) {
+        $isActionLimited = $rateLimit->isActionLimited(RateLimit::ACT_SUBMIT_FEEDBACK);
+        if ($isActionLimited || ($this->container->getSetting('user.publish_captcha') && ($this->container->getSetting('user.always_show_captcha') || !$this->person->getId()))) {
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newfeedback'));
             $captcha_html = $captcha->getHtml();
         }
@@ -253,6 +259,7 @@ class FeedbackController extends AbstractController
 
             if ($validator->isValid($newfeedback) && !$trap_fail) {
                 $feedback = $newfeedback->save();
+                $rateLimit->saveAction(RateLimit::ACT_SUBMIT_FEEDBACK);
 
                 $notify_send = new \Application\DeskPRO\Notifications\NewFeedbackNotification($feedback);
                 $notify_send->send();
@@ -516,7 +523,7 @@ class FeedbackController extends AbstractController
      *
      * @param  $article_id
      */
-    public function newCommentAction($feedback_id)
+    public function newCommentAction($feedback_id, Request $request)
     {
         $feedback = $this->em->getRepository('DeskPRO:Feedback')->find($feedback_id);
         if (!$feedback) {
@@ -543,6 +550,13 @@ class FeedbackController extends AbstractController
         $validator = new \Application\UserBundle\Validator\NewCommentValidator();
         $validator->setPersonContext($this->person);
 
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        if ($rateLimit->isActionLimited(RateLimit::ACT_SUBMIT_COMMENT)) {
+            $captcha = $this->container->getSystemObject('form_captcha', array('type' => NewCommentValidator::CAPTCHA_TYPE));
+            $validator->setCaptcha($captcha);
+        }
+
         if ($this->get('request')->getMethod() == 'POST') {
 
             $trap_fail = false;
@@ -568,6 +582,7 @@ class FeedbackController extends AbstractController
 
             if ($form->isValid() && !$validator->checkDupe($new_comment)) {
                 $comment = $new_comment->save();
+                $rateLimit->saveAction(RateLimit::ACT_SUBMIT_COMMENT);
 
                 $GLOBALS['DP_SET_SKIP_CACHE'] = true;
 

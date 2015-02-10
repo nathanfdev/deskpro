@@ -228,6 +228,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
             // Reset user session
             $this->db->delete('sessions', array('person_id' => $this->person->id));
+            $this->db->delete('api_token', array('person_id' => $this->person->id));
 
             return $this->redirectRoute('user_login');
         }
@@ -435,6 +436,11 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
         // Already have this email on their account
         if ($this->person->findEmailAddress($email_address)) {
+            return $this->redirectRoute('user_profile');
+        }
+
+        if (!$this->person->checkPassword($this->in->getString('current_password'))) {
+            $this->session->setFlash('new_email_invalid_password', 1);
             return $this->redirectRoute('user_profile');
         }
 

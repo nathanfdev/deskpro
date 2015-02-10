@@ -1,6 +1,112 @@
-{##
- # The login page by default is just a portion of the registration page.
- ##}
+{% extends app.request.isXmlHttpRequest() ? 'UserBundle::auth-ajax-layout.html.twig' : 'UserBundle::auth-layout.html.twig' %}
 
-{% set this_page = 'login' %}
-{% include 'UserBundle:Register:register.html.twig' %}
+{% import 'UserBundle:Common:macros-form.html.twig' as formmacro %}
+{% set authManager = app.authenticationManager %}
+{% if return is not defined or not return %}{% set return = app.returnUrl %}{% endif %}
+{% if not is_helpdesk_path(return) %}{% set return = '' %}{% endif %}
+
+{% block auth_login %}
+
+	{% if app.session.getFlash('password_reset') %}
+		<div class="dp-alert dp-alert-success">
+			{{ phrase('user.profile.password_updated') }}
+		</div>
+	{% endif %}
+
+
+	{% if failed_login_name %}
+		<div class="dp-alert dp-alert-error">
+			{{ phrase('user.profile.login_error') }}
+		</div>
+	{% elseif account_disabled %}
+		<div class="dp-alert dp-alert-error">
+			{{ phrase('user.profile.account_disabled_message') }}
+		</div>
+	{% endif %}
+	{% if app.session.getFlash('failed_login_rate') %}
+		{% set timeago = app.session.getFlash('failed_login_rate').value %}
+		<div class="dp-alert dp-alert-error">
+			{{ phrase('user.profile.account_locked_message', {
+				timeago: '<time class="timeago" data-timeago-no-ago="1" data-no-update="1" datetime="' ~ ('- ' ~ timeago ~ ' seconds')|date('c', 'UTC') ~ '"></time>'
+			}, true) }}
+		</div>
+	{% endif %}
+
+
+	<form action="{{ path('user_login_authenticate_local') }}" class="dp-layout" method="post">
+		{{ form_token('user_login') }}
+
+		<input type="hidden" name="return" value="{{ return }}"/>
+
+		<table cellspacing="0" cellpadding="0" width="100%">
+			<tr>
+				<td>
+					<div style="padding-bottom: 5px;">
+						{{ phrase('user.general.email_address') }}
+					</div>
+					<div>
+						<input type="text" name="email" size="20"
+						       value="{{ failed_login_name|default(app.getVariable('login_with_email')) }}" tabindex="100"/>
+					</div>
+				</td>
+				<td>
+					<div style="padding-bottom: 5px;">
+						{{ phrase('user.profile.password') }}
+						{% if authManager.isForgotPasswordVisible %}<a
+							style="margin-{% if is_rtl() %}right{% else %}left{% endif %}: 9px;"
+							href="{{ path('user_login_resetpass') }}">{{ phrase('user.profile.lost_qm') }}</a>
+						{% endif %}
+					</div>
+					<div>
+						<input type="password" autocomplete="off" value="" name="password" size="20" tabindex="101"/>
+					</div>
+				</td>
+				<td style="text-align: center; vertical-align: middle;" valign="middle">
+					<input class="dp-btn dp-btn-primary" type="submit" value="{{ phrase('user.general.log_in') }}"
+					       tabindex="102"/>
+					{% if app.getSetting('core.enable_user_rememberme') %}
+						<label style="margin: 5px 0 0">
+							<input type="checkbox" name="remember_me" value="1"
+						                                      style="display:inline; position: relative; top: -2px;"
+						                                      tabindex="103"/>
+							{{ phrase('user.general.remember_me') }}
+						</label>
+					{% endif %}
+				</td>
+			</tr>
+
+			{% if captcha %}
+				{% set captcha_error = app.session.getFlash('captcha_login_error') %}
+				<tr>
+					<td colspan="3">
+						<div class="dp-control-group {% if captcha_error %}dp-error dp-error-static{% endif %}">
+							<div class="dp-control-label">
+								<label>{{ phrase('user.general.label_captcha') }} *</label>
+							</div>
+							<div class="dp-controls dp-fill">
+								{{ captcha.getHtml()|raw }}
+								{% if captcha_error %}
+									<div class="dp-help-inline dp-error-explain">
+										{{ phrase('user.tickets.form_error_captcha_invalid') }}
+									</div>
+								{% endif %}
+							</div>
+						</div>
+					</td>
+				</tr>
+			{% endif %}
+
+		</table>
+	</form>
+
+
+	{% if authManager.hasLoginTextButtonUsersources %}
+		<hr>
+		<ul class="dp-unstyled">
+			{% for usersource in authManager.getLoginTextButtonUsersources %}
+				<li style="margin-bottom: 5px">{{ render_usersource(usersource, 'login_text_btn') }}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+
+{% endblock %}

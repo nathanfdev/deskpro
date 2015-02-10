@@ -176,12 +176,17 @@
 					{{ phrase('user.profile.email_was_added_validate_it', {'email': app.session.getFlash('removed_email').value }) }}
 				</div>
 			{% endif %}
-			{% if app.getSession().getFlash('invalid_email') %}
+			{% if app.session.getFlash('new_email_invalid_password') %}
+				<div class="dp-alert dp-alert-error">
+					{{ phrase('user.profile.current_password_incorrect') }}
+				</div>
+			{% endif %}
+			{% if app.session.getFlash('invalid_email') %}
 				<div class="dp-alert dp-alert-error">
 					{{ phrase('user.profile.trying_to_add_invalid_email') }}
 				</div>
 			{% endif %}
-			{% if app.getSession().getFlash('email_exists') %}
+			{% if app.session.getFlash('email_exists') %}
 				<div class="dp-alert dp-alert-error">
 					{{ phrase('user.profile.email_validate_exists') }}
 				</div>
@@ -222,6 +227,7 @@
 							<form action="{{ path('user_profile_emails_new') }}" method="post">
 								{{ form_token() }}
 								<input type="text" name="new_email" value="" size="50" style="width: 350px;" placeholder="{{ phrase('user.profile.add_email_address') }}" />
+								<input type="password" name="current_password" value="" size="50" style="width: 350px;" placeholder="{{ phrase('user.profile.current_password') }}" />
 								<br />
 								<button class="dp-btn dp-btn-primary">{{ phrase('user.general.add') }}</button>
 							</form>
@@ -273,17 +279,17 @@
 		<h1>{{ phrase('user.profile.change_password') }}</h1>
 	</header>
 	<div class="dp-content-block dp-profile-block">
-		{% if app.session.hasFlash('invalid_repeat_password') %}
+		{% if app.session.getFlash('invalid_repeat_password') %}
 			<div class="dp-alert dp-alert-error">
 				{{ phrase('user.profile.password_mismatch') }}
 			</div>
 		{% endif %}
-		{% if app.session.hasFlash('invalid_current_password') %}
+		{% if app.session.getFlash('invalid_current_password') %}
 			<div class="dp-alert dp-alert-error">
 				{{ phrase('user.profile.current_password_incorrect') }}
 			</div>
 		{% endif %}
-		{% if app.session.hasFlash('invalid_password') %}
+		{% if app.session.getFlash('invalid_password') %}
 			<div class="dp-alert dp-alert-error">
 				{{ phrase('user.profile.register_password_invalid') }}
 			</div>
