@@ -328,26 +328,32 @@ define [
         })
 
       inst = @$modal.open({
-        templateUrl: @getTemplatePath('Agents/reset-password-modal.html'),
+        templateUrl: @getTemplatePath('Agents/reset-password-modal.html?' + (new Date()).getTime() ),
         controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-          $scope.password = {
+          $scope.password =
             mode: 'random',
             manual: ''
-          }
 
-          $scope.dismiss = ->
-            $modalInstance.dismiss()
+          $scope.dismiss = -> $modalInstance.dismiss()
 
           $scope.saveResetPassword = ->
             $scope.is_saving = true
+            $scope.error = null
+
             if $scope.password.mode == 'set'
-              doReset($scope.password.manual).then(=>
-                $modalInstance.close()
-              , -> $scope.is_saving = false)
+              doReset($scope.password.manual).then(
+                => $modalInstance.close()
+                (res) =>
+                  $scope.is_saving = false
+                  $scope.error = res.data.error_message
+              )
             else
-              doReset(false).then(=>
-                $modalInstance.close()
-              , -> $scope.is_saving = false)
+              doReset(false).then(
+                => $modalInstance.close()
+                (res) =>
+                  $scope.is_saving = false
+                  $scope.error = res.data.error_message
+              )
         ]
       });
 

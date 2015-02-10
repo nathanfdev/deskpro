@@ -102,6 +102,10 @@ class IncomingAccountTester
             case 'gmail':
                 $this->_testGmail();
                 break;
+
+            case 'office365':
+                $this->_testOffice365();
+                break;
         }
 
         return $this->is_success;
@@ -268,6 +272,39 @@ class IncomingAccountTester
                 'port'      => 995,
                 'ssl'       => 'ssl',
                 'logger'    => $this->logger,
+                'test_mode' => true,
+            ));
+
+            $this->message_count = $storage->countMessages();
+
+            $this->is_success = true;
+        } catch (\Exception $e) {
+            $this->exception = $e;
+            $this->logger->logError(sprintf("Error: %s", $e->getMessage()));
+            $this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+            $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
+            $this->is_success = false;
+        }
+    }
+
+    /**
+     * Tests Office365
+     */
+    private function _testOffice365()
+    {
+        /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365Config $config */
+        $config = $this->account_config;
+
+        $this->logger->logInfo('Testing Office365Account');
+
+        try {
+            $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3(array(
+                'host'     => 'outlook.office365.com',
+                'user'     => $config->user,
+                'password' => $config->password,
+                'port'     => 995,
+                'ssl'      => 'ssl',
+                'logger'   => $this->logger,
                 'test_mode' => true,
             ));
 

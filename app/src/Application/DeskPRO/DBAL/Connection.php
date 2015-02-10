@@ -545,7 +545,7 @@ class Connection extends \Doctrine\DBAL\Connection
     private function _writeDeleteQuery($query, $query_params = null)
     {
         // Ignore trivial tables
-        if (preg_match('#agent_activity|cache|chat_conversation_pings|client_messages|content_search|datastore|department_permissions|drafts|login_log|log_items|page_view_log|people_prefs|permissions|permissions_cache|queue_items|result_cache|searchlog|sendmail_queue|sendmail_queue_part|sessions|stat|stat_value|stat_value_group|ticket_access_codes|tickets_search|tmp_data|visitors#', $query)) {
+        if (preg_match('#agent_activity|cache|chat_conversation_pings|client_messages|content_search|datastore|department_permissions|drafts|login_log|log_items|page_view_log|people_prefs|permissions|permissions_cache|queue_items|result_cache|searchlog|sendmail_sources|sessions|stat|stat_value|stat_value_group|ticket_access_codes|tickets_search|tmp_data|visitors#', $query)) {
             return;
         }
 

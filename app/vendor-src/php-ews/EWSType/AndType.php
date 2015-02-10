@@ -11,6 +11,8 @@
  * contained within the And element are true.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_MultipleOperandBooleanExpressionType.
  */
 class EWSType_AndType extends EWSType
 {

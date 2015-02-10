@@ -154,6 +154,7 @@ class BlobStorageService
         // Store logs in the database if config flag is set
         if ($log_adapter_id = $container->getSetting('core.filestorage_method_logs')) {
             $bs->setAdapterForTag('logs.email_source_log', $log_adapter_id);
+            $bs->setAdapterForTag('logs.sendmail_source_log', $log_adapter_id);
             $bs->setAdapterForTag('logs.ticket_proc_log', $log_adapter_id);
         }
 

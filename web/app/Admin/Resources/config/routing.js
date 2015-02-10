@@ -1453,6 +1453,16 @@ define(function() {
 		controller: 'Admin_ImportCsv_Ctrl_ImportCsv'
 	});
 
+  //###
+  //# Export
+  //###
+  routes.push({
+    id: 'crm.export',
+    url: '/export',
+    templateName: 'ExportCsv/export-csv.html',
+    controller: 'Admin_ExportCsv_Ctrl_ExportCsv'
+  });
+
 	//##################################################################################################################
 	// Brand
 	//##################################################################################################################

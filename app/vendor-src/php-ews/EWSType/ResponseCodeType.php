@@ -14,7 +14,7 @@ class EWSType_ResponseCodeType extends EWSType
      * This error occurs when the calling account does not have the rights to
      * perform the requested action.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -23,7 +23,7 @@ class EWSType_ResponseCodeType extends EWSType
     /**
      * This error is for internal use only. This error is not returned.
      *
-     * @since Exchnage 2010
+     * @since Exchange 2010
      *
      * @var string
      */
@@ -32,7 +32,7 @@ class EWSType_ResponseCodeType extends EWSType
     /**
      * This error occurs when the account in question has been disabled.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -42,7 +42,7 @@ class EWSType_ResponseCodeType extends EWSType
      * This error occurs when AD DS is unavailable; Try your request again
      * later.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -51,7 +51,7 @@ class EWSType_ResponseCodeType extends EWSType
     /**
      * This error occurs when a list with added delegates cannot be saved.
      *
-     * @since Exchnage 2007 SP1
+     * @since Exchange 2007 SP1
      *
      * @var string
      */
@@ -62,7 +62,7 @@ class EWSType_ResponseCodeType extends EWSType
      * (DNS) domain name, for cross-forest availability could not be found in
      * the Active Directory database.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -78,7 +78,7 @@ class EWSType_ResponseCodeType extends EWSType
      * can determine whether to delete the current occurrence or the entire
      * series.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -97,7 +97,7 @@ class EWSType_ResponseCodeType extends EWSType
     /**
      * Indicates that the archive mailbox was not enabled.
      *
-     * @since Exchnage 2013
+     * @since Exchange 2013
      *
      * @var string
      */
@@ -115,7 +115,7 @@ class EWSType_ResponseCodeType extends EWSType
     /**
      * Indicates that archive mailbox service discovery failed.
      *
-     * @since Exchnage 2013
+     * @since Exchange 2013
      *
      * @var string
      */
@@ -125,7 +125,7 @@ class EWSType_ResponseCodeType extends EWSType
      * Specifies that an attempt was made to create an item with more than 10
      * nested attachments.
      *
-     * @since Exchnage 2010 SP2
+     * @since Exchange 2010 SP2
      *
      * @var string
      */
@@ -142,26 +142,26 @@ class EWSType_ResponseCodeType extends EWSType
     const ATTACHMENT_SIZE_LIMIT_EXCEEDED = 'ErrorAttachmentSizeLimitExceeded';
 
     /**
-     * This error indicates that the availability configuration information for
-     * the local forest is missing from AD DS.
-     *
-     * @since Exchnage 2007
-     *
-     * @var string
-     */
-    const AVAILABILITY_CONFIG_NOT_FOUND = 'ErrorAvailabilityConfigNotFound';
-
-    /**
      * This error indicates that Exchange Web Services tried to determine the
      * location of a cross-forest computer that is running Exchange that has the
      * Client Access server role installed by using the Autodiscover service,
      * but the call to the Autodiscover service failed.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
     const AUTO_DISCOVERY_FAILED = 'ErrorAutoDiscoverFailed';
+
+    /**
+     * This error indicates that the availability configuration information for
+     * the local forest is missing from AD DS.
+     *
+     * @since Exchange 2007
+     *
+     * @var string
+     */
+    const AVAILABILITY_CONFIG_NOT_FOUND = 'ErrorAvailabilityConfigNotFound';
 
     /**
      * This error indicates that an exception occurred while processing an item
@@ -298,7 +298,7 @@ class EWSType_ResponseCodeType extends EWSType
     /**
      * Indicates that an attempt was made to disable a mandatorty extension.
      *
-     * @since Exchnage 2013
+     * @since Exchange 2013
      *
      * @var string
      */
@@ -385,7 +385,7 @@ class EWSType_ResponseCodeType extends EWSType
      * Indicates that an attempt was made to specify the search folder as the
      * source folder.
      *
-     * @since Exchnage 2013
+     * @since Exchange 2013
      *
      * @var string
      */
@@ -427,7 +427,7 @@ class EWSType_ResponseCodeType extends EWSType
      * CopyItem, or SendItem operation is called and the ID that was specified
      * is not an occurrence ID of any recurring calendar item.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -459,7 +459,7 @@ class EWSType_ResponseCodeType extends EWSType
      * ErrorChangeKeyRequiredForWriteOperations.
      *
      * @since Exchange 2007
-     * @deprecated Exchnage 2007
+     * @deprecated Exchange 2007
      *
      * @var string
      */
@@ -492,7 +492,7 @@ class EWSType_ResponseCodeType extends EWSType
     /**
      * This error is intended for internal use only.
      *
-     * @since Exchnage 2013
+     * @since Exchange 2013
      *
      * @var string
      */
@@ -501,7 +501,7 @@ class EWSType_ResponseCodeType extends EWSType
     /**
      * This error is intended for internal use only.
      *
-     * @since Exchnage 2013
+     * @since Exchange 2013
      *
      * @var string
      */
@@ -546,7 +546,7 @@ class EWSType_ResponseCodeType extends EWSType
      * This error occurs when a search request is made using the QueryString
      * option and content indexing is not enabled for the target mailbox.
      *
-     * @since Exchnage 2013
+     * @since Exchange 2013
      *
      * @var string
      */
@@ -830,7 +830,7 @@ class EWSType_ResponseCodeType extends EWSType
      * This error occurs when the operation failed because of communication
      * problems with Active Directory Domain Services (AD DS).
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -840,7 +840,7 @@ class EWSType_ResponseCodeType extends EWSType
      * This error occurs when a ResolveNames operation request specifies a name
      * that is not valid.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -849,7 +849,7 @@ class EWSType_ResponseCodeType extends EWSType
     /**
      * Indicates an error in archive folder path creation.
      *
-     * @since Exchnage 2013
+     * @since Exchange 2013
      *
      * @var string
      */
@@ -1035,7 +1035,7 @@ class EWSType_ResponseCodeType extends EWSType
      * This error is returned when new instant messaging (IM) contacts cannot be
      * added because the maximum number of contacts has been reached.
      *
-     * @since Exchnage 2013
+     * @since Exchange 2013
      *
      * @var string
      */
@@ -1045,7 +1045,7 @@ class EWSType_ResponseCodeType extends EWSType
      * This error is returned when an attempt is made to add a group display
      * name when an existing group already has the same display name.
      *
-     * @since Exchnage 2013
+     * @since Exchange 2013
      *
      * @var string
      */
@@ -1055,7 +1055,7 @@ class EWSType_ResponseCodeType extends EWSType
      * This error is returned when new IM groups cannot be added because the
      * maximum number of groups has been reached.
      *
-     * @since Exchnage 2013
+     * @since Exchange 2013
      *
      * @var string
      */
@@ -1511,16 +1511,6 @@ class EWSType_ResponseCodeType extends EWSType
     const INVALID_FRACTIONAL_PAGING_PARAMS = 'ErrorInvalidFractionalPagingParameters';
 
     /**
-     * This error indicates that the DataType and ShareFolderId elements are
-     * both present in a request.
-     *
-     * @since Exchange 2010
-     *
-     * @var string
-     */
-    const INVALID_GET_SHARING_FOLDER_REQUEST = 'ErrorInvalidGetSharingFolderRequest';
-
-    /**
      * This error occurs when the GetUserAvailability Operation is called with a
      * FreeBusyViewType of None.
      *
@@ -1529,6 +1519,16 @@ class EWSType_ResponseCodeType extends EWSType
      * @var string
      */
     const INVALID_FREE_BUSY_VIEW_TYPE = 'ErrorInvalidFreeBusyViewType';
+
+    /**
+     * This error indicates that the DataType and ShareFolderId elements are
+     * both present in a request.
+     *
+     * @since Exchange 2010
+     *
+     * @var string
+     */
+    const INVALID_GET_SHARING_FOLDER_REQUEST = 'ErrorInvalidGetSharingFolderRequest';
 
     /**
      * This error indicates that the ID and/or change key is malformed.
@@ -2063,7 +2063,7 @@ class EWSType_ResponseCodeType extends EWSType
      *
      * @var string
      */
-    const INVAILD_PROPERTY_REQUEST = 'ErrorInvalidPropertyRequest';
+    const INVALID_PROPERTY_REQUEST = 'ErrorInvalidPropertyRequest';
 
     /**
      * This error indicates that the property that you are trying to manipulate
@@ -2082,7 +2082,7 @@ class EWSType_ResponseCodeType extends EWSType
      * This error occurs when the state of a calendar item recurrence binary
      * large object (BLOB) in the Exchange store is invalid.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -2106,7 +2106,7 @@ class EWSType_ResponseCodeType extends EWSType
     /**
      * This response code is not used.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -2153,19 +2153,6 @@ class EWSType_ResponseCodeType extends EWSType
     const INVALID_PUSH_SUBSCRIPTION_URL = 'ErrorInvalidPushSubscriptionUrl';
 
     /**
-     * This error indicates that the recipient collection on your message or the
-     * attendee collection on your calendar item is invalid.
-     *
-     * For example, this error will be returned when an attempt is made to send
-     * an item that has no recipients.
-     *
-     * @since Exchange 2007
-     *
-     * @var string
-     */
-    const INVALID_RECIPIENTS = 'ErrorInvalidRecipients';
-
-    /**
      * This error indicates that the search folder has a recipient table filter
      * that Exchange Web Services cannot represent.
      *
@@ -2176,7 +2163,7 @@ class EWSType_ResponseCodeType extends EWSType
      *
      * @var string
      */
-    const INVALID_RECIPIENTS_SUBFILTER = 'ErrorInvalidRecipientSubfilter';
+    const INVALID_RECIPIENT_SUBFILTER = 'ErrorInvalidRecipientSubfilter';
 
     /**
      * This error indicates that the search folder has a recipient table filter
@@ -2216,6 +2203,19 @@ class EWSType_ResponseCodeType extends EWSType
      * @var string
      */
     const INVALID_RECIPIENT_SUBFILTER_TEXT_FILTER = 'ErrorInvalidRecipientSubfilterTextFilter';
+
+    /**
+     * This error indicates that the recipient collection on your message or the
+     * attendee collection on your calendar item is invalid.
+     *
+     * For example, this error will be returned when an attempt is made to send
+     * an item that has no recipients.
+     *
+     * @since Exchange 2007
+     *
+     * @var string
+     */
+    const INVALID_RECIPIENTS = 'ErrorInvalidRecipients';
 
     /**
      * This error occurs when the specified recurrence cannot be created.
@@ -2522,7 +2522,7 @@ class EWSType_ResponseCodeType extends EWSType
     /**
      * This error occurs when an invalid time zone is encountered.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -2632,7 +2632,7 @@ class EWSType_ResponseCodeType extends EWSType
      * This error indicates that the AcceptItem element is invalid for a
      * calendar item that has been cancelled.
      *
-     * @since Exchnage 2010
+     * @since Exchange 2010
      *
      * @var string
      */
@@ -2642,7 +2642,7 @@ class EWSType_ResponseCodeType extends EWSType
      * This error indicates that the DeclineItem element is invalid for a
      * calendar item that has been cancelled.
      *
-     * @since Exchnage 2010
+     * @since Exchange 2010
      *
      * @var string
      */
@@ -2652,7 +2652,7 @@ class EWSType_ResponseCodeType extends EWSType
      * This error indicates that the RemoveItem element is invalid for a
      * calendar item that has been cancelled.
      *
-     * @since Exchnage 2010
+     * @since Exchange 2010
      *
      * @var string
      */
@@ -2662,7 +2662,7 @@ class EWSType_ResponseCodeType extends EWSType
      * This error indicates that the TentativelyAcceptItem element is invalid
      * for a calendar item that has been cancelled.
      *
-     * @since Exchnage 2010
+     * @since Exchange 2010
      *
      * @var string
      */
@@ -2831,6 +2831,25 @@ class EWSType_ResponseCodeType extends EWSType
     const LOGON_AS_NETWORK_SERVICE_FAILED = 'ErrorLogonAsNetworkServiceFailed';
 
     /**
+     * This error occurs if the MailboxData information cannot be mapped to a
+     * valid mailbox account.
+     *
+     * @since Exchange 2007
+     *
+     * @var string
+     */
+    const MAIL_RECIPIENT_NOT_FOUND = 'ErrorMailRecipientNotFound';
+
+    /**
+     * This error indicates that mail tips are disabled.
+     *
+     * @since Exchange 2010
+     *
+     * @var string
+     */
+    const MAIL_TIPS_DISABLED = 'ErrorMailTipsDisabled';
+
+    /**
      * This error indicates that the mailbox information in AD DS is configured
      * incorrectly.
      *
@@ -2936,25 +2955,6 @@ class EWSType_ResponseCodeType extends EWSType
      * @var string
      */
     const MAILBOX_STORE_UNAVAILABLE = 'ErrorMailboxStoreUnavailable';
-
-    /**
-     * This error occurs if the MailboxData information cannot be mapped to a
-     * valid mailbox account.
-     *
-     * @since Exchange 2007
-     *
-     * @var string
-     */
-    const MAIL_RECIPIENT_NOT_FOUND = 'ErrorMailRecipientNotFound';
-
-    /**
-     * This error indicates that mail tips are disabled.
-     *
-     * @since Exchange 2010
-     *
-     * @var string
-     */
-    const MAIL_TIPS_DISABLED = 'ErrorMailTipsDisabled';
 
     /**
      * This error occurs when the caller specifies an Id attribute that is
@@ -3382,7 +3382,7 @@ class EWSType_ResponseCodeType extends EWSType
     /**
      * No error occurred for the request.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -3541,7 +3541,7 @@ class EWSType_ResponseCodeType extends EWSType
      * calendar item is not valid for an attendee; only the meeting organizer
      * can cancel the meeting.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */

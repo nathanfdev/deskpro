@@ -38,10 +38,11 @@ use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\TicketGatewayProcessor;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\FetcherStorageFactory;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
-use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\TransportFactory;
 use Application\DeskPRO\Email\EmailAccount\Repository\EmailAccountRepository;
 use Application\DeskPRO\Entity\EmailAccount;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Exception\MissingConfigurationException;
+use Application\EmailBundle\Mail\RawTransport\RawTransportFactory;
 use Orb\Util\Arrays;
 
 class EmailAccountManager
@@ -56,7 +57,7 @@ class EmailAccountManager
     private $repos;
 
     /**
-     * @var OutgoingAccount\TransportFactory
+     * @var RawTransportFactory
      */
     private $transport_factory;
 
@@ -90,10 +91,10 @@ class EmailAccountManager
 
     /**
      * @param EmailAccountRepository $repos
-     * @param TransportFactory       $transport_factory
+     * @param RawTransportFactory    $transport_factory
      * @param FetcherStorageFactory  $fetcher_storage_factory
      */
-    public function __construct(EmailAccountRepository $repos, TransportFactory $transport_factory, FetcherStorageFactory $fetcher_storage_factory)
+    public function __construct(EmailAccountRepository $repos, RawTransportFactory $transport_factory, FetcherStorageFactory $fetcher_storage_factory)
     {
         $this->repos                   = $repos;
         $this->transport_factory       = $transport_factory;
@@ -211,6 +212,24 @@ class EmailAccountManager
     }
 
     /**
+     * @param \Swift_Mime_Message $message
+     * @return \Application\DeskPRO\Entity\EmailAccount
+     */
+    public function findAccountForSwiftmailerMessage(\Swift_Mime_Message $message)
+    {
+        $from = $message->getFrom();
+        foreach ($from as $email => $name) {
+            $acc = $this->findAccountForEmailAddress($email, EmailAccountManager::IS_ENABLED & EmailAccountManager::WITH_TRANSPORT);
+            if ($acc) {
+                return $acc;
+            }
+        }
+
+        return $this->getDefaultOutAccountWithFallback();
+    }
+
+
+    /**
      * @param  array $accounts
      * @param  int   $criteria
      * @return array
@@ -323,6 +342,20 @@ class EmailAccountManager
     }
 
     /**
+     * @param Ticket $ticket
+     * @return EmailAccount
+     */
+    public function getAccountForTicket(Ticket $ticket)
+    {
+        if ($ticket->email_account) {
+            return $ticket->email_account;
+        }
+
+        return $this->getPrimaryTicketAccountWithFallback();
+    }
+
+
+    /**
      * Count how many outgoing email accounts are defined
      *
      * @return int
@@ -396,7 +429,7 @@ class EmailAccountManager
     }
 
     /**
-     * @return TransportFactory
+     * @return RawTransportFactory
      */
     public function getTransportFactory()
     {

@@ -403,7 +403,7 @@ class DeskproContainer extends Container
     /**
      * Get the mailer
      *
-     * @return \Application\DeskPRO\Mail\Mailer
+     * @return \Application\EmailBundle\SwiftMailer\Mailer
      */
     public function getMailer()
     {
@@ -531,7 +531,7 @@ class DeskproContainer extends Container
      */
     public function getEmailAccountManager()
     {
-        return $this->getSystemService('email_account_manager');
+        return $this->get('email.email_account_manager');
     }
 
     /**
@@ -561,7 +561,7 @@ class DeskproContainer extends Container
      */
     public function getBlobStorage()
     {
-        return $this->getSystemService('blob_storage');
+        return $this->get('deskpro.blob_storage');
     }
 
     /**

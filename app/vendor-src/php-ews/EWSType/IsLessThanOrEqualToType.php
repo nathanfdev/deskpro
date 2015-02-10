@@ -9,6 +9,8 @@
  * less than or equal to the second.
  *
  * @package php-ews\Types
+ *
+ * EWSType_TwoOperandExpressionType
  */
 class EWSType_IsLessThanOrEqualToType extends EWSType
 {

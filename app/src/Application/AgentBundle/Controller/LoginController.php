@@ -36,6 +36,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
+use Application\DeskPRO\Service\RateLimit;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -138,6 +139,13 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
         $browser_warnings = UserAgentRequirementCheck::getInterfaceWarnings();
 
+        $captcha = null;
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        if ($rateLimit->isActionLimited(RateLimit::ACT_LOGIN)) {
+            $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_login'));
+        }
+
         return $this->render('AgentBundle:Login:index.html.twig', array(
             'return'                   => $return,
             'route_prefix'             => $this->route_prefix,
@@ -146,7 +154,8 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             'has_done_reset'           => $has_done_reset,
             'failed_login_name'        => $failed_login_name,
             'browser_warnings'         => $browser_warnings,
-            'timeout'                  => $this->in->getBool('timeout')
+            'timeout'                  => $this->in->getBool('timeout'),
+            'captcha'                  => $captcha,
         ));
     }
 

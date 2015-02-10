@@ -1093,10 +1093,11 @@ class KernelErrorHandler
     /**
      * Formats a backtrace.
      *
-     * @param  array  $backtrace
+     * @param array  $backtrace
+     * @param bool   $no_vars    Dont include vars in the backtrace
      * @return string
      */
-    public static function formatBacktrace(array $backtrace)
+    public static function formatBacktrace(array $backtrace, $no_vars = false)
     {
         $trace = '';
 
@@ -1174,6 +1175,10 @@ class KernelErrorHandler
             }
 
             $line .= "{$v['function']}(";
+
+            if ($no_vars) {
+                $show_vars_string = '...';
+            }
 
             if ($show_vars_string) {
                 if (!empty($v['args'])) {

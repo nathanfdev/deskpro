@@ -8,6 +8,8 @@
  * constant value or another property and evaluates to true if they are equal.
  *
  * @package php-ews\Types
+ *
+ * EWSType_TwoOperandExpressionType
  */
 class EWSType_IsEqualToType extends EWSType
 {

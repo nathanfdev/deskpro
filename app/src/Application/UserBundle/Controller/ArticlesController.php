@@ -38,9 +38,12 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Comments\NewCommentFormType;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\HttpFoundation\Request;
+use Application\DeskPRO\Service\RateLimit;
 use Application\UserBundle\Controller\Helper\Comments;
 use Application\UserBundle\Controller\Helper\ContentRating;
 use Application\UserBundle\Controller\Helper\FacebookLike;
+use Application\UserBundle\Validator\NewCommentValidator;
 use Orb\Util\Numbers;
 
 class ArticlesController extends AbstractController
@@ -448,7 +451,7 @@ class ArticlesController extends AbstractController
      *
      * @param  $article_id
      */
-    public function newCommentAction($article_id)
+    public function newCommentAction($article_id, Request $request)
     {
         if ($this->container->getSetting('core.interact_require_login') && !$this->person->getId()) {
             return $this->forward('UserBundle:Login:index');
@@ -474,6 +477,13 @@ class ArticlesController extends AbstractController
         $validator = new \Application\UserBundle\Validator\NewCommentValidator();
         $validator->setPersonContext($this->person);
 
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        if ($rateLimit->isActionLimited(RateLimit::ACT_SUBMIT_COMMENT)) {
+            $captcha = $this->container->getSystemObject('form_captcha', array('type' => NewCommentValidator::CAPTCHA_TYPE));
+            $validator->setCaptcha($captcha);
+        }
+
         if ($this->get('request')->getMethod() == 'POST') {
 
             $trap_fail = false;
@@ -498,6 +508,7 @@ class ArticlesController extends AbstractController
             }
 
             $comment = $new_comment->save();
+            $rateLimit->saveAction(RateLimit::ACT_SUBMIT_COMMENT);
 
             $GLOBALS['DP_SET_SKIP_CACHE'] = true;
 

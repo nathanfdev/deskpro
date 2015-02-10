@@ -87,10 +87,13 @@ class InstallKernel extends BaseKernel
     {
         $bundles = array(
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+            new \Symfony\Bundle\MonologBundle\MonologBundle(),
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\InstallBundle\InstallBundle(),
+            new \Application\EmailBundle\EmailBundle(),
         );
 
         return $bundles;

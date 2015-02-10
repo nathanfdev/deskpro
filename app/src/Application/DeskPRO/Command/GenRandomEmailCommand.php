@@ -50,7 +50,6 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         $this->addOption('to-email', null, InputOption::VALUE_REQUIRED);
         $this->addOption('with-image', null, InputOption::VALUE_NONE);
         $this->addOption('attach', null, InputOption::VALUE_REQUIRED);
-        $this->addOption('real-send', null, InputOption::VALUE_NONE);
         $this->addOption('subject', null, InputOption::VALUE_REQUIRED);
         $this->addOption('fwd-for', null, InputOption::VALUE_REQUIRED);
     }
@@ -208,20 +207,6 @@ SRC;
         $to_email   = $input->getOption('to-email');
         $time       = date('Y-m-d H:i:s');
 
-        if ($input->getOption('real-send')) {
-            $message = App::getMailer()->createMessage();
-            $message->setTo($to_email);
-            $message->setFrom($from_email);
-            $message->setSubject('Test Email - '.$time);
-            $message->getBody("Test Message\n\n".uniqid('eml-', true));
-
-            $tr = App::$container->getEmailAccountManager()->getTransportFactory()->createPhpMailTransport(new PhpMailConfig());
-            $message->setForceTransport($tr);
-
-            App::getMailer()->send($message);
-
-            echo "Message Sent\n";
-        } else {
             $source = str_replace('%FROM_EMAIL%', $from_email, $source);
             $source = str_replace('%TO_EMAIL%', $to_email, $source);
             $source = str_replace('%TIME%', $time, $source);
@@ -230,4 +215,3 @@ SRC;
             echo $source;
         }
     }
-}

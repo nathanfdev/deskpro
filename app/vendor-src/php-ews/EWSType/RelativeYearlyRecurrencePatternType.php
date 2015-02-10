@@ -7,6 +7,8 @@
  * Describes a relative yearly recurrence pattern.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSTYpe_RecurrencePatternBaseType.
  */
 class EWSType_RelativeYearlyRecurrencePatternType extends EWSType
 {

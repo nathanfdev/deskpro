@@ -57,11 +57,9 @@ $container->setDefinition('session.storage', $definition);
 // twig.helpers.deskpro_templating
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Twig\\Extension\\TemplatingExtension');
-$definition->setArguments(
-    array(
-        new Reference('service_container')
-    )
-);
+$definition->setArguments(array(
+    new Reference('service_container')
+));
 $definition->addTag('twig.extension', array());
 $container->setDefinition('twig.helpers.deskpro_templating', $definition);
 
@@ -224,6 +222,11 @@ $container->loadFromExtension('monolog', array(
     'handlers' => array(
         'main' => array(
             'type' => 'null'
+        ),
+        'email_log_collector' => array(
+            'type' => 'service',
+            'id' => 'email.log_collector',
+            'channels' => array('dp.email.out.mailer', 'dp.email.out.transport', 'dp.email.out.queue', 'dp.email.out.raw_transport')
         )
     )
 ));

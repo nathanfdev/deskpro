@@ -1403,7 +1403,7 @@ class FilestorageLoader extends LoaderAbstract
         header('Content-Length: ' . $filesize);
         header('Last-Modified: ' . date('D, d M Y H:i:s', time()-3600).' GMT');
         header('Expires: ' . date('D, d M Y H:i:s', time() - 3600) . ' GMT');
-        header('Cache-Control: max-age=31556926,private');
+        header('Cache-Control: ' . (@$GLOBALS['DP_CONFIG']['debug']['dev'] ? 'no-cache' : 'max-age=31556926,private'));
         header('X-Robots-Tag: noindex, nofollow');
 
         if ($content !== null) {

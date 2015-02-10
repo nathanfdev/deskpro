@@ -1635,7 +1635,6 @@ class PersonController extends AbstractController
             $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', array(
                 'person' => $person
             ));
-            $message->enableQueueHint();
             $this->container->getMailer()->send($message);
         }
 
