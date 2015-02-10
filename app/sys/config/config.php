@@ -273,7 +273,7 @@ $container->loadFromExtension('monolog', array(
     'handlers' => array(
         'main' => array(
             'type'         => 'fingers_crossed',
-            'action_level' => 'warning',
+            'action_level' => 'error',
             'handler'      => 'main_file',
         ),
         'main_file' => array(
