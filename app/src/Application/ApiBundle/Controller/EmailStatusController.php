@@ -456,7 +456,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             throw $this->createNotFoundException();
         }
 
-        /** @var \Application\EmailBundle\Mail\SourceMapper\DatabaseSourceMapper $source_mapper */
+        /** @var \Application\EmailBundle\SourceMapper\SourceMapperInterface $source_mapper */
         $source_mapper = $this->get('email.source_mapper');
 
         $r = $source_mapper->markSourceRetry($sendmail, sprintf("[%s] Manually marked for retry by %s", date('Y-m-d H:i:s'), $this->person->getDisplayContact()));
@@ -479,7 +479,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
         switch ($action) {
             case 'resend':
-                /** @var \Application\EmailBundle\Mail\SourceMapper\DatabaseSourceMapper $source_mapper */
+                /** @var \Application\EmailBundle\SourceMapper\SourceMapperInterface $source_mapper */
                 $source_mapper = $this->get('email.source_mapper');
 
                 $recs = $this->db->fetchAll("
@@ -494,7 +494,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
                 break;
 
             case 'abort':
-                /** @var \Application\EmailBundle\Mail\SourceMapper\DatabaseSourceMapper $source_mapper */
+                /** @var \Application\EmailBundle\SourceMapper\SourceMapperInterface $source_mapper */
                 $source_mapper = $this->get('email.source_mapper');
 
                 $recs = $this->db->fetchAll("
@@ -511,14 +511,14 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             case 'delete':
                 $bs = $this->container->getBlobStorage();
                 $recs = $this->db->fetchAll("
-                    SELECT sendmail_queue.id AS sendmail_queue_id, blobs.*
+                    SELECT sendmail_sources.id AS sendmail_sources_id, blobs.*
                     FROM sendmail_sources
                     LEFT JOIN blobs ON blobs.id = sendmail_sources.blob_id
                     WHERE sendmail_sources.id IN (" . implode(',', $ids) . ")
                 ");
 
                 foreach ($recs as $r) {
-                    $this->db->delete('sendmail_sources', array('id' => $r['sendmail_queue_id']));
+                    $this->db->delete('sendmail_sources', array('id' => $r['sendmail_sources_id']));
                     if ($r['id']) {
                         $bs->deleteBlobRow($r);
                     }
