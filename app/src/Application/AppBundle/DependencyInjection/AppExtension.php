@@ -48,5 +48,7 @@ class AppExtension extends Extension
         $loader->load('view_services.yml');
         $loader->load('data_services.yml');
         $loader->load('event_listeners.yml');
+
+        $container->setAlias('deskpro.blob_storage', 'blob.storage');
     }
 }
