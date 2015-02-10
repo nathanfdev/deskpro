@@ -6,7 +6,12 @@ cd ..
 
 IS_ERROR=0
 
-bin/phpspec run
+if [[ "$1" -eq "travis" ]] ; then
+    # simplify phpspec if its travis
+    bin/phpspec run --format=dot
+else
+    bin/phpspec run
+fi
 
 if [[ $? -ne 0 ]] ; then
 	echo "
