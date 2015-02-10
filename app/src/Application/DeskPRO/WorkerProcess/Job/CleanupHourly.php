@@ -36,6 +36,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
+use Symfony\Component\Finder\Finder;
 
 class CleanupHourly extends AbstractJob
 {
@@ -274,6 +275,61 @@ class CleanupHourly extends AbstractJob
                     try {
                         $bs->deleteBlobRecord($b->blob);
                     } catch (\Exception $e) {}
+                }
+            }
+        }
+
+        #------------------------------
+        # Clean up old HTTP Cache files
+        #------------------------------
+
+        // don't run on cloud
+        if (!defined('DPC_IS_CLOUD')) {
+
+            // find the cache dir
+            if (defined('DP_CACHE_DIR')) {
+                $cache_dir = DP_CACHE_DIR;
+            } else {
+                $cache_dir = DP_ROOT . '/sys/cache';
+            }
+
+
+            // gather the http_cache dirs from dev and prod
+            $environment_dirs = array();
+            $environments = array('dev', 'prod');
+            foreach ($environments as $env) {
+                $dir = $cache_dir . '/portal/' . $env . '/http_cache';
+                if (is_dir($dir)) {
+                    $environment_dirs[] = $dir;
+                }
+            }
+
+            // delete all files that were last modified more than 7 days ago
+            $file_finder = new Finder();
+            $file_finder->files()->in($environment_dirs)->date('before 7 days ago');
+            foreach ($file_finder as $deletable_file) {
+                unlink($deletable_file);
+            }
+
+
+            // delete all empty directories
+            // do this 3 times because the depth of empty directories can be up to 3, and many won't be empty on first pass
+            for ($i = 0; $i < 3; $i++) {
+                $dir_finder = new Finder();
+                $dir_finder->directories()->in($environment_dirs);
+
+                /** @var \Symfony\Component\Finder\SplFileInfo $dir_name */
+                $maybe_delete_dirs = array();
+                foreach ($dir_finder as $dir_name) {
+                    // cannot delete here, as it might mess up the $finder iterator
+                    $maybe_delete_dirs[] = $dir_name->getRealPath();
+                }
+
+                foreach ($maybe_delete_dirs as $dir) {
+                    $iterator = new \FilesystemIterator($dir);
+                    if (!$iterator->valid()) {
+                        rmdir($dir);
+                    }
                 }
             }
         }
