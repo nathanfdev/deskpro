@@ -176,6 +176,7 @@ final class Downloads extends AbstractParser
             'labels',
         );
 
-        return $this->hasRequiredColumns($download, $columns) && is_array($download['labels']);
+        return $this->hasRequiredColumns($download, $columns)
+            && $this->isArrayColumn($download, 'labels');
     }
 }

@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 use Application\ImportBundle\Entity;
@@ -76,9 +77,9 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     {
         $collection = new Entity\Collection();
         foreach ($custom_fields as $num => $custom_field) {
-            if ($this->hasRequiredCustomFieldColumns($custom_field) === false) {
-                $this->logWarning(sprintf('Invalid custom field record found (Skipping): %d', $num));
-            } else {
+            try {
+                $this->validateCustomField($custom_field);
+
                 $entity = new Entity\CustomField();
                 $entity
                     ->setOid($custom_field['oid'])
@@ -86,6 +87,12 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
                     ->setValue($custom_field['value']);
 
                 $collection->attach($entity);
+
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid custom field record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
@@ -100,7 +107,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function hasRequiredAttachmentColumns(array $attachment)
     {
-        return $this->hasRequiredColumns($attachment, array(
+        $columns = array(
             'oid',
             'person',
             'blob_data',
@@ -109,21 +116,25 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             'file_name',
             'content_type',
             'is_inline',
-        ));
+        );
+
+        return $this->hasRequiredColumns($attachment, $columns);
     }
 
     /**
-     * Check if person has all required columns
+     * Check if custom field has all required columns
      *
      * @param array $custom_field
      * @return bool
      */
-    protected function hasRequiredCustomFieldColumns(array $custom_field)
+    protected function validateCustomField(array $custom_field)
     {
-        return $this->hasRequiredColumns($custom_field, array(
+        $columns = array(
             'oid',
             'key',
             'value',
-        ));
+        );
+
+        return $this->hasRequiredColumns($custom_field, $columns);
     }
 }

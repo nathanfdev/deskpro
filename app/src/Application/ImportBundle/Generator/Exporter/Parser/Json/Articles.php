@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 use DateTime;
@@ -66,9 +68,9 @@ final class Articles extends AbstractParser
         foreach ($articles as $num => $article) {
             $this->advanceProgressBar();
 
-            if ($this->hasRequiredArticleColumns($article) === false) {
-                $this->logWarning(sprintf('Invalid kb record found (Skipping): %d', $num));
-            } else {
+            try {
+                $this->validateArticle($article);
+
                 $entity = new Entity\Article();
                 $entity
                     ->setDestination('news_' . $article['oid'])
@@ -100,6 +102,18 @@ final class Articles extends AbstractParser
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid article record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+
+            } catch (NotArrayException $e) {
+                $this->logError(sprintf(
+                    'Invalid article record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
@@ -121,8 +135,9 @@ final class Articles extends AbstractParser
      *
      * @param array $article
      * @return bool
+     * @throws NotArrayException
      */
-    private function hasRequiredArticleColumns(array $article)
+    private function validateArticle(array $article)
     {
         $columns = array(
             'oid',
@@ -144,7 +159,7 @@ final class Articles extends AbstractParser
         );
 
         return $this->hasRequiredColumns($article, $columns)
-            && is_array($article['categories'])
-            && is_array($article['labels']);
+            && $this->isArrayColumn($article, 'categories')
+            && $this->isArrayColumn($article, 'labels');
     }
 }

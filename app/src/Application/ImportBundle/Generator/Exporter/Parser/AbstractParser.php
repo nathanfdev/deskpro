@@ -64,6 +64,39 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
     }
 
     /**
+     * Check if a record column is array
+     *
+     * @param array  $record
+     * @param string $column
+     * @param bool   $throw_exception
+     *
+     * @return bool
+     *
+     * @throws NoColumnException
+     * @throws NotArrayException
+     */
+    protected function isArrayColumn(array $record, $column, $throw_exception = true)
+    {
+        if (array_key_exists($column, $record) === false) {
+            if ($throw_exception) {
+                throw new NoColumnException(sprintf('Column `%s` not found', $column));
+            }
+
+            return false;
+        }
+
+        if (is_array($record[$column]) === false) {
+            if ($throw_exception) {
+                throw new NotArrayException(sprintf('Column `%s` is not array', $column));
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Returns date time object from string or current date time if the format is empty
      *
      * @param string $format
