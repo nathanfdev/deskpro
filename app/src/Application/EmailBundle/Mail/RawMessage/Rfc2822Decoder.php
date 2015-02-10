@@ -65,8 +65,12 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
      */
     public function createRawMessage($raw_fp)
     {
+        if (!$raw = stream_get_contents($raw_fp, -1, 0)) {
+            // TODO: Zend Mail Part tries to get headers from null-string
+            throw new \Exception('Empty mail stream');
+        }
         $message = new Part(array(
-            'raw' => stream_get_contents($raw_fp),
+            'raw' => $raw,
         ));
 
         $data = array(

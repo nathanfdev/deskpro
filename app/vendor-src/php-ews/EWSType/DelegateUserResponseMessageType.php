@@ -11,49 +11,49 @@
 class EWSType_DelegateUserResponseMessageType extends EWSType
 {
     /**
-     * Provides a text description of the status of the response.
+     * Identifies a single delegate that is returned in a delegate management
+     * response.
      *
-     * @since Exchnage 2007 SP1
+     * @since Exchange 2007 SP1
      *
-     * @var string
+     * @var EWSType_DelegateUserType
      */
-    public $MessageText;
-
-    /**
-     * Provides an error code that identifies the specific error that the
-     * request encountered.
-     *
-     * @since Exchnage 2007 SP1
-     *
-     * @var EWSType_ResponseCodeType
-     */
-    public $ResponseCode;
+    public $DelegateUser;
 
     /**
      * Currently unused and is reserved for future use; contains a value of 0.
      *
-     * @since Exchnage 2007 SP1
+     * @since Exchange 2007 SP1
      *
      * @var integer
      */
     public $DescriptiveLinkKey;
 
     /**
+     * Provides a text description of the status of the response.
+     *
+     * @since Exchange 2007 SP1
+     *
+     * @var string
+     */
+    public $MessageText;
+
+    /**
      * Provides additional error response information.
      *
-     * @since Exchnage 2007 SP1
+     * @since Exchange 2007 SP1
      *
      * @var string
      */
     public $MessageXml;
 
     /**
-     * Identifies a single delegate that is returned in a delegate management
-     * response.
+     * Provides an error code that identifies the specific error that the
+     * request encountered.
      *
-     * @since Exchnage 2007 SP1
+     * @since Exchange 2007 SP1
      *
-     * @var EWSType_DelegateUserType
+     * @var EWSType_ResponseCodeType
      */
-    public $DelegateUser;
+    public $ResponseCode;
 }

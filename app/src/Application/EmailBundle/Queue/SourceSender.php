@@ -124,6 +124,7 @@ class SourceSender
                 $this->logger->error(sprintf("Failed writing source blob"));
                 throw new \RuntimeException(sprintf("Failed writing source blob"));
             }
+            rewind($fp);
         } catch (\InvalidArgumentException $e) {
             $this->logger->error(sprintf("Email source blob does not exist"));
         }

@@ -8,6 +8,8 @@
  * converted identifier in the response.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_AlternateIdBaseType
  */
 class EWSType_AlternateIdType extends EWSType
 {
