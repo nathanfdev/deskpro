@@ -162,13 +162,6 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         ));
     }
 
-    public function ieCompatModeAction()
-    {
-        return $this->render('AgentBundle:Login:instruct-ie-compat-mode.html.twig', array(
-
-        ));
-    }
-
     public function authAdminLoginAction($code)
     {
         $tmp = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code);
