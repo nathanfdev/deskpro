@@ -1,6 +1,6 @@
 define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
-  '$scope', '$q', '$modalInstance', 'report_id', 'widget', 'DashboardsInfo', 'DashboardService', 'DashboardWidgetService',
-  ($scope, $q, $modalInstance, report_id, widget, DashboardsInfo, DashboardService, DashboardWidgetService) ->
+  '$scope', '$q', '$modalInstance', 'report_id', 'widget', 'DashboardsInfo', 'DashboardService', 'DashboardWidgetService', '$anchorScroll', '$location',
+  ($scope, $q, $modalInstance, report_id, widget, DashboardsInfo, DashboardService, DashboardWidgetService, $anchorScroll, $location) ->
     $scope.loaded = false
 
     ####################################################################################################################
@@ -44,6 +44,8 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
 
     $scope.makeChoice = (widgetType) ->
       $scope.widget.type = widgetType
+      $location.hash(widgetType)
+      $anchorScroll()
 
     $scope.changeState = (state) ->
       $scope.state = switch state

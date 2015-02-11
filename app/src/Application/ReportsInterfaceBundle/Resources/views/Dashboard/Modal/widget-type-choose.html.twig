@@ -37,49 +37,49 @@
     <!-- Popup Content -->
     <div class="popup-content">
         <div class="popup-stat-list" ng-show="state == 'graphs'">
-            <a ng-click="makeChoice('pie')" class="link-pointer stat-preview-bucket"
+            <a name='pie' ng-click="makeChoice('pie')" class="link-pointer stat-preview-bucket"
                ng-class="{'selected' : widget.type == 'pie'}">
                 <span class="title">Pie Chart</span>
 
                 <div class="stat-preview stat-preview-pie"></div>
             </a>
 
-            <a ng-click="makeChoice('bars')" class="link-pointer stat-preview-bucket"
+            <a name="bars" ng-click="makeChoice('bars')" class="link-pointer stat-preview-bucket"
                ng-class="{'selected' : widget.type == 'bars'}">
                 <span class="title">Bars</span>
 
                 <div class="stat-preview stat-preview-bars"></div>
             </a>
 
-            <a ng-click="makeChoice('simple_bars')" class="link-pointer stat-preview-bucket"
+            <a name='simple_bars' ng-click="makeChoice('simple_bars')" class="link-pointer stat-preview-bucket"
                ng-class="{'selected' : widget.type == 'simple_bars'}">
                 <span class="title">Simple Bars</span>
 
                 <div class="stat-preview stat-preview-simple-bars"></div>
             </a>
 
-            <a ng-click="makeChoice('lines')" class="link-pointer stat-preview-bucket"
+            <a name='lines' ng-click="makeChoice('lines')" class="link-pointer stat-preview-bucket"
                ng-class="{'selected' : widget.type == 'lines'}">
                 <span class="title">Lines</span>
 
                 <div class="stat-preview stat-preview-line"></div>
             </a>
 
-            <a ng-click="makeChoice('simple_lines')" class="link-pointer stat-preview-bucket"
+            <a name='simple_lines' ng-click="makeChoice('simple_lines')" class="link-pointer stat-preview-bucket"
                ng-class="{'selected' : widget.type == 'simple_lines'}">
                 <span class="title">Simple Lines</span>
 
                 <div class="stat-preview stat-preview-simple-line"></div>
             </a>
 
-            <a ng-click="makeChoice('area')" class="link-pointer stat-preview-bucket"
+            <a name='area' ng-click="makeChoice('area')" class="link-pointer stat-preview-bucket"
                ng-class="{'selected' : widget.type == 'area'}">
                 <span class="title">Area</span>
 
                 <div class="stat-preview stat-preview-area"></div>
             </a>
 
-            <a ng-click="makeChoice('simple_area')" class="link-pointer stat-preview-bucket"
+            <a name='simple_area' ng-click="makeChoice('simple_area')" class="link-pointer stat-preview-bucket"
                ng-class="{'selected' : widget.type == 'simple_area'}">
                 <span class="title">Simple Area</span>
 
@@ -87,19 +87,19 @@
             </a>
         </div>
         <div class="popup-stat-list" ng-show="state == 'stats'">
-            <a ng-click="makeChoice('simple_stat')" class="link-pointer stat-preview-bucket bucket-half"
+            <a name='simple_stat' ng-click="makeChoice('simple_stat')" class="link-pointer stat-preview-bucket bucket-half"
                ng-class="{'selected' : widget.type == 'simple_stat'}">
                 <span class="title">Simple Stat</span>
 
                 <div class="stat-preview stat-preview-simple-stat"></div>
             </a>
-            <a ng-click="makeChoice('group_stats_table')" class="link-pointer stat-preview-bucket bucket-half"
+            <a name='group_stats_table' ng-click="makeChoice('group_stats_table')" class="link-pointer stat-preview-bucket bucket-half"
                ng-class="{'selected' : widget.type == 'group_stats_table'}">
                 <span class="title">Group Stats</span>
 
                 <div class="stat-preview stat-preview-multi-group"></div>
             </a>
-            <a ng-click="makeChoice('group_stats_list')" class="link-pointer stat-preview-bucket bucket-half"
+            <a name='group_stats_list'  ng-click="makeChoice('group_stats_list')" class="link-pointer stat-preview-bucket bucket-half"
                ng-class="{'selected' : widget.type == 'group_stats_list'}">
                 <span class="title">Group Stats</span>
 
