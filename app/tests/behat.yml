@@ -1,0 +1,7 @@
+default:
+  suites:
+    default:
+        contexts:
+            - TestsContext
+#  extensions:
+#    Behat\Symfony2Extension: ~
