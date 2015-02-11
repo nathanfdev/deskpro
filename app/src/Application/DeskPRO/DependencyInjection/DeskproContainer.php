@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\DependencyInjection;
 
+use Application\DeskPRO\App\AgentAppPermissions;
 use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -62,6 +63,11 @@ class DeskproContainer extends Container
      * @var array
      */
     protected $db_read_conns = array();
+
+    /**
+     * @var AgentAppPermissions
+     */
+    protected $agent_app_perms;
 
     /**
      * @return \DeskPRO\Kernel\AbstractKernel
@@ -926,6 +932,23 @@ class DeskproContainer extends Container
     public function getAppManager()
     {
         return $this->getSystemService('app_manager');
+    }
+
+    /**
+     * @return AgentAppPermissions
+     */
+    public function getAppPerms()
+    {
+        if (!$this->agent_app_perms) {
+            $this->agent_app_perms = AgentAppPermissions::newFromDb($this->getDb(), $this->getAppManager()->getAllApps());
+        }
+
+        return $this->agent_app_perms;
+    }
+
+    public function getAppManagerFiltered()
+    {
+
     }
 
 
