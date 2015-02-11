@@ -69,30 +69,20 @@ final class Downloads extends AbstractParser
             $this->advanceProgressBar();
 
             try {
-                $this->validateDownload($download);
-
-                $entity = new Entity\Download();
-                $entity
-                    ->setDestination(self::DOWNLOAD_PREFIX . $download['id'])
-                    ->setOid($download['id'])
-                    ->setPersonEmail($download['person'])
-                    ->setTitle($download['title'])
-                    ->setContent($download['content'])
-                    ->setSlug($download['slug'])
-                    ->setLanguage($download['language'])
-                    ->setCategory($download['category'])
-                    ->setStatus($download['status'])
-                    ->setDateCreated($this->getFromStringOrCurrentDateTime($download['date_created']));
-
-                foreach ($attachments as $attachment) {
-                    /** @var Entity\Attachment $attachment */
-                    if ($attachment->getDestination() === $entity->getDestination()) {
-                        $entity->setAttachment($attachment);
+                $entity = $this->exportDownload($download);
+                if ($entity) {
+                    foreach ($attachments as $attachment) {
+                        /** @var Entity\Attachment $attachment */
+                        if ($attachment->getDestination() === $entity->getDestination()) {
+                            $entity->setAttachment($attachment);
+                        }
                     }
-                }
 
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logError(sprintf('Invalid download record `%d` found (Skipping)', $num));
+                }
 
             } catch (NoColumnException $e) {
                 $this->logError(sprintf(
@@ -103,6 +93,34 @@ final class Downloads extends AbstractParser
         }
 
         return $collection;
+    }
+
+    /**
+     * Returns a download entity
+     *
+     * @param array $download
+     * @return Entity\Download|null
+     */
+    private function exportDownload(array $download)
+    {
+        if ($this->isValidDownload($download)) {
+            $entity = new Entity\Download();
+            $entity
+                ->setDestination(self::DOWNLOAD_PREFIX . $download['id'])
+                ->setOid($download['id'])
+                ->setPersonEmail($download['person'])
+                ->setTitle($download['title'])
+                ->setContent($download['content'])
+                ->setSlug($download['slug'])
+                ->setLanguage($download['language'])
+                ->setCategory($download['category'])
+                ->setStatus($download['status'])
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($download['date_created']));
+
+            return $entity;
+        }
+
+        return null;
     }
 
     /**
@@ -121,7 +139,7 @@ final class Downloads extends AbstractParser
      * @param array $download
      * @return bool
      */
-    private function validateDownload(array $download)
+    private function isValidDownload(array $download)
     {
         $columns = array(
             'id',

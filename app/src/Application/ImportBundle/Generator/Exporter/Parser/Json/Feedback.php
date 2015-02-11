@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 use Orb\Util\Strings;
@@ -67,40 +69,70 @@ final class Feedback extends AbstractParser
         foreach ($feedback_items as $num => $feedback) {
             $this->advanceProgressBar();
 
-            if ($this->hasRequiredFeedbackColumns($feedback) === false) {
-                $this->logWarning(sprintf('Invalid feedback record found (Skipping): %d', $num));
-            } else {
-                $entity = new Entity\Feedback();
-                $entity
-                    ->setDestination('feedback_' . $feedback['oid'])
-                    ->setOid($feedback['oid'])
-                    ->setPersonEmail($feedback['person'])
-                    ->setLanguage($feedback['language'])
-                    ->setTitle($feedback['title'])
-                    ->setContent($feedback['content'])
-                    ->setSlug($feedback['slug'])
-                    ->setPopularity($feedback['popularity'])
-                    ->setStatus($feedback['status'])
-                    ->setTotalRating($feedback['total_rating'])
-                    ->setNumComments($feedback['num_comments'])
-                    ->setNumRatings($feedback['num_ratings'])
-                    ->setViewCount($feedback['view_count'])
-                    ->setCategory($feedback['category'])
-                    ->setDateCreated(new DateTime($feedback['date_created']));
-
-                if ($feedback['date_published']) {
-                    $entity->setDatePublished(new DateTime($feedback['date_published']));
-                }
-                foreach ($feedback['labels'] as $label) {
-                    $entity->addLabel($label);
+            try {
+                $entity = $this->exportFeedback($feedback);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logWarning(sprintf('Invalid feedback record found (Skipping): %d', $num));
                 }
 
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid feedback record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+
+            } catch (NotArrayException $e) {
+                $this->logError(sprintf(
+                    'Invalid feedback record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
         return $collection;
+    }
+
+    /**
+     * Returns a feedback entity
+     *
+     * @param array $feedback
+     * @return Entity\Feedback
+     */
+    private function exportFeedback(array $feedback)
+    {
+        if ($this->isValidFeedback($feedback)) {
+            $entity = new Entity\Feedback();
+            $entity
+                ->setDestination('feedback_' . $feedback['oid'])
+                ->setOid($feedback['oid'])
+                ->setPersonEmail($feedback['person'])
+                ->setLanguage($feedback['language'])
+                ->setTitle($feedback['title'])
+                ->setContent($feedback['content'])
+                ->setSlug($feedback['slug'])
+                ->setPopularity($feedback['popularity'])
+                ->setStatus($feedback['status'])
+                ->setTotalRating($feedback['total_rating'])
+                ->setNumComments($feedback['num_comments'])
+                ->setNumRatings($feedback['num_ratings'])
+                ->setViewCount($feedback['view_count'])
+                ->setCategory($feedback['category'])
+                ->setDateCreated(new DateTime($feedback['date_created']));
+
+            if ($feedback['date_published']) {
+                $entity->setDatePublished(new DateTime($feedback['date_published']));
+            }
+            foreach ($feedback['labels'] as $label) {
+                $entity->addLabel($label);
+            }
+
+            return $entity;
+        }
+
+        return null;
     }
 
     /**
@@ -119,7 +151,7 @@ final class Feedback extends AbstractParser
      * @param array $feedback
      * @return bool
      */
-    private function hasRequiredFeedbackColumns(array $feedback)
+    private function isValidFeedback(array $feedback)
     {
         $columns = array(
             'oid',
@@ -139,6 +171,7 @@ final class Feedback extends AbstractParser
             'date_published',
         );
 
-        return $this->hasRequiredColumns($feedback, $columns) && is_array($feedback['labels']);
+        return $this->hasRequiredColumns($feedback, $columns)
+            && $this->isArrayColumn($feedback, 'labels');
     }
 }

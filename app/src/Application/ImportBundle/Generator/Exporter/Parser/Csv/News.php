@@ -66,26 +66,13 @@ final class News extends AbstractParser
             $this->advanceProgressBar();
 
             try {
-                $this->validateNews($news);
-
-                $entity = new Entity\News();
-                $entity
-                    ->setDestination('news_' . $num)
-                    ->setOid($num)
-                    ->setPersonEmail($news['person'])
-                    ->setLanguage($news['language'])
-                    ->setSlug($news['slug'])
-                    ->setTitle($news['title'])
-                    ->setContent($news['content'])
-                    ->setSlug($news['slug'])
-                    ->setStatus($news['status'])
-                    ->setDateCreated($this->getFromStringOrCurrentDateTime($news['date_created']))
-                    ->setDatePublished($this->getFromStringOrCurrentDateTime($news['date_published']))
-                    ->setCategory($news['category'])
-                    ->addLabel($news['label']);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                $entity = $this->exportNews($num, $news);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logError(sprintf('Invalid news record `%d` found (Skipping)', $num));
+                }
 
             } catch (NoColumnException $e) {
                 $this->logError(sprintf(
@@ -99,12 +86,45 @@ final class News extends AbstractParser
     }
 
     /**
+     * Returns a news entity
+     *
+     * @param int   $num
+     * @param array $news
+     *
+     * @return Entity\News|null
+     */
+    private function exportNews($num, array $news)
+    {
+        if ($this->isValidNews($news)) {
+            $entity = new Entity\News();
+            $entity
+                ->setDestination('news_' . $num)
+                ->setOid($num)
+                ->setPersonEmail($news['person'])
+                ->setLanguage($news['language'])
+                ->setSlug($news['slug'])
+                ->setTitle($news['title'])
+                ->setContent($news['content'])
+                ->setSlug($news['slug'])
+                ->setStatus($news['status'])
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($news['date_created']))
+                ->setDatePublished($this->getFromStringOrCurrentDateTime($news['date_published']))
+                ->setCategory($news['category'])
+                ->addLabel($news['label']);
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
      * Check if news has all required columns
      *
      * @param array $news
      * @return bool
      */
-    private function validateNews(array $news)
+    private function isValidNews(array $news)
     {
         $columns = array(
             'oid',

@@ -67,28 +67,13 @@ final class People extends AbstractParser
             $this->advanceProgressBar();
 
             try {
-                $this->validatePerson($person);
-
-                // todo move logic to entity
-                if (empty($person['name'])) {
-                    $e = explode('@', $person['email'], 2);
-                    $person['name'] = $e[0];
+                $entity = $this->exportPerson($num, $person);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logError(sprintf('Invalid person record `%d` found (Skipping)', $num));
                 }
-
-                $names  = explode(' ', $person['name']);
-                $entity = new Entity\Person();
-                $entity
-                    ->setDestination('person_' . $num)
-                    ->setOid($num)
-                    ->setAsAgent($this->isAgent($person))
-                    ->setName($person['name'])
-                    ->setFirstName($names[0])
-                    ->setLastName(isset($names[1]) ? $names[1] : '')
-                    ->setDateCreated(new DateTime())
-                    ->addEmail($person['email']);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (NoColumnException $e) {
                 $this->logError(sprintf(
@@ -102,14 +87,41 @@ final class People extends AbstractParser
     }
 
     /**
+     * Returns a person entity
+     *
+     * @param int   $num
+     * @param array $person
+     *
+     * @return Entity\Person|null
+     */
+    private function exportPerson($num, array $person)
+    {
+        if ($this->isValidPerson($person)) {
+            $entity = new Entity\Person();
+            $entity
+                ->setDestination('person_' . $num)
+                ->setOid($num)
+                ->setAsAgent($this->isAgent($person))
+                ->setName($person['name'])
+                ->setDateCreated(new DateTime())
+                ->addEmail($person['email']);
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
      * Check if person has all required columns
      *
      * @param array $person
      * @return bool
      */
-    private function validatePerson(array $person)
+    private function isValidPerson(array $person)
     {
-        return $this->hasRequiredColumns($person, array('name', 'email'));
+        $columns = array('name', 'email');
+        return $this->hasRequiredColumns($person, $columns);
     }
 
     /**

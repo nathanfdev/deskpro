@@ -129,20 +129,12 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
 
         foreach ($attachments as $num => $attachment) {
             try {
-                $this->validateAttachment($attachment, $ref_column);
-
-                $entity = new Entity\Attachment();
-                $entity
-                    ->setDestination($destination_prefix . $attachment[$ref_column])
-                    ->setOid($attachment[$ref_column])
-                    ->setPersonEmail($attachment['user'])
-                    ->setBlobUrl($attachment['blob_url'])
-                    ->setBlobPath($attachment['blob_path'])
-                    ->setFileName($attachment['file_name'])
-                    ->setContentType($attachment['content_type'])
-                    ->setAsInline($this->isBooleanTrue($attachment['is_inline']));
-
-                $collection->attach($entity);
+                $entity = $this->exportAttachment($attachment, $destination_prefix, $ref_column);
+                if ($entity) {
+                    $collection->attach($entity);
+                } else {
+                    $this->logError(sprintf('Invalid attachment record `%d` found (Skipping)', $num));
+                }
 
             } catch (NoColumnException $e) {
                 $this->logError(sprintf(
@@ -156,6 +148,35 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
+     * Returns an attachment entity
+     *
+     * @param string $destination_prefix
+     * @param array  $attachment
+     * @param string $ref_column
+     *
+     * @return Entity\Attachment|null
+     */
+    protected function exportAttachment($destination_prefix, array $attachment, $ref_column)
+    {
+        if ($this->isValidAttachment($attachment, $ref_column)) {
+            $entity = new Entity\Attachment();
+            $entity
+                ->setDestination($destination_prefix . $attachment[$ref_column])
+                ->setOid($attachment[$ref_column])
+                ->setPersonEmail($attachment['user'])
+                ->setBlobUrl($attachment['blob_url'])
+                ->setBlobPath($attachment['blob_path'])
+                ->setFileName($attachment['file_name'])
+                ->setContentType($attachment['content_type'])
+                ->setAsInline($this->isBooleanTrue($attachment['is_inline']));
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
      * Check if an attachment has all required columns
      *
      * @param array  $attachment
@@ -163,7 +184,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      *
      * @return bool
      */
-    protected function validateAttachment(array $attachment, $ref_column)
+    protected function isValidAttachment(array $attachment, $ref_column)
     {
         $columns = array(
             $ref_column,

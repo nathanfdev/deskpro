@@ -27,9 +27,10 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
-use Orb\Util\Strings;
 use DateTime;
 
 /**
@@ -67,48 +68,81 @@ final class Downloads extends AbstractParser
         foreach ($downloads as $num => $download) {
             $this->advanceProgressBar();
 
-            if ($this->hasRequiredDownloadColumns($download) === false) {
-                $this->logWarning(sprintf('Invalid download record found (Skipping): %d', $num));
-            } else {
-                $entity = new Entity\Download();
-                $entity
-                    ->setDestination('download_' . $download['oid'])
-                    ->setOid($download['oid'])
-                    ->setPersonEmail($download['person'])
-                    ->setTitle($download['title'])
-                    ->setContent($download['content'])
-                    ->setSlug($download['slug'])
-                    ->setLanguage($download['language'])
-                    ->setTotalRating($download['total_rating'])
-                    ->setNumComments($download['num_comments'])
-                    ->setNumRatings($download['num_ratings'])
-                    ->setNumDownloads($download['num_downloads'])
-                    ->setViewCount($download['view_count'])
-                    ->setCategory($download['category'])
-                    ->setStatus($download['status'])
-                    ->setDateCreated(new DateTime($download['date_created']));
-
-                if ($download['date_published']) {
-                    $entity->setDatePublished(new DateTime($download['date_published']));
-                }
-                if ($download['attachment']) {
-                    if (is_array($download['attachment'])) {
-                        $entity->setAttachment($this->exportAttachment($download['attachment']));
-                    } else {
-                        $this->logWarning(sprintf('Invalid download attachment record found (Skipping): %d', $num));
-                    }
+            try {
+                $entity = $this->exportDownload($download);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logWarning(sprintf('Invalid download record found (Skipping): %d', $num));
                 }
 
-                foreach ($download['labels'] as $label) {
-                    $entity->addLabel($label);
-                }
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid download record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
 
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+            } catch (NotArrayException $e) {
+                $this->logError(sprintf(
+                    'Invalid download record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
         return $collection;
+    }
+
+    /**
+     * Returns a download entity
+     *
+     * @param array $download
+     * @return Entity\Download|null
+     */
+    private function exportDownload(array $download)
+    {
+        if ($this->isValidDownload($download)) {
+            $entity = new Entity\Download();
+            $entity
+                ->setDestination('download_' . $download['oid'])
+                ->setOid($download['oid'])
+                ->setPersonEmail($download['person'])
+                ->setTitle($download['title'])
+                ->setContent($download['content'])
+                ->setSlug($download['slug'])
+                ->setLanguage($download['language'])
+                ->setTotalRating($download['total_rating'])
+                ->setNumComments($download['num_comments'])
+                ->setNumRatings($download['num_ratings'])
+                ->setNumDownloads($download['num_downloads'])
+                ->setViewCount($download['view_count'])
+                ->setCategory($download['category'])
+                ->setStatus($download['status'])
+                ->setDateCreated(new DateTime($download['date_created']));
+
+            if ($download['date_published']) {
+                $entity->setDatePublished(new DateTime($download['date_published']));
+            }
+
+            if ($download['attachment']) {
+                if (is_array($download['attachment'])) {
+                    $entity->setAttachment($this->exportAttachment($download['attachment']));
+                } else {
+                    $this->logError(sprintf('Invalid download attachment record found: %d', $download['oid']));
+                }
+            } else {
+                $this->logWarning(sprintf('No download attachment record found: %d', $download['oid']));
+            }
+
+            foreach ($download['labels'] as $label) {
+                $entity->addLabel($label);
+            }
+
+            return $entity;
+        }
+
+        return null;
     }
 
     /**
@@ -119,21 +153,30 @@ final class Downloads extends AbstractParser
      */
     private function exportAttachment(array $attachment)
     {
-        if ($this->hasRequiredAttachmentColumns($attachment) === false) {
-            $this->logWarning('Invalid download attachment record found (Skipping)');
-        } else {
-            $entity = new Entity\Attachment();
-            $entity
-                ->setOid($attachment['oid'])
-                ->setPersonEmail($attachment['person'])
-                ->setBlobData($attachment['blob_data'])
-                ->setBlobUrl($attachment['blob_url'])
-                ->setBlobPath($attachment['blob_path'])
-                ->setFileName($attachment['file_name'])
-                ->setContentType($attachment['content_type'])
-                ->setAsInline($attachment['is_inline']);
+        try {
+            if ($this->isValidAttachment($attachment)) {
+                $entity = new Entity\Attachment();
+                $entity
+                    ->setOid($attachment['oid'])
+                    ->setPersonEmail($attachment['person'])
+                    ->setBlobData($attachment['blob_data'])
+                    ->setBlobUrl($attachment['blob_url'])
+                    ->setBlobPath($attachment['blob_path'])
+                    ->setFileName($attachment['file_name'])
+                    ->setContentType($attachment['content_type'])
+                    ->setAsInline($attachment['is_inline']);
 
-            return $entity;
+                return $entity;
+
+            } else {
+                $this->logError('Invalid download attachment record found');
+            }
+
+        } catch (NoColumnException $e) {
+            $this->logError(sprintf(
+                'Invalid download attachment record found (Skipping): %s',
+                $e->getMessage()
+            ));
         }
 
         return null;
@@ -155,7 +198,7 @@ final class Downloads extends AbstractParser
      * @param array $download
      * @return bool
      */
-    private function hasRequiredDownloadColumns(array $download)
+    private function isValidDownload(array $download)
     {
         $columns = array(
             'oid',

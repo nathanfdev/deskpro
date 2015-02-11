@@ -218,7 +218,18 @@ final class Person extends AbstractEntity
      */
     public function getFirstName()
     {
-        return $this->first_name;
+        if ($this->first_name) {
+            return $this->first_name;
+        }
+        if ($this->getName()) {
+            $names = @explode(' ', $this->getName());
+
+            if (isset($names[0])) {
+                return $names[0];
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -236,7 +247,18 @@ final class Person extends AbstractEntity
      */
     public function getLastName()
     {
-        return $this->last_name;
+        if ($this->last_name) {
+            return $this->last_name;
+        }
+        if ($this->getName()) {
+            $names = @explode(' ', $this->getName());
+
+            if (isset($names[1])) {
+                return $names[1];
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -254,7 +276,17 @@ final class Person extends AbstractEntity
      */
     public function getName()
     {
-        return $this->name;
+        if ($this->name) {
+            return $this->name;
+        }
+        if ($this->getFirstEmail()) {
+            $email = @explode('@', $this->getFirstEmail(), 2);
+            if (isset($email[0])) {
+                return $email[0];
+            }
+        }
+
+        return null;
     }
 
     /**

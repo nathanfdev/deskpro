@@ -167,7 +167,7 @@ final class Tickets extends AbstractParser
     {
         $collection = new Entity\Collection();
         foreach ($attachments as $num => $attachment) {
-            if ($this->hasRequiredAttachmentColumns($attachment) === false) {
+            if ($this->isValidAttachment($attachment) === false) {
                 $this->logWarning(sprintf('Invalid ticket message attachment record found (Skipping): %d', $num));
             } else {
                 $entity = new Entity\Attachment();

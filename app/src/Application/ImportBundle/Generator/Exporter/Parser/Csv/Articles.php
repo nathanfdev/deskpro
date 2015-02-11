@@ -66,24 +66,13 @@ final class Articles extends AbstractParser
             $this->advanceProgressBar();
 
             try {
-                $this->validateArticle($article);
-
-                $entity = new Entity\Article();
-                $entity
-                    ->setDestination('article_' . $num)
-                    ->setOid($num)
-                    ->setPersonEmail($article['person'])
-                    ->setTitle($article['title'])
-                    ->setContent($article['content'])
-                    ->setSlug($article['slug'])
-                    ->setLanguage($article['language'])
-                    ->setDateCreated($this->getFromStringOrCurrentDateTime($article['date_created']))
-                    ->setStatus($article['status'])
-                    ->addCategory($article['category'])
-                    ->addLabel($article['label']);
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                $entity = $this->exportArticle($num, $article);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logError(sprintf('Invalid article record `%d` found (Skipping)', $num));
+                }
 
             } catch (NoColumnException $e) {
                 $this->logError(sprintf(
@@ -97,12 +86,43 @@ final class Articles extends AbstractParser
     }
 
     /**
+     * Returns an article entity
+     *
+     * @param int   $num
+     * @param array $article
+     *
+     * @return Entity\Article|null
+     */
+    private function exportArticle($num, array $article)
+    {
+        if ($this->isValidArticle($article)) {
+            $entity = new Entity\Article();
+            $entity
+                ->setDestination('article_' . $num)
+                ->setOid($num)
+                ->setPersonEmail($article['person'])
+                ->setTitle($article['title'])
+                ->setContent($article['content'])
+                ->setSlug($article['slug'])
+                ->setLanguage($article['language'])
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($article['date_created']))
+                ->setStatus($article['status'])
+                ->addCategory($article['category'])
+                ->addLabel($article['label']);
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
      * Check if article has all required columns
      *
      * @param array $article
      * @return bool
      */
-    private function validateArticle(array $article)
+    private function isValidArticle(array $article)
     {
         $columns = array(
             'person',

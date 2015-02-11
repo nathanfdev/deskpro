@@ -71,27 +71,20 @@ final class Tickets extends AbstractParser
             $this->advanceProgressBar();
 
             try {
-                $this->validateTicket($ticket);
-
-                $entity = new Entity\Ticket();
-                $entity
-                    ->setDestination(self::TICKET_PREFIX . $ticket['id'])
-                    ->setRef($ticket['id'])
-                    ->setSubject($ticket['subject'])
-                    ->setPersonEmail($ticket['user'])
-                    ->setAgentEmail($ticket['agent'])
-                    ->setStatus($ticket['status'] ? : DeskPROEntity\Ticket::STATUS_AWAITING_AGENT)
-                    ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['date_created']));
-
-                foreach ($messages as $message_entity) {
-                    /** @var Entity\TicketMessage $message_entity */
-                    if ($entity->getDestination() === $message_entity->getDestination()) {
-                        $entity->addMessage($message_entity);
+                $entity = $this->exportTicket($ticket);
+                if ($entity) {
+                    foreach ($messages as $message_entity) {
+                        /** @var Entity\TicketMessage $message_entity */
+                        if ($entity->getDestination() === $message_entity->getDestination()) {
+                            $entity->addMessage($message_entity);
+                        }
                     }
-                }
 
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logError(sprintf('Invalid ticket record `%d` found (Skipping)', $num));
+                }
 
             } catch (NoColumnException $e) {
                 $this->logError(sprintf(
@@ -102,6 +95,31 @@ final class Tickets extends AbstractParser
         }
 
         return $collection;
+    }
+
+    /**
+     * Returns a ticket entity
+     *
+     * @param array $ticket
+     * @return Entity\Ticket|null
+     */
+    private function exportTicket(array $ticket)
+    {
+        if ($this->isValidTicket($ticket)) {
+            $entity = new Entity\Ticket();
+            $entity
+                ->setDestination(self::TICKET_PREFIX . $ticket['id'])
+                ->setRef($ticket['id'])
+                ->setSubject($ticket['subject'])
+                ->setPersonEmail($ticket['user'])
+                ->setAgentEmail($ticket['agent'])
+                ->setStatus($ticket['status'] ?: DeskPROEntity\Ticket::STATUS_AWAITING_AGENT)
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['date_created']));
+
+            return $entity;
+        }
+
+        return null;
     }
 
     /**
@@ -117,24 +135,20 @@ final class Tickets extends AbstractParser
 
         foreach ($messages as $num => $message) {
             try {
-                $this->validateMessage($message);
-
-                $entity = new Entity\TicketMessage();
-                $entity
-                    ->setDestination(self::TICKET_PREFIX . $message['ticket_id'])
-                    ->setOid($message['message_id'])
-                    ->setPersonEmail($message['user'])
-                    ->setMessageText($message['message_text'])
-                    ->setDateCreated($this->getFromStringOrCurrentDateTime($message['date_created']));
-
-                foreach ($attachments as $attachment) {
-                    /** @var Entity\Attachment $attachment */
-                    if ($attachment->getDestination() === self::MESSAGE_PREFIX . $entity->getOid()) {
-                        $entity->addAttachment($attachment);
+                $entity = $this->exportMessage($message);
+                if ($entity) {
+                    foreach ($attachments as $attachment) {
+                        /** @var Entity\Attachment $attachment */
+                        if ($attachment->getDestination() === self::MESSAGE_PREFIX . $entity->getOid()) {
+                            $entity->addAttachment($attachment);
+                        }
                     }
-                }
 
-                $collection->attach($entity);
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logError(sprintf('Invalid ticket message record `%d` found (Skipping)', $num));
+                }
 
             } catch (NoColumnException $e) {
                 $this->logError(sprintf(
@@ -145,6 +159,29 @@ final class Tickets extends AbstractParser
         }
 
         return $collection;
+    }
+
+    /**
+     * Returns a ticket message
+     *
+     * @param array $message
+     * @return Entity\TicketMessage|null
+     */
+    private function exportMessage(array $message)
+    {
+        if ($this->isValidMessage($message)) {
+            $entity = new Entity\TicketMessage();
+            $entity
+                ->setDestination(self::TICKET_PREFIX . $message['ticket_id'])
+                ->setOid($message['message_id'])
+                ->setPersonEmail($message['user'])
+                ->setMessageText($message['message_text'])
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($message['date_created']));
+
+            return $entity;
+        }
+
+        return null;
     }
 
     /**
@@ -163,7 +200,7 @@ final class Tickets extends AbstractParser
      * @param array $ticket
      * @return bool
      */
-    private function validateTicket(array $ticket)
+    private function isValidTicket(array $ticket)
     {
         $columns = array(
             'id',
@@ -183,7 +220,7 @@ final class Tickets extends AbstractParser
      * @param array $message
      * @return bool
      */
-    private function validateMessage(array $message)
+    private function isValidMessage(array $message)
     {
         $columns = array(
             'ticket_id',

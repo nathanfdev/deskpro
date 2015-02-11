@@ -66,25 +66,13 @@ final class Feedback extends AbstractParser
             $this->advanceProgressBar();
 
             try {
-                $this->validateFeedback($feedback);
-
-                $entity = new Entity\Feedback();
-                $entity
-                    ->setDestination('feedback_' . $num)
-                    ->setOid($num)
-                    ->setPersonEmail($feedback['person'])
-                    ->setLanguage($feedback['language'])
-                    ->setTitle($feedback['title'])
-                    ->setContent($feedback['content'])
-                    ->setSlug($feedback['slug'])
-                    ->setPopularity($feedback['popularity'])
-                    ->setStatus($feedback['status'])
-                    ->setCategory($feedback['category'])
-                    ->setDateCreated($this->getFromStringOrCurrentDateTime($feedback['date_created']))
-                    ->setDatePublished($this->getFromStringOrCurrentDateTime($feedback['date_published']));
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                $entity = $this->exportFeedback($num, $feedback);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logError(sprintf('Invalid feedback record `%d` found (Skipping)', $num));
+                }
 
             } catch (NoColumnException $e) {
                 $this->logError(sprintf(
@@ -98,12 +86,42 @@ final class Feedback extends AbstractParser
     }
 
     /**
+     * @param int   $num
+     * @param array $feedback
+     *
+     * @return Entity\Feedback|null
+     */
+    private function exportFeedback($num, array $feedback)
+    {
+        if ($this->isValidFeedback($feedback)) {
+            $entity = new Entity\Feedback();
+            $entity
+                ->setDestination('feedback_' . $num)
+                ->setOid($num)
+                ->setPersonEmail($feedback['person'])
+                ->setLanguage($feedback['language'])
+                ->setTitle($feedback['title'])
+                ->setContent($feedback['content'])
+                ->setSlug($feedback['slug'])
+                ->setPopularity($feedback['popularity'])
+                ->setStatus($feedback['status'])
+                ->setCategory($feedback['category'])
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($feedback['date_created']))
+                ->setDatePublished($this->getFromStringOrCurrentDateTime($feedback['date_published']));
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
      * Check if feedback has all required columns
      *
      * @param array $feedback
      * @return bool
      */
-    private function validateFeedback(array $feedback)
+    private function isValidFeedback(array $feedback)
     {
         $columns = array(
             'person',

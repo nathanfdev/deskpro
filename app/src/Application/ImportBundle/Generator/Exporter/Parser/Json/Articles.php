@@ -69,39 +69,13 @@ final class Articles extends AbstractParser
             $this->advanceProgressBar();
 
             try {
-                $this->validateArticle($article);
-
-                $entity = new Entity\Article();
-                $entity
-                    ->setDestination('news_' . $article['oid'])
-                    ->setOid($article['oid'])
-                    ->setPersonEmail($article['person'])
-                    ->setTitle($article['title'])
-                    ->setContent($article['content'])
-                    ->setSlug($article['slug'])
-                    ->setLanguage($article['language'])
-                    ->setEndAction($article['end_action'])
-                    ->setTotalRating($article['total_rating'])
-                    ->setNumComments($article['num_comments'])
-                    ->setNumRatings($article['num_ratings'])
-                    ->setStatus($article['status'])
-                    ->setDateCreated(new DateTime($article['date_created']));
-
-                if ($article['date_published']) {
-                    $entity->setDatePublished(new DateTime($article['date_published']));
+                $entity = $this->exportArticle($article);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logError(sprintf('Invalid article record `%d` found (Skipping)', $num));
                 }
-                if ($article['date_end']) {
-                    $entity->setDateEnd(new DateTime($article['date_end']));
-                }
-                foreach ($article['categories'] as $category) {
-                    $entity->addCategory($category);
-                }
-                foreach ($article['labels'] as $label) {
-                    $entity->addLabel($label);
-                }
-
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
 
             } catch (NoColumnException $e) {
                 $this->logError(sprintf(
@@ -121,6 +95,50 @@ final class Articles extends AbstractParser
     }
 
     /**
+     * Returns an article entity
+     *
+     * @param array $article
+     * @return Entity\Article|null
+     */
+    private function exportArticle(array $article)
+    {
+        if ($this->isValidArticle($article)) {
+            $entity = new Entity\Article();
+            $entity
+                ->setDestination('news_' . $article['oid'])
+                ->setOid($article['oid'])
+                ->setPersonEmail($article['person'])
+                ->setTitle($article['title'])
+                ->setContent($article['content'])
+                ->setSlug($article['slug'])
+                ->setLanguage($article['language'])
+                ->setEndAction($article['end_action'])
+                ->setTotalRating($article['total_rating'])
+                ->setNumComments($article['num_comments'])
+                ->setNumRatings($article['num_ratings'])
+                ->setStatus($article['status'])
+                ->setDateCreated(new DateTime($article['date_created']));
+
+            if ($article['date_published']) {
+                $entity->setDatePublished(new DateTime($article['date_published']));
+            }
+            if ($article['date_end']) {
+                $entity->setDateEnd(new DateTime($article['date_end']));
+            }
+            foreach ($article['categories'] as $category) {
+                $entity->addCategory($category);
+            }
+            foreach ($article['labels'] as $label) {
+                $entity->addLabel($label);
+            }
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
      * Returns record type reader config
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
@@ -137,7 +155,7 @@ final class Articles extends AbstractParser
      * @return bool
      * @throws NotArrayException
      */
-    private function validateArticle(array $article)
+    private function isValidArticle(array $article)
     {
         $columns = array(
             'oid',

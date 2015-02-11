@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 use DateTime;
@@ -66,40 +68,70 @@ final class News extends AbstractParser
         foreach ($news_list as $num => $news) {
             $this->advanceProgressBar();
 
-            if ($this->hasRequiredNewsColumns($news) === false) {
-                $this->logWarning(sprintf('Invalid news record found (Skipping): %d', $num));
-            } else {
-                $entity = new Entity\News();
-                $entity
-                    ->setDestination('news_' . $news['oid'])
-                    ->setOid($news['oid'])
-                    ->setPersonEmail($news['person'])
-                    ->setLanguage($news['language'])
-                    ->setSlug($news['slug'])
-                    ->setTitle($news['title'])
-                    ->setContent($news['content'])
-                    ->setSlug($news['slug'])
-                    ->setViewCount($news['view_count'])
-                    ->setTotalRating($news['total_rating'])
-                    ->setNumComments($news['num_comments'])
-                    ->setNumRatings($news['num_ratings'])
-                    ->setStatus($news['status'])
-                    ->setDateCreated(new DateTime($news['date_created']))
-                    ->setCategory($news['category']);
-
-                if ($news['date_published']) {
-                    $entity->setDatePublished(new DateTime($news['date_published']));
-                }
-                foreach ($news['labels'] as $label) {
-                    $entity->addLabel($label);
+            try {
+                $entity = $this->exportNews($news);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logWarning(sprintf('Invalid news record found (Skipping): %d', $num));
                 }
 
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid news record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
+
+            } catch (NotArrayException $e) {
+                $this->logError(sprintf(
+                    'Invalid news record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
         return $collection;
+    }
+
+    /**
+     * Returns a news entity
+     *
+     * @param array $news
+     * @return Entity\News
+     */
+    private function exportNews(array $news)
+    {
+        if ($this->isValidNews($news)) {
+            $entity = new Entity\News();
+            $entity
+                ->setDestination('news_' . $news['oid'])
+                ->setOid($news['oid'])
+                ->setPersonEmail($news['person'])
+                ->setLanguage($news['language'])
+                ->setSlug($news['slug'])
+                ->setTitle($news['title'])
+                ->setContent($news['content'])
+                ->setSlug($news['slug'])
+                ->setViewCount($news['view_count'])
+                ->setTotalRating($news['total_rating'])
+                ->setNumComments($news['num_comments'])
+                ->setNumRatings($news['num_ratings'])
+                ->setStatus($news['status'])
+                ->setDateCreated(new DateTime($news['date_created']))
+                ->setCategory($news['category']);
+
+            if ($news['date_published']) {
+                $entity->setDatePublished(new DateTime($news['date_published']));
+            }
+            foreach ($news['labels'] as $label) {
+                $entity->addLabel($label);
+            }
+
+            return $entity;
+        }
+
+        return null;
     }
 
     /**
@@ -118,7 +150,7 @@ final class News extends AbstractParser
      * @param array $news
      * @return bool
      */
-    private function hasRequiredNewsColumns(array $news)
+    private function isValidNews(array $news)
     {
         $columns = array(
             'oid',
@@ -137,6 +169,7 @@ final class News extends AbstractParser
             'labels',
         );
 
-        return $this->hasRequiredColumns($news, $columns) && is_array($news['labels']);
+        return $this->hasRequiredColumns($news, $columns)
+            && $this->isArrayColumn($news, 'labels');
     }
 }

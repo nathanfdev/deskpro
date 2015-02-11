@@ -78,15 +78,12 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         $collection = new Entity\Collection();
         foreach ($custom_fields as $num => $custom_field) {
             try {
-                $this->validateCustomField($custom_field);
-
-                $entity = new Entity\CustomField();
-                $entity
-                    ->setOid($custom_field['oid'])
-                    ->setKey($custom_field['key'])
-                    ->setValue($custom_field['value']);
-
-                $collection->attach($entity);
+                $entity = $this->exportCustomField($custom_field);
+                if ($entity) {
+                    $collection->attach($entity);
+                } else {
+                    $this->logError(sprintf('Invalid custom field record `%d` found (Skipping)', $num));
+                }
 
             } catch (NoColumnException $e) {
                 $this->logError(sprintf(
@@ -100,12 +97,33 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
+     * Returns a custom field entity
+     *
+     * @param array $custom_field
+     * @return Entity\CustomField|null
+     */
+    protected function exportCustomField(array $custom_field)
+    {
+        if ($this->isValidCustomField($custom_field)) {
+            $entity = new Entity\CustomField();
+            $entity
+                ->setOid($custom_field['oid'])
+                ->setKey($custom_field['key'])
+                ->setValue($custom_field['value']);
+
+            return $entity;
+        }
+
+        return null;
+    }
+
+    /**
      * Check if an attachment has all required columns
      *
      * @param array $attachment
      * @return bool
      */
-    protected function hasRequiredAttachmentColumns(array $attachment)
+    protected function isValidAttachment(array $attachment)
     {
         $columns = array(
             'oid',
@@ -127,7 +145,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      * @param array $custom_field
      * @return bool
      */
-    protected function validateCustomField(array $custom_field)
+    protected function isValidCustomField(array $custom_field)
     {
         $columns = array(
             'oid',
