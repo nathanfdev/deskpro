@@ -6,6 +6,15 @@ cd ..
 
 IS_ERROR=0
 
+bin/phpunit
+
+if [[ $? -ne 0 ]] ; then
+	echo "
+!!! phpunit failed !!!
+"
+	IS_ERROR=1
+fi
+
 if [[ "$1" -eq "travis" ]] ; then
     # simplify phpspec if its travis
     bin/phpspec run --format=dot
@@ -16,6 +25,15 @@ fi
 if [[ $? -ne 0 ]] ; then
 	echo "
 !!! phpspec failed !!!
+"
+	IS_ERROR=1
+fi
+
+bin/behat
+
+if [[ $? -ne 0 ]] ; then
+	echo "
+!!! behat failed !!!
 "
 	IS_ERROR=1
 fi
