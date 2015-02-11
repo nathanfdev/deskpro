@@ -1,0 +1,7 @@
+<phpunit bootstrap="bootstrap_minimal.php">
+    <testsuites>
+        <testsuite name="deskpro">
+            <directory>phpunit</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

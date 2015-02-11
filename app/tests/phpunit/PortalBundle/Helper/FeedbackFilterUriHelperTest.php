@@ -37,7 +37,7 @@ namespace DpUnitTests\PortalBundle\Helper;
 use Application\PortalBundle\Helper\FeedbackFilterUriHelper;
 use Application\PortalBundle\Model\FeedbackFilter;
 
-class FeedbackFilterUriHelperTest extends \DpUnitTestCase
+class FeedbackFilterUriHelperTest extends \PHPUnit_Framework_TestCase
 {
     public function testExtractNoPath()
     {
