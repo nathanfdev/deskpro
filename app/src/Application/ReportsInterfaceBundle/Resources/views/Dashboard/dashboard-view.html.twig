@@ -26,7 +26,7 @@
                     <span>Built-in Dashboards</span>
                 </li>
                 <li ng-repeat="db in (dashboards|filter:defaultDashboardsFilter) track by $index">
-                    <a class='link-pointer' ui-sref-active="current" dp-dropdown-item ui-sref="reports.dashboards.view.index({ dashboard_id: db.id })">
+                    <a ng-class="{'current': db.id = dashboard.id}" class='link-pointer' ui-sref-active="current" dp-dropdown-item ui-sref="reports.dashboards.view.index({ dashboard_id: db.id })">
                         <span class='logo-deskpro'></span>
                         {{ ng_var('db.title') }}
                     </a>
@@ -36,7 +36,7 @@
                     <span>Custom Dashboards</span>
                 </li>
                 <li ng-repeat="db in (dashboards|filter:customDashboardsFilter) track by $index">
-                    <a class='link-pointer' ui-sref-active="current" dp-dropdown-item ui-sref="reports.dashboards.view.index({ dashboard_id: db.id })">
+                    <a ng-class="{'current': db.id = dashboard.id}" class='link-pointer' ui-sref-active="current" dp-dropdown-item ui-sref="reports.dashboards.view.index({ dashboard_id: db.id })">
                         {{ ng_var('db.title') }}
                     </a>
                 </li>
