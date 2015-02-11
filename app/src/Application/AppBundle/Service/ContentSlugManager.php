@@ -72,7 +72,7 @@ class ContentSlugManager
      * if it is not correct, it will find something valid AND SET IT on the content.
      *
      * @param ContentAbstract $content
-     * @return string
+     * @return null or the new history object for the content
      */
     public function ensureValidSlug(ContentAbstract $content)
     {
@@ -80,7 +80,7 @@ class ContentSlugManager
         $expected_slug = Strings::slugifyTitle($content->getTitle());
 
         if ($existing_slug === $expected_slug) {
-            return false; // already valid and set, no need to do more here
+            return null; // already valid and set, no need to do more here
         }
 
         // check if the expected slug is a valid one, in both content repo and in slug history repo
@@ -108,12 +108,11 @@ class ContentSlugManager
     public function findContentObjectBySlug($slug, $content_class_name)
     {
         $content_repo = $this->getEm()->getRepository($content_class_name);
-        $history_repo = $this->getEm()->getRepository(sprintf('%sSlugHistory', $content_class_name));
-
         if ($content = $content_repo->findOneBy(array('slug' => $slug))) {
             return $content;
         }
 
+        $history_repo = $this->getEm()->getRepository(sprintf('%sSlugHistory', $content_class_name));
         if ($content_history = $history_repo->findOneBy(array('slug' => $slug))) {
             return $content_history->getContent();
         }
@@ -151,7 +150,9 @@ class ContentSlugManager
      */
     private function getRepoForContent(ContentAbstract $content)
     {
-        switch ($content->getContentType()) {
+        var_dump($content);exit;
+        $type = $content->getContentType();
+        switch ($type) {
             case Article::CONTENT_TYPE:
                 return $this->getEm()->getRepository('DeskPRO:Article');
             case News::CONTENT_TYPE:
