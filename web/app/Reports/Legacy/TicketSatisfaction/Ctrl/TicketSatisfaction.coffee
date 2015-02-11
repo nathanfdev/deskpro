@@ -7,7 +7,7 @@ define [
 ) ->
   class Reports_TicketSatisfaction_Ctrl_TicketSatisfaction extends ReportsBaseCtrl
     @CTRL_ID   = 'Reports_TicketSatisfaction_Ctrl_TicketSatisfaction'
-    @CTRL_AS   = 'Ctrl'
+    @CTRL_AS   = 'TicketSatisfaction'
     @DEPS      = ['Api', '$sce']
 
     init: ->

@@ -2,13 +2,13 @@
 
 	<nav class="dp-blocktabs">
 		<ul>
-			<li class="active" dp-tab-btn="ticket.satisfaction.feed" ng-click="Ctrl.switchToFeed()">
+			<li class="active" dp-tab-btn="ticket.satisfaction.feed" ng-click="TicketSatisfaction.switchToFeed()">
 				<a href="#">
 					<i class="fa fa-pencil"></i> Feed
 				</a>
 			</li>
 			<li class="pipe">|</li>
-			<li dp-tab-btn="ticket.satisfaction.summary" ng-click="Ctrl.switchToSummary()">
+			<li dp-tab-btn="ticket.satisfaction.summary" ng-click="TicketSatisfaction.switchToSummary()">
 				<a href="#">
 					<i class="fa fa-users"></i> Summary
 				</a>
@@ -19,30 +19,30 @@
 	<div dp-tab-body="ticket.satisfaction.feed">
 		<div class="panel panel-fill indent">
 			<section class="padd clearfix">
-				<div class="dp-btn-pagination pull-left" ng-show="Ctrl.num_pages > 1">
+				<div class="dp-btn-pagination pull-left" ng-show="TicketSatisfaction.num_pages > 1">
 					<span dp-show-spinning="loading_feed_results" class="padd">
 						<i class="spinner-flat"></i>
 					</span>
-					<button class="btn" ng-show="Ctrl.page != 1" ng-click="Ctrl.goPrevPage()">
+					<button class="btn" ng-show="TicketSatisfaction.page != 1" ng-click="TicketSatisfaction.goPrevPage()">
 						&lt; Prev
 					</button>
 					<select
-							ng-model="Ctrl.page"
+							ng-model="TicketSatisfaction.page"
 							ui-select2
 							style="width: 130px;"
-							ng-change="Ctrl.changePage()"
+							ng-change="TicketSatisfaction.changePage()"
 							>
-						<option ng-repeat="page in Ctrl.page_nums" value="{{ ng_var('page') }}">
+						<option ng-repeat="page in TicketSatisfaction.page_nums" value="{{ ng_var('page') }}">
 							Page {{ ng_var('page') }}
 						</option>
 					</select>
-					<button class="btn" ng-show="Ctrl.page < Ctrl.num_pages"
-							ng-click="Ctrl.goNextPage()">
+					<button class="btn" ng-show="TicketSatisfaction.page < TicketSatisfaction.num_pages"
+							ng-click="TicketSatisfaction.goNextPage()">
 						Next &gt;
 					</button>
 				</div>
 			</section>
-			<section class="padd" ng-bind-html="Ctrl.feed_html" dp-hide-spinning="loading_feed_results">
+			<section class="padd" ng-bind-html="TicketSatisfaction.feed_html" dp-hide-spinning="loading_feed_results">
 
 			</section>
 		</div>
@@ -52,7 +52,7 @@
 		Jump to month:
 		{% set start_year = ("@" ~ app.getSetting('core.install_timestamp'))|date('Y') %}
 		{% set end_year   = (("now"|date('Y')) - 1) %}
-		<select ui-select2 ng-model="view_date" ng-change="Ctrl.loadSummaryResults()">
+		<select ui-select2 ng-model="view_date" ng-change="TicketSatisfaction.loadSummaryResults()">
 			{% if start_year <= end_year %}
 				{% for year in start_year .. end_year %}
 					{% for month in 1..12 %}
@@ -74,7 +74,7 @@
 				<i class="spinner-flat"></i>
 			</span>
 
-			<section class="padd clearfix" ng-bind-html="Ctrl.summary_html" dp-hide-spinning="loading_summary_results">
+			<section class="padd clearfix" ng-bind-html="TicketSatisfaction.summary_html" dp-hide-spinning="loading_summary_results">
 
 			</section>
 		</div>

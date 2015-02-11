@@ -108,5 +108,5 @@ define -> (States) ->
 
   States.add('reports.ticket_satisfaction')
     .setUrl('/ticket_satisfaction')
-    .setCtrl('Reports.AgentHours.AgentHours')
+    .setCtrl('Reports.TicketSatisfaction.TicketSatisfaction')
     .setTpl('ReportsInterfaceBundle:TicketSatisfaction:index.html')
