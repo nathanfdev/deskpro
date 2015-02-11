@@ -45,6 +45,8 @@ define [
   # DP DIRECTIVES
   'Reports/App/Directive/DpReportWidgetSelectBox',
   'DeskPRO/Directive/DpDropdown',
+  'DeskPRO/Directive/DpShowSpinning',
+  'DeskPRO/Directive/DpHideSpinning',
 
   #jquery
   'jquery',
@@ -103,6 +105,8 @@ define [
   # DP DIRECTIVES
   Reports_App_Directive_DpReportWidgetSelectBox,
   Reports_App_Directive_DpDropdown,
+  Reports_App_Directive_DpShowSpinning,
+  Reports_App_Directive_DpHideSpinning,
 
 ) ->
   ReportsApp = angular.module('DeskPRO.ReportsApp', ['DeskPRO.InterfaceApp', 'gridster', 'ui.sortable'])
@@ -234,5 +238,7 @@ define [
   ReportsApp.directive('dpReportBuilderSelectBox',       Reports_Directive_DpReportBuilderSelectBox)
   ReportsApp.directive('dpReportBillingSelectBox',       Reports_Directive_DpReportBillingSelectBox)
   ReportsApp.directive('dpReportBuilderTitle',           Reports_Directive_DpReportBuilderTitle)
+  ReportsApp.directive('dpShowSpinning',                 Reports_App_Directive_DpShowSpinning)
+  ReportsApp.directive('dpHideSpinning',                 Reports_App_Directive_DpHideSpinning)
 
   return ReportsApp
