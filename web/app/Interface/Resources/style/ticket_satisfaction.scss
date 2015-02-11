@@ -1,3 +1,67 @@
+nav.dp-blocktabs {
+  ul {
+    list-style-type: none;
+    margin: 0 16px;
+    padding: 10px 0 12px 0;
+    border-bottom: 1px dotted #ccc;
+
+    li {
+      cursor: pointer;
+      display: inline-block;
+      padding-right: 11px;
+
+      a {
+        color: #333333;
+        text-decoration: none;
+        border-bottom: 3px solid transparent;
+        padding: 0 0 2px 0;
+        font-size: 130%;
+        font-weight: normal;
+
+        i.fa {
+          font-size: 11pt;
+          color: #777;
+        }
+      }
+    }
+
+    li.active, li:hover {
+      a {
+        border-bottom: 3px solid #999999;
+      }
+    }
+
+    li.pipe {
+      color: #ccc;
+      padding-right: 11px;
+    }
+
+    menu {
+      float: right;
+      position: relative;
+      top: -4px;
+      padding-right: 18px;
+
+      button {
+        padding: 4px;
+        border-radius: 25px;
+
+        span {
+          margin-left: 4px;
+          margin-right: 4px;
+          color: #444;
+
+          i {
+            font-size: 20px;
+            line-height: 100%;
+            vertical-align: middle;
+          }
+        }
+      }
+    }
+  }
+}
+
 .feedback-table {
   margin-bottom: 25px;
   width: 800px;
