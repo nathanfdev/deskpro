@@ -127,11 +127,11 @@ final class News extends AbstractParser
     private function isNewsValid(array $news)
     {
         $columns = array(
-            'oid',
             'person',
-            'language',
             'title',
             'content',
+            'slug',
+            'language',
             'status',
             'date_created',
             'date_published',

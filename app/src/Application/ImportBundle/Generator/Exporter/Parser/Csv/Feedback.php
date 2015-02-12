@@ -125,10 +125,10 @@ final class Feedback extends AbstractParser
     {
         $columns = array(
             'person',
-            'language',
             'title',
             'content',
             'slug',
+            'language',
             'popularity',
             'status',
             'category',

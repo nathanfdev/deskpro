@@ -145,7 +145,7 @@ final class Tickets extends AbstractParser
                     }
 
                     $collection->attach($entity);
-                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                    $this->logInfo(sprintf('Entity `ticket_message_%s` parsed successfully!', $entity->getOid()));
                 } else {
                     $this->logError(sprintf('Invalid ticket message record `%d` found (Skipping)', $num));
                 }

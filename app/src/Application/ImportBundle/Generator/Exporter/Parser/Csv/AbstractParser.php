@@ -132,6 +132,10 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
                 $entity = $this->exportAttachment($attachment, $destination_prefix, $ref_column);
                 if ($entity) {
                     $collection->attach($entity);
+                    $this->logInfo(sprintf(
+                        'Entity `%s%s` parsed successfully!',
+                        $destination_prefix, $entity->getOid())
+                    );
                 } else {
                     $this->logError(sprintf('Invalid attachment record `%d` found (Skipping)', $num));
                 }
