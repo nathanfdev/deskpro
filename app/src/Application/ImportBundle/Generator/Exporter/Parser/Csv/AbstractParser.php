@@ -144,11 +144,11 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
                         $destination_prefix, $entity->getOid())
                     );
                 } else {
-                    $this->logError(sprintf('Invalid attachment record `%d` found (Skipping)', $num));
+                    $this->logWarning(sprintf('Invalid attachment record `%d` found (Skipping)', $num));
                 }
 
             } catch (NoColumnException $e) {
-                $this->logError(sprintf(
+                $this->logWarning(sprintf(
                     'Invalid attachment record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));

@@ -79,13 +79,13 @@ final class People extends AbstractParser
                 }
 
             } catch (NoColumnException $e) {
-                $this->logError(sprintf(
+                $this->logWarning(sprintf(
                     'Invalid person record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
 
             } catch (NotArrayException $e) {
-                $this->logError(sprintf(
+                $this->logWarning(sprintf(
                     'Invalid person record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));

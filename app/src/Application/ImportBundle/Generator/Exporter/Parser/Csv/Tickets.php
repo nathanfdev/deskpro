@@ -83,11 +83,11 @@ final class Tickets extends AbstractParser
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
                 } else {
-                    $this->logError(sprintf('Invalid ticket record `%d` found (Skipping)', $num));
+                    $this->logWarning(sprintf('Invalid ticket record `%d` found (Skipping)', $num));
                 }
 
             } catch (NoColumnException $e) {
-                $this->logError(sprintf(
+                $this->logWarning(sprintf(
                     'Invalid ticket record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
@@ -147,11 +147,11 @@ final class Tickets extends AbstractParser
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `ticket_message_%s` parsed successfully!', $entity->getOid()));
                 } else {
-                    $this->logError(sprintf('Invalid ticket message record `%d` found (Skipping)', $num));
+                    $this->logWarning(sprintf('Invalid ticket message record `%d` found (Skipping)', $num));
                 }
 
             } catch (NoColumnException $e) {
-                $this->logError(sprintf(
+                $this->logWarning(sprintf(
                     'Invalid ticket message record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));

@@ -81,11 +81,11 @@ final class Downloads extends AbstractParser
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
                 } else {
-                    $this->logError(sprintf('Invalid download record `%d` found (Skipping)', $num));
+                    $this->logWarning(sprintf('Invalid download record `%d` found (Skipping)', $num));
                 }
 
             } catch (NoColumnException $e) {
-                $this->logError(sprintf(
+                $this->logWarning(sprintf(
                     'Invalid download record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));

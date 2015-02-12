@@ -72,11 +72,11 @@ final class People extends AbstractParser
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
                 } else {
-                    $this->logError(sprintf('Invalid person record `%d` found (Skipping)', $num));
+                    $this->logWarning(sprintf('Invalid person record `%d` found (Skipping)', $num));
                 }
 
             } catch (NoColumnException $e) {
-                $this->logError(sprintf(
+                $this->logWarning(sprintf(
                     'Invalid person record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));

@@ -82,11 +82,11 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
                 if ($entity) {
                     $collection->attach($entity);
                 } else {
-                    $this->logError(sprintf('Invalid custom field record `%d` found (Skipping)', $num));
+                    $this->logWarning(sprintf('Invalid custom field record `%d` found (Skipping)', $num));
                 }
 
             } catch (NoColumnException $e) {
-                $this->logError(sprintf(
+                $this->logWarning(sprintf(
                     'Invalid custom field record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));

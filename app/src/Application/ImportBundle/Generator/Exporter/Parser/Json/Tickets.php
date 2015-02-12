@@ -78,13 +78,13 @@ final class Tickets extends AbstractParser
                 }
 
             } catch (NoColumnException $e) {
-                $this->logError(sprintf(
+                $this->logWarning(sprintf(
                     'Invalid ticket record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
 
             } catch (NotArrayException $e) {
-                $this->logError(sprintf(
+                $this->logWarning(sprintf(
                     'Invalid ticket record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
