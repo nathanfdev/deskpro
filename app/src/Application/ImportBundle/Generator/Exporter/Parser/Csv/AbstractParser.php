@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Reader\Csv\CsvConfig;
+use Application\ImportBundle\Reader\Csv\CsvReaderException;
 use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
 use Application\ImportBundle\Entity;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
@@ -108,6 +109,12 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
 
         } catch (NotFoundResourceException $e) {
             $this->logWarning(sprintf('Resource `%s` not found (Skipping)', $config->getResource()));
+
+        } catch (CsvReaderException $e) {
+            $this->logWarning(sprintf(
+                'Csv reader throws an exception while reading `%s`. Reason: %s',
+                $config->getResource(), $e->getMessage()
+            ));
         }
 
         return array();

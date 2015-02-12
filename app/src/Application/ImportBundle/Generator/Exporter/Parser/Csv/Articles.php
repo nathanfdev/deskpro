@@ -133,6 +133,7 @@ final class Articles extends AbstractParser
             'status',
             'category',
             'label',
+            'date_created',
         );
 
         return $this->hasRequiredColumns($article, $columns);

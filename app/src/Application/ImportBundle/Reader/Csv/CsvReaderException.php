@@ -25,33 +25,16 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Entity;
+namespace Application\ImportBundle\Reader\Csv;
 
 /**
- * Entity slug interface
+ * Csv reader exception
+ * If reading data is not valid
  *
- * Interface SlugAwareInterface
- * @package Application\ImportBundle\Entity
- *
- * todo add slug validator
+ * Class CsvReaderException
+ * @package Application\ImportBundle\Reader\Csv
  */
-interface SlugAwareInterface
+final class CsvReaderException extends \Exception
 {
-    /**
-     * Sets an acceptable URL slug
-     *
-     * @return string
-     */
-    public function getSlug();
 
-    /**
-     * Get an acceptable URL slug
-     *
-     * Turns a string into an acceptable URL slug.
-     * "My Great Title!" becomes "my-great-title"
-     *
-     * @param string $slug
-     * @return $this
-     */
-    public function setSlug($slug);
 }

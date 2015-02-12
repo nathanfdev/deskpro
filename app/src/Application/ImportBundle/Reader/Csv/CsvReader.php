@@ -72,18 +72,22 @@ class CsvReader implements CsvReaderInterface
         $header = null;
         $data   = array();
         foreach ($iterator as $row) {
-            if (!is_array($row)) {
-                continue;
-            }
-            if (!count(Arrays::removeEmptyString($row))) {
+            if (is_array($row) === false || count(Arrays::removeEmptyString($row)) === 0) {
                 continue;
             }
 
-            if (!$header) {
+            if ($header === null) {
                 $header = $row;
             } else {
                 $record = array();
                 foreach ($header as $num => $key) {
+                    if (array_key_exists($num, $row) === false) {
+                        throw new CsvReaderException(sprintf(
+                            'Row `%s` does not have key `%s`',
+                            @json_encode($record), $key
+                        ));
+                    }
+
                     $record[$key] = $row[$num];
                 }
 
@@ -104,7 +108,7 @@ class CsvReader implements CsvReaderInterface
      */
     private function getIterator(CsvConfig $config)
     {
-        if (!stream_is_local($config->getResource())) {
+        if ( ! stream_is_local($config->getResource())) {
             throw new InvalidResourceException(sprintf('This is not a local file "%s".', $config->getResource()));
         }
 
