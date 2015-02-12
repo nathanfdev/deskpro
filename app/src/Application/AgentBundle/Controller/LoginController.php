@@ -39,6 +39,7 @@ use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 use Application\DeskPRO\Service\RateLimit;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LoginController extends \Application\UserBundle\Controller\LoginController
 {
@@ -72,7 +73,13 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         // Already logged in
         if (($this->session->getPerson() && $this->session->getPerson()->is_agent)) {
             if ($return) return $this->redirect($return);
-            else return $this->redirectRoute($this->route_prefix);
+
+            // fastfix of redirect loop (with wrong scheme)
+            $url = $this->generateUrl($this->route_prefix, array(), UrlGeneratorInterface::ABSOLUTE_URL);
+            if (!$this->request->isCorrectScheme()) {
+                $url = str_replace('http://', 'https://', $url);
+            }
+            return $this->redirect($url);
         }
 
         $has_done_reset = false;
