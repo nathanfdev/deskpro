@@ -165,10 +165,30 @@ class RawSwiftmailerTransport implements RawTransportInterface
 
         $headers = $message->getHeaders();
         foreach ($raw_message->getHeaders() as $header_name => $header_values) {
-            $headers->removeAll($header_name);
-            foreach ($header_values as $v) {
-                $headers->addTextHeader($header_name, $v);
-            }
+            try {
+                switch ($header_name) {
+                    case 'Message-ID':
+                        $message->setId($header_values[0]);
+                        break;
+
+                    case 'Date':
+                        $message->setDate(strtotime($header_values[0]));
+                        break;
+
+                    case 'Return-Path':
+                        $message->setReturnPath($header_values[0]);
+                        break;
+
+                    case 'DKIM-Signature':
+                    case 'DomainKey-Signature':
+                    case (strpos($header_name, 'X-') === 0):
+                        $headers->removeAll($header_name);
+                        foreach ($header_values as $v) {
+                            $headers->addTextHeader($header_name, $v);
+                        }
+                        break;
+                }
+            } catch (\Exception $e) {}
         }
 
         #------------------------------
