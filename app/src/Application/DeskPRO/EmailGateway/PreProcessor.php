@@ -35,6 +35,7 @@ namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\EmailSource;
+use Application\DeskPRO\Entity\TicketMessage;
 
 class PreProcessor extends AbstractGatewayProcessor
 {
@@ -56,6 +57,19 @@ class PreProcessor extends AbstractGatewayProcessor
             $this->error = EmailSource::ERR_FROM_MISSING;
 
             return;
+        }
+
+        #------------------------------
+        # Dupe Detection
+        #------------------------------
+
+        if ($id = $this->reader->getId()) {
+            if ($old = $this->getEm()->getRepository('DeskPRO:TicketMessage')->getDupeByMessageID($id)) {
+                /** @var $old TicketMessage */
+                $this->source_info[] = 'Ticket ID: '. $old->ticket['id'];
+                $this->source_info[] = 'Email Message ID: '. $id;
+                return $this->error = EmailSource::ERR_DUPE;
+            }
         }
 
         #------------------------------

@@ -243,4 +243,18 @@ class TicketMessage extends AbstractEntityRepository
 
         return false;
     }
+
+    public function getDupeByMessageID($emailId)
+    {
+        $old = $this->findOneBy(
+            array('email_message_id' => $emailId), array('date_created' => 'DESC')
+        );
+
+        $date = new \DateTime('-60 days');
+        if ($old && $old->date_created > $date) {
+            return $old;
+        }
+
+        return null;
+    }
 }

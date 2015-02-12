@@ -249,6 +249,18 @@ class ProcessAgentFwd extends ProcessAbstract
             App::getOrm()->persist($blob);
         }
 
+        if ($id = $ticket_message['email_message_id']) {
+            $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: Checking for dupe message by id: ' . $id);
+
+            if (App::getOrm()->getRepository('DeskPRO:TicketMessage')->getDupeByMessageID($id)) {
+                /** @var $old TicketMessage */
+                $this->setError('duplicate_message');
+                $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: duplicate message ' . $id);
+                return null;
+            }
+        }
+
+
         $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: Checking for dupe message: ' . $ticket_message->getMessageHash());
         if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, null, 10800, $this->getLogger())) {
             $this->setError('duplicate_message');
