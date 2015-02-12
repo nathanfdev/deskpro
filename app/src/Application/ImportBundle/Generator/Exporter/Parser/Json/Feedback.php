@@ -103,7 +103,7 @@ final class Feedback extends AbstractParser
      */
     private function exportFeedback(array $feedback)
     {
-        if ($this->isValidFeedback($feedback)) {
+        if ($this->isFeedbackValid($feedback)) {
             $entity = new Entity\Feedback();
             $entity
                 ->setDestination('feedback_' . $feedback['oid'])
@@ -151,7 +151,7 @@ final class Feedback extends AbstractParser
      * @param array $feedback
      * @return bool
      */
-    private function isValidFeedback(array $feedback)
+    private function isFeedbackValid(array $feedback)
     {
         $columns = array(
             'oid',

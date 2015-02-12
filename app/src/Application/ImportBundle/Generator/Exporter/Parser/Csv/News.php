@@ -95,7 +95,7 @@ final class News extends AbstractParser
      */
     private function exportNews($num, array $news)
     {
-        if ($this->isValidNews($news)) {
+        if ($this->isNewsValid($news)) {
             $entity = new Entity\News();
             $entity
                 ->setDestination('news_' . $num)
@@ -124,7 +124,7 @@ final class News extends AbstractParser
      * @param array $news
      * @return bool
      */
-    private function isValidNews(array $news)
+    private function isNewsValid(array $news)
     {
         $columns = array(
             'oid',

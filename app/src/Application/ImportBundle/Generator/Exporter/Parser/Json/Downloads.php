@@ -154,7 +154,7 @@ final class Downloads extends AbstractParser
     private function exportAttachment(array $attachment)
     {
         try {
-            if ($this->isValidAttachment($attachment)) {
+            if ($this->isAttachmentValid($attachment)) {
                 $entity = new Entity\Attachment();
                 $entity
                     ->setOid($attachment['oid'])

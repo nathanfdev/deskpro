@@ -105,7 +105,7 @@ final class Tickets extends AbstractParser
      */
     private function exportTicket(array $ticket)
     {
-        if ($this->isValidTicket($ticket)) {
+        if ($this->isTicketValid($ticket)) {
             $entity = new Entity\Ticket();
             $entity
                 ->setDestination(self::TICKET_PREFIX . $ticket['id'])
@@ -200,7 +200,7 @@ final class Tickets extends AbstractParser
      * @param array $ticket
      * @return bool
      */
-    private function isValidTicket(array $ticket)
+    private function isTicketValid(array $ticket)
     {
         $columns = array(
             'id',

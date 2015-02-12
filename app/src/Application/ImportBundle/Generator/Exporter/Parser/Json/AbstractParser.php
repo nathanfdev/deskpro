@@ -104,7 +104,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function exportCustomField(array $custom_field)
     {
-        if ($this->isValidCustomField($custom_field)) {
+        if ($this->isCustomFieldValid($custom_field)) {
             $entity = new Entity\CustomField();
             $entity
                 ->setOid($custom_field['oid'])
@@ -123,7 +123,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      * @param array $attachment
      * @return bool
      */
-    protected function isValidAttachment(array $attachment)
+    protected function isAttachmentValid(array $attachment)
     {
         $columns = array(
             'oid',
@@ -145,7 +145,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      * @param array $custom_field
      * @return bool
      */
-    protected function isValidCustomField(array $custom_field)
+    protected function isCustomFieldValid(array $custom_field)
     {
         $columns = array(
             'oid',

@@ -158,7 +158,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      */
     protected function exportAttachment($destination_prefix, array $attachment, $ref_column)
     {
-        if ($this->isValidAttachment($attachment, $ref_column)) {
+        if ($this->isAttachmentValid($attachment, $ref_column)) {
             $entity = new Entity\Attachment();
             $entity
                 ->setDestination($destination_prefix . $attachment[$ref_column])
@@ -184,7 +184,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      *
      * @return bool
      */
-    protected function isValidAttachment(array $attachment, $ref_column)
+    protected function isAttachmentValid(array $attachment, $ref_column)
     {
         $columns = array(
             $ref_column,

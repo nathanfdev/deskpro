@@ -96,7 +96,7 @@ final class People extends AbstractParser
      */
     private function exportPerson($num, array $person)
     {
-        if ($this->isValidPerson($person)) {
+        if ($this->isPersonValid($person)) {
             $entity = new Entity\Person();
             $entity
                 ->setDestination('person_' . $num)
@@ -118,7 +118,7 @@ final class People extends AbstractParser
      * @param array $person
      * @return bool
      */
-    private function isValidPerson(array $person)
+    private function isPersonValid(array $person)
     {
         $columns = array('name', 'email');
         return $this->hasRequiredColumns($person, $columns);

@@ -103,7 +103,7 @@ final class Downloads extends AbstractParser
      */
     private function exportDownload(array $download)
     {
-        if ($this->isValidDownload($download)) {
+        if ($this->isDownloadValid($download)) {
             $entity = new Entity\Download();
             $entity
                 ->setDestination(self::DOWNLOAD_PREFIX . $download['id'])
@@ -139,7 +139,7 @@ final class Downloads extends AbstractParser
      * @param array $download
      * @return bool
      */
-    private function isValidDownload(array $download)
+    private function isDownloadValid(array $download)
     {
         $columns = array(
             'id',

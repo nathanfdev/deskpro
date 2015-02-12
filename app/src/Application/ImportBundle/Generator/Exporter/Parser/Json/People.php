@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 use DateTime;
@@ -67,50 +69,80 @@ final class People extends AbstractParser
         foreach ($people as $num => $person) {
             $this->advanceProgressBar();
 
-            if ($this->hasRequiredPersonColumns($person) === false) {
-                $this->logWarning(sprintf('Invalid person record found (Skipping): %d', $num));
-            } else {
-                $entity = new Entity\Person();
-                $entity
-                    ->setDestination('ticket_' . $person['oid'])
-                    ->setOid($person['oid'])
-                    ->setAsAgent($person['is_agent'])
-                    ->setAsUser($person['is_user'])
-                    ->setAsAdmin($person['is_admin'])
-                    ->setFirstName($person['first_name'])
-                    ->setLastName($person['last_name'])
-                    ->setName($person['name'])
-                    ->setOverrideDisplayName($person['override_display_name'])
-                    ->setPassword($person['password'])
-                    ->setPasswordScheme($person['password_scheme'])
-                    ->setTimezone(new DateTimeZone($person['timezone']))
-                    ->setDateCreated(new DateTime($person['date_created']))
-                    ->setLanguage($person['language'])
-                    ->setOrganization($person['organization'])
-                    ->setOrganizationPosition($person['organization_position']);
-
-                foreach ($person['emails'] as $email) {
-                    $entity->addEmail($email);
-                }
-                foreach ($person['labels'] as $label) {
-                    $entity->addLabel($label);
-                }
-                foreach ($person['user_groups'] as $user_group) {
-                    $entity->addUserGroup($user_group);
+            try {
+                $entity = $this->exportPerson($person);
+                if ($entity) {
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+                } else {
+                    $this->logWarning(sprintf('Invalid person record found (Skipping): %d', $num));
                 }
 
-                $custom_fields = $this->exportCustomFields($person['custom_fields']);
-                foreach ($custom_fields as $custom_field) {
-                    /** @var Entity\CustomField $custom_field */
-                    $entity->addCustomField($custom_field);
-                }
+            } catch (NoColumnException $e) {
+                $this->logError(sprintf(
+                    'Invalid person record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
 
-                $collection->attach($entity);
-                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+            } catch (NotArrayException $e) {
+                $this->logError(sprintf(
+                    'Invalid person record `%d` found (Skipping): %s',
+                    $num, $e->getMessage()
+                ));
             }
         }
 
         return $collection;
+    }
+
+    /**
+     * Returns a person entity
+     *
+     * @param array $person
+     * @return Entity\Person|null
+     */
+    private function exportPerson(array $person)
+    {
+        if ($this->isPersonValid($person)) {
+            $entity = new Entity\Person();
+            $entity
+                ->setDestination('ticket_' . $person['oid'])
+                ->setOid($person['oid'])
+                ->setAsAgent($person['is_agent'])
+                ->setAsUser($person['is_user'])
+                ->setAsAdmin($person['is_admin'])
+                ->setFirstName($person['first_name'])
+                ->setLastName($person['last_name'])
+                ->setName($person['name'])
+                ->setOverrideDisplayName($person['override_display_name'])
+                ->setPassword($person['password'])
+                ->setPasswordScheme($person['password_scheme'])
+                ->setTimezone(new DateTimeZone($person['timezone']))
+                ->setDateCreated(new DateTime($person['date_created']))
+                ->setLanguage($person['language'])
+                ->setOrganization($person['organization'])
+                ->setOrganizationPosition($person['organization_position']);
+
+            foreach ($person['emails'] as $email) {
+                $entity->addEmail($email);
+            }
+            foreach ($person['labels'] as $label) {
+                $entity->addLabel($label);
+            }
+            foreach ($person['user_groups'] as $user_group) {
+                $entity->addUserGroup($user_group);
+            }
+
+            $custom_fields = $this->exportCustomFields($person['custom_fields']);
+            foreach ($custom_fields as $custom_field) {
+                /** @var Entity\CustomField $custom_field */
+                $entity->addCustomField($custom_field);
+            }
+
+            return $entity;
+        }
+
+        return null;
     }
 
     /**
@@ -129,7 +161,7 @@ final class People extends AbstractParser
      * @param array $person
      * @return bool
      */
-    private function hasRequiredPersonColumns(array $person)
+    private function isPersonValid(array $person)
     {
         $columns = array(
             'oid',
@@ -154,8 +186,8 @@ final class People extends AbstractParser
         );
 
         return $this->hasRequiredColumns($person, $columns)
-            && is_array($person['emails'])
-            && is_array($person['labels'])
-            && is_array($person['custom_fields']);
+            && $this->isArrayColumn($person, 'emails')
+            && $this->isArrayColumn($person, 'labels')
+            && $this->isArrayColumn($person, 'custom_fields');
     }
 }

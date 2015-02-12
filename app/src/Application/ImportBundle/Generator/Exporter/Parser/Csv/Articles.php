@@ -95,7 +95,7 @@ final class Articles extends AbstractParser
      */
     private function exportArticle($num, array $article)
     {
-        if ($this->isValidArticle($article)) {
+        if ($this->isArticleValid($article)) {
             $entity = new Entity\Article();
             $entity
                 ->setDestination('article_' . $num)
@@ -122,7 +122,7 @@ final class Articles extends AbstractParser
      * @param array $article
      * @return bool
      */
-    private function isValidArticle(array $article)
+    private function isArticleValid(array $article)
     {
         $columns = array(
             'person',
