@@ -561,15 +561,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             $user_email = $this->reader->getFromAddress()->getEmail();
 
             if (!$ticket_email->is_bounce && !$this->reader->isFromRobot() && !$account_manager->findAccountForEmailAddress($user_email)) {
-                if (!$this->reader->isFromRobot()) {
-                    $message = $this->container->getMailer()->createMessage();
-                    $message->setTemplate('DeskPRO:emails_user:new-ticket-reg-closed.html.twig', array(
-                        'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-                        'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                    ));
-                    $message->setTo($this->reader->getFromAddress()->getEmail());
-                    $this->container->getMailer()->send($message);
-                }
+                $message = $this->container->getMailer()->createMessage();
+                $message->setTemplate('DeskPRO:emails_user:new-ticket-reg-closed.html.twig', array(
+                    'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+                    'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                ));
+                $message->setTo($this->reader->getFromAddress()->getEmail());
+                $this->container->getMailer()->send($message);
             }
 
             return null;
