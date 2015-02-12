@@ -246,13 +246,22 @@ class TicketMessage extends AbstractEntityRepository
 
     public function getDupeByMessageID($emailId)
     {
-        $old = $this->findOneBy(
-            array('email_message_id' => $emailId), array('date_created' => 'DESC')
-        );
+        $q = '
+            SELECT ei FROM DeskPRO:TicketMessageEmailId ei
+            JOIN ei.message eim
+            WHERE ei.email_id = :id and eim.date_created > :date
+            ORDER BY eim.date_created DESC
+            ';
 
-        $date = new \DateTime('-60 days');
-        if ($old && $old->date_created > $date) {
-            return $old;
+        $old = $this->getEntityManager()
+            ->createQuery($q)
+            ->setMaxResults(1)
+            ->setParameter('id', $emailId)
+            ->setParameter('date', new \DateTime('-60 days'))
+            ->getResult();
+
+        if ($old) {
+            return reset($old);
         }
 
         return null;

@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,17 +29,61 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @category Entities
  */
 
-namespace Application\InstallBundle\Upgrade\Build;
+namespace Application\DeskPRO\Entity;
 
-class Build1423725055 extends AbstractBuild
+use Application\DeskPRO\App;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
+
+class TicketMessageEmailId extends \Application\DeskPRO\Domain\DomainObject
 {
-    public function run()
-    {
-        $this->out("Upgrade Ticket Messages Class");
-		$this->execMutateSql("CREATE TABLE tickets_message_email_id (id INT AUTO_INCREMENT NOT NULL, message_id INT DEFAULT NULL, email_id VARCHAR(255) NOT NULL, INDEX IDX_C0D32802537A1329 (message_id), INDEX email_id_idx (email_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 ENGINE = InnoDB DEFAULT CHARSET=utf8");
-		$this->execMutateSql("ALTER TABLE tickets_message_email_id ADD CONSTRAINT FK_C0D32802537A1329 FOREIGN KEY (message_id) REFERENCES tickets_messages (id) ON DELETE CASCADE");
-    }
+	protected $id;
+
+	protected $message;
+
+	protected $email_id;
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+//		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketMessageEmailId';
+		$metadata->setPrimaryTable(array(
+			'name' => 'tickets_message_email_id',
+			'indexes' => array(
+				'email_id_idx' => array('columns' => array('email_id')),
+			)
+		));
+
+		$metadata->mapField(array(
+			'fieldName' => 'id',
+			'id' => true,
+			'type' => 'integer',
+		));
+
+		$metadata->mapField(array(
+			'fieldName' => 'email_id',
+			'nullable' => false,
+			'columnName' => 'email_id',
+		));
+
+		$metadata->mapManyToOne(array(
+			'fieldName' => 'message',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage',
+			'inversedBy' => 'email_message_id',
+			'joinColumns' => array(array(
+				'name' => 'message_id',
+				'referencedColumnName' => 'id',
+				'onDelete' => 'CASCADE',
+			)),
+		));
+	}
 }

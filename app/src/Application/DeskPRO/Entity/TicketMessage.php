@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
@@ -210,7 +211,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     protected $_message_length = null;
 
     /**
-     * @var null|string
+     * @var TicketMessageEmailId[]
      */
     protected $email_message_id;
 
@@ -218,7 +219,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->setModelField('date_created', new \DateTime());
         $this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
-        $email_id && $this->setModelField('email_message_id', $email_id);
+        if ($email_id) {
+            $ref = new TicketMessageEmailId();
+            $ref['email_id'] = $email_id;
+            $ref->message = $this;
+            $this->setModelField('email_message_id', new ArrayCollection(array($ref)));
+        }
     }
 
     /**
@@ -652,7 +658,6 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
             'name' => 'tickets_messages',
             'indexes' => array(
                 'date_created_idx' => array('columns' => array('date_created')),
-                'message_id_idx' => array('columns' => array('email_message_id')),
             )
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
@@ -673,7 +678,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'message_raw', 'type' => 'text', 'nullable' => true, 'columnName' => 'message_raw', ));
         $metadata->mapField(array( 'fieldName' => 'lang_code', 'type' => 'string', 'length' => 80, 'nullable' => true, 'columnName' => 'lang_code', ));
         $metadata->mapField(array( 'fieldName' => 'show_full_hint', 'type' => 'boolean', 'columnName' => 'show_full_hint', ));
-        $metadata->mapField(array( 'fieldName' => 'email_message_id', 'type' => 'string', 'nullable' => true, 'columnName' => 'email_message_id', ));
+
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
         $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
@@ -681,5 +686,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapManyToOne(array( 'fieldName' => 'primary_translation', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessageTranslated', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'message_translated_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
         $metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
         $metadata->mapOneToMany(array( 'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAttachment', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'message', 'dpApi' => true, 'dpApiDeep' => true  ));
+
+        $metadata->mapOneToMany(array(
+            'fieldName' => 'email_message_id',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessageEmailId',
+            'mappedBy' => 'message',
+            'cascade' => array('persist'),
+        ));
     }
 }
