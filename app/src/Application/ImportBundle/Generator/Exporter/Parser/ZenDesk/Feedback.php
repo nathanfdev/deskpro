@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 use Application\ImportBundle\Entity;
 
 /**
+ * ZenDesk feedback parser
+ *
  * Class Feedback
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */

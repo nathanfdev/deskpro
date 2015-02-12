@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 /**
+ * If raw data column does not exist
+ *
  * Class NoColumnException
  * @package Application\ImportBundle\Generator\Exporter\Parser
  */

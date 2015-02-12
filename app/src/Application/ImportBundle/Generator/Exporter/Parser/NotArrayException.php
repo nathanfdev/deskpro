@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 /**
+ * If raw data column is not array
+ *
  * Class NotArrayException
  * @package Application\ImportBundle\Generator\Exporter\Parser
  */

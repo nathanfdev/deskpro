@@ -240,7 +240,6 @@ final class Tickets extends AbstractParser
                     'Invalid ticket message attachment record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
-
             }
         }
 

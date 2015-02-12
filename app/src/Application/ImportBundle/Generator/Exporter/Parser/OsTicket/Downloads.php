@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 use Application\ImportBundle\Entity;
 
 /**
+ * OsTicket downloads parser
+ *
  * Class Downloads
  * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */

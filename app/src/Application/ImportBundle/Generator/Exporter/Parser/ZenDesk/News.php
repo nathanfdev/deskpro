@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 use Application\ImportBundle\Entity;
 
 /**
+ * ZenDesk news parser
+ *
  * Class News
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
