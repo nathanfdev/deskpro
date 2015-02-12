@@ -101,7 +101,7 @@ abstract class AbstractVoter extends \Symfony\Component\Security\Core\Authorizat
      */
     protected function isLoggedIn($user)
     {
-        return $user instanceof Person && $user->id > 0;
+        return $user instanceof Person && $user->getId() > 0;
     }
 
     /**

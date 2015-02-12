@@ -35,7 +35,7 @@
 namespace Application\AppBundle\Hierarchy;
 
 
-use Application\FormBundle\Hierarchy\Hierarchy;
+use Application\AppBundle\Hierarchy\Hierarchy;
 
 class HierarchyNode implements \IteratorAggregate, \Countable
 {
@@ -93,7 +93,8 @@ class HierarchyNode implements \IteratorAggregate, \Countable
         $node->setHierarchy($this->hierarchy);
         $this->children[] = $node;
 
-        usort($this->children, function ($node1, $node2) {
+        // bug in php will throw an exception for modifying arrays in some versions of php during usort
+        @usort($this->children, function ($node1, $node2) {
             return $node2->getOrder() - $node1->getOrder();
         });
     }

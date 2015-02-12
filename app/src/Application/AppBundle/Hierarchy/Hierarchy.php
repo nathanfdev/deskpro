@@ -67,13 +67,17 @@ class Hierarchy implements \Countable, \IteratorAggregate
     public function __construct(array $root_nodes, HierarchyFormatterInterface $formatter = null, $node_id_path = null)
     {
         $this->formatter = $formatter ? : new Formatter\FlatListFormatter();
-        usort($root_nodes, function($node1, $node2) {
+
+        // suppress the bug in php in some versions for modifying an array in usort
+        @usort($root_nodes, function($node1, $node2) {
             return $node2->getOrder() - $node1->getOrder();
         });
         $this->root_nodes = $root_nodes;
+
         foreach ($root_nodes as $root_node) {
             $root_node->setHierarchy($this);
         }
+
         $this->node_id_path = $node_id_path;
         $this->accessor = PropertyAccess::createPropertyAccessor();
     }

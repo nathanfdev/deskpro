@@ -53,7 +53,6 @@ class ContentCommentVoter extends AbstractVoter
 
     protected function isGranted($attribute, $object, $user = null)
     {
-        // TODO: we do need the permission bag here, but it is not currently used.... this is purely based on settings atm
         if ($this->isLoggedIn($user)) {
             $permission_bag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
         } else {

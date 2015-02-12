@@ -4,6 +4,6 @@ services:
 
   redirect_protection_listener:
     class: Application\AppBundle\EventListener\RedirectProtectionListener
-    arguments: [@brand_stack, @logger]
+    arguments: [@brand_stack, @url_host_checker, @logger]
     tags:
       - { name: kernel.event_subscriber }

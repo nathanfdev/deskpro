@@ -67,26 +67,4 @@ class ContentSlugManagerSpec extends ObjectBehavior
 
         $this->ensureValidSlug($news)->shouldBe(null);
     }
-
-    function it_sets_the_right_new_slug_and_creates_history_if_passed_content_has_an_invalid_slug(
-        EntityManager $em,
-        News $news,
-        NewsRepo $news_repo,
-        NewsSlugHistoryRepo $news_slug_history_repo
-    )
-    {
-        //$content_class = 'Application\DeskPRO\Entity\News';
-        //
-        //$news->getTitle()->willReturn('New Title');
-        //$news->getSlug()->willReturn('current-slug');
-        //$news->getContentType()->willReturn(News::CONTENT_TYPE);
-        //
-        //$em->getRepository($content_class)->willReturn($news_repo);
-        //$em->getRepository($content_class . 'SlugHistory')->willReturn($news_slug_history_repo);
-        //
-        //$news_repo->findOneBy(array('slug' => 'new-title'))->willReturn(null);
-        //$news_slug_history_repo->findOneBy(array('slug' => 'new-title'))->willReturn(null);
-        //
-        //$this->ensureValidSlug($news)->shouldBeAnInstanceOf('Application\DeskPRO\Entity\NewsSlugHistory');
-    }
 }
