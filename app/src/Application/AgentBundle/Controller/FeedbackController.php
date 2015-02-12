@@ -434,7 +434,7 @@ class FeedbackController extends AbstractController
 
                 $feedback['content'] = $this->person->hasPerm('agent_publish.can_insert_html')
                     ? $this->in->getCleanValue('content', 'string', null, array('noclean' => true))
-                    : $this->in->getCleanValue('content', 'string');
+                    : $this->in->getCleanValue('content', 'html');
 
                 $data['content_html'] = $this->renderView('AgentBundle:Feedback:view-content-tab.html.twig', array(
                     'feedback' => $feedback
