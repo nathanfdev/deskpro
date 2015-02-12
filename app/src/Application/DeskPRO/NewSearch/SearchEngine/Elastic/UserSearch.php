@@ -87,7 +87,6 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Filter\Term(array('_type' => 'article')));
             $f->addMust(new Filter\Term(array('status' => 'published')));
             $f->addMust(new Filter\Terms('category_ids', $context->getArticleCategoryIds()));
-            $f->setBoost('1.5');
             $filter->addFilter($f);
         }
         if ($context->getNewsCategoryIds() && ($limit_types === null || in_array('news', $limit_types))) {
@@ -96,7 +95,6 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Filter\Term(array('_type' => 'news')));
             $f->addMust(new Filter\Term(array('status' => 'published')));
             $f->addMust(new Filter\Terms('category_id', $context->getNewsCategoryIds()));
-            $f->setBoost('1.3');
             $filter->addFilter($f);
         }
         if ($context->getDownloadCategoryIds() && ($limit_types === null || in_array('download', $limit_types))) {
@@ -105,14 +103,13 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Filter\Term(array('_type' => 'download')));
             $f->addMust(new Filter\Term(array('status' => 'published')));
             $f->addMust(new Filter\Terms('category_id', $context->getDownloadCategoryIds()));
-            $f->setBoost('1.5');
             $filter->addFilter($f);
         }
         if ($context->getFeedbackCategoryIds() && ($limit_types === null || in_array('feedback', $limit_types))) {
             $search->addType('feedback');
             $f = new Filter\Bool();
             $f->addMust(new Filter\Term(array('_type' => 'feedback')));
-            $f->addMust(new Filter\Term(array('status' => 'published')));
+            $f->addMustNot(new Filter\Term(array('status' => 'hidden')));
             $f->addMust(new Filter\Terms('category_id', $context->getFeedbackCategoryIds()));
             $filter->addFilter($f);
         }
@@ -130,7 +127,6 @@ class UserSearch implements UserSearchInterface
             }
 
             $f->addMust($f2);
-            $f->setBoost(5);
             $filter->addFilter($f);
         }
 
