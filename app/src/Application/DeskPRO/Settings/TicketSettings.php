@@ -296,12 +296,6 @@ class TicketSettings
         $this->settings->setSetting('core.gateway_max_email', $this->gateway_max_email ?: null);
 
         $wh = $this->working_hours;
-        $wh['work_days'] = array();
-        if (!empty($this->working_hours['work_days']) && is_array($this->working_hours['work_days'])) {
-            foreach ($this->working_hours['work_days'] as $k => $v) {
-                if ($v) $wh['work_days'][] = $k;
-            }
-        }
         if ($wh) {
             $this->settings->setSetting('core_tickets.work_hours', serialize($wh));
         } else {
