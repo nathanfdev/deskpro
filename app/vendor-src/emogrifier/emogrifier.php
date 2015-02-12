@@ -118,23 +118,24 @@ class Emogrifier {
 
             // query the body for the xpath selector
             $nodes = $xpath->query($this->translateCSStoXpath(trim($value['selector'])));
+            if ($nodes) {
+                foreach ($nodes as $node) {
+                    // if it has a style attribute, get it, process it, and append (overwrite) new stuff
+                    if ($node->hasAttribute('style')) {
+                        // break it up into an associative array
+                        $oldStyleArr = $this->cssStyleDefinitionToArray($node->getAttribute('style'));
+                        $newStyleArr = $this->cssStyleDefinitionToArray($value['attributes']);
 
-            foreach($nodes as $node) {
-                // if it has a style attribute, get it, process it, and append (overwrite) new stuff
-                if ($node->hasAttribute('style')) {
-                    // break it up into an associative array
-                    $oldStyleArr = $this->cssStyleDefinitionToArray($node->getAttribute('style'));
-                    $newStyleArr = $this->cssStyleDefinitionToArray($value['attributes']);
-
-                    // new styles overwrite the old styles (not technically accurate, but close enough)
-                    $combinedArr = array_merge($oldStyleArr,$newStyleArr);
-                    $style = '';
-                    foreach ($combinedArr as $k => $v) $style .= (strtolower($k) . ':' . $v . ';');
-                } else {
-                    // otherwise create a new style
-                    $style = trim($value['attributes']);
+                        // new styles overwrite the old styles (not technically accurate, but close enough)
+                        $combinedArr = array_merge($oldStyleArr, $newStyleArr);
+                        $style = '';
+                        foreach ($combinedArr as $k => $v) $style .= (strtolower($k) . ':' . $v . ';');
+                    } else {
+                        // otherwise create a new style
+                        $style = trim($value['attributes']);
+                    }
+                    $node->setAttribute('style', $style);
                 }
-                $node->setAttribute('style', $style);
             }
         }
 
