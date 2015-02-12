@@ -59,9 +59,6 @@ if (!window.DP_NO_JS_SCROLL) {
 					$listing.closest('.view-body').siblings('header:visible').each(function(){
 						hh += $(this).outerHeight(true);
 					});
-          $listing.closest('.view-body').find('.list-grouping-bar:visible').each(function() {
-            hh += $(this).outerHeight(true);
-          });
 				}
 				$listing.height(sh - hh - 1);
 

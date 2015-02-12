@@ -17,7 +17,7 @@ define(function () {
     var updateMeta = function () {
       var data = $scope.meta_defaults || {};
       $scope.loading_meta = true;
-      $scope.meta_errors = null;
+      $scope.error = null;
       $scope.meta_defaults = {};
       $scope.Ctrl.startSpinner('saving_settings');
 
@@ -25,10 +25,9 @@ define(function () {
         function (res) {
           $scope.loading_meta = false;
           $scope.Ctrl.stopSpinner('saving_settings');
+          $scope.error = res.data.error;
 
-          if (res.data.errors) {
-            $scope.meta_errors = res.data.errors;
-          } else {
+          if (!$scope.error) {
             $scope.meta = res.data;
 
             $scope.meta_defaults = {
@@ -39,8 +38,9 @@ define(function () {
             };
           }
         },
-        function () {
+        function (res) {
           $scope.loading_meta = false;
+          $scope.error = res.data.error;
           $scope.Ctrl.stopSpinner('saving_settings');
         }
       );
@@ -65,7 +65,7 @@ define(function () {
     });
 
     $scope.saveSettings = function () {
-      $scope.meta_errors = null;
+      $scope.error = null;
       $scope.Ctrl.saveSettings().then(
         function () {
           updateMeta();

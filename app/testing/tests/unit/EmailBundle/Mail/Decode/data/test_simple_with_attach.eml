@@ -1,0 +1,50 @@
+Delivered-To: target@example.com
+Received: by 10.114.21.129 with SMTP id v1csp1147403lde;
+        Thu, 5 Feb 2015 08:14:45 -0800 (PST)
+X-Received: by 10.68.138.135 with SMTP id qq7mr6648479pbb.139.1423152883932;
+        Thu, 05 Feb 2015 08:14:43 -0800 (PST)
+Return-Path: <user@example.com>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com. [66.111.4.25])
+        by mx.google.com with ESMTPS id n4si6640977pdn.170.2015.02.05.08.14.42
+        for <target@example.com>
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Feb 2015 08:14:43 -0800 (PST)
+Received-SPF: none (google.com: user@example.com does not designate permitted sender hosts) client-ip=66.111.4.25;
+Authentication-Results: mx.google.com;
+       spf=none (google.com: user@example.com does not designate permitted sender hosts) smtp.mail=user@example.com;
+       dkim=pass header.i=@messagingengine.com
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailout.nyi.internal (Postfix) with ESMTP id 14D5C2075B
+	for <target@example.com>; Thu,  5 Feb 2015 11:14:39 -0500 (EST)
+Received: from frontend1 ([10.202.2.160])
+  by compute1.internal (MEProxy); Thu, 05 Feb 2015 11:14:40 -0500
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
+	messagingengine.com; h=x-sasl-enc:from:to:subject:date
+	:message-id:mime-version:content-type; s=smtpout; bh=jDE8x0HoyiX
+	Z/AO/+kDphK754KE=; b=FFeK57A/45tJyYTem4bnFydQtDHly4oOBR3rhmHHw+K
+	Ivp2wrwlO5K6xQaXVzw3GLNiCdE0hMzllq+dz8Ci2yxUtNr6H/yUp/bA7TGNDf8f
+	X0tr+WchHhytylCC8QjrCY8OX2Os6PE9syzeruo2IdVgOnuGC+CloyO2KERG4LHM
+	=
+X-Sasl-enc: pPLLLYz5AZaAaQdc/b7i/CVjj/Iv4G7A04GDCxrQpFyy 1423152879
+Received: from [172.16.6.1] (unknown [194.74.6.165])
+	by mail.messagingengine.com (Postfix) with ESMTPA id 8D2DCC002A3
+	for <target@example.com>; Thu,  5 Feb 2015 11:14:39 -0500 (EST)
+From: "User" <user@example.com>
+To: "Target" <target@example.com>
+Subject: Testing Simple with Attach
+Date: Thu, 05 Feb 2015 16:14:31 +0000
+Message-ID: <DF502865-9522-41B0-8F2C-AE70F73711DA@example.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="=_MailMate_967F2B2E-957D-4A95-9361-71AB01BB8EB9_="
+X-Mailer: MailMate (1.8r4576)
+
+
+--=_MailMate_967F2B2E-957D-4A95-9361-71AB01BB8EB9_=
+
+Testing 123
+--=_MailMate_967F2B2E-957D-4A95-9361-71AB01BB8EB9_=
+Content-Disposition: attachment; filename=text-file.txt
+
+This is a text file attachment.
+--=_MailMate_967F2B2E-957D-4A95-9361-71AB01BB8EB9_=--

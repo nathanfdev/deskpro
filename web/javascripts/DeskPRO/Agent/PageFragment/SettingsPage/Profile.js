@@ -113,6 +113,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 							$('#agent_settings_win_errors').find('li.' + classname).show();
 						});
 						$('#agent_settings_win_errors').show();
+						$('#settingswin_pages').scrollTop(0);
 
 						return;
 					}

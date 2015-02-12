@@ -109,7 +109,15 @@ class OAuthWrapper
 		parse_str($body, $tokens);
 
 		if (empty($tokens)) {
-			throw new \Exception("An error occurred while requesting oauth token credentials");
+			throw new \Exception(sprintf(
+				'Bad response from host. Expected urlencoded string but "%s" received.', substr($body, 0, 200)
+			), 1003);
+		}
+
+		if (!isset($tokens['oauth_token'])) {
+			throw new \Exception(
+				'Bad response from host. No OAuth token provided.'
+			, 1004);
 		}
 
 		return $this->tokens = $tokens;

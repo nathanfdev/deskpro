@@ -8,6 +8,8 @@
  * format.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_AlternateIdBaseType
  */
 class EWSType_AlternatePublicFolderItemIdType extends EWSType
 {

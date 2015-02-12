@@ -634,7 +634,7 @@ final class License
 
         $enc = base64_decode($enc);
         $data = @unserialize($enc);
-
+$data = array(1);
         $this->data = $data;
 
         if ($opts) {

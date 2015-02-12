@@ -104,6 +104,12 @@ var ticketReader = (function() {
 				{{ phrase('user.general.wait_attach_loading') }}
 			</div>
 
+			{% if captcha_html and force_captcha %}
+				<div>
+					{% include 'UserBundle:NewTicket:field-captcha.html.twig' %}
+				</div>
+			{% endif %}
+
 			<input class="dp-btn dp-btn-primary" type="submit" value="{{ phrase('user.tickets.submit') }}" />
 		</form>
 	</article>

@@ -15,7 +15,7 @@ class EWSType_PathToIndexedFieldType extends EWSType
      *
      * This attribute is required.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -24,7 +24,7 @@ class EWSType_PathToIndexedFieldType extends EWSType
     /**
      * FieldURI property
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var EWSType_DictionaryURIType
      */

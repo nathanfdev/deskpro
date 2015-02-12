@@ -35,7 +35,10 @@ namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\Translate\JsExporter;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class InterfaceController extends AbstractController
 {
@@ -198,5 +201,33 @@ class InterfaceController extends AbstractController
             default:
                 return array();
         }
+    }
+
+
+    /**
+     * @param $code
+     * @return BinaryFileResponse
+     */
+    public function downloadExportFileAction($code)
+    {
+        if (!$data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code)) {
+            throw new NotFoundHttpException;
+        }
+
+        $file = $data->getData('file');
+
+        if (!file_exists($file)) {
+            throw new NotFoundHttpException;
+        }
+
+        $response = new BinaryFileResponse($file);
+        $response->trustXSendfileTypeHeader();
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_INLINE,
+            pathinfo($file, PATHINFO_BASENAME),
+            iconv('UTF-8', 'ASCII//TRANSLIT', 'DP_Export.csv')
+        );
+
+        return $response;
     }
 }

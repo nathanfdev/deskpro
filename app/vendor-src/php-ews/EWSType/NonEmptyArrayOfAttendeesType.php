@@ -11,7 +11,7 @@
 class EWSType_NonEmptyArrayOfAttendeesType extends EWSType
 {
     /**
-     * Attendee property
+     * Represents attendees and resources for a meeting.
      *
      * @since Exchange 2007
      *

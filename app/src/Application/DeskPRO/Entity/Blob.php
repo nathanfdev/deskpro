@@ -62,7 +62,6 @@ use Orb\Util\Strings;
  * @property int $dim_h
  * @property \DateTime $date_created
  * @property bool $is_temp
- * @property \DateTime $date_cleanup
  */
 class Blob extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -204,11 +203,6 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      * @var bool
      */
     protected $is_temp = false;
-
-    /**
-     * The date this blob should be automatically cleaned
-     */
-    protected $date_cleanup;
 
     /**
      */
@@ -529,7 +523,6 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             'dim_w'            => $this->dim_w,
             'dim_h'            => $this->dim_h,
             'is_temp'          => $this->is_temp ? 1 : 0,
-            'date_cleanup'     => $this->date_cleanup ? $this->date_cleanup->format('Y-m-d H:i:s') : null
         );
     }
 
@@ -545,7 +538,8 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             'name' => 'blobs',
             'indexes' => array(
                 'authcode_idx' => array('columns' => array('authcode')),
-                'storage_loc_idx' => array('columns' => array('storage_loc', 'storage_loc_pref'))
+                'storage_loc_idx' => array('columns' => array('storage_loc', 'storage_loc_pref')),
+                'date_created_idx' => array('columns' => array('date_created', 'is_temp'))
             )
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
@@ -567,7 +561,6 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'dim_h', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'dim_h', ));
         $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
         $metadata->mapField(array( 'fieldName' => 'is_temp', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_temp', ));
-        $metadata->mapField(array( 'fieldName' => 'date_cleanup', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_cleanup', ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(array( 'fieldName' => 'original_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'original_blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
         $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelBlob', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'blob', 'orphanRemoval' => true, ));

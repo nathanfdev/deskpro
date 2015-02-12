@@ -1,0 +1,358 @@
+#!/usr/bin/env php
+<?php
+namespace DeskPRO\Bin\redis_cmd_runner;
+use React;
+use Predis;
+
+########################################################################################################################
+
+error_reporting(E_ALL | E_STRICT);
+define('DP_ROOT', realpath(__DIR__ . '/../../'));
+define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
+require(DP_ROOT . '/sys/autoload.php');
+set_time_limit(0);
+
+########################################################################################################################
+
+/* COPY THIS CONFIG TO A FILE:
+
+$conf = array();
+$conf['log_file'] = '/path/to/logfile';
+$conf['cmd_log_dir'] = '/path/to/logs/dir';
+$conf['redis_key'] = 'redis_key';
+$conf['redis_params'] = array(
+    'scheme'             => 'tcp',
+    'host'               => '127.0.0.1',
+    'port'               => '6379',
+    'read_write_timeout' => '20'
+);
+$conf['cmd_timeout'] = 120;
+$conf['max_children'] = 15;
+
+$conf['queue_processor'] = function($info) {
+    //....
+    return array(
+        'group_id' => 'string',
+        'cmd' => 'php cmd.php some:cmd'
+    );
+};
+
+return $conf;
+
+*/
+
+$opts = getopt('', array('config:'));
+if (empty($opts['config'])) {
+    echo "You must specify the --config option.\n";
+    exit(1);
+}
+if (!is_file($opts['config'])) {
+    echo "Invalid config path: {$opts['config']}\n";
+    exit(1);
+}
+
+$conf = require($opts['config']);
+
+########################################################################################################################
+
+class CmdJob
+{
+    /**
+     * @var string
+     */
+    public $id;
+
+    /**
+     * @var string
+     */
+    public $group_id;
+
+    /**
+     * @var string
+     */
+    public $cmd;
+
+    /**
+     * @var array
+     */
+    public $data;
+}
+
+class CmdRunner
+{
+    /**
+     * @var string
+     */
+    private $log_file;
+
+    /**
+     * @var string
+     */
+    private $cmd_log_dir;
+
+    /**
+     * @var string
+     */
+    private $redis_key;
+
+    /**
+     * @var callable
+     */
+    private $queue_processor;
+
+    /**
+     * @var int
+     */
+    private $cmd_timeout = 120;
+
+    /**
+     * @var int
+     */
+    private $max_children = 15;
+
+    /**
+     * @var array
+     */
+    private $running_children = array();
+
+    /**
+     * @var Predis\Client
+     */
+    private $redis_client = null;
+
+    /**
+     * @var array
+     */
+    private $redis_params;
+
+    /**
+     * @var React\EventLoop\LoopInterface
+     */
+    private $loop;
+
+
+    public function __construct(array $config)
+    {
+        $this->log_file        = $config['log_file'];
+        $this->cmd_log_dir     = $config['cmd_log_dir'];
+        $this->redis_key       = $config['redis_key'];
+        $this->redis_params    = $config['redis_params'];
+        $this->queue_processor = $config['queue_processor'];
+        $this->cmd_timeout     = @$config['cmd_timeout'] ?: 120;
+        $this->max_children    = @$config['max_children'] ?: 15;
+    }
+
+    public function start()
+    {
+        $this->loop = React\EventLoop\Factory::create();
+        $this->loop->addPeriodicTimer(1, array($this, 'runLoop'));
+        $this->loop->run();
+    }
+
+    public function runLoop()
+    {
+        foreach ($this->running_children as $c) {
+            if ((time() - $c['time']) > $this->cmd_timeout) {
+                $this->_appendJobOutput($c['id'], 'stderr', "TIMEOUT");
+                $c['p']->terminate();
+            }
+            if (!$c['p']->isRunning()) {
+                $this->_jobStopped($c['id']);
+            }
+        }
+
+        while (count($this->running_children) < $this->max_children && ($job = $this->getNext())) {
+            $id = $job->id;
+            $me = $this;
+
+            $process = new React\ChildProcess\Process($job->cmd);
+            $process->start($this->loop);
+
+            $info = array(
+                'id'       => $job->id,
+                'group_id' => $job->group_id,
+                'cmd'      => $job->cmd,
+                'stderr'   => '',
+                'stdout'   => '',
+                'time'     => time(),
+                'p'        => $process
+            );
+
+            $this->running_children[$job->id] = $info;
+
+            $process->on('exit', function() use ($me, $id) {
+                $me->_jobStopped($id);
+            });
+            $process->stdout->on('data', function($output) use ($me, $id) {
+                $me->_appendJobOutput($id, 'stdout', $output);
+            });
+            $process->stderr->on('data', function($output) use ($me, $id) {
+                $me->_appendJobOutput($id, 'stderr', $output);
+            });
+        }
+    }
+
+    /**
+     * @param string $id
+     * @param string $type   stdout or stderr
+     * @param string $output
+     */
+    public function _appendJobOutput($id, $type, $output)
+    {
+        if (isset($this->running_children[$id])) {
+            $this->running_children[$id][$type] .= $output;
+        }
+    }
+
+    /**
+     * @param string $id
+     * @internal
+     */
+    public function _jobStopped($id)
+    {
+        if (!isset($this->running_children[$id])) {
+            return;
+        }
+        $info = $this->running_children[$id];
+        unset($this->running_children[$id]);
+
+        $log = "Cmd: " . $info['cmd']
+            . "STDOUT\n"
+            . str_repeat("#", 72)
+            . "\n\n"
+            . $info['stdout']
+            . "\n\n"
+            . "STDERR\n"
+            . str_repeat("#", 72)
+            . "\n\n"
+            . $info['stderr'];
+
+        $this->logCmdOutput($info['group_id'], $log);
+    }
+
+    /**
+     * @return CmdJob|null
+     */
+    public function getNext()
+    {
+        for ($i = 0; $i < 5; $i++) {
+            try {
+                $c = $this->getRedisClient($this->redis_params);
+                $next = $c->rpop($this->redis_key);
+
+                if ($next === null) {
+                    return null;
+                }
+
+                $value = @json_decode($next, true);
+                if (!$value) {
+                    $this->logMessage("Invalid job data: " . $next);
+                } else {
+                    $info = call_user_func($this->queue_processor, $value);
+                    if ($info) {
+                        $cmdjob = new CmdJob();
+                        $cmdjob->id = uniqid('', true);
+                        $cmdjob->cmd = $info['cmd'];
+                        $cmdjob->group_id = $info['group_id'];
+                        $cmdjob->data = $value;
+                        return $cmdjob;
+                    } else {
+                        $this->logMessage("Invalid job data: " . $next);
+                        return null;
+                    }
+                }
+            } catch (\Exception $e) {
+                $this->logMessage($e->getMessage());
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return Predis\Client
+     */
+    public function getRedisClient()
+    {
+        if ($this->redis_client && $this->redis_client->isConnected()) {
+            return $this->redis_client;
+        }
+
+        $this->logMessage("Connecting...");
+
+        // see https://github.com/nrk/predis/wiki/Connection-Parameters
+        try {
+            $client = new Predis\Client();
+
+            $client->connect();
+        } catch (\Exception $e) {
+            $this->logMessage("-> Connect failure: " . $e->getMessage());
+            throw $e;
+        }
+
+        $this->redis_client = $client;
+
+        $this->logMessage("-> Connecting done");
+        return $this->redis_client;
+    }
+
+    /**
+     * Resets the redis connection
+     */
+    public function resetRedisClient()
+    {
+        if ($this->redis_client) {
+            try {
+                $this->redis_client->disconnect();
+            } catch (\Exception $e) {}
+        }
+        $this->redis_client = null;
+    }
+
+    /**
+     * Log a message to the runner log
+     *
+     * @param string $var
+     */
+    public function logMessage($var)
+    {
+        if (func_num_args() > 1) {
+            $args = func_get_args();
+            array_shift($args);
+            $write = vsprintf($var, $args);
+        } else {
+            $write = $var;
+        }
+
+        $write = '[' . date('Y-m-d H:i:s') . '] ' . $write;
+        $write .= "\n";
+
+        echo $write;
+
+        if ($this->log_file) {
+            file_put_contents($this->log_file, $write, \FILE_APPEND);
+        }
+    }
+
+    /**
+     * Log output from a given command
+     *
+     * @param string $group_id A directory to log the file to
+     * @param string $out
+     */
+    public function logCmdOutput($group_id, $out)
+    {
+        $write = '[' . date('Y-m-d H:i:s') . '] ' . trim($out);
+        $write .= "\n";
+
+        $uid = date('YmdHis'). '_' . uniqid('') . '.log';
+
+        $dir = $this->cmd_log_dir.'/'.date('Y/m/d/').$group_id;
+        @mkdir($dir, 0777, true);
+
+        file_put_contents($dir.'/'.$uid, $write, \FILE_APPEND);
+    }
+}
+
+$runner = new CmdRunner($conf);
+$runner->start();

@@ -40,10 +40,10 @@ use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\EditEmailAccount;
 use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\EditEmailAccountType;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\IncomingAccountTester;
-use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\OutgoingAccountTester;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Settings\EmailAccountsSettings;
+use Application\EmailBundle\Queue\QueueProc;
 use Orb\Util\Env;
 use Orb\Validator\StringEmail;
 
@@ -146,6 +146,11 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         if ($data['incoming_type'] == 'gmail') {
             $data['outgoing_type']     = 'gmail';
             $data['out_gmail_account'] = $data['in_gmail_account'];
+        }
+
+        if ($data['incoming_type'] == 'office365') {
+            $data['outgoing_type']     = 'office365';
+            $data['out_office365_account'] = $data['in_office365_account'];
         }
 
         $form->submit($data);
@@ -260,17 +265,53 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
             ));
         }
 
-        $tester = new OutgoingAccountTester($out_account);
-        $tester->test(
-            $this->in->getString('test_email.to'),
+        try {
+            $raw_tr = $this->container->get('email.raw_transport_factory')->createTransport($out_account);
+        } catch (\Exception $e) {
+            return $this->createApiResponse(array(
+                'is_success'    => false,
+                'log'           => $e->getMessage(),
+            ));
+        }
+
+        QueueProc::$__dp_current_sendmail = array('id' => '@TEST');
+
+        $logger = $this->container->get('monolog.logger.dp.email.out.queue');
+
+        $swift_message = \Swift_Message::newInstance()
+            ->setSubject($this->in->getString('test_email.subject'))
+            ->setBody($this->in->getString('test_email.message'))
+            ->setFrom($this->in->getString('test_email.from'))
+            ->setTo($this->in->getString('test_email.to'));
+
+        $fp = fopen('php://temp/maxmemory:10000000', 'rw');
+        fwrite($fp, $swift_message->toString());
+
+        $logger->info('Begin send test');
+
+        $failed = array();
+        $sent = $raw_tr->sendRawMessage(
             $this->in->getString('test_email.from'),
-            $this->in->getString('test_email.subject'),
-            $this->in->getString('test_email.message')
+            array($this->in->getString('test_email.to')),
+            $fp,
+            $failed
         );
 
+        if ($failed) {
+            $logger->notice(sprintf('NOTICE: Failed recipients: %s', implode(', ', $failed)));
+        }
+
+        $logger->info(sprintf('Sent %d messages', $sent));
+
+        QueueProc::$__dp_current_sendmail = null;
+
+        // Cleans up log a bit to remove channel names
+        $log = $this->container->get('email.log_collector')->getLogForMessage('@TEST');
+        $log = preg_replace("#^(\[.*?\]) (.*?)\.([A-Z]+): #m", '$1 ', $log);
+
         return $this->createApiResponse(array(
-            'is_success'    => $tester->isSuccess(),
-            'log'           => $tester->getLog(),
+            'is_success'    => $sent > 0,
+            'log'           => $log,
         ));
     }
 

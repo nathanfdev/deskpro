@@ -263,6 +263,7 @@
     'agent.general.error_form_correct'                      => 'Please correct the following errors with your form',
     'agent.general.error_password_mismatch'                 => 'The two password fields do not match',
     'agent.general.error_password_short'                    => 'Please enter a password of at least {{len}} characters',
+    'agent.general.error_password_invalid'                  => 'Password does not adhere to agent password policy',
     'agent.general.error_your_name'                         => 'Please enter your full name',
     'agent.general.escalation'                              => 'Escalation',
     'agent.general.everyone'                                => 'Everyone',

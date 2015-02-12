@@ -12,18 +12,6 @@
 class EWSType_ItemIdType extends EWSType
 {
     /**
-     * Identifies a specific item in the Exchange store.
-     *
-     * Id is case-sensitive; therefore, comparisons between Ids must be
-     * case-sensitive or binary.
-     *
-     * @since Exchange 2007
-     *
-     * @var string
-     */
-    public $Id;
-
-    /**
      * Identifies a specific version of an item.
      *
      * A ChangeKey is required for the following scenarios:
@@ -42,4 +30,16 @@ class EWSType_ItemIdType extends EWSType
      * @var string
      */
     public $ChangeKey;
+
+    /**
+     * Identifies a specific item in the Exchange store.
+     *
+     * Id is case-sensitive; therefore, comparisons between Ids must be
+     * case-sensitive or binary.
+     *
+     * @since Exchange 2007
+     *
+     * @var string
+     */
+    public $Id;
 }
