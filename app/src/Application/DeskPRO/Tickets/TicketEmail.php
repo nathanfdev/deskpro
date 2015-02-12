@@ -51,9 +51,14 @@ class TicketEmail
     private $settings;
 
     /**
-     * @var \Application\DeskPRO\Mail\Mailer
+     * @var \Swift_Mailer
      */
     private $mailer;
+
+    /**
+     * @var \Application\DeskPRO\Email\EmailAccount\EmailAccountManager
+     */
+    private $email_accounts;
 
     /**
      * @var \Application\DeskPRO\Translate\Translate
@@ -162,6 +167,7 @@ class TicketEmail
         $opt->addRequiredNames(
             'settings',
             'mailer',
+            'email_accounts',
             'translate',
             'em',
             'ticket',
@@ -191,6 +197,7 @@ class TicketEmail
 
         $this->settings                = $opt->get('settings');
         $this->mailer                  = $opt->get('mailer');
+        $this->email_accounts          = $opt->get('email_accounts');
         $this->translate               = $opt->get('translate');
         $this->em                      = $opt->get('em');
         $this->ticket_field_manager    = $opt->get('ticket_field_manager');
@@ -295,8 +302,7 @@ class TicketEmail
      */
     public function send(array $vars = array())
     {
-        $mailer     = $this->mailer;
-        $mailer->resetLogMessages();
+        $mailer = $this->mailer;
 
         $translator = $this->translate;
         $em         = $this->em;
@@ -460,7 +466,7 @@ class TicketEmail
         }
 
         if (!$this->from_email_account || !$this->from_email_account->outgoing_account) {
-            $this->from_email_account = $mailer->getEmailAccountForTicket($this->ticket);
+            $this->from_email_account = $this->email_accounts->getAccountForTicket($this->ticket);
         }
 
         if (!$this->from_email_account) {
@@ -510,10 +516,6 @@ class TicketEmail
         $start = microtime(true);
         $mailer->send($message);
         $this->logger->info(sprintf("[TicketEmail] Send took %.3fs", microtime(true) - $start));
-
-        foreach ($mailer->getLogMessages() as $log_msg) {
-            $this->logger->debug("[TicketEmail][Mailer] $log_msg");
-        }
     }
 
     /**

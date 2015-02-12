@@ -47,7 +47,7 @@ class MailDecodeTest extends \DpUnitTestCase
         $m = $decoder->createRawMessage($fp);
 
         $this->assertEquals(
-            array(array('email' => 'user@example.com', 'name' => 'User')),
+            array('email' => 'user@example.com', 'name' => 'User'),
             $m->getFrom(),
             'Check From'
         );
@@ -92,7 +92,7 @@ class MailDecodeTest extends \DpUnitTestCase
         $m = $decoder->createRawMessage($fp);
 
         $this->assertEquals(
-            array(array('email' => 'user@example.com', 'name' => 'User')),
+            array('email' => 'user@example.com', 'name' => 'User'),
             $m->getFrom(),
             'Check From'
         );
@@ -143,7 +143,7 @@ class MailDecodeTest extends \DpUnitTestCase
         $m = $decoder->createRawMessage($fp);
 
         $this->assertEquals(
-            array(array('email' => 'user@example.com', 'name' => 'User')),
+            array('email' => 'user@example.com', 'name' => 'User'),
             $m->getFrom(),
             'Check From'
         );

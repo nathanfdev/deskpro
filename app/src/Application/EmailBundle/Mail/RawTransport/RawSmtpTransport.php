@@ -65,9 +65,13 @@ class RawSmtpTransport implements RawTransportInterface
             $failed = array();
         }
 
-        $this->tr->start();
-
-        if (!empty($tos)) $sent += $this->_doMail($from, $tos, $raw_fp, $failed);
+        try {
+            $this->tr->start();
+            if (!empty($tos)) $sent += $this->_doMail($from, $tos, $raw_fp, $failed);
+        } catch (\Swift_TransportException $e) {
+            $raw_e = new RawTransportException($e->getMessage(), $e->getCode(), $e);
+            throw $raw_e;
+        }
 
         return $sent;
     }

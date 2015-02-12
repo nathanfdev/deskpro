@@ -106,8 +106,6 @@ class DatabaseSourceMapper implements SourceMapperInterface
      */
     public function createSourceForMessage(\Swift_Mime_Message $message, $status, \DateTime $queue_date = null)
     {
-        $blob = $this->bs->createBlobRowFromString($message->toString(), 'out_email.eml', 'message/rfc822');
-
         $header_to_raw  = $message->getTo();
         $header_to      = array();
 
@@ -182,6 +180,8 @@ class DatabaseSourceMapper implements SourceMapperInterface
             $message->getHeaders()->addTextHeader('X-DeskPRO-MessageRef', $ref);
             $message->setId($ref . '@deskpro-message');
         }
+
+        $blob = $this->bs->createBlobRowFromString($message->toString(), 'out_email.eml', 'message/rfc822');
 
         if ($status == 'processing') {
             $exec_count = 1;

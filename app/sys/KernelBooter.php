@@ -271,6 +271,13 @@ class KernelBooter
         } else {
             define('DP_INTERFACE', 'user');
 
+            // exit early on asset 404s
+            if (preg_match('#^/web/#', $path)) {
+                header("HTTP/1.0 404 Not Found");
+                echo "File not found. (no asset)";
+                exit;
+            }
+
             try {
 
                 // debug code

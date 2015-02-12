@@ -221,13 +221,20 @@ $container->loadFromExtension('framework', array(
 $container->loadFromExtension('monolog', array(
     'handlers' => array(
         'main' => array(
-            'type' => 'null'
+            'type'         => 'fingers_crossed',
+            'action_level' => 'error',
+            'handler'      => 'main_file',
+        ),
+        'main_file' => array(
+            'type'  => 'stream',
+            'path'  => '%kernel.logs_dir%/deskpro.log',
+            'level' => 'debug',
         ),
         'email_log_collector' => array(
             'type' => 'service',
             'id' => 'email.log_collector',
             'channels' => array('dp.email.out.mailer', 'dp.email.out.transport', 'dp.email.out.queue', 'dp.email.out.raw_transport')
-        )
+        ),
     )
 ));
 

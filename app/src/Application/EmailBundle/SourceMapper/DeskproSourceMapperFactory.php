@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,42 +29,36 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage EmailBundle
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
-use Application\DeskPRO\App;
-use Application\EmailBundle\SourceMapper\ExternalPendingQueue;
+namespace Application\EmailBundle\SourceMapper;
 
-/**
- * Goes through queued messages
- */
-class SendmailQueue extends AbstractJob
+use Application\EmailBundle\SourceMapper\PendingQueuer\RedisPendingQueuer;
+use Symfony\Component\DependencyInjection\Container;
+use Predis;
+
+class DeskproSourceMapperFactory
 {
-    const DEFAULT_INTERVAL = 60;
-
-    public function run()
+    public static function getSourceMapper(Container $container)
     {
-        $runner = App::getContainer()->get('email.queue_runner');
-        $count_problems = $runner->detectProblems();
-        $count = 0;
+        $source_mapper = new DatabaseSourceMapper(
+            $container->get('database_connection'),
+            $container->get('deskpro.blob_storage'),
+            $container->get('email.email_account_manager'),
+            $container->get('email.log_collector')
+        );
 
-        $source_mapper = App::getContainer()->get('email.source_mapper');
+        if (dp_get_config('sendmail_redis_queue')) {
+            // see https://github.com/nrk/predis/wiki/Connection-Parameters
+            $client = new Predis\Client(dp_get_config('sendmail_redis_queue'));
+            $redis_queuer = new RedisPendingQueuer($client, 'sendmail_queue');
 
-        // If we are using an external pending queue implementation,
-        // then this cron job should NOT run th emain queue loop
-        // because the external queue is responsible for that
-        if (!($source_mapper instanceof ExternalPendingQueue)) {
-            @ini_set('memory_limit', DP_MAX_MEMSIZE);
-            $count = $runner->run();
-            @ini_set('memory_limit', DP_SET_MEMSIZE);
-        }
+            $external = new ExternalPendingQueue($source_mapper, $redis_queuer);
+            return $external;
 
-        if ($count_problems) {
-            $this->logStatus("Detected {$count_problems} probelms in queue. Marked those as error:timeout.");
-        }
-        if ($count) {
-            $this->logStatus("Processed {$count} emails in queue.");
+        } else {
+            return $source_mapper;
         }
     }
 }

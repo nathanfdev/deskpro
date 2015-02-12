@@ -35,6 +35,7 @@
 namespace Application\EmailBundle\Queue;
 
 use Application\DeskPRO\DBAL\Connection;
+use Application\EmailBundle\SourceMapper\DatabaseSourceMapper;
 use Application\EmailBundle\SourceMapper\SourceMapperInterface;
 use Psr\Log\LoggerInterface;
 use Monolog;
@@ -80,6 +81,11 @@ class QueueRunner
      * @var int
      */
     private $proc_time_limit = 180;
+
+    /**
+     * @var array
+     */
+    private $done_ids = array();
 
     /**
      * @param Connection $db
@@ -128,7 +134,7 @@ class QueueRunner
             $batch = $this->db->fetchAllKeyed("
                 SELECT * FROM sendmail_sources
                 WHERE status = 'processing' AND date_status < ? AND exec_count <= 3
-                LIMIT 100
+                LIMIT 250
             ", array(date('Y-m-d H:i:s', time() -  1200)));
 
             $count += count($batch);
@@ -156,7 +162,7 @@ class QueueRunner
             $batch = $this->db->fetchAllKeyed("
                 SELECT * FROM sendmail_sources
                 WHERE status IN ('inserted', 'processing') AND date_status < ?
-                LIMIT 100
+                LIMIT 250
             ", array(date('Y-m-d H:i:s', time() -  1200)));
 
             $count += count($batch);
@@ -182,6 +188,47 @@ class QueueRunner
                 $did = true;
             }
 
+            #----
+            # Detect messages that did not queue in an external service properly
+            #----
+
+            if (!($this->source_mapper instanceof DatabaseSourceMapper)) {
+                $batch = $this->db->fetchAllKeyed("
+                    SELECT * FROM sendmail_sources
+                    WHERE status IN ('pending', 'retry') AND error_code = 'enqueue_failed'
+                    LIMIT 250
+                "); // 1 hrs
+
+                foreach ($batch as $r) {
+                    $this->source_mapper->setSourcePending($r);
+                    $did = true;
+                }
+            }
+
+            #----
+            # Detect messages that are pending too long
+            #----
+
+            // - If not using the standard database source mapper,
+            // means we are using some other source mapper which might
+            // use a queue.
+            // - So we sholud detect messages that are still 'pending' after
+            // a long time and re-mark them as pending (which should hopefully
+            // re-queue the message in the queue).
+
+            if (!($this->source_mapper instanceof DatabaseSourceMapper)) {
+                $batch = $this->db->fetchAllKeyed("
+                    SELECT * FROM sendmail_sources
+                    WHERE status IN ('pending') AND date_status < ?
+                    LIMIT 250
+                ", array(date('Y-m-d H:i:s', time() - 3600))); // 1 hrs
+
+                foreach ($batch as $r) {
+                    $this->source_mapper->setSourcePending($r);
+                    $did = true;
+                }
+            }
+
         } while ($did);
 
         return $count;
@@ -200,31 +247,47 @@ class QueueRunner
 
         $this->logger->info(sprintf('Starting -- Limit: %d -- Max Time: %ds', $this->proc_limit, $this->proc_time_limit));
 
-        $batch = $this->reserveBatch();
-        $this->logger->info(sprintf('Reserved %d records', count($batch)));
+        while (true) {
+            $did_break = false;
+            $batch_count = 0;
+            $batch = $this->reserveBatch();
+            $this->logger->info(sprintf('Reserved %d records', count($batch)));
 
-        $proc = new QueueProc($this->source_mapper, $this->source_sender, $this->logger);
+            $proc = new QueueProc($this->source_mapper, $this->source_sender, $this->logger);
 
-        if ($batch) {
-            while ($r = array_shift($batch)) {
-                $proc->process($r);
-                $count++;
+            if ($batch) {
+                while ($r = array_shift($batch)) {
+                    $proc->process($r);
+                    $count++;
+                    $batch_count++;
 
-                if ($count >= $this->proc_limit) {
-                    $this->logger->info("Reached limit, breaking");
-                    break;
-                }
+                    if ($count >= $this->proc_limit) {
+                        $this->logger->info("Reached limit, breaking");
+                        $did_break = true;
+                        break;
+                    }
 
-                if ((time() - $time_start) > $this->proc_time_limit) {
-                    $this->logger->info("Reached time limit, breaking");
-                    break;
+                    if ((time() - $time_start) > $this->proc_time_limit) {
+                        $this->logger->info("Reached time limit, breaking");
+                        $did_break = true;
+                        break;
+                    }
                 }
             }
-        }
 
-        if ($batch) {
-            $this->logger->info(sprintf('Releasing remainder %d reserved records back into queue', count($batch)));
-            $this->releaseRemaining($batch);
+            if ($batch) {
+                $this->logger->info(sprintf('Releasing remainder %d reserved records back into queue', count($batch)));
+                $this->releaseRemaining($batch);
+            }
+
+            if ($did_break || !$batch_count) {
+                break;
+            }
+
+            if ((time() - $time_start) > $this->proc_time_limit) {
+                $this->logger->info("Reached time limit, breaking (outer)");
+                break;
+            }
         }
 
         $time_end = time();
@@ -241,16 +304,25 @@ class QueueRunner
     {
         $this->db->beginTransaction();
 
+        if (!$this->done_ids) {
+            $this->done_ids = array(0);
+        }
+
         $batch = $this->db->fetchAll("
             SELECT *
             FROM sendmail_sources
-            WHERE status IN ('pending', 'retry') AND (date_next_attempt < ? OR date_next_attempt IS NULL)
+            WHERE
+              status IN ('pending', 'retry')
+              AND (date_next_attempt < ? OR date_next_attempt IS NULL)
+              AND id NOT IN (?)
             ORDER BY status ASC, id ASC
             LIMIT {$this->per_batch}
-        ", array(date('Y-m-d H:i:s', time())));
+            FOR UPDATE
+        ", array(date('Y-m-d H:i:s'), $this->done_ids), array(\PDO::PARAM_STR, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY));
 
         if ($batch) {
             $batch_ids = array_map(function($r) { return $r['id']; }, $batch);
+            $this->done_ids = array_merge($this->done_ids, $batch_ids);
             $this->db->executeUpdate("
                 UPDATE sendmail_sources
                 SET status = 'processing', date_status = ?

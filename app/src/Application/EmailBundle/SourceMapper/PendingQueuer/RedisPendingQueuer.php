@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,42 +29,48 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage EmailBundle
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
-use Application\DeskPRO\App;
-use Application\EmailBundle\SourceMapper\ExternalPendingQueue;
+namespace Application\EmailBundle\SourceMapper\PendingQueuer;
 
-/**
- * Goes through queued messages
- */
-class SendmailQueue extends AbstractJob
+use Predis;
+
+class RedisPendingQueuer implements PendingQueuerInterface
 {
-    const DEFAULT_INTERVAL = 60;
+    /**
+     * @var Predis\Client
+     */
+    private $client;
 
-    public function run()
+    /**
+     * @var string
+     */
+    private $key;
+
+    /**
+     * @param Predis\Client $client
+     * @param string $key
+     */
+    function __construct(Predis\Client $client, $key)
     {
-        $runner = App::getContainer()->get('email.queue_runner');
-        $count_problems = $runner->detectProblems();
-        $count = 0;
+        $this->client = $client;
+        $this->key = $key;
+    }
 
-        $source_mapper = App::getContainer()->get('email.source_mapper');
+    /**
+     * @param array $source
+     */
+    public function queueMessageSource(array $source)
+    {
+        $data = array(
+            'id' => $source['id']
+        );
 
-        // If we are using an external pending queue implementation,
-        // then this cron job should NOT run th emain queue loop
-        // because the external queue is responsible for that
-        if (!($source_mapper instanceof ExternalPendingQueue)) {
-            @ini_set('memory_limit', DP_MAX_MEMSIZE);
-            $count = $runner->run();
-            @ini_set('memory_limit', DP_SET_MEMSIZE);
+        if (defined('DPC_IS_CLOUD')) {
+            $data['dpc_site_id'] = DPC_SITE_ID;
         }
 
-        if ($count_problems) {
-            $this->logStatus("Detected {$count_problems} probelms in queue. Marked those as error:timeout.");
-        }
-        if ($count) {
-            $this->logStatus("Processed {$count} emails in queue.");
-        }
+        $this->client->rpush($this->key, array(json_encode($data)));
     }
 }

@@ -68,7 +68,16 @@ class RawSwiftmailerTransport implements RawTransportInterface
     public function sendRawMessage($from, array $tos, $raw_fp, array &$failed = null)
     {
         $message = $this->recreateSwiftMessage($from, $tos, $raw_fp);
-        return $this->tr->send($message, $failed);
+
+        try {
+            $this->tr->start();
+            $sent = $this->tr->send($message, $failed);
+        } catch (\Swift_TransportException $e) {
+            $raw_e = new RawTransportException($e->getMessage(), $e->getCode(), $e);
+            throw $raw_e;
+        }
+
+        return $sent;
     }
 
     /**

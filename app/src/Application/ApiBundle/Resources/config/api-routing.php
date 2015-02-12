@@ -437,20 +437,6 @@ $collection->create('api_tickets_sla', array(
     'methods'       => array('GET'),
 ));
 
-$collection->create('api_tickets_sla_people', array(
-    'path'          => '/tickets/slas/{sla_id}/people',
-    'controller'    => 'ApiBundle:Ticket:getSlaPeople',
-    'requirements'  => array('sla_id' => '\\d+'),
-    'methods'       => array('GET'),
-));
-
-$collection->create('api_tickets_sla_organizations', array(
-    'path'          => '/tickets/slas/{sla_id}/organizations',
-    'controller'    => 'ApiBundle:Ticket:getSlaOrganizations',
-    'requirements'  => array('sla_id' => '\\d+'),
-    'methods'       => array('GET'),
-));
-
 $collection->create('api_textsnippets_list', array(
     'path'        => '/text-snippets/{typename}',
     'controller'  => 'ApiBundle:TextSnippets:filterSnippets',
@@ -706,34 +692,6 @@ $collection->create('api_people_person_clear_session', array(
     'controller'    => 'ApiBundle:Person:clearSession',
     'requirements'  => array('person_id' => '\\d+'),
     'methods'       => array('POST'),
-));
-
-$collection->create('api_people_person_slas', array(
-    'path'          => '/people/{person_id}/slas',
-    'controller'    => 'ApiBundle:Person:getPersonSlas',
-    'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('GET'),
-));
-
-$collection->create('api_people_person_slas_post', array(
-    'path'          => '/people/{person_id}/slas',
-    'controller'    => 'ApiBundle:Person:postPersonSlas',
-    'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('POST'),
-));
-
-$collection->create('api_people_person_sla', array(
-    'path'          => '/people/{person_id}/slas/{sla_id}',
-    'controller'    => 'ApiBundle:Person:getPersonSla',
-    'requirements'  => array('person_id' => '\\d+', 'sla_id' => '\\d+'),
-    'methods'       => array('GET'),
-));
-
-$collection->create('api_people_person_sla_delete', array(
-    'path'          => '/people/{person_id}/slas/{sla_id}',
-    'controller'    => 'ApiBundle:Person:deletePersonSla',
-    'requirements'  => array('person_id' => '\\d+', 'sla_id' => '\\d+'),
-    'methods'       => array('DELETE'),
 ));
 
 $collection->create('api_people_person_notes', array(
@@ -1121,34 +1079,6 @@ $collection->create('api_organizations_organization_chats', array(
     'controller'    => 'ApiBundle:Organization:getOrganizationChats',
     'requirements'  => array('organization_id' => '\\d+'),
     'methods'       => array('GET'),
-));
-
-$collection->create('api_organizations_organization_slas', array(
-    'path'          => '/organizations/{organization_id}/slas',
-    'controller'    => 'ApiBundle:Organization:getOrganizationSlas',
-    'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('GET'),
-));
-
-$collection->create('api_organizations_organization_slas_post', array(
-    'path'          => '/organizations/{organization_id}/slas',
-    'controller'    => 'ApiBundle:Organization:postOrganizationSlas',
-    'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('POST'),
-));
-
-$collection->create('api_organizations_organization_sla', array(
-    'path'          => '/organizations/{organization_id}/slas/{sla_id}',
-    'controller'    => 'ApiBundle:Organization:getOrganizationSla',
-    'requirements'  => array('organization_id' => '\\d+', 'sla_id' => '\\d+'),
-    'methods'       => array('GET'),
-));
-
-$collection->create('api_organizations_organization_sla_delete', array(
-    'path'          => '/organizations/{organization_id}/slas/{sla_id}',
-    'controller'    => 'ApiBundle:Organization:deleteOrganizationSla',
-    'requirements'  => array('organization_id' => '\\d+', 'sla_id' => '\\d+'),
-    'methods'       => array('DELETE'),
 ));
 
 $collection->create('api_organizations_organization_billing_charges', array(

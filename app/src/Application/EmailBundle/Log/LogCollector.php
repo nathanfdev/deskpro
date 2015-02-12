@@ -74,11 +74,13 @@ class LogCollector implements HandlerInterface, LogCollectorInterface
      */
     public function handle(array $record)
     {
-        if (QueueProc::$__dp_current_sendmail) {
-            $record['extra']['sendmail_source_id'] = QueueProc::$__dp_current_sendmail['id'];
+        if (empty($record['extra']['sendmail_source_id'])) {
+            if (QueueProc::$__dp_current_sendmail) {
+                $record['extra']['sendmail_source_id'] = QueueProc::$__dp_current_sendmail['id'];
+            }
         }
 
-        if (!$this->isHandling($record)) {
+        if (empty($record['extra']['sendmail_source_id'])) {
             return false;
         }
 
@@ -104,7 +106,7 @@ class LogCollector implements HandlerInterface, LogCollectorInterface
         if (!isset($this->msg_lines[$id])) {
             $this->msg_lines[$id] = array();
             while (count($this->msg_lines) > $this->max_msg_keep) {
-                array_shift($this->msg_lines[$id]);
+                array_shift($this->msg_lines);
             }
         }
 
@@ -133,7 +135,7 @@ class LogCollector implements HandlerInterface, LogCollectorInterface
      */
     public function isHandling(array $record)
     {
-        if (empty($record['extra']['sendmail_source_id'])) {
+        if (empty($record['extra']['sendmail_source_id']) && !QueueProc::$__dp_current_sendmail) {
             return false;
         }
 

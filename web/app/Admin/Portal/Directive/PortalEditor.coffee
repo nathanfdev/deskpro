@@ -329,7 +329,7 @@ define [
               var wrapper = ev.wrapperEl;
 
               wrapper.find('.file-upload').fileupload({
-                url: DP_BASE_URL + 'admin/portal-editor/accept-upload',
+                url: DP_BASE_URL + 'admin/portal-editor/accept-upload?REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN + '&API-TOKEN=' + window.DP_API_TOKEN,
                 dropZone: wrapper,
                 autoUpload: true,
                 done: function(e, data) {
