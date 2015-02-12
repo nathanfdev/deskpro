@@ -200,7 +200,7 @@ class ProcessAgentFwd extends ProcessAbstract
         $ticket->email_account = $this->account;
         $ticket->creation_system = 'gateway.agent';
 
-        $ticket_message = new TicketMessage();
+        $ticket_message = new TicketMessage($this->reader->getId());
         $ticket_message->person = $user;
         $ticket_message->creation_system = 'gateway.agent';
         $ticket_message->withNewSubject = $ticket->subject;
@@ -221,7 +221,7 @@ class ProcessAgentFwd extends ProcessAbstract
             $this->logMessage('[TicketGatewayProcessor] Adding agent reply');
             $agent_reply = nl2br(htmlspecialchars($agent_reply, \ENT_QUOTES, 'UTF-8'));
 
-            $agent_ticket_message = new TicketMessage();
+            $agent_ticket_message = new TicketMessage($this->reader->getId());
             $agent_ticket_message->date_created->modify('+1 second');
             $agent_ticket_message->person = $this->person;
             $agent_ticket_message->setMessageHtml($agent_reply);
@@ -470,7 +470,7 @@ class ProcessAgentFwd extends ProcessAbstract
         $ticket->email_account = $this->account;
         $ticket->creation_system = 'gateway.agent';
 
-        $ticket_message = new TicketMessage();
+        $ticket_message = new TicketMessage($user_reader->getId());
         $ticket_message->person = $user;
         $ticket_message->creation_system = 'gateway.agent';
         $ticket_message->withNewSubject = $ticket->subject;
@@ -501,7 +501,7 @@ class ProcessAgentFwd extends ProcessAbstract
         if ($agent_reply) {
             $this->logMessage('[TicketGatewayProcessor] Adding agent reply');
 
-            $agent_ticket_message = new TicketMessage();
+            $agent_ticket_message = new TicketMessage($this->reader->getId());
             $agent_ticket_message->date_created->modify('+1 second');
             $agent_ticket_message->person = $this->person;
             $agent_ticket_message->setMessageHtml($agent_reply);

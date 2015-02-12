@@ -214,10 +214,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $email_message_id;
 
-    public function __construct()
+    public function __construct($email_id = null)
     {
         $this->setModelField('date_created', new \DateTime());
         $this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
+        $email_id && $this->setModelField('email_message_id', $email_id);
     }
 
     /**
