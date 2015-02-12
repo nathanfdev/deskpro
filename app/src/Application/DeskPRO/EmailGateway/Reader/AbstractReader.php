@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\EmailGateway\Reader;
 
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
+use Application\DeskPRO\EmailGateway\Reader\Item\Header;
 use Orb\Util\Strings;
 
 abstract class AbstractReader
@@ -472,9 +473,11 @@ abstract class AbstractReader
      */
     public function getId()
     {
-        if (!$id = $this->getHeader('Message-Id')) {
+        /** @var Header $id */
+        if (!$id = $this->getHeader('message-id')) {
             return null;
         }
+        $id = reset($id->header_parts);
 
         if (20 > $length = strlen($id)) {
             return null;
