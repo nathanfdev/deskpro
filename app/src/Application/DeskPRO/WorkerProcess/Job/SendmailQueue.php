@@ -52,7 +52,7 @@ class SendmailQueue extends AbstractJob
         $source_mapper = App::getContainer()->get('email.source_mapper');
 
         // If we are using an external pending queue implementation,
-        // then this cron job should NOT run th emain queue loop
+        // then this cron job should NOT run the main queue loop
         // because the external queue is responsible for that
         if (!($source_mapper instanceof ExternalPendingQueue)) {
             @ini_set('memory_limit', DP_MAX_MEMSIZE);

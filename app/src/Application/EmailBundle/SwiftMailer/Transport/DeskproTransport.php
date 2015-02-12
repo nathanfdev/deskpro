@@ -157,9 +157,15 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
     {
         $this->preprocessMessage($message);
 
-        $r = $this->source_mapper->createSourceForMessage($message, 'pending', $send_date);
-        $this->logger->info(sprintf('Message %d queued as pending', $r['id']), array('source_id' => $r['id'], 'message_done' => true));
-        $r = $this->source_mapper->setLogText($r);
+        if (@$GLOBALS['DP_CONFIG']['debug']['mail']['disable_send']) {
+            $r = $this->source_mapper->createSourceForMessage($message, 'aborted');
+            $this->logger->info(sprintf('Message %d queued as aborted (disable_send is enabled in config)', $r['id']), array('sendmail_source_id' => $r['id']));
+            $r = $this->source_mapper->setLogText($r);
+        } else {
+            $r = $this->source_mapper->createSourceForMessage($message, 'pending', $send_date);
+            $this->logger->info(sprintf('Message %d queued as pending', $r['id']), array('sendmail_source_id' => $r['id']));
+            $r = $this->source_mapper->setLogText($r);
+        }
 
         return $r['id'];
     }
@@ -176,7 +182,7 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
         $this->preprocessMessage($message);
 
         $r = $this->source_mapper->createSourceForMessage($message, 'inserted');
-        $this->logger->info(sprintf('Message %d queued as inserted', $r['id']), array('source_id' => $r['ref'], 'message_done' => true));
+        $this->logger->info(sprintf('Message %d queued as inserted', $r['id']), array('sendmail_source_id' => $r['ref']));
         $r = $this->source_mapper->setLogText($r);
 
         return $r['id'];
@@ -199,7 +205,7 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
             $this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
             if ($evt->bubbleCancelled()) {
                 $r = $this->source_mapper->createSourceForMessage($message, 'aborted');
-                $this->logger->info(sprintf('Message %d aborted', $r['id']), array('source_id' => $r['ref'], 'message_done' => true));
+                $this->logger->info(sprintf('Message %d aborted', $r['id']), array('sendmail_source_id' => $r['ref']));
                 $r = $this->source_mapper->setLogText($r);
                 return 0;
             }
