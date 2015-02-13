@@ -1,1 +1,41 @@
-WIDGET VIEW
+<div class="reports-editor-panel full-editor">
+    <div class="editor-form full-editor-form">
+        <div class="query-part title"><div ui-ace="editor_conf({minLines: 1, mode: 'xml', fontFamily: 'Lato, \'proxima nova\'', fontSize: '13px'})" ng-model="widget.title"></div></div>
+        <div class="inline-input">
+            <label>Select:</label>
+            <div class="input-container"><div class="query-part"><div ui-ace="editor_conf({minLines: 1})" ng-model="widget.query_parts.select"></div></div></div>
+        </div>
+        <div class="inline-input">
+            <label>From:</label>
+            <div class="input-container"><div class="query-part short"><div ui-ace="editor_conf({minLines: 1})" ng-model="widget.query_parts.from"></div></div></div>
+        </div>
+        <div class="inline-input">
+            <label>Where:</label>
+            <div class="input-container"><div class="query-part"><div ui-ace="editor_conf({minLines: 3})" ng-model="widget.query_parts.where"></div></div></div>
+        </div>
+        <div class="inline-input">
+            <label>Split By:</label>
+            <div class="input-container"><div class="query-part"><div ui-ace="editor_conf({minLines: 1})" ng-model="widget.query_parts.splitBy"></div></div></div>
+        </div>
+        <div class="inline-input">
+            <label>Group By:</label>
+            <div class="input-container"><div class="query-part"><div ui-ace="editor_conf({minLines: 1})" ng-model="widget.query_parts.groupBy"></div></div></div>
+        </div>
+        <div class="inline-input">
+            <label>Order By:</label>
+            <div class="input-container"><div class="query-part"><div ui-ace="editor_conf({minLines: 1})" ng-model="widget.query_parts.orderBy"></div></div></div>
+        </div>
+        <div class="inline-input">
+            <label>Limit:</label>
+            <div class="input-container"><input type="text" ng-model="widget.query_parts.limit" style="width:100px"></div>
+            <div class="offset">
+                <label>Offset:</label><input type="text" ng-model="widget.query_parts.offset">
+            </div>
+        </div>
+
+        <div class="editor-controls">
+            <a href="#" class="button">Save Query <i class="fa fa-save"></i></a>
+            <a href="#" class="button button-edit">Test <i class="fa fa-fast-forward"></i></a>
+        </div>
+    </div>
+</div>
