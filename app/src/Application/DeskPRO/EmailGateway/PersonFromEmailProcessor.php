@@ -170,7 +170,9 @@ class PersonFromEmailProcessor
             ));
 
             // Create new person record (no chance of conflicts here)
-            $db->insert('people', Arrays::removeFalsey($tmp_person->toArray(Entity\Person::TOARRAY_ONLY_PRIMATIVES)));
+            $p_array = $tmp_person->toArray(Entity\Person::TOARRAY_ONLY_PRIMATIVES);
+            $p_array['date_created'] = date('Y-m-d H:i:s', time() - 5);// overwrting time because we'll set it for real below
+            $db->insert('people', Arrays::removeFalsey($p_array));
             $person_id = $db->lastInsertId();
 
             // Attempt to create email record,
@@ -227,6 +229,11 @@ class PersonFromEmailProcessor
 
         $user_rule_proc = new \Application\DeskPRO\People\UserRuleProcessor(App::getOrm());
         $user_rule_proc->newRegister($person);
+
+        // We need to manually persist the record again
+        // so doctrine hooks are run (e.g., to insert into search index)
+        $person->date_created = new \DateTime();
+        App::$container->getEm()->persist($person);
 
         return $person;
     }

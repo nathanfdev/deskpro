@@ -303,8 +303,6 @@ class DeskproBlobStorage implements Loggable
             if ($imageinfo) {
                 $blob_entity_tmp->dim_w = $imageinfo[0];
                 $blob_entity_tmp->dim_h = $imageinfo[1];
-            } else {
-                throw new \RuntimeException("Attempting to save invalid image");
             }
         }
 
@@ -448,8 +446,6 @@ class DeskproBlobStorage implements Loggable
                 if ($imageinfo) {
                     $blob_entity_tmp->dim_w = $imageinfo[0];
                     $blob_entity_tmp->dim_h = $imageinfo[1];
-                } else {
-                    throw new \RuntimeException("Attempting to save invalid image");
                 }
             }
             @unlink($tmpfname);

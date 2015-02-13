@@ -283,7 +283,7 @@ class ProcessNew extends ProcessAbstract
             }
         }
 
-        $ticket_message = new TicketMessage();
+        $ticket_message = new TicketMessage($this->reader->getId());
         $ticket_message->person = $this->person;
         $ticket_message->message_raw = $email_info->body_raw;
         $ticket_message->setMessageHtml($email_info->body);

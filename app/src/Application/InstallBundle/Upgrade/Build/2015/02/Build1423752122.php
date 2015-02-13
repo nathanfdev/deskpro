@@ -29,42 +29,22 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
-use Application\DeskPRO\App;
-use Application\EmailBundle\SourceMapper\ExternalPendingQueue;
+namespace Application\InstallBundle\Upgrade\Build;
 
-/**
- * Goes through queued messages
- */
-class SendmailQueue extends AbstractJob
+class Build1423752122 extends AbstractBuild
 {
-    const DEFAULT_INTERVAL = 60;
-
     public function run()
     {
-        $runner = App::getContainer()->get('email.queue_runner');
-        $count_problems = $runner->detectProblems();
-        $count = 0;
-
-        $source_mapper = App::getContainer()->get('email.source_mapper');
-
-        // If we are using an external pending queue implementation,
-        // then this cron job should NOT run the main queue loop
-        // because the external queue is responsible for that
-        if (!($source_mapper instanceof ExternalPendingQueue)) {
-            @ini_set('memory_limit', DP_MAX_MEMSIZE);
-            $count = $runner->run();
-            @ini_set('memory_limit', DP_SET_MEMSIZE);
-        }
-
-        if ($count_problems) {
-            $this->logStatus("Detected {$count_problems} probelms in queue. Marked those as error:timeout.");
-        }
-        if ($count) {
-            $this->logStatus("Processed {$count} emails in queue.");
+        if (!defined('DPC_IS_CLOUD') && $this->container->getSetting('elastica.enabled')) {
+            $this->out("Setting ElasticSearch reindex flag");
+            $this->container->getDb()->replace('settings', array(
+                'name'  => 'elastica.requires_reset',
+                'value' => '1',
+            ));
+            $this->container->getDb()->delete('datastore', array('name' => 'sys.es_indexer'));
         }
     }
 }

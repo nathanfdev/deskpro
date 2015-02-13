@@ -364,7 +364,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
     /**
      * @param array $source
      * @param string $log_text
-     * @return void
+     * @return bool
      */
     private function appendLogText(&$source, $log_text)
     {
@@ -395,7 +395,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
             $new_log_blob = $this->bs->createBlobRowFromString($log_text, 'log.txt', 'text/plain', array('tag' => 'logs.sendmail_source_log'));
         } catch (\Exception $e) {
             KernelErrorHandler::handleException($e);
-            return;
+            return false;
         }
 
         if ($old_log_blob) {

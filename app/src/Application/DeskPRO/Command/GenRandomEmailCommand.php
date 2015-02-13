@@ -70,6 +70,8 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             $email_pre_html = "<div>".nl2br($email_pre)."</div>";
         }
 
+        $uid = uniqid('', true);
+
         $from_lines = array();
         if ($input->hasOption('from-email')) {
             $from_lines[] = "From: ".$input->getOption('from-email');
@@ -96,7 +98,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 Date: Mon, 10 Dec 2012 19:15:33 +0000
 $from_lines
 To: %TO_EMAIL%
-Message-ID: <144FD598151749D98C378FCF8B2E03C2@gmail.com>
+Message-ID: <$uid@test-message>
 Subject: $subject
 X-Mailer: sparrow 1.6.4 (build 1176)
 MIME-Version: 1.0

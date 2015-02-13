@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,42 +29,61 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @category Entities
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\DeskPRO\Entity;
+
 use Application\DeskPRO\App;
-use Application\EmailBundle\SourceMapper\ExternalPendingQueue;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-/**
- * Goes through queued messages
- */
-class SendmailQueue extends AbstractJob
+class TicketMessageEmailId extends \Application\DeskPRO\Domain\DomainObject
 {
-    const DEFAULT_INTERVAL = 60;
+	protected $id;
 
-    public function run()
-    {
-        $runner = App::getContainer()->get('email.queue_runner');
-        $count_problems = $runner->detectProblems();
-        $count = 0;
+	protected $message;
 
-        $source_mapper = App::getContainer()->get('email.source_mapper');
+	protected $email_id;
 
-        // If we are using an external pending queue implementation,
-        // then this cron job should NOT run the main queue loop
-        // because the external queue is responsible for that
-        if (!($source_mapper instanceof ExternalPendingQueue)) {
-            @ini_set('memory_limit', DP_MAX_MEMSIZE);
-            $count = $runner->run();
-            @ini_set('memory_limit', DP_SET_MEMSIZE);
-        }
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
 
-        if ($count_problems) {
-            $this->logStatus("Detected {$count_problems} probelms in queue. Marked those as error:timeout.");
-        }
-        if ($count) {
-            $this->logStatus("Processed {$count} emails in queue.");
-        }
-    }
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+//		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketMessageEmailId';
+		$metadata->setPrimaryTable(array(
+			'name' => 'tickets_message_email_id',
+			'indexes' => array(
+				'email_id_idx' => array('columns' => array('email_id')),
+			)
+		));
+
+		$metadata->mapField(array(
+			'fieldName' => 'id',
+			'id' => true,
+			'type' => 'integer',
+		));
+
+		$metadata->mapField(array(
+			'fieldName' => 'email_id',
+			'nullable' => false,
+			'columnName' => 'email_id',
+		));
+
+		$metadata->mapManyToOne(array(
+			'fieldName' => 'message',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage',
+			'inversedBy' => 'email_message_id',
+			'joinColumns' => array(array(
+				'name' => 'message_id',
+				'referencedColumnName' => 'id',
+				'onDelete' => 'CASCADE',
+			)),
+		));
+	}
 }
