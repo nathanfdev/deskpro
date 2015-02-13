@@ -68,20 +68,18 @@ class ContentSubscriptionsVoter extends AbstractVoter
             return false;
         }
 
-        // not sure if there are individual permissions on this, not seeing them in old portal code, but the bag is available...
         $permissionBag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
-        $brand_settings = $this->getActiveBrandContainer()->getSettings();
 
         switch($attribute) {
             case static::SUBSCRIBE_ARTICLES:
             case static::SUBSCRIBE_ARTICLE_CATEGORIES:
-                return $brand_settings->get('user.kb_subscriptions');
+                return $this->getActiveBrandSetting('user.kb_subscriptions');
             case static::SUBSCRIBE_NEWS:
             case static::SUBSCRIBE_NEWS_CATEGORIES:
-                return $brand_settings->get('user.news_subscriptions');
+                return $this->getActiveBrandSetting('user.news_subscriptions');
             case static::SUBSCRIBE_DOWNLOADS:
             case static::SUBSCRIBE_DOWNLOADS_CATEGORIES:
-                return $brand_settings->get('user.downloads_subscriptions');
+                return $this->getActiveBrandSetting('user.downloads_subscriptions');
         }
 
         return false;
