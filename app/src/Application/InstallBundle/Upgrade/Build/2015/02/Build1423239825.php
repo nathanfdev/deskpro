@@ -60,7 +60,9 @@ class Build1423239825 extends AbstractBuild
         }
 
         $this->out("Drop the old table");
+        $this->execMutateSql("SET FOREIGN_KEY_CHECKS = 0");
         $this->execMutateSql("DROP TABLE IF EXISTS sendmail_queue");
+        $this->execMutateSql("SET FOREIGN_KEY_CHECKS = 1");
     }
 
     private function _getNext()
