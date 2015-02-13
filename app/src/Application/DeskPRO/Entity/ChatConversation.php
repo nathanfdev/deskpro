@@ -792,6 +792,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->custom_data->add($data);
         $data['conversation'] = $this;
+        $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
     }
 
     /**

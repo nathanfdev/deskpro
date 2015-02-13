@@ -179,6 +179,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     {
         $this->custom_data->add($data);
         $data['feedback'] = $this;
+        $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
     }
 
 

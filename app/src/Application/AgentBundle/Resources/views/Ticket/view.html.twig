@@ -221,7 +221,7 @@ pageMeta.lang = {{ {
 							data-msg-invalid-email="{{ phrase('agent.general.error_email_address') }}"
 							data-msg-invalid-email-isaccount="{{ phrase('agent.tickets.email_is_ticket_account') }}"
 							data-msg-is-dupe="{{ phrase('agent.tickets.email_is_dupe') }}"
-							data-msg-invalid-email-isagent="{{ phrase('agent.tickets.email_is_agent_use_followers') }}"
+							data-msg-invalid-email-isagent="{{ phrase('agent.tickets.email_is_agent_use_followers')|e }}"
 						>{{ phrase('agent.general.add') }}</button>
 					</span>
 					<span class="is-loading">{{ phrase('agent.general.saving') }}</span>

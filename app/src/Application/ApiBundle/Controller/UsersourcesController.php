@@ -180,8 +180,10 @@ class UsersourcesController extends AbstractController
 
         $source->title = $this->in->getString('title');
         $source->is_enabled = $this->in->getBool('is_enabled');
-        $this->container->getEm()->persist($source);
-        $this->container->getEm()->flush();
+        $this->em->persist($source);
+        $this->em->flush();
+
+        $this->em->getRepository('DeskPRO:Usersource')->checkAndEnableDeskpro();
 
         return $this->createApiResponse(
             array(

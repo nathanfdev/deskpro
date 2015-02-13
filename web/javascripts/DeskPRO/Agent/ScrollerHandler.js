@@ -46,9 +46,10 @@ if (!window.DP_NO_JS_SCROLL) {
 				if (!element) return;
 
 				// hardcoded update of list height
-				var sh = $('.source-pane-content:visible').height(),
+				var $content = $('.list-pane-content'),
+						sh = $('.source-pane-content:visible').height(),
 						hh = 0,
-						$listing = $('.list-listing:visible');
+						$listing = $('.list-listing:visible', $content);
 
 				$listing.siblings('header:visible').each(function(){
 					hh += $(this).outerHeight(true);

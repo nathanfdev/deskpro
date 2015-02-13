@@ -54,34 +54,33 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     ###
     doNextRequest: ->
       @current_check++
+      @Api.sendGet('/server_file_check/' + (@current_check - 1)).then (res) =>
+        data = res.data.server_file_check
 
-      if @current_check <= @total_checks
-        @Api.sendGet('/server_file_check/' + (@current_check-1)).then( (res) =>
-          data = res.data.server_file_check
+        if data.okay
+          @logs.push 'Batch ' + @current_check + ' of ' + @total_checks + ': ' + data.okay.length + ' files verified'
+        if data.added
+          for file in data.added
+            @logs.push 'Batch ' + @current_check + ' of ' + @total_checks + ': ' + ' File added: ' + file
 
-          if data.okay
-            @logs.push 'Batch ' + @current_check + ' of ' + @total_checks + ': ' + data.okay.length + ' files verified'
-          if data.added
-            for file in data.added
-              @logs.push 'Batch ' + @current_check + ' of ' + @total_checks + ': ' + ' File added: ' + file
+        if data.changed and data.changed.length
+          for file in data.changed
+            @logs.push 'Batch ' + @current_check + ' of ' + @total_checks + ': ' + ' File changed: ' + file
+            @error_logs.push 'CHANGED: ' + file
+            @has_errors = true
+        if data.removed and data.removed.length
+          for file in data.removed
+            @logs.push 'Batch ' + @current_check + ' of ' + @total_checks + ': ' + ' Missing: ' + file
+            @error_logs.push 'MISSING: ' + file
+            @has_errors = true
 
-          if data.changed and data.changed.length
-            for file in data.changed
-              @logs.push 'Batch ' + @current_check + ' of ' + @total_checks + ': ' + ' File changed: ' + file
-              @error_logs.push 'CHANGED: ' + file
-              @has_errors = true
-          if data.removed and data.removed.length
-            for file in data.removed
-              @logs.push 'Batch ' + @current_check + ' of ' + @total_checks + ': ' + ' Missing: ' + file
-              @error_logs.push 'MISSING: ' + file
-              @has_errors = true
+        @current_percentage = Math.ceil @current_check / @total_checks * 100
 
-          @current_percentage = Math.ceil @current_check / @total_checks * 100
+        if @current_check < @total_checks
           @doNextRequest()
-        )
-      else
-        @check_in_progress = false
-        @current_percentage = 100
+        else
+          @check_in_progress = false
+          @current_percentage = 100
 
     ###
     # Show / hide 'show log' button
