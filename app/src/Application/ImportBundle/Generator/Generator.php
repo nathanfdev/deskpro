@@ -165,7 +165,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
             throw new Exception('Generator configuration is not set up');
         }
 
-        $writer = $this->writers->getByType($this->config->getExporterType());
+        $writer = $this->writers->getByType($this->config->getWriterType());
         $writer->setConfig($this->config);
         $this->logNotice(sprintf('Get `%s` writer', $writer->getType()));
 
