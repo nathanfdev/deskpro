@@ -105,7 +105,12 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected function getReaderData(CsvConfig $config)
     {
         try {
-            return $this->reader->getData($config);
+            $data = $this->reader->getData($config);
+            if (count($data) === 0) {
+                $this->logWarning(sprintf('No records found in resource `%s`', $config->getResource()));
+            }
+
+            return $data;
 
         } catch (NotFoundResourceException $e) {
             $this->logWarning(sprintf('Resource `%s` not found (Skipping)', $config->getResource()));
