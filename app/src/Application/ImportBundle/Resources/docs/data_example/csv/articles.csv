@@ -1,3 +1,3 @@
-person;title;content;slug;language;status;category;label
-some@email.tld;Article 1;Content 1;slug-article-1;english;new;Category 1;Label 1
-another@email.tld;Article 2;Content 2;;english;new;Category 1;Label 1
+person;title;content;slug;language;status;category;label;date_created
+some@email.tld;Article 1;Content 1;slug-article-1;english;new;Category 1;Label 1;2015-01-15
+another@email.tld;Article 2;Content 2;;english;new;Category 1;Label 1;
