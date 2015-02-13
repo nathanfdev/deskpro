@@ -1150,6 +1150,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           }
 
           if (trigger && action) {
+	          result.id = self.meta.ticket_id;
             DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.new_reply', result, action);
           }
         }
@@ -3140,7 +3141,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				data: postData,
                 success: function(){
                     if (DeskPRO_Window.$scope) {
-                        DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.updated', {subject: setName});
+                        DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.updated', {id: self.meta.ticket_id, subject: setName});
                     }
                 }
 			});

@@ -150,6 +150,11 @@ $definition = new Definition();
 $definition->setClass('Browser');
 $container->setDefinition('browser_sniffer', $definition);
 
+// deskpro.logging.null_handler
+$definition = new Definition();
+$definition->setClass('Orb\\Logger\\Handler\\NullHandler');
+$container->setDefinition('deskpro.logging.null_handler', $definition);
+
 // deskpro.service_urls
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Settings\\ServiceUrls');
@@ -272,14 +277,8 @@ $container->loadFromExtension('framework', array(
 $container->loadFromExtension('monolog', array(
     'handlers' => array(
         'main' => array(
-            'type'         => 'fingers_crossed',
-            'action_level' => 'error',
-            'handler'      => 'main_file',
-        ),
-        'main_file' => array(
-            'type'  => 'stream',
-            'path'  => '%kernel.logs_dir%/deskpro.log',
-            'level' => 'debug',
+            'type' => 'service',
+            'id'   => 'deskpro.logging.null_handler',
         ),
         'email_log_collector' => array(
             'type' => 'service',

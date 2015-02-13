@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,49 +29,22 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-class CleanupWeekly extends AbstractJob
+class Build1423752122 extends AbstractBuild
 {
-    const DEFAULT_INTERVAL = 604800;
-
     public function run()
     {
-        $this->doRun();
-        App::getDb()->setIsolationDefault();
-    }
-
-    private function doRun()
-    {
-        $date = date('Y-m-d H:i:s', strtotime('-1 year'));
-
-        $num = App::getDb()->executeUpdate("
-            DELETE FROM login_log
-            WHERE date_created < ?
-        ", array($date));
-
-        if ($num) {
-            $this->logStatus("Cleaned up $num old login logs");
-        }
-
-        #------------------------------
-        # cleanup blobs_storage with no blobs record
-        #------------------------------
-
-        $num = App::getDb()->executeUpdate("
-            DELETE blobs_storage
-            FROM blobs_storage
-            LEFT JOIN blobs ON blobs.id = blobs_storage.blob_id
-            WHERE blobs.id IS NULL
-        ");
-
-        if ($num) {
-            $this->logStatus("Cleaned up $num blobs_storage records without blobs");
+        if (!defined('DPC_IS_CLOUD') && $this->container->getSetting('elastica.enabled')) {
+            $this->out("Setting ElasticSearch reindex flag");
+            $this->container->getDb()->replace('settings', array(
+                'name'  => 'elastica.requires_reset',
+                'value' => '1',
+            ));
+            $this->container->getDb()->delete('datastore', array('name' => 'sys.es_indexer'));
         }
     }
 }

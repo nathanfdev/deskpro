@@ -29,49 +29,61 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @category Entities
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-class CleanupWeekly extends AbstractJob
+class TicketMessageEmailId extends \Application\DeskPRO\Domain\DomainObject
 {
-    const DEFAULT_INTERVAL = 604800;
+	protected $id;
 
-    public function run()
-    {
-        $this->doRun();
-        App::getDb()->setIsolationDefault();
-    }
+	protected $message;
 
-    private function doRun()
-    {
-        $date = date('Y-m-d H:i:s', strtotime('-1 year'));
+	protected $email_id;
 
-        $num = App::getDb()->executeUpdate("
-            DELETE FROM login_log
-            WHERE date_created < ?
-        ", array($date));
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
 
-        if ($num) {
-            $this->logStatus("Cleaned up $num old login logs");
-        }
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+//		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketMessageEmailId';
+		$metadata->setPrimaryTable(array(
+			'name' => 'tickets_message_email_id',
+			'indexes' => array(
+				'email_id_idx' => array('columns' => array('email_id')),
+			)
+		));
 
-        #------------------------------
-        # cleanup blobs_storage with no blobs record
-        #------------------------------
+		$metadata->mapField(array(
+			'fieldName' => 'id',
+			'id' => true,
+			'type' => 'integer',
+		));
 
-        $num = App::getDb()->executeUpdate("
-            DELETE blobs_storage
-            FROM blobs_storage
-            LEFT JOIN blobs ON blobs.id = blobs_storage.blob_id
-            WHERE blobs.id IS NULL
-        ");
+		$metadata->mapField(array(
+			'fieldName' => 'email_id',
+			'nullable' => false,
+			'columnName' => 'email_id',
+		));
 
-        if ($num) {
-            $this->logStatus("Cleaned up $num blobs_storage records without blobs");
-        }
-    }
+		$metadata->mapManyToOne(array(
+			'fieldName' => 'message',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage',
+			'inversedBy' => 'email_message_id',
+			'joinColumns' => array(array(
+				'name' => 'message_id',
+				'referencedColumnName' => 'id',
+				'onDelete' => 'CASCADE',
+			)),
+		));
+	}
 }

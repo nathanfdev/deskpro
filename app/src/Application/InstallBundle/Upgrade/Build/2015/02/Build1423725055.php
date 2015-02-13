@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,49 +29,17 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-class CleanupWeekly extends AbstractJob
+class Build1423725055 extends AbstractBuild
 {
-    const DEFAULT_INTERVAL = 604800;
-
     public function run()
     {
-        $this->doRun();
-        App::getDb()->setIsolationDefault();
-    }
-
-    private function doRun()
-    {
-        $date = date('Y-m-d H:i:s', strtotime('-1 year'));
-
-        $num = App::getDb()->executeUpdate("
-            DELETE FROM login_log
-            WHERE date_created < ?
-        ", array($date));
-
-        if ($num) {
-            $this->logStatus("Cleaned up $num old login logs");
-        }
-
-        #------------------------------
-        # cleanup blobs_storage with no blobs record
-        #------------------------------
-
-        $num = App::getDb()->executeUpdate("
-            DELETE blobs_storage
-            FROM blobs_storage
-            LEFT JOIN blobs ON blobs.id = blobs_storage.blob_id
-            WHERE blobs.id IS NULL
-        ");
-
-        if ($num) {
-            $this->logStatus("Cleaned up $num blobs_storage records without blobs");
-        }
+        $this->out("Upgrade Ticket Messages Class");
+		$this->execMutateSql("CREATE TABLE tickets_message_email_id (id INT AUTO_INCREMENT NOT NULL, message_id INT DEFAULT NULL, email_id VARCHAR(255) NOT NULL, INDEX IDX_C0D32802537A1329 (message_id), INDEX email_id_idx (email_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 ENGINE = InnoDB DEFAULT CHARSET=utf8");
+		$this->execMutateSql("ALTER TABLE tickets_message_email_id ADD CONSTRAINT FK_C0D32802537A1329 FOREIGN KEY (message_id) REFERENCES tickets_messages (id) ON DELETE CASCADE");
     }
 }

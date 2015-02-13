@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
@@ -209,10 +210,21 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $_message_length = null;
 
-    public function __construct()
+    /**
+     * @var TicketMessageEmailId[]
+     */
+    protected $email_message_id;
+
+    public function __construct($email_id = null)
     {
         $this->setModelField('date_created', new \DateTime());
         $this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
+        if ($email_id) {
+            $ref = new TicketMessageEmailId();
+            $ref['email_id'] = $email_id;
+            $ref->message = $this;
+            $this->setModelField('email_message_id', new ArrayCollection(array($ref)));
+        }
     }
 
     /**
@@ -645,7 +657,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setPrimaryTable(array(
             'name' => 'tickets_messages',
             'indexes' => array(
-                'date_created_idx' => array('columns' => array('date_created'))
+                'date_created_idx' => array('columns' => array('date_created')),
             )
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
@@ -653,19 +665,20 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         $metadata->addLifecycleCallback('incTicketCount', 'prePersist');
         $metadata->addLifecycleCallback('initPersonAccessCode', 'postPersist');
         $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-        $metadata->mapField(array( 'fieldName' => 'is_agent_note', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent_note', ));
-        $metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system', ));
-        $metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address', ));
-        $metadata->mapField(array( 'fieldName' => 'hostname', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'hostname', ));
-        $metadata->mapField(array( 'fieldName' => 'geo_country', 'type' => 'string', 'length' => 10, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_country', ));
-        $metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email', ));
-        $metadata->mapField(array( 'fieldName' => 'message_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message_hash', ));
-        $metadata->mapField(array( 'fieldName' => 'message', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message', ));
-        $metadata->mapField(array( 'fieldName' => 'message_full', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'message_full', ));
-        $metadata->mapField(array( 'fieldName' => 'message_raw', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'message_raw', ));
-        $metadata->mapField(array( 'fieldName' => 'lang_code', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'lang_code', ));
-        $metadata->mapField(array( 'fieldName' => 'show_full_hint', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'show_full_hint', ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'columnName' => 'date_created', ));
+        $metadata->mapField(array( 'fieldName' => 'is_agent_note', 'type' => 'boolean', 'columnName' => 'is_agent_note', ));
+        $metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'columnName' => 'creation_system', ));
+        $metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'columnName' => 'ip_address', ));
+        $metadata->mapField(array( 'fieldName' => 'hostname', 'type' => 'string', 'length' => 255, 'columnName' => 'hostname', ));
+        $metadata->mapField(array( 'fieldName' => 'geo_country', 'type' => 'string', 'length' => 10, 'nullable' => true, 'columnName' => 'geo_country', ));
+        $metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'columnName' => 'email', ));
+        $metadata->mapField(array( 'fieldName' => 'message_hash', 'type' => 'string', 'length' => 40, 'columnName' => 'message_hash', ));
+        $metadata->mapField(array( 'fieldName' => 'message', 'type' => 'text', 'columnName' => 'message', ));
+        $metadata->mapField(array( 'fieldName' => 'message_full', 'type' => 'text', 'nullable' => true, 'columnName' => 'message_full', ));
+        $metadata->mapField(array( 'fieldName' => 'message_raw', 'type' => 'text', 'nullable' => true, 'columnName' => 'message_raw', ));
+        $metadata->mapField(array( 'fieldName' => 'lang_code', 'type' => 'string', 'length' => 80, 'nullable' => true, 'columnName' => 'lang_code', ));
+        $metadata->mapField(array( 'fieldName' => 'show_full_hint', 'type' => 'boolean', 'columnName' => 'show_full_hint', ));
+
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
         $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
@@ -673,5 +686,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapManyToOne(array( 'fieldName' => 'primary_translation', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessageTranslated', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'message_translated_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
         $metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
         $metadata->mapOneToMany(array( 'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAttachment', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'message', 'dpApi' => true, 'dpApiDeep' => true  ));
+
+        $metadata->mapOneToMany(array(
+            'fieldName' => 'email_message_id',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessageEmailId',
+            'mappedBy' => 'message',
+            'cascade' => array('persist'),
+        ));
     }
 }
