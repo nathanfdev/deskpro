@@ -63,19 +63,17 @@ class UseSectionVoter extends AbstractVoter
             $permissionBag = $this->getPortalPermissionsManager()->getPermissionsBagForGuest();
         }
 
-        $brand_settings = $this->getActiveBrandContainer()->getSettings();
-
         switch($attribute) {
             case static::USE_ARTICLES:
-                return $brand_settings->get('core.apps_kb') && $permissionBag->get('articles.use');
+                return $this->getActiveBrandSetting('core.apps_kb') && $permissionBag->get('articles.use');
             case static::USE_FEEDBACK:
-                return $brand_settings->get('core.apps_feedback') && $permissionBag->get('feedback.use');
+                return $this->getActiveBrandSetting('core.apps_feedback') && $permissionBag->get('feedback.use');
             case static::USE_CHAT:
-                return $brand_settings->get('core.apps_chat') && $permissionBag->get('chat.use');
+                return $this->getActiveBrandSetting('core.apps_chat') && $permissionBag->get('chat.use');
             case static::USE_DOWNLOADS:
-                return $brand_settings->get('core.apps_downloads') && $permissionBag->get('downloads.use');
+                return $this->getActiveBrandSetting('core.apps_downloads') && $permissionBag->get('downloads.use');
             case static::USE_NEWS:
-                return $brand_settings->get('core.apps_news') && $permissionBag->get('news.use');
+                return $this->getActiveBrandSetting('core.apps_news') && $permissionBag->get('news.use');
             case static::USE_TICKETS:
                 return $permissionBag->get('tickets.use');
         }
