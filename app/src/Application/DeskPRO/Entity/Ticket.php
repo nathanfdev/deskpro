@@ -958,7 +958,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     {
         $person_id = $person_or_id;
         if ($person_or_id instanceof Person) {
-            $person_id = $person_or_id['id'];
+            $person_id = $person_or_id->getId();
         }
 
         // User not commited yet, so obviously they dont exist
@@ -967,7 +967,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
 
         foreach ($this->participants as $p) {
-            if ($p->person->id == $person_id) {
+            if ($p->person->getId() == $person_id) {
                 return $p;
             }
         }
@@ -992,7 +992,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             return null;
         }
 
-        if ($this->person && $person->id == $this->person->id && DP_INTERFACE != 'agent') {
+        if ($this->person && $person->getId() == $this->person->getId() && ((defined('DP_INTERFACE') && DP_INTERFACE != 'agent') || !defined('DP_INTERFACE'))) {
             return null;
         }
 
@@ -1690,8 +1690,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             $this['language'] = $person->getRealLanguage();
         }
 
-        if ($person->organization) {
-            $this['organization'] = $person->organization;
+        if ($organization = $person->getOrganization()) {
+            $this->setOrganization($organization);
         }
 
         if ($this->person_email && $this->person_email->person->getId() != $person->getId()) {
@@ -3751,10 +3751,50 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
      * @return Organization
      */
     public function getOrganization()
     {
         return $this->organization;
+    }
+
+    /**
+     * @param Organization $organization
+     */
+    public function setOrganization(Organization $organization = null)
+    {
+        $this->setModelField('organization', $organization);
+    }
+
+    public function isOwner(Person $person)
+    {
+        return $person === $this->getPerson();
+    }
+
+    public function isParticipant(Person $person)
+    {
+        return (bool) $this->hasParticipantPerson($person);
+    }
+
+    public function isOrganizationManager(Person $person)
+    {
+        return $person->isOrganizationManager()
+            && $person->getOrganization() !== null
+            && $person->getOrganization() === $this->getOrganization();
+    }
+
+    public function isInvolved(Person $person)
+    {
+        return $this->isOwner($person)
+            || $this->isParticipant($person)
+            || $this->isOrganizationManager($person);
     }
 }
