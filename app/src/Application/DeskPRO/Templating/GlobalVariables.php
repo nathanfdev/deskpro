@@ -387,6 +387,10 @@ class GlobalVariables extends BaseGlobalVariables
             return $this->app_allowed_checks[$k] = false;
         }
 
+        if ('set' !== $app->perm_type) {
+            return $this->app_allowed_checks[$k] = true;
+        }
+
         $perms = $cont->getAppPerms();
 
         return $this->app_allowed_checks[$k] = $perms->checkPersonPermission($app, $person);
