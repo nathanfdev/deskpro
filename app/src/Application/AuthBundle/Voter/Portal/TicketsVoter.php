@@ -51,38 +51,39 @@ class TicketsVoter extends AbstractVoter
 
     /**
      * @param string $attribute
-     * @param object $object
+     * @param object $ticket
      * @param \Application\DeskPRO\Entity\Person|\Application\DeskPRO\People\PersonGuest|null $user
      * @return bool
      */
-    protected function isGranted($attribute, $object, $user = null)
+    protected function isGranted($attribute, $ticket, $user = null)
     {
-        if (!$object instanceof Ticket) {
-            throw new InvalidArgumentException('expected Ticket entity, but got "'. get_class($object) .'"');
+        if (!$ticket instanceof Ticket) {
+            throw new InvalidArgumentException('expected Ticket entity, but got "'. get_class($ticket) .'"');
         }
 
+        // none of the attributes currently supported by this voter will grant unauthenticated tokens
         if (!$this->isLoggedIn($user)) {
             return false;
         }
 
-        $user_organization = $user->getOrganization();
-        $ticket_organization = $object->getOrganization();
-        $is_owner = $object->getPersonId() === $user->getId();
-        $is_participant = $object->hasParticipantPerson($user);
-        $is_organization_manager = $user->isOrganizationManager() && $user_organization;
-        $ticket_in_organization = ($user_organization && $ticket_organization) && ($ticket_organization->getId() == $user_organization->getId());
+        $decision = false;
 
         switch($attribute) {
             case static::TICKET_LIST:
-                return $this->isLoggedIn($user);
+                $decision = $this->isLoggedIn($user);
+                break;
+
             case static::TICKET_VIEW:
-                return $is_owner || $is_participant || ($is_organization_manager && $ticket_in_organization);
+                $decision = $ticket->isInvolved($user);
+                break;
+
             case static::TICKET_EDIT:
-                return $is_owner || ($is_organization_manager && $ticket_in_organization);
+                $decision = $ticket->isInvolved($user)
+                    && ($ticket->isOwner($user) || $ticket->isOrganizationManager($user));
                 break;
         }
 
-        return false;
+        return $decision;
     }
 
     /**
