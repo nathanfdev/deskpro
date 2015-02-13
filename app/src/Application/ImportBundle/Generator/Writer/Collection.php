@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Writer;
 
 use Application\ImportBundle\AbstractCollection;
+use Exception;
 
 /**
  * Class Collection
@@ -43,7 +44,24 @@ class Collection extends AbstractCollection
      */
     public function attach(WriterInterface $writer)
     {
-        $this->collection[] = $writer;
+        $this->collection[$writer->getType()] = $writer;
         return $this;
+    }
+
+    /**
+     * Returns a writer by type
+     *
+     * @param string $type
+     *
+     * @return WriterInterface
+     * @throws Exception
+     */
+    public function getByType($type)
+    {
+        if (isset($this->collection[$type])) {
+            return $this->collection[$type];
+        }
+
+        throw new Exception(sprintf('Generator writer `%s` not found', $type));
     }
 }

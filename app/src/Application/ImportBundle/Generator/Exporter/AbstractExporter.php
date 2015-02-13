@@ -81,28 +81,24 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      */
     private function getParserByType($type)
     {
-        if (!$this->config) {
+        if ( ! $this->config) {
             throw new Exception('Generator configuration is not set up');
         }
 
-        foreach ($this->parsers as $parser) {
-            /** @var Parser\ParserInterface $parser */
-            if ($parser->getEntityType() === $type) {
-                $parser->setConfig($this->config);
+        $this->logNotice(sprintf('Parsing entities `%s`', $type));
 
-                if ($this->logger && $parser instanceof LoggerAwareInterface) {
-                    /** @var LoggerAwareInterface $parser */
-                    $parser->setLogger($this->logger);
-                }
-                if ($this->progress_bar && $parser instanceof ProgressBarAwareInterface) {
-                    /** @var ProgressBarAwareInterface $parser */
-                    $parser->setProgressBarHelper($this->progress_bar);
-                }
+        $parser = $this->parsers->getByEntityType($type);
+        $parser->setConfig($this->config);
 
-                return $parser;
-            }
+        if ($this->logger && $parser instanceof LoggerAwareInterface) {
+            /** @var LoggerAwareInterface $parser */
+            $parser->setLogger($this->logger);
+        }
+        if ($this->progress_bar && $parser instanceof ProgressBarAwareInterface) {
+            /** @var ProgressBarAwareInterface $parser */
+            $parser->setProgressBarHelper($this->progress_bar);
         }
 
-        throw new Exception(sprintf('This record type `%s` is not supported', $type));
+        return $parser;
     }
 }

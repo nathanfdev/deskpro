@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\AbstractCollection;
+use Exception;
 
 /**
  * Collection of exporters
@@ -45,7 +46,24 @@ class Collection extends AbstractCollection
      */
     public function attach(ExporterInterface $exporter)
     {
-        $this->collection[] = $exporter;
+        $this->collection[$exporter->getType()] = $exporter;
         return $this;
+    }
+
+    /**
+     * Returns an exporter by type
+     *
+     * @param string $type
+     *
+     * @return ExporterInterface
+     * @throws Exception
+     */
+    public function getByType($type)
+    {
+        if (isset($this->collection[$type])) {
+            return $this->collection[$type];
+        }
+
+        throw new Exception(sprintf('Generator exporter `%s` not found', $type));
     }
 }

@@ -137,26 +137,20 @@ class Generator extends AbstractGenerator implements GeneratorInterface
             throw new Exception('Generator configuration is not set up');
         }
 
-        foreach ($this->exporters as $exporter) {
-            /** @var Exporter\ExporterInterface $exporter */
-            if ($exporter->getType() === $this->config->getExporterType()) {
-                $exporter->setConfig($this->config);
+        $exporter = $this->exporters->getByType($this->config->getExporterType());
+        $exporter->setConfig($this->config);
+        $this->logNotice(sprintf('Get `%s` exporter', $exporter->getType()));
 
-                if ($this->logger && $exporter instanceof LoggerAwareInterface) {
-                    /** @var LoggerAwareInterface $exporter */
-                    $exporter->setLogger($this->logger);
-                }
-                if ($this->progress_bar && $exporter instanceof ProgressBarAwareInterface) {
-                    /** @var ProgressBarAwareInterface $exporter */
-                    $exporter->setProgressBarHelper($this->progress_bar);
-                }
-
-                $this->logNotice(sprintf('Get `%s` exporter', $exporter->getType()));
-                return $exporter;
-            }
+        if ($this->logger && $exporter instanceof LoggerAwareInterface) {
+            /** @var LoggerAwareInterface $exporter */
+            $exporter->setLogger($this->logger);
+        }
+        if ($this->progress_bar && $exporter instanceof ProgressBarAwareInterface) {
+            /** @var ProgressBarAwareInterface $exporter */
+            $exporter->setProgressBarHelper($this->progress_bar);
         }
 
-        throw new Exception(sprintf('Generator exporter `%s` not found', $this->config->getExporterType()));
+        return $exporter;
     }
 
     /**
@@ -171,26 +165,20 @@ class Generator extends AbstractGenerator implements GeneratorInterface
             throw new Exception('Generator configuration is not set up');
         }
 
-        foreach ($this->writers as $writer) {
-            /** @var Writer\WriterInterface $writer */
-            if ($writer->getType() === $this->config->getWriterType()) {
-                $writer->setConfig($this->config);
+        $writer = $this->writers->getByType($this->config->getExporterType());
+        $writer->setConfig($this->config);
+        $this->logNotice(sprintf('Get `%s` writer', $writer->getType()));
 
-                if ($this->logger && $writer instanceof LoggerAwareInterface) {
-                    /** @var LoggerAwareInterface $writer */
-                    $writer->setLogger($this->logger);
-                }
-                if ($this->progress_bar && $writer instanceof ProgressBarAwareInterface) {
-                    /** @var ProgressBarAwareInterface $writer */
-                    $writer->setProgressBarHelper($this->progress_bar);
-                }
-
-                $this->logNotice(sprintf('Get `%s` writer', $writer->getType()));
-                return $writer;
-            }
+        if ($this->logger && $writer instanceof LoggerAwareInterface) {
+            /** @var LoggerAwareInterface $writer */
+            $writer->setLogger($this->logger);
+        }
+        if ($this->progress_bar && $writer instanceof ProgressBarAwareInterface) {
+            /** @var ProgressBarAwareInterface $writer */
+            $writer->setProgressBarHelper($this->progress_bar);
         }
 
-        throw new Exception(sprintf('Generator writer `%s` not found', $this->config->getExporterType()));
+        return $writer;
     }
 
     /**
@@ -211,6 +199,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
                 try {
                     /** @var Validator\ValidatorInterface $validator */
                     $validator->validate($entity);
+
                 } catch (Validator\ValidatorExceptionInterface $e) {
                     $exceptions->attach($e);
                 }

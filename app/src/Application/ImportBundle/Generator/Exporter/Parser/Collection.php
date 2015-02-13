@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser;
 
 use Application\ImportBundle\AbstractCollection;
+use Exception;
 
 /**
  * Collection of the generator exporter parsers
@@ -35,7 +36,7 @@ use Application\ImportBundle\AbstractCollection;
  * Class Collection
  * @package Application\ImportBundle\Generator\Exporter\Parser
  */
-class Collection extends AbstractCollection
+final class Collection extends AbstractCollection
 {
     /**
      * Add a parser
@@ -45,7 +46,24 @@ class Collection extends AbstractCollection
      */
     public function attach(ParserInterface $parser)
     {
-        $this->collection[] = $parser;
+        $this->collection[$parser->getEntityType()] = $parser;
         return $this;
+    }
+
+    /**
+     * Returns a parser by entity type
+     *
+     * @param string $type
+     *
+     * @return ParserInterface
+     * @throws Exception
+     */
+    public function getByEntityType($type)
+    {
+        if (isset($this->collection[$type])) {
+            return $this->collection[$type];
+        }
+
+        throw new Exception(sprintf('This record type `%s` is not supported', $type));
     }
 }
