@@ -69,12 +69,6 @@ class ContentAccessVoter extends AbstractVoter
 
     protected function isGranted($attribute, $object, $user = null)
     {
-        if ($this->isLoggedIn($user)) {
-            $permission_bag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
-        } else {
-            $permission_bag = $this->getPortalPermissionsManager()->getPermissionsBagForGuest();
-        }
-
         // $object is the content entity here (or content category) ie Article, ArticleCategory, etc.
         switch($attribute) {
             case static::DOWNLOAD_DOWNLOAD:
