@@ -79,7 +79,7 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
         @lastDashboardDetail = resp.data
         @lastDashboardDetail.version_id = @version_id
         @lastDashboardDetail.reports_version_id = @version_id
-        d.resolve(resp.data)
+        d.resolve(@lastDashboardDetail)
       )
 
       return d.promise
