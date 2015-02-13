@@ -53,9 +53,11 @@ class ContentRatingsVoter extends AbstractVoter
 
     protected function isGranted($attribute, $object, $user = null)
     {
-        // TODO: we do need the permission bag here, but it is not currently used.... this is purely based on settings atm
         if ($this->isLoggedIn($user)) {
             $permission_bag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
+            if ($this->getActiveBrandSetting('core.interact_require_login', false)) {
+                return false; // if core.interact_require_login and we aren't logged in, then can't comment
+            }
         } else {
             $permission_bag = $this->getPortalPermissionsManager()->getPermissionsBagForGuest();
         }
