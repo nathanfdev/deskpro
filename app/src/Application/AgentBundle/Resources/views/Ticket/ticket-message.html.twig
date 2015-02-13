@@ -129,7 +129,7 @@
 							</td>
 						</tr>
 					{% endif %}
-					{% if message.hostname or app.getSetting('rdns_ticket_messages') %}
+					{% if app.getSetting('rdns_ticket_messages') and app.isAppAllowed('deskpro_ticket_hostnames') %}
 						<tr>
 							<th>{{ phrase('agent.general.hostname') }}:</th>
 							<td>

@@ -9,7 +9,8 @@
  *
  * @package php-ews\Types
  *
- * @todo Extend ReplyToItem.
+ * @todo Extend EWS_ReplyToItemType?
+ * @todo Extend EWSType_SmartResponseType.
  */
 class EWSType_ReplyAllToItemType extends EWSType
 {

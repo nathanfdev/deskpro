@@ -164,6 +164,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     {
         $this->custom_data->add($data);
         $data['article'] = $this;
+        $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
     }
 
     public function isInCategory(ArticleCategory $cat)

@@ -112,7 +112,6 @@ class FeedbackModerate implements PersonContextInterface
             $message = $mailer->createMessage();
             $message->setToPerson($feedback->person);
             $message->setTemplate('DeskPRO:emails_user:feedback-approved.html.twig', $vars);
-            $message->enableQueueHint();
 
             $mailer->send($message);
         });
@@ -152,7 +151,6 @@ class FeedbackModerate implements PersonContextInterface
             $message = $mailer->createMessage();
             $message->setToPerson($feedback->person);
             $message->setTemplate('DeskPRO:emails_user:feedback-disapproved.html.twig', $vars);
-            $message->enableQueueHint();
 
             $mailer->send($message);
         });

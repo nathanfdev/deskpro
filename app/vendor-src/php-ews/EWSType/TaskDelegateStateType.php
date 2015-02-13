@@ -4,7 +4,7 @@
  */
 
 /**
- * Rpresents the status of a delegated task.
+ * Represents the status of a delegated task.
  *
  * @package php-ews\Enumerations
  */

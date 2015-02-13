@@ -12,15 +12,6 @@
 class EWSType_ProtectionRuleActionType extends EWSType
 {
     /**
-     * Identifies the name of the action.
-     *
-     * @since Exchange 2010
-     *
-     * @var string
-     */
-    public $Name;
-
-    /**
      * Specifies arguments to the action.
      *
      * This property should be left empty if the specified action does not
@@ -33,4 +24,13 @@ class EWSType_ProtectionRuleActionType extends EWSType
      * @var EWSType_ProtectionRuleArgumentType
      */
     public $Argument;
+
+    /**
+     * Identifies the name of the action.
+     *
+     * @since Exchange 2010
+     *
+     * @var string
+     */
+    public $Name;
 }

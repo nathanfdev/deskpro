@@ -244,6 +244,10 @@ class NewTicketValidator extends AbstractValidator
             $this->_traverseItems($this->display_fields);
         }
 
+        if ($this->captca && !$this->captca->validate()) {
+            $this->addError('captcha.invalid');
+        }
+
         #------------------------------
         # Return results
         #------------------------------
@@ -345,15 +349,6 @@ class NewTicketValidator extends AbstractValidator
                     }
                 }
                 break;
-
-            case 'captcha':
-                if (!$this->captca) {
-                    break;
-                }
-
-                if (!$this->captca->validate()) {
-                    $this->addError('captcha.invalid');
-                }
         }
     }
 }

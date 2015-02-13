@@ -7,6 +7,8 @@
  * Describes the start date and the number of occurrences of a recurring item.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_RecurrenceRangeBaseType.
  */
 class EWSType_NumberedRecurrenceRangeType extends EWSType
 {

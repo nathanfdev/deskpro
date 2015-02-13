@@ -228,6 +228,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
             // Reset user session
             $this->db->delete('sessions', array('person_id' => $this->person->id));
+            $this->db->delete('api_token', array('person_id' => $this->person->id));
 
             return $this->redirectRoute('user_login');
         }
@@ -438,6 +439,11 @@ class ProfileController extends AbstractController implements RequireUserInterfa
             return $this->redirectRoute('user_profile');
         }
 
+        if (!$this->person->checkPassword($this->in->getString('current_password'))) {
+            $this->session->setFlash('new_email_invalid_password', 1);
+            return $this->redirectRoute('user_profile');
+        }
+
         if (!$this->container->getSystemService('email_address_validator')->isValidUserEmail($email_address)) {
             $this->session->setFlash('invalid_email', 1);
             $this->session->save();
@@ -497,7 +503,6 @@ class ProfileController extends AbstractController implements RequireUserInterfa
             $message = $container->getMailer()->createMessage();
             $message->setTo($validating_email->getEmail(), $person->getDisplayName());
             $message->setTemplate('DeskPRO:emails_user:new-email-validate.html.twig', $vars);
-            $message->enableQueueHint();
 
             $container->getMailer()->send($message);
         });

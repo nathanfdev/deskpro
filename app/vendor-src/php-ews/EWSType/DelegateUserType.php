@@ -12,18 +12,9 @@
 class EWSType_DelegateUserType extends EWSType
 {
     /**
-     * Identifies the delegate.
-     *
-     * @since Exchnage 2007 SP1
-     *
-     * @var EWSType_UserIdType
-     */
-    public $UserId;
-
-    /**
      * Contains the delegate permission level settings.
      *
-     * @since Exchnage 2007 SP1
+     * @since Exchange 2007 SP1
      *
      * @var EWSType_DelegatePermissionsType
      */
@@ -33,17 +24,26 @@ class EWSType_DelegateUserType extends EWSType
      * Indicates whether a delegate receives copies of meeting-related messages
      * that are addressed to the principal.
      *
-     * @since Exchnage 2007 SP1
+     * @since Exchange 2007 SP1
      *
      * @var boolean
      */
     public $ReceiveCopiesOfMeetingMessages;
 
     /**
+     * Identifies the delegate.
+     *
+     * @since Exchange 2007 SP1
+     *
+     * @var EWSType_UserIdType
+     */
+    public $UserId;
+
+    /**
      * Indicates whether a delegate has permission to view private calendar
      * items in the principal's mailbox.
      *
-     * @since Exchnage 2007 SP1
+     * @since Exchange 2007 SP1
      *
      * @var boolean
      */

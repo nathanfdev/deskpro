@@ -44,6 +44,9 @@ class GlobalVariables extends BaseGlobalVariables
     /** @var array */
     protected $variables = array();
 
+    /** @var array simple cache of isAppAllowed() multiple calls */
+    protected $app_allowed_checks = array();
+
     public function setVariable($name, $value)
     {
         $this->variables[$name] = $value;
@@ -363,6 +366,30 @@ class GlobalVariables extends BaseGlobalVariables
     public function isAppInstalled($name)
     {
         return App::getContainer()->getAppManager()->isPackageInstalled($name);
+    }
+
+    public function isAppAllowed($name)
+    {
+        $person = App::getSession()->getPerson();
+        $k = sha1($name . '|' . $person['id']);
+
+        if (isset($this->app_allowed_checks[$k])) {
+            return $this->app_allowed_checks[$k];
+        }
+
+        if (!$this->isAppInstalled($name)) {
+            return $this->app_allowed_checks[$k] = false;
+        }
+
+        $cont = App::getContainer();
+
+        if (!$app = $cont->getAppManager()->getPackageApp($name)) {
+            return $this->app_allowed_checks[$k] = false;
+        }
+
+        $perms = $cont->getAppPerms();
+
+        return $this->app_allowed_checks[$k] = $perms->checkPersonPermission($app, $person);
     }
 
     public function getAppService($name)

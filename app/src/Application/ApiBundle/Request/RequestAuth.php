@@ -164,7 +164,12 @@ class RequestAuth
      */
     private function getSessionFromRequest()
     {
-        $session_id = $this->getRequestValue('X-DeskPRO-Session-ID', 'SESSION-ID', true);
+        $session_id = $this->getRequestValue('X-DeskPRO-Session-ID', 'SESSION-ID', false);
+        if (!$session_id) {
+            if (isset($_COOKIE['dpsid-admin'])) {
+                $session_id = $_COOKIE['dpsid-admin'];
+            }
+        }
         if (!$session_id) {
             return null;
         }
