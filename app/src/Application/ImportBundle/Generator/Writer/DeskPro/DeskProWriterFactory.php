@@ -68,6 +68,8 @@ class DeskProWriterFactory extends AbstractFactory
         $download_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Download');
         /** @var EntityRepository\DownloadCategory $download_category_repository */
         $download_category_repository = $doctrine->getRepository('Application\DeskPRO\Entity\DownloadCategory');
+        /** @var EntityRepository\LabelDownload $download_label_repository */
+        $download_label_repository = $doctrine->getRepository('Application\DeskPRO\Entity\LabelDownload');
         /** @var EntityRepository\Feedback $feedback_repository */
         $feedback_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Feedback');
         /** @var EntityRepository\FeedbackCategory $feedback_category_repository */
@@ -113,6 +115,7 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\Department($departmentRepository))
             ->attach(new Importer\Mapper\Download($download_repository))
             ->attach(new Importer\Mapper\DownloadCategory($download_category_repository))
+            ->attach(new Importer\Mapper\DownloadLabel($download_label_repository))
             ->attach(new Importer\Mapper\Feedback($feedback_repository))
             ->attach(new Importer\Mapper\FeedbackCategory($feedback_category_repository))
             ->attach(new Importer\Mapper\Language($language_repository))
