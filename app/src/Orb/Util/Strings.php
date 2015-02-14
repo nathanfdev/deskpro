@@ -1412,7 +1412,7 @@ class Strings
         }, $text);
 
         $text = preg_replace_callback('#(?<!\=(\'|"))(https?:\/\/[^\s<>]+([a-zA-Z0-9\?_\-]))#iu',function ($m) use (&$search_replace, $attr) {
-            $url = $m[2];
+            $url = str_replace('&amp;', '&', $m[2]);
             $key = md5(mt_rand(0,9999) . microtime());
             $search_replace[$key] = '<a href="' . $url . '" '.$attr.'>' . htmlspecialchars($m[2], \ENT_QUOTES, 'UTF-8') . '</a>';
 
@@ -1422,7 +1422,7 @@ class Strings
         $text = preg_replace_callback('#(?<!\=(\'|"))(https?://|mailto:)?([a-zA-Z0-9\.\-]+\.(com|net|org|co\.uk)[^\s<>]*)#iu',function ($m) use (&$search_replace, $attr) {
             if ($m[2]) return $m[0];
 
-            $url = ($m[2] ? $m[2] : 'http://') . $m[3];
+            $url = str_replace('&amp;', '&', ($m[2] ? $m[2] : 'http://') . $m[3]);
             $key = md5(mt_rand(0,9999) . microtime());
             $search_replace[$key] = '<a href="' . $url . '" '.$attr.'>' . htmlspecialchars($m[3], \ENT_QUOTES, 'UTF-8') . '</a>';
 
