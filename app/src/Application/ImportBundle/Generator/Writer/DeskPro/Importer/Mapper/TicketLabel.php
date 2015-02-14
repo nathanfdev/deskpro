@@ -27,59 +27,72 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository;
+
 /**
- * Generator mapper interface
+ * Ticket label record mapper
  *
- * Interface MapperInterface
+ * Class TicketLabel
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-interface MapperInterface
+final class TicketLabel implements MapperInterface
 {
-    const TYPE_PERSON            = 'person';
-    const TYPE_PERSON_EMAIL      = 'person_email';
-    const TYPE_PERSON_LABEL      = 'person_label';
-    const TYPE_TICKET_DEPARTMENT = 'ticket_department';
-    const TYPE_TICKET            = 'ticket';
-    const TYPE_TICKET_CATEGORY   = 'ticket_category';
-    const TYPE_TICKET_LABEL      = 'ticket_label';
-    const TYPE_TICKET_WORKFLOW   = 'ticket_workflow';
-    const TYPE_TICKET_PRIORITY   = 'ticket_priority';
-    const TYPE_DEPARTMENT        = 'department';
-    const TYPE_PRODUCT           = 'product';
-    const TYPE_USER_GROUP        = 'usergroup';
-    const TYPE_ORGANIZATION      = 'organization';
-    const TYPE_LANGUAGE          = 'language';
-    const TYPE_ARTICLE_CATEGORY  = 'article_category';
-    const TYPE_ARTICLE_LABEL     = 'article_label';
-    const TYPE_ARTICLE           = 'article';
-    const TYPE_NEWS_CATEGORY     = 'news_category';
-    const TYPE_NEWS_LABEL        = 'news_label';
-    const TYPE_NEWS              = 'news';
-    const TYPE_FEEDBACK_CATEGORY = 'feedback_category';
-    const TYPE_FEEDBACK_LABEL    = 'feedback_label';
-    const TYPE_FEEDBACK          = 'feedback';
-    const TYPE_DOWNLOAD_CATEGORY = 'download_category';
-    const TYPE_DOWNLOAD_LABEL    = 'download_label';
-    const TYPE_DOWNLOAD          = 'download';
-    const TYPE_CUSTOM_DEF_TICKET = 'custom_def_ticket';
-    const TYPE_CUSTOM_DEF_PERSON = 'custom_def_people';
-    const TYPE_BLOB_DATA         = 'blob_data';
-    const TYPE_EMAIL_ACCOUNT     = 'email_account';
+    /**
+     * @var EntityRepository\LabelTicket
+     */
+    private $repository;
 
     /**
-     * Returns DeskPro record type
+     * Constructor
      *
-     * @return string
+     * @param EntityRepository\LabelTicket $repository
      */
-    public function getType();
+    public function __construct(EntityRepository\LabelTicket $repository)
+    {
+        $this->repository = $repository;
+    }
 
     /**
-     * Returns the DeskPro record by criteria
-     *
-     * @param array $criteria
-     * @param bool  $throw_exception
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function findOneBy(array $criteria, $throw_exception = true);
+    public function getType()
+    {
+        return self::TYPE_TICKET_LABEL;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findOneBy(array $criteria, $throw_exception = true)
+    {
+        /** @var Entity\LabelTicket $record */
+        $record = $this->repository->findOneBy($criteria);
+        if ( ! $record && $throw_exception) {
+            throw new MapperException('Ticket label not found', $criteria);
+        }
+
+        return $record;
+    }
+
+    /**
+     * Returns a collection of ticket labels
+     *
+     * @param int  $id
+     * @param bool $throw_exception
+     *
+     * @return Entity\LabelTicket[]
+     * @throws MapperException
+     */
+    public function findByTicketId($id, $throw_exception = true)
+    {
+        $criteria = array('ticket' => $id);
+        $records  = $this->repository->findBy($criteria);
+
+        if (empty($records) && $throw_exception) {
+            throw new MapperException('Ticket labels not found', $criteria);
+        }
+
+        return $records;
+    }
 }

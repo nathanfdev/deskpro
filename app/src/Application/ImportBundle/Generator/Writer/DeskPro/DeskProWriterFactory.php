@@ -88,6 +88,8 @@ class DeskProWriterFactory extends AbstractFactory
         $organization_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Organization');
         /** @var EntityRepository\Person $person_repository */
         $person_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Person');
+        /** @var EntityRepository\LabelPerson $person_label_repository */
+        $person_label_repository = $doctrine->getRepository('Application\DeskPRO\Entity\LabelPerson');
         /** @var EntityRepository\PersonEmail $person_email_repository */
         $person_email_repository = $doctrine->getRepository('Application\DeskPRO\Entity\PersonEmail');
         /** @var EntityRepository\Product $product_repository */
@@ -98,6 +100,8 @@ class DeskProWriterFactory extends AbstractFactory
         $ticket_priority_repository = $doctrine->getRepository('Application\DeskPRO\Entity\TicketPriority');
         /** @var EntityRepository\TicketCategory $ticket_category_repository */
         $ticket_category_repository = $doctrine->getRepository('Application\DeskPRO\Entity\TicketCategory');
+        /** @var EntityRepository\LabelTicket $ticket_label_repository */
+        $ticket_label_repository = $doctrine->getRepository('Application\DeskPRO\Entity\LabelTicket');
         /** @var EntityRepository\TicketWorkflow $ticket_workflow_repository */
         $ticket_workflow_repository = $doctrine->getRepository('Application\DeskPRO\Entity\TicketWorkflow');
         /** @var EntityRepository\Usergroup $user_group_repository */
@@ -129,11 +133,13 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\NewsLabel($news_label_repository))
             ->attach(new Importer\Mapper\Organization($organization_repository))
             ->attach(new Importer\Mapper\Person($person_repository))
+            ->attach(new Importer\Mapper\PersonLabel($person_label_repository))
             ->attach(new Importer\Mapper\PersonEmail($person_email_repository))
             ->attach(new Importer\Mapper\Product($product_repository))
             ->attach(new Importer\Mapper\Ticket($ticket_repository))
             ->attach(new Importer\Mapper\TicketPriority($ticket_priority_repository))
             ->attach(new Importer\Mapper\TicketCategory($ticket_category_repository))
+            ->attach(new Importer\Mapper\TicketLabel($ticket_label_repository))
             ->attach(new Importer\Mapper\TicketDepartment($departmentRepository))
             ->attach(new Importer\Mapper\TicketWorkflow($ticket_workflow_repository))
             ->attach(new Importer\Mapper\UserGroup($user_group_repository))
