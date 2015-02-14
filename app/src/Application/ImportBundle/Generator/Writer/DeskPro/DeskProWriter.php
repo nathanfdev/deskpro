@@ -43,7 +43,7 @@ use Doctrine\Common\Persistence\ObjectManager;
  * Class DeskProWriter
  * @package Application\ImportBundle\Generator\Writer\DeskPro
  */
-class DeskProWriter extends AbstractWriter
+final class DeskProWriter extends AbstractWriter
 {
     /**
      * @var Importer\Collection
@@ -92,7 +92,7 @@ class DeskProWriter extends AbstractWriter
             }
 
             if ($this->config->isDryRun()) {
-                $this->logInfo('Dry run mode is enabled');
+                $this->logInfo('Dry run mode is enabled, no data was flushed');
             } else {
                 $this->entity_manager->flush();
             }
@@ -123,26 +123,20 @@ class DeskProWriter extends AbstractWriter
      */
     private function getImporter(EntityInterface $entity)
     {
-        foreach ($this->importers as $importer) {
-            /** @var Importer\ImporterInterface $importer */
-            if ($entity->getType() === $importer->getEntityType()) {
-                if ($this->config && $importer instanceof GeneratorConfigAwareInterface) {
-                    /** @var GeneratorConfigAwareInterface $importer */
-                    $importer->setConfig($this->config);
-                }
-                if ($this->logger && $importer instanceof LoggerAwareInterface) {
-                    /** @var LoggerAwareInterface $importer */
-                    $importer->setLogger($this->logger);
-                }
-                if ($this->progress_bar && $importer instanceof ProgressBarAwareInterface) {
-                    /** @var ProgressBarAwareInterface $importer */
-                    $importer->setProgressBarHelper($this->progress_bar);
-                }
-
-                return $importer;
-            }
+        $importer = $this->importers->getByEntityType($entity->getType());
+        if ($this->config && $importer instanceof GeneratorConfigAwareInterface) {
+            /** @var GeneratorConfigAwareInterface $importer */
+            $importer->setConfig($this->config);
+        }
+        if ($this->logger && $importer instanceof LoggerAwareInterface) {
+            /** @var LoggerAwareInterface $importer */
+            $importer->setLogger($this->logger);
+        }
+        if ($this->progress_bar && $importer instanceof ProgressBarAwareInterface) {
+            /** @var ProgressBarAwareInterface $importer */
+            $importer->setProgressBarHelper($this->progress_bar);
         }
 
-        throw new \Exception(sprintf('Entity `%s` not supported', get_class($entity)));
+        return $importer;
     }
 }

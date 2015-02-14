@@ -45,7 +45,24 @@ final class Collection extends AbstractCollection
      */
     public function attach(ImporterInterface $importer)
     {
-        $this->collection[] = $importer;
+        $this->collection[$importer->getEntityType()] = $importer;
         return $this;
+    }
+
+    /**
+     * Returns an importer by entity type
+     *
+     * @param string $type
+     *
+     * @return ImporterInterface
+     * @throws \Exception
+     */
+    public function getByEntityType($type)
+    {
+        if (isset($this->collection[$type])) {
+            return $this->collection[$type];
+        }
+
+        throw new \Exception(sprintf('Entity `%s` not supported', $type));
     }
 }
