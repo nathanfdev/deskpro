@@ -80,38 +80,40 @@ final class DeskProWriter extends AbstractWriter
      */
     public function writeData(EntityInterface $entity)
     {
-        try {
-            $importer = $this->getImporter($entity);
-            if ($importer instanceof SkipDuplicateInterface) {
-                $importer->checkAlreadyExists($entity);
-            }
-
-            $records = $importer->getDoctrineEntities($entity);
-            if ($this->config->isDryRun()) {
-                $this->logNotice('Dry run mode is enabled, no data was flushed');
-                foreach ($records as $record) {
-                    $this->logInfo(sprintf('Generated `%s` entity', get_class($record)));
+        $importers = $this->getImporters($entity);
+        foreach ($importers as $importer) {
+            try {
+                if ($importer instanceof SkipDuplicateInterface) {
+                    $importer->checkAlreadyExists($entity);
                 }
-            } else {
-                foreach ($records as $record) {
-                    $this->entity_manager->persist($record);
-                    $this->entity_manager->flush();
 
-                    $this->logInfo(sprintf('Flushed a new `%s` entity', get_class($record)));
+                $records = $importer->getDoctrineEntities($entity);
+                if ($this->config->isDryRun()) {
+                    $this->logNotice('Dry run mode is enabled, no data was flushed');
+                    foreach ($records as $record) {
+                        $this->logInfo(sprintf('Generated `%s` entity', get_class($record)));
+                    }
+                } else {
+                    foreach ($records as $record) {
+                        $this->entity_manager->persist($record);
+                        $this->entity_manager->flush();
+
+                        $this->logInfo(sprintf('Flushed a new `%s` entity', get_class($record)));
+                    }
                 }
+
+            } catch (Importer\Mapper\MapperException $e) {
+                $this->logWarning(sprintf(
+                    'Unable to create `%s` with oid `%s`. Reason %s',
+                    $entity->getType(), $entity->getOid(), $e->__toString()
+                ));
+
+            } catch (Importer\DuplicateException $e) {
+                $this->logWarning(sprintf(
+                    'Duplicate entity `%s` with oid `%s` (Skipping)',
+                    $entity->getType(), $entity->getOid()
+                ));
             }
-
-        } catch (Importer\Mapper\MapperException $e) {
-            $this->logWarning(sprintf(
-                'Unable to create `%s` with oid `%s`. Reason %s',
-                $entity->getType(), $entity->getOid(), $e->__toString()
-            ));
-
-        } catch (Importer\DuplicateException $e) {
-            $this->logWarning(sprintf(
-                'Duplicate entity `%s` with oid `%s` (Skipping)',
-                $entity->getType(), $entity->getOid()
-            ));
         }
 
         return true;
@@ -122,25 +124,27 @@ final class DeskProWriter extends AbstractWriter
      *
      * @param EntityInterface $entity
      *
-     * @return Importer\ImporterInterface
+     * @return Importer\Collection
      * @throws \Exception
      */
-    private function getImporter(EntityInterface $entity)
+    private function getImporters(EntityInterface $entity)
     {
-        $importer = $this->importers->getByEntityType($entity->getType());
-        if ($this->config && $importer instanceof GeneratorConfigAwareInterface) {
-            /** @var GeneratorConfigAwareInterface $importer */
-            $importer->setConfig($this->config);
-        }
-        if ($this->logger && $importer instanceof LoggerAwareInterface) {
-            /** @var LoggerAwareInterface $importer */
-            $importer->setLogger($this->logger);
-        }
-        if ($this->progress_bar && $importer instanceof ProgressBarAwareInterface) {
-            /** @var ProgressBarAwareInterface $importer */
-            $importer->setProgressBarHelper($this->progress_bar);
+        $importers = $this->importers->getByEntityType($entity->getType());
+        foreach ($importers as $importer) {
+            if ($this->config && $importer instanceof GeneratorConfigAwareInterface) {
+                /** @var GeneratorConfigAwareInterface $importer */
+                $importer->setConfig($this->config);
+            }
+            if ($this->logger && $importer instanceof LoggerAwareInterface) {
+                /** @var LoggerAwareInterface $importer */
+                $importer->setLogger($this->logger);
+            }
+            if ($this->progress_bar && $importer instanceof ProgressBarAwareInterface) {
+                /** @var ProgressBarAwareInterface $importer */
+                $importer->setProgressBarHelper($this->progress_bar);
+            }
         }
 
-        return $importer;
+        return $importers;
     }
 }

@@ -27,51 +27,55 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
-use Application\ImportBundle\AbstractCollection;
+use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\ImportBundle\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Collection of DeskPro importers
+ * DeskPro article labels importer
  *
- * Class Collection
+ * Class ArticleLabel
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-final class Collection extends AbstractCollection
+final class ArticleLabel extends AbstractImporter
 {
     /**
-     * Add an importer
-     *
-     * @param ImporterInterface $importer
-     * @return $this
+     * {@inheritdoc}
      */
-    public function attach(ImporterInterface $importer)
+    public function getEntityType()
     {
-        $this->collection[] = $importer;
-        return $this;
+        return Entity\EntityInterface::TYPE_ARTICLE;
     }
 
     /**
-     * Returns an importer by entity type
+     * {@inheritdoc}
      *
-     * @param string $type
-     *
-     * @return Collection
-     * @throws \Exception
+     * @var Entity\Article $entity
      */
-    public function getByEntityType($type)
+    public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
-        $collection = new Collection();
+        $this->records = new ArrayCollection();
+        $article = $this->getArticleMapper()->findOneByTitle($entity->getTitle());
 
-        foreach ($this->collection as $importer) {
-            /** @var ImporterInterface $importer */
-            if ($importer->getEntityType() === $type) {
-                $collection->attach($importer);
-            }
+        foreach ($entity->getLabels() as $label) {
+            $article->addLabel($this->createArticleLabel($label));
         }
 
-        if ($collection->count() === 0) {
-            throw new \Exception(sprintf('Entity `%s` not supported', $type));
-        }
+        return $this->records;
+    }
 
-        return $collection;
+    /**
+     * Returns a new article label entity
+     *
+     * @param string $label
+     * @return DeskPROEntity\LabelArticle
+     */
+    private function createArticleLabel($label)
+    {
+        $entity = new DeskPROEntity\LabelArticle();
+        $entity->setLabel($label);
+
+        $this->records->add($entity);
+        return $entity;
     }
 }

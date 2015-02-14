@@ -59,12 +59,6 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
-        // Entity of type Application\DeskPRO\Entity\LabelArticle has identity through a foreign entity Application\DeskPRO\Entity\Article,
-        // however this entity has no identity itself. You have to call EntityManager#persist() on the related entity
-        // and make sure that an identifier was generated before trying to persist 'Application\DeskPRO\Entity\LabelArticle'.
-        // In case of Post Insert ID Generation (such as MySQL Auto-Increment or PostgreSQL SERIAL)
-        // this means you have to call EntityManager#flush() between both persist operations.
-
         $this->records = new ArrayCollection();
 
         $article = new DeskPROEntity\Article();
@@ -81,9 +75,6 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
 
         foreach ($entity->getCategories() as $category) {
             $article->addToCategory($this->findOrCreateArticleCategory($category));
-        }
-        foreach ($entity->getLabels() as $label) {
-//            $article->addLabel($this->createArticleLabel($label));
         }
 
         $this->records->add($article);
@@ -133,32 +124,6 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
         }
 
         return $category;
-    }
-
-    /**
-     * Returns a new article label entity
-     *
-     * @param string $label
-     * @return DeskPROEntity\LabelArticle
-     */
-    private function createArticleLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelArticle();
-        $entity->setLabel($label);
-
-        $this->records->add($entity);
-        return $entity;
-    }
-
-    /**
-     * Returns the article mapper
-     *
-     * @return Mapper\Article
-     * @throws \Exception
-     */
-    private function getArticleMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ARTICLE);
     }
 
     /**

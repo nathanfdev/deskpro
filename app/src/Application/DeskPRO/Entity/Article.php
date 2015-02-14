@@ -172,8 +172,8 @@ class Article extends ContentAbstract implements HighlightableModelInterface
      */
     public function addLabel(LabelArticle $label)
     {
-        $label['article'] = $this;
         $this->labels->add($label);
+        $label['article'] = $this;
     }
 
     public function addCustomData(CustomDataArticle $data)

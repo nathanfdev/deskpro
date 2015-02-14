@@ -155,4 +155,15 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_LANGUAGE);
     }
+
+    /**
+     * Returns the article mapper
+     *
+     * @return Mapper\Article
+     * @throws \Exception
+     */
+    protected function getArticleMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ARTICLE);
+    }
 }
