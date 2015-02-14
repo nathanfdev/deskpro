@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,56 +25,74 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- * @category Entities
- */
+namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 
-namespace Application\DeskPRO\Entity;
-
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository;
 
 /**
- * Base labels associations class
+ * Article label record mapper
  *
+ * Class ArticleLabel
+ * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
+final class ArticleLabel implements MapperInterface
 {
     /**
-     * The 'type' of label this is for, as it could be found in the
-     * LabelDef.
+     * @var EntityRepository\LabelArticle
      */
-    const LABEL_TYPENAME = 'OVERRIDE';
+    private $repository;
 
     /**
-     * @var string
-     */
-    protected $label;
-
-
-    /**
-     * @param string $label
-     */
-    public function setLabel($label)
-    {
-        $label = trim($label);
-        $label = str_replace(',', '', $label);
-        $this->label = $label;
-    }
-
-    /**
-     * Returns label name
+     * Constructor
      *
-     * @return string
+     * @param EntityRepository\LabelArticle $repository
      */
-    public function getLabel()
+    public function __construct(EntityRepository\LabelArticle $repository)
     {
-        return $this->label;
+        $this->repository = $repository;
     }
 
-    public function __toString()
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
     {
-        return $this->label;
+        return self::TYPE_ARTICLE_LABEL;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findOneBy(array $criteria, $throw_exception = true)
+    {
+        /** @var Entity\LabelArticle $record */
+        $record = $this->repository->findOneBy($criteria);
+        if ( ! $record && $throw_exception) {
+            throw new MapperException('Article category not found', $criteria);
+        }
+
+        return $record;
+    }
+
+    /**
+     * Returns a collection of article labels
+     *
+     * @param int  $id
+     * @param bool $throw_exception
+     *
+     * @return Entity\LabelArticle[]
+     * @throws MapperException
+     */
+    public function findByArticleId($id, $throw_exception = true)
+    {
+        $criteria = array('article' => $id);
+        $records  = $this->repository->findBy($criteria);
+
+        if (empty($records) && $throw_exception) {
+            throw new MapperException('Article categories not found', $criteria);
+        }
+
+        return $records;
     }
 }

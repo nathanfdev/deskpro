@@ -48,6 +48,7 @@ interface MapperInterface
     const TYPE_ORGANIZATION      = 'organization';
     const TYPE_LANGUAGE          = 'language';
     const TYPE_ARTICLE_CATEGORY  = 'article_category';
+    const TYPE_ARTICLE_LABEL     = 'article_label';
     const TYPE_ARTICLE           = 'article';
     const TYPE_NEWS_CATEGORY     = 'news_category';
     const TYPE_NEWS              = 'news';
