@@ -74,10 +74,6 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
             ->setDateCreated($entity->getDateCreated())
             ->setDatePublished($entity->getDatePublished());
 
-        foreach ($entity->getLabels() as $label) {
-            $feedback->addLabel($this->createFeedbackLabel($label));
-        }
-
         $this->records->add($feedback);
         return $this->records;
     }
@@ -120,32 +116,6 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
         }
 
         return $category;
-    }
-
-    /**
-     * Returns a new feedback label entity
-     *
-     * @param string $label
-     * @return DeskPROEntity\LabelFeedback
-     */
-    private function createFeedbackLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelFeedback();
-        $entity->setLabel($label);
-
-        $this->records->add($entity);
-        return $entity;
-    }
-
-    /**
-     * Returns the feedback mapper
-     *
-     * @return Mapper\Feedback
-     * @throws \Exception
-     */
-    private function getFeedbackMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_FEEDBACK);
     }
 
     /**

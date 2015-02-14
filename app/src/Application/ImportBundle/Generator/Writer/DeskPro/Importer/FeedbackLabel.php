@@ -32,99 +32,94 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro news importer
+ * DeskPro feedback labels importer
  *
- * Class News
+ * Class FeedbackLabel
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-final class News extends AbstractImporter implements SkipDuplicateInterface
+final class FeedbackLabel extends AbstractImporter
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_NEWS;
+        return Entity\EntityInterface::TYPE_FEEDBACK;
     }
 
     /**
      * {@inheritdoc}
      *
-     * todo add referred objects
-     * 'total_rating'   => $nval->total_rating,
-     * 'num_comments'   => $nval->num_comments,
-     * 'num_ratings'    => $nval->num_ratings,
-     * 'view_count'     => $nval->view_count
-     *
-     * @var Entity\News $entity
+     * @var Entity\Article $entity
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
         $this->records = new ArrayCollection();
 
-        $news = new DeskPROEntity\News();
-        $news
-            ->setTitle($entity->getTitle())
-            ->setContent($entity->getContent())
-            ->setSlug($entity->getSlug())
-            ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
-            ->setLanguage($this->findLanguage($entity->getLanguage()))
-            ->setCategory($this->findOrCreateNewsCategory($entity->getCategory()))
-            ->setDateCreated($entity->getDateCreated())
-            ->setDatePublished($entity->getDatePublished());
+        $feedback = $this->getFeedbackMapper()->findOneByTitle($entity->getTitle());
+        $labels   = $this->getExistingLabelsNames($feedback->getId());
 
-        $this->records->add($news);
+        foreach ($entity->getLabels() as $label) {
+            if (in_array($label, $labels, true)) {
+                $this->logWarning(sprintf(
+                    'Found an existing label `%s` for feedback with oid `%d` (Skipping)',
+                    $label, $feedback->getId()
+                ));
+            } else {
+                $feedback->addLabel($this->createFeedbackLabel($label));
+                $this->logInfo(sprintf(
+                    'Creating a new label `%s` for feedback with oid `%d`',
+                    $label, $feedback->getId()
+                ));
+            }
+        }
+
         return $this->records;
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a new feedback label entity
      *
-     * @var Entity\News $entity
+     * @param string $label
+     * @return DeskPROEntity\LabelFeedback
      */
-    public function checkAlreadyExists(Entity\EntityInterface $entity)
+    private function createFeedbackLabel($label)
     {
-        if ($this->getNewsMapper()->findOneByTitle($entity->getTitle(), false)) {
-            throw new DuplicateException();
-        }
+        $entity = new DeskPROEntity\LabelFeedback();
+        $entity->setLabel($label);
+
+        $this->records->add($entity);
+        return $entity;
     }
 
     /**
-     * Returns an feedback category by title
-     * Creates a new feedback category if not found
+     * Returns a collection of existing feedback label names
      *
-     * @param string $title
+     * @param int $id
      *
-     * @return DeskPROEntity\NewsCategory|null
-     * @throws \Exception
+     * @return array
+     * @throws Mapper\MapperException
      */
-    private function findOrCreateNewsCategory($title)
+    private function getExistingLabelsNames($id)
     {
-        $category = null;
-        if ($title) {
-            $category = $this->getNewsCategoryMapper()->findOneByTitle($title, false);
-            if ($category) {
-                $this->logInfo(sprintf('Found existing news category `%s`', $category->getTitle()));
-            } else {
-                $category = new DeskPROEntity\NewsCategory();
-                $category->setRealTitle($title);
+        $labels = $this->getFeedbackLabelMapper()->findByFeedbackId($id, false);
+        $names  = array();
 
-                $this->records->add($category);
-                $this->logWarning(sprintf('New news category creating `%s`', $category->getTitle()));
-            }
+        foreach ($labels as $label) {
+            $names[] = $label->getLabel();
         }
 
-        return $category;
+        return $names;
     }
 
     /**
-     * Returns the news category mapper
+     * Returns the article mapper
      *
-     * @return Mapper\NewsCategory
+     * @return Mapper\FeedbackLabel
      * @throws \Exception
      */
-    private function getNewsCategoryMapper()
+    private function getFeedbackLabelMapper()
     {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_NEWS_CATEGORY);
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_FEEDBACK_LABEL);
     }
 }
