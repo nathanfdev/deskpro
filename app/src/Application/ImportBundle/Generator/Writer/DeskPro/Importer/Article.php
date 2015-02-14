@@ -37,7 +37,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Class Article
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-final class Article extends AbstractImporter
+final class Article extends AbstractImporter implements SkipDuplicateInterface
 {
     /**
      * {@inheritdoc}
@@ -59,6 +59,12 @@ final class Article extends AbstractImporter
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
+        // Entity of type Application\DeskPRO\Entity\LabelArticle has identity through a foreign entity Application\DeskPRO\Entity\Article,
+        // however this entity has no identity itself. You have to call EntityManager#persist() on the related entity
+        // and make sure that an identifier was generated before trying to persist 'Application\DeskPRO\Entity\LabelArticle'.
+        // In case of Post Insert ID Generation (such as MySQL Auto-Increment or PostgreSQL SERIAL)
+        // this means you have to call EntityManager#flush() between both persist operations.
+
         $this->records = new ArrayCollection();
 
         $article = new DeskPROEntity\Article();
@@ -77,7 +83,7 @@ final class Article extends AbstractImporter
             $article->addToCategory($this->findOrCreateArticleCategory($category));
         }
         foreach ($entity->getLabels() as $label) {
-            $article->addLabel($this->createArticleLabel($label));
+//            $article->addLabel($this->createArticleLabel($label));
         }
 
         $this->records->add($article);
@@ -91,6 +97,11 @@ final class Article extends AbstractImporter
      */
     public function checkAlreadyExists(Entity\EntityInterface $entity)
     {
+        $this->logInfo(sprintf(
+            'Looking for existing article with title `%s`, oid `%d`',
+            $entity->getTitle(), $entity->getOid()
+        ));
+
         if ($this->getArticleMapper()->findOneByTitle($entity->getTitle(), false)) {
             throw new DuplicateException();
         }

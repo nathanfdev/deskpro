@@ -91,9 +91,9 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
         if ($title) {
             $language = $this->getLanguageMapper()->findOneByTitle($title);
             if ($language) {
-                $this->logInfo(sprintf('Found existing language %s', $title));
+                $this->logInfo(sprintf('Found existing `%s` language', $title));
             } else {
-                $this->logNotice(sprintf('Could not map language value `%s`', $title));
+                $this->logNotice(sprintf('Could not map unknown `%s` language', $title));
             }
         }
 

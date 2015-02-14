@@ -88,11 +88,16 @@ final class DeskProWriter extends AbstractWriter
 
             $records = $importer->getDoctrineEntities($entity);
             if ($this->config->isDryRun()) {
-                $this->logInfo('Dry run mode is enabled, no data was flushed');
+                $this->logNotice('Dry run mode is enabled, no data was flushed');
+                foreach ($records as $record) {
+                    $this->logInfo(sprintf('Generated `%s` entity', get_class($record)));
+                }
             } else {
                 foreach ($records as $record) {
                     $this->entity_manager->persist($record);
                     $this->entity_manager->flush();
+
+                    $this->logInfo(sprintf('Flushed a new `%s` entity', get_class($record)));
                 }
             }
 
@@ -103,7 +108,7 @@ final class DeskProWriter extends AbstractWriter
             ));
 
         } catch (Importer\DuplicateException $e) {
-            $this->logError(sprintf(
+            $this->logWarning(sprintf(
                 'Duplicate entity `%s` with oid `%s` (Skipping)',
                 $entity->getType(), $entity->getOid()
             ));

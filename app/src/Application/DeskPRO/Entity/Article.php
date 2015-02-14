@@ -96,6 +96,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     protected $custom_data;
 
     /**
+     * \Doctrine\Common\Collections\ArrayCollection
      */
     protected $labels;
 
@@ -114,6 +115,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         $this->categories  = new ArrayCollection();
         $this->attachments = new ArrayCollection();
         $this->custom_data = new ArrayCollection();
+        $this->labels      = new ArrayCollection();
     }
 
     /**
