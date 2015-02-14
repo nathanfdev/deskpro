@@ -9,10 +9,14 @@ class UrlHostChecker
         $check_host = parse_url($check_url, PHP_URL_HOST);
         $check_port = parse_url($check_url, PHP_URL_PORT);
 
+        // no schemaless urls
+        if (substr($check_url, 0, 2) == '//') {
+            return false;
+        }
+
         if (
             null === $check_host
             && substr($check_url, 0, 1) === '/'
-            && substr($check_url, 0, 2) !== '//'
         ) {
             return true; // url does not contain host info, so it is an absolute url redirect (example: "/news")
         }
