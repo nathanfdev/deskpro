@@ -179,7 +179,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             $entity
                 ->setDestination($destination_prefix . $attachment[$ref_column])
                 ->setOid($attachment[$ref_column])
-                ->setPersonEmail($attachment['user'])
+                ->setPersonEmail($attachment['person'])
                 ->setBlobUrl($attachment['blob_url'])
                 ->setBlobPath($attachment['blob_path'])
                 ->setFileName($attachment['file_name'])

@@ -63,7 +63,6 @@ final class Downloads extends AbstractParser
     {
         $collection  = new Entity\Collection();
         $downloads   = $this->getReaderData($this->getConfig());
-        $attachments = $this->exportDownloadAttachments();
 
         foreach ($downloads as $num => $download) {
             $this->advanceProgressBar();
@@ -71,13 +70,6 @@ final class Downloads extends AbstractParser
             try {
                 $entity = $this->exportDownload($download);
                 if ($entity) {
-                    foreach ($attachments as $attachment) {
-                        /** @var Entity\Attachment $attachment */
-                        if ($attachment->getDestination() === $entity->getDestination()) {
-                            $entity->setAttachment($attachment);
-                        }
-                    }
-
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
                 } else {
@@ -97,13 +89,14 @@ final class Downloads extends AbstractParser
 
     /**
      * Returns a download entity
+     * Download data contains attachment params
      *
      * @param array $download
      * @return Entity\Download|null
      */
     private function exportDownload(array $download)
     {
-        if ($this->isDownloadValid($download)) {
+        if ($this->isDownloadValid($download) && $this->isAttachmentValid($download, 'id')) {
             $entity = new Entity\Download();
             $entity
                 ->setDestination(self::DOWNLOAD_PREFIX . $download['id'])
@@ -115,22 +108,13 @@ final class Downloads extends AbstractParser
                 ->setLanguage($download['language'])
                 ->setCategory($download['category'])
                 ->setStatus($download['status'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($download['date_created']));
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($download['date_created']))
+                ->setAttachment($this->exportAttachment(self::DOWNLOAD_PREFIX, $download, 'id'));
 
             return $entity;
         }
 
         return null;
-    }
-
-    /**
-     * Returns a collection of download attachments
-     *
-     * @return Entity\Collection
-     */
-    private function exportDownloadAttachments()
-    {
-        return $this->exportAttachments($this->getDownloadAttachmentsConfig(), self::DOWNLOAD_PREFIX, 'download_id');
     }
 
     /**
@@ -165,15 +149,5 @@ final class Downloads extends AbstractParser
     private function getConfig()
     {
         return $this->getReaderConfig(self::FILE_DOWNLOADS);
-    }
-
-    /**
-     * Returns reader of download attachments records config
-     *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
-     */
-    private function getDownloadAttachmentsConfig()
-    {
-        return $this->getReaderConfig(self::FILE_DOWNLOAD_ATTACHMENTS);
     }
 }

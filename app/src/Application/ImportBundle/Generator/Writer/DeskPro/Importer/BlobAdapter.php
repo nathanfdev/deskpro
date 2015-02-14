@@ -73,7 +73,7 @@ class BlobAdapter implements BlobAdapterInterface
      */
     public function createByAttachment(Entity\Attachment $attachment)
     {
-        $blob_data = $this->mapper->findOneBy(
+        $blob_data = $this->mapper->findOneByParams(
             $attachment->getBlobData(),
             $attachment->getBlobPath(),
             $attachment->getBlobUrl()

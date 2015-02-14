@@ -106,8 +106,8 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         return array(
 //            Entity\EntityInterface::TYPE_TICKET,
 //            Entity\EntityInterface::TYPE_PERSON,
-            Entity\EntityInterface::TYPE_ARTICLE,
-//            Entity\EntityInterface::TYPE_DOWNLOAD,
+//            Entity\EntityInterface::TYPE_ARTICLE,
+            Entity\EntityInterface::TYPE_DOWNLOAD,
 //            Entity\EntityInterface::TYPE_FEEDBACK,
 //            Entity\EntityInterface::TYPE_NEWS,
         );
@@ -123,8 +123,8 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         return array(
 //            Entity\EntityInterface::TYPE_PERSON,
 //            Entity\EntityInterface::TYPE_TICKET,
-            Entity\EntityInterface::TYPE_ARTICLE,
-//            Entity\EntityInterface::TYPE_DOWNLOAD,
+//            Entity\EntityInterface::TYPE_ARTICLE,
+            Entity\EntityInterface::TYPE_DOWNLOAD,
 //            Entity\EntityInterface::TYPE_FEEDBACK,
 //            Entity\EntityInterface::TYPE_NEWS,
         );

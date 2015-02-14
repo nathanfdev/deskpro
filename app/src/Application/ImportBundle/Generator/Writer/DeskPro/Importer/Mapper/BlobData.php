@@ -49,20 +49,20 @@ final class BlobData implements MapperInterface
     public function findOneBy(array $criteria, $throw_exception = true)
     {
         $data = null;
-        if (!empty($criteria['data'])) {
+        if ( ! empty($criteria['data'])) {
             $data = base64_decode($criteria['data']);
         }
-        if (!empty($criteria['path'])) {
+        if ( ! empty($criteria['path'])) {
             if (!is_readable($criteria['path'])) {
                 throw new MapperException(sprintf('Invalid blob path %s', $criteria['path']), $criteria);
             }
 
             $data = @file_get_contents($criteria['path']);
         }
-        if (!empty($criteria['url'])) {
+        if ( ! empty($criteria['url'])) {
             $data = @file_get_contents($criteria['url']);
         }
-        if (!$data) {
+        if ( ! $data) {
             throw new MapperException('Blob data not found', $criteria);
         }
 
