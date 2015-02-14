@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Tickets\Actions\ModStopTriggers;
+use Application\DeskPRO\Tickets\Actions\SetDeleted;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -150,6 +151,10 @@ class TicketTrigger extends DomainObject
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
      */
     protected $actions;
+
+    protected $_has_stop_trigger_action;
+
+    protected $_has_delete_ticket_action;
 
     /**
      * @var int
@@ -267,21 +272,41 @@ class TicketTrigger extends DomainObject
         }
     }
 
+    protected function processActions()
+    {
+        if (!$this->actions) return;
+
+        if (null !== $this->_has_delete_ticket_action && null !== $this->_has_stop_trigger_action) return;
+
+        foreach ($this->actions as $a) {
+            if ($a instanceof ModStopTriggers) {
+                $this->_has_stop_trigger_action = true;
+            }
+            if ($a instanceof SetDeleted) {
+                $this->_has_delete_ticket_action = true;
+            }
+
+            if (null !== $this->_has_delete_ticket_action && null !== $this->_has_stop_trigger_action) break;
+        }
+
+        $this->_has_stop_trigger_action = (bool) $this->_has_stop_trigger_action;
+        $this->_has_delete_ticket_action = (bool) $this->_has_delete_ticket_action;
+    }
+
 
     /**
      * @return bool
      */
     public function hasStopTriggersAction()
     {
-        if (!$this->actions) return false;
+        $this->processActions();
+        return $this->_has_stop_trigger_action;
+    }
 
-        foreach ($this->actions as $a) {
-            if ($a instanceof ModStopTriggers) {
-                return true;
-            }
-        }
-
-        return false;
+    public function hasDeleteTicketAction()
+    {
+        $this->processActions();
+        return $this->_has_delete_ticket_action;
     }
 
 
@@ -299,6 +324,7 @@ class TicketTrigger extends DomainObject
         $data['terms']         = $this->terms->exportToArray();
         $data['actions']       = $this->actions->exportToArray();
         $data['has_stop_triggers_action'] = $this->hasStopTriggersAction();
+        $data['has_delete_ticket_action'] = $this->hasDeleteTicketAction();
 
         return $data;
     }
