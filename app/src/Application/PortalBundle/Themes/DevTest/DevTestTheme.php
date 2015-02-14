@@ -65,7 +65,7 @@ class DevTestTheme extends AbstractTheme
     }
 
 
-    public static function getTags()
+    public static function getHardCodedTags()
     {
         return array();
     }

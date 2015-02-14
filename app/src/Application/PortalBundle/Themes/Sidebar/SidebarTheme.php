@@ -61,11 +61,11 @@ class SidebarTheme extends AbstractTheme
      */
     public function getName()
     {
-        return 'Side Bar';
+        return 'Sidebar';
     }
 
 
-    public static function getTags()
+    public static function getHardCodedTags()
     {
         return array();
     }
