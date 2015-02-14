@@ -1,3 +1,5 @@
 name;email;is_agent
 Abhinav Kumar;abhinav.kumar@deskpro.com;true
 Angry Customer;angry.customer@example.com;false
+Some Customer;some@email.tld;false
+Another Customer;another@email.tld;false

@@ -83,13 +83,13 @@ class GeneratorConfig
     private $verbose = false;
 
     /**
-     * Not used yet
-     *
-     * @var int|null
+     * @var bool
      */
-//    private $ticket_offset;
+    private $dry_run = false;
 
     /**
+     * Returns an exporter type
+     *
      * @return string
      */
     public function getExporterType()
@@ -98,6 +98,8 @@ class GeneratorConfig
     }
 
     /**
+     * Sets an exporter type (csv, json, osticket, zendesk)
+     *
      * @param string $exporter_type
      * @return $this
      */
@@ -152,7 +154,7 @@ class GeneratorConfig
     }
 
     /**
-     * Some of exporters need an input path
+     * Some of the exporters need an input path
      * Returns true if the input path must be specified
      *
      * @return bool
@@ -269,6 +271,28 @@ class GeneratorConfig
     public function setVerbose($verbose)
     {
         $this->verbose = (bool)$verbose;
+        return $this;
+    }
+
+    /**
+     * A writer does not flush data
+     *
+     * @return boolean
+     */
+    public function isDryRun()
+    {
+        return $this->dry_run;
+    }
+
+    /**
+     * A writer does not flush data
+     *
+     * @param boolean $dry_run
+     * @return $this
+     */
+    public function setDryRun($dry_run)
+    {
+        $this->dry_run = (bool)$dry_run;
         return $this;
     }
 }

@@ -86,9 +86,12 @@ class ImportCommand extends AbstractExportCommand
             }
 
         } catch (\Exception $e) {
-            $output->writeln('');
-            $output->writeln('');
             $logger->critical($e->getMessage());
+
+            if ($config->isVerbose() === false) {
+                $output->writeln('');
+            }
+            $output->writeln('');
             $output->writeln(sprintf(
                 'An error has occurred while importing. Look at the log file `%s` to see details.',
                 $config->getLogPath()

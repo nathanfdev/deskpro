@@ -91,7 +91,11 @@ class DeskProWriter extends AbstractWriter
                 $this->entity_manager->persist($record);
             }
 
-            $this->entity_manager->flush();
+            if ($this->config->isDryRun()) {
+                $this->logInfo('Dry run mode is enabled');
+            } else {
+                $this->entity_manager->flush();
+            }
 
         } catch (Importer\Mapper\MapperException $e) {
             $this->logWarning(sprintf(

@@ -68,7 +68,8 @@ class ExportCommand extends AbstractExportCommand
 
         $config = $this->createGeneratorConfig($input, $this->exportEntityTypesQueue());
         $config->setWriterType(Generator\Writer\WriterInterface::TYPE_JSON);
-        if ( ! $config->getOutputPath()) {
+
+        if ($config->isDryRun() === false && ! $config->getOutputPath()) {
             throw new Exception('Output path must be specified');
         }
         if ($config->needInputPath()) {

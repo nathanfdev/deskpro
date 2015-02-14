@@ -67,12 +67,19 @@ final class JsonWriter extends AbstractWriter
      */
     public function writeData(Entity\EntityInterface $entity)
     {
-        if (!$this->config) {
+        if ( ! $this->config) {
             throw new Exception('Generator configuration is not set up');
         }
 
-        $this->createOutputDirsIfNotExist();
-        file_put_contents($this->getEntityPath($entity), json_encode($entity->toArray()));
+        $path = $this->getEntityPath($entity);
+        $data = json_encode($entity->toArray());
+
+        if ($this->config->isDryRun()) {
+            $this->logInfo(sprintf('Dry run mode is enabled, filename `%s` is not created or updated.', $path));
+        } else {
+            $this->createOutputDirsIfNotExist();
+            file_put_contents($path, $data);
+        }
 
         return true;
     }

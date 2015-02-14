@@ -64,6 +64,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             InputOption::VALUE_REQUIRED,
             'The path to the directory where the exporting files are present'
         );
+        $this->addOption(
+            'dry-run',
+            null,
+            InputOption::VALUE_NONE,
+            'A writer does not flush data'
+        );
     }
 
     /**
@@ -180,6 +186,9 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         if ($input->hasOption('verbose')) {
             $config->setVerbose($input->getOption('verbose'));
         }
+        if ($input->hasOption('dry-run')) {
+            $config->setDryRun($input->getOption('dry-run'));
+        }
     }
 
     /**
@@ -221,7 +230,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             ->setConfig($config)
             ->setLogger($logger);
 
-        if ( ! $config->isVerbose()) {
+        if ($config->isVerbose() === false) {
             $progress_bar = new ProgressBar($output, $generator->getTotalRecordsCount());
             $progress_bar->start();
 

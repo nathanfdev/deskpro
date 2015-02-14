@@ -85,7 +85,7 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
             throw new Exception('Generator configuration is not set up');
         }
 
-        $this->logNotice(sprintf('Parsing entities `%s`', $type));
+        $this->logNotice(sprintf('Parsing `%s` entities', $type));
 
         $parser = $this->parsers->getByEntityType($type);
         $parser->setConfig($this->config);
