@@ -292,12 +292,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
      */
     public function setCategory(DownloadCategory $category = null)
     {
-        if ($category) {
-            $this->setModelField('category', $category);
-        } else {
-            $this->setModelField('category', -1);
-        }
-
+        $this->setModelField('category', $category);
         return $this;
     }
 
