@@ -74,12 +74,16 @@ class DeskProWriterFactory extends AbstractFactory
         $feedback_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Feedback');
         /** @var EntityRepository\FeedbackCategory $feedback_category_repository */
         $feedback_category_repository = $doctrine->getRepository('Application\DeskPRO\Entity\FeedbackCategory');
+        /** @var EntityRepository\LabelFeedback $feedback_label_repository */
+        $feedback_label_repository = $doctrine->getRepository('Application\DeskPRO\Entity\LabelFeedback');
         /** @var EntityRepository\Language $language_repository */
         $language_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Language');
         /** @var EntityRepository\News $news_repository */
         $news_repository = $doctrine->getRepository('Application\DeskPRO\Entity\News');
         /** @var EntityRepository\NewsCategory $news_category_repository */
         $news_category_repository = $doctrine->getRepository('Application\DeskPRO\Entity\NewsCategory');
+        /** @var EntityRepository\LabelNews $news_label_repository */
+        $news_label_repository = $doctrine->getRepository('Application\DeskPRO\Entity\LabelNews');
         /** @var EntityRepository\Organization $organization_repository */
         $organization_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Organization');
         /** @var EntityRepository\Person $person_repository */
@@ -118,9 +122,11 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\DownloadLabel($download_label_repository))
             ->attach(new Importer\Mapper\Feedback($feedback_repository))
             ->attach(new Importer\Mapper\FeedbackCategory($feedback_category_repository))
+            ->attach(new Importer\Mapper\FeedbackLabel($feedback_label_repository))
             ->attach(new Importer\Mapper\Language($language_repository))
             ->attach(new Importer\Mapper\News($news_repository))
             ->attach(new Importer\Mapper\NewsCategory($news_category_repository))
+            ->attach(new Importer\Mapper\NewsLabel($news_label_repository))
             ->attach(new Importer\Mapper\Organization($organization_repository))
             ->attach(new Importer\Mapper\Person($person_repository))
             ->attach(new Importer\Mapper\PersonEmail($person_email_repository))
