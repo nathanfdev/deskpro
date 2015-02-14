@@ -71,8 +71,8 @@ class Tag implements \Serializable
         $this->defined_options = $defined_options;
         $this->default_options = $default_options;
         $this->esi = $esi;
-        $this->allow_route_params = $allow_route_params;
         $this->always_guest_inline = $always_guest_inline;
+        $this->allow_route_params = $allow_route_params;
     }
 
     public function serialize()
@@ -84,8 +84,8 @@ class Tag implements \Serializable
                 'defined_options' => $this->defined_options,
                 'default_options' => $this->default_options,
                 'esi' => $this->esi,
-                'allow_route_params' => $this->allow_route_params,
-                'always_guest_inline' => $this->always_guest_inline
+                'always_guest_inline' => $this->always_guest_inline,
+                'allow_route_params' => $this->allow_route_params
             )
         );
     }
@@ -95,12 +95,12 @@ class Tag implements \Serializable
         $unserialized = unserialize($serialized);
 
         $this->name = $unserialized['name'];
-        $this->esi = $unserialized['esi'];
         $this->controller_name = $unserialized['controller_name'];
         $this->defined_options = $unserialized['defined_options'];
         $this->default_options = $unserialized['default_options'];
-        $this->allow_route_params = $unserialized['allow_route_params'];
+        $this->esi = $unserialized['esi'];
         $this->always_guest_inline = $unserialized['always_guest_inline'];
+        $this->allow_route_params = $unserialized['allow_route_params'];
     }
 
     /**
@@ -120,19 +120,19 @@ class Tag implements \Serializable
     }
 
     /**
-     * @return array a map of pre-determined default values for some or all options
-     */
-    public function getDefaultOptions()
-    {
-        return $this->default_options;
-    }
-
-    /**
      * @return array an indexed array of defined option names
      */
     public function getDefinedOptions()
     {
         return $this->defined_options;
+    }
+
+    /**
+     * @return array a map of pre-determined default values for some or all options
+     */
+    public function getDefaultOptions()
+    {
+        return $this->default_options;
     }
 
     /**
