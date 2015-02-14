@@ -157,7 +157,7 @@ class ThemeRepository
         $tags = array();
 
         // source 1: static method
-        $static_tags = $theme::getTags();
+        $static_tags = $theme::getHardCodedTags();
         foreach ($static_tags as $tag) {
             $tags[$tag->getName()] = $tag;
         }
