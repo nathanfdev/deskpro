@@ -1,2 +1,2 @@
-id;person;title;content;slug;language;status;blob_url;blob_path;file_name;content_type;is_inline;date_created;category;label
-1;some@email.tld;Download 1;Download Content 1;download-slug-1;english;new;;/deskpro/www/app/src/Application/ImportBundle/Resources/docs/data_example/csv/downloads.csv;downloads.csv;csv;;;Category 1;Label 1
+person;title;content;slug;language;status;blob_url;blob_path;file_name;content_type;is_inline;date_created;category;label
+some@email.tld;Download 1;Download Content 1;download-slug-1;english;new;;/deskpro/www/app/src/Application/ImportBundle/Resources/docs/data_example/csv/downloads.csv;downloads.csv;csv;;;Category 1;Label 1

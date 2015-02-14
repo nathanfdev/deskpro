@@ -68,7 +68,7 @@ final class Downloads extends AbstractParser
             $this->advanceProgressBar();
 
             try {
-                $entity = $this->exportDownload($download);
+                $entity = $this->exportDownload($num, $download);
                 if ($entity) {
                     $collection->attach($entity);
                     $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
@@ -91,16 +91,18 @@ final class Downloads extends AbstractParser
      * Returns a download entity
      * Download data contains attachment params
      *
+     * @param int   $num
      * @param array $download
+     *
      * @return Entity\Download|null
      */
-    private function exportDownload(array $download)
+    private function exportDownload($num, array $download)
     {
-        if ($this->isDownloadValid($download) && $this->isAttachmentValid($download, 'id')) {
+        if ($this->isDownloadValid($download) && $this->isAttachmentValid($download, 'person')) {
             $entity = new Entity\Download();
             $entity
-                ->setDestination(self::DOWNLOAD_PREFIX . $download['id'])
-                ->setOid($download['id'])
+                ->setDestination(self::DOWNLOAD_PREFIX . $num)
+                ->setOid($num)
                 ->setPersonEmail($download['person'])
                 ->setTitle($download['title'])
                 ->setContent($download['content'])
@@ -109,7 +111,7 @@ final class Downloads extends AbstractParser
                 ->setCategory($download['category'])
                 ->setStatus($download['status'])
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($download['date_created']))
-                ->setAttachment($this->exportAttachment(self::DOWNLOAD_PREFIX, $download, 'id'))
+                ->setAttachment($this->exportAttachment(self::DOWNLOAD_PREFIX, $download, 'person'))
                 ->addLabel($download['label']);
 
             return $entity;
@@ -127,7 +129,6 @@ final class Downloads extends AbstractParser
     private function isDownloadValid(array $download)
     {
         $columns = array(
-            'id',
             'person',
             'title',
             'content',
