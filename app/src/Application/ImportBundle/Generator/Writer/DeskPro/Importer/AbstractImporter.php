@@ -166,4 +166,15 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ARTICLE);
     }
+
+    /**
+     * Returns the download mapper
+     *
+     * @return Mapper\Download
+     * @throws \Exception
+     */
+    protected function getDownloadMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_DOWNLOAD);
+    }
 }

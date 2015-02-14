@@ -66,7 +66,7 @@ final class DownloadLabel implements MapperInterface
      */
     public function findOneBy(array $criteria, $throw_exception = true)
     {
-        /** @var Entity\LabelArticle $record */
+        /** @var Entity\LabelDownload $record */
         $record = $this->repository->findOneBy($criteria);
         if ( ! $record && $throw_exception) {
             throw new MapperException('Download label not found', $criteria);
@@ -84,9 +84,9 @@ final class DownloadLabel implements MapperInterface
      * @return Entity\LabelDownload[]
      * @throws MapperException
      */
-    public function findByArticleId($id, $throw_exception = true)
+    public function findByDownloadId($id, $throw_exception = true)
     {
-        $criteria = array('article' => $id);
+        $criteria = array('download' => $id);
         $records  = $this->repository->findBy($criteria);
 
         if (empty($records) && $throw_exception) {

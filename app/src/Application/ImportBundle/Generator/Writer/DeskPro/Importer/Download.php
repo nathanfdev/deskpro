@@ -92,10 +92,6 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
             ->setDateCreated($entity->getDateCreated())
             ->setDatePublished($entity->getDatePublished());
 
-        foreach ($entity->getLabels() as $label) {
-            $download->addLabel($this->createDownloadLabel($label));
-        }
-
         $this->records->add($download);
         return $this->records;
     }
@@ -138,32 +134,6 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
         }
 
         return $category;
-    }
-
-    /**
-     * Returns a new download label entity
-     *
-     * @param string $label
-     * @return DeskPROEntity\LabelDownload
-     */
-    private function createDownloadLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelDownload();
-        $entity->setLabel($label);
-
-        $this->records->add($entity);
-        return $entity;
-    }
-
-    /**
-     * Returns the download mapper
-     *
-     * @return Mapper\Download
-     * @throws \Exception
-     */
-    private function getDownloadMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_DOWNLOAD);
     }
 
     /**

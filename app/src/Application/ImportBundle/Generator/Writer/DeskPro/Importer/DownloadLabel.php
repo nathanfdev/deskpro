@@ -32,44 +32,44 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro article labels importer
+ * DeskPro download labels importer
  *
- * Class ArticleLabel
+ * Class DownloadLabel
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-final class ArticleLabel extends AbstractImporter
+final class DownloadLabel extends AbstractImporter
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_ARTICLE;
+        return Entity\EntityInterface::TYPE_DOWNLOAD;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Article $entity
+     * @var Entity\Download $entity
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
         $this->records = new ArrayCollection();
 
-        $article = $this->getArticleMapper()->findOneByTitle($entity->getTitle());
-        $labels  = $this->getExistingLabelsNames($article->getId());
+        $download = $this->getDownloadMapper()->findOneByTitle($entity->getTitle());
+        $labels   = $this->getExistingLabelsNames($download->getId());
 
         foreach ($entity->getLabels() as $label) {
             if (in_array($label, $labels, true)) {
                 $this->logWarning(sprintf(
-                    'Found an existing label `%s` for article with oid `%d` (Skipping)',
-                    $label, $article->getId()
+                    'Found an existing label `%s` for download with oid `%d` (Skipping)',
+                    $label, $download->getId()
                 ));
             } else {
-                $article->addLabel($this->createArticleLabel($label));
+                $download->addLabel($this->createDownloadLabel($label));
                 $this->logInfo(sprintf(
-                    'Creating a new label `%s` for article with oid `%d`',
-                    $label, $article->getId()
+                    'Creating a new label `%s` for download with oid `%d`',
+                    $label, $download->getId()
                 ));
             }
         }
@@ -78,14 +78,14 @@ final class ArticleLabel extends AbstractImporter
     }
 
     /**
-     * Returns a new article label entity
+     * Returns a new download label entity
      *
      * @param string $label
-     * @return DeskPROEntity\LabelArticle
+     * @return DeskPROEntity\LabelDownload
      */
-    private function createArticleLabel($label)
+    private function createDownloadLabel($label)
     {
-        $entity = new DeskPROEntity\LabelArticle();
+        $entity = new DeskPROEntity\LabelDownload();
         $entity->setLabel($label);
 
         $this->records->add($entity);
@@ -93,7 +93,7 @@ final class ArticleLabel extends AbstractImporter
     }
 
     /**
-     * Returns a collection of existing article label names
+     * Returns a collection of existing download label names
      *
      * @param int $id
      *
@@ -102,7 +102,7 @@ final class ArticleLabel extends AbstractImporter
      */
     private function getExistingLabelsNames($id)
     {
-        $labels = $this->getArticleLabelMapper()->findByArticleId($id, false);
+        $labels = $this->getDownloadLabelMapper()->findByDownloadId($id, false);
         $names  = array();
 
         foreach ($labels as $label) {
@@ -113,13 +113,13 @@ final class ArticleLabel extends AbstractImporter
     }
 
     /**
-     * Returns the article mapper
+     * Returns the download mapper
      *
-     * @return Mapper\ArticleLabel
+     * @return Mapper\DownloadLabel
      * @throws \Exception
      */
-    private function getArticleLabelMapper()
+    private function getDownloadLabelMapper()
     {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ARTICLE_LABEL);
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_DOWNLOAD_LABEL);
     }
 }
