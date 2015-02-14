@@ -1,6 +1,7 @@
 <?php return array(
     'agent.publish.add_new_category'              => 'Add new category',
     'agent.publish.add_new_glossary'              => 'Add new glossary word',
+    'agent.publish.add_new_search_word'           => 'Press enter to add a new search word',
     'agent.publish.add_pending'                   => 'Add a new pending article',
     'agent.publish.all_articles'                  => 'All Articles',
     'agent.publish.all_comments'                  => 'All Comments',
