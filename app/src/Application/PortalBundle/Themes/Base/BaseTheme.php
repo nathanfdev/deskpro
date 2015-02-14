@@ -39,9 +39,8 @@ use Application\PortalBundle\Theme\Tag;
 
 class BaseTheme extends AbstractTheme
 {
-    public static function getTags()
+    public static function getHardCodedTags()
     {
-        // these have been moved to annotations on the tag controllers in this theme
         return array();
     }
 
