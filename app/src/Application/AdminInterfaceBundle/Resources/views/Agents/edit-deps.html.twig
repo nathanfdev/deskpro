@@ -55,6 +55,8 @@
                             dp-slider-switch
                             ng-model="EditCtrl.all_perms.deps_perms.tickets.assign"
                             ng-change="EditCtrl.changeAllPerms('deps_perms_tickets', 'assign')"
+                            is-on="EditCtrl.all_perms.deps_perms.tickets.assign || EditCtrl.all_perms.deps_perms.tickets.full"
+                            is-locked="EditCtrl.all_perms.deps_perms.tickets.full"
                             />
                     </td>
                     <td class="text-center">
