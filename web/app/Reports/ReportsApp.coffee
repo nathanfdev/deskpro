@@ -33,17 +33,20 @@ define [
   'Admin/Main/DataService/EntityManager',
   'Reports/Legacy/Service/DataServiceManager',
 
-  #STANDARD DIRECTIVES
-  'Reports/App/Directive/DashboardAmcharts',
-  'Reports/App/Directive/DashboardStat',
-  'Reports/App/Directive/DashboardTable',
+  # REPORTS SPECIFIC DIRECTIVES
 
+  # DASHBOARDS SPECIFIC DIRECTIVES
+  'Reports/Dashboards/Directive/DashboardAmcharts',
+  'Reports/Dashboards/Directive/DashboardStat',
+  'Reports/Dashboards/Directive/DashboardTable',
+  'Reports/Dashboards/Directive/DpReportVariables',
+
+  # LEGACY DIRECTIVES
   'Reports/Legacy/Directive/DpReportBuilderSelectBox',
   'Reports/Legacy/Directive/DpReportBillingSelectBox',
   'Reports/Legacy/Directive/DpReportBuilderTitle',
 
   # DP DIRECTIVES
-  'Reports/App/Directive/DpReportWidgetSelectBox',
   'DeskPRO/Directive/DpDropdown',
   'DeskPRO/Directive/DpShowSpinning',
   'DeskPRO/Directive/DpHideSpinning',
@@ -96,16 +99,20 @@ define [
   Admin_Main_DataService_EntityManager,
   Reports_App_Service_DataServiceManager,
 
-  Reports_App_Directive_DashboardAmcharts,
-  Reports_App_Directive_DashboardStat,
-  Reports_App_Directive_DashboardTable,
+  # REPORTS SPECIFIC DIRECTIVES
+
+  # DASHBOARDS SPECIFIC DIRECTIVES
+  Reports_Dashboards_Directive_DashboardAmcharts,
+  Reports_Dashboards_Directive_DashboardStat,
+  Reports_Dashboards_Directive_DashboardTable,
+  Reports_Dashboards_Directive_DpReportVariables,
+
 
   Reports_Directive_DpReportBuilderSelectBox,
   Reports_Directive_DpReportBillingSelectBox,
   Reports_Directive_DpReportBuilderTitle,
 
   # DP DIRECTIVES
-  Reports_App_Directive_DpReportWidgetSelectBox,
   Reports_App_Directive_DpDropdown,
   Reports_App_Directive_DpShowSpinning,
   Reports_App_Directive_DpHideSpinning,
@@ -234,14 +241,25 @@ define [
   ###
   # Directives section
   ###
-  ReportsApp.directive('dashboardAmcharts',         Reports_App_Directive_DashboardAmcharts)
-  ReportsApp.directive('dpDropdown',                Reports_App_Directive_DpDropdown)
-  ReportsApp.directive('dpReportWidgetSelectBox',   Reports_App_Directive_DpReportWidgetSelectBox)
-  ReportsApp.directive('dashboardTable',            Reports_App_Directive_DashboardTable)
 
+  ###
+  # Dashboards specific directives
+  ###
+  ReportsApp.directive('dashboardAmcharts',         Reports_Dashboards_Directive_DashboardAmcharts)
+  ReportsApp.directive('dashboardTable',            Reports_Dashboards_Directive_DashboardTable)
+  ReportsApp.directive('dpReportVariables',         Reports_Dashboards_Directive_DpReportVariables)
+
+  ###
+  # Legacy directives
+  ###
   ReportsApp.directive('dpReportBuilderSelectBox',       Reports_Directive_DpReportBuilderSelectBox)
   ReportsApp.directive('dpReportBillingSelectBox',       Reports_Directive_DpReportBillingSelectBox)
   ReportsApp.directive('dpReportBuilderTitle',           Reports_Directive_DpReportBuilderTitle)
+
+  ###
+  # DeskPRO directives
+  ###
+  ReportsApp.directive('dpDropdown',                Reports_App_Directive_DpDropdown)
   ReportsApp.directive('dpShowSpinning',                 Reports_App_Directive_DpShowSpinning)
   ReportsApp.directive('dpHideSpinning',                 Reports_App_Directive_DpHideSpinning)
   ReportsApp.directive('dpTabBody',                      Reports_App_Directive_DpTabBody)

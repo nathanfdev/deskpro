@@ -6,6 +6,7 @@ define ->
         dropdownId: "@dpDropdown"
         openerId: "@dpDropdownOpener"
         closerId: "@dpDropdownCloser"
+        useClass: "@dpDropdownUseClass"
 
       link: (scope, element) ->
 
@@ -26,7 +27,10 @@ define ->
             dropdown.hide()
 
         if scope.openerId?
-          opener = element.find("##{scope.openerId}")
+          if scope.useClass
+            opener = element.find(".#{scope.openerId}")
+          else
+            opener = element.find("##{scope.openerId}")
         else
           opener = element
 
@@ -37,7 +41,10 @@ define ->
             closeDropdown()
 
         opener.bind 'click', toggleDropdown
-        dropdown = element.find("##{scope.dropdownId}")
+        if scope.useClass
+          dropdown = element.find(".#{scope.dropdownId}")
+        else
+          dropdown = element.find("##{scope.dropdownId}")
 
         processDropdown()
         $document.bind 'click', (event) ->

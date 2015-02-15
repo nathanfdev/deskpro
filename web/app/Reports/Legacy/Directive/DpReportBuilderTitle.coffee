@@ -25,7 +25,7 @@ define ->
           <span ng-bind-html="text"></span>
           <span ng-if="options[$index]" class='select-data'>
             <span ng-repeat="option in options[$index]" ng-if="selected[$parent.$index] == option.value">
-              {{ option.label }}
+              <a class="link-pointer">{{ option.label }}</a>
             </span>
           </select>
         </span>

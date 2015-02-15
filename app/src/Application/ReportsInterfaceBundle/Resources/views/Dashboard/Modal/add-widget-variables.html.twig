@@ -1,0 +1,16 @@
+<span ng-repeat="text in texts">
+  <span ng-bind-html="text"></span>
+  <span dp-dropdown="dp-select-data-dropdown" dp-dropdown-opener="dp-dropdown-opener" dp-dropdown-use-class="true" class="select-data" ng-if="options[$index]">
+      <a class="dp-dropdown-opener link-pointer" style="display: block; width: 100%; height: 100%;">
+        {{ ng_var('current[$index]') }}
+          <i class="fa fa-caret-down"></i>
+      </a>
+    <div style="display: none" class="dp-select-data-dropdown select-data-dropdown">
+        <ul>
+            <li ng-repeat="option in options[$index]">
+                <a class="link-pointer" dp-dropdown-item ng-click="changeValue($parent.$index, option)">{{ ng_var('option.label') }}</a>
+            </li>
+        </ul>
+    </div>
+  </span>
+</span>

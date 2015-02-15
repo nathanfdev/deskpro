@@ -1515,12 +1515,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "83b8899cb73d85d648af93f37ec0ac89f4a5bbae"
+                "reference": "724b1fcfb88b7bbbbd92fddd5deb7518c3988267"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/83b8899cb73d85d648af93f37ec0ac89f4a5bbae",
-                "reference": "83b8899cb73d85d648af93f37ec0ac89f4a5bbae",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/724b1fcfb88b7bbbbd92fddd5deb7518c3988267",
+                "reference": "724b1fcfb88b7bbbbd92fddd5deb7518c3988267",
                 "shasum": ""
             },
             "require": {
@@ -1551,7 +1551,7 @@
             ],
             "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
             "homepage": "https://github.com/firebase/php-jwt",
-            "time": "2014-11-18 17:58:25"
+            "time": "2015-02-12 15:57:00"
         },
         {
             "name": "friendsofsymfony/elastica-bundle",
@@ -2176,12 +2176,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/padraic/mockery.git",
-                "reference": "c9fbdd9fb044cf1dd7c2abecfc9cce6ca714d1fe"
+                "reference": "69d8323a3aa4681d5fa12c177d54d8e9ecb94286"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/mockery/zipball/c9fbdd9fb044cf1dd7c2abecfc9cce6ca714d1fe",
-                "reference": "c9fbdd9fb044cf1dd7c2abecfc9cce6ca714d1fe",
+                "url": "https://api.github.com/repos/padraic/mockery/zipball/69d8323a3aa4681d5fa12c177d54d8e9ecb94286",
+                "reference": "69d8323a3aa4681d5fa12c177d54d8e9ecb94286",
                 "shasum": ""
             },
             "require": {
@@ -2234,7 +2234,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2015-02-09 15:10:41"
+            "time": "2015-02-14 20:13:14"
         },
         {
             "name": "monolog/monolog",
@@ -3352,20 +3352,22 @@
         },
         {
             "name": "symfony/icu",
-            "version": "v1.0.1",
+            "version": "v1.2.2",
             "target-dir": "Symfony/Component/Icu",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Icu.git",
-                "reference": "fdba214b1e087c149843bde976263c53ac10c975"
+                "reference": "d4d85d6055b87f394d941b45ddd3a9173e1e3d2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Icu/zipball/fdba214b1e087c149843bde976263c53ac10c975",
-                "reference": "fdba214b1e087c149843bde976263c53ac10c975",
+                "url": "https://api.github.com/repos/symfony/Icu/zipball/d4d85d6055b87f394d941b45ddd3a9173e1e3d2a",
+                "reference": "d4d85d6055b87f394d941b45ddd3a9173e1e3d2a",
                 "shasum": ""
             },
             "require": {
+                "ext-intl": "*",
+                "lib-icu": ">=4.4",
                 "php": ">=5.3.3",
                 "symfony/intl": "~2.3"
             },
@@ -3395,7 +3397,7 @@
                 "icu",
                 "intl"
             ],
-            "time": "2013-10-04 09:12:07"
+            "time": "2014-07-25 09:58:17"
         },
         {
             "name": "symfony/monolog-bundle",
@@ -3989,12 +3991,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zircote/swagger-php.git",
-                "reference": "d2a75e2ee0c53a371dd2d0d92d75988dec4935ff"
+                "reference": "4c9c869cb7618dda7f624ee9329be8bcfbcd8232"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/d2a75e2ee0c53a371dd2d0d92d75988dec4935ff",
-                "reference": "d2a75e2ee0c53a371dd2d0d92d75988dec4935ff",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/4c9c869cb7618dda7f624ee9329be8bcfbcd8232",
+                "reference": "4c9c869cb7618dda7f624ee9329be8bcfbcd8232",
                 "shasum": ""
             },
             "require": {
@@ -4037,7 +4039,7 @@
                 "json",
                 "service discovery"
             ],
-            "time": "2014-11-21 15:25:17"
+            "time": "2015-02-13 15:19:21"
         }
     ],
     "packages-dev": [],

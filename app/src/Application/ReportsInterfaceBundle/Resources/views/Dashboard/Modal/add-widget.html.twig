@@ -24,7 +24,7 @@
             </form>
         </div>
 
-        <div class="bucket" dp-dropdown="dp-select-label-dropdown" dp-dropdown-opener="dp-select-label-opener" dp-dropdown-toggle="true">
+        <div class="bucket" dp-dropdown="select-label-dropdown" dp-dropdown-opener="dp-select-label-opener">
             <a id="dp-select-label-opener" class="link-pointer select">Select labels: <i class="fa fa-caret-down"></i></a>
 
             <!-- Needs to be same width as the .select above -->
@@ -59,7 +59,7 @@
                 <span ng-click="makeChoice(report)" class="mark"></span>
 
                 <h1>
-                    <dp-report-widget-select-box change-widget-params="changeWidgetParams(params)" report-id="report.id" value-to-decorate="report.title" possible-values="groupParams"></dp-report-widget-select-box>
+                    <dp-report-variables change-widget-params="changeWidgetParams(params)" report-id="report.id" value-to-decorate="report.title" possible-values="groupParams"></dp-report-builder-select-box>
                 </h1>
 
                 <p>
