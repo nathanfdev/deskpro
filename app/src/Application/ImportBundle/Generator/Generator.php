@@ -96,11 +96,15 @@ class Generator extends AbstractGenerator implements GeneratorInterface
         $outputWriter = $this->getWriter();
 
         foreach ($this->config->getEntityTypes() as $type) {
+            $this->exporterLogHeader($type);
+
             $collection = $exporter->exportByType($type);
             $exceptions = $this->validateExportingCollection($type, $collection);
             if (count($exceptions) > 0) {
                 throw new GeneratorException($exceptions);
             }
+
+            $this->writerLogHeader($type);
 
             foreach ($collection as $entity) {
                 /** @var Entity\EntityInterface $entity */
@@ -118,6 +122,8 @@ class Generator extends AbstractGenerator implements GeneratorInterface
         $exceptions = new Validator\ExceptionCollection();
 
         foreach ($this->config->getEntityTypes() as $type) {
+            $this->exporterLogHeader($type);
+
             $collection = $exporter->exportByType($type);
             $exceptions->merge($this->validateExportingCollection($type, $collection));
         }
@@ -207,5 +213,33 @@ class Generator extends AbstractGenerator implements GeneratorInterface
         }
 
         return $exceptions;
+    }
+
+    /**
+     * Writes exporter log header
+     *
+     * @param string $type
+     */
+    private function exporterLogHeader($type)
+    {
+        $this->logInfo('');
+        $this->logInfo('');
+        $this->logInfo('=====================================');
+        $this->logInfo(sprintf('Export `%s` collection', $type));
+        $this->logInfo('=====================================');
+    }
+
+    /**
+     * Writes output writer log header
+     *
+     * @param string $type
+     */
+    private function writerLogHeader($type)
+    {
+        $this->logInfo('');
+        $this->logInfo('');
+        $this->logInfo('=====================================');
+        $this->logInfo(sprintf('Write `%s` collection', $type));
+        $this->logInfo('=====================================');
     }
 }
