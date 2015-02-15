@@ -31,8 +31,10 @@ use Application\ImportBundle\Generator\GeneratorConfig;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator;
 use Application\ImportBundle\Entity;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -203,11 +205,22 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     {
         $logger = new Logger('exporter');
         if ($config->getLogPath()) {
-            $logger->pushHandler(new StreamHandler($config->getLogPath()));
+            $formatter = new LineFormatter();
+            $formatter->ignoreEmptyContextAndExtra(true);
+
+            $handler = new StreamHandler($config->getLogPath());
+            $handler->setFormatter($formatter);
+
+            $logger->pushHandler($handler);
         }
         if ($config->isVerbose()) {
-            $console_handler = new ConsoleHandler($output);
-            $logger->pushHandler($console_handler);
+            $formatter = new ConsoleFormatter();
+            $formatter->ignoreEmptyContextAndExtra(true);
+
+            $handler = new ConsoleHandler($output);
+            $handler->setFormatter($formatter);
+
+            $logger->pushHandler($handler);
         }
 
         return $logger;
