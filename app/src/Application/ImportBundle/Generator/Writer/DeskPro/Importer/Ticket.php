@@ -74,9 +74,16 @@ final class Ticket extends AbstractImporter
     {
         $this->records = new ArrayCollection();
 
-        // Remember new ref, if it was changed to apply ticket labels
         $ref = $this->getOrCreateTicketRef($entity->getRef());
-        $entity->setRef($ref);
+        if ($ref !== $entity->getRef()) {
+            $this->logWarning(sprintf(
+                'Ticket ref with oid `%d` was changed due duplicate unique, old ref `%s`, new ref `%s`',
+                $entity->getOid(), $entity->getRef(), $ref
+            ));
+
+            // Remember new ref, if it was changed to apply ticket labels
+            $entity->setRef($ref);
+        }
 
         $ticket = new DeskPROEntity\Ticket();
         $ticket

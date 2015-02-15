@@ -107,7 +107,8 @@ final class Feedback extends AbstractParser
                 ->setStatus($feedback['status'])
                 ->setCategory($feedback['category'])
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($feedback['date_created']))
-                ->setDatePublished($this->getFromStringOrCurrentDateTime($feedback['date_published']));
+                ->setDatePublished($this->getFromStringOrCurrentDateTime($feedback['date_published']))
+                ->addLabel($feedback['label']);
 
             return $entity;
         }
