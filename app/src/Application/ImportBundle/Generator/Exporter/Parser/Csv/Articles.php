@@ -106,9 +106,14 @@ final class Articles extends AbstractParser
                 ->setSlug($article['slug'])
                 ->setLanguage($article['language'])
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($article['date_created']))
-                ->setStatus($article['status'])
-                ->addCategory($article['category'])
-                ->addLabel($article['label']);
+                ->setStatus($article['status']);
+
+            if ($article['label']) {
+                $entity->addLabel($article['label']);
+            }
+            if ($article['category']) {
+                $entity->addCategory($article['category']);
+            }
 
             return $entity;
         }

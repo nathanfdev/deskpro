@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use DateTime;
 
 /**
  * Feedback csv file parser
@@ -106,9 +107,14 @@ final class Feedback extends AbstractParser
                 ->setPopularity($feedback['popularity'])
                 ->setStatus($feedback['status'])
                 ->setCategory($feedback['category'])
-                ->setDateCreated($this->getFromStringOrCurrentDateTime($feedback['date_created']))
-                ->setDatePublished($this->getFromStringOrCurrentDateTime($feedback['date_published']))
-                ->addLabel($feedback['label']);
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($feedback['date_created']));
+
+            if ($feedback['date_published']) {
+                $entity->setDatePublished(new DateTime($feedback['date_published']));
+            }
+            if ($feedback['label']) {
+                $entity->addLabel($feedback['label']);
+            }
 
             return $entity;
         }

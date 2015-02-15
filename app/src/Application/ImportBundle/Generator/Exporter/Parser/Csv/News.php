@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
+use DateTime;
 
 /**
  * News csv file parser
@@ -108,9 +109,14 @@ final class News extends AbstractParser
                 ->setSlug($news['slug'])
                 ->setStatus($news['status'])
                 ->setDateCreated($this->getFromStringOrCurrentDateTime($news['date_created']))
-                ->setDatePublished($this->getFromStringOrCurrentDateTime($news['date_published']))
-                ->setCategory($news['category'])
-                ->addLabel($news['label']);
+                ->setCategory($news['category']);
+
+            if ($news['date_published']) {
+                $entity->setDatePublished(new DateTime($news['date_published']));
+            }
+            if ($news['label']) {
+                $entity->addLabel($news['label']);
+            }
 
             return $entity;
         }
