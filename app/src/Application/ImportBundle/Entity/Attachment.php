@@ -33,7 +33,7 @@ use Symfony\Component\Validator\Constraints;
 /**
  * Exporting attachment entity
  *
- * Class TicketMessageAttachment
+ * Class Attachment
  * @package Application\ImportBundle\Entity
  */
 final class Attachment extends AbstractEntity implements PersonAwareInterface

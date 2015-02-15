@@ -38,7 +38,7 @@ use Orb\Util\Strings;
  * Class News
  * @package Application\ImportBundle\Entity
  */
-final class News extends AbstractEntity implements SlugAwareInterface, PersonAwareInterface
+final class News extends AbstractEntity implements SlugAwareInterface, PersonAwareInterface, LabelAwareInterface
 {
     /**
      * @var string
@@ -359,7 +359,7 @@ final class News extends AbstractEntity implements SlugAwareInterface, PersonAwa
     }
 
     /**
-     * @return string[]
+     * {@inheritdoc}
      */
     public function getLabels()
     {
@@ -367,8 +367,7 @@ final class News extends AbstractEntity implements SlugAwareInterface, PersonAwa
     }
 
     /**
-     * @param string $label
-     * @return $this
+     * {@inheritdoc}
      */
     public function addLabel($label)
     {

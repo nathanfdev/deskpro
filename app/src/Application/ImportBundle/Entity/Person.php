@@ -38,7 +38,7 @@ use DateTimeZone;
  * Class Person
  * @package Application\ImportBundle\Entity
  */
-final class Person extends AbstractEntity
+final class Person extends AbstractEntity implements LabelAwareInterface
 {
     const PASSWORD_SCHEME_PLAIN  = 'plain';
     const PASSWORD_SCHEME_BCRYPT = 'bcrypt';
@@ -482,9 +482,7 @@ final class Person extends AbstractEntity
     }
 
     /**
-     * Returns the person labels
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getLabels()
     {
@@ -492,8 +490,7 @@ final class Person extends AbstractEntity
     }
 
     /**
-     * @param string $label
-     * @return $this
+     * {@inheritdoc}
      */
     public function addLabel($label)
     {

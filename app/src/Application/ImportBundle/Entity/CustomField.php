@@ -31,7 +31,9 @@ use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Class CustomDefValue
+ * Exporting custom field entity
+ *
+ * Class CustomField
  * @package Application\ImportBundle\Entity
  */
 final class CustomField extends AbstractEntity

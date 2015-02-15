@@ -38,7 +38,7 @@ use DateTime;
  * Class Ticket
  * @package Application\ImportBundle\Entity
  */
-final class Ticket extends AbstractEntity implements PersonAwareInterface
+final class Ticket extends AbstractEntity implements PersonAwareInterface, LabelAwareInterface
 {
     /**
      * @var int
@@ -527,7 +527,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * @return string[]
+     * {@inheritdoc}
      */
     public function getLabels()
     {
@@ -535,8 +535,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * @param string $label
-     * @return $this
+     * {@inheritdoc}
      */
     public function addLabel($label)
     {

@@ -28,21 +28,25 @@
 namespace Application\ImportBundle\Entity;
 
 /**
- * Entity person related interface
+ * Entity label interface
  *
- * Interface PersonAwareInterface
+ * Interface LabelAwareInterface
  * @package Application\ImportBundle\Entity
  */
-interface PersonAwareInterface
+interface LabelAwareInterface
 {
     /**
-     * @return string
+     * Returns a collection of labels
+     *
+     * @return string[]
      */
-    public function getPersonEmail();
+    public function getLabels();
 
     /**
-     * @param string $person_email
+     * Add a new label
+     *
+     * @param string $label
      * @return $this
      */
-    public function setPersonEmail($person_email);
+    public function addLabel($label);
 }

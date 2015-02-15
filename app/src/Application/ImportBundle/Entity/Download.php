@@ -38,7 +38,7 @@ use Orb\Util\Strings;
  * Class Download
  * @package Application\ImportBundle\Entity
  */
-final class Download extends AbstractEntity implements SlugAwareInterface, PersonAwareInterface
+final class Download extends AbstractEntity implements SlugAwareInterface, PersonAwareInterface, LabelAwareInterface
 {
     /**
      * @var string
@@ -405,7 +405,7 @@ final class Download extends AbstractEntity implements SlugAwareInterface, Perso
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getLabels()
     {
@@ -413,8 +413,7 @@ final class Download extends AbstractEntity implements SlugAwareInterface, Perso
     }
 
     /**
-     * @param string $label
-     * @return $this
+     * {@inheritdoc}
      */
     public function addLabel($label)
     {
