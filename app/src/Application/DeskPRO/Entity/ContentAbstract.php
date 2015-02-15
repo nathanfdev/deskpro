@@ -50,13 +50,13 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     const STATUS_ARCHIVED    = 'archived';
     const STATUS_HIDDEN      = 'hidden';
 
-    const HIDDEN_STATUS_UNPUBLISHED   = 'unpublished';
-    const HIDDEN_STATUS_VALIDATING    = 'validating';
+    const HIDDEN_STATUS_UNPUBLISHED     = 'unpublished';
+    const HIDDEN_STATUS_VALIDATING      = 'validating';
     const HIDDEN_STATUS_USER_VALIDATING = 'user_validating';
-    const HIDDEN_STATUS_DELETED       = 'deleted';
-    const HIDDEN_STATUS_SPAM          = 'spam';
-    const HIDDEN_STATUS_DRAFT         = 'draft';
-    const HIDDEN_STATUS_TEMP          = 'temp';
+    const HIDDEN_STATUS_DELETED         = 'deleted';
+    const HIDDEN_STATUS_SPAM            = 'spam';
+    const HIDDEN_STATUS_DRAFT           = 'draft';
+    const HIDDEN_STATUS_TEMP            = 'temp';
 
     /**
      * @var int
@@ -554,6 +554,16 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function setDatePublished(DateTime $date_published = null)
     {
         $this->setModelField('date_published', $date_published);
+        return $this;
+    }
+
+    /**
+     * @param int $view_count
+     * @return $this
+     */
+    public function setViewsCount($view_count)
+    {
+        $this->setModelField('view_count', $view_count);
         return $this;
     }
 }

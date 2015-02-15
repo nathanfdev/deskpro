@@ -113,6 +113,7 @@ final class Articles extends AbstractParser
                 ->setSlug($article['slug'])
                 ->setLanguage($article['language'])
                 ->setEndAction($article['end_action'])
+                ->setViewCount($article['view_count'])
                 ->setTotalRating($article['total_rating'])
                 ->setNumComments($article['num_comments'])
                 ->setNumRatings($article['num_ratings'])
@@ -168,6 +169,7 @@ final class Articles extends AbstractParser
             'total_rating',
             'num_comments',
             'num_ratings',
+            'view_count',
             'status',
             'date_created',
             'date_published',

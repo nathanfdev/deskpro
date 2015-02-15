@@ -71,7 +71,8 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
             ->setLanguage($this->findLanguage($entity->getLanguage()))
             ->setDateCreated($entity->getDateCreated())
             ->setDatePublished($entity->getDatePublished())
-            ->setDateEnd($entity->getDateEnd());
+            ->setDateEnd($entity->getDateEnd())
+            ->setViewsCount($entity->getViewCount());
 
         foreach ($entity->getCategories() as $category) {
             $article->addToCategory($this->findOrCreateArticleCategory($category));

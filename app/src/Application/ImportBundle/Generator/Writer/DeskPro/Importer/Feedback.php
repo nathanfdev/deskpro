@@ -54,7 +54,6 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
      * $record['total_rating']		= $fval->total_rating;
      * $record['num_comments']		= $fval->num_comments;
      * $record['num_ratings']		= $fval->num_ratings;
-     * $record['view_count']		= $fval->view_count;
      * $record['popularity']		= $fval->popularity;
      *
      * @var Entity\Feedback $entity
@@ -72,7 +71,8 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
             ->setLanguage($this->findLanguage($entity->getLanguage()))
             ->setCategory($this->findOrCreateFeedbackCategory($entity->getCategory()))
             ->setDateCreated($entity->getDateCreated())
-            ->setDatePublished($entity->getDatePublished());
+            ->setDatePublished($entity->getDatePublished())
+            ->setViewsCount($entity->getViewCount());
 
         $this->records->add($feedback);
         return $this->records;

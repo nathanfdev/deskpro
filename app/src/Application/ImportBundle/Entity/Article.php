@@ -73,6 +73,11 @@ final class Article extends AbstractEntity implements SlugAwareInterface, Person
     /**
      * @var int
      */
+    private $view_count = 0;
+
+    /**
+     * @var int
+     */
     private $total_rating = 0;
 
     /**
@@ -230,6 +235,23 @@ final class Article extends AbstractEntity implements SlugAwareInterface, Person
     public function setContent($content)
     {
         $this->content = $content;
+        return $this;
+    }
+    /**
+     * @return int
+     */
+    public function getViewCount()
+    {
+        return $this->view_count;
+    }
+
+    /**
+     * @param int $view_count
+     * @return $this
+     */
+    public function setViewCount($view_count)
+    {
+        $this->view_count = $view_count;
         return $this;
     }
 
@@ -420,6 +442,7 @@ final class Article extends AbstractEntity implements SlugAwareInterface, Person
             'total_rating'   => $this->total_rating,
             'num_comments'   => $this->num_comments,
             'num_ratings'    => $this->num_ratings,
+            'view_count'     => $this->view_count,
             'status'         => $this->status,
             'date_created'   => $this->date_created->format('Y-m-d H:i:s'),
             'date_published' => $this->date_published ? $this->date_published->format('Y-m-d H:i:s') : null,

@@ -54,7 +54,6 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
      * 'total_rating'   => $nval->total_rating,
      * 'num_comments'   => $nval->num_comments,
      * 'num_ratings'    => $nval->num_ratings,
-     * 'view_count'     => $nval->view_count
      *
      * @var Entity\News $entity
      */
@@ -71,7 +70,8 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
             ->setLanguage($this->findLanguage($entity->getLanguage()))
             ->setCategory($this->findOrCreateNewsCategory($entity->getCategory()))
             ->setDateCreated($entity->getDateCreated())
-            ->setDatePublished($entity->getDatePublished());
+            ->setDatePublished($entity->getDatePublished())
+            ->setViewsCount($entity->getViewCount());
 
         $this->records->add($news);
         return $this->records;
