@@ -78,7 +78,15 @@ final class JsonWriter extends AbstractWriter
             $this->logInfo(sprintf('Dry run mode is enabled, filename `%s` is not created or updated.', $path));
         } else {
             $this->createOutputDirsIfNotExist();
-            file_put_contents($path, $data);
+
+            if (@file_exists($path)) {
+                $this->logWarning(sprintf('File `%s` already exists (Override).', $path));
+            } else {
+                $this->logInfo(sprintf('Generate a new file `%s`', $path));
+            }
+            if (@file_put_contents($path, $data) === false) {
+                $this->logWarning(sprintf('Unable to write file `%s`', $path));
+            }
         }
 
         return true;

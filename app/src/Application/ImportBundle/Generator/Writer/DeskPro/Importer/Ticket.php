@@ -162,7 +162,7 @@ final class Ticket extends AbstractImporter
      * Returns the importing DeskPro doctrine ticket message attachment entity
      *
      * @param Entity\Attachment $importing_entity
-     * @param string                  $message_person_email
+     * @param string            $message_person_email
      *
      * @return DeskPROEntity\TicketAttachment
      */
