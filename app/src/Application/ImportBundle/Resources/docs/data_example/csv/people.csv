@@ -3,3 +3,6 @@ Abhinav Kumar;abhinav.kumar@deskpro.com;true
 Angry Customer;angry.customer@example.com;false
 Some Customer;some@email.tld;false
 Another Customer;another@email.tld;false
+Some Agent;agent@email.tld;true
+Some Agent 2;agent2@email.tld;true
+Some Agent 3;agent3@email.tld;true

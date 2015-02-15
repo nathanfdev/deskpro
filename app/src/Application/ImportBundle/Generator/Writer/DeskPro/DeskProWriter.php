@@ -90,17 +90,22 @@ final class DeskProWriter extends AbstractWriter
                 $records = $importer->getDoctrineEntities($entity);
                 if ($this->config->isDryRun()) {
                     $this->logNotice('Dry run mode is enabled, no data was flushed');
-                    foreach ($records as $record) {
-                        $this->logInfo(sprintf('Generated `%s` entity', get_class($record)));
-                    }
-                } else {
-                    foreach ($records as $record) {
-                        $this->entity_manager->persist($record);
-                        $this->entity_manager->flush();
+                }
 
-                        $this->logInfo(sprintf('Flushed a new `%s` entity', get_class($record)));
+                foreach ($records as $record) {
+                    if (method_exists($record, 'getId') && $record->getId() > 0) {
+                        $this->logInfo(sprintf('Update an existing `%s` entity', get_class($record)));
+                    } else {
+                        $this->logInfo(sprintf('Generate a new `%s` entity', get_class($record)));
+                    }
+
+                    if ($this->config->isDryRun() === false) {
+                        $this->entity_manager->persist($record);
+                        $this->logInfo(sprintf('Flush `%s` entity', get_class($record)));
                     }
                 }
+
+                $this->entity_manager->flush();
 
             } catch (Importer\Mapper\MapperException $e) {
                 $this->logWarning(sprintf(
