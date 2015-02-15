@@ -113,7 +113,7 @@ final class ArticleLabel extends AbstractImporter
     }
 
     /**
-     * Returns the article mapper
+     * Returns the article label mapper
      *
      * @return Mapper\ArticleLabel
      * @throws \Exception

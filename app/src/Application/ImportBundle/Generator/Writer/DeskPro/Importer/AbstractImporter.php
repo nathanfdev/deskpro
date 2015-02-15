@@ -199,4 +199,15 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_FEEDBACK);
     }
+
+    /**
+     * Returns the ticket mapper
+     *
+     * @return Mapper\Ticket
+     * @throws \Exception
+     */
+    protected function getTicketMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET);
+    }
 }

@@ -74,9 +74,13 @@ final class Ticket extends AbstractImporter
     {
         $this->records = new ArrayCollection();
 
+        // Remember new ref, if it was changed to apply ticket labels
+        $ref = $this->getOrCreateTicketRef($entity->getRef());
+        $entity->setRef($ref);
+
         $ticket = new DeskPROEntity\Ticket();
         $ticket
-            ->setRef($this->getOrCreateTicketRef($entity->getRef()))
+            ->setRef($ref)
             ->setSubject($entity->getSubject())
             ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
             ->setOrganization($this->findOrCreateOrganization($entity->getOrganization()))
@@ -101,9 +105,6 @@ final class Ticket extends AbstractImporter
         }
         foreach ($entity->getParticipants() as $participant) {
             $ticket->addParticipant($this->createParticipant($participant));
-        }
-        foreach ($entity->getLabels() as $label) {
-            $ticket->addLabel($this->createTicketLabel($label));
         }
         foreach ($entity->getCustomFields() as $custom_field) {
             $ticket->addCustomData($this->createCustomData($custom_field));
@@ -175,20 +176,6 @@ final class Ticket extends AbstractImporter
         $participant->setPerson($this->getPersonMapper()->findOneByEmail($email));
 
         return $participant;
-    }
-
-    /**
-     * Returns the importing DeskPro doctrine ticket label entity
-     *
-     * @param string $label
-     * @return DeskPROEntity\LabelTicket
-     */
-    private function createTicketLabel($label)
-    {
-        $ticket_label = new DeskPROEntity\LabelTicket();
-        $ticket_label->setLabel($label);
-
-        return $ticket_label;
     }
 
     /**
@@ -337,7 +324,6 @@ final class Ticket extends AbstractImporter
     /**
      * Validates if current ref is already exist
      *
-     * todo Is it ref to original source? Can it be not unique?
      * todo Should we check if random is unique?
      *
      * @param $ref
@@ -347,17 +333,6 @@ final class Ticket extends AbstractImporter
     {
         $existing_ticket = $this->getTicketMapper()->findOneByRef($ref, false);
         return $existing_ticket ? Strings::random(10, Strings::CHARS_ALPHANUM_IU) : $ref;
-    }
-
-    /**
-     * Returns the ticket mapper
-     *
-     * @return Mapper\Ticket
-     * @throws \Exception
-     */
-    private function getTicketMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET);
     }
 
     /**

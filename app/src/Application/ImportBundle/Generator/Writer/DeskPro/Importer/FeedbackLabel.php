@@ -50,7 +50,7 @@ final class FeedbackLabel extends AbstractImporter
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Article $entity
+     * @var Entity\Feedback $entity
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
@@ -113,7 +113,7 @@ final class FeedbackLabel extends AbstractImporter
     }
 
     /**
-     * Returns the article mapper
+     * Returns the feedback label mapper
      *
      * @return Mapper\FeedbackLabel
      * @throws \Exception

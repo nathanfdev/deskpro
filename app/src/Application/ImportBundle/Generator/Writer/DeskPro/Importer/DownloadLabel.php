@@ -113,7 +113,7 @@ final class DownloadLabel extends AbstractImporter
     }
 
     /**
-     * Returns the download mapper
+     * Returns the download label mapper
      *
      * @return Mapper\DownloadLabel
      * @throws \Exception

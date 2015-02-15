@@ -32,44 +32,44 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro news labels importer
+ * DeskPro ticket labels importer
  *
- * Class NewsLabel
+ * Class TicketLabel
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-final class NewsLabel extends AbstractImporter
+final class TicketLabel extends AbstractImporter
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_NEWS;
+        return Entity\EntityInterface::TYPE_TICKET;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @var Entity\News $entity
+     * @var Entity\Ticket $entity
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
         $this->records = new ArrayCollection();
 
-        $news   = $this->getNewsMapper()->findOneByTitle($entity->getTitle());
-        $labels = $this->getExistingLabelsNames($news->getId());
+        $ticket = $this->getTicketMapper()->findOneByRef($entity->getRef());
+        $labels = $this->getExistingLabelsNames($ticket->getId());
 
         foreach ($entity->getLabels() as $label) {
             if (in_array($label, $labels, true)) {
                 $this->logWarning(sprintf(
-                    'Found an existing label `%s` for news with oid `%d` (Skipping)',
-                    $label, $news->getId()
+                    'Found an existing label `%s` for ticket with oid `%d` (Skipping)',
+                    $label, $ticket->getId()
                 ));
             } else {
-                $news->addLabel($this->createNewsLabel($label));
+                $ticket->addLabel($this->createTicketLabel($label));
                 $this->logInfo(sprintf(
-                    'Creating a new label `%s` for news with oid `%d`',
-                    $label, $news->getId()
+                    'Creating a new label `%s` for ticket with oid `%d`',
+                    $label, $ticket->getId()
                 ));
             }
         }
@@ -78,22 +78,21 @@ final class NewsLabel extends AbstractImporter
     }
 
     /**
-     * Returns a new news label entity
+     * Returns a new ticket label entity
      *
      * @param string $label
-     * @return DeskPROEntity\LabelNews
+     * @return DeskPROEntity\LabelTicket
      */
-    private function createNewsLabel($label)
+    private function createTicketLabel($label)
     {
-        $entity = new DeskPROEntity\LabelNews();
+        $entity = new DeskPROEntity\LabelTicket();
         $entity->setLabel($label);
 
-        $this->records->add($entity);
         return $entity;
     }
 
     /**
-     * Returns a collection of existing news label names
+     * Returns a collection of existing ticket label names
      *
      * @param int $id
      *
@@ -102,7 +101,7 @@ final class NewsLabel extends AbstractImporter
      */
     private function getExistingLabelsNames($id)
     {
-        $labels = $this->getNewsLabelMapper()->findByNewsId($id, false);
+        $labels = $this->getTicketLabelMapper()->findByTicketId($id, false);
         $names  = array();
 
         foreach ($labels as $label) {
@@ -113,13 +112,13 @@ final class NewsLabel extends AbstractImporter
     }
 
     /**
-     * Returns the news label mapper
+     * Returns the person label mapper
      *
-     * @return Mapper\NewsLabel
+     * @return Mapper\TicketLabel
      * @throws \Exception
      */
-    private function getNewsLabelMapper()
+    private function getTicketLabelMapper()
     {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_NEWS_LABEL);
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET_LABEL);
     }
 }

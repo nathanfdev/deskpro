@@ -32,44 +32,44 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro news labels importer
+ * DeskPro person labels importer
  *
- * Class NewsLabel
+ * Class PersonLabel
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-final class NewsLabel extends AbstractImporter
+final class PersonLabel extends AbstractImporter
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_NEWS;
+        return Entity\EntityInterface::TYPE_PERSON;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @var Entity\News $entity
+     * @var Entity\Person $entity
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
         $this->records = new ArrayCollection();
 
-        $news   = $this->getNewsMapper()->findOneByTitle($entity->getTitle());
-        $labels = $this->getExistingLabelsNames($news->getId());
+        $person = $this->getPersonMapper()->findOneByEmails($entity->getEmails());
+        $labels = $this->getExistingLabelsNames($person->getId());
 
         foreach ($entity->getLabels() as $label) {
             if (in_array($label, $labels, true)) {
                 $this->logWarning(sprintf(
-                    'Found an existing label `%s` for news with oid `%d` (Skipping)',
-                    $label, $news->getId()
+                    'Found an existing label `%s` for person with oid `%d` (Skipping)',
+                    $label, $person->getId()
                 ));
             } else {
-                $news->addLabel($this->createNewsLabel($label));
+                $person->addLabel($this->createPersonLabel($label));
                 $this->logInfo(sprintf(
-                    'Creating a new label `%s` for news with oid `%d`',
-                    $label, $news->getId()
+                    'Creating a new label `%s` for person with oid `%d`',
+                    $label, $person->getId()
                 ));
             }
         }
@@ -78,14 +78,14 @@ final class NewsLabel extends AbstractImporter
     }
 
     /**
-     * Returns a new news label entity
+     * Returns a new person label entity
      *
      * @param string $label
-     * @return DeskPROEntity\LabelNews
+     * @return DeskPROEntity\LabelPerson
      */
-    private function createNewsLabel($label)
+    private function createPersonLabel($label)
     {
-        $entity = new DeskPROEntity\LabelNews();
+        $entity = new DeskPROEntity\LabelPerson();
         $entity->setLabel($label);
 
         $this->records->add($entity);
@@ -93,7 +93,7 @@ final class NewsLabel extends AbstractImporter
     }
 
     /**
-     * Returns a collection of existing news label names
+     * Returns a collection of existing person label names
      *
      * @param int $id
      *
@@ -102,7 +102,7 @@ final class NewsLabel extends AbstractImporter
      */
     private function getExistingLabelsNames($id)
     {
-        $labels = $this->getNewsLabelMapper()->findByNewsId($id, false);
+        $labels = $this->getPersonLabelMapper()->findByPersonId($id, false);
         $names  = array();
 
         foreach ($labels as $label) {
@@ -113,13 +113,13 @@ final class NewsLabel extends AbstractImporter
     }
 
     /**
-     * Returns the news label mapper
+     * Returns the person label mapper
      *
-     * @return Mapper\NewsLabel
+     * @return Mapper\PersonLabel
      * @throws \Exception
      */
-    private function getNewsLabelMapper()
+    private function getPersonLabelMapper()
     {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_NEWS_LABEL);
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON_LABEL);
     }
 }

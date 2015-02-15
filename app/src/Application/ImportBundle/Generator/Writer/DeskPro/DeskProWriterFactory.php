@@ -165,7 +165,9 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\News($mappers))
             ->attach(new Importer\NewsLabel($mappers))
             ->attach(new Importer\Person($mappers))
-            ->attach(new Importer\Ticket($mappers, $blob_adapter));
+            ->attach(new Importer\PersonLabel($mappers))
+            ->attach(new Importer\Ticket($mappers, $blob_adapter))
+            ->attach(new Importer\TicketLabel($mappers));
 
         return new DeskProWriter($importers, $entity_manager);
     }

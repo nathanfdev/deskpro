@@ -92,9 +92,6 @@ final class Person extends AbstractImporter
                 ));
             }
         }
-        foreach ($entity->getLabels() as $label) {
-            $person->addLabel($this->createPersonLabel($label));
-        }
         foreach ($entity->getUserGroups() as $user_group) {
             $person->addUsergroup($this->getUserGroupMapper()->findOneByTitle($user_group));
         }
@@ -161,21 +158,6 @@ final class Person extends AbstractImporter
         }
 
         return $email;
-    }
-
-    /**
-     * Returns a new person label entity
-     *
-     * @param string $label
-     * @return DeskPROEntity\LabelPerson
-     */
-    private function createPersonLabel($label)
-    {
-        $entity = new DeskPROEntity\LabelPerson();
-        $entity->setLabel($label);
-
-        $this->records->add($entity);
-        return $entity;
     }
 
     /**
