@@ -68,8 +68,14 @@ class ReportsBuilderController extends AbstractController
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 
+        $customReports = $reports_builder->getCustomReports();
+        foreach ($customReports as &$report) {
+            foreach($report['labels'] as &$label) {
+                $label = $this->container->getTranslator()->phrase('reports.labels.'.$label);
+            }
+        }
         return $this->createApiResponse(array(
-             'reports' => $reports_builder->getCustomReports()
+             'reports' => $customReports
         ));
     }
 
@@ -85,8 +91,14 @@ class ReportsBuilderController extends AbstractController
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 
+        $builtInReports = $reports_builder->getBuiltInReports();
+        foreach ($builtInReports as &$report) {
+            foreach($report['labels'] as &$label) {
+                $label = $this->container->getTranslator()->phrase('reports.labels.'.$label);
+            }
+        }
         return $this->createApiResponse(array(
-            'reports' => $reports_builder->getBuiltInReports()
+            'reports' => $builtInReports
         ));
     }
 
