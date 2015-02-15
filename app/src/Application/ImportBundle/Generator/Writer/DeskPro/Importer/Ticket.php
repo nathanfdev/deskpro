@@ -154,6 +154,7 @@ final class Ticket extends AbstractImporter
             ));
         }
 
+        $this->records->add($message);
         return $message;
     }
 
@@ -173,6 +174,7 @@ final class Ticket extends AbstractImporter
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
             ->setBlob($this->blob_adapter->createByAttachment($importing_entity));
 
+        $this->records->add($attachment);
         return $attachment;
     }
 
@@ -189,6 +191,7 @@ final class Ticket extends AbstractImporter
         $participant = new DeskPROEntity\TicketParticipant();
         $participant->setPerson($this->getPersonMapper()->findOneByEmail($email));
 
+        $this->records->add($participant);
         return $participant;
     }
 
@@ -332,6 +335,7 @@ final class Ticket extends AbstractImporter
                 throw new ImporterException('Unknown custom field type `%s`', $person_def->getTypeName());
         }
 
+        $this->records->add($entity);
         return $entity;
     }
 

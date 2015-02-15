@@ -213,6 +213,7 @@ final class Person extends AbstractImporter
                 throw new ImporterException('Unknown custom field type `%s`', $person_def->getTypeName());
         }
 
+        $this->records->add($entity);
         return $entity;
     }
 

@@ -223,7 +223,6 @@ class Generator extends AbstractGenerator implements GeneratorInterface
     private function exporterLogHeader($type)
     {
         $this->logInfo('');
-        $this->logInfo('');
         $this->logInfo('=====================================');
         $this->logInfo(sprintf('Export `%s` collection', $type));
         $this->logInfo('=====================================');
@@ -236,7 +235,6 @@ class Generator extends AbstractGenerator implements GeneratorInterface
      */
     private function writerLogHeader($type)
     {
-        $this->logInfo('');
         $this->logInfo('');
         $this->logInfo('=====================================');
         $this->logInfo(sprintf('Write `%s` collection', $type));
