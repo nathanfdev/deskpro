@@ -73,7 +73,6 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
      * 'total_rating'   => $dval->total_rating,
      * 'num_comments'   => $dval->num_comments,
      * 'num_ratings'    => $dval->num_ratings,
-     * 'num_downloads'  => $dval->num_downloads,
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
@@ -90,7 +89,8 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
             ->setCategory($this->findOrCreateDownloadCategory($entity->getCategory()))
             ->setDateCreated($entity->getDateCreated())
             ->setDatePublished($entity->getDatePublished())
-            ->setViewsCount($entity->getViewCount());
+            ->setViewsCount($entity->getViewCount())
+            ->setNumDownloads($entity->getNumDownloads());
 
         $this->records->add($download);
         return $this->records;

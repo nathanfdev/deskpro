@@ -306,6 +306,17 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         $this->labels->add($label);
     }
 
+    /**
+     * Set downloads count
+     *
+     * @param int $num_downloads
+     * @return $this
+     */
+    public function setNumDownloads($num_downloads)
+    {
+        $this->setModelField('num_downloads', $num_downloads);
+        return $this;
+    }
 
     /**
      * @return string
