@@ -626,6 +626,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * Returns ticket unique ref
+     *
+     * @return string
+     */
+    public function getRef()
+    {
+        return $this->ref;
+    }
+
+    /**
      * @param string $ref
      * @return $this
      */

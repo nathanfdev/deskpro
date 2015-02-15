@@ -204,6 +204,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function createLogger(GeneratorConfig $config, OutputInterface $output)
     {
         $logger = new Logger('exporter');
+
         if ($config->getLogPath()) {
             $formatter = new LineFormatter();
             $formatter->ignoreEmptyContextAndExtra(true);

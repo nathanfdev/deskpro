@@ -150,6 +150,8 @@ class DeskProWriterFactory extends AbstractFactory
         if ($this->container instanceof DeskproContainer) {
             $blob_storage = $this->container->getBlobStorage();
             $blob_adapter = new BlobAdapter($blob_storage, new Importer\Mapper\BlobData());
+
+            $ticket_manager = $this->container->getTicketManager();
         } else {
             throw new Exception('Unable to get the blob storage');
         }
@@ -166,7 +168,7 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\NewsLabel($mappers))
             ->attach(new Importer\Person($mappers))
             ->attach(new Importer\PersonLabel($mappers))
-            ->attach(new Importer\Ticket($mappers, $blob_adapter))
+            ->attach(new Importer\Ticket($mappers, $ticket_manager, $blob_adapter))
             ->attach(new Importer\TicketLabel($mappers));
 
         return new DeskProWriter($importers, $entity_manager);

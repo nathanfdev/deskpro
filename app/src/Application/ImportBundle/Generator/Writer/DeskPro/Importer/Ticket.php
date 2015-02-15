@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\DeskPRO\Tickets\TicketManager;
 use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Strings;
@@ -41,6 +42,11 @@ use Orb\Util\Strings;
 final class Ticket extends AbstractImporter
 {
     /**
+     * @var TicketManager
+     */
+    private $manager;
+
+    /**
      * @var BlobAdapterInterface
      */
     private $blob_adapter;
@@ -49,11 +55,14 @@ final class Ticket extends AbstractImporter
      * Constructor
      *
      * @param Mapper\Collection    $mappers
+     * @param TicketManager        $manager
      * @param BlobAdapterInterface $blob_adapter
      */
-    public function __construct(Mapper\Collection $mappers, BlobAdapterInterface $blob_adapter)
+    public function __construct(Mapper\Collection $mappers, TicketManager $manager, BlobAdapterInterface $blob_adapter)
     {
         parent::__construct($mappers);
+
+        $this->manager      = $manager;
         $this->blob_adapter = $blob_adapter;
     }
 
@@ -74,20 +83,18 @@ final class Ticket extends AbstractImporter
     {
         $this->records = new ArrayCollection();
 
-        $ref = $this->getOrCreateTicketRef($entity->getRef());
-        if ($ref !== $entity->getRef()) {
+        $ticket = $this->manager->createTicket();
+        if ($ticket->getRef() !== $entity->getRef()) {
             $this->logWarning(sprintf(
-                'Ticket ref with oid `%d` was changed due duplicate unique, old ref `%s`, new ref `%s`',
-                $entity->getOid(), $entity->getRef(), $ref
+                'Ticket ref with oid `%d` was changed, old ref `%s`, new ref `%s`',
+                $entity->getOid(), $entity->getRef(), $ticket->getRef()
             ));
 
             // Remember new ref, if it was changed to apply ticket labels
-            $entity->setRef($ref);
+            $entity->setRef($ticket->getRef());
         }
 
-        $ticket = new DeskPROEntity\Ticket();
         $ticket
-            ->setRef($ref)
             ->setSubject($entity->getSubject())
             ->setPerson($this->getPersonMapper()->findOneByEmail($entity->getPersonEmail()))
             ->setOrganization($this->findOrCreateOrganization($entity->getOrganization()))
@@ -326,20 +333,6 @@ final class Ticket extends AbstractImporter
         }
 
         return $entity;
-    }
-
-    /**
-     * Validates if current ref is already exist
-     *
-     * todo Should we check if random is unique?
-     *
-     * @param $ref
-     * @return string
-     */
-    private function getOrCreateTicketRef($ref)
-    {
-        $existing_ticket = $this->getTicketMapper()->findOneByRef($ref, false);
-        return $existing_ticket ? Strings::random(10, Strings::CHARS_ALPHANUM_IU) : $ref;
     }
 
     /**
