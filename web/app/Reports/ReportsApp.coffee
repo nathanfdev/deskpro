@@ -5,15 +5,19 @@ define [
   # Controllers
   'Reports/Dashboards/Ctrl/DashboardReport',
   'Reports/Dashboards/Ctrl/DashboardView',
+
+  # Modal controllers
   'Reports/Dashboards/ModalCtrl/EditDashboard',
   'Reports/Dashboards/ModalCtrl/ChooseWidget',
   'Reports/Dashboards/ModalCtrl/AddWidget',
   'Reports/Dashboards/ModalCtrl/EditWidget',
 
+  # Stats controllers
   'Reports/Stats/Ctrl/StatsMain',
   'Reports/Stats/Ctrl/StatsHome',
   'Reports/Stats/Ctrl/WidgetView',
 
+  # Legacy
   'Reports/Legacy/AgentActivity/Ctrl/AgentActivity',
   'Reports/Legacy/AgentHours/Ctrl/AgentHours',
   'Reports/Legacy/Builder/Ctrl/Edit',
@@ -72,15 +76,19 @@ define [
   # Controllers
   Reports_Dashboards_Ctrl_DashboardReport,
   Reports_Dashboards_Ctrl_DashboardView,
+
+  # Modal controllers
   Reports_Dashboards_ModalCtrl_EditDashboard,
   Reports_Dashboards_ModalCtrl_ChooseWidget,
   Reports_Dashboards_ModalCtrl_AddWidget,
   Reports_Dashboards_ModalCtrl_EditWidget,
 
+  # Stats controller
   Reports_Stats_Ctrl_StatsMain,
   Reports_Stats_Ctrl_StatsHome,
   Reports_Stats_Ctrl_WidgetView,
 
+  # Legacy
   Reports_AgentActivity_Ctrl_AgentActivity,
   Reports_AgentHours_Ctrl_AgentHours,
   Reports_Builder_Ctrl_Edit,
