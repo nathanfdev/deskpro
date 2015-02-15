@@ -1,1 +1,2 @@
 message_id;person;blob_url;blob_path;file_name;content_type;is_inline
+1;some@email.tld;;/deskpro/www/app/src/Application/ImportBundle/Resources/docs/data_example/csv/tickets.csv;tickets.csv;csv;
