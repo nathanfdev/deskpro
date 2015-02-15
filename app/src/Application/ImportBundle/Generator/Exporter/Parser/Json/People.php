@@ -117,11 +117,14 @@ final class People extends AbstractParser
                 ->setOverrideDisplayName($person['override_display_name'])
                 ->setPassword($person['password'])
                 ->setPasswordScheme($person['password_scheme'])
-                ->setTimezone(new DateTimeZone($person['timezone']))
-                ->setDateCreated(new DateTime($person['date_created']))
                 ->setLanguage($person['language'])
                 ->setOrganization($person['organization'])
-                ->setOrganizationPosition($person['organization_position']);
+                ->setOrganizationPosition($person['organization_position'])
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($person['date_created']));
+
+            if ($person['timezone']) {
+                $entity->setTimezone(new DateTimeZone($person['timezone']));
+            }
 
             foreach ($person['emails'] as $email) {
                 $entity->addEmail($email);

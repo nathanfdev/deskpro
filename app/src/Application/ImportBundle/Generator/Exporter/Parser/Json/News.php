@@ -118,7 +118,7 @@ final class News extends AbstractParser
                 ->setNumComments($news['num_comments'])
                 ->setNumRatings($news['num_ratings'])
                 ->setStatus($news['status'])
-                ->setDateCreated(new DateTime($news['date_created']))
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($news['date_created']))
                 ->setCategory($news['category']);
 
             if ($news['date_published']) {

@@ -120,7 +120,7 @@ final class Feedback extends AbstractParser
                 ->setNumRatings($feedback['num_ratings'])
                 ->setViewCount($feedback['view_count'])
                 ->setCategory($feedback['category'])
-                ->setDateCreated(new DateTime($feedback['date_created']));
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($feedback['date_created']));
 
             if ($feedback['date_published']) {
                 $entity->setDatePublished(new DateTime($feedback['date_published']));

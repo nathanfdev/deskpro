@@ -118,7 +118,7 @@ final class Articles extends AbstractParser
                 ->setNumComments($article['num_comments'])
                 ->setNumRatings($article['num_ratings'])
                 ->setStatus($article['status'])
-                ->setDateCreated(new DateTime($article['date_created']));
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($article['date_created']));
 
             if ($article['date_published']) {
                 $entity->setDatePublished(new DateTime($article['date_published']));

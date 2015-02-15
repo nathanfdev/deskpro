@@ -109,6 +109,7 @@ final class Tickets extends AbstractParser
             $entity = new Entity\Ticket();
             $entity
                 ->setDestination(self::TICKET_PREFIX . $ticket['id'])
+                ->setOid($ticket['id'])
                 ->setRef($ticket['id'])
                 ->setSubject($ticket['subject'])
                 ->setPersonEmail($ticket['user'])

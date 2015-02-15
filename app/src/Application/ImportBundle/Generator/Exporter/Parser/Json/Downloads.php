@@ -119,7 +119,7 @@ final class Downloads extends AbstractParser
                 ->setViewCount($download['view_count'])
                 ->setCategory($download['category'])
                 ->setStatus($download['status'])
-                ->setDateCreated(new DateTime($download['date_created']));
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($download['date_created']));
 
             if ($download['date_published']) {
                 $entity->setDatePublished(new DateTime($download['date_published']));

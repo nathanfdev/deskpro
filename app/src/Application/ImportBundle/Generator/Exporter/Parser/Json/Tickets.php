@@ -113,7 +113,6 @@ final class Tickets extends AbstractParser
                 ->setAgentEmail($ticket['agent'])
                 ->setAgentTeam($ticket['agent_team'])
                 ->setStatus($ticket['status'])
-                ->setDateCreated(new DateTime($ticket['date_created']))
                 ->setSubject($ticket['subject'])
                 ->setPriority($ticket['priority'])
                 ->setLanguage($ticket['language'])
@@ -122,9 +121,10 @@ final class Tickets extends AbstractParser
                 ->setProduct($ticket['product'])
                 ->setOrganization($ticket['organization'])
                 ->setAsHold($ticket['is_hold'])
-                ->setUrgency($ticket['urgency']);
+                ->setUrgency($ticket['urgency'])
+                ->setDateCreated($this->getFromStringOrCurrentDateTime($ticket['date_created']));
 
-            if ($ticket['date_published']) {
+            if ($ticket['date_resolved']) {
                 $entity->setDateResolved(new DateTime($ticket['date_resolved']));
             }
             if ($ticket['date_archived']) {
@@ -191,6 +191,12 @@ final class Tickets extends AbstractParser
         return $collection;
     }
 
+    /**
+     * Returns a ticket message entity
+     *
+     * @param array $message
+     * @return Entity\TicketMessage|null
+     */
     private function exportMessage(array $message)
     {
         if ($this->isMessageValid($message)) {
@@ -257,6 +263,7 @@ final class Tickets extends AbstractParser
         if ($this->isAttachmentValid($attachment)) {
             $entity = new Entity\Attachment();
             $entity
+                ->setDestination('attachment_' . $attachment['oid'])
                 ->setOid($attachment['oid'])
                 ->setPersonEmail($attachment['person'])
                 ->setBlobData($attachment['blob_data'])
