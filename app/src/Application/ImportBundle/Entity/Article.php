@@ -30,7 +30,6 @@ namespace Application\ImportBundle\Entity;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use DateTime;
-use Orb\Util\Strings;
 
 /**
  * Exporting kb entity
@@ -38,7 +37,7 @@ use Orb\Util\Strings;
  * Class Article
  * @package Application\ImportBundle\Entity
  */
-final class Article extends AbstractEntity implements SlugAwareInterface, PersonAwareInterface, LabelAwareInterface
+final class Article extends AbstractContentEntity implements PersonAwareInterface, LabelAwareInterface
 {
     /**
      * @var string
@@ -48,27 +47,7 @@ final class Article extends AbstractEntity implements SlugAwareInterface, Person
     /**
      * @var string
      */
-    private $language;
-
-    /**
-     * @var string
-     */
     private $end_action;
-
-    /**
-     * @var string
-     */
-    private $slug;
-
-    /**
-     * @var string
-     */
-    private $title;
-
-    /**
-     * @var string
-     */
-    private $content;
 
     /**
      * @var int
@@ -148,24 +127,6 @@ final class Article extends AbstractEntity implements SlugAwareInterface, Person
     /**
      * @return string
      */
-    public function getLanguage()
-    {
-        return $this->language;
-    }
-
-    /**
-     * @param string $language
-     * @return $this
-     */
-    public function setLanguage($language)
-    {
-        $this->language = $language;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
     public function getEndAction()
     {
         return $this->end_action;
@@ -181,62 +142,6 @@ final class Article extends AbstractEntity implements SlugAwareInterface, Person
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSlug()
-    {
-        if ($this->slug) {
-            return $this->slug;
-        }
-
-        return Strings::slugifyTitle($this->title);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setSlug($slug)
-    {
-        $this->slug = $slug;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * @param string $title
-     * @return $this
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContent()
-    {
-        return $this->content;
-    }
-
-    /**
-     * @param string $content
-     * @return $this
-     */
-    public function setContent($content)
-    {
-        $this->content = $content;
-        return $this;
-    }
     /**
      * @return int
      */

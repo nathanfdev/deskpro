@@ -30,7 +30,6 @@ namespace Application\ImportBundle\Entity;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use DateTime;
-use Orb\Util\Strings;
 
 /**
  * Exporting feedback entity
@@ -38,7 +37,7 @@ use Orb\Util\Strings;
  * Class Feedback
  * @package Application\ImportBundle\Entity
  */
-final class Feedback extends AbstractEntity implements SlugAwareInterface, PersonAwareInterface, LabelAwareInterface
+final class Feedback extends AbstractContentEntity implements PersonAwareInterface, LabelAwareInterface
 {
     /**
      * @var string
@@ -52,29 +51,9 @@ final class Feedback extends AbstractEntity implements SlugAwareInterface, Perso
     private $person_email;
 
     /**
-     * @var string
-     */
-    private $language;
-
-    /**
      * @var int
      */
     private $popularity = 0;
-
-    /**
-     * @var string
-     */
-    private $slug;
-
-    /**
-     * @var string
-     */
-    private $title;
-
-    /**
-     * @var string
-     */
-    private $content;
 
     /**
      * @var int
@@ -160,24 +139,6 @@ final class Feedback extends AbstractEntity implements SlugAwareInterface, Perso
     }
 
     /**
-     * @return string
-     */
-    public function getLanguage()
-    {
-        return $this->language;
-    }
-
-    /**
-     * @param string $language
-     * @return $this
-     */
-    public function setLanguage($language)
-    {
-        $this->language = $language;
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function getPopularity()
@@ -192,63 +153,6 @@ final class Feedback extends AbstractEntity implements SlugAwareInterface, Perso
     public function setPopularity($popularity)
     {
         $this->popularity = $popularity;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getSlug()
-    {
-        if ($this->slug) {
-            return $this->slug;
-        }
-
-        return Strings::slugifyTitle($this->title);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setSlug($slug)
-    {
-        $this->slug = $slug;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * @param string $title
-     * @return $this
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContent()
-    {
-        return $this->content;
-    }
-
-    /**
-     * @param string $content
-     * @return $this
-     */
-    public function setContent($content)
-    {
-        $this->content = $content;
         return $this;
     }
 

@@ -28,15 +28,43 @@
 namespace Application\ImportBundle\Entity;
 
 /**
- * Entity slug interface
+ * Basic properties on content interface
  *
- * Interface SlugAwareInterface
+ * Interface ContentAwareInterface
  * @package Application\ImportBundle\Entity
- *
- * todo add slug validator
  */
-interface SlugAwareInterface
+interface ContentAwareInterface
 {
+    /**
+     * Entity title
+     *
+     * @return string
+     */
+    public function getTitle();
+
+    /**
+     * Set entity title
+     *
+     * @param string $title
+     * @return $this
+     */
+    public function setTitle($title);
+
+    /**
+     * Entity content
+     *
+     * @return string
+     */
+    public function getContent();
+
+    /**
+     * Set entity content
+     *
+     * @param string $content
+     * @return $this
+     */
+    public function setContent($content);
+
     /**
      * Sets an acceptable URL slug
      *
@@ -54,4 +82,19 @@ interface SlugAwareInterface
      * @return $this
      */
     public function setSlug($slug);
+
+    /**
+     * Entity language
+     *
+     * @return string
+     */
+    public function getLanguage();
+
+    /**
+     * Set entity language
+     *
+     * @param string $language
+     * @return $this
+     */
+    public function setLanguage($language);
 }
