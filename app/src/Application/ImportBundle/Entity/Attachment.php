@@ -202,7 +202,7 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
      */
     public function setAsInline($is_inline)
     {
-        $this->is_inline = $is_inline;
+        $this->is_inline = (bool)$is_inline;
         return $this;
     }
 
@@ -230,8 +230,9 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
+        AbstractEntity::loadValidatorMetadata($metadata);
+
         $metadata
-            ->addPropertyConstraint('oid', new Constraints\NotBlank())
             ->addPropertyConstraint('person_email', new Constraints\Email())
             ->addPropertyConstraint('file_name', new Constraints\NotBlank())
             ->addPropertyConstraint('content_type', new Constraints\NotBlank());

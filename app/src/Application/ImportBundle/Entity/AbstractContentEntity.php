@@ -2,6 +2,8 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Orb\Util\Strings;
 
 /**
@@ -192,5 +194,23 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     {
         $this->num_ratings = (int)$num_ratings;
         return $this;
+    }
+
+    /**
+     * Validator class metadata
+     *
+     * @param ClassMetadata $metadata
+     */
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        AbstractEntity::loadValidatorMetadata($metadata);
+
+        $metadata
+            ->addPropertyConstraint('title', new Constraints\NotBlank())
+            ->addPropertyConstraint('content', new Constraints\NotBlank())
+            ->addPropertyConstraint('language', new Constraints\NotBlank())
+
+            ->addGetterConstraint('slug', new Constraints\NotBlank())
+        ;
     }
 }

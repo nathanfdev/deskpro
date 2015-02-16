@@ -192,7 +192,7 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
      */
     public function toArray()
     {
-        if (!$this->date_created) {
+        if ( ! $this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 
@@ -222,10 +222,6 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
-        $metadata
-            ->addPropertyConstraint('oid', new Constraints\NotBlank())
-            ->addPropertyConstraint('title', new Constraints\NotBlank())
-            ->addPropertyConstraint('content', new Constraints\NotBlank())
-        ;
+        AbstractContentEntity::loadValidatorMetadata($metadata);
     }
 }

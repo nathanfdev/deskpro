@@ -635,6 +635,8 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
+        AbstractEntity::loadValidatorMetadata($metadata);
+
         $metadata
             ->addPropertyConstraint('ref', new Constraints\NotBlank())
 

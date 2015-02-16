@@ -35,7 +35,7 @@ use Application\ImportBundle\AbstractCollection;
  * Class Collection
  * @package Application\ImportBundle\Entity
  */
-class Collection extends AbstractCollection
+final class Collection extends AbstractCollection
 {
     /**
      * @param EntityInterface $entity

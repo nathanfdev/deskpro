@@ -117,8 +117,9 @@ final class CustomField extends AbstractEntity
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
+        AbstractEntity::loadValidatorMetadata($metadata);
+
         $metadata
-            ->addPropertyConstraint('oid', new Constraints\NotBlank())
             ->addPropertyConstraint('key', new Constraints\NotBlank())
             ->addPropertyConstraint('value', new Constraints\NotBlank());
     }

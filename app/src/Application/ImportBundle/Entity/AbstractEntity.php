@@ -27,6 +27,9 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+
 /**
  * Base exporting entity
  *
@@ -82,5 +85,17 @@ abstract class AbstractEntity implements EntityInterface
     {
         $this->destination = $destination;
         return $this;
+    }
+
+    /**
+     * Validator class metadata
+     *
+     * @param ClassMetadata $metadata
+     */
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata
+            ->addPropertyConstraint('oid', new Constraints\NotBlank())
+            ->addPropertyConstraint('destination', new Constraints\NotBlank());
     }
 }

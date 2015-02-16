@@ -581,8 +581,9 @@ final class Person extends AbstractEntity implements LabelAwareInterface
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
+        AbstractEntity::loadValidatorMetadata($metadata);
+
         $metadata
-            ->addPropertyConstraint('oid', new Constraints\NotBlank())
             ->addPropertyConstraint('name', new Constraints\NotBlank())
 
             ->addPropertyConstraint('date_created', new Constraints\NotBlank())

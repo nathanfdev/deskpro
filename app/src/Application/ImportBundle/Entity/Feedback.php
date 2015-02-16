@@ -216,7 +216,7 @@ final class Feedback extends AbstractContentEntity implements PersonAwareInterfa
      */
     public function toArray()
     {
-        if (!$this->date_created) {
+        if ( ! $this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 
@@ -247,10 +247,6 @@ final class Feedback extends AbstractContentEntity implements PersonAwareInterfa
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
-        $metadata
-            ->addPropertyConstraint('oid', new Constraints\NotBlank())
-            ->addPropertyConstraint('title', new Constraints\NotBlank())
-            ->addPropertyConstraint('content', new Constraints\NotBlank())
-        ;
+        AbstractContentEntity::loadValidatorMetadata($metadata);
     }
 }

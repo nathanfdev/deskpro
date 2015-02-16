@@ -240,6 +240,8 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
+        AbstractEntity::loadValidatorMetadata($metadata);
+
         $metadata
             ->addPropertyConstraint('person_email', new Constraints\NotBlank())
             ->addPropertyConstraint('person_email', new Constraints\Email())
