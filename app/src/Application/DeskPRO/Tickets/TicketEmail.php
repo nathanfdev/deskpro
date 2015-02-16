@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets;
 use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
+use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
 use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
 
@@ -104,6 +105,11 @@ class TicketEmail
      * @var string[]
      */
     private $sent_with_ccs;
+
+    /**
+     * @var int
+     */
+    private $sendmail_source_id;
 
     /**
      * @var \Application\DeskPRO\Entity\Ticket
@@ -514,7 +520,17 @@ class TicketEmail
         }
 
         $start = microtime(true);
-        $mailer->send($message);
+
+        if ($mailer instanceof StorageTransportInterface) {
+            $id = $mailer->queueMessage($message);
+            if ($id) {
+                $this->logger->info(sprintf("[TicketEmail] SendmailSource ID #%d", $id));
+                $this->sendmail_source_id = $id;
+            }
+        } else {
+            $mailer->send($message);
+        }
+
         $this->logger->info(sprintf("[TicketEmail] Send took %.3fs", microtime(true) - $start));
     }
 
@@ -540,5 +556,13 @@ class TicketEmail
     public function getSentWithCcs()
     {
         return $this->sent_with_ccs;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSendmailSourceId()
+    {
+        return $this->sendmail_source_id;
     }
 }

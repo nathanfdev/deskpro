@@ -1460,7 +1460,7 @@ class PersonController extends AbstractController
                         $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
                             'person' => $person
                         ));
-                        $mailer->sendNow($message);
+                        $mailer->send($message);
                     }
 
                     return $this->createJsonResponse(array(
@@ -1508,7 +1508,7 @@ class PersonController extends AbstractController
                     'person' => $person
                 ));
 
-                $mailer->sendNow($message);
+                $mailer->send($message);
             }
 
             return $this->createJsonResponse(array(
