@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Entity;
 
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
-use DateTime;
 
 /**
  * Exporting news entity
@@ -48,16 +47,6 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
      * @var string
      */
     private $status;
-
-    /**
-     * @var DateTime
-     */
-    private $date_created;
-
-    /**
-     * @var DateTime
-     */
-    private $date_published;
 
     /**
      * @var string
@@ -113,42 +102,6 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
     public function setStatus($status)
     {
         $this->status = $status;
-        return $this;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getDateCreated()
-    {
-        return $this->date_created;
-    }
-
-    /**
-     * @param DateTime $date_created
-     * @return $this
-     */
-    public function setDateCreated(DateTime $date_created)
-    {
-        $this->date_created = $date_created;
-        return $this;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getDatePublished()
-    {
-        return $this->date_published;
-    }
-
-    /**
-     * @param DateTime $date_published
-     * @return $this
-     */
-    public function setDatePublished(DateTime $date_published)
-    {
-        $this->date_published = $date_published;
         return $this;
     }
 

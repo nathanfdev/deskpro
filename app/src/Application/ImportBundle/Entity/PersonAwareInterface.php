@@ -36,11 +36,15 @@ namespace Application\ImportBundle\Entity;
 interface PersonAwareInterface
 {
     /**
+     * Person email
+     *
      * @return string
      */
     public function getPersonEmail();
 
     /**
+     * Set person email
+     *
      * @param string $person_email
      * @return $this
      */

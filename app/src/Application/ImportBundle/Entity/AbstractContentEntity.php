@@ -5,6 +5,7 @@ namespace Application\ImportBundle\Entity;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Orb\Util\Strings;
+use DateTime;
 
 /**
  * Basic properties on content
@@ -55,6 +56,16 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
      * @var int
      */
     protected $num_ratings = 0;
+
+    /**
+     * @var DateTime
+     */
+    protected $date_created;
+
+    /**
+     * @var DateTime
+     */
+    protected $date_published;
 
     /**
      * {@inheritdoc}
@@ -197,6 +208,50 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     }
 
     /**
+     * Date created
+     *
+     * @return DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * Set date created
+     *
+     * @param DateTime $date_created
+     * @return $this
+     */
+    public function setDateCreated(DateTime $date_created)
+    {
+        $this->date_created = $date_created;
+        return $this;
+    }
+
+    /**
+     * Date published
+     *
+     * @return DateTime
+     */
+    public function getDatePublished()
+    {
+        return $this->date_published;
+    }
+
+    /**
+     * Set date published
+     *
+     * @param DateTime $date_published
+     * @return $this
+     */
+    public function setDatePublished(DateTime $date_published)
+    {
+        $this->date_published = $date_published;
+        return $this;
+    }
+
+    /**
      * Validator class metadata
      *
      * @param ClassMetadata $metadata
@@ -210,7 +265,6 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
             ->addPropertyConstraint('content', new Constraints\NotBlank())
             ->addPropertyConstraint('language', new Constraints\NotBlank())
 
-            ->addGetterConstraint('slug', new Constraints\NotBlank())
-        ;
+            ->addGetterConstraint('slug', new Constraints\NotBlank());
     }
 }

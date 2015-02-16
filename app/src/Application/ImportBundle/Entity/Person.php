@@ -597,8 +597,6 @@ final class Person extends AbstractEntity implements LabelAwareInterface
             )))
 
             ->addGetterConstraint('firstEmail', new Constraints\NotBlank())
-            ->addGetterConstraint('firstEmail', new Constraints\Email())
-
-        ;
+            ->addGetterConstraint('firstEmail', new Constraints\Email());
     }
 }

@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Entity;
 
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
-use DateTime;
 
 /**
  * Exporting download entity
@@ -65,16 +64,6 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     private $status;
 
     /**
-     * @var DateTime
-     */
-    private $date_created;
-
-    /**
-     * @var DateTime
-     */
-    private $date_published;
-
-    /**
      * @var array
      */
     private $labels = array();
@@ -88,6 +77,8 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
+     * Download category
+     *
      * @return string
      */
     public function getCategory()
@@ -96,6 +87,8 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
+     * Set a download category
+     *
      * @param string $category
      * @return $this
      */
@@ -106,6 +99,8 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
+     * Download attachment
+     *
      * @return Attachment
      */
     public function getAttachment()
@@ -114,6 +109,8 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
+     * Set a download attachment
+     *
      * @param Attachment $attachment
      * @return $this
      */
@@ -141,6 +138,8 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
+     * Number of downloads
+     *
      * @return int
      */
     public function getNumDownloads()
@@ -149,6 +148,8 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
+     * Set a number of downloads
+     *
      * @param int $num_downloads
      * @return $this
      */
@@ -177,42 +178,6 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     public function setStatus($status)
     {
         $this->status = $status;
-        return $this;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getDateCreated()
-    {
-        return $this->date_created;
-    }
-
-    /**
-     * @param DateTime $date_created
-     * @return $this
-     */
-    public function setDateCreated(DateTime $date_created)
-    {
-        $this->date_created = $date_created;
-        return $this;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getDatePublished()
-    {
-        return $this->date_published;
-    }
-
-    /**
-     * @param DateTime $date_published
-     * @return $this
-     */
-    public function setDatePublished(DateTime $date_published)
-    {
-        $this->date_published = $date_published;
         return $this;
     }
 
