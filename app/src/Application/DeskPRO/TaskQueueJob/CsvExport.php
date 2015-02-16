@@ -52,7 +52,7 @@ class CsvExport extends AbstractJob
         return array(
             'file' => null,
             'offset' => 0,
-            'limit' => 100,
+            'limit' => 50,
             'headers' => array(
                 'ID', 'Name', 'Title', 'Primary Email', 'Additional Emails', 'Organization', 'Org Position',
                 'Date Created', 'Date Last Login', 'Usergroup IDs', 'Timezone', 'Labels',
@@ -64,6 +64,8 @@ class CsvExport extends AbstractJob
 
     public function run($max_time)
     {
+	    $em = App::getOrm();
+	    $em->getConnection()->getConfiguration()->setSQLLogger(null);
         $start_time = microtime(true);
         $file = $this->_data['file'];
         $delimeter = ';';
@@ -105,9 +107,9 @@ class CsvExport extends AbstractJob
         }
 
         /** @var \Application\DeskPRO\EntityRepository\Person $rep */
-        $rep = App::getOrm()->getRepository('DeskPRO:Person');
+        $rep = $em->getRepository('DeskPRO:Person');
 
-        while (1 || microtime(true) - $start_time < $max_time) {
+        while (microtime(true) - $start_time < $max_time) {
 
             if (!$batch = $rep->findBy(array(), array(), $this->_data['limit'], $this->_data['offset'])) {
                 break;
@@ -115,7 +117,7 @@ class CsvExport extends AbstractJob
 
             foreach ($batch as $person) {
 
-                if (0 && microtime(true) >= $max_time + $start_time) break;
+                if (microtime(true) >= $max_time + $start_time) break;
                 /** @var $person Person */
 
                 $row = array(
@@ -141,13 +143,13 @@ class CsvExport extends AbstractJob
             }
 
 	        if ($batch) {
-		        App::getOrm()->clear('Application\DeskPRO\Entity\Person');
-		        App::getOrm()->clear('Application\DeskPRO\Entity\PersonEmail');
-		        App::getOrm()->clear('Application\DeskPRO\Entity\LabelPerson');
-		        App::getOrm()->clear('Application\DeskPRO\Entity\Organization');
-		        App::getOrm()->clear('Application\DeskPRO\Entity\CustomDefPerson');
-		        App::getOrm()->clear('Application\DeskPRO\Entity\CustomDataPerson');
-		        App::getOrm()->clear('Application\DeskPRO\Entity\PersonContactData');
+		        $em->clear('Application\DeskPRO\Entity\Person');
+		        $em->clear('Application\DeskPRO\Entity\PersonEmail');
+		        $em->clear('Application\DeskPRO\Entity\LabelPerson');
+		        $em->clear('Application\DeskPRO\Entity\Organization');
+		        $em->clear('Application\DeskPRO\Entity\CustomDefPerson');
+		        $em->clear('Application\DeskPRO\Entity\CustomDataPerson');
+		        $em->clear('Application\DeskPRO\Entity\PersonContactData');
 	        }
         }
 
@@ -171,7 +173,7 @@ class CsvExport extends AbstractJob
             );
             $data['name'] = 'csv_export.file';
             $task['task_data']['tmp'] = $data;
-            App::getOrm()->persist($data);
+            $em->persist($data);
 
             return self::TASK_COMPLETED;
         } else {
