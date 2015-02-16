@@ -2,7 +2,38 @@ services:
 
   theme_resolver:
     class: Application\PortalBundle\Theme\ThemeResolver
-    arguments: [@service_container, @theme_repository, @portal_mode_storage, @portal_cache_helper, @logger]
+    arguments:
+        - @service_container
+        - @theme_repository
+        - @tag_processor
+        - @logger
+
+
+  tag_processor:
+    lazy: true
+    class: Application\PortalBundle\Theme\TagProcessor
+    arguments:
+      - @tag_request_factory
+      - [ @tag_handler.esi, @tag_handler.inline ]
+
+
+  tag_handler.esi:
+    class: Application\PortalBundle\Theme\TagHandler\EsiTagHandler
+    arguments:
+      - @service_container
+      - @portal_cache_helper
+
+
+  tag_handler.inline:
+    class: Application\PortalBundle\Theme\TagHandler\InlineTagHandler
+    arguments:
+      - @service_container
+
+
+  tag_request_factory:
+    class: Application\PortalBundle\Theme\TagRequestFactory
+    arguments:
+      - @request_stack
 
 
   theme_view_factory:

@@ -48,44 +48,38 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ThemeResolver
 {
     /**
-     * @var ThemeRepository
-     */
-    private $theme_repo;
-
-    /**
      * @var \Symfony\Component\DependencyInjection\ContainerInterface
      */
     private $container;
 
     /**
-     * @var array
+     * @var ThemeRepository
      */
-    private $themeTemplateMap;
-
-    /**
-     * @var PortalModeStorage
-     */
-    private $mode_storage;
-
-    /**
-     * @var \Application\PortalBundle\HttpCache\PortalCacheHelper
-     */
-    private $cache_helper;
+    private $theme_repo;
 
     /**
      * @var \Psr\Log\LoggerInterface
      */
     private $logger;
 
+    /**
+     * @var TagProcessor
+     */
+    private $tag_processor;
 
-    public function __construct(ContainerInterface $container, ThemeRepository $theme_repo, PortalModeStorage $mode_storage, PortalCacheHelper $cache_helper, LoggerInterface $logger)
+    /**
+     * @var array
+     */
+    private $themeTemplateMap;
+
+
+    public function __construct(ContainerInterface $container, ThemeRepository $theme_repo, TagProcessor $tag_processor, LoggerInterface $logger)
     {
         $this->container  = $container;
         $this->theme_repo = $theme_repo;
         $this->themeTemplateMap = null;
-        $this->mode_storage = $mode_storage;
         $this->logger = $logger;
-        $this->cache_helper = $cache_helper;
+        $this->tag_processor = $tag_processor;
     }
 
     /**
@@ -206,105 +200,10 @@ class ThemeResolver
 
     public function processTag(ThemeInterface $theme, $tag_name, array $arguments)
     {
-        $tag = $theme->resolveTag($tag_name);
-
-        $arguments = $this->filterArguments($arguments);
-
-        if (!$tag) {
-            throw new \InvalidArgumentException("Could not resolve tag: $tag_name");
-        }
-
-        $this->logger->debug(sprintf('theme resolver: resolving tag "%s" with controller "%s"', $tag->getName(), $tag->getControllerName()));
-
-        // theme can't process a tag it's being asked to resolve; just silently ignore the tag by return a blank string.
-        if (!$tag instanceof Tag) {
+        if (!$tag = $theme->resolveTag($tag_name)) {
             return '';
         }
 
-        // Note: a few hacks here, but if you change anything, check TagRequestConverter (does similar for ESIs)
-        $current_request = $this->container->get('request_stack')->getCurrentRequest();
-        $tag_options = array_merge($tag->getDefaultOptions(), array_merge($arguments, array('_tag_name' => $tag_name)));
-        $query = array('tag_options' => $tag_options);
-        $extra_attrs = array('_tag_name' => $tag_name);
-        //if ($mode = $this->mode_storage->getMode()) {
-        //    $serialize = urlencode(serialize($mode));
-        //    $query[PortalMode::ATTR_NAME] = $serialize;
-        //}
-        $attrs = array_merge($current_request->attributes->all(), $extra_attrs);
-        unset($attrs['tag_request']);
-        unset($attrs['_security']);
-        $tag_request = new TagRequest($query, array(), $attrs);
-        $tag_request->setOptionsResolver(new OptionsResolver());
-        $tag_request->setSession($current_request->getSession());
-        $tag_request->headers->replace($current_request->headers->all());
-
-        if ($tag->isEsi($this->cache_helper->isGuestRequest())) {
-
-            // construct and return the proper ESI tag content
-            $attrs = $this->filterArguments($attrs, $tag->allowRouteParams());
-
-            $esi = $this->container->get('fragment.renderer.esi')->render(
-                $controller = new ControllerReference($tag->getControllerName(), $attrs, $query), $tag_request, array('ignore_errors' => false)
-            );
-
-            $esi_content = $esi->getContent();
-
-            $this->logger->info(sprintf('theme resolver: created ESI for "%s" (%s)', $tag->getName(), $esi_content));
-
-            return $esi_content;
-
-        }
-
-        // construct and return the actual tag response content
-        $tag_request->attributes->set('_controller', $tag->getControllerName());
-
-        $response = $this->container->get('http_kernel')->handle($tag_request, HttpKernelInterface::SUB_REQUEST);
-
-        if (!$response->isSuccessful()) {
-            $this->logger->info(sprintf('theme resolver: 404 while attempting to process tag "%s"', $tag->getName()));
-
-            return '';
-        }
-
-        $this->logger->info(sprintf('theme resolver: successfully processed tag "%s"', $tag->getName()));
-
-        return $response->getContent();
-    }
-
-    private function filterArguments(array $arguments, $allow_route_info = false)
-    {
-        $new_args = array();
-
-        // some are objects, and some are page specific data (which isn't good to put in URL because we want to share the http cache)
-        $remove = array(
-            '_portal_tag_cache',
-            '_portal_page_cache',
-            '_cache',
-            '_security',
-            '_converters',
-            '_method',
-            'visitor_id',
-            '_dp_orig_url',
-            '_security_remember_me_cookie'
-        );
-
-        if (!$allow_route_info) {
-            $remove = array_merge($remove, array('_route_params', '_route'));
-        }
-
-        foreach ($arguments as $arg => $val) {
-
-            if (in_array($arg, $remove)) {
-                continue; // reserved attributes that we don't want to ship to the tag
-            }
-
-            if ($val instanceof DomainObject) {
-                $val = $val->id;
-            }
-
-            $new_args[$arg] = $val;
-        }
-
-        return $new_args;
+        return $this->tag_processor->process($tag, $arguments);
     }
 }
