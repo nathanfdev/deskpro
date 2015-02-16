@@ -64,22 +64,8 @@ class TestCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $decoder = new Rfc822Decoder();
-
-        $fp = fopen('/deskpro/sample_emails/email.eml', 'r');
-        $decoder->createRawMessage($fp);
-
-        return;
-        $mailer = $this->getContainer()->getMailer();
-
-        $message = $mailer->createMessage();
-        $message->setTemplate('DeskPRO:emails_agent:test-email.html.twig');
-
-        $person = $this->getContainer()->getAgentData()->get(1);
-        $message->setToPerson($person);
-
-        $mailer->send($message);
-
+        echo __FILE__;
+        echo "\n";
         return 0;
     }
 }
