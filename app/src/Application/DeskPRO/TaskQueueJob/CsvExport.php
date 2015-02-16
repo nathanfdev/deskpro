@@ -107,7 +107,7 @@ class CsvExport extends AbstractJob
         /** @var \Application\DeskPRO\EntityRepository\Person $rep */
         $rep = App::getOrm()->getRepository('DeskPRO:Person');
 
-        while (microtime(true) - $start_time < $max_time) {
+        while (1 || microtime(true) - $start_time < $max_time) {
 
             if (!$batch = $rep->findBy(array(), array(), $this->_data['limit'], $this->_data['offset'])) {
                 break;
@@ -115,7 +115,7 @@ class CsvExport extends AbstractJob
 
             foreach ($batch as $person) {
 
-                if (microtime(true) >= $max_time + $start_time) break;
+                if (0 && microtime(true) >= $max_time + $start_time) break;
                 /** @var $person Person */
 
                 $row = array(
@@ -138,8 +138,17 @@ class CsvExport extends AbstractJob
 
                 fputcsv($fp, $row, $delimeter, $enclosure);
                 $this->_data['offset']++;
-	            App::getOrm()->clear($person);
             }
+
+	        if ($batch) {
+		        App::getOrm()->clear('Application\DeskPRO\Entity\Person');
+		        App::getOrm()->clear('Application\DeskPRO\Entity\PersonEmail');
+		        App::getOrm()->clear('Application\DeskPRO\Entity\LabelPerson');
+		        App::getOrm()->clear('Application\DeskPRO\Entity\Organization');
+		        App::getOrm()->clear('Application\DeskPRO\Entity\CustomDefPerson');
+		        App::getOrm()->clear('Application\DeskPRO\Entity\CustomDataPerson');
+		        App::getOrm()->clear('Application\DeskPRO\Entity\PersonContactData');
+	        }
         }
 
         fclose($fp);
