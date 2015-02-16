@@ -108,7 +108,6 @@ class CsvExport extends AbstractJob
 
         /** @var \Application\DeskPRO\EntityRepository\Person $rep */
         $rep = $em->getRepository('DeskPRO:Person');
-	    echo "\n\n";
 
         while (microtime(true) - $start_time < $max_time) {
 
@@ -145,7 +144,6 @@ class CsvExport extends AbstractJob
 	            $em->detach($person);
 	            $person->clear();
 	            unset($person);
-	            echo "\r {$this->_data['offset']} | ".memory_get_usage(1);
             }
         }
 
