@@ -42,6 +42,7 @@ a {
 @import 'stats';
 @import 'editor';
 @import 'reports-overview';
+@import 'reports-editor';
 @import 'ticket_satisfaction';
 @import 'agent_performance';
 @import 'legacy-appstrip';
@@ -55,8 +56,6 @@ a {
 //
 //    A(pp-bar) + sidebar = content padding-left
 //
-
-
 
 $app-width: 55px;
 $sidebar-width: 220px;

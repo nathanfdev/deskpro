@@ -37,6 +37,7 @@
   "momentTimezone":                  "vendor/moment-timezone",
   "moment":                          "bower_components/moment/min/moment-with-locales.min",
   "aceEditor":                       "bower_components/ace-builds/src-min-noconflict/ace",
+  "aceEditorLangTools":              "bower_components/ace-builds/src-min-noconflict/ext-language_tools",
   "stacktrace":                      "bower_components/stacktrace/stacktrace",
   "bootstrapModal":                  "bower_components/bootstrap/js/modal",
   "bootstrapTooltip":                "bower_components/bootstrap/js/tooltip",
