@@ -241,16 +241,21 @@
 
 // Stats in page (not in popup)
 .report-list-wrapper {
-  .big-list-of-stats {
-    height: auto;
-    overflow-y: auto;
-    max-height: none;
 
-    .stat-list {
-      li { padding-left: 10px; }
-      .mark { display: none; }
-      a { text-decoration: none; }
+  .big-list-of-stats {
+//    height: auto;
+//    overflow-y: auto;
+    max-height: 900px;
+    .stat-list-wrapper {
+      overflow: auto;
+      max-height: 674px;
+      .stat-list {
+        li { padding-left: 10px; }
+        .mark { display: none; }
+        a { text-decoration: none; }
+      }
     }
+
   }
 
   .big-list-of-stats-filters:after {

@@ -16,13 +16,12 @@
             </a>
 
 
-            <span class="graph-type-filter extendable">
+            <span class="graph-type-filter extendable" dp-dropdown="dp-report-select-display-type">
 
               <span class="icon">
                 <i class="fa fa-bar-chart-o"></i>
                 <span class="extender"><i class="fa fa-caret-down"></i></span>
-                {#
-                <div class="extended-content">
+                <div class="extended-content" style="display: none" id="dp-report-select-display-type">
 
                     <a class="stat-preview-bucket selected" href="#">
                         <span class="title">Pie Chart</span>
@@ -72,7 +71,6 @@
                         </div>
                     </a>
                 </div>
-                #}
               </span>
               <span class="title">Charts</span>
             </span>
@@ -114,7 +112,7 @@
                 <div ng-show="!loaded" style="text-align: center; padding: 45px;">
                     <i class="spinner-big-circle"></i>
                 </div>
-                <div ng-show="loaded">
+                <div ng-show="loaded" class="stat-list-wrapper">
                     <ul class="stat-list">
                         <li ng-repeat="report in custom_data_list_prefiltered | filter:filterBySearchText track by $index" ui-sref-active="active">
                             <span class="mark"></span>
