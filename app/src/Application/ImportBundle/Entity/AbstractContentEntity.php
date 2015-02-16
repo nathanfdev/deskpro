@@ -35,6 +35,26 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     protected $language;
 
     /**
+     * @var int
+     */
+    protected $view_count = 0;
+
+    /**
+     * @var int
+     */
+    protected $total_rating = 0;
+
+    /**
+     * @var int
+     */
+    protected $num_comments = 0;
+
+    /**
+     * @var int
+     */
+    protected $num_ratings = 0;
+
+    /**
      * {@inheritdoc}
      */
     public function getTitle()
@@ -103,6 +123,74 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     public function setLanguage($language)
     {
         $this->language = $language;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getViewCount()
+    {
+        return $this->view_count;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setViewCount($view_count)
+    {
+        $this->view_count = (int)$view_count;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTotalRating()
+    {
+        return $this->total_rating;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setTotalRating($total_rating)
+    {
+        $this->total_rating = (int)$total_rating;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNumComments()
+    {
+        return $this->num_comments;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setNumComments($num_comments)
+    {
+        $this->num_comments = (int)$num_comments;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNumRatings()
+    {
+        return $this->num_ratings;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setNumRatings($num_ratings)
+    {
+        $this->num_ratings = (int)$num_ratings;
         return $this;
     }
 }

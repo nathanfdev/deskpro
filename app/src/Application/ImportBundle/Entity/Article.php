@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 use DateTime;
 
 /**
- * Exporting kb entity
+ * Exporting article entity
  *
  * Class Article
  * @package Application\ImportBundle\Entity
@@ -48,26 +48,6 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
      * @var string
      */
     private $end_action;
-
-    /**
-     * @var int
-     */
-    private $view_count = 0;
-
-    /**
-     * @var int
-     */
-    private $total_rating = 0;
-
-    /**
-     * @var int
-     */
-    private $num_comments = 0;
-
-    /**
-     * @var int
-     */
-    private $num_ratings = 0;
 
     /**
      * @var string
@@ -139,78 +119,6 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     public function setEndAction($end_action)
     {
         $this->end_action = $end_action;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getViewCount()
-    {
-        return $this->view_count;
-    }
-
-    /**
-     * @param int $view_count
-     * @return $this
-     */
-    public function setViewCount($view_count)
-    {
-        $this->view_count = $view_count;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTotalRating()
-    {
-        return $this->total_rating;
-    }
-
-    /**
-     * @param int $total_rating
-     * @return $this
-     */
-    public function setTotalRating($total_rating)
-    {
-        $this->total_rating = $total_rating;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getNumComments()
-    {
-        return $this->num_comments;
-    }
-
-    /**
-     * @param int $num_comments
-     * @return $this
-     */
-    public function setNumComments($num_comments)
-    {
-        $this->num_comments = $num_comments;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getNumRatings()
-    {
-        return $this->num_ratings;
-    }
-
-    /**
-     * @param int $num_ratings
-     * @return $this
-     */
-    public function setNumRatings($num_ratings)
-    {
-        $this->num_ratings = $num_ratings;
         return $this;
     }
 
