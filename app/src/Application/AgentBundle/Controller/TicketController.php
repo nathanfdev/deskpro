@@ -540,6 +540,30 @@ class TicketController extends AbstractController
             $ticket_logs = isset($all_ticket_logs[$page-1]) ? $all_ticket_logs[$page-1] : array();
         }
 
+        // Get email status
+        $sendmail_source_ids = array();
+        foreach ($ticket_logs as $l) {
+            if (!empty($l['details']['sendmail_source_id'])) {
+                $sendmail_source_ids[] = $l['details']['sendmail_source_id'];
+            } else if (!empty($l['grouped'])) {
+                foreach ($l['grouped'] as $l2) {
+                    if (!empty($l2['details']['sendmail_source_id'])) {
+                        $sendmail_source_ids[] = $l2['details']['sendmail_source_id'];
+                    }
+                }
+            }
+        }
+
+        if ($sendmail_source_ids) {
+            $sendmail_source_status = $this->db->fetchAllKeyed("
+                SELECT id, status
+                FROM sendmail_sources
+                WHERE id IN (?)
+            ", array($sendmail_source_ids), 'id', array(\Doctrine\DBAL\Connection::PARAM_INT_ARRAY));
+        } else {
+            $sendmail_source_status = array();
+        }
+
         $info = array();
         $info['ticket']      = $ticket;
         $info['num_pages']   = count($all_ticket_logs);
@@ -547,6 +571,7 @@ class TicketController extends AbstractController
         $info['ticket_logs'] = $ticket_logs;
         $info['filter']      = $filter;
         $info['counts']      = $counts;
+        $info['sendmail_source_status'] = $sendmail_source_status;
 
         $rendered = $this->renderView('AgentBundle:Ticket:ticket-logs.html.twig', $info);
         $info['rendered'] = $rendered;

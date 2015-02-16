@@ -247,7 +247,7 @@ class KbSubscriptions extends AbstractJob
                 'unsub_auth'       => \Orb\Util\Util::generateStaticSecurityToken(App::getSetting('core.app_secret') . $person->getId() . $person->secret_string)
             ));
 
-            App::getMailer()->sendNow($message);
+            App::getMailer()->send($message);
 
             // Saves mem
             App::getOrm()->detach($person);

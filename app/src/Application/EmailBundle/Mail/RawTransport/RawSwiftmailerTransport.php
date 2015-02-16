@@ -102,6 +102,12 @@ class RawSwiftmailerTransport implements RawTransportInterface
         }
 
         #------------------------------
+        # Subject
+        #------------------------------
+
+        $message->setSubject($raw_message->getSubject());
+
+        #------------------------------
         # Recipients
         #------------------------------
 
