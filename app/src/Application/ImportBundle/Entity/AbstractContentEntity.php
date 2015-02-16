@@ -12,8 +12,6 @@ use DateTime;
  *
  * Class AbstractContentEntity
  * @package Application\ImportBundle\Entity
- *
- * todo add slug validator
  */
 abstract class AbstractContentEntity extends AbstractEntity implements ContentAwareInterface
 {
@@ -265,6 +263,9 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
             ->addPropertyConstraint('content', new Constraints\NotBlank())
             ->addPropertyConstraint('language', new Constraints\NotBlank())
 
-            ->addGetterConstraint('slug', new Constraints\NotBlank());
+            ->addGetterConstraint('slug', new Constraints\NotBlank())
+            ->addGetterConstraint('slug', new Constraints\Regex(array(
+                'pattern' => '/^[a-z0-9-]+$/',
+            )));
     }
 }
