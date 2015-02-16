@@ -38,6 +38,8 @@ app/sys/Resources/agent-perm-names.php
 /app/src/Cloud/bin/twitter-cloud.log
 /app/src/Cloud/bin/twitter-cloud-control.txt
 /app/src/Cloud/bin/twitter-cloud.pid
+/app/tests/coverage
+!/app/tests/coverage/tmp/.gitkeep
 
 /data/last-email_error.dat
 /data/is_installed.dat
