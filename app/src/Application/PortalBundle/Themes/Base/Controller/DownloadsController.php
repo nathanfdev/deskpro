@@ -162,7 +162,7 @@ class DownloadsController extends AbstractController
      *      required={"file"},
      *      defaults={"style":"link"},
      *      allowed_types={
-     *          "file": {"Application\DeskPRO\Entity\File", "int", "string", "null"}
+     *          "file": {"Application\DeskPRO\Entity\Download", "int", "string", "null"}
      *      },
      *      attribute_expressions={
      *          "file": "service('data.downloads').getDownload(options['file'])"

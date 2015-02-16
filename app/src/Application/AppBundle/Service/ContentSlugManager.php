@@ -150,7 +150,6 @@ class ContentSlugManager
      */
     private function getRepoForContent(ContentAbstract $content)
     {
-        var_dump($content);exit;
         $type = $content->getContentType();
         switch ($type) {
             case Article::CONTENT_TYPE:
