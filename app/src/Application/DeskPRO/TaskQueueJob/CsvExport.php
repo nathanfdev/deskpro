@@ -138,11 +138,8 @@ class CsvExport extends AbstractJob
 
                 fputcsv($fp, $row, $delimeter, $enclosure);
                 $this->_data['offset']++;
+	            App::getOrm()->clear($person);
             }
-
-	        if ($batch) {
-		        App::getOrm()->clear();
-	        }
         }
 
         fclose($fp);
