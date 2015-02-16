@@ -39,7 +39,7 @@ if [[ $? -ne 0 ]] ; then
 fi
 
 bin/phpcov merge --clover coverage/clover.xml coverage/tmp
-COVERALLS_REPO_TOKEN=csalmmB0NCw41vSRBeWy6NoEWNs5iMquh bin/coveralls -c tests/coveralls.yml -v
+bin/coveralls -c tests/coveralls.yml -v
 
 if [[ "$IS_ERROR" -eq "0" ]] ; then
     exec travis-ci/after-success
