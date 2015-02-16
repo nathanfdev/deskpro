@@ -38,8 +38,12 @@ if [[ $? -ne 0 ]] ; then
 	IS_ERROR=1
 fi
 
-#bin/phpcov merge --clover coverage/clover.xml coverage/tmp
-bin/coveralls -c tests/coveralls.yml -v --dry-run
+if [[ "$1" -eq "travis" ]] ; then
+    # no dry run if its travis
+    bin/coveralls -c tests/coveralls.yml -v
+else
+    bin/coveralls -c tests/coveralls.yml -v --dry-run
+fi
 
 if [[ "$IS_ERROR" -eq "0" ]] ; then
     exec travis-ci/after-success

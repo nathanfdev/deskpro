@@ -1,6 +1,8 @@
 service_name: travis-pro
 repo_token: csalmmB0NCw41vSRBeWy6NoEWNs5iMquh
 src_dir: src
-coverage_clover: tests/coverage/tmp/*.xml
+coverage_clover:
+  - tests/coverage/phpunit.xml
+  - tests/coverage/phpspec.xml
 
 json_path: tests/coverage/coveralls-upload.json
