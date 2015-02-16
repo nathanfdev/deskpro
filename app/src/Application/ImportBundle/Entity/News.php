@@ -46,11 +46,6 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
     /**
      * @var string
      */
-    private $status;
-
-    /**
-     * @var string
-     */
     private $category;
 
     /**
@@ -80,28 +75,6 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
     public function setPersonEmail($person_email)
     {
         $this->person_email = $person_email;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStatus()
-    {
-        if ($this->date_published) {
-            return 'published';
-        }
-
-        return $this->status;
-    }
-
-    /**
-     * @param string $status
-     * @return $this
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
         return $this;
     }
 

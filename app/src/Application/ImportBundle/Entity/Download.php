@@ -59,11 +59,6 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     private $num_downloads = 0;
 
     /**
-     * @var string
-     */
-    private $status;
-
-    /**
      * @var array
      */
     private $labels = array();
@@ -156,28 +151,6 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     public function setNumDownloads($num_downloads)
     {
         $this->num_downloads = $num_downloads;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStatus()
-    {
-        if ($this->date_published) {
-            return 'published';
-        }
-
-        return $this->status;
-    }
-
-    /**
-     * @param string $status
-     * @return $this
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
         return $this;
     }
 

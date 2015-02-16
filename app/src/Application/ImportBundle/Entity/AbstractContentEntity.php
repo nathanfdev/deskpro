@@ -36,6 +36,11 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     protected $language;
 
     /**
+     * @var string
+     */
+    protected $status;
+
+    /**
      * @var int
      */
     protected $view_count = 0;
@@ -140,6 +145,27 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     /**
      * {@inheritdoc}
      */
+    public function getStatus()
+    {
+        if ($this->date_published) {
+            return 'published';
+        }
+
+        return $this->status;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getViewCount()
     {
         return $this->view_count;
@@ -206,9 +232,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     }
 
     /**
-     * Date created
-     *
-     * @return DateTime
+     * {@inheritdoc}
      */
     public function getDateCreated()
     {
@@ -216,10 +240,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     }
 
     /**
-     * Set date created
-     *
-     * @param DateTime $date_created
-     * @return $this
+     * {@inheritdoc}
      */
     public function setDateCreated(DateTime $date_created)
     {
@@ -228,9 +249,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     }
 
     /**
-     * Date published
-     *
-     * @return DateTime
+     * {@inheritdoc}
      */
     public function getDatePublished()
     {
@@ -238,10 +257,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     }
 
     /**
-     * Set date published
-     *
-     * @param DateTime $date_published
-     * @return $this
+     * {@inheritdoc}
      */
     public function setDatePublished(DateTime $date_published)
     {

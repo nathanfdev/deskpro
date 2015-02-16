@@ -50,11 +50,6 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     private $end_action;
 
     /**
-     * @var string
-     */
-    private $status;
-
-    /**
      * @var DateTime
      */
     private $date_end;
@@ -113,27 +108,15 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getStatus()
     {
         if ($this->date_end) {
             return 'archived';
-        } elseif ($this->date_published) {
-            return 'published';
         }
 
-        return $this->status;
-    }
-
-    /**
-     * @param string $status
-     * @return $this
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-        return $this;
+        return parent::getStatus();
     }
 
     /**

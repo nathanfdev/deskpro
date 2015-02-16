@@ -55,11 +55,6 @@ final class Feedback extends AbstractContentEntity implements PersonAwareInterfa
     private $popularity = 0;
 
     /**
-     * @var string
-     */
-    private $status;
-
-    /**
      * @var array
      */
     private $labels = array();
@@ -122,28 +117,6 @@ final class Feedback extends AbstractContentEntity implements PersonAwareInterfa
     public function setPopularity($popularity)
     {
         $this->popularity = $popularity;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStatus()
-    {
-        if ($this->date_published) {
-            return 'published';
-        }
-
-        return $this->status;
-    }
-
-    /**
-     * @param string $status
-     * @return $this
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
         return $this;
     }
 

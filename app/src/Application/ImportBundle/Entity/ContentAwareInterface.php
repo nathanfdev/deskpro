@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Entity;
 
+use DateTime;
+
 /**
  * Basic properties on content interface
  *
@@ -99,6 +101,21 @@ interface ContentAwareInterface
     public function setLanguage($language);
 
     /**
+     * Set status
+     *
+     * @return string
+     */
+    public function getStatus();
+
+    /**
+     * Status
+     *
+     * @param string $status
+     * @return $this
+     */
+    public function setStatus($status);
+
+    /**
      * View count
      *
      * @return int
@@ -157,4 +174,34 @@ interface ContentAwareInterface
      * @return $this
      */
     public function setNumRatings($num_ratings);
+
+    /**
+     * Date created
+     *
+     * @return DateTime
+     */
+    public function getDateCreated();
+
+    /**
+     * Set date created
+     *
+     * @param DateTime $date_created
+     * @return $this
+     */
+    public function setDateCreated(DateTime $date_created);
+
+    /**
+     * Date published
+     *
+     * @return DateTime
+     */
+    public function getDatePublished();
+
+    /**
+     * Set date published
+     *
+     * @param DateTime $date_published
+     * @return $this
+     */
+    public function setDatePublished(DateTime $date_published);
 }
