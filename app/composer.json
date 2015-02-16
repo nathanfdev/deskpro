@@ -48,7 +48,8 @@
 		"friendsofsymfony/http-cache-bundle": "~1.2",
 		"behat/behat": "~3.0",
 		"behat/symfony2-extension": "~2.0",
-		"bossa/phpspec2-expect": "~1.0"
+		"bossa/phpspec2-expect": "~1.0",
+		"ocramius/proxy-manager": "~0.5"
 	},
 	"preferred-install": "dist"
 }
