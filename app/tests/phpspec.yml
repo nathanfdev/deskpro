@@ -1,8 +1,23 @@
 extensions:
     - PhpSpec\NyanFormattersExtension\Extension
-formatter.name: nyan.cat
+    - PhpSpec\Extension\CodeCoverageExtension
 
 suites:
     default:
         src_path: ../src
         spec_path: ./
+
+code_coverage:
+    whitelist:
+      - ../src/Application/AppBundle
+      - ../src/Application/PortalBundle
+      - ../src/Application/AuthBundle
+    blacklist:
+      - ../vendor
+      - ../vendor-src
+    format:
+      - php
+    output:
+      php: coverage/tmp/phpspec.cov
+
+formatter.name: nyan.cat

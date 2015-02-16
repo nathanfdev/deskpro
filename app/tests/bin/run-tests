@@ -38,6 +38,9 @@ if [[ $? -ne 0 ]] ; then
 	IS_ERROR=1
 fi
 
+bin/phpcov merge --clover coverage/clover.xml coverage/tmp
+bin/coveralls -c tests/coveralls.yml
+
 if [[ "$IS_ERROR" -eq "0" ]] ; then
     exec travis-ci/after-success
 fi

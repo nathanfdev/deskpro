@@ -4,4 +4,7 @@
             <directory>phpunit</directory>
         </testsuite>
     </testsuites>
+    <logging>
+        <log type="coverage-php" target="coverage/tmp/phpunit.cov"/>
+    </logging>
 </phpunit>

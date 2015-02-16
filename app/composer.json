@@ -19,7 +19,7 @@
 		"lightopenid/lightopenid": "dev-master",
 		"pear/math_biginteger": "dev-tags/RELEASE_1_0_2",
 		"symfony/monolog-bundle": "*",
-		"doctrine/doctrine-bundle": "*",
+		"doctrine/doctrine-bundle": "~1.3@dev",
 		"symfony/swiftmailer-bundle": "*",
 		"zendframework/zendframework": "2.3.*",
 		"zendframework/zendoauth": "dev-master",
@@ -27,7 +27,6 @@
 		"squizlabs/php_codesniffer": "1.4.7",
 		"phpmd/phpmd": "1.5.0",
 		"satooshi/php-coveralls": "~0.6",
-		"codeception/codeception": "~1.8",
 		"erusev/parsedown": "1.0",
 		"deskpro/deskpro-api-php": "dev-master",
 		"tedivm/fetch": "v0.5.3",
@@ -49,7 +48,11 @@
 		"behat/behat": "~3.0",
 		"behat/symfony2-extension": "~2.0",
 		"bossa/phpspec2-expect": "~1.0",
-		"ocramius/proxy-manager": "~0.5"
+		"ocramius/proxy-manager": "~0.5",
+		"whatthejeff/nyancat-scoreboard": "~1.1@dev",
+        "phpunit/phpunit": "~4.0",
+		"henrikbjorn/phpspec-code-coverage": "~1.0",
+		"phpunit/phpcov": "~2.0"
 	},
 	"preferred-install": "dist"
 }
