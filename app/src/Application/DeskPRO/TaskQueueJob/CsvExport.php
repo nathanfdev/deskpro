@@ -108,6 +108,7 @@ class CsvExport extends AbstractJob
 
         /** @var \Application\DeskPRO\EntityRepository\Person $rep */
         $rep = $em->getRepository('DeskPRO:Person');
+	    echo "\n\n";
 
         while (microtime(true) - $start_time < $max_time) {
 
@@ -117,10 +118,10 @@ class CsvExport extends AbstractJob
 
             foreach ($batch as $person) {
 
-                if (microtime(true) >= $max_time + $start_time) break;
-                /** @var $person Person */
+	            if (microtime(true) >= $max_time + $start_time) break;
 
-                $row = array(
+	            /** @var $person Person */
+	            $row = array(
                     $person['id'],
                     implode(',', array($person['name'], $person['first_name'], $person['last_name'])),
                     $person['title_prefix'],
@@ -139,18 +140,13 @@ class CsvExport extends AbstractJob
                 $this->fillCustomFieldsValues($person, $row);
 
                 fputcsv($fp, $row, $delimeter, $enclosure);
-                $this->_data['offset']++;
-            }
 
-	        if ($batch) {
-		        $em->clear('Application\DeskPRO\Entity\Person');
-		        $em->clear('Application\DeskPRO\Entity\PersonEmail');
-		        $em->clear('Application\DeskPRO\Entity\LabelPerson');
-		        $em->clear('Application\DeskPRO\Entity\Organization');
-		        $em->clear('Application\DeskPRO\Entity\CustomDefPerson');
-		        $em->clear('Application\DeskPRO\Entity\CustomDataPerson');
-		        $em->clear('Application\DeskPRO\Entity\PersonContactData');
-	        }
+                $this->_data['offset']++;
+	            $em->detach($person);
+	            $person->clear();
+	            unset($person);
+	            echo "\r {$this->_data['offset']} | ".memory_get_usage(1);
+            }
         }
 
         fclose($fp);
