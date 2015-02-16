@@ -12,12 +12,16 @@ code_coverage:
       - ../src/Application/AppBundle
       - ../src/Application/PortalBundle
       - ../src/Application/AuthBundle
+      - ../src/Application/LanguageBundle
+      - ../src/Application/FormsBundle
+      - ../src/Application/PersonBundle
+      - ../src/Application/TicketBundle
     blacklist:
       - ../vendor
       - ../vendor-src
     format:
-      - php
+      - clover
     output:
-      php: coverage/tmp/phpspec.cov
+      clover: coverage/tmp/phpspec.xml
 
 formatter.name: nyan.cat

@@ -5,6 +5,25 @@
         </testsuite>
     </testsuites>
     <logging>
-        <log type="coverage-php" target="coverage/tmp/phpunit.cov"/>
+        <log type="coverage-clover" target="coverage/tmp/phpunit.xml"/>
     </logging>
+    <filter>
+        <whitelist>
+            <directory>../src/Application/AppBundle</directory>
+            <directory>../src/Application/PortalBundle</directory>
+            <directory>../src/Application/AuthBundle</directory>
+            <directory>../src/Application/LanguageBundle</directory>
+            <directory>../src/Application/FormsBundle</directory>
+            <directory>../src/Application/PersonBundle</directory>
+            <directory>../src/Application/TicketBundle</directory>
+            <directory>../src/Application/DeskPRO/Brand</directory>
+            <directory>../src/Application/DeskPRO/Cache</directory>
+            <directory>../src/Application/DeskPRO/NewSettings</directory>
+            <directory>../src/Application/DeskPRO/Sms</directory>
+        </whitelist>
+        <blacklist>
+            <directory>../vendor</directory>
+            <directory>../vendor-src</directory>
+        </blacklist>
+    </filter>
 </phpunit>
