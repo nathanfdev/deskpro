@@ -63,7 +63,7 @@ class Tag implements \Serializable
         $default_options = array(),
         $esi = false,
         $always_guest_inline = false,
-        $allow_route_params = false
+        $allow_route_params = true
     )
     {
         $this->name = $name;

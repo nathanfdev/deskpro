@@ -142,10 +142,8 @@ class TagSpec extends ObjectBehavior
         $this->isEsi($is_guest = true)->shouldBe(false);
     }
 
-    function it_disallows_route_params_by_default()
+    function it_alows_route_params_by_default()
     {
-        // by default, _route_params are ignored when generating ESI tag urls
-
         $this->beConstructedWith(
             'knowledgebase',
             'Theme:Articles:list',
@@ -154,7 +152,7 @@ class TagSpec extends ObjectBehavior
             $esi = true
         );
 
-        $this->allowRouteParams()->shouldBe(false);
+        $this->allowRouteParams()->shouldBe(true);
     }
 
     function it_can_be_marked_to_allow_route_params()
