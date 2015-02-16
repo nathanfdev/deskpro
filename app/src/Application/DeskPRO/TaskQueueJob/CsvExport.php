@@ -107,7 +107,7 @@ class CsvExport extends AbstractJob
         /** @var \Application\DeskPRO\EntityRepository\Person $rep */
         $rep = App::getOrm()->getRepository('DeskPRO:Person');
 
-        while (microtime(true) - $start_time < $max_time * 10000) {
+        while (microtime(true) - $start_time < $max_time) {
 
             if (!$batch = $rep->findBy(array(), array(), $this->_data['limit'], $this->_data['offset'])) {
                 break;
@@ -115,7 +115,7 @@ class CsvExport extends AbstractJob
 
             foreach ($batch as $person) {
 
-                if (microtime(true) >= 10000 * $max_time + $start_time) break;
+                if (microtime(true) >= $max_time + $start_time) break;
                 /** @var $person Person */
 
                 $row = array(
