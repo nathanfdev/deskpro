@@ -135,7 +135,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                 list ($person_id, $cookie_code) = explode('-', $_COOKIE['dpreme'], 2);
 
                 $person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
-                if ($person && $person->validateRememberMeCookieCode($cookie_code)) {
+                if ($person && !$person->is_deleted && !$person->is_disabled && $person->validateRememberMeCookieCode($cookie_code)) {
                     $this->_setCurrentPerson($person);
 
                     if (defined('DP_INTERFACE') && DP_INTERFACE == 'agent') {
