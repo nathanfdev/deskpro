@@ -20,8 +20,8 @@ code_coverage:
       - ../vendor
       - ../vendor-src
     format:
-      - clover
+      - php
     output:
-      clover: coverage/phpspec.xml
+      php: coverage/cov/phpspec.cov
 
 formatter.name: nyan.cat

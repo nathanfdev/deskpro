@@ -40,6 +40,8 @@ fi
 
 if [[ "$IS_ERROR" -eq "0" ]] ; then
 
+    bin/phpcov merge --clover coverage/combined-clover.xml coverage/cov
+
     if [[ "$1" -eq "travis" ]] ; then
         # no dry run if its travis
         bin/coveralls -c app/tests/coveralls.yml -v
