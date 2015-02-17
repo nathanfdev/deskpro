@@ -8,5 +8,5 @@ framework:
         strict_requirements: true
 
 web_profiler:
-    toolbar: true
+    toolbar: false
     intercept_redirects: false
