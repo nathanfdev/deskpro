@@ -166,7 +166,11 @@ class CsvExport extends AbstractJob
                 '+24 hours'
             );
             $data['name'] = 'csv_export.file';
-            $task['task_data']['tmp'] = $data;
+
+            $task_data = $task['task_data'];
+            $task_data['tmp'] = $data;
+            $task['task_data'] = $task_data;
+
             $em->persist($data);
 
             return self::TASK_COMPLETED;
