@@ -61,6 +61,7 @@ use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\DeskPRO\Tickets\TicketSplit;
+use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Dates;
@@ -3112,8 +3113,10 @@ class TicketController extends AbstractController
         }
 
         if ($this->container->getSetting('core_tickets.fwd_use_agent_address')) {
+            $use_from = true;
             $from_email = $this->person->getEmailAddress();
         } else {
+            $use_from = false;
             $from_email = $account->getUseEmailAddress();
         }
 
@@ -3127,8 +3130,14 @@ class TicketController extends AbstractController
         }
 
         $tr = $this->container->getEmailAccountManager()->getTransportForAccount($account);
-        if ($tr) {
-            $email->setForceTransport($tr);
+
+        if ($email instanceof MessageOptionsInterface) {
+            if ($tr) {
+                $email->getMessageOptions()->set(MessageOptionsInterface::OPT_ACCOUNT_ID, $account->id);
+            }
+            if ($use_from) {
+                $email->getMessageOptions()->set(MessageOptionsInterface::OPT_USE_FROM, $from_email);
+            }
         }
 
         $ticketdisplay = new \Application\DeskPRO\Tickets\TicketDisplay($ticket, $this->person);

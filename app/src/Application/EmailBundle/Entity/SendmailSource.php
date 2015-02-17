@@ -170,6 +170,11 @@ class SendmailSource implements NotifyPropertyChanged
     protected $status = 'inserted';
 
     /**
+     * @var string
+     */
+    protected $options = null;
+
+    /**
      * @var \DateTime
      */
     protected $date_status = null;
@@ -580,18 +585,68 @@ class SendmailSource implements NotifyPropertyChanged
         $this->setModelField('exec_count', $exec_count);
     }
 
+    /**
+     * @return array
+     */
+    public function getAllOptions()
+    {
+        return $this->options ?: array();
+    }
+
+    /**
+     * @param array $options
+     */
+    public function setAllOptions(array $options = null)
+    {
+        $this->setModelField('options', $options ?: null);
+    }
+
+    /**
+     * @param string $k
+     * @param mixed  $default
+     * @return mixed
+     */
+    public function getOption($k, $default = null)
+    {
+        return ($this->options && isset($this->options[$k])) ? $this->options[$k] : $default;
+    }
+
+    /**
+     * @param string $k
+     * @param mixed  $v
+     */
+    public function setOption($k, $v = null)
+    {
+        $options = $this->options ?: array();
+
+        if ($v === null) {
+            if (isset($options[$k])) {
+                unset($options[$k]);
+            }
+        } else {
+            $options[$k] = $v;
+        }
+
+        if ($options) {
+            $this->setModelField('options', $options);
+        } else {
+            $this->setModelField('options', null);
+        }
+    }
+
     public function toArray()
     {
         $data = array();
 
-        $data['id'] = $this->id;
-        $data['ref'] = $this->ref;
-        $data['header_to'] = $this->header_to;
-        $data['header_from'] = $this->header_from;
+        $data['id']             = $this->id;
+        $data['ref']            = $this->ref;
+        $data['header_to']      = $this->header_to;
+        $data['header_from']    = $this->header_from;
         $data['header_subject'] = $this->header_subject;
-        $data['status'] = $this->status;
-        $data['error_code'] = $this->error_code;
-        $data['exec_count'] = $this->exec_count;
+        $data['status']         = $this->status;
+        $data['error_code']     = $this->error_code;
+        $data['exec_count']     = $this->exec_count;
+        $data['options']        = $this->options;
 
         foreach (array('date_created', 'date_status', 'date_sent', 'date_next_attempt') as $date_field) {
             if ($this->$date_field) {
@@ -684,6 +739,12 @@ class SendmailSource implements NotifyPropertyChanged
             } else {
                 $data[$f.'_id'] = null;
             }
+        }
+
+        if ($this->options) {
+            $data['options'] = json_encode($this->options);
+        } else {
+            $data['options'] = null;
         }
 
         return $data;
@@ -797,6 +858,12 @@ class SendmailSource implements NotifyPropertyChanged
             'type'       => 'string',
             'length'     => 80,
             'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'options',
+            'fieldName'  => 'options',
+            'type'       => 'json_array',
+            'nullable'   => true,
         ));
         $metadata->mapField(array(
             'fieldName'  => 'date_status',

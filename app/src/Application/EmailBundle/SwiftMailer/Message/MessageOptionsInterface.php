@@ -34,25 +34,20 @@
 
 namespace Application\EmailBundle\SwiftMailer\Message;
 
-use Application\DeskPRO\Mail\Message as DeskproMessage;
-use Orb\Util\OptionsArray;
-
-class Message extends DeskproMessage implements MessageOptionsInterface
+interface MessageOptionsInterface
 {
     /**
-     * @var array
+     * Hint to use a specific account
      */
-    private $options;
+    const OPT_ACCOUNT_ID = 'account_id';
+
+    /**
+     * Hint to use a specific from address (i.e., ignore the email address set on the outgoing account)
+     */
+    const OPT_USE_FROM   = 'use_from';
 
     /**
      * @return \Orb\Util\OptionsArray
      */
-    public function getMessageOptions()
-    {
-        if ($this->options === null) {
-            $this->options = new OptionsArray();
-        }
-
-        return $this->options;
-    }
+    public function getMessageOptions();
 }

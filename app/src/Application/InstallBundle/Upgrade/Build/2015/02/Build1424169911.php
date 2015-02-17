@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,30 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage EmailBundle
+ * @subpackage
  */
 
-namespace Application\EmailBundle\SwiftMailer\Message;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Mail\Message as DeskproMessage;
-use Orb\Util\OptionsArray;
-
-class Message extends DeskproMessage implements MessageOptionsInterface
+class Build1424169911 extends AbstractBuild
 {
-    /**
-     * @var array
-     */
-    private $options;
-
-    /**
-     * @return \Orb\Util\OptionsArray
-     */
-    public function getMessageOptions()
+    public function run()
     {
-        if ($this->options === null) {
-            $this->options = new OptionsArray();
-        }
-
-        return $this->options;
+        $this->out("Add sendmail_sources.options");
+		$this->execMutateSql("ALTER TABLE sendmail_sources ADD options LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)'");
     }
 }
