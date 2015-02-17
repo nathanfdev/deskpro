@@ -36,6 +36,7 @@ namespace Application\ImportBundle;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Application\ImportBundle\DependencyInjection;
 
 class ImportBundle extends Bundle
 {
@@ -44,9 +45,12 @@ class ImportBundle extends Bundle
         $this->name = 'Import';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function build(ContainerBuilder $container)
     {
-        parent::build($container);
+        $container->registerExtension(new DependencyInjection\ImportExtension());
     }
 
     /**
@@ -55,10 +59,10 @@ class ImportBundle extends Bundle
     public function registerCommands(Application $application)
     {
         $commands = array(
-            'Application\\ImportBundle\\Command\\CheckImportCommand',
             'Application\\ImportBundle\\Command\\CheckExportCommand',
             'Application\\ImportBundle\\Command\\ExportCommand',
             'Application\\ImportBundle\\Command\\ImportCommand',
+            'Application\\ImportBundle\\Command\\ImportBatchCommand',
             'Application\\ImportBundle\\Command\\ResetCommand',
         );
 

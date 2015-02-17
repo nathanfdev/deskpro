@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -147,16 +148,20 @@ class Organization extends DomainObject implements HighlightableModelInterface
      */
     protected $_search_highlights;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
-        $this->setModelField('email_domains'       , new \Doctrine\Common\Collections\ArrayCollection());
-        $this->setModelField('custom_data'         , new \Doctrine\Common\Collections\ArrayCollection());
-        $this->setModelField('labels'              , new \Doctrine\Common\Collections\ArrayCollection());
-        $this->setModelField('contact_data'        , new \Doctrine\Common\Collections\ArrayCollection());
-        $this->setModelField('usergroups'          , new \Doctrine\Common\Collections\ArrayCollection());
-        $this->setModelField('twitter_users'       , new \Doctrine\Common\Collections\ArrayCollection());
-        $this->setModelField('date_created'        , new \DateTime());
-        $this->slas = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->setModelField('email_domains', new ArrayCollection());
+        $this->setModelField('custom_data',   new ArrayCollection());
+        $this->setModelField('labels',        new ArrayCollection());
+        $this->setModelField('contact_data',  new ArrayCollection());
+        $this->setModelField('usergroups',    new ArrayCollection());
+        $this->setModelField('twitter_users', new ArrayCollection());
+        $this->setModelField('date_created',  new \DateTime());
+
+        $this->slas = new ArrayCollection();
     }
 
     /**
@@ -167,17 +172,44 @@ class Organization extends DomainObject implements HighlightableModelInterface
         return $this->id;
     }
 
+    /**
+     * Returns the organization name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set the organization name
+     *
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $old = $this->name;
+        $this->name = (string)$name;
+        $this->_onPropertyChanged('name', $old, $this->name);
+
+        return $this;
+    }
 
     /**
      * Set the default importance of people in this org
      *
      * @param int $importance
+     * @return $this
      */
     public function setImportance($importance)
     {
         $old = $this->importance;
         $this->importance = Numbers::bound($importance, 0, 5);
         $this->_onPropertyChanged('importance', $old, $this->importance);
+
+        return $this;
     }
 
 
@@ -257,14 +289,15 @@ class Organization extends DomainObject implements HighlightableModelInterface
 		}
 	}
 
-
-
     /**
      * Set custom field data for a particular field.
      *
-     * @param  int   $field_id
-     * @param  mixed $value
+     * @param int   $field_id
+     * @param mixed $value_type
+     * @param mixed $value
+     *
      * @return mixed
+     * @throws \Exception
      */
     public function setCustomData($field_id, $value_type, $value)
     {
@@ -304,7 +337,7 @@ class Organization extends DomainObject implements HighlightableModelInterface
     /**
      * Add a custom data item to this ticket
      *
-     * @param CustomDataTicket $data
+     * @param CustomDataOrganization $data
      */
     public function addCustomData(CustomDataOrganization $data)
     {

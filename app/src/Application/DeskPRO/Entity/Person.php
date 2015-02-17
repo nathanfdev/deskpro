@@ -574,19 +574,19 @@ class Person extends DomainObject implements HighlightableModelInterface
             $this->setModelField('timezone', 'UTC');
         }
 
-        $this->emails                 = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->usergroups             = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->twitter_accounts       = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->twitter_users          = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->usersource_assoc       = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->contact_data           = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->custom_data            = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->preferences            = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->phone_numbers          = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->department_permissions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->teams                  = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->notes                  = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->emails                 = new ArrayCollection();
+        $this->usergroups             = new ArrayCollection();
+        $this->twitter_accounts       = new ArrayCollection();
+        $this->twitter_users          = new ArrayCollection();
+        $this->usersource_assoc       = new ArrayCollection();
+        $this->contact_data           = new ArrayCollection();
+        $this->custom_data            = new ArrayCollection();
+        $this->preferences            = new ArrayCollection();
+        $this->labels                 = new ArrayCollection();
+        $this->phone_numbers          = new ArrayCollection();
+        $this->department_permissions = new ArrayCollection();
+        $this->teams                  = new ArrayCollection();
+        $this->notes                  = new ArrayCollection();
 
         $this->_initPersonLogger();
         $this->_person_logger->recordExtra('person_created', true);
@@ -668,9 +668,19 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
     }
 
+    /**
+     * Is agent
+     *
+     * @return bool
+     */
+    public function isAgent()
+    {
+        return $this->is_agent;
+    }
 
     /**
      * @param bool $yesno
+     * @return $this
      */
     public function setIsAgent($yesno)
     {
@@ -680,11 +690,13 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         $this->setModelField('is_agent', $yesno);
+        return $this;
     }
 
 
     /**
      * @param bool $yesno
+     * @return $this
      */
     public function setCanAdmin($yesno)
     {
@@ -693,6 +705,7 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         $this->setModelField('can_admin', $yesno);
+        return $this;
     }
 
 
@@ -1264,6 +1277,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 
     /**
      * @param int $id
+     * @return $this
      */
     public function setLanguageId($id)
     {
@@ -1273,6 +1287,7 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         $this['language'] = $lang;
+        return $this;
     }
 
 
@@ -1778,6 +1793,7 @@ class Person extends DomainObject implements HighlightableModelInterface
      * Add an email address
      *
      * @param PersonEmail $email
+     * @return PersonEmail
      */
     public function addEmailAddress(PersonEmail $email)
     {
@@ -1859,6 +1875,19 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $the_email;
     }
 
+    /**
+     * Reset emails collection
+     *
+     * @return $this
+     */
+    public function resetEmails()
+    {
+        $this->emails = new ArrayCollection();
+        $this->_onPropertyChanged('emails', null, $this->emails);
+
+        return $this;
+    }
+
 
     public function getEmailId($email_id)
     {
@@ -1870,7 +1899,6 @@ class Person extends DomainObject implements HighlightableModelInterface
 
         return null;
     }
-
 
     /**
      * Get the email record for a specific address
@@ -1894,12 +1922,11 @@ class Person extends DomainObject implements HighlightableModelInterface
         return null;
     }
 
-
-
     /**
      * Add a new usergroup
      *
      * @param Usergroup $usergroup
+     * @return bool
      */
     public function addUsergroup(Usergroup $usergroup)
     {
@@ -1914,7 +1941,8 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * remove usergroup
+     * Remove usergroup
+     *
      * @param  Usergroup $usergroup
      * @return bool
      */
@@ -1926,6 +1954,18 @@ class Person extends DomainObject implements HighlightableModelInterface
         return true;
     }
 
+    /**
+     * Remove all usergroups
+     *
+     * @return $this
+     */
+    public function resetUsergroups()
+    {
+        $this->usergroups = new ArrayCollection();
+        $this->_onPropertyChanged('usergroups', null, $this->usergroups);
+
+        return $this;
+    }
 
     /**
      * Check if hte user belongs to a usergroup
@@ -1938,10 +1978,9 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this->usergroups->contains($usergroup);
     }
 
-
-
     /**
      * Add a label
+     *
      * @param \Application\DeskPRO\Entity\LabelPerson $label
      */
     public function addLabel(LabelPerson $label)
@@ -1960,6 +1999,19 @@ class Person extends DomainObject implements HighlightableModelInterface
             $this->_onPropertyChanged('labels', $this->labels, $this->labels);
             break;
         }
+    }
+
+    /**
+     * Reset labels
+     *
+     * @return $this
+     */
+    public function resetLabels()
+    {
+        $this->labels = new ArrayCollection();
+        $this->_onPropertyChanged('labels', null, $this->labels);
+
+        return $this;
     }
 
     public function addNote(PersonNote $note)
@@ -1984,7 +2036,6 @@ class Person extends DomainObject implements HighlightableModelInterface
         return Usergroup::generateUsergroupSetKey($this->usergroups);
     }
 
-
     /**
      * Set the picture blob
      *
@@ -1995,8 +2046,6 @@ class Person extends DomainObject implements HighlightableModelInterface
         $this->setModelField('picture_blob', $blob);
     }
 
-
-
     /**
      * Sets the gravatar URL
      *
@@ -2006,8 +2055,6 @@ class Person extends DomainObject implements HighlightableModelInterface
     {
         $this->setModelField('gravatar_url', $url);
     }
-
-
 
     /**
      * Gets the URL to a picture for the person. Note that this will always return
@@ -2127,14 +2174,14 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this->_is_new_person;
     }
 
-
-
     /**
      * Set this persons organization and position.
      *
      * @param Organization $org
      * @param string       $position
      * @param bool         $manager
+     *
+     * @return $this
      */
     public function setOrganization(Organization $org = null, $position = '', $manager = false)
     {
@@ -2143,13 +2190,13 @@ class Person extends DomainObject implements HighlightableModelInterface
             $this->setModelField('organization', $org);
             $this->setModelField('organization_position', '');
             $this->setModelField('organization_manager', false);
-
-            return;
+        } else {
+            $this->setModelField('organization', $org);
+            $this->setModelField('organization_position', $position);
+            $this->setModelField('organization_manager', (bool)$manager);
         }
 
-        $this->setModelField('organization', $org);
-        $this->setModelField('organization_position', $position);
-        $this->setModelField('organization_manager', (bool)$manager);
+        return $this;
     }
 
     public function getTwitterAccountIds()
@@ -2193,18 +2240,24 @@ class Person extends DomainObject implements HighlightableModelInterface
         $parts = Strings::rexplode(' ', $name, 2);
         $this->setModelField('first_name', $parts[0]);
         $this->setModelField('last_name', isset($parts[1]) ? $parts[1] : '');
+
+        return $this;
     }
 
     public function setFirstName($name)
     {
         $this->setModelField('first_name', $name);
         $this->setModelField('name', $name . ' ' . $this->last_name);
+
+        return $this;
     }
 
     public function setLastName($name)
     {
         $this->setModelField('last_name', $name);
         $this->setModelField('name', $this->first_name . ' ' . $name);
+
+        return $this;
     }
 
     /**
@@ -2347,6 +2400,20 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         $this->setModelField('timezone', $tz);
+
+        return $this;
+    }
+
+    /**
+     * Set date created
+     *
+     * @param \DateTime $date_created
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $date_created)
+    {
+        $this->setModelField('date_created', $date_created);
+        return $this;
     }
 
     public function getTimezone()
@@ -2428,13 +2495,16 @@ class Person extends DomainObject implements HighlightableModelInterface
 
     /**
      * @param string $organization_position
+     * @return $this
      */
     public function setOrganizationPosition($organization_position)
     {
         if (!$organization_position) {
             $organization_position = '';
         }
+
         $this->setModelField('organization_position', $organization_position);
+        return $this;
     }
 
     public function hasSla(Sla $sla)
