@@ -365,6 +365,13 @@ class LegacyTermsTransformer
                     'options' => $options->all()
                 );
 
+            case 'FilterCreationSystem':
+                return array(
+                    'type'    => 'creation_system',
+                    'op'      => $term->getTermOperator(),
+                    'options' => $options->all()
+                );
+
             case 'FilterOrgName':
                 return array(
                     'type'    => 'org_name',
@@ -682,6 +689,9 @@ class LegacyTermsTransformer
 
             case 'date_last_user_reply':
                 return new Terms\FilterDateLastUserReply($op, $options);
+
+            case 'creation_system':
+                return new Terms\FilterCreationSystem($op, array('creation_system' => @$options['creation_system']));
 
             case 'person_name':
                 return new Terms\FilterUserName($op, array(
