@@ -34,6 +34,8 @@
 namespace Application\DeskPRO\HttpFoundation;
 
 
+use Orb\Util\Strings;
+
 class Request extends \Symfony\Component\HttpFoundation\Request
 {
     const PARTIAL_REQUEST_KEY = '_partial';
@@ -279,6 +281,11 @@ class Request extends \Symfony\Component\HttpFoundation\Request
         }
 
         if (!$return = (string) $this->get('return')) {
+            return null;
+        }
+
+        $return = Strings::removeInvisibleCharacters($return);
+        if (!$return) {
             return null;
         }
 
