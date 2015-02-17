@@ -83,6 +83,10 @@ class PortalKernel extends Kernel
             $bundles[] = new \Symfony\Bundle\DebugBundle\DebugBundle();
         }
 
+        if ('test' === $this->getEnvironment()) {
+            $bundles[] = new \DpBehat\TestBundle\TestBundle();
+        }
+
         return $bundles;
     }
 

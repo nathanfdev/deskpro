@@ -2,6 +2,15 @@ default:
   suites:
     default:
         contexts:
-            - TestsContext
-#  extensions:
-#    Behat\Symfony2Extension: ~
+            - DpBehat\TestsContext:
+                session: @session
+                dataset_manager: @dataset_manager
+                em: @doctrine.orm.default_entity_manager
+  extensions:
+    Behat\Symfony2Extension:
+        kernel:
+            bootstrap: features/bootstrap/boot.php
+            path: ../sys/Kernel/PortalKernel.php
+            class: DeskPRO\Kernel\PortalKernel
+            env: test
+            debug: true
