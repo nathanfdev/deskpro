@@ -175,7 +175,7 @@ AnnotationRegistry::registerFile(DP_ROOT.'/vendor/doctrine/orm/lib/Doctrine/ORM/
 if (is_callable(array($composer_loader, 'loadClass'))) {
     AnnotationRegistry::registerLoader(array($composer_loader, 'loadClass'));
 }
-
+AnnotationRegistry::registerAutoloadNamespace('Sensio\Bundle\FrameworkExtraBundle', DP_ROOT.'/vendor/sensio/framework-extra-bundle');
 require DP_ROOT.'/vendor/swiftmailer/swiftmailer/lib/swift_required.php';
 \Swift_DependencyContainer::getInstance()->register('cache.disk')-> asSharedInstanceOf('Orb\\Mail\\KeyCache\\DiskKeyCache')->withDependencies(array('cache.inputstream', 'tempdir'));
 

@@ -26,6 +26,7 @@ $DIR_ROOT/app/bin/init-project.sh
 
 echo "Creating test database"
 mysql -e "CREATE DATABASE deskpro;"
+mysql -e "CREATE DATABASE deskpro_test;"
 mysql -u root -e "CREATE USER 'deskpro'@'localhost' IDENTIFIED BY 'deskpro'; CREATE USER 'deskpro'@'%' IDENTIFIED BY 'deskpro';"
 mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'deskpro'@'localhost' WITH GRANT OPTION; GRANT ALL PRIVILEGES ON *.* TO 'deskpro'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;"
 mysql -u root -e "SET GLOBAL wait_timeout=600;"
@@ -37,7 +38,7 @@ cp app/tests/travis-ci/test-config.php config.php
 echo "--> Done"
 
 echo "Creating config.testing.php"
-cp app/tests/travis-ci/test-config.php config.testing.php
+cp app/tests/travis-ci/config.test.php.dist app/tests/config.test.php
 echo "--> Done"
 
 echo "Ensuring permissions"
