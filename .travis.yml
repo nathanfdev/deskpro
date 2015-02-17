@@ -14,7 +14,7 @@ after_failure:
 after_success:
   - app/tests/travis-ci/after-success
 
-script: app/tests/bin/run-tests
+script: app/tests/bin/run-tests travis
 
 notifications:
   hipchat:
