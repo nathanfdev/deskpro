@@ -38,13 +38,14 @@ if [[ $? -ne 0 ]] ; then
 	IS_ERROR=1
 fi
 
-if [[ "$1" -eq "travis" ]] ; then
-    # no dry run if its travis
-    bin/coveralls -c tests/coveralls.yml -v
-else
-    bin/coveralls -c tests/coveralls.yml -v --dry-run
-fi
-
 if [[ "$IS_ERROR" -eq "0" ]] ; then
+
+    if [[ "$1" -eq "travis" ]] ; then
+        # no dry run if its travis
+        bin/coveralls -c tests/coveralls.yml -v
+    else
+        bin/coveralls -c tests/coveralls.yml -v --dry-run
+    fi
+
     exec travis-ci/after-success
 fi
