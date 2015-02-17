@@ -94,6 +94,24 @@ spl_autoload_register(function ($classname) {
     return true;
 });
 
+
+// psr-4 style autoloading for DpBehat\ namespace
+spl_autoload_register(function ($class) {
+    $prefix = 'DpBehat\\';
+    $base_dir = DP_ROOT . '/tests/features/bootstrap/';
+    $len = strlen($prefix);
+    if (strncmp($prefix, $class, $len) !== 0) {
+        return;
+    }
+    $relative_class = substr($class, $len);
+    $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+    if (file_exists($file)) {
+        require $file;
+    }
+});
+
+require_once 'DpShutdown.php';
+
 spl_autoload_register(function ($classname) {
     // Fallback to checking native apps
     $parts = explode('\\', $classname);
