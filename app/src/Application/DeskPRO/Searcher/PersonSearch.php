@@ -362,6 +362,9 @@ class PersonSearch extends SearcherAbstract
                     $wheres[] = $this->_stringMatch("$join_name.name", $op, $choice);
                     break;
                 case self::TERM_USERGROUP:
+                    if (isset($choice['usergroup_ids'])) {
+                        $choice = $choice['usergroup_ids'];
+                    }
                     $choice = array_map('intval', (array)$choice);
                     if (!$choice) $choice = array(0);
                     $person_ids = App::getDbRead('search.filter.people')->fetchAllCol("

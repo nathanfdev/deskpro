@@ -183,7 +183,9 @@ class TicketSearch extends SearcherAbstract
     {
         $person_search->setMode(PersonSearch::MODE_ANY);
         $this->person_search = $person_search;
-        $this->person_search->setPerson($this->getPersonContext());
+        if ($this->person) {
+            $this->person_search->setPerson($this->person);
+        }
     }
 
 

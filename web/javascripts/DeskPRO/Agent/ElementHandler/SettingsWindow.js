@@ -17,7 +17,7 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 		if (this._hasInit) return;
 		this._hasInit = true;
 
-		$('.close-trigger', this.el).first().on('click', function(ev) {
+		$('.close-trigger', this.el).first().off('click').on('click', function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
 			self.el.trigger('dp_close');
@@ -106,6 +106,10 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 	_cleanupOld: function() {
 		// TODO
 		// after settings window is hidden for a while, clear all of the page fragments to reduce memory
+		this.el.find('#settingswin_pages > section').each(function(){
+			$(this).data('page-fragment', null).children().replaceWith('<div class="page-loading"></div>');
+		});
+		this._hasInit = false;
 	},
 
 	showSavePuff: function() {
@@ -161,7 +165,7 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 			this.el.hide();
 			this.backdrop.hide();
 
-			this._cleanupTimer = window.setTimeout(this._cleanupOld.bind(this), 180000); // three minutes
+			this._cleanupTimer = window.setTimeout(this._cleanupOld.bind(this), 10); // three minutes
 
 			if (this.reloadInterface || DP_PERSON_PASSWORD_EXPIRED) {
 				DeskPRO_Window.util.reloadInterface();

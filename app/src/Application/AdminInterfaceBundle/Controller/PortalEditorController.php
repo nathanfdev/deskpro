@@ -60,20 +60,29 @@ class PortalEditorController extends AbstractController
         $request_auth = new RequestAuth($this->em, $this->getRequest());
         $api_user = $request_auth->getApiUser();
         $api_token = $api_user->api_token;
-        
+
         if (!$api_token || $api_token->scope != 'session') {
-            return $this->createApiErrorResponse('invalid_api_token', 'API requests via token must be with a valid session', 403);
+            return $this->createJsonResponse(array(
+                'error_code' => 'invalid_api_token',
+                'error_message' => 'API requests via token must be with a valid session'
+            ), 403);
         }
 
         $session = $api_user->session;
 
         if (!$session || !$session->person || $session->person != $api_token->person) {
-            return $this->createApiErrorResponse('invalid_api_token', 'API requests via token must be with a valid session', 403);
+            return $this->createJsonResponse(array(
+                'error_code' => 'invalid_api_token',
+                'error_message' => 'API requests via token must be with a valid session'
+            ), 403);
         }
 
         // Validate the request token
         if (!$api_user->request_token || !$api_user->session->checkSecurityToken('request_token', $api_user->request_token)) {
-            return $this->createApiErrorResponse('invalid_request_token', 'You must provide a valid request token', 403);
+            return $this->createJsonResponse(array(
+                'error_code' => 'invalid_request_token',
+                'error_message' => 'You must provide a valid request token'
+            ), 403);
         }
    }
 

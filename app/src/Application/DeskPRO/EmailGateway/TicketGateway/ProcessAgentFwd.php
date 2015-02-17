@@ -200,7 +200,7 @@ class ProcessAgentFwd extends ProcessAbstract
         $ticket->email_account = $this->account;
         $ticket->creation_system = 'gateway.agent';
 
-        $ticket_message = new TicketMessage();
+        $ticket_message = new TicketMessage($this->reader->getId());
         $ticket_message->person = $user;
         $ticket_message->creation_system = 'gateway.agent';
         $ticket_message->withNewSubject = $ticket->subject;
@@ -221,7 +221,7 @@ class ProcessAgentFwd extends ProcessAbstract
             $this->logMessage('[TicketGatewayProcessor] Adding agent reply');
             $agent_reply = nl2br(htmlspecialchars($agent_reply, \ENT_QUOTES, 'UTF-8'));
 
-            $agent_ticket_message = new TicketMessage();
+            $agent_ticket_message = new TicketMessage($this->reader->getId());
             $agent_ticket_message->date_created->modify('+1 second');
             $agent_ticket_message->person = $this->person;
             $agent_ticket_message->setMessageHtml($agent_reply);
@@ -248,6 +248,18 @@ class ProcessAgentFwd extends ProcessAbstract
             $blob->is_temp = false;
             App::getOrm()->persist($blob);
         }
+
+        if ($id = $ticket_message['email_message_id']) {
+            $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: Checking for dupe message by id: ' . $id);
+
+            if (App::getOrm()->getRepository('DeskPRO:TicketMessage')->getDupeByMessageID($id)) {
+                /** @var $old TicketMessage */
+                $this->setError('duplicate_message');
+                $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: duplicate message ' . $id);
+                return null;
+            }
+        }
+
 
         $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: Checking for dupe message: ' . $ticket_message->getMessageHash());
         if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, null, 10800, $this->getLogger())) {
@@ -470,7 +482,7 @@ class ProcessAgentFwd extends ProcessAbstract
         $ticket->email_account = $this->account;
         $ticket->creation_system = 'gateway.agent';
 
-        $ticket_message = new TicketMessage();
+        $ticket_message = new TicketMessage($user_reader->getId());
         $ticket_message->person = $user;
         $ticket_message->creation_system = 'gateway.agent';
         $ticket_message->withNewSubject = $ticket->subject;
@@ -501,7 +513,7 @@ class ProcessAgentFwd extends ProcessAbstract
         if ($agent_reply) {
             $this->logMessage('[TicketGatewayProcessor] Adding agent reply');
 
-            $agent_ticket_message = new TicketMessage();
+            $agent_ticket_message = new TicketMessage($this->reader->getId());
             $agent_ticket_message->date_created->modify('+1 second');
             $agent_ticket_message->person = $this->person;
             $agent_ticket_message->setMessageHtml($agent_reply);
@@ -623,7 +635,7 @@ class ProcessAgentFwd extends ProcessAbstract
         return array(
             'via'                  => 'fwd',
             'ticket'               => $ticket,
-            'ticket_message'       => $agent_ticket_message,
+            'ticket_message'       => $ticket_message,
             'agent_ticket_message' => $agent_ticket_message,
             'user_ticket_message'  => $ticket_message
         );

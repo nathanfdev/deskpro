@@ -11,33 +11,6 @@
 class EWSType_MonthNamesType extends EWSType
 {
     /**
-     * Text value for the month of January.
-     *
-     * @since Exchange 2007
-     *
-     * @var string
-     */
-    const JANUARY = 'January';
-
-    /**
-     * Text value for the month of February.
-     *
-     * @since Exchange 2007
-     *
-     * @var string
-     */
-    const FEBRUARY = 'February';
-
-    /**
-     * Text value for the month of March.
-     *
-     * @since Exchange 2007
-     *
-     * @var string
-     */
-    const MARCH = 'March';
-
-    /**
      * Text value for the month of April.
      *
      * @since Exchange 2007
@@ -45,33 +18,6 @@ class EWSType_MonthNamesType extends EWSType
      * @var string
      */
     const APRIL = 'April';
-
-    /**
-     * Text value for the month of May.
-     *
-     * @since Exchange 2007
-     *
-     * @var string
-     */
-    const MAY = 'May';
-
-    /**
-     * Text value for the month of June.
-     *
-     * @since Exchange 2007
-     *
-     * @var string
-     */
-    const JUNE = 'June';
-
-    /**
-     * Text value for the month of July.
-     *
-     * @since Exchange 2007
-     *
-     * @var string
-     */
-    const JULY = 'July';
 
     /**
      * Text value for the month of August.
@@ -83,22 +29,67 @@ class EWSType_MonthNamesType extends EWSType
     const AUGUST = 'August';
 
     /**
-     * Text value for the month of September.
+     * Text value for the month of February.
      *
      * @since Exchange 2007
      *
      * @var string
      */
-    const SEPTEMBER = 'September';
+    const FEBRUARY = 'February';
 
     /**
-     * Text value for the month of October.
+     * Text value for the month of December.
      *
      * @since Exchange 2007
      *
      * @var string
      */
-    const OCTOBER = 'October';
+    const DECEMBER = 'December';
+
+    /**
+     * Text value for the month of January.
+     *
+     * @since Exchange 2007
+     *
+     * @var string
+     */
+    const JANUARY = 'January';
+
+    /**
+     * Text value for the month of July.
+     *
+     * @since Exchange 2007
+     *
+     * @var string
+     */
+    const JULY = 'July';
+
+    /**
+     * Text value for the month of June.
+     *
+     * @since Exchange 2007
+     *
+     * @var string
+     */
+    const JUNE = 'June';
+
+    /**
+     * Text value for the month of March.
+     *
+     * @since Exchange 2007
+     *
+     * @var string
+     */
+    const MARCH = 'March';
+
+    /**
+     * Text value for the month of May.
+     *
+     * @since Exchange 2007
+     *
+     * @var string
+     */
+    const MAY = 'May';
 
     /**
      * Text value for the month of November.
@@ -110,13 +101,22 @@ class EWSType_MonthNamesType extends EWSType
     const NOVEMBER = 'November';
 
     /**
-     * Text value for the month of December.
+     * Text value for the month of October.
      *
      * @since Exchange 2007
      *
      * @var string
      */
-    const DECEMBER = 'December';
+    const OCTOBER = 'October';
+
+    /**
+     * Text value for the month of September.
+     *
+     * @since Exchange 2007
+     *
+     * @var string
+     */
+    const SEPTEMBER = 'September';
 
     /**
      * Indicates the month to be used for the value.

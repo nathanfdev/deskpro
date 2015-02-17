@@ -222,7 +222,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     public function isCorrectHost($correctHost = null)
     {
         if (!$info = $this->getCorrectInfo($correctHost)) {
-            return null;
+            return false;
         }
 
         $host = $info['port']
@@ -239,15 +239,15 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     public function isCorrectScheme($correctHost = null)
     {
         if (!$info = $this->getCorrectInfo($correctHost)) {
-            return null;
+            return false;
         }
 
-        return 'https' === $this->getScheme() || 'http' === $info['scheme'];
+        return 'https' === $this->getScheme() || 'https' !== $info['scheme'];
     }
 
     /**
      * @param null $correctHost
-     * @return bool|mixed
+     * @return array
      */
     public function getCorrectInfo($correctHost = null)
     {
@@ -255,15 +255,14 @@ class Request extends \Symfony\Component\HttpFoundation\Request
             return $this->info;
         }
 
-        if ($correctHost && !$this->info) {
-            $this->info = parse_url($correctHost);
-            if (!$this->info || empty($this->info['host']) || empty($this->info['scheme'])) {
-                return false;
+        if ($correctHost) {
+            if (!$info = parse_url($correctHost)) {
+                return array();
             }
-
-            $this->info['scheme'] = strtolower($this->info['scheme']);
-            $this->info['host'] = strtolower($this->info['host']);
-            $this->info['port'] = @$this->info['port'] ?: null;
+            $info['scheme'] = strtolower(@$info['scheme']);
+            $info['host'] = strtolower(@$info['host']);
+            $info['port'] = @$info['port'];
+            $this->info = $info;
         }
 
         return $this->info;

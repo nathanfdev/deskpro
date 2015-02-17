@@ -146,6 +146,7 @@ define([
   'Admin/Banning/Ctrl/EditIp',
   'Admin/Banning/Ctrl/EditEmail',
   'Admin/ImportCsv/Ctrl/ImportCsv',
+  'Admin/ExportCsv/Ctrl/ExportCsv',
   'Admin/UserRules/Ctrl/List',
   'Admin/UserRules/Ctrl/Edit',
   'Admin/KbSettings/Ctrl/KbSettings',

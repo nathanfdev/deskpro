@@ -156,7 +156,7 @@ class ProcessReply extends ProcessAbstract
             $executor_context->getVars()->set('is_bounce_message', true);
         }
 
-        $message = new TicketMessage();
+        $message = new TicketMessage($this->reader->getId());
         $message->email_reader = $this->reader;
         if ($this->reader->hasProperty('email_source')) {
             $message['email_source'] = $this->reader->getProperty('email_source');

@@ -36,6 +36,7 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\UserBundle\Form\NewTicketType;
@@ -145,9 +146,22 @@ class NewTicketController extends AbstractController
 
         $unique_items = $this->container->getTicketLayoutManager()->getUserLayoutItems();
 
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
         $captcha = null;
-        if (isset($unique_items['captcha']) && empty($this->person->id)) {
+        $force_captcha = false;
+        $isLimited = $rateLimit->isActionLimited(RateLimit::ACT_SUBMIT_TICKET);
+
+        if ($isLimited || (isset($unique_items['captcha']) && empty($this->person->id))) {
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newticket'));
+        }
+
+        if ($isLimited) {
+            $force_captcha = true;
+            unset($unique_items['captcha']);
+            if (false !== $k = array_search('captcha', $page_data_field_ids)) {
+                unset($page_data_field_ids[$k]);
+            }
         }
 
         $errors = array();
@@ -232,6 +246,7 @@ class NewTicketController extends AbstractController
             if ($validator->isValid($newticket) && !$trap_fail) {
                 try {
                     $ticket = $newticket->save();
+                    $rateLimit->saveAction(RateLimit::ACT_SUBMIT_TICKET);
 
                     if (!$request->request->has($new_custom_fields_form->getName())) {
                         $request->request->set($new_custom_fields_form->getName(), array());
@@ -365,6 +380,7 @@ class NewTicketController extends AbstractController
             'hide_email_field'      => $hide_email_field,
 
             'new_custom_fields' => $new_custom_fields_form->createView(),
+            'force_captcha'     => $force_captcha,
         ));
     }
 

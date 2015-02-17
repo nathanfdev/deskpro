@@ -39,6 +39,10 @@
 		"league/url": "3.0.*@dev",
 		"onelogin/php-saml": "2.1.*",
 		"google/apiclient": "1.0.*@dev",
+		"predis/predis": "1.0.*",
+		"react/event-loop": "0.4.*",
+		"react/child-process": "0.4.*",
+		"react/stream": "0.4.*",
 		"zendesk/zendesk_api_client_php": "dev-master"
 	},
 	"preferred-install": "dist"

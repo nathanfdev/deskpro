@@ -190,6 +190,25 @@
 							<i class="icon-lock"></i>
 							<input type="password" autocomplete="off" class="text" value="" name="password" id="password" size="40"  tabindex="2" placeholder="{{ phrase('agent.general.password') }}" />
 						</p>
+
+						{% if captcha %}
+							{% set captcha_error = app.session.getFlash('captcha_login_error') %}
+							<div class="dp-control-group {% if captcha_error %}dp-error dp-error-static{% endif %}" style="position: relative;margin-left:-9px;">
+								<div class="dp-control-label">
+									<label>{{ phrase('user.general.label_captcha') }} *</label>
+								</div>
+								<div class="dp-controls dp-fill">
+									{{ captcha.getHtml()|raw }}
+									{% if captcha_error %}
+										<div class="dp-help-inline dp-error-explain" style="color: red;">
+											{{ phrase('user.tickets.form_error_captcha_invalid') }}
+										</div>
+									{% endif %}
+								</div>
+							</div>
+						{% endif %}
+						<br /><br />
+
 						<ul style="margin:0;padding:0; line-height:20px;">
 							{% if app.getSetting('core.enable_user_rememberme') %}
 							<li style="float:left; list-style-type:none;">

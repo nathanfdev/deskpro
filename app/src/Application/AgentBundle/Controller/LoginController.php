@@ -36,8 +36,10 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
+use Application\DeskPRO\Service\RateLimit;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LoginController extends \Application\UserBundle\Controller\LoginController
 {
@@ -71,7 +73,13 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         // Already logged in
         if (($this->session->getPerson() && $this->session->getPerson()->is_agent)) {
             if ($return) return $this->redirect($return);
-            else return $this->redirectRoute($this->route_prefix);
+
+            // fastfix of redirect loop (with wrong scheme)
+            $url = $this->generateUrl($this->route_prefix, array(), UrlGeneratorInterface::ABSOLUTE_URL);
+            if (!$this->request->isCorrectScheme()) {
+                $url = str_replace('http://', 'https://', $url);
+            }
+            return $this->redirect($url);
         }
 
         $has_done_reset = false;
@@ -132,6 +140,13 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
         $browser_warnings = UserAgentRequirementCheck::getInterfaceWarnings();
 
+        $captcha = null;
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        if ($rateLimit->isActionLimited(RateLimit::ACT_LOGIN)) {
+            $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_login'));
+        }
+
         return $this->render('AgentBundle:Login:index.html.twig', array(
             'return'                   => $return,
             'route_prefix'             => $this->route_prefix,
@@ -140,7 +155,8 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             'has_done_reset'           => $has_done_reset,
             'failed_login_name'        => $failed_login_name,
             'browser_warnings'         => $browser_warnings,
-            'timeout'                  => $this->in->getBool('timeout')
+            'timeout'                  => $this->in->getBool('timeout'),
+            'captcha'                  => $captcha,
         ));
     }
 
@@ -159,13 +175,6 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
         return $this->render('AgentBundle:Login:browser-requirements.html.twig', array(
             'is_ie' => $browser->isBrowser(\Browser::BROWSER_IE)
-        ));
-    }
-
-    public function ieCompatModeAction()
-    {
-        return $this->render('AgentBundle:Login:instruct-ie-compat-mode.html.twig', array(
-
         ));
     }
 

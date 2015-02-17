@@ -40,27 +40,6 @@ class UserAgentRequirementCheck
 {
     public static function passAgentInterface(Browser $browser = null)
     {
-        if (!$browser) {
-            $browser = new \Browser();
-        }
-
-        // Check for known browsers
-        if ($browser->getBrowser() == \Browser::BROWSER_FIREFOX && $browser->getVersion() < 4) {
-            return false;
-        } elseif ($browser->getBrowser() == \Browser::BROWSER_CHROME && $browser->getVersion() < 14) {
-            return false;
-        } elseif ($browser->getBrowser() == \Browser::BROWSER_SAFARI && $browser->getVersion() < 5) {
-            return false;
-        } elseif ($browser->getBrowser() == \Browser::BROWSER_OPERA && $browser->getVersion() < 11) {
-            return false;
-        } elseif ($browser->getBrowser() == \Browser::BROWSER_IE && $browser->getVersion() < 8) {
-            if (!$browser->isChromeFrame()) {
-                return false;
-            }
-        }
-
-        // Unknown browsers we'll err on the lenient side and assume
-        // they work, or that the users know better
         return true;
     }
 

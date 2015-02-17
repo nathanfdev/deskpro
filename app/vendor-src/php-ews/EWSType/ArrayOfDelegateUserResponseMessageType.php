@@ -8,13 +8,15 @@
  * management request.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_BaseDelegateResponseMessageType.
  */
 class EWSType_ArrayOfDelegateUserResponseMessageType extends EWSType
 {
     /**
      * Contains response messages for delegate management operations.
      *
-     * @since Exchnage 2007 SP1
+     * @since Exchange 2007 SP1
      *
      * @var EWSType_DelegateUserResponseMessageType
      */

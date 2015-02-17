@@ -488,7 +488,7 @@ class KbController extends AbstractController
 
                 $content = $this->person->hasPerm('agent_publish.can_insert_html')
                     ? $this->in->getCleanValue('content', 'string', null, array('noclean' => true))
-                    : $this->in->getCleanValue('content', 'string');
+                    : $this->in->getCleanValue('content', 'html');
 
                 $content_info = Strings::parseImageDataUrls($content);
 

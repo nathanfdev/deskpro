@@ -7,6 +7,8 @@
  * Represents an Exchange item that is attached to another Exchange item.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_AttachmentType.
  */
 class EWSType_ItemAttachmentType extends EWSType
 {
@@ -146,7 +148,7 @@ class EWSType_ItemAttachmentType extends EWSType
     /**
      * Represents the name of the attachment.
      *
-     * @since Exchnage 2007
+     * @since Exchange 2007
      *
      * @var string
      */

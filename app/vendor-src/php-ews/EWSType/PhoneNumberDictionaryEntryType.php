@@ -4,9 +4,12 @@
  */
 
 /**
- * Definition of the PhoneNumberDictionaryEntryType type
+ * Represents a telephone number for a contact.
  *
  * @package php-ews\Types
+ *
+ * @todo Create a common EntryType class.
+ * @todo Create a common TextEntryType class.
  */
 class EWSType_PhoneNumberDictionaryEntryType extends EWSType
 {

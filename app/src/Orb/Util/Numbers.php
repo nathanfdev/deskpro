@@ -220,7 +220,7 @@ class Numbers
      * @param  int       $mode     Rounding mode to use
      * @return mixed
      */
-    public static function roundToMultiple($number, $multiple, $mode = self::ROUND_MULTIPLE_NEAREST)
+    public static function roundToMultiple($number, $multiple, $mode = self::ROUND_MULTIPLE_NEAR)
     {
         if ($mode == self::ROUND_MULTIPLE_NEAR) {
             return round($number / $multiple) * $multiple;

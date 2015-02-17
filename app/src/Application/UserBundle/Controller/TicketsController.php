@@ -99,13 +99,8 @@ class TicketsController extends AbstractController
                 $sort_dql = 'ticket.id DESC';
         }
 
+        $count = $this->em->getRepository('DeskPRO:Ticket')->countTicketsForPerson($this->person);
         if ($this->person->is_agent) {
-            $count = $this->db->fetchColumn("
-                SELECT COUNT(*)
-                FROM tickets
-                WHERE tickets.person_id = ? AND tickets.status != 'hidden'
-            ", array($this->person->id));
-
             $tickets = $this->em->createQuery("
                 SELECT ticket
                 FROM DeskPRO:Ticket ticket
@@ -115,13 +110,6 @@ class TicketsController extends AbstractController
             ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person));
         } else {
             if ($this->person->organization && $this->person->organization_manager) {
-
-                $count = $this->db->fetchColumn("
-                    SELECT COUNT(*)
-                    FROM tickets
-                    LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
-                    WHERE (tickets.person_id = ? OR (tickets_participants.person_id = ? AND tickets.organization_id != ?)) AND tickets.status != 'hidden'
-                ", array($this->person->id, $this->person->id, $this->person->organization->id));
 
                 // Managers can always see their org tickets, so dont show them
                 // tickets if they are of their own org because those will be on the org page
@@ -134,12 +122,6 @@ class TicketsController extends AbstractController
                     ORDER BY $sort_dql
                 ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person, 'org' => $this->person->organization));
             } else {
-                $count = $this->db->fetchColumn("
-                    SELECT COUNT(*)
-                    FROM tickets
-                    LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
-                    WHERE (tickets.person_id = ? OR tickets_participants.person_id = ?) AND tickets.status != 'hidden'
-                ", array($this->person->id, $this->person->id));
 
                 $tickets = $this->em->createQuery("
                     SELECT ticket
@@ -204,7 +186,6 @@ class TicketsController extends AbstractController
             'resolved_tickets' => $resolved_tickets,
             'last_messages'    => $last_messages,
             'sort'             => $sort,
-            'count'            => $count,
             'pageinfo'         => $pageinfo,
             'show_split'       => $show_split,
         ));

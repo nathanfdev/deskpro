@@ -35,6 +35,7 @@
 
 namespace Application\DeskPRO\Command;
 
+use Application\EmailBundle\Mail\RawMessage\Rfc822Decoder;
 use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -63,7 +64,7 @@ class TestCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        echo DP_ROOT;
+        echo __FILE__;
         echo "\n";
         return 0;
     }

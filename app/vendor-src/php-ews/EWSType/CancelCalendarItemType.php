@@ -7,6 +7,8 @@
  * Represents the response object that is used to cancel a meeting.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_SmartResponseType.
  */
 class EWSType_CancelCalendarItemType extends EWSType
 {

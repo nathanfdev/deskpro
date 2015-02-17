@@ -378,7 +378,9 @@ class __DP_CI_Security {
             // replace illegal attribute strings that are inside an html tag
             if (count($attribs) > 0)
             {
-                $str = preg_replace('/(<?)(\/?[^><]+?)([^A-Za-z<>\-])(.*?)('.implode('|', $attribs).')(.*?)([\s><]?)([><]*)/i', '$1$2 $4$6$7$8', $str, -1, $count);
+                foreach ($attribs as $a) {
+                    $str = preg_replace('/(<?)(\/?[^><]+?)([^A-Za-z<>\-])(.*?)(' . $a . ')(.*?)([\s><]?)([><]*)/i', '$1$2 $4$6$7$8', $str, -1, $count);
+                }
             }
 
         }

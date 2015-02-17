@@ -50,7 +50,6 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         $this->addOption('to-email', null, InputOption::VALUE_REQUIRED);
         $this->addOption('with-image', null, InputOption::VALUE_NONE);
         $this->addOption('attach', null, InputOption::VALUE_REQUIRED);
-        $this->addOption('real-send', null, InputOption::VALUE_NONE);
         $this->addOption('subject', null, InputOption::VALUE_REQUIRED);
         $this->addOption('fwd-for', null, InputOption::VALUE_REQUIRED);
     }
@@ -70,6 +69,8 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         if ($email_pre) {
             $email_pre_html = "<div>" . nl2br($email_pre) . "</div>";
         }
+
+        $uid = uniqid('', true);
 
         $from_lines = array();
         if ($input->hasOption('from-email')) {
@@ -97,7 +98,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 Date: Mon, 10 Dec 2012 19:15:33 +0000
 $from_lines
 To: %TO_EMAIL%
-Message-ID: <144FD598151749D98C378FCF8B2E03C2@gmail.com>
+Message-ID: <$uid@test-message>
 Subject: $subject
 X-Mailer: sparrow 1.6.4 (build 1176)
 MIME-Version: 1.0
@@ -211,26 +212,11 @@ SRC;
         $to_email   = $input->getOption('to-email');
         $time       = date('Y-m-d H:i:s');
 
-        if ($input->getOption('real-send')) {
-            $message = App::getMailer()->createMessage();
-            $message->setTo($to_email);
-            $message->setFrom($from_email);
-            $message->setSubject('Test Email - ' . $time);
-            $message->getBody("Test Message\n\n" . uniqid('eml-', true));
+        $source = str_replace('%FROM_EMAIL%', $from_email, $source);
+        $source = str_replace('%TO_EMAIL%', $to_email, $source);
+        $source = str_replace('%TIME%', $time, $source);
+        $source = str_replace('%MSG_UID%', uniqid('eml-', true), $source);
 
-            $tr = App::$container->getEmailAccountManager()->getTransportFactory()->createPhpMailTransport(new PhpMailConfig());
-            $message->setForceTransport($tr);
-
-            App::getMailer()->send($message);
-
-            echo "Message Sent\n";
-        } else {
-            $source = str_replace('%FROM_EMAIL%', $from_email, $source);
-            $source = str_replace('%TO_EMAIL%', $to_email, $source);
-            $source = str_replace('%TIME%', $time, $source);
-            $source = str_replace('%MSG_UID%', uniqid('eml-', true), $source);
-
-            echo $source;
-        }
+        echo $source;
     }
 }

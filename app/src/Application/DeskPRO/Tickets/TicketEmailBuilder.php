@@ -37,16 +37,17 @@ namespace Application\DeskPRO\Tickets;
 use Application\DeskPRO\CustomFields\PersonFieldManager;
 use Application\DeskPRO\CustomFields\TicketFieldManager;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Mail\Mailer;
 use Application\DeskPRO\Settings\Settings;
 use Application\DeskPRO\TicketLayout\TicketLayoutManager;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use Orb\Util\OptionsArray;
+use Swift_Mailer;
 
 class TicketEmailBuilder
 {
@@ -78,6 +79,7 @@ class TicketEmailBuilder
         $build->setEm($container->getEm())
             ->setSettings($container->getSettingsHandler())
             ->setMailer($container->getMailer())
+            ->setEmailAccountManager($container->getEmailAccountManager())
             ->setTranslate($container->getTranslator())
             ->setTicketFieldManager($container->getTicketFieldManager())
             ->setUserFieldManager($container->getPersonFieldManager())
@@ -106,13 +108,23 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  Mailer             $mailer
+     * @param  Swift_Mailer $mailer
      * @return TicketEmailBuilder
      */
-    public function setMailer(Mailer $mailer)
+    public function setMailer(Swift_Mailer $mailer)
     {
         $this->options->set('mailer', $mailer);
 
+        return $this;
+    }
+
+    /**
+     * @param EmailAccountManager $email_accounts
+     * @return $this
+     */
+    public function setEmailAccountManager(EmailAccountManager $email_accounts)
+    {
+        $this->options->set('email_accounts', $email_accounts);
         return $this;
     }
 

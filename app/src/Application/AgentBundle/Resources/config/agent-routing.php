@@ -187,11 +187,6 @@ $collection->create('agent_browser_requirements', array(
     'controller'  => 'AgentBundle:Login:browserRequirements',
 ));
 
-$collection->create('agent_browser_requirements_ie_compat', array(
-    'path'        => '/browser-requirements/ie-compat-mode',
-    'controller'  => 'AgentBundle:Login:ieCompatMode',
-));
-
 $collection->create('agent_login', array(
     'path'        => '/login',
     'controller'  => 'AgentBundle:Login:index',

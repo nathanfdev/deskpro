@@ -342,6 +342,7 @@ class AppsController extends AbstractController
 
         $this->em->persist($app);
         $this->em->flush();
+        $this->em->getRepository('DeskPRO:Usersource')->checkAndEnableDeskpro();
 
         return $this->createApiSuccessResponse();
     }

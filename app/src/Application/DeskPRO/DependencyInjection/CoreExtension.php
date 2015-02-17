@@ -36,6 +36,7 @@ namespace Application\DeskPRO\DependencyInjection;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Service\JIRA;
+use Application\DeskPRO\Service\RateLimit;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
@@ -101,6 +102,9 @@ class CoreExtension extends Extension
         $definition->setArguments(array(new Reference('deskpro.core.input_cleaner')));
         $definition->addTag('form.type_extension', array('alias' => 'form'));
         $container->setDefinition('form.cleaner_extension', $definition);
+
+        $container->register(RateLimit::KEY, 'Application\DeskPRO\Service\RateLimit')
+            ->addArgument(new Reference('service_container'));
 
         $this->loadPeople($container);
         $this->loadInputReader($container);

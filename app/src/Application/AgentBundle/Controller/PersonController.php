@@ -673,7 +673,6 @@ class PersonController extends AbstractController
                         $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', array(
                             'person' => $person
                         ));
-                        $message->enableQueueHint();
                         $this->container->getMailer()->send($message);
                     }
                 }
@@ -1461,7 +1460,7 @@ class PersonController extends AbstractController
                         $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
                             'person' => $person
                         ));
-                        $mailer->sendNow($message);
+                        $mailer->send($message);
                     }
 
                     return $this->createJsonResponse(array(
@@ -1509,7 +1508,7 @@ class PersonController extends AbstractController
                     'person' => $person
                 ));
 
-                $mailer->sendNow($message);
+                $mailer->send($message);
             }
 
             return $this->createJsonResponse(array(
