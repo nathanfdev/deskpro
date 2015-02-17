@@ -1,30 +1,9 @@
 extensions:
     - PhpSpec\NyanFormattersExtension\Extension
-    - PhpSpec\Extension\CodeCoverageExtension
 
 suites:
     default:
         src_path: ../src
         spec_path: ./
-
-code_coverage:
-    show_uncovered_files: true
-    whitelist:
-      - ../src/Application/AppBundle
-      - ../src/Application/PortalBundle
-      - ../src/Application/AuthBundle
-      - ../src/Application/LanguageBundle
-      - ../src/Application/FormsBundle
-      - ../src/Application/PersonBundle
-      - ../src/Application/TicketBundle
-    blacklist:
-      - ../vendor
-      - ../vendor-src
-    format:
-      - clover
-      - php
-    output:
-      clover: coverage/phpspec-clover.xml
-      php: coverage/cov/phpspec.cov
 
 formatter.name: nyan.cat
