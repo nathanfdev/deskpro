@@ -8,6 +8,7 @@ suites:
         spec_path: ./
 
 code_coverage:
+    show_uncovered_files: true
     whitelist:
       - ../src/Application/AppBundle
       - ../src/Application/PortalBundle
