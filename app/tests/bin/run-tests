@@ -48,4 +48,8 @@ if [[ "$IS_ERROR" -eq "0" ]] ; then
     fi
 
     exec travis-ci/after-success
+
+	exit 1
 fi
+
+exit 0
