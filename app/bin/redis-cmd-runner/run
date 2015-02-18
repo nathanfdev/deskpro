@@ -147,6 +147,7 @@ class CmdRunner
         $this->loop = React\EventLoop\Factory::create();
         $this->loop->addPeriodicTimer(1, array($this, 'runLoop'));
         $this->loop->run();
+        $this->logMessage("Started");
     }
 
     public function runLoop()
@@ -227,7 +228,7 @@ class CmdRunner
             . "\n\n"
             . $info['stderr'];
 
-        $this->logCmdOutput($info['group_id'], $log);
+        $this->logCmdOutput($info['group_id'], $id, $log);
     }
 
     /**
@@ -251,11 +252,11 @@ class CmdRunner
                     $info = call_user_func($this->queue_processor, $value);
                     if ($info) {
                         $cmdjob = new CmdJob();
-                        $cmdjob->id = uniqid('', true);
+                        $cmdjob->id = date('YmdHis') . '-' . uniqid('', true);
                         $cmdjob->cmd = $info['cmd'];
                         $cmdjob->group_id = $info['group_id'];
                         $cmdjob->data = $value;
-                        $this->logMessage(sprintf("Job.%s: [%s] %s", $info['group_id'], $cmdjob->id, $info['cmd']));
+                        $this->logMessage(sprintf("(%s) Job <%s>: %s", $info['group_id'], $cmdjob->id, $info['cmd']));
                         return $cmdjob;
                     } else {
                         $this->logMessage("Invalid job data: " . $next);
@@ -339,19 +340,18 @@ class CmdRunner
      * Log output from a given command
      *
      * @param string $group_id A directory to log the file to
+     * @param string $uid Job id
      * @param string $out
      */
-    public function logCmdOutput($group_id, $out)
+    public function logCmdOutput($group_id, $uid, $out)
     {
         $write = '[' . date('Y-m-d H:i:s') . '] ' . trim($out);
         $write .= "\n";
 
-        $uid = date('YmdHis'). '_' . uniqid('') . '.log';
-
         $dir = $this->cmd_log_dir.'/'.date('Y/m/d/').$group_id;
         @mkdir($dir, 0777, true);
 
-        file_put_contents($dir.'/'.$uid, $write, \FILE_APPEND);
+        file_put_contents($dir.'/'.$uid.'.log', $write, \FILE_APPEND);
     }
 }
 
