@@ -91,6 +91,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
      */
     public function matchRequest(Request $request)
     {
+        $this->language_manager->getLanguageStack()->pushDefault();
         if ($mode = $this->mode_store->getMode()) {
             $path_info = $mode->getInternalPath();
         } else {
@@ -156,6 +157,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
         $generated = $this->router->generate($name, $parameters, $referenceType);
 
         if (!$this->language_manager->isMultiLanguagePortal()) {
+            $this->language_manager->getLanguageStack()->pushDefault();
             return $generated;
         }
 
@@ -264,7 +266,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
     {
         $mode = $this->mode_store->getMode() ? $this->mode_store->getMode()->getModePath() : '';
         $pre = $language ? '/'.$language->getTwoLetterLanguageCode() : '';
-        $url = $mode.$pre.$url;
+        $url = $mode.$pre.($url == '/' ? '' : $url);
 
         throw new RedirectToUrlException($url);
     }

@@ -60,10 +60,6 @@ class UrlMatcher
             $return['remaining_pathinfo'] = '/';
         }
 
-
-//		if ($locale) {
-//			$locale = Strings::extractRegexMatch('#^/([a-z]{2}_[A-Z]{2})/#', $pathinfo, 1);
-//		}
         return $return;
     }
 }
