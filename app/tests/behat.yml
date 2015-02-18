@@ -14,37 +14,39 @@ default:
                 lang_stack: @language_stack
             - DpBehat\PortalModeContext:
                 mode_storage: @portal_mode_storage
+                mode_factory: @portal_mode_factory
+            - DpBehat\RouterContext
   extensions:
-    VIPSoft\CodeCoverageExtension\Extension:
-        drivers:
-            - local
-        report:
-            format: php
-            options:
-                target: coverage/cov/behat.cov
-        filter:
-            whitelist:
-                addUncoveredFilesFromWhitelist: true
-                include:
-                    directories:
-                        '../src/Application/AppBundle':
-                            suffix: .php
-                        '../src/Application/PortalBundle':
-                            suffix: .php
-                        '../src/Application/AuthBundle':
-                            suffix: .php
-                        '../src/Application/LanguageBundle':
-                            suffix: .php
-                        '../src/Application/FormsBundle':
-                            suffix: .php
-                        '../src/Application/PersonBundle':
-                            suffix: .php
-                        '../src/Application/TicketBundle':
-                            suffix: .php
-                exclude:
-                    directories:
-                        '../vendor': ~
-                        '../vendor-src': ~
+#    VIPSoft\CodeCoverageExtension\Extension:
+#        drivers:
+#            - local
+#        report:
+#            format: php
+#            options:
+#                target: coverage/cov/behat.cov
+#        filter:
+#            whitelist:
+#                addUncoveredFilesFromWhitelist: true
+#                include:
+#                    directories:
+#                        '../src/Application/AppBundle':
+#                            suffix: .php
+#                        '../src/Application/PortalBundle':
+#                            suffix: .php
+#                        '../src/Application/AuthBundle':
+#                            suffix: .php
+#                        '../src/Application/LanguageBundle':
+#                            suffix: .php
+#                        '../src/Application/FormsBundle':
+#                            suffix: .php
+#                        '../src/Application/PersonBundle':
+#                            suffix: .php
+#                        '../src/Application/TicketBundle':
+#                            suffix: .php
+#                exclude:
+#                    directories:
+#                        '../vendor': ~
+#                        '../vendor-src': ~
     Behat\MinkExtension:
        sessions:
          default:

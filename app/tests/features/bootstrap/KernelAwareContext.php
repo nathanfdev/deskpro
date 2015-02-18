@@ -34,74 +34,49 @@
 
 namespace DpBehat;
 
-use Application\DeskPRO\Brand\BrandStack;
-use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
-use Application\DeskPRO\Languages\LangPackInfo;
-use Application\LanguageBundle\Language\LanguageManager;
-use Application\LanguageBundle\Language\LanguageStack;
-use Application\PortalBundle\Mode\PortalModeFactory;
-use Application\PortalBundle\Mode\PortalModeStorage;
-use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
-use Behat\Gherkin\Node\TableNode;
-use Doctrine\ORM\EntityManager;
+use Behat\Symfony2Extension\Context\KernelAwareContext as KernelAwareContextInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
-class PortalModeContext implements Context
+abstract class KernelAwareContext implements KernelAwareContextInterface
 {
     /**
-     * @var PortalModeStorage
+     * @var KernelInterface
      */
-    private $mode_storage;
-    /**
-     * @var PortalModeFactory
-     */
-    private $mode_factory;
+    private $kernel;
 
-    public function __construct(
-        PortalModeStorage $mode_storage,
-        PortalModeFactory $mode_factory
-    )
+    /**
+     * Sets Kernel instance.
+     *
+     * @param KernelInterface $kernel
+     */
+    public function setKernel(KernelInterface $kernel)
     {
-        $this->mode_storage = $mode_storage;
-        $this->mode_factory = $mode_factory;
+        $this->kernel = $kernel;
+    }
+
+    public function get($service_id)
+    {
+        return $this->getContainer()->get($service_id);
     }
 
     /**
-     * @Given the active mode is :set_mode
+     * Returns HttpKernel instance.
+     *
+     * @return KernelInterface
      */
-    public function theActiveModeIsNormal($set_mode)
+    public function getKernel()
     {
-        switch ($set_mode) {
-            case 'admin':
-                $mode = $this->mode_factory->createMode('/admin-mode');
-                break;
-            case 'brand':
-                $mode = $this->mode_factory->createMode('/brand-1');
-                break;
-            default:
-                $mode = $this->mode_factory->createMode('/');
-                break;
-        }
-
-        $this->mode_storage->setMode($mode);
+        return $this->kernel;
     }
 
     /**
-     * @Then the portal should be in :mode mode
+     * Returns HttpKernel service container.
+     *
+     * @return ContainerInterface
      */
-    public function thePortalShouldBeInMode($mode)
+    public function getContainer()
     {
-        $mode = $this->mode_storage->getMode();
-        switch($mode) {
-            case 'admin':
-                expect($mode->isAdmin())->toBe(true);
-                break;
-            case 'normal':
-                expect($mode->isNormal())->toBe(true);
-                break;
-            case 'brand':
-                expect($mode->isBrand())->toBe(true);
-                break;
-        }
+        return $this->kernel->getContainer();
     }
 }

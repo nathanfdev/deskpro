@@ -44,104 +44,33 @@ use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Application\LanguageBundle\Routing\Router;
 
-class LanguageContext extends KernelAwareContext
+class RouterContext extends KernelAwareContext
 {
-    /**
-     * @var LanguageManager
-     */
-    private $language_manager;
-    /**
-     * @var EntityManager
-     */
-    private $em;
-    /**
-     * @var LanguageRepo
-     */
-    private $lang_repo;
-    /**
-     * @var LanguageStack
-     */
-    private $lang_stack;
+    private $generated;
 
-    public function __construct(
-        LanguageManager $language_manager,
-        EntityManager $em,
-        LanguageRepo $lang_repo,
-        LanguageStack $lang_stack
-    )
+    /**
+     * @When I generate a url for :route
+     */
+    public function iGenerateAUrlFor($route)
     {
-        $this->language_manager = $language_manager;
-        $this->em = $em;
-        $this->lang_repo = $lang_repo;
-        $this->lang_stack = $lang_stack;
+        $this->generated = $this->getRouter()->generate($route);
     }
 
     /**
-     * @Given the following languages are enabled:
+     * @Then the generated url should be :url
      */
-    public function theFollowingLanguagesAreEnabled(TableNode $table)
+    public function theGeneratedUrlShouldBe($url)
     {
-        $langs = array();
-        foreach ($table->getRows() as $row) {
-            $langs[] = $row[0];
-        }
-
-        // remove existing if not listed
-        $existing_langs = $this->lang_repo->findAll();
-        /** @var \Application\DeskPRO\Entity\Language $existing */
-        foreach ($existing_langs as $existing) {
-            if (!in_array($existing->getSystemName(), $langs)) {
-                $this->em->remove($existing);
-            }
-        }
-
-        // add new if not existing
-        $langpacks = new LangPackInfo();
-        foreach($langs as $lang) {
-            if (!$this->language_manager->getLanguageBySystemName($lang)) {
-                $new_lang = $langpacks->newLanguageEntity($lang);
-                $this->em->persist($new_lang);
-            }
-        }
-
-        $this->em->flush();
+        expect($this->generated)->toBe($url);
     }
 
     /**
-     * @Then :lang_code should be the active language
+     * @return Router
      */
-    public function shouldBeTheActiveLanguage($lang_code)
+    public function getRouter()
     {
-        if (!$lang = $this->getLanguageStack()->getActive()) {
-            var_dump($this->lang_stack);
-            throw new \Exception('no active lang');
-        }
-
-        expect($lang->getSystemName())->toBe($lang_code);
-    }
-
-    /**
-     * @Given :lang is the active language
-     */
-    public function defaultIsTheActiveLanguage($lang)
-    {
-        $this->getLanguageStack()->push($this->getLanguageManager()->getLanguageBySystemName($lang));
-    }
-
-    /**
-     * @return LanguageStack
-     */
-    public function getLanguageStack()
-    {
-        return $this->get('language_stack');
-    }
-
-    /**
-     * @return LanguageManager
-     */
-    public function getLanguageManager()
-    {
-        return $this->get('language_manager');
+        return $this->get('router');
     }
 }
