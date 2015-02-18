@@ -844,6 +844,7 @@ define [
 			return def
 
 		getSetDeleted: (options = {}) ->
+			options.icon = 'fa-chain-broken'
 			def = @getStandardIs(options)
 			return def
 
