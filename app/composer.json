@@ -54,7 +54,8 @@
 		"henrikbjorn/phpspec-code-coverage": "~1.0",
 		"phpunit/phpcov": "~2.0",
 		"behat/mink-extension": "~2.0@dev",
-		"behat/mink-browserkit-driver": "~1.1"
+		"behat/mink-browserkit-driver": "~1.1",
+		"vipsoft/code-coverage-extension": "*@dev"
 	},
 	"preferred-install": "dist"
 }

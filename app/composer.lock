@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5acfd0cbe2d72b140e5435d80aef0cb1",
+    "hash": "d9eff73a08d6dc1fd3fe4b8dea2a327a",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -4773,6 +4773,115 @@
             "time": "2015-01-25 17:32:08"
         },
         {
+            "name": "vipsoft/code-coverage-common",
+            "version": "2.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vipsoft/code-coverage-common.git",
+                "reference": "816a42e203e8ecb5d4ec20775effcab700016ee9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vipsoft/code-coverage-common/zipball/816a42e203e8ecb5d4ec20775effcab700016ee9",
+                "reference": "816a42e203e8ecb5d4ec20775effcab700016ee9",
+                "shasum": ""
+            },
+            "require": {
+                "phpunit/php-code-coverage": "*"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "*",
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "VIPSoft\\CodeCoverageCommon": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Anthon Pang",
+                    "email": "apang@softwaredevelopment.ca",
+                    "role": "developer"
+                }
+            ],
+            "description": "Extending PHP_CodeCoverage",
+            "keywords": [
+                "BDD",
+                "Behat",
+                "code",
+                "coverage",
+                "phpunit",
+                "testing"
+            ],
+            "time": "2013-11-16 03:02:36"
+        },
+        {
+            "name": "vipsoft/code-coverage-extension",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vipsoft/code-coverage-extension.git",
+                "reference": "35d6ce1f4bfe06df35482b25a2fbc3904e277f64"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vipsoft/code-coverage-extension/zipball/35d6ce1f4bfe06df35482b25a2fbc3904e277f64",
+                "reference": "35d6ce1f4bfe06df35482b25a2fbc3904e277f64",
+                "shasum": ""
+            },
+            "require": {
+                "behat/behat": "~3.0",
+                "guzzle/http": "~3.0",
+                "php": ">=5.3.10",
+                "symfony/config": "~2.2",
+                "symfony/dependency-injection": "~2.2",
+                "symfony/http-foundation": "~2.2",
+                "symfony/http-kernel": "~2.2",
+                "vipsoft/code-coverage-common": "2.5.*"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "1.2.*",
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "VIPSoft\\CodeCoverageExtension": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Anthon Pang",
+                    "email": "apang@softwaredevelopment.ca"
+                }
+            ],
+            "description": "Behat code coverage collector",
+            "keywords": [
+                "BDD",
+                "Behat",
+                "code",
+                "coverage",
+                "phpunit",
+                "testing"
+            ],
+            "time": "2014-07-31 03:16:45"
+        },
+        {
             "name": "whatthejeff/fab",
             "version": "v1.0.0",
             "source": {
@@ -5261,7 +5370,8 @@
         "firebase/php-jwt": 20,
         "google/apiclient": 20,
         "whatthejeff/nyancat-scoreboard": 20,
-        "behat/mink-extension": 20
+        "behat/mink-extension": 20,
+        "vipsoft/code-coverage-extension": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
