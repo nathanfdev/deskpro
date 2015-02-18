@@ -58,6 +58,13 @@ class RedirectExceptionListener implements EventSubscriberInterface
         $this->logger        = $logger;
     }
 
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::EXCEPTION => array('onKernelException', 129) // high priority
+        );
+    }
+
 
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
@@ -74,13 +81,5 @@ class RedirectExceptionListener implements EventSubscriberInterface
 
         $event->setResponse(new RedirectResponse($url, Response::HTTP_FOUND));
         $event->stopPropagation();
-    }
-
-
-    public static function getSubscribedEvents()
-    {
-        return array(
-            KernelEvents::EXCEPTION => array('onKernelException', 129) // very high priority
-        );
     }
 }
