@@ -111,4 +111,10 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
     {
 
     }
+
+	public function clear()
+	{
+		$this->person = null;
+		$this->entity = null;
+	}
 }

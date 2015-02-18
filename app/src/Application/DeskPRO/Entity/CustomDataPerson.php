@@ -39,7 +39,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Custom ticket data
+ * Custom person data
  */
 class CustomDataPerson extends CustomDataAbstract
 {
@@ -58,11 +58,37 @@ class CustomDataPerson extends CustomDataAbstract
      */
     protected $root_field = null;
 
+    /**
+     * @return int
+     */
     public function getPersonId()
     {
         return $this->person['id'];
     }
 
+    /**
+     * Set a field
+     *
+     * @param CustomDefPerson $field
+     * @return $this
+     */
+    public function setField(CustomDefPerson $field)
+    {
+        $this->setModelField('field', $field);
+        return $this;
+    }
+
+    /**
+     * Set a root field
+     *
+     * @param CustomDefPerson $field
+     * @return $this
+     */
+    public function setRootField(CustomDefPerson $field)
+    {
+        $this->setModelField('root_field', $field);
+        return $this;
+    }
 
 
     ############################################################################

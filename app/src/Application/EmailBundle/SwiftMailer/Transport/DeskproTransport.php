@@ -37,6 +37,7 @@ namespace Application\EmailBundle\SwiftMailer\Transport;
 use Application\DeskPRO\BlobStorage;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\EmailBundle\SourceMapper\SourceMapperInterface;
+use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use Orb\Util\Arrays;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -99,8 +100,16 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
         }
 
         $acc = $this->email_accounts->findAccountForSwiftmailerMessage($message);
-        $from_name = Arrays::getFirstItem($message->getFrom() ?: array()) ?: '';
-        $message->setFrom($acc->getUseEmailAddress(), $from_name);
+        $from_name  = Arrays::getFirstItem($message->getFrom() ?: array()) ?: '';
+        $from_email = $acc->getUseEmailAddress();
+
+        if ($message instanceof MessageOptionsInterface) {
+            if ($message->getMessageOptions()->has(MessageOptionsInterface::OPT_USE_FROM)) {
+                $from_email = $message->getMessageOptions()->get(MessageOptionsInterface::OPT_USE_FROM);
+            }
+        }
+
+        $message->setFrom($from_email, $from_name);
 
         if ($acc) {
             $this->logger->debug(sprintf("Detected account #%d <%s>", $acc->id, $acc->address));

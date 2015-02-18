@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a49075356cfa887033cc9b4db682e4e3",
+    "hash": "b77168595fc670e7d8831b20a3bbb1b0",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1515,12 +1515,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "83b8899cb73d85d648af93f37ec0ac89f4a5bbae"
+                "reference": "724b1fcfb88b7bbbbd92fddd5deb7518c3988267"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/83b8899cb73d85d648af93f37ec0ac89f4a5bbae",
-                "reference": "83b8899cb73d85d648af93f37ec0ac89f4a5bbae",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/724b1fcfb88b7bbbbd92fddd5deb7518c3988267",
+                "reference": "724b1fcfb88b7bbbbd92fddd5deb7518c3988267",
                 "shasum": ""
             },
             "require": {
@@ -1551,7 +1551,7 @@
             ],
             "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
             "homepage": "https://github.com/firebase/php-jwt",
-            "time": "2014-11-18 17:58:25"
+            "time": "2015-02-12 15:57:00"
         },
         {
             "name": "friendsofsymfony/elastica-bundle",
@@ -2176,12 +2176,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/padraic/mockery.git",
-                "reference": "c9fbdd9fb044cf1dd7c2abecfc9cce6ca714d1fe"
+                "reference": "f699a69af1f0a5a314107455e6150cfadce33e6b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/mockery/zipball/c9fbdd9fb044cf1dd7c2abecfc9cce6ca714d1fe",
-                "reference": "c9fbdd9fb044cf1dd7c2abecfc9cce6ca714d1fe",
+                "url": "https://api.github.com/repos/padraic/mockery/zipball/f699a69af1f0a5a314107455e6150cfadce33e6b",
+                "reference": "f699a69af1f0a5a314107455e6150cfadce33e6b",
                 "shasum": ""
             },
             "require": {
@@ -2234,7 +2234,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2015-02-09 15:10:41"
+            "time": "2015-02-15 16:05:06"
         },
         {
             "name": "monolog/monolog",
@@ -3730,6 +3730,50 @@
             "time": "2015-01-25 17:32:08"
         },
         {
+            "name": "zendesk/zendesk_api_client_php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendesk/zendesk_api_client_php.git",
+                "reference": "cf00164cc434458b589619cc6e671cd8bc5119ae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/cf00164cc434458b589619cc6e671cd8bc5119ae",
+                "reference": "cf00164cc434458b589619cc6e671cd8bc5119ae",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Zendesk\\API\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache License Version 2.0"
+            ],
+            "authors": [
+                {
+                    "name": "DeVaris Brown",
+                    "email": "dbrown@zendesk.com"
+                },
+                {
+                    "name": "John Ginsberg",
+                    "email": "john.ginsberg@toptal.com"
+                }
+            ],
+            "description": "PHP Client for Zendesk REST API. See http://developer.zendesk.com/api-docs",
+            "homepage": "https://github.com/zendesk/zendesk_api_client_php",
+            "time": "2015-02-10 18:19:56"
+        },
+        {
             "name": "zendframework/zend-queue",
             "version": "dev-master",
             "source": {
@@ -3989,12 +4033,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zircote/swagger-php.git",
-                "reference": "d2a75e2ee0c53a371dd2d0d92d75988dec4935ff"
+                "reference": "4c9c869cb7618dda7f624ee9329be8bcfbcd8232"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/d2a75e2ee0c53a371dd2d0d92d75988dec4935ff",
-                "reference": "d2a75e2ee0c53a371dd2d0d92d75988dec4935ff",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/4c9c869cb7618dda7f624ee9329be8bcfbcd8232",
+                "reference": "4c9c869cb7618dda7f624ee9329be8bcfbcd8232",
                 "shasum": ""
             },
             "require": {
@@ -4037,7 +4081,7 @@
                 "json",
                 "service discovery"
             ],
-            "time": "2014-11-21 15:25:17"
+            "time": "2015-02-13 15:19:21"
         }
     ],
     "packages-dev": [],
@@ -4058,7 +4102,8 @@
         "fzaninotto/faker": 20,
         "firebase/php-jwt": 20,
         "league/url": 20,
-        "google/apiclient": 20
+        "google/apiclient": 20,
+        "zendesk/zendesk_api_client_php": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

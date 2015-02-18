@@ -79,7 +79,11 @@ class NewNews
         $news = new News();
         $news->person = $this->_person_context;
         $news->title = $this->title;
-        $news->content = $this->content ?: '';
+
+        $news->content = $this->_person_context->hasPerm('agent_publish.can_insert_html')
+            ? App::$container->getInputCleaner()->clean($this->content ?: '', 'string', array('noclean' => true))
+            : App::$container->getInputCleaner()->clean($this->content ?: '', 'html');
+
         $news->setStatusCode($this->status);
 
         if ($news->getStatusCode() == 'published' && !$this->_person_context->hasPerm('agent_publish.validate')) {

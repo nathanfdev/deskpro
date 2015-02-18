@@ -50,7 +50,9 @@ class Ticket extends AbstractEntityRepository
     /**
      * The ticket is
      *
-     * @param  Person                                 $person
+     * @param PersonEntity $person
+     * @param \DateTime    $date_last_reply
+     *
      * @return TicketEntity
      * @throws \Doctrine\ORM\NonUniqueResultException
      */

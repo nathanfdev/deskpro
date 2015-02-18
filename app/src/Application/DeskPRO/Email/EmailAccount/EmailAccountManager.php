@@ -43,6 +43,7 @@ use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Exception\MissingConfigurationException;
 use Application\EmailBundle\Mail\RawTransport\RawTransportFactory;
+use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use Orb\Util\Arrays;
 
 class EmailAccountManager
@@ -226,6 +227,18 @@ class EmailAccountManager
      */
     public function findAccountForSwiftmailerMessage(\Swift_Mime_Message $message)
     {
+        if ($message instanceof MessageOptionsInterface) {
+            if ($message->getMessageOptions()->has(MessageOptionsInterface::OPT_ACCOUNT_ID)) {
+                try {
+                    $acc = $this->getAccount($message->getMessageOptions()->get(MessageOptionsInterface::OPT_ACCOUNT_ID));
+                } catch (\Exception $e) {}
+
+                if ($acc && $acc->is_enabled && $acc->outgoing_account) {
+                    return $acc;
+                }
+            }
+        }
+
         $from = $message->getFrom();
         foreach ($from as $email => $name) {
             $acc = $this->findAccountForEmailAddress($email, EmailAccountManager::IS_ENABLED & EmailAccountManager::WITH_TRANSPORT);

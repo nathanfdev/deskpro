@@ -442,4 +442,9 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
     }
 
     public function _getthis() { return $this; }
+
+	public function clear()
+	{
+		$this->person = null;
+	}
 }
