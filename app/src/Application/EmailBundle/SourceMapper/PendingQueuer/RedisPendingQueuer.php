@@ -49,6 +49,11 @@ class RedisPendingQueuer implements PendingQueuerInterface
     private $key;
 
     /**
+     * @var array
+     */
+    private $data_items = array();
+
+    /**
      * @param Predis\Client $client
      * @param string $key
      */
@@ -56,6 +61,25 @@ class RedisPendingQueuer implements PendingQueuerInterface
     {
         $this->client = $client;
         $this->key = $key;
+
+        $me = $this;
+        register_shutdown_function(function() use ($me) {
+            try {
+                $me->pushAll();
+            } catch (\Exception $e) {
+                error_log($e->getMessage());
+            }
+        });
+    }
+
+    /**
+     * Pushes all pendning rows to the server
+     */
+    public function pushAll()
+    {
+        foreach ($this->data_items as $d) {
+            $this->client->rpush($this->key, array(json_encode($d)));
+        }
     }
 
     /**
@@ -71,6 +95,6 @@ class RedisPendingQueuer implements PendingQueuerInterface
             $data['dpc_site_id'] = DPC_SITE_ID;
         }
 
-        $this->client->rpush($this->key, array(json_encode($data)));
+        $this->data_items[] = $data;
     }
 }
