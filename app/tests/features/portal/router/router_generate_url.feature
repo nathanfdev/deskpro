@@ -63,6 +63,7 @@ Feature: Generate URLs
       | default |
       | french  |
     Given the active mode is admin
+    And default is the active language
     When I generate a url for "portal_index"
     Then the generated url should be "/admin-mode/en"
 
@@ -71,6 +72,7 @@ Feature: Generate URLs
       | default |
       | french  |
     Given the active mode is admin
+    And default is the active language
     When I generate a url for "portal_downloads"
     Then the generated url should be "/admin-mode/en/downloads"
 
