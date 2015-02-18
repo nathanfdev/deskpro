@@ -255,6 +255,7 @@ class CmdRunner
                         $cmdjob->cmd = $info['cmd'];
                         $cmdjob->group_id = $info['group_id'];
                         $cmdjob->data = $value;
+                        $this->logMessage(sprintf("Job.%s: [%s] %s", $info['group_id'], $cmdjob->id, $info['cmd']));
                         return $cmdjob;
                     } else {
                         $this->logMessage("Invalid job data: " . $next);
