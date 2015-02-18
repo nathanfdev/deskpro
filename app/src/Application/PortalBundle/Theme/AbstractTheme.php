@@ -134,7 +134,7 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
                 }
                 $template_name = "Theme:$controller:$name";
                 $resolved_path = $temp->getRealPath();
-                $resolved_path = substr($resolved_path, strlen(DP_ROOT));
+                $resolved_path = substr($resolved_path, strlen(realpath(DP_ROOT)));
                 $temps[$template_name] = $resolved_path;
             }
         }
