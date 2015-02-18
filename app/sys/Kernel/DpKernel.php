@@ -183,6 +183,7 @@ class DpKernel extends AbstractKernel
         $content = str_replace("'" . DP_ROOT, 'DP_ROOT.\'', $content);
         // Correct double slash paths
         $content = str_replace('prod//', 'prod/', $content);
+        $content = str_replace('dev//', 'dev/', $content);
         // Empty logs dir that isn't used (we get it from conf)
         $content = preg_replace("#'kernel\\.logs_dir' => '(.*?)'#", "'kernel.logs_dir' => ''", $content);
 
