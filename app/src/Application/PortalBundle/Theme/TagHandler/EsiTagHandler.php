@@ -35,6 +35,8 @@ namespace Application\PortalBundle\Theme\TagHandler;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Application\PortalBundle\HttpCache\PortalCacheHelper;
+use Application\PortalBundle\Mode\PortalMode;
+use Application\PortalBundle\Mode\PortalModeStorage;
 use Application\PortalBundle\Request\TagRequest;
 use Application\PortalBundle\Theme\Tag;
 use Application\PortalBundle\Theme\TagHandlerInterface;
@@ -60,10 +62,16 @@ class EsiTagHandler implements TagHandlerInterface
      */
     private $container;
 
-    public function __construct(ContainerInterface $container, PortalCacheHelper $portal_cache_helper)
+    /**
+     * @var PortalModeStorage
+     */
+    private $mode_storage;
+
+    public function __construct(ContainerInterface $container, PortalCacheHelper $portal_cache_helper, PortalModeStorage $mode_storage)
     {
         $this->portal_cache_helper = $portal_cache_helper;
         $this->container = $container;
+        $this->mode_storage = $mode_storage;
     }
 
     public function supports(Tag $tag, TagRequest $tag_request)
@@ -92,6 +100,7 @@ class EsiTagHandler implements TagHandlerInterface
             $new_attrs
         );
         $new_query = $this->filterOutObjects($tag_request->query);
+        $new_query[PortalMode::ATTR_NAME] = $this->mode_storage->getSerializedMode();
         $tag_request->query->replace(
             $new_query
         );

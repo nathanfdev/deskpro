@@ -23,6 +23,11 @@ class PortalModeStorage
         return $this->mode;
     }
 
+    public function getSerializedMode()
+    {
+        return serialize($this->mode);
+    }
+
     /**
      * @param PortalMode $mode
      */

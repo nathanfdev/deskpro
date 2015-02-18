@@ -5,6 +5,7 @@ namespace Application\PortalBundle\EventListener;
 use Application\PortalBundle\Mode\PortalMode;
 use Application\PortalBundle\Mode\PortalModeFactory;
 use Application\PortalBundle\Mode\PortalModeStorage;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -21,10 +22,16 @@ class PortalModeListener implements EventSubscriberInterface
      */
     private $store;
 
-    public function __construct(PortalModeFactory $factory, PortalModeStorage $store)
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(PortalModeFactory $factory, PortalModeStorage $store, LoggerInterface $logger)
     {
         $this->factory = $factory;
         $this->store = $store;
+        $this->logger = $logger;
     }
 
     public function onKernelRequest(GetResponseEvent $event)
@@ -33,6 +40,8 @@ class PortalModeListener implements EventSubscriberInterface
             return;
         }
 
+        $this->logger->info('attempting to detect portal mode');
+
         $request = $event->getRequest();
 
         // an internal request (e.g. /_proxy?_path=x&foo=bar) is still a master request
@@ -40,6 +49,7 @@ class PortalModeListener implements EventSubscriberInterface
         // we need to mkae sure this is in the portal_mode_storage service, too!
         $path = rawurldecode($request->getPathInfo());
         if ('/_proxy' === substr($path, 0, 7)) {
+            $this->logger->info(sprintf('detected proxy request, attempting to get mode from query'));
             $this->processInternalRequest($event);
             return;
         }
@@ -52,6 +62,8 @@ class PortalModeListener implements EventSubscriberInterface
         $mode = $this->factory->createMode($request->getPathInfo());
 
         $this->store->setMode($mode);
+
+        $this->logMode($mode);
     }
 
     protected function processInternalRequest(GetResponseEvent $event)
@@ -63,9 +75,16 @@ class PortalModeListener implements EventSubscriberInterface
                 $mode = unserialize(urldecode($serialized_mode));
                 $this->store->setMode($mode);
 
+                $this->logMode($mode);
+
                 return true;
             }
         }
+    }
+
+    protected function logMode(PortalMode $mode)
+    {
+        $this->logger->info(sprintf('setting portal mode to "%s"', $mode));
     }
 
     public static function getSubscribedEvents()

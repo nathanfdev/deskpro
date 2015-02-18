@@ -22,6 +22,7 @@ services:
     arguments:
       - @service_container
       - @portal_cache_helper
+      - @portal_mode_storage
 
 
   tag_handler.inline:

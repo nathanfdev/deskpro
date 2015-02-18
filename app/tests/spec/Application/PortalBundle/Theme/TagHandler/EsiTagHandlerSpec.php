@@ -36,6 +36,8 @@ namespace spec\Application\PortalBundle\Theme\TagHandler;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\News;
 use Application\PortalBundle\HttpCache\PortalCacheHelper;
+use Application\PortalBundle\Mode\PortalMode;
+use Application\PortalBundle\Mode\PortalModeStorage;
 use Application\PortalBundle\Request\TagRequest;
 use Application\PortalBundle\Theme\Tag;
 use PhpSpec\ObjectBehavior;
@@ -56,12 +58,17 @@ class EsiTagHandlerSpec extends ObjectBehavior
         EsiFragmentRenderer $esi_renderer,
         PortalCacheHelper $cache_helper,
         Tag $tag,
-        TagRequest $tag_request
+        TagRequest $tag_request,
+        PortalModeStorage $mode_storage,
+        PortalMode $mode
     )
     {
         $container->get('fragment.renderer.esi')->willReturn($esi_renderer);
         $cache_helper->isGuestRequest()->willReturn(false);
-        $this->beConstructedWith($container, $cache_helper);
+        // phpspec doesnt like serailzied so just use the normal mode here, in reality it would be serialized()
+        $mode_storage->getSerializedMode()->willReturn($mode);
+
+        $this->beConstructedWith($container, $cache_helper, $mode_storage);
     }
 
     function it_supports_tags_that_say_they_are_esi_for_guests(
@@ -108,7 +115,8 @@ class EsiTagHandlerSpec extends ObjectBehavior
         ParameterBag $query,
         Response $response,
         Article $article,
-        News $news
+        News $news,
+        PortalMode $mode
     )
     {
         $tag->getName()->willReturn('tag_name');
@@ -144,7 +152,8 @@ class EsiTagHandlerSpec extends ObjectBehavior
         $query->replace(
             array(
                 'article' => 5,
-                'param' => 'param'
+                'param' => 'param',
+                PortalMode::ATTR_NAME => $mode // all tags store the mode
             )
         )->shouldBeCalled();
 

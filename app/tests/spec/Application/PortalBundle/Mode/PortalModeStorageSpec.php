@@ -3,6 +3,7 @@
 namespace spec\Application\PortalBundle\Mode;
 
 use Application\PortalBundle\Mode\PortalMode;
+use Application\PortalBundle\Mode\PortalModeStorage;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -22,5 +23,11 @@ class PortalModeStorageSpec extends ObjectBehavior
     {
         $this->setMode($mode);
         $this->getMode()->shouldReturn($mode);
+    }
+
+    function it_will_give_you_the_serialized_mode()
+    {
+        $this->setMode(new PortalMode('/'));
+        $this->getSerializedMode()->shouldBeString();
     }
 }

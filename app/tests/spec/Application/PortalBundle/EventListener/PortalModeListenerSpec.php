@@ -3,6 +3,7 @@
 namespace spec\Application\PortalBundle\EventListener;
 
 use League\Url\Components\Port;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Mode\PortalMode;
 use Application\PortalBundle\Mode\PortalModeFactory;
@@ -22,9 +23,9 @@ class PortalModeListenerSpec extends ObjectBehavior
         $this->shouldImplement('Symfony\Component\EventDispatcher\EventSubscriberInterface');
     }
 
-    function let(PortalModeFactory $factory, PortalModeStorage $store)
+    function let(PortalModeFactory $factory, PortalModeStorage $store, LoggerInterface $logger)
     {
-        $this->beConstructedWith($factory, $store);
+        $this->beConstructedWith($factory, $store, $logger);
     }
 
     public function it_subscribes_to_kernel_request_with_high_priority()
@@ -52,6 +53,7 @@ class PortalModeListenerSpec extends ObjectBehavior
         $factory->createMode($path)->willReturn($mode);
 
         $store->setMode($mode)->shouldBeCalled();
+        $mode->__toString()->willReturn('admin');
 
         $this->onKernelRequest($event);
     }
