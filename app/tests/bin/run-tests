@@ -93,7 +93,7 @@ if [[ "$IS_ERROR" -ne "0" ]]; then
         echo "
         --- BEHAT FAILED --- "
     fi
-    exit 0
+    exit 1
 fi
 
 
@@ -116,4 +116,4 @@ fi
 
 exec travis-ci/after-success
 
-exit 1
+exit 0
