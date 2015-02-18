@@ -2,11 +2,23 @@ default:
   suites:
     default:
         contexts:
+            - Behat\MinkExtension\Context\MinkContext
             - DpBehat\TestsContext:
                 session: @session
                 dataset_manager: @dataset_manager
                 em: @doctrine.orm.default_entity_manager
+            - DpBehat\LanguageContext:
+                language_manager: @language_manager
+                em: @doctrine.orm.default_entity_manager
+                lang_repo: @language_repository
+                lang_stack: @language_stack
+            - DpBehat\PortalModeContext:
+                mode_storage: @portal_mode_storage
   extensions:
+    Behat\MinkExtension:
+       sessions:
+         default:
+           symfony2: ~
     Behat\Symfony2Extension:
         kernel:
             bootstrap: features/bootstrap/boot.php

@@ -2,6 +2,7 @@ imports:
   - { resource: portal_config_dev.yml }
 
 framework:
+    test: ~
     profiler: { only_exceptions: false }
     router:
         resource: "%kernel.root_dir%/config/portal_routing_dev.yml"
