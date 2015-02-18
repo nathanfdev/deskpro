@@ -107,7 +107,6 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
         if (!$request->isMethodSafe() || $request_info->isSpecialPath()) {
             $routable_path = $request_info->getRoutablePath();
             $params = $this->router->match($routable_path);
-            xdebug_break();
             return $params;
         }
 
