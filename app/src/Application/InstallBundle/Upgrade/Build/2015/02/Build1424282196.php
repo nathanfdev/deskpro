@@ -34,11 +34,11 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1424169911 extends AbstractBuild
+class Build1424282196 extends AbstractBuild
 {
     public function run()
     {
-        $this->out("Add sendmail_sources.options");
-		$this->execMutateSql("ALTER TABLE sendmail_sources ADD options LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)'");
+        $this->out("Rate Limit Log Upgrade Class");
+		$this->execMutateSql("CREATE TABLE rate_limit_log (id INT AUTO_INCREMENT NOT NULL, action VARCHAR(255) NOT NULL, ip INT NOT NULL, person_id INT NOT NULL, date_created DATETIME NOT NULL, INDEX search_idx (action, date_created, ip), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci", true);
     }
 }

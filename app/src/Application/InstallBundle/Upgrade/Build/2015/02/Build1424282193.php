@@ -34,12 +34,10 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1424255378 extends AbstractBuild
+class Build1424282193 extends AbstractBuild
 {
     public function run()
     {
-        $this->out("Relax email rejection setting");
-		$this->execMutateSql("REPLACE INTO `settings` (`name`, `value`) VALUES ('core.emails.rate_count', 300)");
-		$this->execMutateSql("REPLACE INTO `settings` (`name`, `value`) VALUES ('core.emails.rate_time', 300)");
+        $this->execSlowAlterTable('blobs', "DROP date_cleanup, ADD INDEX date_created_idx (date_created, is_temp)");
     }
 }
