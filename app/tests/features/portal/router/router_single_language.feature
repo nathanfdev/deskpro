@@ -1,9 +1,9 @@
 Feature: Portal Router
-  In order to manage mode and make sure users arent going to language urlsß
+  In order to manage mode and make sure users arent going to language urls
   As a developer
   I need a router that can match urls and redirect invalid ones
 
-  Background: Fresh database
+  Background: Fresh database with default language
     Given I install the fresh data set
     And the following languages are enabled:
       | default |
@@ -11,7 +11,6 @@ Feature: Portal Router
   Scenario: I visit homepage and don't get redirected
     When I go to "/"
     Then I should be on "/"
-    And the portal should be in "normal" mode
 
   Scenario: I visit another page and still don't get redirected
     When I go to "/new-ticket"
