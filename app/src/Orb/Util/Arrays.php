@@ -368,6 +368,28 @@ class Arrays
     }
 
 
+    /**
+     * Like array_unique but works with object identity.
+     *
+     * @param array $objects
+     * @return array
+     */
+    public static function uniqueObjectArray(array $objects)
+    {
+        $map = array();
+        $res = array();
+
+        foreach ($objects as $k => $o) {
+            $oid = spl_object_hash($o);
+            if (!isset($map[$oid])) {
+                $map[$oid] = true;
+                $res[] = $o;
+            }
+        }
+
+        return $res;
+    }
+
 
     /**
      * Add a new value to the beginning of an associative array.
