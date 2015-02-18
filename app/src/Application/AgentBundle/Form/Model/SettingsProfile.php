@@ -44,10 +44,6 @@ class SettingsProfile
 {
     /** @var string */
     public $name;
-    /** @var \Application\DeskPRO\Entity\PhoneNumber */
-    public $primary_phone_number;
-    /** @var string */
-    public $primary_phone_number_text;
     /** @var string */
     public $override_display_name;
     /** @var string */
