@@ -86,6 +86,8 @@ class SettingsProfile
     /** @var array */
     public $remove_emails;
 
+	public $primary_phone;
+
     /**
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -106,10 +108,10 @@ class SettingsProfile
 
         // store the text, for the user to operate on, but keep track of the PhoneNumber object (or create a new one)
         // this is acting like a DataTransformer.
-        $this->primary_phone_number_text = $person->primary_phone_number ? $person->primary_phone_number->number : '';
-        $this->primary_phone_number = $person->primary_phone_number ?: new PhoneNumber();
-        $this->primary_phone_number_region = $person->primary_phone_number_region ?: $defaultCountryCode;
-        //
+	    $this->primary_phone = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
+	    if (!$this->primary_phone['region']) {
+		    $this->primary_phone['region'] = $defaultCountryCode;
+	    }
 
         $this->override_display_name = $person->override_display_name;
         $this->email = $person->getPrimaryEmailAddress();
@@ -150,12 +152,11 @@ class SettingsProfile
 
         $person->name = $this->name;
 
-        if (PhoneNumbers::looksEmpty($this->primary_phone_number_text)) {
+        if (PhoneNumbers::looksEmpty($this->primary_phone['number'])) {
             $person->setPrimaryPhoneNumber(null);
         } else {
             // just update the $primary->number text of the existing primary PhoneNumber object
-            $this->primary_phone_number->number = $this->primary_phone_number_text;
-            $person->setPrimaryPhoneNumber($this->primary_phone_number);
+            $person->setPrimaryPhoneNumber($this->primary_phone);
         }
 
         $person->override_display_name = $this->override_display_name;
