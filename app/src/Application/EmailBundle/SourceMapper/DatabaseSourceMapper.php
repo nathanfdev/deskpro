@@ -38,6 +38,7 @@ use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\EmailBundle\Log\LogCollectorInterface;
+use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -147,6 +148,20 @@ class DatabaseSourceMapper implements SourceMapperInterface
 
         $account_id = null;
 
+        if ($message instanceof MessageOptionsInterface && ($force_account_id = $message->getMessageOptions()->get(MessageOptionsInterface::OPT_ACCOUNT_ID))) {
+            try {
+                $acc = $this->email_accounts->getAccount($force_account_id);
+                if (!$acc || !$acc->is_enabled || !$acc->outgoing_account) {
+                    $acc = null;
+                }
+            } catch (\Exception $e) {
+                $acc = null;
+            }
+            if ($acc) {
+                $account_id = $acc->id;
+            }
+        }
+
         if ($header_from_raw) {
             foreach ($header_from_raw as $email => $name) {
                 if ($name) {
@@ -159,11 +174,31 @@ class DatabaseSourceMapper implements SourceMapperInterface
                     $acc = $this->email_accounts->findAccountForEmailAddress($email, 'with_transport');
                     if ($acc) {
                         $account_id = $acc->id;
-                        $header_from_email = $acc->getUseEmailAddress();
+                    } else {
+                        $acc = null;
+                        $account_id = null;
                     }
                 }
             }
         }
+
+        if (!$header_from_email) {
+            if ($acc) {
+                $header_from_email = $acc->getUseEmailAddress();
+            } else {
+                foreach ($header_from_raw as $email => $name) {
+                    if ($email) {
+                        $header_from_email = $email;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if ($message instanceof MessageOptionsInterface && ($force_from = $message->getMessageOptions()->get(MessageOptionsInterface::OPT_USE_FROM))) {
+            $header_from_email = $force_from;
+        }
+
         $header_from = implode(', ', $header_from);
 
         $date = date('Y-m-d H:i:s');
@@ -206,6 +241,10 @@ class DatabaseSourceMapper implements SourceMapperInterface
             'date_created'     => $date,
             'exec_count'       => $exec_count
         );
+
+        if ($message instanceof MessageOptionsInterface && ($opts = $message->getMessageOptions()->all())) {
+            $record['options'] = json_encode($opts);
+        }
 
         if ($status == 'pending') {
             if (!$queue_date) {

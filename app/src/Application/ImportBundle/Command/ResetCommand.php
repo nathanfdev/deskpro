@@ -25,10 +25,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\ImporterFactory;
@@ -38,6 +34,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class ResetCommand
+ * @package Application\ImportBundle\Command
+ */
 class ResetCommand extends ContainerAwareCommand
 {
     /**
@@ -51,7 +51,6 @@ class ResetCommand extends ContainerAwareCommand
         $this->addOption('log-path', null, InputOption::VALUE_REQUIRED, 'A base path to write log data to. Defaults to a file in the default log directory.');
     }
 
-
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
@@ -60,27 +59,14 @@ class ResetCommand extends ContainerAwareCommand
         return parent::getContainer();
     }
 
-
     /**
      * {@inheritDoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        echo "Scanning for '.done' files. This may take some time.\n";
+        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
 
-        $factory = new ImporterFactory($this->getContainer(), $input);
-
-        $config = $factory->createImporterConfig();
-        $importer = $factory->createImporter($config);
-
-        $importer->setStatusCallback(new ImporterStatusFnCallback(array('postResetDoneMarker' => function () {
-            echo ".";
-        })));
-        $importer->resetDoneMarkers();
-
-        echo "\n";
-        echo "Done";
-
-        return 0;
+        $output->writeln("Scanning for '.done' files. This may take some time.");
+//        $importer->resetDoneMarkers();
     }
 }

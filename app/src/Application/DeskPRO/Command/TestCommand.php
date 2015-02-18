@@ -35,8 +35,6 @@
 
 namespace Application\DeskPRO\Command;
 
-use Application\EmailBundle\Mail\RawMessage\Rfc822Decoder;
-use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -64,22 +62,8 @@ class TestCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $decoder = new Rfc822Decoder();
-
-        $fp = fopen('/deskpro/sample_emails/email.eml', 'r');
-        $decoder->createRawMessage($fp);
-
-        return;
-        $mailer = $this->getContainer()->getMailer();
-
-        $message = $mailer->createMessage();
-        $message->setTemplate('DeskPRO:emails_agent:test-email.html.twig');
-
-        $person = $this->getContainer()->getAgentData()->get(1);
-        $message->setToPerson($person);
-
-        $mailer->send($message);
-
+        echo __FILE__;
+        echo "\n";
         return 0;
     }
 }

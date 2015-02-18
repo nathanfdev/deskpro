@@ -686,16 +686,25 @@ JS;
     {
         $inserted = false;
 
-        $message = $this->in->getString('message');
+        // plain text message isnt really used, so dont want to spend a lot of
+        // effort cleaning it, so just stripping html it on the off chance it's ever used in a template somehwere
+        $message = Strings::stripTags(Strings::html2Text($this->in->getCleanValue('message', 'string', null, array('noclean' => true))));
+
         $extras = $this->in->getCleanValueArray('extras');
         $draft = null;
         if ($message) {
-            $message_html = Strings::trimHtml($this->in->getHtmlCore('message'));
+            $message_html = trim($this->in->getHtmlCore('message'));
             $message_html = Strings::prepareWysiwygHtml($message_html);
 
             $message_test = preg_replace('/<(p|div) class="dp-signature-start">(.*)$/s', '', $message_html);
-            $message_test = Strings::trimHtml($message_test);
-            if ($message_test && !Strings::compareHtml($message_test, $this->person->getSignatureHtml())) {
+
+            if ($message_test
+                && (
+                    !$this->person->getSignatureHtml()
+                    ||
+                    !Strings::compareHtml($message_test, $this->person->getSignatureHtml())
+                )
+            ) {
                 $draft = $this->em->getRepository('DeskPRO:Draft')->insertDraft(
                     $content_type, $content_id, $message, $message_html, $extras
                 );
