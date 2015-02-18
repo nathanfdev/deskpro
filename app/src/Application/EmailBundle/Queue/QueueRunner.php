@@ -221,7 +221,7 @@ class QueueRunner
                     SELECT * FROM sendmail_sources
                     WHERE status IN ('pending') AND date_status < ?
                     LIMIT 250
-                ", array(date('Y-m-d H:i:s', time() - 3600))); // 1 hrs
+                ", array(date('Y-m-d H:i:s', time() - 1800))); // 30m
 
                 foreach ($batch as $r) {
                     $this->source_mapper->setSourcePending($r);
