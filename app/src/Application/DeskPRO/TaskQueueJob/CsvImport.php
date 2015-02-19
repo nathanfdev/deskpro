@@ -94,6 +94,7 @@ class CsvImport extends AbstractJob
             'field_maps' => false,
             'new_custom_map' => false,
             'skip_first' => true,
+	        'update_if_exists' => true,
             'welcome_email' => false,
             'welcome_from_name' => '',
             'welcome_from_email' => '',
@@ -257,6 +258,7 @@ class CsvImport extends AbstractJob
         $secondary_emails = array();
         $addresses = array();
         $errors = array();
+	    $old = null;
 
         foreach ($field_maps AS $column_id => $info) {
             if (empty($info['map'])) {
@@ -284,9 +286,12 @@ class CsvImport extends AbstractJob
                     continue;
                 }
 
-                if ($person_em->findOneByEmail($column_value)) {
-                    $errors[] = sprintf('Email %s already exist', $column_value);
-                    continue;
+                if ($old = $person_em->findOneByEmail($column_value)) {
+	                if (!$this->_data['update_if_exists']) {
+		                $errors[] = sprintf('Email %s already exist', $column_value);
+		                continue;
+	                }
+	                $person = $old;
                 }
 
                 $primary_email = strtolower($column_value);
@@ -299,9 +304,12 @@ class CsvImport extends AbstractJob
                     $errors[] = sprintf('Email %s already exist', $column_value);
                     break;
                 }
-                if ($person_em->findOneByEmail($column_value)) {
-                    $errors[] = sprintf('Email %s already exist', $column_value);
-                    break;
+                if ($old = $person_em->findOneByEmail($column_value)) {
+	                if (!$this->_data['update_if_exists']) {
+		                $errors[] = sprintf('Email %s already exist', $column_value);
+		                break;
+	                }
+	                $person = $old;
                 }
 
                 $secondary_emails[] = strtolower($column_value);
@@ -312,20 +320,20 @@ class CsvImport extends AbstractJob
             $primary_email = array_shift($secondary_emails);
         }
 
-        if (!$primary_email) {
+        if (!$primary_email && !$person['id']) {
             $this->log($errors);
-
             return false;
         }
 
-        $person->addEmailAddressString($primary_email);
+	    $emails = array_flip($person->getEmailAddresses());
+        !isset($emails[$primary_email]) && $person->addEmailAddressString($primary_email);
 
         array_unique($secondary_emails);
         foreach ($secondary_emails AS $secondary_email) {
             if ($secondary_email == $primary_email) {
                 continue;
             }
-            $person->addEmailAddressString($secondary_email);
+	        !isset($emails[$secondary_email]) && $person->addEmailAddressString($secondary_email);
         }
 
         foreach ($field_maps AS $column_id => $info) {

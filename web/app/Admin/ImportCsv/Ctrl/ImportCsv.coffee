@@ -18,7 +18,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @$scope.enclosure = 'none'
       @options = {}
 
-      @$scope.importSettings = {fieldMappings: [], additionalMappings: [], skipFirst: 1, welcomeEmail: false, showExtraMappings: {}}
+      @$scope.importSettings = {fieldMappings: [], additionalMappings: [], skipFirst: 1, updateIfExists: 1, welcomeEmail: false, showExtraMappings: {}}
       @showExtraMappingsCases = [
         'organization', 'phone', 'website', 'im', 'twitter', 'linkedin', 'facebook', 'address1', 'address2', 'city',
         'state', 'post_code', 'country', 'new_custom', 'language'
@@ -96,6 +96,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         field_maps: field_maps
         user_filename: user_filename
         skip_first: skip_first
+        update_if_exists: @$scope.importSettings.updateIfExists
         welcome_email: if welcome_email then 1 else 0,
         filename: filename
         options: options
