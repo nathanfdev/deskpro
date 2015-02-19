@@ -490,25 +490,31 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			return l;
 		};
 
-		var open = function() {
+		var open = function(openNow) {
 			if (DeskPRO_Window.appsSidebar.visible || !self.anyAppsSidebar) return;
 
 			self.fragmentElement.addClass('with-apps-sidebar-overlay');
-			sidebarEl.css('right', -DeskPRO_Window.appsSidebar.width).css('width', DeskPRO_Window.appsSidebar.width).show();
-			sidebarEl.stop().animate({right: 0}, {
-				duration: 350,
-				complete: function() {
-					sizer.css('left', sizerCalcLeft()).show();
-					if (!isOver && !isPlaceOver && !outTimeout && !isSizerOver && !isSizing) {
-						outTimeout = window.setTimeout(function() {
-							outTimeout = null;
-							if (!isOver && !isPlaceOver && !isSizerOver && !isSizing) {
-								close();
-							}
-						}, 380);
+
+			if (openNow) {
+				sidebarEl.stop().css('right', 0).show();
+				sizer.css('left', sizerCalcLeft()).show();
+			} else {
+				sidebarEl.css('right', -DeskPRO_Window.appsSidebar.width).css('width', DeskPRO_Window.appsSidebar.width).show();
+				sidebarEl.stop().animate({right: 0}, {
+					duration: 350,
+					complete: function () {
+						sizer.css('left', sizerCalcLeft()).show();
+						if (!isOver && !isPlaceOver && !outTimeout && !isSizerOver && !isSizing) {
+							outTimeout = window.setTimeout(function () {
+								outTimeout = null;
+								if (!isOver && !isPlaceOver && !isSizerOver && !isSizing) {
+									close();
+								}
+							}, 380);
+						}
 					}
-				}
-			})
+				});
+			}
 		};
 
 		var close = function() {
@@ -630,7 +636,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			ev.stopPropagation();
 			ev.stopImmediatePropagation();
 			ev.preventDefault();
-			togglePin();
+			open(true);
 		});
 		sidebarEl.find('.pin-btn').on('click', function(ev) {
 			ev.stopPropagation();

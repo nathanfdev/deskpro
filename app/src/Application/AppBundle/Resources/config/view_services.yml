@@ -1,0 +1,6 @@
+# View services, usually take an entity and turn them into a ViewModel to be used in templates.
+services:
+
+  view.tickets:
+      class: Application\AppBundle\DataService\TicketViewService
+      arguments: [@form_field_manager, @ticket_layout_factory, @deskpro.core.translate]

@@ -7,6 +7,8 @@
  * Contains the status and result of an AddDelegate Operation request.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_BaseDelegateResponseMessageType.
  */
 class EWSType_AddDelegateResponseMessageType extends EWSType
 {
@@ -14,7 +16,7 @@ class EWSType_AddDelegateResponseMessageType extends EWSType
      * Contains the response messages for an Exchange Web Services delegate
      * management request.
      *
-     * @since Exchnage 2007 SP1
+     * @since Exchange 2007 SP1
      *
      * @var EWSType_ArrayOfDelegateUserResponseMessageType
      */
@@ -23,7 +25,7 @@ class EWSType_AddDelegateResponseMessageType extends EWSType
     /**
      * Provides a text description of the status of the response.
      *
-     * @since Exchnage 2007 SP1
+     * @since Exchange 2007 SP1
      *
      * @var string
      */
@@ -33,7 +35,7 @@ class EWSType_AddDelegateResponseMessageType extends EWSType
      * Provides an error code that identifies the specific error that the
      * request encountered.
      *
-     * @since Exchnage 2007 SP1
+     * @since Exchange 2007 SP1
      *
      * @var EWSType_ResponseCodeType
      */
@@ -43,7 +45,7 @@ class EWSType_AddDelegateResponseMessageType extends EWSType
      * Currently unused and is reserved for future use. It contains a value of
      * 0.
      *
-     * @since Exchnage 2007 SP1
+     * @since Exchange 2007 SP1
      *
      * @var integer
      */
@@ -52,7 +54,7 @@ class EWSType_AddDelegateResponseMessageType extends EWSType
     /**
      * Provides additional error response information.
      *
-     * @since Exchnage 2007 SP1
+     * @since Exchange 2007 SP1
      *
      * @var string
      */

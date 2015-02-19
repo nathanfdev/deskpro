@@ -42,6 +42,7 @@ class Build1416914310 extends AbstractBuild
 		if (!$did_do) {
 			$this->out("Add app_packages.trigger_events");
 			$this->execMutateSql("ALTER TABLE app_packages ADD trigger_events LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)'");
+			$this->execMutateSql("ALTER TABLE app_instances ADD perm_type VARCHAR(15) NOT NULL", true);
 
 			$this->out("Add ticket_triggers.by_app_mode");
 			$this->execMutateSql("ALTER TABLE ticket_triggers ADD by_app_mode LONGTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)'");

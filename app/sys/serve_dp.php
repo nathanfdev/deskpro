@@ -816,7 +816,7 @@ class DpLoader extends LoaderAbstract
         $sids['aa'] = !empty($_COOKIE['dpsid-admin']) ? $_COOKIE['dpsid-admin'] : '';
 
         // i=u(user),a(agent),aa(admin)
-        $interface = !empty($_GET['i']) ? $_GET['i'] : null;
+        $interface = (!empty($_GET['i']) && is_scalar($_GET['i'])) ? $_GET['i'] : null;
 
         $pdo = $this->getPdo();
         $q = $pdo->prepare("UPDATE sessions SET date_last = ? WHERE id = ? AND auth = ?");

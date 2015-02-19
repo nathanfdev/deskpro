@@ -53,12 +53,20 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
      */
     protected $person_context;
 
-    public function __construct($snippet_id, $reply_pos = null)
+    public function __construct($snippet_id = null, $reply_pos = null)
     {
+        if (!$snippet_id) {
+            return;
+        }
+
         $item = new ReplySnippetActionItem();
         $item->snippet_id = $snippet_id;
         $item->reply_pos  = $reply_pos;
         $item->snippet = App::getOrm()->find('DeskPRO:TextSnippet', $snippet_id);
+
+        if (!$item->snippet) {
+            return;
+        }
 
         if ($item->snippet) {
             $this->addSnippetItem($item);

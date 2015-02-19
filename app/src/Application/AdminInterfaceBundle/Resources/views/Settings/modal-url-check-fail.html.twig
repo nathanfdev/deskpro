@@ -1,0 +1,23 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_title %}
+	<h4 class="modal-title">Problem with your new URL</h4>
+{% endblock %}
+{% block modal_body %}
+	<p>
+		We detected that the Helpdesk URL that you entered may be invalid:
+	</p>
+	<div style="padding: 5px; margin: 10px; border: 2px solid #ddd;">
+		{{ ng_var('url') }}
+	</div>
+	<p>
+		You should double-check the URL before you continue.
+	</p>
+{% endblock %}
+{% block modal_footer %}
+	<button class="btn btn-danger" ng-click="continue()">
+		<i class="fa fa-exclamation-triangle"></i> Save the new URL anyway
+	</button>
+	<button class="btn btn-primary" ng-click="dismiss()">
+		<i class="fa fa-stop"></i> Go Back
+	</button>
+{% endblock %}

@@ -41,6 +41,7 @@ use Application\DeskPRO\Search\Adapter\MysqlAdapter;
 use Application\DeskPRO\Search\Searcher\ContentSearcherInterface;
 use Application\DeskPRO\Search\SearcherResult\Result;
 use Application\DeskPRO\Search\SearcherResult\ResultSet;
+use Orb\Util\Strings;
 
 /**
  * The content searcher searches: articles, downloads, feedback, news
@@ -99,8 +100,14 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
         $limit_types = "'" . implode('\',\'', $limit_types) . "'";
 
+        $query_text_orig = $query_text;
+
+        $query_text = Strings::decodeHtmlEntities($query_text);
+        $query_text = Strings::decodeUnicodeEntities($query_text);
+        $query_text = Strings::utf8_accents_to_ascii($query_text);
+
         // Specific labels
-        if (preg_match_all('#\[(.*?)\]#', $query_text, $m)) {
+        if (preg_match_all('#\[(.*?)\]#', $query_text_orig, $m)) {
             foreach ($m[1] as $w) {
                 $query_text .= " " . MysqlAdapter::encodeLabel(strtolower($w));
             }
@@ -271,6 +278,10 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
         $limit_type_names = $limit_types;
         $limit_types = "'" . implode('\',\'', $limit_types) . "'";
+
+        $query_text = Strings::decodeHtmlEntities($query_text);
+        $query_text = Strings::decodeUnicodeEntities($query_text);
+        $query_text = Strings::utf8_accents_to_ascii($query_text);
 
         $query_words = explode(' ', $query_text);
         if (!$query_words) {

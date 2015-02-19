@@ -48,6 +48,8 @@ use Orb\Util\Strings;
  */
 class News extends ContentAbstract implements HighlightableModelInterface
 {
+    const CONTENT_TYPE = 'news';
+
     /**
      * @var \Application\DeskPRO\Entity\NewsCategory
      *
@@ -126,6 +128,10 @@ class News extends ContentAbstract implements HighlightableModelInterface
         return $diff;
     }
 
+    /**
+     * @return string
+     * @deprecated generate the route properly, check route name is right and use getSlug()
+     */
     public function getLink()
     {
         $url = App::getRouter()->generate('user_news_view', array('slug' => $this->getUrlSlug()), true);
@@ -133,6 +139,10 @@ class News extends ContentAbstract implements HighlightableModelInterface
         return $url;
     }
 
+    /**
+     * @return string
+     * @deprecated generate the route properly, check route name is right and use getSlug()
+     */
     public function getPermalink()
     {
         $url = App::getRouter()->generate('user_news_view', array('slug' => $this->id), true);
@@ -210,6 +220,14 @@ class News extends ContentAbstract implements HighlightableModelInterface
         }
     }
 
+    protected function addSlugHistory($old_slug)
+    {
+        $history = new NewsSlugHistory($this, $old_slug);
+        $this->slug_history->add($history);
+
+        return $history;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -249,5 +267,9 @@ class News extends ContentAbstract implements HighlightableModelInterface
         $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelNews', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'news', 'orphanRemoval' => true));
         $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL)), 'dpApi' => true ));
         $metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'dpApi' => true ));
+        $metadata->mapOneToMany(array(
+            'fieldName' => 'slug_history', 'targetEntity' => 'Application\DeskPRO\Entity\NewsSlugHistory',
+            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'news'
+        ));
     }
 }

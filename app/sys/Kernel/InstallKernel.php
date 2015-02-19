@@ -87,10 +87,13 @@ class InstallKernel extends BaseKernel
     {
         $bundles = array(
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+            new \Symfony\Bundle\MonologBundle\MonologBundle(),
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\InstallBundle\InstallBundle(),
+            new \Application\EmailBundle\EmailBundle(),
         );
 
         return $bundles;
@@ -170,9 +173,9 @@ class InstallKernel extends BaseKernel
 
         if ($cache_dir === null) {
             if (defined('DPC_IS_CLOUD')) {
-                $cache_dir = dp_get_cache_dir().'/'.$this->environment.'-cloud/';
+                $cache_dir = dp_get_cache_dir().'/'.$this->environment.'-cloud';
             } else {
-                $cache_dir = dp_get_cache_dir().'/'.$this->environment.'/';
+                $cache_dir = dp_get_cache_dir().'/'.$this->environment;
             }
         }
 

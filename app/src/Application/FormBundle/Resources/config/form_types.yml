@@ -2,9 +2,23 @@ services:
 
   form.ticket:
     class: Application\FormBundle\Form\Type\TicketType
-    arguments: [@form_field_manager, @ticket_layout_factory, @ticket_layout_differ, @form_hierarchy_generator, @doctrine.orm.default_entity_manager]
+    arguments:
+      - @form_field_manager
+      - @ticket_layout_factory
+      - @ticket_layout_differ
+      - @form_hierarchy_generator
+      - @doctrine.orm.default_entity_manager
+      - @language_manager
+      - @captcha_decider
     tags:
       - { name: form.type, alias: ticket }
+
+
+  form.csrf_double_submit_extension:
+    class: Application\FormBundle\Form\Type\CsrfDoubleSubmitExtension
+    arguments: [@request_stack]
+    tags:
+      - { name: form.type_extension, alias: form }
 
 
   form.ticket_reply:
@@ -15,7 +29,7 @@ services:
 
   form.person_registration:
     class: Application\FormBundle\Form\Type\PersonRegistrationType
-    arguments: [@form_field_manager]
+    arguments: [@form_field_manager, @language_manager, @captcha_decider]
     tags:
       - { name: form.type, alias: person_registration }
 
@@ -29,9 +43,53 @@ services:
 
   form.person_profile:
     class: Application\FormBundle\Form\Type\PersonEditProfileType
-    arguments: [@form_field_manager]
+    arguments: [@form_field_manager, @language_manager, @blob.storage, @doctrine.orm.default_entity_manager]
     tags:
       - { name: form.type, alias: person_profile }
+
+
+  form.comment:
+    class: Application\FormBundle\Form\Type\CommentType
+    tags:
+      - { name: form.type, alias: comment }
+
+
+  form.new_feedback:
+    class: Application\FormBundle\Form\Type\NewFeedbackType
+    arguments: [@captcha_decider]
+    tags:
+      - { name: form.type, alias: new_feedback }
+
+  form.custom_feedback_fields:
+    class: Application\FormBundle\Form\Type\CustomFeedbackType
+    arguments: [@form_field_manager]
+    tags:
+      - { name: form.type, alias: custom_feedback_fields }
+
+
+  form.feedback_attachment:
+    class: Application\FormBundle\Form\Type\FeedbackAttachmentType
+    arguments: [@blob.storage]
+    tags:
+      - { name: form.type, alias: feedback_attachment }
+
+
+  form.feedback_attachment_collection:
+    class: Application\FormBundle\Form\Type\FeedbackAttachmentCollectionType
+    tags:
+      - { name: form.type, alias: feedback_attachment_collection }
+
+
+  form.feedback_category:
+    class: Application\FormBundle\Form\Type\FeedbackCategoryType
+    tags:
+      - { name: form.type, alias: feedback_category }
+
+
+  form.request_password_reset:
+    class: Application\FormBundle\Form\Type\PasswordResetRequestType
+    tags:
+      - { name: form.type, alias: request_password_reset }
 
 
   form.person_change_password:
@@ -54,6 +112,13 @@ services:
       - { name: form.type, alias: deskpro_custom_data_person }
 
 
+  form.custom_data_feedback:
+    class: Application\FormBundle\Form\Type\CustomDataFeedbackType
+    arguments: [@form_field_manager]
+    tags:
+      - { name: form.type, alias: deskpro_custom_data_feedback }
+
+
   form.ticket_message:
     class: Application\FormBundle\Form\Type\TicketMessageType
     tags:
@@ -62,7 +127,7 @@ services:
 
   form.ticket_message_attachment:
     class: Application\FormBundle\Form\Type\TicketMessageAttachmentType
-    arguments: [@blob.storage]
+    arguments: [@blob.storage, @doctrine.orm.default_entity_manager]
     tags:
       - { name: form.type, alias: ticket_message_attachment }
 
@@ -107,7 +172,6 @@ services:
 
   form.department:
     class: Application\FormBundle\Form\Type\DepartmentType
-    arguments: [@form_hierarchy_generator, @doctrine.orm.default_entity_manager]
     tags:
       - { name: form.type, alias: deskpro_department }
 
@@ -143,15 +207,9 @@ services:
       - { name: form.type, alias: deskpro_captcha }
 
 
-  form.attach:
-    class: Application\FormBundle\Form\Type\AttachType
-    tags:
-      - { name: form.type, alias: deskpro_attach }
-
-
   form.blob:
     class: Application\FormBundle\Form\Type\BlobType
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: [@doctrine.orm.default_entity_manager, @blob.storage]
     tags:
       - { name: form.type, alias: deskpro_blob }
 
@@ -179,3 +237,10 @@ services:
     class: Application\FormBundle\Form\Type\HeirarchicalEntityType
     tags:
       - { name: form.type, alias: deskpro_heirarchical_entity }
+
+
+  form.entity_hierarchy:
+    class: Application\FormBundle\Form\Type\EntityHeirarchyType
+    arguments: [@form_hierarchy_generator]
+    tags:
+      - { name: form.type, alias: entity_hierarchy }

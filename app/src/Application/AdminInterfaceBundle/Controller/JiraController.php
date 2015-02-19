@@ -67,43 +67,14 @@ class JiraController extends AbstractController
 
 			if ($back = $request->getSession()->get('jira_back_url')) {
 				$request->getSession()->remove('jira_back_url');
-			} else {
-				$back = $this->generateUrl('jira_test');
 			}
 
-			return $this->redirect($back);
+			return $this->redirect($back ?: $this->generateUrl('admin'));
 		}
 
 		$credentials = $oauth->requestTempCredentials();
 		$request->getSession()->set('jira_oauth', $credentials);
 
 		return $this->redirect($oauth->getAuthUrl());
-	}
-
-	public function testAction()
-	{
-		/** @var JIRA $js */
-		$js = $this->get(JIRA::NAME);
-		$api = $js->getApi();
-
-		$ret = $api->call('rest/auth/1/session');
-//		$ret = $api->get('/user', array('username' => 'n3b'));
-
-
-//		$meta = $js->getMeta()->toArray();
-//
-//		$ret = $api->post('/search', array(
-//			'jql' => sprintf('id IN (%s)', implode(',', array(10525, 10526))),
-//			'fields' => $meta['default_fields_summary'],
-//			'expand' => array('renderedFields'),
-//		));
-
-		echo '<script type="text/javascript">
-			var a = ' . json_encode($ret) . ';
-			console.log(a);
-		</script>';
-//		var_export($ret);
-
-		die();
 	}
 }

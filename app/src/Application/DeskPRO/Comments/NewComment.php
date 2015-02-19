@@ -223,7 +223,6 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
                     $message = App::getMailer()->createMessage();
                     $message->setTo($email_to, $person->getDisplayName());
                     $message->setTemplate('DeskPRO:emails_user:comment-new.html.twig', $vars);
-                    $message->enableQueueHint();
 
                     App::getMailer()->send($message);
                 });

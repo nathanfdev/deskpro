@@ -119,6 +119,9 @@ class DataInitializer
 
     public function runSearchIndex()
     {
+        if (defined('DP_TESTS_RUNNING')) {
+            return;
+        }
         if ($this->is_import) {
             return;
         }

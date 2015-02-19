@@ -1,0 +1,4 @@
+services:
+
+    url_host_checker:
+        class: Application\AppBundle\Helper\UrlHostChecker

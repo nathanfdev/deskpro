@@ -227,8 +227,8 @@ class SearchController extends AbstractController
 
             foreach ($results as $item) {
                 $data['results'][] = array(
-                    'url' => $item->getLink(),
-                    'title' => $item->getTitle()
+                    'url' => $item['object']->getLink(),
+                    'title' => $item['object']->getTitle()
                 );
             }
 

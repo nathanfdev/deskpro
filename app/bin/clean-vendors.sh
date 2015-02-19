@@ -428,8 +428,6 @@ rm -rf _config.yml component.json composer.json CONTRIBUTING.md	Gemfile Gemfile.
 cd $DIR_WEB_BOWER/jquery
 rm -rf component.json composer.json jquery-migrate.js jquery-migrate.min.js
 
-cd $DIR_WEB_BOWER/jquery-ui
-rm -rf ui/*.js ui/i18n/
 rm -rf AUTHORS.txt composer.json MANIFEST
 
 mv ui/minified/jquery-ui.min.js /tmp/jquery-ui.min.js

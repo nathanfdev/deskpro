@@ -62,7 +62,6 @@ class FeedbackController extends AbstractController
         $counts['comments_awaiting_validation'] = $this->em->getRepository('DeskPRO:FeedbackComment')->countAwaitingValidation();
 
         $status_counts           = array();
-        $status_counts['new']    = $this->em->getRepository('DeskPRO:Feedback')->countNew();
         $status_counts['active'] = $this->em->getRepository('DeskPRO:Feedback')->countActiveGrouped();
         $status_counts['closed'] = $this->em->getRepository('DeskPRO:Feedback')->countClosedGrouped();
         $status_counts['hidden'] = $this->em->getRepository('DeskPRO:Feedback')->countHiddenGrouped();
@@ -430,7 +429,9 @@ class FeedbackController extends AbstractController
 
                 $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
 
-                $feedback['content'] = $this->in->getCleanValue('content', 'string', null, array('noclean' => true));
+                $feedback['content'] = $this->person->hasPerm('agent_publish.can_insert_html')
+                    ? $this->in->getCleanValue('content', 'string', null, array('noclean' => true))
+                    : $this->in->getCleanValue('content', 'html');
 
                 $data['content_html'] = $this->renderView('AgentBundle:Feedback:view-content-tab.html.twig', array(
                     'feedback' => $feedback,

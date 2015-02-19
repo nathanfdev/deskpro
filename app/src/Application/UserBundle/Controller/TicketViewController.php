@@ -125,11 +125,28 @@ class TicketViewController extends AbstractController
                             // Otherwise, they might have an account
                             // from elsewhere (eg active directory)
                             } else {
+                                $account_name = null;
                                 foreach ($ticket->person->usersource_assoc as $us) {
                                     if ($us->identity_friendly) {
-                                        $tpl_globals->setVariable('login_with_email', $us->identity_friendly);
+                                        $account_name = $us->identity_friendly;
                                         break;
                                     }
+                                }
+
+                                // - If the friendly identity looks like an email address
+                                // but the user does not have that address on their account,
+                                // then just fallback to using the one on their account which sholud
+                                // map to the correct user anyway.
+                                // - This is to fix a certain kind of bug where the friendly identity
+                                // in AD might have been the users full account name (user@network)
+                                if (strpos($account_name, '@') !== false) {
+                                    if (!$ticket->person->hasEmailAddress($account_name)) {
+                                        $account_name = $ticket->person->getPrimaryEmailAddress();
+                                    }
+                                }
+
+                                if ($account_name) {
+                                    $tpl_globals->setVariable('login_with_email', $account_name);
                                 }
                             }
 

@@ -44,6 +44,8 @@ use Orb\Util\Util;
  */
 abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
+    const CONTENT_TYPE = null;
+
     const STATUS_PUBLISHED   = 'published';
     const STATUS_ARCHIVED    = 'archived';
     const STATUS_HIDDEN      = 'hidden';
@@ -61,7 +63,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $id = null;
 
-        /**
+    /**
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $person = null;
@@ -157,11 +159,16 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $_label_manager = null;
 
+    /**
+     */
+    protected $slug_history;
+
     public function __construct()
     {
         $this['date_created'] = new \DateTime();
         $this->revisions      = new \Doctrine\Common\Collections\ArrayCollection();
         $this->labels         = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->slug_history = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this['status']        = self::STATUS_HIDDEN;
         $this['hidden_status'] = self::HIDDEN_STATUS_DRAFT;
@@ -179,13 +186,15 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         $old_title = $this->title;
         $this->setModelField('title', $title);
+        // note: removed the setSlug call, we do that in the DoctrineContentSlugListener now (prepersist/preupdate)
+    }
 
-        if (!$this->slug || $this->slug == Strings::slugifyTitle($old_title)) {
-            $this['slug']  = Strings::slugifyTitle($title);
-            if (!$this['slug']) {
-                $this['slug'] = 'view';
-            }
-        }
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
     }
 
     public function getLanguage()
@@ -313,12 +322,52 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $content;
     }
 
+    /**
+     * @return string
+     * @deprecated use getSlug() instead (we no longer do the id-slug format in portal)
+     */
     public function getUrlSlug()
     {
         return $this->id.'-'.$this->slug;
     }
 
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getSlugHistory()
+    {
+        return $this->slug_history;
+    }
+
+    /**
+     * NOTE: don't use this directly. Instead, use the "content_slug_manager" service to set the slug for you.
+     *
+     * @param $new_slug
+     * @return null or the new slug history object
+     * @internal this shouldn't be called except by the content_slug_manager
+     */
+    public function setSlug($new_slug)
+    {
+        $history = null;
+        if ($new_slug !== $this->slug && $this->slug) {
+
+            // if the slug exists in history already, we don't want to add it again
+            $object_slug = $this->slug;
+            if (!$this->slug_history->exists(function($key, $history) use ($object_slug) {
+                return $object_slug === $history->getSlug();
+            })) {
+                $history = $this->addSlugHistory($this->slug);
+            }
+
+        }
+        $this->setModelField('slug', $new_slug);
+
+        return $history;
+    }
+
     abstract public function getLink();
+
+    abstract protected function addSlugHistory($old_slug);
 
     abstract public function getPermalink();
 
@@ -402,6 +451,17 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $stats['down'];
     }
 
+    public function markRatingChangedPositivly()
+    {
+        // 2 to override the -1 when the neg rating was added
+        $this['total_rating'] = $this->total_rating + 2;
+    }
+
+    public function markRatingChangedNegatively()
+    {// 2 to override the -1 when the positive rating was added
+        $this['total_rating'] = $this->total_rating - 2;
+    }
+
     public function getRatingPercent()
     {
         if (!$this->num_ratings) {
@@ -426,13 +486,13 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     public function addComment($comment)
     {
-        $this->num_comments++;
+        $this->setModelField('num_comments', $this->num_comments + 1);
         $comment->setObject($this);
     }
 
     public function removeComment($comment)
     {
-        $this->num_comments--;
+        $this->setModelField('num_comments', $this->num_comments - 1);
     }
 
     /**
@@ -493,5 +553,45 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function setRealContent($content)
     {
         $this->setModelField('content', $content);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     */
+    public function setPerson(Person $person = null)
+    {
+        $this->setModelField('person', $person);
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDatePublished()
+    {
+        return $this->date_published;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
     }
 }

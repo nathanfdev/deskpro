@@ -420,7 +420,6 @@ class ChatController extends AbstractController
         $message->setTo($email, $name);
         $message->setSubject($email_subject);
         $message->setBody($email_body, 'text/html');
-        $message->enableQueueHint();
 
         $this->container->getMailer()->send($message);
     }

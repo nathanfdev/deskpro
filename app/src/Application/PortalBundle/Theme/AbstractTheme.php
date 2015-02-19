@@ -49,7 +49,7 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
     /**
      * @var ThemeInterface|null
      */
-    private $parent;
+    protected $parent;
 
     public function serialize()
     {
@@ -103,6 +103,15 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
         return null;
     }
 
+    /**
+     * A list of all tag objects
+     *
+     * @return Tag[]
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
 
     public function getTemplateMap()
     {
@@ -124,7 +133,9 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
                     $name = implode('/', $path_broken);
                 }
                 $template_name = "Theme:$controller:$name";
-                $temps[$template_name] = $temp->getRealPath();
+                $resolved_path = $temp->getRealPath();
+                $resolved_path = substr($resolved_path, strlen(realpath(DP_ROOT)));
+                $temps[$template_name] = $resolved_path;
             }
         }
 
@@ -133,6 +144,12 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
 
     public function setTags(array $tags)
     {
-        $this->tags = $tags;
+        $tags_with_names = array();
+
+        foreach ($tags as $tag) {
+            $tags_with_names[$tag->getName()] = $tag;
+        }
+
+        $this->tags = $tags_with_names;
     }
 }

@@ -2,25 +2,9 @@
 
 {% block inner_content %}
     {{ page.knowledgebase_breadcrumbs()|raw }}
-
-    {% if brand_setting('user.kb_subscriptions') %}
-        <hr/>
-        <hr/>
-        {% if is_subscribed %}
-        You are subscribed.
-        {% endif %}
-        <a href="{{ path('portal_kb_article_category_toggle_subscription', { slug: category.slug }) }}">
-            {% if is_subscribed %}
-                {{ phrase('portal.general.btn-unsubscribe') }} from this category
-            {% else %}
-                {{ phrase('portal.general.btn-subscribe') }} to get an email notification when new articles are published
-            {% endif %}
-        </a>
-        <hr/>
-        <hr/>
-    {% endif %}
-
+    <h1>{{ category.title }}</h1>
+    {{ page.knowledgebase_category_subscription()|raw }}
     {{ page.knowledgebase()|raw }}
-    {{ page.knowledgebase_articles_simple()|raw }}
+    {{ page.knowledgebase_articles_simple({ show_category_link: false })|raw }}
     {{ page.knowledgebase_pager()|raw }}
 {% endblock inner_content %}

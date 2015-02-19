@@ -127,7 +127,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         p = @Api.sendDelete("/agent_teams/#{@teamId}")
         p.then(=>
           @getTeamListCtrl().removeTeamById(@teamId)
-          @$state.go('agents.agents')
+          @$state.go('agents.teams')
         )
         return p
 

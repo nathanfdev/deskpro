@@ -1442,7 +1442,7 @@ class KbController extends AbstractController
      *			),
      *			@SWG\Parameter(
      *				name="usergroup_id[]",
-     *				description="ID of user group that has access. If not provided, defaults to all users.",
+     *				description="ID of usergroup that has access. If not provided, defaults to all users.",
      *				paramType="query",
      *				required=false,
      *				type="integer"
@@ -1575,7 +1575,7 @@ class KbController extends AbstractController
      *			),
      *			@SWG\Parameter(
      *				name="usergroup_id[]",
-     *				description="ID of user group that has access. If not provided, defaults to all users.",
+     *				description="ID of usergroup that has access. If not provided, defaults to all users.",
      *				paramType="query",
      *				required=false,
      *				type="integer"

@@ -263,6 +263,10 @@ class CsvImport extends AbstractJob
                 continue;
             }
 
+            if (!isset($row[$column_id])) {
+                continue;
+            }
+
             $column_value = $row[$column_id];
             if ($column_value === '') {
                 continue;

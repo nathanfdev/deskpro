@@ -10,19 +10,26 @@
             <i class="fa fa-search-plus"></i> Link Existing Issue
         </button>
     </header>
-    <header class="sub-header" ng-show="link_search_mode">
-        <input type="text" placeholder="Enter Issue ID" ng-model="search_issue" style="display: block; width: 95%;" />
+    <header class="sub-header" ng-show="link_search_mode" style="height: auto;">
+        <input type="text" placeholder="Enter Issue ID" ng-model="search" style="display: block; width: 95%;" />
         <div style="text-align: center; margin: 8px 0;">
-            <div ng-show="search_issue_state != 1">
-                <button ng-click="search()" class="dp-btn" type="button">
-                    <i class="fa fa-link"></i> Find Issue and Preview
-                </button>
+            <div ng-show="active_searches === 0">
                 <span style="font-size: 11px;">
-                    or <span class="faux-link" ng-click="link_search_mode = false">cancel</span>
+                    <span class="faux-link" ng-click="link_search_mode = false">cancel</span>
                 </span>
             </div>
-            <div ng-show="search_issue_state == 1">
+            <div ng-show="active_searches > 0">
                 <i class="flat-spinner"></i>
+            </div>
+
+            <div class="jira-search-results-list" ng-if="search_results.length">
+                <ul>
+                    <li ng-repeat="issue in search_results">
+                        <a href="#" ng-click="$event.preventDefault();openLinkModal(issue)">
+                            {{ issue.key }} - {{ issue.fields.summary }}
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
         <div style="margin: 8px; background: #fff; padding: 4px; font-size: 11px; border: 1px solid #ccc; border-radius: 2px;" ng-show="404 === search_issue_state">Issue not found. Please enter a valid issue ID.</div>

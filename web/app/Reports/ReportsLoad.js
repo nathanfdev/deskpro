@@ -58,6 +58,13 @@ define([
       };
       var $html = angular.element(document.getElementsByTagName('html')[0]);
 
+      // All target=blanks need to null out window.opener
+      $(document).on('click', 'a[target="_blank"]', function(ev) {
+        ev.preventDefault();
+        var o = window.open($(this).attr('href'));
+        o.opener = null;
+      });
+
       angular.element().ready(function() {
         $html.addClass('ng-app');
 

@@ -45,13 +45,13 @@ class EmailAccountManagerService
     public static function create(DeskproContainer $container)
     {
         $repos           = new EmailAccountRepository($container->getEm());
-        $tr_factory      = new TransportFactory();
+        $tr_factory      = $container->get('email.raw_transport_factory');
         $fetcher_factory = new FetcherStorageFactory();
 
         $manager = new EmailAccountManager($repos, $tr_factory, $fetcher_factory);
 
         $default_addr = $container->getSetting('core.default_from_email');
-        $account      = $manager->findAccountForEmailAddress($default_addr, 'is_enabled | with_transport');
+        $account = $manager->findAccountForEmailAddress($default_addr, 'is_enabled | with_transport');
         if ($account) {
             $manager->setDefaultOutAccount($account);
         }

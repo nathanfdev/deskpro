@@ -70,6 +70,12 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
     protected $is_bounce_mode = false;
 
     /**
+     * @var bool
+     */
+    protected $enable_exact_subject = false;
+
+
+    /**
      * Enable bounce mode if the message is or is suspected ot be a bounced message.
      * This will look for PTAC/TAC 'headers' in the body text.
      */
@@ -77,6 +83,26 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
     {
         $this->is_bounce_mode = true;
     }
+
+    /**
+     * When enabled, this will try to match exact subjects. Usually we only try
+     * matching when there's a reply prefix (like RE:) because that indicates it's a reply.
+     * But in some cases (e.g., automated systems) you might want to connect all emails
+     * with the same subject.
+     *
+     * Before:
+     *        These match:  "I love DeskPRO" and "RE: I love DeskPRO"   -> 1 ticket with 1 reply
+     *        These DONT:   "I love DeskPRO" and "I love DeskPRO"       -> 2 separate tickets
+     *
+     * With this setting:
+     *        These match:  "I love DeskPRO" and "RE: I love DeskPRO"   -> 1 ticket with 1 reply (no change)
+     *   These also match:  "I love DeskPRO" and "I love DeskPRO"       -> 1 ticket with 1 reply
+     */
+    public function enableExactSubjectMatching()
+    {
+        $this->enable_exact_subject = true;
+    }
+
 
     /**
      * @param int $time_cutoff Max age of a ticket before the subject match wont work
@@ -137,34 +163,48 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 
         // Common prefixes
         // Also including FW|FWDxxx here to catch cases where a user uses fwd to reply to an email they just sent.
-        if (!preg_match('#^(RE|VS|AW|SV|FW|FWD|VL|WG|FS|VB|RV|VS):\s*#i', $subject)) {
-            return null;
-        }
+        $common_prefix_re = '#^(RE|VS|AW|SV|FW|FWD|VL|WG|FS|VB|RV|VS):\s*#i';
 
-        // Strip off Re: prefix (and alternatives in some other langs)
-        // The loop is so we can catch emails with multiple prefixes like RE: RE: RE:
-        $last_subject = $subject_orig;
-        $ticket_ids   = array();
-        while (true) {
-            $subject_re   = preg_replace('#^(RE|VS|AW|SV|FW|FWD|VL|WG|FS|VB|RV|VS):\s*#i', '', trim($last_subject));
-            $subject_re   = trim($subject_re);
+        $ticket_ids = array();
 
-            if ($subject_re == $last_subject || !$subject_re) {
-                break;
-            }
-
-            $last_subject = $subject_re;
-
-            $this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: ".$subject_re);
-
-            // Now lets try to find it...
+        if ($this->enable_exact_subject) {
+            $this->getLogger()->logDebug('[SubjectMatchDetector] (Standard) Trying to find exact subject: ' . $subject);
             $ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
                 SELECT id
                 FROM tickets
                 WHERE (subject = ? OR original_subject = ?) AND date_created > ? AND status NOT IN ('archived', 'resolved', 'hidden')
                 ORDER BY id DESC
                 LIMIT 20
-            ", array($subject_re, $subject_re, $this->_time_cutoff)));
+            ", array($subject, $subject, $this->_time_cutoff)));
+        }
+
+        // handle prefixes
+        if (preg_match($common_prefix_re, $subject)) {
+            // Strip off Re: prefix (and alternatives in some other langs)
+            // The loop is so we can catch emails with multiple prefixes like RE: RE: RE:
+            $last_subject = $subject_orig;
+
+            while (true) {
+                $subject_re = preg_replace($common_prefix_re, '', trim($last_subject));
+                $subject_re = trim($subject_re);
+
+                if ($subject_re == $last_subject || !$subject_re) {
+                    break;
+                }
+
+                $last_subject = $subject_re;
+
+                $this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: " . $subject_re);
+
+                // Now lets try to find it...
+                $ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
+                    SELECT id
+                    FROM tickets
+                    WHERE (subject = ? OR original_subject = ?) AND date_created > ? AND status NOT IN ('archived', 'resolved', 'hidden')
+                    ORDER BY id DESC
+                    LIMIT 20
+                ", array($subject_re, $subject_re, $this->_time_cutoff)));
+            }
         }
 
         $ticket_ids = Arrays::removeFalsey($ticket_ids);

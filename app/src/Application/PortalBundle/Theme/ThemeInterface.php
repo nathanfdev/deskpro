@@ -109,6 +109,14 @@ interface ThemeInterface
 
 
     /**
+     * Return a list of all tag objects
+     *
+     * @return Tag[]
+     */
+    public function getTags();
+
+
+    /**
      * Get a map of "Theme:x:y.html.twig" => "/abs/path/to/source/twig/file.twig" for all templates that this theme
      * can resolve. This means recursively going through the parents for a complete list. See AbstractTheme.
      *
@@ -122,7 +130,7 @@ interface ThemeInterface
      *
      * @return Tag[]
      */
-    public static function getTags();
+    public static function getHardCodedTags();
 
     /**
      * Sets the parent of the theme

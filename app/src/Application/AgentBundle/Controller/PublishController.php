@@ -377,7 +377,6 @@ class PublishController extends AbstractController
             $message->setTemplate('DeskPRO:emails_user:comment-approved.html.twig', array(
                 'comment' => $comment,
             ));
-            $message->enableQueueHint();
             $this->container->getMailer()->send($message);
         }
 
@@ -407,7 +406,6 @@ class PublishController extends AbstractController
             $message->setTemplate('DeskPRO:emails_user:comment-deleted.html.twig', array(
                 'comment' => $comment,
             ));
-            $message->enableQueueHint();
             $this->container->getMailer()->send($message);
         }
     }

@@ -13,7 +13,7 @@ class EWSType_ArrayOfDelegateUserType extends EWSType
     /**
      * Identifies a single delegate to add to or update in a mailbox.
      *
-     * @since Exchnage 2007 SP1
+     * @since Exchange 2007 SP1
      *
      * @var EWSType_DelegateUserType
      */

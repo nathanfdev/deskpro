@@ -213,6 +213,11 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('status', $new_status);
     }
 
+    public function setPerson(Person $person = null)
+    {
+        $this->setModelField('person', $person);
+    }
+
     /**
      * @return string
      */
@@ -224,6 +229,11 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getContentReal()
     {
         return $this->content;
+    }
+
+    public function setContentReal($content)
+    {
+        $this->setModelField('content', $content);
     }
 
     /**

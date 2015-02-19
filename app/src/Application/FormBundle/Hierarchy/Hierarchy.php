@@ -106,7 +106,7 @@ class Hierarchy extends BaseHierarchy
                 $label = (string)$node;
                 $key = $this->getNodeId($node);
 
-                $choices[$key] = $key;
+                $choices[$key] = $node;
                 $labels[$key] = $label;
             }
 
@@ -115,12 +115,13 @@ class Hierarchy extends BaseHierarchy
 
         /** @var HierarchyNode $node */
         foreach ($this as $node) {
-            if (count($node)) {
-                $choices[(string)$node] = $node->getChoices();
-                $labels[(string)$node] = $node->getLabels();
-            } else {
-                $choices[$this->getNodeId($node)] = $this->getNodeId($node);
-                $labels[$this->getNodeId($node)] = (string)$node;
+            $choices[$this->getNodeId($node)] = $node;
+            $labels[$this->getNodeId($node)] = (string)$node;
+            foreach ($node->getChoices() as $id => $nid) {
+                $choices[$id] = $nid;
+            }
+            foreach ($node->getLabels() as $id => $nl) {
+                $labels[$id] = $nl;
             }
         }
 
@@ -141,7 +142,7 @@ class Hierarchy extends BaseHierarchy
      */
     public function countSelectable()
     {
-        return $this->count();
+        return $this->countTree(); // for now this acts as an alias, but we should preserve the concept
     }
 
     /**
@@ -154,6 +155,23 @@ class Hierarchy extends BaseHierarchy
         foreach ($this->root_nodes as $node) {
             return $node->getData();
         }
+    }
+
+    /**
+     * Counts all nodes in the tree
+     *
+     * @param bool $only_count_left_nodes
+     * @return int
+     */
+    public function countTree($only_count_left_nodes = false)
+    {
+        $count = 0;
+
+        foreach ($this->root_nodes as $root) {
+            $count += $root->countTree($only_count_left_nodes);
+        }
+
+        return $count;
     }
 }
  

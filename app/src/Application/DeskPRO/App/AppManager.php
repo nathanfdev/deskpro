@@ -38,6 +38,7 @@ use Application\DeskPRO\App\Native\NativeApp;
 use Application\DeskPRO\App\Native\NativePackageConfig;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
+use Application\DeskPRO\Entity\Person;
 
 class AppManager implements AppManagerInterface
 {
@@ -250,13 +251,22 @@ class AppManager implements AppManagerInterface
      * Gets an AppManager with a specific scope filter applied to it
      *
      * @param  string              $scope The scope to search for
+     * @param  callable            $package_filter Optionally specify a custom package filter
+     * @param  callable            $app_filter Optionally specify a custom app filter
      * @return AppManagerInterface
      */
-    public function getScopeFilter($scope)
+    public function getScopeFilter($scope, $package_filter = null, $app_filter = null)
     {
-        $manager = new AppManagerFiltered($this, function (AppPackage $package) use ($scope) {
-            return in_array($scope, $package->scopes);
-        });
+        $manager = new AppManagerFiltered($this, function (AppPackage $package) use ($scope, $package_filter) {
+            if (!in_array($scope, $package->scopes)) {
+                return false;
+            }
+            if ($package_filter && !call_user_func($package_filter, $package)) {
+                return false;
+            }
+
+            return true;
+        }, $app_filter);
 
         return $manager;
     }

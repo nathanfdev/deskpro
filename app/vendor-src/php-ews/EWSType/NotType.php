@@ -8,6 +8,8 @@
  * expression that it contains.
  *
  * @package php-ews\Types
+ *
+ * @todo Extend EWSType_MultipleOperandBooleanExpressionType.
  */
 class EWSType_NotType extends EWSType
 {
@@ -120,9 +122,9 @@ class EWSType_NotType extends EWSType
      * Represents a search expression that negates the Boolean value of the
      * search expression it contains.
      *
-     * @var EWSType_NotType
-     *
      * @since Exchange 2007
+     *
+     * @var EWSType_NotType
      */
     public $Not;
 

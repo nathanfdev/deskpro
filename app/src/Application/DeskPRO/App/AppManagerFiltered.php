@@ -50,15 +50,22 @@ class AppManagerFiltered implements AppManagerInterface
     private $filter;
 
     /**
+     * @var callable
+     */
+    private $app_filter;
+
+    /**
      * $filter mus take an AppPackage and return truthy if it passes the filter or falsey if not.
      *
      * @param AppManagerInterface $app_manager
      * @param callable            $filter      The filter to filter app packages by
+     * @param callable            $app_filter  The filter to filter apps by
      */
-    public function __construct(AppManagerInterface $app_manager, $filter)
+    public function __construct(AppManagerInterface $app_manager, $filter, $app_filter = null)
     {
         $this->app_manager = $app_manager;
         $this->filter      = $filter;
+        $this->app_filter  = $app_filter;
     }
 
     /**
@@ -119,7 +126,15 @@ class AppManagerFiltered implements AppManagerInterface
 
         $app = $this->app_manager->getApp($id);
 
-        return call_user_func($this->filter, $app->package) ? true : false;
+        if (!call_user_func($this->filter, $app->package)) {
+            return false;
+        }
+
+        if ($this->app_filter && !call_user_func($this->app_filter, $app)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -131,6 +146,10 @@ class AppManagerFiltered implements AppManagerInterface
     {
         $app = $this->app_manager->getApp($id);
         if (!call_user_func($this->filter, $app->package)) {
+            throw new \InvalidArgumentException();
+        }
+
+        if ($this->app_filter && !call_user_func($this->app_filter, $app)) {
             throw new \InvalidArgumentException();
         }
 
@@ -146,6 +165,9 @@ class AppManagerFiltered implements AppManagerInterface
 
         foreach ($this->app_manager->getAllApps() as $app) {
             if (call_user_func($this->filter, $app->package)) {
+                if ($this->app_filter && !call_user_func($this->app_filter, $app)) {
+                    continue;
+                }
                 $apps[] = $app;
             }
         }
@@ -163,6 +185,18 @@ class AppManagerFiltered implements AppManagerInterface
             return array();
         }
 
-        return $this->app_manager->getPackageApps($name);
+        $all_apps = $this->app_manager->getPackageApps($name);
+        $apps = array();
+
+        foreach ($all_apps as $app) {
+            if (call_user_func($this->filter, $app->package)) {
+                if ($this->app_filter && !call_user_func($this->app_filter, $app)) {
+                    continue;
+                }
+                $apps[] = $app;
+            }
+        }
+
+        return $apps;
     }
 }

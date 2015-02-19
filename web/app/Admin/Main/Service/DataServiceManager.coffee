@@ -24,7 +24,6 @@ define [
   'Admin/AgentGroups/DataService/AgentGroups',
   'Admin/AgentTeams/DataService/AgentTeams',
   'Admin/Tasks/DataService/Tasks',
-  'Admin/Labels/DataService/Settings'
   'Admin/Usersources/DataService/Usersources',
   'Admin/Portal/DataService/PortalGeneralSettings'
 ], (
@@ -53,7 +52,6 @@ define [
   DataService_AgentGroups,
   DataService_AgentTeams,
   DataService_Tasks,
-  DataService_LabelSettings,
   DataService_Usersources,
   DataService_PortalGeneralSettings
 ) ->
@@ -64,6 +62,8 @@ define [
     constructor: (@$injector) ->
       @ds_cache = {}
       @registered = {}
+
+
 
     get: (serviceId, args...) ->
       cacheKey = serviceId
@@ -80,6 +80,8 @@ define [
         @ds_cache[cacheKey] = obj
 
       obj
+
+
 
     factory: (serviceId) ->
       # If this class has a custom initXXX method, call that

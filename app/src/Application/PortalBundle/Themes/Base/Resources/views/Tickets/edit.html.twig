@@ -2,6 +2,10 @@
 
 {% block inner_content %}
 
+    {% if rerendering %}
+        <strong>You have switched departments and the form fields have changed. Please review the form and submit again.</strong>
+    {% endif %}
+
     {% embed 'Theme:Form:ticket.html.twig' %}{% endembed %}
 
     <a href="{{ path('portal_tickets_view', { id: ticket.id }) }}">Cancel edit, show me the ticket again</a>

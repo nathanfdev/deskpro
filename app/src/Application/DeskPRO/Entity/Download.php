@@ -46,8 +46,10 @@ use Orb\Util\Strings;
  */
 class Download extends ContentAbstract implements HighlightableModelInterface
 {
+    const CONTENT_TYPE = 'download';
+
     /**
-     * @var \Application\DeskPRO\Entity\TicketCategory
+     * @var \Application\DeskPRO\Entity\DownloadCategory
      */
     protected $category;
 
@@ -113,6 +115,12 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     public function _preUpdate()
     {
         $this->setModelField('date_updated', new \DateTime());
+    }
+
+    public function incrementDownloadCount()
+    {
+        $new = (int) $this->num_downloads + 1;
+        $this->setModelField('num_downloads', $new);
     }
 
     /**
@@ -240,6 +248,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @return string
+     * @deprecated generate the route properly, check route name is right and use getSlug()
      */
     public function getLink()
     {
@@ -250,6 +259,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @return string
+     * @deprecated generate the route properly, check route name is right and use getSlug()
      */
     public function getPermalink()
     {
@@ -358,6 +368,22 @@ class Download extends ContentAbstract implements HighlightableModelInterface
                 return null;
             }
         }
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->date_updated;
+    }
+
+    protected function addSlugHistory($old_slug)
+    {
+        $history = new DownloadSlugHistory($this, $old_slug);
+        $this->slug_history->add($history);
+
+        return $history;
     }
 
     ############################################################################
@@ -536,7 +562,19 @@ class Download extends ContentAbstract implements HighlightableModelInterface
             ), 'dpApi'      => true,
             )
         );
+        $metadata->mapOneToMany(array(
+            'fieldName' => 'slug_history', 'targetEntity' => 'Application\DeskPRO\Entity\DownloadSlugHistory',
+            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'download'
+        ));
 
         $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getBlob()
+    {
+        return $this->blob;
     }
 }

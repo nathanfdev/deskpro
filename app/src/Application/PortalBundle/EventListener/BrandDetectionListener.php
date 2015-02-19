@@ -38,6 +38,8 @@ use Application\DeskPRO\Brand\BrandStack;
 use Application\DeskPRO\EntityRepository\Brand;
 use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use Application\PortalBundle\Mode\PortalMode;
+use Application\PortalBundle\Mode\PortalModeStorage;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -74,36 +76,20 @@ class BrandDetectionListener implements EventSubscriberInterface
      */
     private $logger;
 
+    /**
+     * @var PortalModeStorage
+     */
+    private $mode_storage;
 
-    public function __construct(BrandStack $brand_stack, SettingsResolver $settings_resolver, Brand $brand_repository, BrandEntity $default_brand, LoggerInterface $logger)
+
+    public function __construct(BrandStack $brand_stack, SettingsResolver $settings_resolver, Brand $brand_repository, BrandEntity $default_brand, PortalModeStorage $mode_storage, LoggerInterface $logger)
     {
         $this->brand_stack = $brand_stack;
         $this->settings_resolver = $settings_resolver;
         $this->brand_repository = $brand_repository;
         $this->default_brand = $default_brand;
+        $this->mode_storage = $mode_storage;
         $this->logger = $logger;
-    }
-
-    /**
-     * @param  Request  $request
-     * @return int|null the brand id detected
-     */
-    public function detectBrandInRequest(Request $request)
-    {
-        if ($brand_id = $request->query->get('brand', null)) {
-            try {
-                return $this->brand_repository->find($brand_id);
-            } catch (\Exception $e) {
-                return null;
-            }
-        }
-
-        return null;
-    }
-
-    public function getDefaultBrand()
-    {
-        return $this->default_brand;
     }
 
     public function onKernelRequest(GetResponseEvent $event)
@@ -114,8 +100,13 @@ class BrandDetectionListener implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
+        $brand = null;
 
-        if (!$brand = $this->detectBrandInRequest($request)) {
+        if ($mode = $this->mode_storage->getMode()) {
+            $brand = $this->detectBrandMode($mode);
+        }
+
+        if (!$brand) {
             $this->logger->info('Brand Detector: can\'t determine brand from request. falling back on default brand');
             $brand = $this->getDefaultBrand();
         }
@@ -123,6 +114,22 @@ class BrandDetectionListener implements EventSubscriberInterface
         $this->brand_stack->push($brand);
 
         $this->logger->info('Brand Detector: initialized brand stack with brand id='.$brand->getId());
+    }
+
+    protected function detectBrandMode(PortalMode $mode)
+    {
+        if ($mode->isBrand()) {
+            try {
+                return $this->brand_repository->find($mode->getData());
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
+    }
+
+    protected function getDefaultBrand()
+    {
+        return $this->default_brand;
     }
 
     public static function getSubscribedEvents()

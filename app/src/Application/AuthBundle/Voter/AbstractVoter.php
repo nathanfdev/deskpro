@@ -101,7 +101,7 @@ abstract class AbstractVoter extends \Symfony\Component\Security\Core\Authorizat
      */
     protected function isLoggedIn($user)
     {
-        return $user instanceof Person && $user->id > 0;
+        return $user instanceof Person && $user->getId() > 0;
     }
 
     /**
@@ -118,6 +118,16 @@ abstract class AbstractVoter extends \Symfony\Component\Security\Core\Authorizat
     public function getActiveBrandContainer()
     {
         return $this->container->get('brand_stack')->getActive();
+    }
+
+    /**
+     * @param $setting
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getActiveBrandSetting($setting, $default = null)
+    {
+        return $this->getActiveBrandContainer()->getSetting($setting, $default);
     }
 
     /**

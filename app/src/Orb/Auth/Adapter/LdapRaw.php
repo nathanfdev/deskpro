@@ -95,7 +95,7 @@ class LdapRaw implements FormLoginInterface, Loggable
         if (!$this->options['field_username']) $this->options['field_username'] = 'uid';
 
         if (!isset($this->options['accountFilterFormat'])) {
-            $this->options['accountFilterFormat']   = '(uid=%s)';
+            $this->options['accountFilterFormat']  = '(|(dn=%1$s)(mail=%1$s)(uid=%1$s))';
         }
     }
 
@@ -116,7 +116,7 @@ class LdapRaw implements FormLoginInterface, Loggable
      */
     public function getZendAuthAdapter()
     {
-        $options = array();
+        $options = array('tryUsernameSplit' => false);
         foreach (array('host', 'port', 'baseDn', 'username', 'password', 'accountFilterFormat', 'accountCanonicalForm', 'bindRequiresDn', 'useStartTls', 'useSsl') as $k) {
             if (isset($this->options[$k]) && $this->options[$k]) {
                 $options[$k] = $this->options[$k];
@@ -195,11 +195,12 @@ class LdapRaw implements FormLoginInterface, Loggable
             if ($rec) {
                 $raw_info = array_merge($raw_info, $rec->getAttributes());
 
-                if (!empty($raw_info[self::OPT_FIELD_ID])) {
-                    $raw_info['identity'] = Arrays::getFirstItem($raw_info[self::OPT_FIELD_ID]);
+                if (!empty($raw_info['samaccountname'])) {
+                    $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['samaccountname']);
                 } elseif (!empty($raw_info['uid'])) {
-                    $raw_info['identity'] = Arrays::getFirstItem($raw_info['uid']);
-                } elseif (!empty($raw_info['distinguishedname'])) {
+                    $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['uid']);
+                }
+                if (!empty($raw_info['distinguishedname'])) {
                     $raw_info['identity'] = Arrays::getFirstItem($raw_info['distinguishedname']);
                 } elseif (!empty($raw_info['dn'])) {
                     $raw_info['identity'] = Arrays::getFirstItem($raw_info['dn']);

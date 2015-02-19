@@ -248,12 +248,13 @@ class Util
             's' => 'ss', 'u' => 'SSS',
             'e' => 'zz', 'O' => 'ZZ', 'P' => 'Z',
             'c' => 'YYYY-MM-DDTHH:mm:ss.SSSZZ', 'r' => 'ddd, D MMM YYYY HH:mm:ss ZZ',
-            'U' => 'X'
+            'U' => 'X',
+            '^' => 'DD' // custom for jS below
         );
 
         // There is no separate ordinal symbol with momentjs like with PHP
         // So we can only translate 'jS' to 'Do' which is the momentjs '1st' etc for day of month
-        $format = str_replace('jS', 'Do', $format);
+        $format = str_replace('jS', '^', $format);
 
         $format_len = strlen($format);
         $new_format = array();

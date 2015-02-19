@@ -67,7 +67,12 @@ class CarryAdminSession
 
                     // Set their status to available by default
                     $this->controller->session->set('active_status', 'available');
-                    $this->controller->session->set('is_chat_available', 1);
+
+                    if ($admin_session->person->hasPerm('agent_chat.use')) {
+                        $this->controller->session->set('is_chat_available', 0);
+                    } else {
+                        $this->controller->session->set('is_chat_available', 1);
+                    }
 
                     $this->controller->session->save();
 

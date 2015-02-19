@@ -60,6 +60,19 @@ class InstallExtension extends Extension
         $definition->setFactoryMethod('getSearchAdapter');
         $container->setDefinition('deskpro.search_adapter', $definition);
 
+        // slug listener (sets slugs on content)
+        // note this is a duplicate for install (canonical definition is in config.shared.php)
+        $definition = new Definition();
+        $definition->setClass('Application\AppBundle\EventListener\DoctrineContentSlugListener');
+        $definition->setArguments(array(new Reference('content_slug_manager')));
+        $definition->addTag('doctrine.event_subscriber');
+        $container->setDefinition('doctrine_listener.content_slug', $definition);
+        // slug manager (note duplicate: canonical definition is in config.shared.php)
+        $definition = new Definition();
+        $definition->setClass('Application\AppBundle\Service\ContentSlugManager');
+        $definition->setArguments(array(new Reference('service_container')));
+        $container->setDefinition('content_slug_manager', $definition);
+
         $this->loadInputReader($container);
     }
 

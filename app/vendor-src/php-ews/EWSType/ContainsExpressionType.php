@@ -12,6 +12,42 @@
 class EWSType_ContainsExpressionType extends EWSType
 {
     /**
+     * Identifies a constant value in a restriction.
+     *
+     * @since Exchange 2007
+     *
+     * @var EWSType_ConstantValueType
+     */
+    public $Constant;
+
+    /**
+     * Determines whether the search ignores cases and spaces.
+     *
+     * @since Exchange 2007
+     *
+     * @var EWSType_ContainmentComparisonType
+     */
+    public $ContainmentComparison;
+
+    /**
+     * Identifies the boundaries of a search.
+     *
+     * @since Exchange 2007
+     *
+     * @var EWSType_ContainmentModeType
+     */
+    public $ContainmentMode;
+
+    /**
+     * Identifies MAPI properties.
+     *
+     * @since Exchange 2007
+     *
+     * @var EWSType_PathToExtendedFieldType
+     */
+    public $ExtendedFieldURI;
+
+    /**
      * Identifies frequently referenced properties by URI.
      *
      * @since Exchange 2007
@@ -28,40 +64,4 @@ class EWSType_ContainsExpressionType extends EWSType
      * @var EWSType_PathToIndexedFieldType
      */
     public $IndexedFieldURI;
-
-    /**
-     * Identifies MAPI properties.
-     *
-     * @since Exchange 2007
-     *
-     * @var EWSType_PathToExtendedFieldType
-     */
-    public $ExtendedFieldURI;
-
-    /**
-     * Identifies a constant value in a restriction.
-     *
-     * @since Exchange 2007
-     *
-     * @var EWSType_ConstantValueType
-     */
-    public $Constant;
-
-    /**
-     * Identifies the boundaries of a search.
-     *
-     * @since Exchange 2007
-     *
-     * @var EWSType_ContainmentModeType
-     */
-    public $ContainmentMode;
-
-    /**
-     * Determines whether the search ignores cases and spaces.
-     *
-     * @since Exchange 2007
-     *
-     * @var EWSType_ContainmentComparisonType
-     */
-    public $ContainmentComparison;
 }

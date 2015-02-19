@@ -39,7 +39,9 @@ use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterf
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\JIRA\OAuthWrapper;
 use Application\DeskPRO\Service\JIRA;
+use Guzzle\Http\Exception\BadResponseException;
 use Guzzle\Http\Exception\ClientErrorResponseException;
+use Guzzle\Http\Exception\CurlException;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
@@ -63,7 +65,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 	 */
 	protected function checkErrors(DeskproContainer $container)
 	{
-		$errors = array();
+		$error = array();
 
 		/** @var JIRA $js */
 		$js = $container->get(JIRA::NAME);
@@ -73,27 +75,35 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 			$oauth->requestTempCredentials();
 		} catch (\Exception $e) {
 
-			if ($e instanceof ClientErrorResponseException) {
-				$code = $e->getResponse()->getStatusCode();
+			$error = array(
+				'type' => 'other',
+				'code' => $e->getCode(),
+				'message' => $e->getMessage(),
+			);
 
-				if (404 === $code || 403 === $code) {
-					$errors['url'] = true;
-				} else {
-					$errors['api'] = true;
-				}
+			if ($e instanceof CurlException) {
+				$error = array(
+					'type' => 'curl',
+					'code' => $e->getErrorNo(),
+					'message' => $e->getError(),
+				);
+			} elseif ($e instanceof BadResponseException) {
+				$error = array(
+					'type' => 'jira',
+					'code' => $e->getResponse()->getStatusCode(),
+					'message' => $e->getResponse()->getReasonPhrase(),
+					'additional' => $e->getResponse()->getBody(1),
+				);
 			} elseif ($e->getCode() >= 1000) {
-				$errors['code'] = $e->getCode();
-				$errors['message'] = $e->getMessage();
-			} else {
-				$errors['url'] = true;
+				$error['type'] = 'app';
 			}
 		}
 
-		if (!$errors && !$js->getTokens()) {
-			$errors['token'] = true;
+		if (!$error && !$js->getTokens()) {
+			$error['token'] = true;
 		}
 
-		return $errors ?: null;
+		return $error ?: null;
 	}
 
 	/**
@@ -102,8 +112,8 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 	 */
 	public function getMetaAction(ApiPackageRequestContext $context)
 	{
-		if ($errors = $this->checkErrors($context->getContainer())) {
-			return $context->createJsonResponse(array('errors' => $errors));
+		if ($error = $this->checkErrors($context->getContainer())) {
+			return $context->createJsonResponse(array('error' => $error));
 		}
 
         /** @var JIRA $js */

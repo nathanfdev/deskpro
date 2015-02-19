@@ -48,14 +48,14 @@ class FeedbackStatusCategory extends AbstractEntityRepository
             SELECT c
             FROM DeskPRO:FeedbackStatusCategory c INDEX BY c.id
             WHERE c.status_type = ?1
-            ORDER BY c.display_order ASC
+            ORDER BY c.display_order DESC
         ")->setParameter(1, 'active')->execute();
 
         $this->closed_cats = $this->getEntityManager()->createQuery("
             SELECT c
             FROM DeskPRO:FeedbackStatusCategory c INDEX BY c.id
             WHERE c.status_type = ?1
-            ORDER BY c.display_order ASC
+            ORDER BY c.display_order DESC
         ")->setParameter(1, 'closed')->execute();
     }
 

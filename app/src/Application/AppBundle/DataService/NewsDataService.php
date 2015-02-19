@@ -38,14 +38,16 @@ namespace Application\AppBundle\DataService;
 use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
-class NewsDataService
+class NewsDataService extends AbstractDataService
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -65,18 +67,35 @@ class NewsDataService
      */
     public function getNewsPager(NewsCategory $category = null, $page, $max_per_page)
     {
-        // TODO: optimize this query
-        if ($category) {
-            $dls = $category->articles;
-        } else {
-            $dls = new ArrayCollection($this->getNewsRepo()->findAll());
-        }
-        // TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
-        $pager = new Pagerfanta(new DoctrineCollectionAdapter($dls));
-        $pager->setMaxPerPage($max_per_page);
-        $pager->setCurrentPage($page);
+        $em = $this->em;
 
-        return $pager;
+        return $this->generateAndCache(
+            array(
+                'getNewsPager',
+                $category,
+                $page,
+                $max_per_page
+            ),
+            function () use ($em, $category, $max_per_page, $page) {
+                $qb = $em->createQueryBuilder();
+
+                $qb->select('n')
+                    ->from('DeskPRO:News', 'n')
+                    ->where('n.status = :status')->setParameter('status', News::STATUS_PUBLISHED)
+                    ->orderBy('n.id', 'DESC');
+
+                if ($category) {
+                    $qb->leftJoin('n.category', 'c')
+                        ->andWhere('c = :cat')->setParameter('cat', $category);
+                }
+
+                $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+                $pager->setMaxPerPage($max_per_page);
+                $pager->setCurrentPage($page);
+
+                return $pager;
+            }
+        );
     }
 
     /**
@@ -92,17 +111,54 @@ class NewsDataService
      */
     public function getCategoryChildren($category)
     {
-        if (!$category) { // get root categories
-            return $this->getNewsCategoriesRepo()->findBy(array('parent' => null));
-        }
+        $that = $this;
 
-        if (!$category instanceof NewsCategory) { // if not already category, try to make it one
-            if (!$category = $this->getCategory($category)) {
-                throw new \InvalidArgumentException(sprintf('could not convert "%s" into a download category'));
+        return $this->generateAndCache(
+            array(
+                'getCategoryChildren',
+                $category
+            ),
+            function() use ($that, $category) {
+                if (!$category) { // get root categories
+                    return $that->getNewsCategoriesRepo()->findBy(array('parent' => null));
+                }
+
+                if (!$category instanceof NewsCategory) { // if not already category, try to make it one
+                    if (!$category = $that->getCategory($category)) {
+                        throw new \InvalidArgumentException(sprintf('could not convert "%s" into a download category'));
+                    }
+                }
+
+                return $category->children;
             }
-        }
+        );
+    }
 
-        return $category->children;
+    /**
+     * @param int|null|News $post
+     * @return News|null
+     */
+    public function getPost($post)
+    {
+        $that = $this;
+
+        return $this->generateAndCache(
+            array(
+                'getPost',
+                $post
+            ),
+            function() use ($that, $post) {
+                if (!$post) { // we need some input
+                    return null;
+                }
+
+                if ($post instanceof News) { // already have what you seek
+                    return $post;
+                }
+
+                return $that->getNewsRepo()->find($post);
+            }
+        );
     }
 
     /**
@@ -115,15 +171,43 @@ class NewsDataService
      */
     public function getCategory($category)
     {
-        if (!$category) { // we need some input
-            return null;
-        }
+        $that = $this;
 
-        if ($category instanceof NewsCategory) { // already have what you seek
-            return $category;
-        }
+        return $this->generateAndCache(
+            array(
+                'getCategory',
+                $category
+            ),
+            function() use ($that, $category) {
+                if (!$category) { // we need some input
+                    return null;
+                }
 
-        return $this->getNewsCategoriesRepo()->find($category);
+                if ($category instanceof NewsCategory) { // already have what you seek
+                    return $category;
+                }
+
+                return $that->getNewsCategoriesRepo()->find($category);
+            }
+        );
+    }
+
+    public function getPostComments($post, Person $person = null)
+    {
+        $that = $this;
+
+        return $this->generateAndCache(
+            array(
+                'getPostComments',
+                $post,
+                $person
+            ),
+            function() use ($that, $post, $person) {
+                $post = $that->getPost($post);
+
+                return $that->getNewsCommentRepo()->getDisplayComments($post, $person);
+            }
+        );
     }
 
     /**
@@ -140,6 +224,22 @@ class NewsDataService
     public function getNewsCategoriesRepo()
     {
         return $this->em->getRepository('DeskPRO:NewsCategory');
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\NewsComment
+     */
+    public function getNewsCommentRepo()
+    {
+        return $this->em->getRepository('DeskPRO:NewsComment');
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\RelatedContent
+     */
+    public function getRelatedContentRepo()
+    {
+        return $this->em->getRepository('DeskPRO:RelatedContent');
     }
 }
  

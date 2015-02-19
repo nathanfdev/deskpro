@@ -35,11 +35,16 @@
 namespace Application\FormBundle\Form\Type;
 
 
+use Application\DeskPRO\Entity\CustomDataPerson;
+use Application\FormBundle\Captcha\CaptchaDecider;
 use Application\FormBundle\Form\FormFieldManager;
+use Application\FormBundle\Validator\Constraints\ValidCaptcha;
+use Application\LanguageBundle\Language\LanguageManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -50,9 +55,21 @@ class PersonRegistrationType extends AbstractType
      */
     private $field_manager;
 
-    public function __construct(FormFieldManager $field_manager)
+    /**
+     * @var LanguageManager
+     */
+    private $language_manager;
+
+    /**
+     * @var CaptchaDecider
+     */
+    private $captcha_decider;
+
+    public function __construct(FormFieldManager $field_manager, LanguageManager $language_manager, CaptchaDecider $captcha_decider)
     {
         $this->field_manager = $field_manager;
+        $this->language_manager = $language_manager;
+        $this->captcha_decider = $captcha_decider;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -84,16 +101,19 @@ class PersonRegistrationType extends AbstractType
 
         $builder->add('timezone', 'timezone', array());
 
-        $builder->add('language_id', 'deskpro_language', array(
-            'view_context' => 'user'
-        ));
+        if ($this->language_manager->isMultiLanguagePortal()) {
+            $builder->add('language_id', 'deskpro_language', array(
+                'view_context' => 'user'
+            ));
+        }
 
 
         $field_manager = $this->field_manager;
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) use ($field_manager) {
+        $captcha_decider = $this->captcha_decider;
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) use ($field_manager, $captcha_decider) {
             foreach ($field_manager->getAvailablePersonFields() as $field_def) {
                 if (!$field_def->is_enabled) {
-                    return false;
+                    continue;
                 }
 
                 $id = $field_def->getId();
@@ -108,6 +128,17 @@ class PersonRegistrationType extends AbstractType
                         'label' => false
                     )
                 );
+            }
+
+            if ($captcha_decider->shouldRequireRegistrationCaptchaForCurrentUser()) {
+                $event->getForm()->add('captcha', 'deskpro_captcha', array(
+                    'mapped' => false,
+                    'error_bubbling' => false,
+                    'label' => false,
+                    'constraints' => array(
+                        new ValidCaptcha()
+                    )
+                ));
             }
         });
 

@@ -84,7 +84,7 @@ class NewsValueImporter extends AbstractValueImporter
         if ($nval->language) {
             $languageId = $this->getMappers()->findIdFromMappedValue('language', $nval->language);
             if ($languageId) {
-                $this->getLogger()->notice(sprintf("[%s] Found existing language %s", $log_id, $nval->language));
+                $this->getLogger()->info(sprintf("[%s] Found existing language %s", $log_id, $nval->language));
                 $record['language_id'] = $languageId;
             } else {
                 $this->getLogger()->notice(sprintf("[%s] Could not map language value: %s", $log_id, $nval->language));

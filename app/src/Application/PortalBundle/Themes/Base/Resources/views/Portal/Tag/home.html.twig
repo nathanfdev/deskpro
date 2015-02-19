@@ -1,3 +1,4 @@
+{% if is_granted('USE_NEWS') %}
 <section>
     <div class="column-full">
         <article class="news front-page-news">
@@ -6,30 +7,39 @@
         </article>
     </div>
 </section>
+{% endif %}
 
+{% if is_granted('USE_ARTICLES') %}
 <section>
     {{ page.knowledgebase({ articles_options: { count: 5 }})|raw }}
 </section>
+{% endif %}
 
 <section>
+    {% if is_granted('USE_NEWS') %}
     <div class="column-third">
         <article class="panel-tiny front-page-downloads">
-            <div class="large-title clearfix"><h1>Knowledgebase</h1></div>
-            {{ page.knowledgebase_articles_list({ count: 3 })|raw }}
+            <div class="large-title clearfix"><h1>Recent News</h1></div>
+            {{ page.news_posts_list({ count: 5 })|raw }}
         </article>
     </div>
+    {% endif %}
 
+    {% if is_granted('USE_FEEDBACK') %}
     <div class="column-third">
         <article class="panel-tiny front-page-downloads">
-            <div class="large-title clearfix"><h1>Feedback</h1></div>
-            {{ page.feedback_items_list({ count: 3 })|raw }}
+            <div class="large-title clearfix"><h1>Recent Feedback</h1></div>
+            {{ page.feedback_items_list({ count: 5 })|raw }}
         </article>
     </div>
+    {% endif %}
 
+    {% if is_granted('USE_DOWNLOADS') %}
     <div class="column-third omega">
         <article class="panel-tiny front-page-downloads">
-            <div class="large-title clearfix"><h1>Downloads</h1></div>
-            {{ page.downloads_files_list({ count: 3 })|raw }}
+            <div class="large-title clearfix"><h1>Recent Downloads</h1></div>
+            {{ page.downloads_files_list({ count: 5 })|raw }}
         </article>
     </div>
+    {% endif %}
 </section>

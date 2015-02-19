@@ -36,6 +36,8 @@ namespace Application\PortalBundle\Twig;
 
 
 use Application\DeskPRO\Brand\BrandStack;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 
 class PortalExtension extends \Twig_Extension
@@ -67,6 +69,8 @@ class PortalExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
+            new \Twig_SimpleFunction('ticket_status', array($this, 'getTicketStatusString')),
+            new \Twig_SimpleFunction('person_picture_url', array($this, 'getPersonPictureUrl')),
             new \Twig_SimpleFunction('brand_setting', array($this, 'getBrandSetting'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('*', array($this, 'processPortalTag'), array('is_safe' => array('html'))),
         );
@@ -75,6 +79,42 @@ class PortalExtension extends \Twig_Extension
     public function getBrandSetting($setting, $default = null)
     {
         return $this->brand_stack->getActive()->getSetting($setting, $default);
+    }
+
+    public function getTicketStatusString(Ticket $ticket)
+    {
+        switch ($ticket->getStatusCode()) {
+            case Ticket::STATUS_RESOLVED:
+                return 'Resolved';
+            case Ticket::STATUS_AWAITING_AGENT:
+                return 'Awaiting Agent';
+            case Ticket::STATUS_AWAITING_USER:
+                return 'Awaiting You';
+            case Ticket::STATUS_HIDDEN:
+                return 'Hidden';
+            case Ticket::STATUS_ARCHIVED:
+                return 'Archived';
+            default:
+                return 'Unknown';
+        }
+    }
+
+    /**
+     * Get URL to a persons profile picture
+     *
+     * Use this twig func instead of calling an entity directly in twig for urls
+     *
+     * @param Person $person
+     * @param int $size
+     * @param bool $secure
+     *
+     * @return string the url
+     */
+    public function getPersonPictureUrl(Person $person = null, $size = 80, $secure = false)
+    {
+        if ($person) {
+            return $person->getPictureUrl($size, $secure);
+        }
     }
 
     /**

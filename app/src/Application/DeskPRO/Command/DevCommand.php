@@ -166,7 +166,6 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         $db->executeUpdate("UPDATE people SET picture_blob_id = null");
         $db->executeUpdate("UPDATE departments SET avatar_blob_id = null");
         $db->executeUpdate("UPDATE agent_teams SET avatar_blob_id = null");
-        $db->executeUpdate("UPDATE styles SET logo_blob_id = null, css_blob_id = null, css_blob_rtl_id = null");
         $this->getContainer()->getSettingsHandler()->setSetting('core.favicon_blob_url', null);
         $output->writeln("-> OK");
     }

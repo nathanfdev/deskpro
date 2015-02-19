@@ -132,6 +132,21 @@ class Pop3 extends AbstractFetcher
                 $this->logger->log('SSL Enabled', 'debug');
                 break;
 
+            case 'office365':
+                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365Config $config */
+                $config = $this->account->incoming_account;
+
+                $options['host']     = 'outlook.office365.com';
+                $options['port']     = 995;
+                $options['user']     = $config->user;
+                $options['password'] = $config->password;
+
+                $this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+
+                $options['ssl'] = 'SSL';
+                $this->logger->log('SSL Enabled', 'debug');
+                break;
+
             default:
                 throw new \InvalidArgumentException("Unknown account type: ".$this->account->incoming_account->getType());
         }

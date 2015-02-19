@@ -264,6 +264,10 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
     {
         // Email address should be validated by the time we get here,
         // this is a failsafe check
+        if (defined('DP_TESTS_RUNNING')) {
+            return;
+        }
+
         if (App::$container->getEmailAccountManager()->findAccountForEmailAddress($this->email)) {
             throw new \RuntimeException("`{$this->email}`` is an a gateway account address");
         }
@@ -300,5 +304,13 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'date_validated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_validated'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'emails', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
     }
 }

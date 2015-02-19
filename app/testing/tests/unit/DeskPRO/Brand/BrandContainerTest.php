@@ -58,7 +58,7 @@ class BrandContainerTest extends \DpUnitTestCase
         $themeResolver = \Mockery::mock('Application\PortalBundle\Theme\ThemeResolver');
         $bc            = new BrandContainer($mockBrand, $mockSettings, $themeResolver);
 
-        $mockSettings->shouldReceive('get')->with('setting_name')->andReturn('the val!')->once();
+        $mockSettings->shouldReceive('get')->with('setting_name', null)->andReturn('the val!')->once();
 
         $this->assertEquals('the val!', $bc->getSetting('setting_name'));
     }

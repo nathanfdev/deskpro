@@ -36,6 +36,7 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\UserBundle\Form\NewTicketType;
@@ -145,9 +146,22 @@ class NewTicketController extends AbstractController
 
         $unique_items = $this->container->getTicketLayoutManager()->getUserLayoutItems();
 
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
         $captcha = null;
-        if (isset($unique_items['captcha']) && empty($this->person->id)) {
+        $force_captcha = false;
+        $isLimited = $rateLimit->isActionLimited(RateLimit::ACT_SUBMIT_TICKET);
+
+        if ($isLimited || (isset($unique_items['captcha']) && empty($this->person->id))) {
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newticket'));
+        }
+
+        if ($isLimited) {
+            $force_captcha = true;
+            unset($unique_items['captcha']);
+            if (false !== $k = array_search('captcha', $page_data_field_ids)) {
+                unset($page_data_field_ids[$k]);
+            }
         }
 
         $errors = array();
@@ -232,6 +246,7 @@ class NewTicketController extends AbstractController
             if ($validator->isValid($newticket) && !$trap_fail) {
                 try {
                     $ticket = $newticket->save();
+                    $rateLimit->saveAction(RateLimit::ACT_SUBMIT_TICKET);
 
                     if (!$request->request->has($new_custom_fields_form->getName())) {
                         $request->request->set($new_custom_fields_form->getName(), array());
@@ -257,6 +272,13 @@ class NewTicketController extends AbstractController
                 // Its no longer a preticket, so we can delete the record
                 if ($preticket_id = $this->in->getUint('preticket_status_id')) {
                     $preticket = $this->em->find('DeskPRO:PreticketContent', $preticket_id);
+
+                    // Must be same user
+                    if ($preticket) {
+                        if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
+                            $preticket = null;
+                        }
+                    }
 
                     if ($preticket) {
                         $this->em->remove($preticket);
@@ -358,6 +380,7 @@ class NewTicketController extends AbstractController
             'hide_email_field'      => $hide_email_field,
 
             'new_custom_fields' => $new_custom_fields_form->createView(),
+            'force_captcha'     => $force_captcha,
         ));
     }
 
@@ -366,49 +389,8 @@ class NewTicketController extends AbstractController
      */
     public function saveStatusAction()
     {
-        $id = $this->in->getUint('preticket_status_id');
-
-        $preticket = null;
-        if ($id) {
-            $preticket = $this->em->find('DeskPRO:PreticketContent', $id);
-        }
-
-        if (!$preticket) {
-            $preticket = Entity\PreticketContent::newForPerson($this->person, true);
-        }
-
-        $form_data = $_POST;
-        unset($form_data['preticket_status_id']);
-
-        if (!empty($form_data['newticket']['ticket']['subject'])) {
-            $preticket->subject = $form_data['newticket']['ticket']['subject'];
-        }
-        if (!empty($form_data['newticket']['ticket']['message'])) {
-            $preticket->message = $form_data['newticket']['ticket']['message'];
-        }
-        if (!empty($form_data['newticket']['ticket']['department_id'])) {
-            $preticket->department_id = $form_data['newticket']['ticket']['department_id'];
-        }
-        if (!empty($form_data['newticket']['person']['email'])) {
-            $preticket->email = $form_data['newticket']['person']['email'];
-        }
-        if (!empty($form_data['newticket']['person']['name'])) {
-            $preticket->name = $form_data['newticket']['person']['name'];
-        }
-
-        $preticket->data = $form_data;
-
-        $this->em->beginTransaction();
-        $this->em->persist($preticket);
-        $this->em->flush();
-        $this->em->commit();
-
-        $GLOBALS['DP_SET_SKIP_CACHE'] = true;
-
-        $this->session->set('preticket_id', $preticket->getId());
-
         return $this->createJsonResponse(array(
-            'preticket_status_id' => $preticket->id
+            'preticket_status_id' => 0
         ));
     }
 
@@ -419,6 +401,13 @@ class NewTicketController extends AbstractController
         $preticket = null;
         if ($id) {
             $preticket = $this->em->find('DeskPRO:PreticketContent', $id);
+
+            // Must be same user
+            if ($preticket) {
+                if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
+                    $preticket = null;
+                }
+            }
         }
 
         $url = $this->in->getString('url');
@@ -457,6 +446,13 @@ class NewTicketController extends AbstractController
         $preticket = null;
         if ($id) {
             $preticket = $this->em->find('DeskPRO:PreticketContent', $id);
+
+            // Must be same user
+            if ($preticket) {
+                if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
+                    $preticket = null;
+                }
+            }
         }
 
         $content_type = $this->in->getString('content_type');

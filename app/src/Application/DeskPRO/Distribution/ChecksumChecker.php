@@ -51,6 +51,7 @@ class ChecksumChecker extends \Orb\File\ChecksumChecker
             ->notName('classes.map')
             ->notName('.htaccess')
             ->notName('web.config')
+            ->notName('README.txt')
             ->ignoreVCS(true)
             ->exclude('sys/cache/dev')
             ->exclude('.settings')

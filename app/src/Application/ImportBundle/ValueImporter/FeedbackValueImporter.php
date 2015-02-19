@@ -88,7 +88,7 @@ class FeedbackValueImporter extends AbstractValueImporter
         if ($fval->language) {
             $languageId = $this->getMappers()->findIdFromMappedValue('language', $fval->language);
             if ($languageId) {
-                $this->getLogger()->notice(sprintf("[%s] Found existing language %s", $log_id, $fval->language));
+                $this->getLogger()->info(sprintf("[%s] Found existing language %s", $log_id, $fval->language));
                 $record['language_id'] = $languageId;
             } else {
                 $this->getLogger()->notice(sprintf("[%s] Could not map language value: %s", $log_id, $fval->language));

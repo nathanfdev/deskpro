@@ -221,14 +221,20 @@
     'core.email_source_storetime_rejection' => 1296000, // 15 days
 
     /**
+     * How long to store sendmail sources
+     */
+    'core.sendmail_source_storetime' => 1728000, // 20 days
+    'core.sendmail_source_storetime_error' => 3456000, // 40 days
+
+    /**
+     * Adapter to store log files under.
+     */
+    'core.filestorage_method_logs' => 'db',
+
+    /**
      * How long to store ticket manager logs for
      */
     'core.ticket_manager_log_storetime' => 604800, // 7 days
-
-    /**
-     * When to use the mail queue: never, hint, always
-     */
-    'core.use_mail_queue'  => 'hint',
 
     //'core.disqus_shortname' => '',
     //'core.facebook_comments_num_posts' => 10,
@@ -301,6 +307,12 @@
      * True to have the DeskPRO local user source enabled
      */
     'core.deskpro_source_enabled' => true,
+
+    /**
+     * True if we always replace local name (fname, lname, name) and other data with usersource data on every login.
+     * False means we only do this on first login with that usersource.
+     */
+    'core.usersource_always_update_data' => true,
 
     /**
      * True to have links from chat intercepted and sent through the security page
@@ -424,19 +436,6 @@
     'core.agent_translate_debug' => false,
     'core.agent_enable_kb_shortcuts' => true,
 
-    /**#@+
-     * If agents can create various labels
-     */
-    'labels.downloads.agent_can_create'     => true,
-    'labels.feedback.agent_can_create'      => true,
-    'labels.articles.agent_can_create'      => true,
-    'labels.news.agent_can_create'          => true,
-    'labels.organizations.agent_can_create' => true,
-    'labels.people.agent_can_create'        => true,
-    'labels.tickets.agent_can_create'       => true,
-    'labels.chat.agent_can_create'          => true,
-    /**#@-*/
-
     ####################################################################################################################
     # core_tickets
     ####################################################################################################################
@@ -483,6 +482,12 @@
 
     'core_tickets.enable_like_search_mode' => true,
 
+    // See TicketMessage::checkDupeMessage
+    'core_tickets.enable_dupe_checking' => true,
+
+    // See TicketGatewayProcessor::createTicketDetector and SubjectMatchDetector::enableExactSubjectMatching
+    'core_tickets.enable_exact_subject_matching' => false,
+
     // True to force agent emails to have the marker line
     'core_tickets.gateway_agent_require_marker' => true,
 
@@ -516,7 +521,7 @@
 
     'core_tickets.default_ticket_reverse_order' => true,
 
-    'core_tickets.work_hours' => 'a:8:{s:11:"active_time";s:3:"all";s:10:"start_hour";i:9;s:12:"start_minute";i:0;s:8:"end_hour";i:17;s:10:"end_minute";i:0;s:4:"days";a:5:{i:1;b:1;i:2;b:1;i:3;b:1;i:4;b:1;i:5;b:1;}s:8:"timezone";N;s:8:"holidays";a:0:{}}',
+    'core_tickets.work_hours' => 'a:7:{s:8:"timezone";s:3:"UTC";s:10:"start_hour";i:9;s:9:"start_min";i:0;s:8:"end_hour";i:17;s:7:"end_min";i:0;s:8:"holidays";a:0:{}s:9:"work_days";a:5:{i:0;i:1;i:1;i:2;i:2;i:3;i:3;i:4;i:4;i:5;}}',
 
     /**
      * The account to use when forwarding messages out
@@ -539,9 +544,65 @@
     'portal.default_brand' => 1,
 
     /**
-     * A timestamp used in generating cache keys (updates automatically in the db)
+     * A timestamp used in generating cache keys for permissions, etags, etc (updates automatically in the db)
      */
-    'portal.default_permissions_timestamp' => 0,
+    'portal.global_cache_timestamp' => 0,
+
+    /**
+     * disable_permissions_cache
+     */
+    'portal.disable_permissions_cache' => false,
+
+    /**
+     * When creating a new feedback in portal, this status category is set automatically
+     */
+    'portal.default_feedback_status_category_id' => 2,
+
+    /**
+     * The default "per page" number of results in content lists
+     */
+    'portal.per_page_content' => 10,
+
+    /**
+     * The default "per page" number of results in RSS feeds
+     */
+    'portal.per_page_rss' => 10,
+
+    /**
+     * The default "per page" number of results in each of the user's ticket lists
+     */
+    'portal.per_page_tickets' => 10,
+
+    /**
+     * If the portal should validate based on etags in the http cache layer
+     */
+    'portal.http_cache_etags' => true,
+
+    /**
+     * If the portal should validate based on last modified dates in the http cache layer
+     */
+    'portal.http_cache_last_modified' => true,
+
+    /**
+     * http s-maxage for a guest "page"
+     */
+    'portal.smaxage_guest_page' => 600,
+
+    /**
+     * http cache s-maxage for a guest "tag"
+     */
+    'portal.smaxage_guest_tag' => 600,
+
+    /**
+     * http cache s-maxage for a user "page"
+     */
+    'portal.smaxage_user_page' => 600,
+
+    /**
+     * http cache s-maxage for a user "tag"
+     */
+    'portal.smaxage_user_tag' => 600,
+
 
     ####################################################################################################################
     # core_misc
@@ -571,6 +632,27 @@
      * How often to clean up scheduled task log
      */
     'core_misc.cleanup_task_logs' => 604800, // 7 days
+
+    /**
+     * Server to use for rDNS lookups
+     */
+    'rdns_server' => '8.8.8.8',
+
+    /**
+     * How long to cache rdns lookups
+     */
+    'rdns_timeout' => '18000',
+
+    /**
+     * True to enable rdns on ticket messages when an IP is available
+     */
+    'rdns_ticket_messages' => false,
+
+    /**
+     * True to have hostnames visible on the ticket in a list rather that just
+     * in the hover area
+     */
+    'rdns_ticket_showprops' => false,
 
     ####################################################################################################################
     # core_email
@@ -787,6 +869,11 @@
     'user.disable_chat_element' => false,
     'user.portal_default_news_cat' => 0,
 
+    /**
+     * Invalidate the "password reset" code after this many seconds
+     */
+    'user.password_reset_code_time_limit' => 86400,
+
     'user.show_ratings' => true,
     'user.show_ratings_min_votes' => 1,
     'user.show_num_votes' => false,
@@ -796,6 +883,8 @@
     'user.always_show_captcha' => false,
     'user.feedback_notify_comments' => true,
     'user.kb_subscriptions' => true,
+    'user.news_subscriptions' => true,
+    'user.downloads_subscriptions' => true,
 
     ####################################################################################################################
     # search
@@ -837,6 +926,64 @@
     'agent.ip_security.enabled'            => false,
     'agent.ip_security.mode'               => 'agents,admins',
     'agent.ip_security.whitelist_lifetime' => 1814400,
+
+    ####################################################################################################################
+    # login account lockout
+    ####################################################################################################################
+
+    'user.login_rate_limit.enabled'         => true,
+    'user.login_rate_limit.attempts'        => 20,
+    'user.login_rate_limit.attempts_time'   => 900,
+    'user.login_rate_limit.lock_time'       => 900,
+    'agent.login_rate_limit.enabled'        => true,
+    'agent.login_rate_limit.attempts'       => 20,
+    'agent.login_rate_limit.attempts_time'  => 900,
+    'agent.login_rate_limit.lock_time'      => 900,
+
+    ####################################################################################################################
+    # rate limit
+    ####################################################################################################################
+
+    'rate_limit.login.limit'                            => 3,
+    'rate_limit.login.time'                             => 15 * 60, // 15 min
+    'rate_limit.login.response'                         => 'captcha',
+
+    'rate_limit.registration.limit'                     => 3,
+    'rate_limit.registration.time'                      => 15 * 60, // 15 min
+    'rate_limit.registration.response'                  => 'captcha',
+
+    'rate_limit.reset_password.limit'                   => 3,
+    'rate_limit.reset_password.time'                    => 15 * 60, // 15 min
+    'rate_limit.reset_password.response'                => 'captcha',
+
+    'rate_limit.token_exchange.limit'                   => 50,
+    'rate_limit.token_exchange.time'                    => 15 * 60, // 15 min
+    'rate_limit.token_exchange.response'                => 'captcha',
+
+    'rate_limit.submit_comment.limit'                   => 3,
+    'rate_limit.submit_comment.time'                    => 15 * 60, // 15 min
+    'rate_limit.submit_comment.response'                => 'captcha',
+
+    'rate_limit.submit_feedback.limit'                  => 3,
+    'rate_limit.submit_feedback.time'                   => 15 * 60, // 15 min
+    'rate_limit.submit_feedback.response'               => 'captcha',
+
+    'rate_limit.submit_ticket.limit'                    => 3,
+    'rate_limit.submit_ticket.time'                     => 15 * 60, // 15 min
+    'rate_limit.submit_ticket.response'                 => 'captcha',
+
+    'rate_limit.submit_comment.guest.limit'             => 3,
+    'rate_limit.submit_comment.guest.time'              => 15 * 60, // 15 min
+    'rate_limit.submit_comment.guest.response'          => 'captcha',
+
+    'rate_limit.submit_feedback.guest.limit'            => 3,
+    'rate_limit.submit_feedback.guest.time'             => 15 * 60, // 15 min
+    'rate_limit.submit_feedback.guest.response'         => 'captcha',
+
+    'rate_limit.submit_ticket.guest.limit'              => 3,
+    'rate_limit.submit_ticket.guest.time'               => 15 * 60, // 15 min
+    'rate_limit.submit_ticket.guest.response'           => 'captcha',
+
 
     ####################################################################################################################
     # user_style

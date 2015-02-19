@@ -50,6 +50,16 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 			self.updateUi();
 		});
 
+		this.getEl('set_password').on('change', function(){
+			var $div = $(this).parent().next('div');
+			$(this).prop('checked') ? $div.show() : $div.hide();
+		});
+
+		var $passwordInput = this.getEl('set_password_input');
+		this.getEl('set_password_trigger').find('input[name="newperson[set_password_radio]"]').on('change', function(){
+			$(this).prop('checked') && 'set' === $(this).val() ? $passwordInput.show() : $passwordInput.hide();
+		});
+
         var wrapper = $(this.wrapper).find('.upload-vcard-wrap');
         
         console.log(wrapper);

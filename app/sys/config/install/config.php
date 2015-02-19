@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\Reference;
 $container->setParameter('kernel.include_core_classes', false);
 $container->setParameter('routing.file_locator.class', 'Application\\DeskPRO\\HttpKernel\\Config\\FileLocator');
 $container->setParameter('templating.cache_warmer.template_paths.class', 'Application\\DeskPRO\\CacheWarmer\\TemplatePathsCacheWarmer');
-$container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%../doctrine-proxies');
+$container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/../doctrine-proxies');
 $container->setParameter('doctrine.orm.entity_manager.class', 'Application\\DeskPRO\\ORM\\EntityManager');
 $container->setParameter('templating.globals.class', 'Application\\DeskPRO\\Templating\\GlobalVariables');
 $container->setParameter('templating.name_parser.class', 'Application\\DeskPRO\\Templating\\TemplateNameParser');
@@ -18,13 +18,19 @@ $container->setParameter('templating.asset.path_package.class', 'Application\\De
 $container->setParameter('templating.cache_warmer.template_paths.class', 'Application\\DeskPRO\\CacheWarmer\\TemplatePathsCacheWarmer');
 $container->setParameter('twig.loader.filesystem.class', 'Application\\DeskPRO\\Twig\\Loader\\HybridLoader');
 $container->setParameter('twig.class', 'Application\\DeskPRO\\Twig\\Environment');
-$container->setParameter('twig.options', array('cache' => '%kernel.cache_dir%../twig-compiled', 'charset' => 'UTF-8', 'debug' => '%kernel.debug%', 'auto_reload' => '%kernel.debug%'));
+$container->setParameter('twig.options', array('cache' => '%kernel.cache_dir%/../twig-compiled', 'charset' => 'UTF-8', 'debug' => '%kernel.debug%', 'auto_reload' => '%kernel.debug%'));
 $container->setParameter('templating.locator.class', 'Application\\DeskPRO\\Templating\\Loader\\TemplateLocator');
 $container->setParameter('templating.engine.twig.class', 'Application\\DeskPRO\\Twig\\TwigEngine');
 
 ############################################################################
 # Services
 ############################################################################
+
+
+// app secret
+$definition = new Definition();
+$definition->setClass('Application\AppBundle\AppSecret\AppSecret');
+$container->setDefinition('app_secret', $definition);
 
 // twig.helpers.deskpro_templating
 $definition = new Definition();
@@ -102,6 +108,20 @@ $container->loadFromExtension('framework', array(
     ),
     'validation' => array('enabled' => true),
     'form' => array('enabled' => true)
+));
+
+// Monolog default logging, turn off unless specifically enabled (eg in some _dev configs)
+$container->loadFromExtension('monolog', array(
+    'handlers' => array(
+        'main' => array(
+            'type' => 'null'
+        ),
+        'email_log_collector' => array(
+            'type' => 'service',
+            'id' => 'email.log_collector',
+            'channels' => array('dp.email.out.mailer', 'dp.email.out.transport', 'dp.email.out.queue', 'dp.email.out.raw_transport')
+        )
+    )
 ));
 
 ############################################################################

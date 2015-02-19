@@ -67,13 +67,6 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $value;
 
-    /**
-     * The scope this settings is scoped to
-     *
-     * @var \Application\DeskPRO\Entity\Brand
-     */
-    protected $brand;
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -84,7 +77,7 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
         $builder->mapId();
         $builder->setTable('settings');
         $builder->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\Setting');
-        $builder->addUniqueConstraint(array('name', 'brand_id'), 'unique_settings_per_brand');
+        $builder->addUniqueConstraint(array('name'), 'unique_setting_name');
 
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
@@ -98,17 +91,6 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
             array(
                 'fieldName' => 'value', 'type' => 'dpblob', 'length' => -3, 'precision' => 0, 'scale' => 0,
                 'nullable'  => true, 'columnName' => 'value',
-            )
-        );
-        $metadata->mapManyToOne(
-            array(
-                'fieldName'  => 'brand', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Brand', 'mappedBy' => null,
-                'inversedBy' => null, 'joinColumns' => array(
-                0 => array(
-                    'name'     => 'brand_id', 'referencedColumnName' => 'id', 'nullable' => true,
-                    'onDelete' => 'cascade', 'columnDefinition' => null,
-                ),
-            ),
             )
         );
     }

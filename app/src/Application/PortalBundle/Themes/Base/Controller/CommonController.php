@@ -35,39 +35,30 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\AuthBundle\Security\AgentImpersonateToken;
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\DownloadComment;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsComment;
+use Application\DeskPRO\People\PersonGuest;
 use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Request\TagRequest;
+use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
+use Symfony\Component\HttpFoundation\Response;
+use Application\PortalBundle\HttpCache\Configuration\TagHttpCache;
 
 class CommonController extends AbstractController
 {
     /**
-     * @Tag(name="pager")
-     *
-     * @TagOptions(
-     *      required={"pager"},
-     *      defaults={
-     *          "show_pagination": true
-     *      },
-     *      allowed_types={
-     *          "pager":"Pagerfanta\Pagerfanta"
-     *      }
-     * )
-     */
-    public function pagerAction(TagRequest $request, array $options)
-    {
-        return $this->renderThemeView(
-            'Theme:Common:pager.html.twig',
-            array(
-                'pager' => $options['pager'],
-                'show_pagination' => $options['show_pagination']
-            )
-        );
-    }
-
-    /**
      * @Tag(name="get_in_touch")
+     * @TagHttpCache()
      */
     public function getInTouchAction(TagRequest $tag_request)
     {
@@ -75,15 +66,26 @@ class CommonController extends AbstractController
     }
 
     /**
-     * @Tag(name="alerts")
+     * @Tag(name="alerts", esi=true, always_guest_inline=true)
      */
     public function alertsAction(TagRequest $tag_request)
     {
-        return $this->renderThemeView('Theme:Common:alerts.html.twig');
+        $agent = null;
+        if ($token = $this->get('security.token_storage')->getToken()) {
+            if ($token instanceof AgentImpersonateToken) {
+                $agent_id = $token->getAttribute(AgentImpersonateToken::ATTR_AGENT_IMPERSONATE);
+                $agent = $this->getPersonDataService()->getPerson($agent_id);
+            }
+        }
+
+        return $this->renderThemeView('Theme:Common:alerts.html.twig', array(
+            'impersonator' => $agent,
+            'user' => $this->getUser()
+        ));
     }
 
     /**
-     * @Tag(name="flashes")
+     * @Tag(name="flashes", esi=true, always_guest_inline=true)
      */
     public function flashesAction(TagRequest $tag_request)
     {
@@ -99,5 +101,60 @@ class CommonController extends AbstractController
                 'flashes' => $flashes
             )
         );
+    }
+
+    /**
+     * @Tag(name="related_content", esi=true)
+     * @TagHttpCache()
+     *
+     * @TagOptions(
+     *      required={"content_type", "content_id"},
+     *      allowed_types={"content_type":"string", "content_id":{"string","int"}},
+     *      allowed_values={"content_type":{"article","news","download","feedback"}}
+     * )
+     */
+    public function relatedContentAction(TagRequest $tag_request, array $options)
+    {
+        $content_id = $options['content_id'];
+        $content_type = $options['content_type'];
+
+        if (!$content = $this->extractContent($content_type, $content_id)) {
+            return new Response('');
+        }
+
+        $related_content_finder = new RelatedContentFinder($this->getUser() ?: new PersonGuest(), $content);
+        $related_content = $related_content_finder->getRelatedEntities();
+
+        return $this->render('Theme:Common:related_content.html.twig', array(
+            'content_type' => $content_type,
+            'content_id' => $content_id,
+            'content' => $content,
+            'related_content' => $related_content
+        ));
+    }
+
+    /**
+     * @param $content_type
+     * @param $content_id
+     * @return Article|Download|Feedback|News|null
+     */
+    protected function extractContent($content_type, $content_id)
+    {
+        $content = null;
+        switch ($content_type) {
+            case Article::CONTENT_TYPE:
+                $content = $this->getArticlesDataService()->getArticle($content_id);
+                break;
+            case Download::CONTENT_TYPE:
+                $content = $this->getDownloadsDataService()->getDownload($content_id);
+                break;
+            case News::CONTENT_TYPE:
+                $content = $this->getNewsDataService()->getPost($content_id);
+                break;
+            case Feedback::CONTENT_TYPE:
+                $content = $this->getFeedbackDataService()->getItem($content_id);
+                break;
+        }
+        return $content;
     }
 }

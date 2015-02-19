@@ -115,6 +115,10 @@ class StringToIntegerArrayTransformer implements DataTransformerInterface
      */
     public function reverseTransform($value)
     {
+        if (!$value) {
+            return '';
+        }
+
         return implode($this->delimiter, $value);
     }
 }

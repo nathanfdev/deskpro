@@ -53,9 +53,9 @@ class ProfileVoter extends AbstractVoter
         return array(self::EDIT_PROFILE);
     }
 
-    protected function isGranted($attribute, $object, $user = null)
+    protected function isGranted($attribute, $person, $user = null)
     {
         // any person that is logged in can edit their own profile
-        return $this->isLoggedIn($user) && $object->getId() === $user->getId();
+        return $this->isLoggedIn($user) && $person->getId() === $user->getId();
     }
 }

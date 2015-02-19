@@ -176,6 +176,11 @@ class TicketMessage extends AbstractEntityRepository
             return false;
         }
 
+        if (!App::getSetting('core_tickets.enable_dupe_checking')) {
+            if ($logger) $logger->logDebug("core_tickets.enable_dupe_checking is disabled");
+            return false;
+        }
+
         $timesnip = date_create('-' . $secs_ago . ' seconds');
 
         if ($ticket) {
@@ -237,5 +242,28 @@ class TicketMessage extends AbstractEntityRepository
         }
 
         return false;
+    }
+
+    public function getDupeByMessageID($emailId)
+    {
+        $q = '
+            SELECT ei FROM DeskPRO:TicketMessageEmailId ei
+            JOIN ei.message eim
+            WHERE ei.email_id = :id and eim.date_created > :date
+            ORDER BY eim.date_created DESC
+            ';
+
+        $old = $this->getEntityManager()
+            ->createQuery($q)
+            ->setMaxResults(1)
+            ->setParameter('id', $emailId)
+            ->setParameter('date', new \DateTime('-60 days'))
+            ->getResult();
+
+        if ($old) {
+            return reset($old);
+        }
+
+        return null;
     }
 }

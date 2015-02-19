@@ -47,13 +47,15 @@ class PersonChangePasswordType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('current_password', 'password', array(
-            'required' => true,
-            'constraints' => array(
-                new UserPassword()
-            ),
-            'mapped' => false // not mapping this, just using it for validation
-        ));
+        if ($options['require_current_password']) {
+            $builder->add('current_password', 'password', array(
+                'required' => true,
+                'constraints' => array(
+                    new UserPassword()
+                ),
+                'mapped' => false // not mapping this, just using it for validation
+            ));
+        }
 
         $builder->add('new_password', 'repeated', array(
             'first_name' => 'password',
@@ -77,7 +79,8 @@ class PersonChangePasswordType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Application\DeskPRO\Entity\Person'
+                'data_class' => 'Application\DeskPRO\Entity\Person',
+                'require_current_password' => true
             )
         );
 

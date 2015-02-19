@@ -157,9 +157,6 @@ class Manager
 
         \Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
 
-        // Clear old CSS blob so it's regenerated
-        $this->container->getDb()->executeUpdate("UPDATE styles SET css_blob_id = NULL, css_blob_rtl_id = NULL");
-
         // Update lang titles and has_agent flags
         $langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
 
@@ -230,6 +227,10 @@ class Manager
             new PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine()),
             $this->logger ?: null
         );
+
+        // Dont fail the upgrade at this point
+        // but log the error so we can know something went wrong with an app
+        $app_syncer->setExceptionHandler(function($e) { KernelErrorHandler::logException($e); });
 
         $app_syncer->runUpdates();
         $app_syncer->runSync();

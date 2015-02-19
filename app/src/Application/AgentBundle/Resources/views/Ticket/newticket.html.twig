@@ -267,7 +267,7 @@ pageMeta.baseId = '{{ baseId }}';
                                             data-placeholder="Add a label"
                                             name="labels"
                                             value="{% for label in ticket.labels %}{{ label.label }},{% endfor %}"
-                                            data-allow-new="{{ app.getSetting('labels.tickets.agent_can_create') }}"
+											data-allow-new="{% if app.user.hasPerm('agent_tickets.create_labels') %}1{% endif %}"
                                     />
                                 </div>
                             </td>
@@ -513,6 +513,14 @@ pageMeta.baseId = '{{ baseId }}';
 			</ul>
 		</div>
 	</section>
+</div>
+
+<div id="{{ baseId }}_editor_translations" style="display: none;"
+	 data-attach-title="{{ phrase('agent.general.attach') }}"
+	 data-attach-description="{{ phrase('agent.general.attach_description') }}"
+	 data-snippets-title="{{ phrase('agent.general.snippets') }}"
+	 data-snippets-description="{{ phrase('agent.general.snippets_description') }}"
+		>
 </div>
 
 {% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newticket[attach][]'} %}

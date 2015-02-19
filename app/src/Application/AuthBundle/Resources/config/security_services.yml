@@ -1,0 +1,19 @@
+services:
+
+    dp_authentication_manager.user:
+        class: Application\DeskPRO\Auth\AuthenticationManager
+        factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AuthenticationManagerService
+        factory_method: create
+        arguments: [@service_container, 'user']
+
+    dp_auth_settings:
+        class: Application\DeskPRO\Auth\AuthSettings
+        factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AuthSettingsService
+        factory_method: create
+        arguments: [@service_container]
+
+    dp_security.twig_extension:
+        class: Application\AuthBundle\Twig\AuthTwigExtension
+        arguments: [@service_container]
+        tags:
+            - { name: twig.extension }

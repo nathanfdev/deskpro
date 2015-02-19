@@ -33,6 +33,7 @@
  */
 
 namespace Application\DeskPRO\Search\Indexer;
+use Orb\Util\Strings;
 
 /**
  * A document represents something that we'll insert into the index.
@@ -75,6 +76,17 @@ class Document implements DocumentInterface
         if (isset($info['remove'])) {
             $do_remove = true;
             unset($info['remove']);
+        }
+
+        if (Strings::hasPhpUtf8()) {
+            foreach ($info as &$v) {
+                if (is_string($v)) {
+                    $v = Strings::decodeHtmlEntities($v);
+                    $v = Strings::decodeUnicodeEntities($v);
+                    $v = Strings::utf8_accents_to_ascii($v);
+                }
+            }
+            unset($v);
         }
 
         $obj = new self($id, $content_type, $info);

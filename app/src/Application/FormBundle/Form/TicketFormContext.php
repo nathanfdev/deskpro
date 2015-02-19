@@ -89,6 +89,7 @@ class TicketFormContext
      * @var \Application\DeskPRO\Entity\Person
      */
     private $person;
+
     /**
      * @var \Application\DeskPRO\Entity\TicketMessage
      */
@@ -132,6 +133,14 @@ class TicketFormContext
      * @return Layout
      */
     public function getActiveLayout()
+    {
+        return ('agent' === $this->view_context) ? $this->layout->agent_layout : $this->layout->user_layout;
+    }
+
+    /**
+     * @return Layout
+     */
+    public function getPreviouslyActiveLayout()
     {
         return ('agent' === $this->view_context) ? $this->layout->agent_layout : $this->layout->user_layout;
     }
@@ -217,5 +226,21 @@ class TicketFormContext
     public function getMessage()
     {
         return $this->ticket_message;
+    }
+
+    /**
+     * @param TicketLayout $layout
+     */
+    public function setLayout(TicketLayout $layout)
+    {
+        $this->layout = $layout;
+    }
+
+    /**
+     * @param TicketLayout $previous_layout
+     */
+    public function setPreviousLayout(TicketLayout $previous_layout)
+    {
+        $this->previous_layout = $previous_layout;
     }
 }

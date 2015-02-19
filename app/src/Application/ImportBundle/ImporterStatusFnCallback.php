@@ -89,7 +89,7 @@ class ImporterStatusFnCallback extends ImporterStatusCallback
         }
     }
 
-    public function postImportValue(Importer $importer, AbstractValueImporter $value_importer, \SplFileInfo $file, array $data, $count, $time)
+    public function postImportValue(Importer $importer, AbstractValueImporter $value_importer, \SplFileInfo $file, $count, array $data, $time)
     {
         if (isset($this->callbacks['postImportValue'])) {
             call_user_func($this->callbacks['postImportValue'], $importer, $value_importer, $file, $count, $data, $time);

@@ -34,12 +34,26 @@
 
 namespace Application\PortalBundle\HttpKernel;
 
+use Application\DeskPRO\Brand\BrandContainer;
 use Application\DeskPRO\Brand\BrandStack;
+use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser as BaseParser;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Application\DeskPRO\Cache\ConvenientCache;
+use Application\AppBundle\Helper\ArbitraryHasher;
 
 class ControllerNameParser extends BaseParser
 {
+    /**
+     * @var ArbitraryHasher
+     */
+    protected $hash_generator;
+
+    /**
+     * @var ConvenientCache
+     */
+    protected $cache;
+
     /**
      * @var \Application\DeskPRO\Brand\BrandStack
      */
@@ -61,6 +75,25 @@ class ControllerNameParser extends BaseParser
             throw new \RuntimeException('no brand is active in the brand stack. cannot parse theme controller.');
         }
 
+        // if the controller is a string, we're going to array cache the resolved controller based on brand to avoid over-computing
+        if (is_string($controller)) {
+            return $this->generateAndCache(
+                array(
+                    'parse',
+                    $brand_container->getBrand()->getId(),
+                    $controller
+                ),
+                array($this, 'doParse'),
+                array($brand_container, $controller)
+            );
+        }
+
+        // if it isn't a string, just do the normal work
+        return $this->doParse($brand_container, $controller);
+    }
+
+    public function doParse(BrandContainer $brand_container, $controller)
+    {
         if ($theme_controller = $brand_container->resolveController($controller)) {
             return $theme_controller;
         }
@@ -68,4 +101,38 @@ class ControllerNameParser extends BaseParser
         return parent::parse($controller);
     }
 
+    /**
+     * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable
+     * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     * @return mixed|null
+     */
+    protected function generateAndCache($params, $callable, array $args = array())
+    {
+        return $this->getCache()->get($this->generateHash($params), $callable, $args);
+    }
+
+    /**
+     * @return ConvenientCache
+     */
+    protected function getCache()
+    {
+        if (null === $this->cache) {
+            $this->cache = new ConvenientCache(new SimpleArrayCache());
+        }
+
+        return $this->cache;
+    }
+
+    /**
+     * @param mixed $input
+     * @return string
+     */
+    protected function generateHash($input)
+    {
+        if (null === $this->hash_generator) {
+            $this->hash_generator = new ArbitraryHasher();
+        }
+
+        return $this->hash_generator->generateHash($input);
+    }
 }

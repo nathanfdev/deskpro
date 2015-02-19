@@ -49,6 +49,12 @@ class AbstractController extends BaseController
         return $this->get('doctrine.orm.default_entity_manager');
     }
 
+    public function persistAndFlushEntity($object)
+    {
+        $this->getEm()->persist($object);
+        $this->getEm()->flush($object);
+    }
+
     /**
      * @return Connection
      */
@@ -112,6 +118,16 @@ class AbstractController extends BaseController
     public function getThemeViewFactory()
     {
         return $this->get('theme_view_factory');
+    }
+
+    /**
+     * @param $setting
+     * @param null $default
+     * @return mixed
+     */
+    protected function getBrandSetting($setting, $default = null)
+    {
+        return $this->getBrandContainer()->getSetting($setting, $default);
     }
 
     /**
@@ -185,5 +201,101 @@ class AbstractController extends BaseController
         if (!$this->isGranted($attributes, $object)) {
             throw $this->createAccessDeniedException($message);
         }
+    }
+
+    /**
+     * @return \Application\PortalBundle\Helper\PortalRatingsHelper
+     */
+    public function getRatingsHelper()
+    {
+        return $this->get('ratings_helper');
+    }
+
+    /**
+     * @return \Application\PortalBundle\Helper\ContentSubscriptionsHelper
+     */
+    public function getSubscriptionsHelper()
+    {
+        return $this->get('subscriptions_helper');
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\PersonDataService
+     */
+    public function getPersonDataService()
+    {
+        return $this->get('data.person');
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\RatingsDataService
+     */
+    public function getRatingDataService()
+    {
+        return $this->get('data.rating');
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\DownloadsDataService
+     */
+    public function getDownloadsDataService()
+    {
+        return $this->get('data.downloads');
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\NewsDataService
+     */
+    public function getNewsDataService()
+    {
+        return $this->get('data.news');
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\FeedbackDataService
+     */
+    public function getFeedbackDataService()
+    {
+        return $this->get('data.feedback');
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\ArticlesDataService
+     */
+    protected function getArticlesDataService()
+    {
+        return $this->get('data.articles');
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\TicketsDataService
+     */
+    protected function getTicketsDataService()
+    {
+        return $this->get('data.tickets');
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\TicketViewService
+     */
+    protected function getTicketsViewService()
+    {
+        return $this->get('view.tickets');
+    }
+
+    /**
+     * @return \Application\DeskPRO\Tickets\TicketManager
+     */
+    protected function getTicketManager()
+    {
+        return $this->get('ticket_manager');
+    }
+
+    /**
+     * @return \Application\PersonBundle\Person\PersonFactory
+     */
+    protected function getPersonFactory()
+    {
+        return $this->get('person_factory');
     }
 }

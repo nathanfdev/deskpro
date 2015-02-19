@@ -49,26 +49,41 @@ class TicketsVoter extends AbstractVoter
         return array(self::TICKET_LIST, self::TICKET_VIEW, self::TICKET_EDIT);
     }
 
-    protected function isGranted($attribute, $object, $user = null)
+    /**
+     * @param string $attribute
+     * @param object $ticket
+     * @param \Application\DeskPRO\Entity\Person|\Application\DeskPRO\People\PersonGuest|null $user
+     * @return bool
+     */
+    protected function isGranted($attribute, $ticket, $user = null)
     {
-        if (!$object instanceof Ticket) {
-            throw new InvalidArgumentException('expected Ticket entity, but got "'. get_class($object) .'"');
+        if (!$ticket instanceof Ticket) {
+            throw new InvalidArgumentException('expected Ticket entity, but got "'. get_class($ticket) .'"');
         }
 
+        // none of the attributes currently supported by this voter will grant unauthenticated tokens
         if (!$this->isLoggedIn($user)) {
             return false;
         }
 
+        $decision = false;
+
         switch($attribute) {
             case static::TICKET_LIST:
-                return $this->isLoggedIn($user);
+                $decision = $this->isLoggedIn($user);
+                break;
 
             case static::TICKET_VIEW:
+                $decision = $ticket->isInvolved($user);
+                break;
+
             case static::TICKET_EDIT:
-            return $object->person->getId() === $user->getId();
+                $decision = $ticket->isInvolved($user)
+                    && ($ticket->isOwner($user) || $ticket->isOrganizationManager($user));
+                break;
         }
 
-        return false;
+        return $decision;
     }
 
     /**

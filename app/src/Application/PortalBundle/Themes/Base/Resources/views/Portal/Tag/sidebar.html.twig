@@ -1,4 +1,7 @@
 {{ page.user_sidebar()|raw }}
 {{ page.get_in_touch()|raw }}
+
+{% if is_granted('USE_ARTICLES') %}
 Knowledgebase
 {{ page.knowledgebase_list()|raw }}
+{% endif %}

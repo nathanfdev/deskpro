@@ -104,6 +104,7 @@ class TicketManager
         $this->save_actions[] = new TicketSaveActions\VerifyCreationSystem();
         $this->save_actions[] = new TicketSaveActions\VerifyRef($container->getRefGenerator());
         $this->save_actions[] = new TicketSaveActions\VerifyOrgManagers($container->getEm()->getRepository('DeskPRO:Organization'));
+        $this->save_actions[] = new TicketSaveActions\VerifyAgent($container->getAgentData());
         $this->save_actions[] = new TicketSaveActions\DetectAutoresponders(
             $container->getEm(),
             $container->getSetting('core_email.antiflood_newtickets'),
@@ -372,6 +373,20 @@ class TicketManager
                     'ticket_id'      => $ticket->getId(),
                     'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
                     'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null
+                ))
+            ));
+        }
+
+        if ($ticket->getStateChangeRecorder()->hasChangedField('locked_by_agent')) {
+            $this->db->insert('client_messages', array(
+                'channel'      => 'agent-notification.tickets.locked-status',
+                'auth'         => Strings::random(15, Strings::CHARS_KEY),
+                'date_created' => date('Y-m-d H:i:s'),
+                'data' => serialize(array(
+                    'ticket_id'       => $ticket->getId(),
+                    'is_locked'       => $ticket->getIsLocked(),
+                    'locked_by'       => $ticket->locked_by_agent ? $ticket->locked_by_agent->id : null,
+                    'via_person'      => $context->getPersonContext() ? $context->getPersonContext()->getId() : null
                 ))
             ));
         }

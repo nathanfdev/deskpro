@@ -36,6 +36,11 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\EntityRepository\LoginLog;
+use Application\DeskPRO\Form\Captcha\Recaptcha;
+use Application\DeskPRO\Service\RateLimit;
+use Application\DeskPRO\People\PersonGuest;
+use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\Entity\Person;
@@ -51,7 +56,7 @@ use Orb\Log\Writer\ArrayWriter;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 use Orb\Validator\StringEmail;
-use Symfony\Component\HttpFoundation\Request;
+use Application\DeskPRO\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -90,6 +95,8 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
         $this->auth_manager = $this->container->getSystemService('authentication_manager');
         $this->usersource_manager = $this->container->getSystemService('usersource_manager');
+
+        $GLOBALS['DP_SET_SKIP_CACHE'] = true;
     }
 
     protected function loginViaToken()
@@ -136,7 +143,12 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
                 // Announce if its an agent
                 if ($set_active) {
                     $this->session->set('active_status', 'available');
-                    $this->session->set('is_chat_available', 1);
+
+                    if ($person->hasPerm('agent_chat.use')) {
+                        $this->session->set('is_chat_available', 1);
+                    } else {
+                        $this->session->set('is_chat_available', 0);
+                    }
                 }
 
                 $this->session->save();
@@ -155,12 +167,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
      */
     public function indexAction()
     {
-        $return = $this->in->getStringFromGet('return');
-        if ($return AND ($return[0] != '/' || strpos($return, '/validate-email/') !== false)) {
-            // Always be a path on the current domain,
-            // or else it might be a trick to go to some other domain etc
-            $return = '';
-        }
+        $return = $this->request->getReturnParam();
 
         if ($this->loginViaToken() || $this->session->getPerson()->getId()) {
             if ($return) return $this->redirect($return);
@@ -200,8 +207,15 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
         }
 
         $captcha = null;
-        if ($this->container->getSetting('user.register_captcha')) {
-            $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_reg'));
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        if ($rateLimit->isActionLimited(RateLimit::ACT_LOGIN)) {
+            $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_login'));
+        }
+
+        if (!$failed_login_name && !$account_disabled && $this->container->getRequest()->getMethod() == 'GET') {
+            // we want to cache the page if we're just viewing the form
+            unset($GLOBALS['DP_SET_SKIP_CACHE']);
         }
 
         return $this->render($this->tpl_prefix . ':index.html.twig', array(
@@ -225,7 +239,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
             ", array($person['id'], 'agent.ui.state'));
         }
 
-        $this->session->replace(array());
+        $this->session->invalidate();
         $this->session->save();
 
         foreach (array('dpsid-agent', 'dpsid-admin', 'dpreme') as $cookie_name) {
@@ -359,9 +373,22 @@ HTML;
             return $this->redirectRoute($this->route_prefix . '_login');
         }
 
-        $return = $this->in->getString('return');
-        if ($return AND ($return[0] != '/' || strpos($return, '/validate-email/') !== false)) {
-            $return = '';
+        $return = $this->request->getReturnParam();
+
+        if ($lockTime = $this->getLoginLockoutTime($this->in->getString('email'))) {
+            $this->session->setFlash('failed_login_rate', $lockTime);
+            return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+        }
+
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        $captcha = null;
+        if ($rateLimit->isActionLimited(RateLimit::ACT_LOGIN)) {
+            $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_login'));
+            if (!$captcha->validate()) {
+                $this->session->setFlash('captcha_login_error', true);
+                return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+            }
         }
 
         $this->ensureRequestToken('user_login');
@@ -392,6 +419,8 @@ HTML;
                     }
                 }
             }
+
+            $rateLimit->saveAction(RateLimit::ACT_LOGIN);
 
             // Send alert
             $attempt_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
@@ -444,6 +473,7 @@ HTML;
         $this->em->persist($person);
         $this->em->flush();
 
+        $this->session->invalidate();
         $this->session->set('auth_person_id', $identity->getIdentity());
         $this->session->set('dp_interface', DP_INTERFACE);
         $this->session->save();
@@ -456,7 +486,12 @@ HTML;
             if (!isset($GLOBALS['DP_LOGIN_VIA_TOKEN'])) {
                 // Set their status to available by default
                 $this->session->set('active_status', 'available');
-                $this->session->set('is_chat_available', 1);
+
+                if ($person->hasPerm('agent_chat.use')) {
+                    $this->session->set('is_chat_available', 1);
+                } else {
+                    $this->session->set('is_chat_available', 0);
+                }
 
                 $data = array(
                     'agent_id'   => $person['id'],
@@ -606,7 +641,7 @@ HTML;
 
     public function authenticateAction($usersource_id)
     {
-        $return = $this->in->getString('return');
+        $return = $this->request->getReturnParam();
 
         if ($usersource_test = $this->in->getBool(self::USERSOURCE_TEST)) {
             $this->session->setFlash(self::USERSOURCE_TEST, 1);
@@ -677,7 +712,7 @@ HTML;
             // We expect a redirect to be rquired
             } elseif ($result->isRedirectRequired()) {
 
-                $return = $this->in->getString('return');
+                $return = $this->request->getReturnParam();
                 $this->session->set('auth_return', $return);
 
                 if ($this->in->getString('js_tell')) {
@@ -715,7 +750,7 @@ HTML;
 
                 $this->_setupUsersourceSession($usersource, $person, $result);
 
-                $return = $this->in->getString('return');
+                $return = $this->request->getReturnParam();
                 if ($return) {
                     return $this->redirect($return);
                 } else {
@@ -733,7 +768,7 @@ HTML;
 
     public function authenticateCallbackAction($usersource_id)
     {
-        $return = $this->in->getString('return');
+        $return = $this->request->getReturnParam();
         $usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 
         if (!$usersource) {
@@ -825,12 +860,20 @@ HTML;
         $reg_formtype = new \Application\UserBundle\Form\RegisterType();
         $form = $this->get('form.factory')->create($reg_formtype, $register);
 
+        $captcha = null;
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        if ($rateLimit->isActionLimited(RateLimit::ACT_RESET_PWD)) {
+            $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_reset_password'));
+        }
+
         return $this->render($this->tpl_prefix . ':reset-password.html.twig', array(
             'route_prefix' => $this->route_prefix,
             'invalid_email' => $invalid_email,
             'invalid_code' => $invalid_code,
             'form' => $form->createView(),
             'invalid' => $this->in->getBool('inv'),
+            'captcha' => $captcha,
         ));
     }
 
@@ -851,9 +894,25 @@ HTML;
     # Resetting passwords
     ############################################################################
 
-    public function sendResetPasswordAction($_format = 'html')
+    public function sendResetPasswordAction($_format = 'html', Request $request)
     {
         $this->ensureRequestToken('user_login');
+
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        if ($rateLimit->isActionLimited(RateLimit::ACT_RESET_PWD)) {
+            $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_reset_password'));
+            if (!$captcha->validate()) {
+                if ($_format == 'json') {
+                    return $this->createJsonResponse(array('success' =>1 ));
+                } else {
+                    $this->session->setFlash('captcha_reset_error', true);
+                    return $this->redirectRoute($this->route_prefix . '_login_resetpass', array('return' => $request->getReturnParam()));
+                }
+            }
+        }
+
+        $rateLimit->saveAction(RateLimit::ACT_RESET_PWD);
 
         $email = $this->in->getString('email');
 
@@ -862,6 +921,18 @@ HTML;
         }
 
         $person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+
+        /** @var \Application\DeskPRO\EntityRepository\TmpData $rep */
+        $rep = $this->em->getRepository('DeskPRO:TmpData');
+        // hardcoded rate-limit for reset password request
+        if (2 <= $rep->getCountByName('reset-password:' . DP_INTERFACE .':' . $person['id'], 30 * 60)) {
+            return $_format == 'json'
+                ? $this->createJsonResponse(array('success' => 1))
+                : $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
+                    'route_prefix' => $this->route_prefix,
+                    'did_send' => true
+                ));
+        }
 
         $is_invalid = false;
         if ($person && $person->is_deleted) {
@@ -916,16 +987,20 @@ HTML;
                 }
             }
 
-            if ($us_names) {
-                if ($this->request->isXmlHttpRequest()) {
-                    return $this->createJsonResponse(array('status' => 'usersource_no_reset', 'usersource_name' => implode(', ', $us_names)));
-                }
+            // If reg is enabled, then resetting a password makes them a user (below)
+            // otherwise we fail with a no account error
+            if (!$this->container->getSetting('core.reg_enabled')) {
+                if ($us_names) {
+                    if ($this->request->isXmlHttpRequest()) {
+                        return $this->createJsonResponse(array('status' => 'usersource_no_reset', 'usersource_name' => implode(', ', $us_names)));
+                    }
 
-                // No other user sources for the user
-                return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
-                    'route_prefix' => $this->route_prefix,
-                    'did_send' => false
-                ));
+                    // No other user sources for the user
+                    return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
+                        'route_prefix' => $this->route_prefix,
+                        'did_send' => false
+                    ));
+                }
             }
         }
 
@@ -941,7 +1016,6 @@ HTML;
                 $message = $this->container->getMailer()->createMessage();
                 $message->setTemplate('DeskPRO:emails_agent:admin-noreset-password.html.twig', $vars);
                 $message->setTo($email, $person->getDisplayName());
-                $message->disableQueueHint();
                 $this->container->getMailer()->send($message);
 
                 if ($_format == 'json') {
@@ -958,6 +1032,7 @@ HTML;
         // If they're still here, then we just send them through the normal DeskPRO reset procedure
 
         $code_data = TmpData::create('reset-password', array('person_id' => $person['id'], 'interface' => DP_INTERFACE), '+3 days');
+        $code_data['name'] = 'reset-password:' . DP_INTERFACE .':' . $person['id'];
         $this->em->persist($code_data);
         $this->em->flush();
 
@@ -971,7 +1046,6 @@ HTML;
         $message = $this->container->getMailer()->createMessage();
         $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
         $message->setTo($email, $person->getDisplayName());
-        $message->disableQueueHint();
 
         $this->container->getMailer()->send($message);
 
@@ -990,6 +1064,11 @@ HTML;
 
     public function resetPasswordNewPassAction($code)
     {
+        if (!$this->session->getPerson() instanceof PersonGuest) {
+            $this->session->invalidate();
+            return $this->redirectRoute('user_login_resetpass_newpass', array('code' => $code));
+        }
+
         $code_data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code, 'reset-password');
         $person = null;
         if ($code_data) {
@@ -1025,14 +1104,20 @@ HTML;
                     $em->persist($code_data);
                     $em->flush();
                 });
+                $this->em->getRepository('DeskPRO:TmpData')->removeDupes($code_data);
 
                 if ($is_new_user) {
                     $user_rule_proc = new \Application\DeskPRO\People\UserRuleProcessor(App::getOrm());
                     $user_rule_proc->newRegister($person);
                 }
 
+                // Delete old sessions for this user
+                $this->db->delete('sessions', array('person_id' => $person->getId()));
+                $this->db->delete('api_token', array('person_id' => $this->person->id));
+
                 $this->session->setFlash('password_reset', 1);
 
+                $this->session->invalidate();
                 $this->session->set('auth_person_id', $person->getId());
                 $this->session->set('dp_interface', DP_INTERFACE);
                 $this->session->save();
@@ -1269,7 +1354,7 @@ HTML;
             }
         }
 
-        $return = $this->in->getString('return');
+        $return = $this->request->getReturnParam();
         if ($return) {
             return $this->redirect($return);
         } else {
@@ -1308,5 +1393,36 @@ HTML;
         } else {
             return null;
         }
+    }
+
+    /**
+     * get current login lockout time
+     * @param null $email
+     * @return int|mixed
+     */
+    protected function getLoginLockoutTime($email = null)
+    {
+        if (!$email) {
+            return 0;
+        }
+
+        if (!$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email)) {
+            return 0;
+        }
+
+        $context = $person['is_agent'] ? 'agent' : 'user';
+
+        // 0 if disabled
+        if (!$this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.enabled')) {
+            return 0;
+        }
+
+        /** @var LoginLog $rep */
+        $rep = $this->em->getRepository('DeskPRO:LoginLog');
+        $maxAttempts = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'attempts');
+        $checkTime = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'attempts_time');
+        $lockTime = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'lock_time');
+
+        return $rep->getLoginLockoutTime($person, $maxAttempts, $checkTime, $lockTime);
     }
 }

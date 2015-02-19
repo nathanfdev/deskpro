@@ -87,7 +87,7 @@ class KbValueImporter extends AbstractValueImporter
         if ($kbval->language) {
             $languageId = $this->getMappers()->findIdFromMappedValue('language', $kbval->language);
             if ($languageId) {
-                $this->getLogger()->notice(sprintf("[%s] Found existing language %s", $log_id, $kbval->language));
+                $this->getLogger()->info(sprintf("[%s] Found existing language %s", $log_id, $kbval->language));
                 $record['language_id'] = $languageId;
             } else {
                 $this->getLogger()->notice(sprintf("[%s] Could not map language value: %s", $log_id, $kbval->language));

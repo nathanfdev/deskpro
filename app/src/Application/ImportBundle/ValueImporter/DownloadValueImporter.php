@@ -111,7 +111,7 @@ class DownloadValueImporter extends AbstractValueImporter
         if ($dval->language) {
             $languageId = $this->getMappers()->findIdFromMappedValue('language', $dval->language);
             if ($languageId) {
-                $this->getLogger()->notice(sprintf("[%s] Found existing language %s", $log_id, $dval->language));
+                $this->getLogger()->info(sprintf("[%s] Found existing language %s", $log_id, $dval->language));
                 $record['language_id'] = $languageId;
             } else {
                 $this->getLogger()->notice(sprintf("[%s] Could not map language value: %s", $log_id, $dval->language));

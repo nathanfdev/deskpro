@@ -275,6 +275,11 @@ class AppsController extends AbstractController
 
         $data = $app->toApiData();
 
+        if ($app->package->getTaggedAsset('app_js')) {
+            $data['with_permissions'] = true;
+            $data['permissions'] = $this->em->getRepository('DeskPRO:AppInstance')->getPermissionsForInstance($app);
+        }
+
         return $this->createApiResponse(array('app' => $data));
     }
 
@@ -299,6 +304,40 @@ class AppsController extends AbstractController
         $context->setSaveAssets($saveAssets);
 
         $this->getAppManipulator()->updateInstance($app, $context);
+
+        $this->db->delete('app_instance_permissions', array('app_instance_id' => $app->id));
+        if ($app->package->getTaggedAsset('app_js') && $this->in->getString('permissions.type') == 'set') {
+            $app->perm_type = 'set';
+            $batch = array();
+
+            foreach ($this->in->getArrayOfInts('permissions.usergroup_ids') as $ugid) {
+                if ($this->container->getAgentGroups()->groupExists($ugid)) {
+                    $batch[] = array(
+                        'app_instance_id' => $app->id,
+                        'usergroup_id'    => $ugid,
+                        'person_id'       => null
+                    );
+                }
+            }
+            foreach ($this->in->getArrayOfInts('permissions.person_ids') as $aid) {
+                if ($this->container->getAgentData()->has($aid)) {
+                    $batch[] = array(
+                        'app_instance_id' => $app->id,
+                        'usergroup_id'    => null,
+                        'person_id'       => $aid
+                    );
+                }
+            }
+
+            if ($batch) {
+                $this->db->batchInsert('app_instance_permissions', $batch, true);
+            }
+        } else {
+            $app->perm_type = 'global';
+        }
+
+        $this->em->persist($app);
+        $this->em->flush();
 
         return $this->createApiSuccessResponse();
     }
@@ -583,9 +622,9 @@ class AppsController extends AbstractController
             $this->generateUrl('api_apps_instance', array('id' => $app->id))
         );
     }
+
     ####################################################################################################################
     # exec-package-action
-
     ####################################################################################################################
 
     public function execPackageAction(Request $request, $name, $action)
@@ -664,7 +703,7 @@ class AppsController extends AbstractController
     }
 
     ####################################################################################################################
-    # rsync-packages
+    # resync-packages
     ####################################################################################################################
 
     public function resyncPackagesAction()

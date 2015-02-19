@@ -151,6 +151,11 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
         return $this->getTwoLetterLanguageCode();
     }
 
+    public function getSystemName()
+    {
+        return $this->sys_name;
+    }
+
     /**
      * Return a unique ID that we can use to look up translations for this object
      *

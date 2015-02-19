@@ -46,10 +46,12 @@ class ChatPermissions implements PermissionValueInterface
     public $view_others      = false;
     /** @var bool  */
     public $delete           = false;
+    /** @var bool  */
+    public $create_labels    = false;
 
     public function getNames()
     {
-        return array('use', 'view_transcripts', 'view_unassigned', 'view_others', 'delete');
+        return array('use', 'view_transcripts', 'view_unassigned', 'view_others', 'delete', 'create_labels');
     }
 
     public function getDestructiveNames()

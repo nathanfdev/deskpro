@@ -71,6 +71,13 @@ class StateChangeRecorder
     private $change_metadata = array();
 
     /**
+     * Array of object IDs (changes[]) to the state they were at when the change was registered.
+     *
+     * @var array
+     */
+    private $changes_to_state_version = array();
+
+    /**
      * @var array
      */
     private $current_change_metadata = array();
@@ -104,6 +111,25 @@ class StateChangeRecorder
         return $this->state_version;
     }
 
+
+    /**
+     * Given a change, get the state version for that change. Will return 0 if no
+     * such change is registered.
+     *
+     * @param ChangeInterface $change
+     * @return int
+     */
+    public function getStateVersionForChange(ChangeInterface $change)
+    {
+        $id = spl_object_hash($change);
+
+        return isset($this->changes_to_state_version[$id]) ? $this->changes_to_state_version[$id] : 0;
+    }
+
+
+    /**
+     * @param ChangeInterface $change
+     */
     private function addChange(ChangeInterface $change)
     {
         $field_id = $change->getField();
@@ -126,6 +152,8 @@ class StateChangeRecorder
         }
 
         $this->touched_fields[$field_id] = true;
+
+        $this->changes_to_state_version[spl_object_hash($change)] = $this->state_version;
     }
 
 

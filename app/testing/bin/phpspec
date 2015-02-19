@@ -1,0 +1,12 @@
+#!/usr/bin/env php
+<?php
+
+define('PHPSPEC_VERSION', '2.1.1');
+
+define('DP_ROOT', getcwd() . '/../.');
+define('DP_WEB_ROOT', getcwd() . '/../../.');
+$str = getcwd() . '/../sys/autoload.php';
+require_once($str);
+
+$app = new PhpSpec\Console\Application(PHPSPEC_VERSION);
+$app->run();

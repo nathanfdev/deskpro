@@ -48,6 +48,7 @@ class FormExtension extends Extension
         $loader->load('form_services.yml');
         $loader->load('form_types.yml');
         $loader->load('validator_services.yml');
+        $loader->load('event_listeners.yml');
     }
 }
  

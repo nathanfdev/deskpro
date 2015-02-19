@@ -44,6 +44,8 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\FileCacheReader;
 use Doctrine\Common\Util\ClassUtils;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ExpressionLanguage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -57,13 +59,23 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class TagOptionsListener implements EventSubscriberInterface
 {
     /**
+     * @var ExpressionLanguage
+     */
+    protected $expressionLanguage;
+
+    /**
      * @var AnnotationReader
      */
     private $reader;
+    /**
+     * @var Container
+     */
+    private $container;
 
-    public function __construct(FileCacheReader $reader)
+    public function __construct(FileCacheReader $reader, Container $container)
     {
         $this->reader = $reader;
+        $this->container = $container;
     }
 
     public function onKernelController(FilterControllerEvent $event)
@@ -108,14 +120,22 @@ class TagOptionsListener implements EventSubscriberInterface
                     $tag_request->getOptionsResolver()->setAllowedValues($annotation->allowed_values);
                 }
 
-                $tag_request->attributes->set('options', $tag_request->getTagOptions());
+                $resolved_tag_options = $tag_request->getTagOptions();
+
+                $tag_request->attributes->set('options', $resolved_tag_options);
                 if ($request_backup) {
-                    $request_backup->attributes->set('options', $tag_request->attributes->get('options'));
+                    $request_backup->attributes->set('options', $resolved_tag_options);
+                }
+
+                // run thru any expressions, evaluate them, and set them as tag_request attributes
+                foreach ($annotation->attribute_expressions as $attribute => $expression) {
+                    $tag_request->attributes->set($attribute, $this->evaluate($expression, array('options' => $resolved_tag_options)));
                 }
 
                 break; // we only care about finding one TagOptions here
             }
         }
+
     }
 
     public static function getSubscribedEvents()
@@ -123,5 +143,22 @@ class TagOptionsListener implements EventSubscriberInterface
         return array(
             KernelEvents::CONTROLLER => array('onKernelController', -10)
         );
+    }
+
+    protected function evaluate($expr, array $variables)
+    {
+        return $this->getExpressionLanguage()->evaluate($expr, array_merge($variables, array('container' => $this->container)));
+    }
+
+    protected function getExpressionLanguage()
+    {
+        if (null === $this->expressionLanguage) {
+            if (!class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
+                throw new \RuntimeException('Unable to use expressions as the Symfony ExpressionLanguage component is not installed.');
+            }
+            $this->expressionLanguage = new ExpressionLanguage();
+        }
+
+        return $this->expressionLanguage;
     }
 }

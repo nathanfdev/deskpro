@@ -35,6 +35,8 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\PortalBundle\HttpCache\PortalHttpCache;
+use Application\PortalBundle\EventListener\OriginalUriListener;
 use Application\PortalBundle\Request\TagRequest;
 use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Controller\AbstractController;
@@ -42,11 +44,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
+use Application\PortalBundle\HttpCache\Configuration\TagHttpCache;
 
 class PortalController extends AbstractController
 {
     /**
-     * @Tag(name="home")
+     * @Tag(name="home", esi=true)
+     * @TagHttpCache()
      */
     public function homeAction(TagRequest $tag_request)
     {
@@ -54,7 +58,8 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="page_top")
+     * @Tag(name="page_top", esi=true)
+     * @TagHttpCache()
      */
     public function topBarAction(TagRequest $tag_request)
     {
@@ -66,14 +71,14 @@ class PortalController extends AbstractController
             array(
                 'enabled_languages' => $language_manager->getEnabledLanguages(),
                 'current_language' => $language_manager->getLanguageStack()->getActive(),
-                'is_multi_language' => $language_manager->isMultiLanguagePortal(),
-                'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
+                'is_multi_language' => $language_manager->isMultiLanguagePortal()
             )
         );
     }
 
     /**
-     * @Tag(name="page_search_box")
+     * @Tag(name="page_search_box", esi=true)
+     * @TagHttpCache()
      */
     public function topSearchAction(TagRequest $tag_request)
     {
@@ -81,7 +86,8 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="page_tabs")
+     * @Tag(name="page_tabs", esi=true)
+     * @TagHttpCache()
      */
     public function topTabsAction(TagRequest $tag_request)
     {
@@ -99,7 +105,8 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="sidebar")
+     * @Tag(name="sidebar", esi=true)
+     * @TagHttpCache()
      */
     public function sidebarAction(TagRequest $tag_request)
     {
@@ -107,26 +114,47 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="user_sidebar", esi=true)
+     * @Tag(name="user_sidebar", esi=true, always_guest_inline=true)
      */
     public function userSidebarAction(TagRequest $tag_request)
     {
         if (!$user = $this->getUser()) {
-            //TODO: dont pass the auth manager into the template...
+            $auth_manager = $this->get('dp_authentication_manager.user');
             return $this->renderThemeView(
                 'Theme:Portal:Tag/sidebar_login.html.twig',
                 array(
-                    'auth_manager' => $this->get('dp_authentication_manager.user')
+                    'login_text_button_usersources' => $auth_manager->getLoginTextButtonUsersources(),
+                    'login_icon_usersources' => $auth_manager->getLoginIconUsersources(),
+                    'show_forgot_password' => $auth_manager->isForgotPasswordVisible(),
+                    'show_remember_me' => $auth_manager->isRememberMeEnabled(),
+                    'show_login_form' => $auth_manager->isLoginFormVisible(),
+                    'show_auth' => $auth_manager->isAuthVisible(),
                 )
             );
         }
 
-        $ticket_count = $this->getDoctrine()->getRepository('DeskPRO:Ticket')->getTicketCountForPerson($user);
-
         return $this->renderThemeView(
             'Theme:Portal:Tag/sidebar_user.html.twig',
             array(
-                'has_tickets' => $ticket_count > 0
+                'user' => $user,
+                'ticket_count' => $this->getTicketsDataService()->getTicketCount($user)
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="small_user_info", esi=true, always_guest_inline=true)
+     */
+    public function smallUserInfoAction(TagRequest $tag_request)
+    {
+        $user = $this->getUser();
+
+        return $this->renderThemeView(
+            'Theme:Portal:Tag/small_user_info.html.twig',
+            array(
+                'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
+                'ticket_count' => $user ? $this->getTicketsDataService()->getTicketCount($user) : 0,
+                'user' => $user
             )
         );
     }

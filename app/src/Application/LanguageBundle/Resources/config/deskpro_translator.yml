@@ -1,0 +1,23 @@
+services:
+
+  # Same translator config as the DpKernel uses
+  deskpro.core.translate:
+    class: Application\DeskPRO\Translate\Translate
+    arguments: [ @deskpro.core.translate_loader, @event_dispatcher ]
+
+
+  deskpro.core.translate_loader_system:
+    class: Application\DeskPRO\Translate\Loader\SystemLoader
+    arguments: [ [ %kernel.root_dir% ~ '/../languages' ] ]
+
+
+  deskpro.core.translate_loader_db:
+    class: Application\DeskPRO\Translate\Loader\DbLoader
+    arguments: [ @doctrine.dbal.default_connection ]
+
+
+  deskpro.core.translate_loader:
+    class: Application\DeskPRO\Translate\Loader\DeskproLoader
+    calls:
+     - [setSystemLoader, [@deskpro.core.translate_loader_system] ]
+     - [setDbLoader, [@deskpro.core.translate_loader_db] ]

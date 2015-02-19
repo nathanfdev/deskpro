@@ -103,6 +103,15 @@ class LanguageManager
     }
 
     /**
+     * @param  string   $sys_name the system id for a language (default, french, etc)
+     * @return Language
+     */
+    public function getLanguageBySystemName($sys_name)
+    {
+        return $this->language_repo->findOneBy(array('sys_name' => $sys_name));
+    }
+
+    /**
      * Turns an arbitrary lang string into a more normalized lang string that we use internally for URLs.
      *
      * @param  string $lang_code
@@ -137,6 +146,16 @@ class LanguageManager
      */
     public function getTranslator($lang = null)
     {
+        if (!$lang) {
+            if (!$lang = $this->language_stack->getActive()) {
+                $lang = $this->language_stack->getDefaultLanguage();
+            }
+        } elseif (!$lang instanceof Language) {
+            $lang = $this->getLanguage($lang);
+        }
+
+        $this->translate->setLanguage($lang);
+
         return $this->translate;
     }
 }

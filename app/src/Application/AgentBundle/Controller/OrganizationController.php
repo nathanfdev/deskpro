@@ -216,7 +216,7 @@ class OrganizationController extends AbstractController
 
             case 'get-person-row':
                 $person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
-                if ($person->organization->id = $org->id) {
+                if ($person->organization->id == $org->id) {
                     $data['row_html'] = $this->renderView('AgentBundle:Organization:view-members-row.html.twig', array('person' => $person, 'org' => $org));
                 }
                 break;

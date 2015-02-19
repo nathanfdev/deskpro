@@ -1,0 +1,43 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Export CSV File</h3>
+		</header>
+
+		{##################################################################################################}
+
+		<article class="padd">
+
+			<div ng-if="status">
+				Status: {{ ng_var('status') }}
+				<span ng-if="offset">({{ ng_var('offset') }} entries exported)</span>
+				<i class="fa fa-refresh fa-spin" ng-if="'running' === status || 'queued' === status"></i>
+			</div>
+
+			<br /><br />
+
+			<button class="btn btn-primary" ng-if="'running' !== status && 'queued' !== status" ng-click="start()">
+				Start
+			</button>
+
+			<button class="btn btn-danger" ng-if="'running' === status || 'queued' === status" ng-click="stop()">
+				Stop
+			</button>
+
+
+			<br /><br />
+
+			<ul>
+				<li ng-repeat="file in files">
+					<a href="{{ path('admin_download_export_file', {code: '0000'})|replace({'0000': '{{ file.code }}'}) }}" download="{{ ng_var('file.filename') }}">
+						{{ ng_var('file.created') }} ({{ ng_var('file.count') }} entries)
+					</a>
+					This file will be removed after {{ ng_var('file.expire') }}
+				</li>
+			</ul>
+
+		</article>
+
+	</section>
+{% endblock %}

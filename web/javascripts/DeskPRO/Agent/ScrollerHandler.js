@@ -44,6 +44,23 @@ if (!window.DP_NO_JS_SCROLL) {
 
 			function updateSize() {
 				if (!element) return;
+
+				// hardcoded update of list height
+				var sh = $('.source-pane-content:visible').height(),
+						hh = 0,
+						$listing = $('.list-listing:visible');
+
+				$listing.siblings('header:visible').each(function(){
+					hh += $(this).outerHeight(true);
+				});
+
+				if (!hh) {
+					$listing.closest('.view-body').siblings('header:visible').each(function(){
+						hh += $(this).outerHeight(true);
+					});
+				}
+				$listing.height(sh - hh - 1);
+
 				initScroll();
 				if (element.tinyscrollbar_update) {
 					element.tinyscrollbar_update();

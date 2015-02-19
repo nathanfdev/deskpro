@@ -509,6 +509,9 @@ class FilestorageLoader extends LoaderAbstract
         header('Cache-Control: max-age=31556926,public');
         header('Content-Disposition: inline; filename=' . $desc);
         header("Content-type: image/png");
+        header('X-Content-Type-Options: nosniff');
+        header('X-Robots-Tag: noindex, nofollow');
+
         imagepng($im);
         exit;
     }
@@ -707,6 +710,8 @@ class FilestorageLoader extends LoaderAbstract
         header('Content-Type: ' . $mimetype . '; filename="' . addslashes($filename) . '"');
         header('Content-Length: ' . $filesize);
         header('Content-Disposition: attachment; filename="' . addslashes($filename) . '"');
+        header('X-Robots-Tag: noindex, nofollow');
+
         if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
             header("X-Sendfile: $path");
         } else {
@@ -815,24 +820,6 @@ class FilestorageLoader extends LoaderAbstract
             $sth->execute(array('id' => $blob_id));
             $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
-            // Try to detect bad css file and reload it automatically
-            if ($filename == 'main.css') {
-                $is_css = false;
-                $q = $this->getPdoRead()->query("SELECT css_blob_id FROM styles");
-                while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
-                    if ($r['css_blob_id'] == $blob_id) {
-                        $is_css = true;
-                        break;
-                    }
-                }
-
-                if ($is_css) {
-                    $this->getPdo()->exec("UPDATE styles SET css_blob_id = NULL");
-                    $this->userCssAction();
-                    exit;
-                }
-            }
-
             // Fallback on DB check, it may have been moved
             if ($blob['storage_loc'] != 'fs') {
                 $this->showBlob($blob_id, $size);
@@ -871,6 +858,7 @@ class FilestorageLoader extends LoaderAbstract
         header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('2010-01-01')).' GMT');
         header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
         header('Cache-Control: max-age=31556926,private');
+        header('X-Robots-Tag: noindex, nofollow');
 
         if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
             header("X-Sendfile: $filepath");
@@ -1089,6 +1077,7 @@ class FilestorageLoader extends LoaderAbstract
         header('Last-Modified: ' . $d->format('D, d M Y H:i:s').' GMT');
         header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
         header('Cache-Control: max-age=31556926,private');
+        header('X-Robots-Tag: noindex, nofollow');
     }
 
     /**
@@ -1395,8 +1384,9 @@ class FilestorageLoader extends LoaderAbstract
         header('Content-Type: ' . $mimetype . '; filename="' . addslashes($filename) . '"');
         header('Content-Length: ' . $filesize);
         header('Last-Modified: ' . date('D, d M Y H:i:s', time()-3600).' GMT');
-            header('Expires: ' . date('D, d M Y H:i:s', time() - 3600) . ' GMT');
-            header('Cache-Control: max-age=31556926,private');
+        header('Expires: ' . date('D, d M Y H:i:s', time() - 3600) . ' GMT');
+        header('Cache-Control: ' . (@$GLOBALS['DP_CONFIG']['debug']['dev'] ? 'no-cache' : 'max-age=31556926,private'));
+        header('X-Robots-Tag: noindex, nofollow');
 
         if ($content !== null) {
             echo $content;

@@ -32,7 +32,7 @@
     'adm.general.save_settings_success'              => 'Your settings were saved successfully.',
     'adm.general.tabchange_unsaved_changes_warning'  => 'You have unsaved changes on this page. Are you sure you want to change to another page? Your unsaved changes will be lost.',
     'adm.general.translate'                          => 'Translate',
-    'adm.general.usergroup_perms'                    => 'User Group Permissions',
+    'adm.general.usergroup_perms'                    => 'Usergroup Permissions',
     'adm.general.website_embed'                      => 'Website Embed',
     'adm.general.x_departments'                      => '{{count}} Department|{{count}} Departments',
     'adm.general.action_cannot_be_undone'            => 'This action cannot be undone.',

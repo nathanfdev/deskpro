@@ -40,14 +40,17 @@ use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
+use Application\PortalBundle\Model\FeedbackFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
-class FeedbackDataService
+class FeedbackDataService extends AbstractDataService
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -62,19 +65,81 @@ class FeedbackDataService
     /**
      * @param $page
      * @param $max_per_page
+     * @param FeedbackFilter $filter
      * @return Pagerfanta
      */
-    public function getItemsPager($page, $max_per_page)
+    public function getItemsPager($page, $max_per_page, FeedbackFilter $filter)
     {
-        // TODO: this needs to be a full blown search with filters
-        $items = new ArrayCollection($this->getItemsRepo()->findAll());
+        $em = $this->em;
 
-        // TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
-        $pager = new Pagerfanta(new DoctrineCollectionAdapter($items));
-        $pager->setMaxPerPage($max_per_page);
-        $pager->setCurrentPage($page);
+        return $this->generateAndCache(
+            array(
+                'getItemsPager',
+                $page,
+                $max_per_page,
+                $filter
+            ),
+            function() use ($em, $page, $max_per_page, $filter) {
+                $qb = $em->createQueryBuilder();
+                $qb->select('f')->from('DeskPRO:Feedback', 'f');
 
-        return $pager;
+                // status
+                // "all","active","closed"
+                switch ($filter->getStatus()) {
+                    case FeedbackFilter::STATUS_ALL:
+                        $valid_status = array(Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED);
+                        break;
+                    case FeedbackFilter::STATUS_ACTIVE:
+                        $valid_status = array(Feedback::STATUS_ACTIVE);
+                        break;
+                    case FeedbackFilter::STATUS_CLOSED:
+                        $valid_status = array(Feedback::STATUS_CLOSED);
+                        break;
+                    default:
+                        $valid_status = array();
+                }
+                $qb->where('f.status IN (:valid_status)')->setParameter('valid_status', $valid_status);
+
+                // status_categories (feedback->status_category)
+                // array(6,1,4)
+                if (count($status_categories = $filter->getStatusCategories())) {
+                    $qb->andWhere('f.status_category IN (:status_categories)')->setParameter('status_categories', $status_categories);
+                }
+
+                // types
+                // array(1,3,5) $feedback->category
+                if (count($types = $filter->getTypes())) {
+                    $qb->andWhere('f.category IN (:types)')->setParameter('types', $types);
+                }
+
+                // sort
+                // "date", "most-popular", "highest-rating", "most-discussed", "most-viewed"
+                switch ($filter->getSort()) {
+                    case FeedbackFilter::SORT_POPULARITY:
+                    case FeedbackFilter::SORT_RATING:
+                        $sort_string = 'f.total_rating';
+                        break;
+                    case FeedbackFilter::SORT_COMMENTS:
+                        $sort_string = 'f.num_comments';
+                        break;
+                    case FeedbackFilter::SORT_VIEWS:
+                        $sort_string = 'f.view_count';
+                        break;
+                    default:
+                        $sort_string = 'f.date_created';
+                }
+
+                // sort direction
+                // "desc" or "asc"
+                $qb->orderBy($sort_string, $filter->getSortDirection());
+
+                $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+                $pager->setMaxPerPage($max_per_page);
+                $pager->setCurrentPage($page);
+
+                return $pager;
+            }
+        );
     }
 
     /**
@@ -83,15 +148,66 @@ class FeedbackDataService
      */
     public function getItem($item)
     {
-        if (!$item) { // we need some input
-            return null;
+        $that = $this;
+
+        return $this->generateAndCache(
+            array(
+                'getItem',
+                $item
+            ),
+            function() use ($that, $item) {
+                if (!$item) { // we need some input
+                    return null;
+                }
+
+                if ($item instanceof Feedback) { // already have what you seek
+                    return $item;
+                }
+
+                return $that->getItemsRepo()->find($item);
+            }
+        );
+    }
+
+    public function getItemComments($item, Person $person = null)
+    {
+        $that = $this;
+
+        return $this->generateAndCache(
+            array(
+                'getItemComments',
+                $item,
+                $person
+            ),
+            function() use ($that, $item, $person) {
+                $item = $that->getItem($item);
+
+                return $that->getItemCommetRepo()->getDisplayComments($item, $person);
+            }
+        );
+    }
+
+    /**
+     * @param Person $person
+     * @return FeedbackCategory[]
+     */
+    public function getFeedbackCategoriesForPerson(Person $person)
+    {
+        // TODO: permissions
+        return $this->getFeedbackCategoryRepo()->findAll();
+    }
+
+    /**
+     * @param $status_category
+     * @return FeedbackStatusCategory
+     */
+    public function getFeedbackStatusCategory($status_category)
+    {
+        if ($status_category instanceof FeedbackStatusCategory) {
+            return $status_category;
         }
 
-        if ($item instanceof Feedback) { // already have what you seek
-            return $item;
-        }
-
-        return $this->getItemsRepo()->find($item);
+        return $this->getFeedbackStatusCategoryRepo()->find($status_category);
     }
 
     /**
@@ -100,6 +216,30 @@ class FeedbackDataService
     public function getItemsRepo()
     {
         return $this->em->getRepository('DeskPRO:Feedback');
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\FeedbackStatusCategory
+     */
+    public function getFeedbackStatusCategoryRepo()
+    {
+        return $this->em->getRepository('DeskPRO:FeedbackStatusCategory');
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\FeedbackCategory
+     */
+    public function getFeedbackCategoryRepo()
+    {
+        return $this->em->getRepository('DeskPRO:FeedbackCategory');
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\FeedbackComment
+     */
+    public function getItemCommetRepo()
+    {
+        return $this->em->getRepository('DeskPRO:FeedbackComment');
     }
 }
  

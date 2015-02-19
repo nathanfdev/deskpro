@@ -1,0 +1,9 @@
+services:
+
+    dp_security.agent_impersonate.provider:
+        class: Application\AuthBundle\Security\Authentication\Provider\AgentImpersonateProvider
+        arguments:
+          - @dp_authentication_manager.user
+          - @dp_person_user_provider
+          - @session
+          - @doctrine.orm.default_entity_manager

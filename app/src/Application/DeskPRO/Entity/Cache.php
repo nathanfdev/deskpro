@@ -61,8 +61,10 @@ class Cache extends \Application\DeskPRO\Domain\DomainObject
     public function setData($data)
     {
         if (!is_array($data)) {
-            $this['data'] = array('VALUE' => $data);
+            $data = array('VALUE' => $data);
         }
+
+        $this->setModelField('data', $data);
     }
 
     public function getData()
@@ -72,6 +74,53 @@ class Cache extends \Application\DeskPRO\Domain\DomainObject
         }
 
         return $this->data;
+    }
+
+    /**
+     * Default time to compare is "new DateTime('now')", but you can provide a date
+     *
+     * @param \DateTime $now
+     * @return bool
+     */
+    public function isExpired(\DateTime $now = null)
+    {
+        if (null === $now) {
+            $now = new \DateTime();
+        }
+
+        return $this->date_expire <= $now;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getExpiresAt()
+    {
+        return $this->date_expire;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function setExpiresAt(\DateTime $expire)
+    {
+        $this->setModelField('date_expire', $expire);
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->setModelField('id', $id);
     }
 
     ############################################################################

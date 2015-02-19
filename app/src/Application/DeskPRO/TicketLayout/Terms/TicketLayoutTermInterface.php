@@ -52,4 +52,10 @@ interface TicketLayoutTermInterface extends CriteriaTermInterface
      * @return bool
      */
     public function isTicketMatch(Ticket $ticket);
+
+    /**
+     * @param  array $data
+     * @return bool
+     */
+    public function isSubmittedDataMatch(array $data);
 }

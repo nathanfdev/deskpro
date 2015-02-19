@@ -82,12 +82,13 @@ class ConvenientCache implements CacheAdapterInterface
      *
      * @param             $key
      * @param  null       $default
+     * @param  array      $params if $default is a callable, $params will be passed as arguments
      * @return mixed|null
      */
-    public function get($key, $default = null)
+    public function get($key, $default = null, array $params = array())
     {
         if ($default && !$this->adapter->has($key)) {
-            $val = $this->resolveDefault($default);
+            $val = $this->resolveDefault($default, $params);
 
             $this->adapter->set($key, $val);
 
@@ -97,10 +98,10 @@ class ConvenientCache implements CacheAdapterInterface
         return $this->adapter->get($key);
     }
 
-    protected function resolveDefault($val)
+    protected function resolveDefault($val, array $params)
     {
         if (is_callable($val)) {
-            return call_user_func($val);
+            return call_user_func_array($val, $params);
         }
 
         return $val;

@@ -45,6 +45,10 @@ class LanguageExtension extends Extension
     public function load(array $config, ContainerBuilder $container)
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.yml');
+        $loader->load('language_router.yml');
+        $loader->load('language_management.yml');
+        $loader->load('language_listeners.yml');
+        $loader->load('language_services.yml');
+        $loader->load('deskpro_translator.yml');
     }
 }

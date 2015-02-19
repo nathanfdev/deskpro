@@ -86,7 +86,7 @@ class GeneratorFactory
             }
 
             if ($this->input->hasOption('output-path')) {
-                $config->output_path = $this->input->getOption('output-path');
+                $config->output_path = rtrim($this->input->getOption('output-path'), "\\/") . "/";
             }
             if ($this->input->hasOption('input-path')) {
                 $config->input_path = $this->input->getOption('input-path');

@@ -34,6 +34,7 @@
 
 namespace Application\AuthBundle;
 
+use Application\AuthBundle\Security\Factory\AgentImpersonateFactory;
 use Application\AuthBundle\Security\Factory\DpFormLoginFactory;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -47,6 +48,7 @@ class AuthBundle extends Bundle
 
         $extension = $container->getExtension('security');
         $extension->addSecurityListenerFactory(new DpFormLoginFactory());
+        $extension->addSecurityListenerFactory(new AgentImpersonateFactory());
     }
 
     public function registerCommands(Application $application)

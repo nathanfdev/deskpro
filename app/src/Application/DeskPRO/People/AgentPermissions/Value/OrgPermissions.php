@@ -44,10 +44,12 @@ class OrgPermissions implements PermissionValueInterface
     public $notes  = false;
     /** @var bool  */
     public $delete = false;
+    /** @var bool  */
+    public $create_labels = false;
 
     public function getNames()
     {
-        return array('create', 'edit', 'notes', 'delete');
+        return array('create', 'edit', 'notes', 'delete', 'create_labels');
     }
 
     public function getDestructiveNames()

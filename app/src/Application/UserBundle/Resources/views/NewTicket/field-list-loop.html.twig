@@ -60,19 +60,19 @@
 {% endif %}
 
 {% if app.getSetting('core.use_ticket_category') and item.field_type == 'category' %}
-	<div data-field-id="ticket_category" class="{{ item.id }} ticket-display-field" {% if item.has_criteria or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
+	<div data-field-id="category" class="{{ item.id }} ticket-display-field" {% if item.has_criteria or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 		{% include 'UserBundle:NewTicket:field-ticket-category.html.twig' %}
 	</div>
 {% endif %}
 
 {% if app.getSetting('core.use_product') and item.field_type == 'product' %}
-	<div data-field-id="ticket_product" class="{{ item.id }} ticket-display-field" {% if item.has_criteria or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
+	<div data-field-id="product" class="{{ item.id }} ticket-display-field" {% if item.has_criteria or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 		{% include 'UserBundle:NewTicket:field-product.html.twig' %}
 	</div>
 {% endif %}
 
 {% if app.getSetting('core.use_ticket_priority') and item.field_type == 'priority' %}
-	<div data-field-id="ticket_priority" class="{{ item.id }} ticket-display-field" {% if item.has_criteria or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
+	<div data-field-id="priority" class="{{ item.id }} ticket-display-field" {% if item.has_criteria or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
 		{% include 'UserBundle:NewTicket:field-ticket-priority.html.twig' %}
 	</div>
 {% endif %}

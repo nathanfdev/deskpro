@@ -2,6 +2,7 @@
 namespace DpFixtures\General;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\BrandSetting;
 use Application\DeskPRO\Entity\Setting;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -24,7 +25,7 @@ class SimpleSettingsData extends AbstractFixture
         $brand->name = 'some_name';
         $manager->persist($brand);
 
-        $setting        = new Setting();
+        $setting        = new BrandSetting();
         $setting->name  = '456key';
         $setting->value = 'brand-setting';
         $setting->brand = $brand;
@@ -34,7 +35,7 @@ class SimpleSettingsData extends AbstractFixture
         $brand2->name = 'Another Brand';
         $manager->persist($brand2);
 
-        $setting = new Setting();
+        $setting = new BrandSetting();
         $setting->name = '456key';
         $setting->value = 'second brand';
         $setting->brand = $brand2;

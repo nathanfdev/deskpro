@@ -334,6 +334,27 @@
 						<label for="{{ replyBaseId }}_email_user">{{ phrase('agent.general.email_user') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.email_user_tip') }}"></span></label>
 					</div>
 				</div>
+
+                {% if app.jira.isEnabled() %}
+                <div class="cell">
+                    <div class="inner-cell" style="padding-left: 11px;">
+                        <input type="checkbox" name="options[do_trigger_jira_app]" id="{{ replyBaseId }}_jira_app_action_check" />
+                    </div>
+                    <div class="inner-cell" style="position: relative;">
+                        <span style="cursor: pointer;">
+                            <span id="{{ replyBaseId }}_jira_app_action_text" ></span>
+                            <i class="icon-sort-down" style="color: #888; position: relative; top: -2px;"></i>
+                        </span>
+                        <select name="options[jira_app_action]" id="{{replyBaseId}}_jira_app_action"
+                                class="dpe_select" data-select-nogrouptitle="1" style="min-width: 170px;"
+                                data-invisible-trigger-right="1" data-style-type="icons" data-select-icon-size="22"
+                            >
+                            <option value="send_comment" selected="selected">Send comment to JIRA</option>
+                            <option value="create_issue">Send to JIRA as new issue</option>
+                        </select>
+                    </div>
+                </div>
+                {% endif %}
 			</td>
 		</tr></table>
 	</footer>

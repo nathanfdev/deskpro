@@ -11,4 +11,7 @@
     'portal.general.btn-print'          => 'Print',
     'portal.general.btn-download-pdf'   => 'Download PDF',
     'portal.general.related-pages'      => 'Related Pages',
+    'portal.general.related-news'      => 'Related News',
+    'portal.general.related-downloads'      => 'Related Files',
+    'portal.general.related-feedback'      => 'Related Feedback',
 );

@@ -1,0 +1,11 @@
+#!/usr/bin/env php
+<?php
+require __DIR__ . '/../../vendor/autoload.php';
+
+define('PHP_COVERALLS_COMPOSER_INSTALL', 1);
+
+use Satooshi\Bundle\CoverallsBundle\Console\Application;
+use Satooshi\Bundle\CoverallsV1Bundle\Version;
+
+$app = new Application(realpath(__DIR__ . '/../../../'), 'PHP client library for Coveralls API', Version::VERSION);
+$app->run();

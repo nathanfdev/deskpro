@@ -39,37 +39,18 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Controller\AbstractController;
+use Application\PortalBundle\Model\FeedbackFilter;
 use Application\PortalBundle\Request\TagRequest;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Application\PortalBundle\HttpCache\Configuration\TagHttpCache;
+use Zend\Feed\Reader\Extension\CreativeCommons\Feed;
 
 class FeedbackController extends AbstractController
 {
-    /**
-     * @Tag(name="feedback")
-     *
-     * @TagOptions(
-     *      defaults={
-     *          "count": 2,
-     *          "page": 1,
-     *          "show_pagination": true
-     *      }
-     * )
-     */
-    public function feedbackAction(TagRequest $tag_request, array $options)
-    {
-        return $this->renderThemeView(
-            'Theme:Feedback:Tag/feedback.html.twig',
-            array(
-                'count' => $options['count'],
-                'page' => $options['page'],
-                'show_pagination' => $options['show_pagination']
-            )
-        );
-    }
-
     /**
      * @Tag(name="feedback_items")
      * @Tag(name="feedback_items_list", default_options={"style":"list"})
@@ -78,17 +59,40 @@ class FeedbackController extends AbstractController
      * @TagOptions(
      *      defaults={
      *          "style": "row",
-     *          "count": 2,
-     *          "page": 1
+     *          "count": 10,
+     *          "page": 1,
+     *          "status": "all",
+     *          "status_categories": {},
+     *          "types": {},
+     *          "sort": "date",
+     *          "sort_direction": "desc",
+     *          "show_category_link": true
      *      },
      *      allowed_values={
-     *          "style": {"list","row"}
+     *          "style": {"list", "row"},
+     *          "sort": {"date", "most-popular", "highest-rating", "most-discussed", "most-views"},
+     *          "sort_direction": {"desc", "asc"},
+     *          "status": {"all","active","closed"}
      *      }
      * )
+     *
+     * @Security("is_granted('USE_FEEDBACK')")
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
-        $pager = $this->getFeedbackDataService()->getItemsPager($options['page'], $options['count']);
+        $filter = new FeedbackFilter(array(
+            'status' => $options['status'],
+            'status_categories' => $options['status_categories'],
+            'types' => $options['types'],
+            'sort' => $options['sort'],
+            'sort_direction' => $options['sort_direction']
+        ));
+
+        $pager = $this->getFeedbackDataService()->getItemsPager(
+            $options['page'],
+            $options['count'],
+            $filter
+        );
 
         return $this->renderThemeView(
             sprintf('Theme:Feedback:Tag/items_%s.html.twig', $options['style']),
@@ -99,15 +103,51 @@ class FeedbackController extends AbstractController
     }
 
     /**
+     * @Tag(name="item", esi=true)
+     * @TagHttpCache(content="item")
+     *
+     * @TagOptions(
+     *      required={"item"},
+     *      allowed_types={
+     *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
+     *      },
+     *      attribute_expressions={
+     *          "item": "service('data.feedback').getItem(options['item'])"
+     *      }
+     * )
+     */
+    public function itemAction(TagRequest $tag_request, array $options, Feedback $item = null)
+    {
+        return $this->renderThemeView(
+            'Theme:Feedback:Tag/item.html.twig',
+            array(
+                'item' => $item
+            )
+        );
+    }
+
+    /**
      * @Tag(name="feedback_pager")
      *
      * @TagOptions(
      *      defaults={
      *          "show_pagination": true,
-     *          "count": 2,
-     *          "page": 1
+     *          "count": 10,
+     *          "page": 1,
+     *          "status": "all",
+     *          "status_categories": {},
+     *          "types": {},
+     *          "sort": "date",
+     *          "sort_direction": "desc"
      *      },
+     *      allowed_values={
+     *          "sort": {"date", "most-popular", "highest-rating", "most-discussed", "most-views"},
+     *          "sort_direction": {"desc", "asc"},
+     *          "status": {"all","active","closed"}
+     *      }
      * )
+     *
+     * @Security("is_granted('USE_FEEDBACK')")
      */
     public function pagerAction(TagRequest $tag_request, array $options)
     {
@@ -115,7 +155,19 @@ class FeedbackController extends AbstractController
             return new Response('');
         }
 
-        $pager = $this->getFeedbackDataService()->getItemsPager($options['page'], $options['count']);
+        $filter = new FeedbackFilter(array(
+            'status' => $options['status'],
+            'status_categories' => $options['status_categories'],
+            'types' => $options['types'],
+            'sort' => $options['sort'],
+            'sort_direction' => $options['sort_direction']
+        ));
+
+        $pager = $this->getFeedbackDataService()->getItemsPager(
+            $options['page'],
+            $options['count'],
+            $filter
+        );
 
         return $this->renderThemeView(
             'Theme:Common:pager.html.twig',
@@ -130,13 +182,18 @@ class FeedbackController extends AbstractController
      *
      * @TagOptions(
      *      defaults={"item": null},
-     *      allowed_types={"item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}}
+     *      allowed_types={
+     *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
+     *      },
+     *      attribute_expressions={
+     *          "item": "service('data.feedback').getItem(options['item'])"
+     *      }
      * )
+     *
+     * @Security("is_granted('USE_FEEDBACK')")
      */
-    public function breadcrumbsAction(TagRequest $request, array $options)
+    public function breadcrumbsAction(TagRequest $tag_request, array $options, Feedback $item = null)
     {
-        $item = $this->getFeedbackDataService()->getItem($options['item']);
-
         return $this->renderThemeView(
             'Theme:Feedback:Tag/breadcrumbs.html.twig',
             array(
@@ -146,10 +203,58 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @return \Application\AppBundle\DataService\FeedbackDataService
+     * @Tag(name="feedback_comments")
+     *
+     * @TagOptions(
+     *      defaults={
+     *          "item": null
+     *      },
+     *      allowed_types={
+     *          "item":{"Application\DeskPRO\Entity\Feedback","int","string","null"}
+     *      },
+     *      attribute_expressions={
+     *          "item": "service('data.feedback').getItem(options['item'])"
+     *      }
+     * )
+     *
+     * @Security("is_granted('USE_FEEDBACK')")
      */
-    public function getFeedbackDataService()
+    public function commentsAction(TagRequest $tag_request, array $options, Feedback $item = null)
     {
-        return $this->get('data.feedback');
+        $comments = $this->getFeedbackDataService()->getItemComments($item, $this->getUser());
+
+        return $this->renderThemeView('Theme:Feedback:Tag/comments.html.twig', array(
+            'item' => $item,
+            'comments' => $comments
+        ));
+    }
+
+    /**
+     * @Tag(name="feedback_ratings", esi=true, always_guest_inline=true)
+     *
+     * @TagOptions(
+     *      defaults={"item": null},
+     *      allowed_types={
+     *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
+     *      },
+     *      attribute_expressions={
+     *          "item": "service('data.feedback').getItem(options['item'])"
+     *      }
+     * )
+     *
+     * @Security("is_granted('USE_FEEDBACK')")
+     */
+    public function ratingsAction(TagRequest $tag_request, array $options, Feedback $item = null)
+    {
+        $item = $this->getFeedbackDataService()->getItem($options['item']);
+        $rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser());
+
+        return $this->renderThemeView(
+            'Theme:Feedback:Tag/ratings.html.twig',
+            array(
+                'rating' => $rating,
+                'item' => $item
+            )
+        );
     }
 }

@@ -46,7 +46,7 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
         // See app/src/Application/DeskPRO/Searcher/TicketSearch.php
         // Re-creating permission logic via filters
 
-        $main_filter = new Filter\BoolAnd();
+        $main_filter = new Filter\BoolOr();
 
         $assigned_filter = new Filter\BoolOr();
         $assigned_filter->addFilter(new Filter\Term(array('agent' => $this->person->getId())));
@@ -55,32 +55,43 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
             $assigned_filter->addFilter(new Filter\Terms('agent_team', $team_ids));
         }
 
-        $dis_dep_ids = $this->person->getHelper('AgentPermissions')->getDisallowedDepartments();
-        if ($dis_dep_ids) {
-            $perm1 = new Filter\BoolOr();
-            $perm1->addFilter(new Filter\BoolNot(new Filter\Terms('department', $dis_dep_ids)));
-            $perm1->addFilter($assigned_filter);
-            $main_filter->addFilter($perm1);
-        }
+        $main_filter->addFilter($assigned_filter);
 
-        if (!$this->person->hasPerm('agent_tickets.view_unassigned')) {
-            $main_filter->addFilter(new Filter\BoolNot(new Filter\Term(array('agent' => 0))));
-        }
+        if (!$this->person->getAllowedDepartments() || (!$this->person->hasPerm('agent_tickets.view_unassigned') && !$this->person->hasPerm('agent_tickets.view_others'))) {
+            // cant see anything else
+        } else {
 
-        if (!$this->person->hasPerm('agent_tickets.view_others')) {
-            $perm2 = new Filter\BoolOr();
-            $perm2->addFilter($assigned_filter);
-            if ($this->person->hasPerm('agent_tickets.view_unassigned')) {
-                $perm2->addFilter(new Filter\Term(array('agent' => 0)));
+            $sub_filter = new Filter\BoolAnd();
+            $any = false;
+
+            $dis_dep_ids = $this->person->getHelper('AgentPermissions')->getDisallowedDepartments();
+            if ($dis_dep_ids) {
+                $sub_filter->addFilter(new Filter\BoolNot(new Filter\Terms('department', $dis_dep_ids)));
+                $any = true;
             }
 
-            $main_filter->addFilter($perm2);
-        }
+            if (!$this->person->hasPerm('agent_tickets.view_unassigned')) {
+                $not_assigned = new Filter\BoolOr();
+                $not_assigned->addFilter(new Filter\BoolNot(new Filter\Term(array('agent' => 0))));
+                $not_assigned->addFilter(new Filter\BoolNot(new Filter\Term(array('agent_team' => 0))));
+                $sub_filter->addFilter($not_assigned);
+                $any = true;
+            }
 
-        // If user has all perms, then no filters are applied
-        // and the BoolAnd filter will be empty
-        if (!$main_filter->getFilters()) {
-            return array();
+            if (!$this->person->hasPerm('agent_tickets.view_others')) {
+                $sub_filter->addFilter(new Filter\BoolNot(new Filter\Term(array('agent' => 0))));
+                $sub_filter->addFilter(new Filter\BoolNot(new Filter\Term(array('agent_team' => 0))));
+                $any = true;
+            }
+
+
+            // If user has all perms, then no filters are applied
+            // and the BoolAnd filter will be empty
+            if (!$any) {
+                return array();
+            }
+
+            $main_filter->addFilter($sub_filter);
         }
 
         return $main_filter->toArray();

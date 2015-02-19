@@ -538,7 +538,7 @@ class ServerChecks
         if ($type == 'apc_check' || $type == 'all') {
             $enabledApc = function_exists('apc_store') && (int) ini_get('apc.enabled');
             $enabledWincache = extension_loaded('wincache') && (int) ini_get('wincache.ocenabled');
-            $enabledOpcache = (int) ini_get('opcache.enable') || extension_loaded('Zend OPcache');
+            $enabledOpcache = (int) ini_get('opcache.enable') && extension_loaded('Zend OPcache');
 
             $this->getLogger()->log("[CHECK] Checking if any opcode cache is enabled", Logger::DEBUG);
 
@@ -743,6 +743,42 @@ class ServerChecks
                 $this->server_errors['dp3_files'] = array(
                     'message' => $msg,
                     'level' => 'fatal'
+                );
+            }
+        }
+
+        #------------------------------
+        # IMAP
+        #------------------------------
+
+        if ($type == 'imap_check' || $type == 'all') {
+            $this->getLogger()->log("[CHECK] Checking if the IMAP extension is enabled", Logger::DEBUG);
+            if (extension_loaded('imap')) {
+                $this->getLogger()->log("[OK] IMAP installed", Logger::DEBUG);
+            } else {
+                $msg = "We recommend installing the IMAP extension so you can use IMAP mail functions.";
+                $this->getLogger()->log("$msg", Logger::INFO);
+                $this->server_errors['imap_check'] = array(
+                    'message' => $msg,
+                    'level' => 'recommended'
+                );
+            }
+        }
+
+        #------------------------------
+        # SOAP
+        #------------------------------
+
+        if ($type == 'soap_check' || $type == 'all') {
+            $this->getLogger()->log("[CHECK] Checking if the SOAP extension is enabled", Logger::DEBUG);
+            if (extension_loaded('soap')) {
+                $this->getLogger()->log("[OK] SOAP installed", Logger::DEBUG);
+            } else {
+                $msg = "We recommend installing the SOAP extension so you can use MS Exchange.";
+                $this->getLogger()->log("$msg", Logger::INFO);
+                $this->server_errors['soap_check'] = array(
+                    'message' => $msg,
+                    'level' => 'recommended'
                 );
             }
         }

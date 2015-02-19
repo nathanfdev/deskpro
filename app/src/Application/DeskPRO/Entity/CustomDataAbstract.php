@@ -105,7 +105,30 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      */
     public function getData()
     {
-        return $this->value ? $this->value : $this->input;
+        $type = !empty($this->field) ? $this->field->getTypeName() : 'text';
+
+        switch ($type) {
+            case 'toggle':
+            case 'date':
+            case 'datetime':
+                return $this->value;
+            default:
+                return $this->value ? $this->value : $this->input;
+        }
+    }
+
+    /**
+     * Set the value or input (use the individual methods if you don't want auto detection)
+     *
+     * @param mixed $data
+     */
+    public function setData($data)
+    {
+        if (is_int($data)) {
+            $this->setModelField('value', $data);
+        } else {
+            $this->setModelField('input', (string) $data);
+        }
     }
 
     public function getValue()

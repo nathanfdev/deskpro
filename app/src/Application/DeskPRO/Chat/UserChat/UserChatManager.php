@@ -847,7 +847,6 @@ class UserChatManager
         $message = App::getMailer()->createMessage();
         $message->setTo($email, $name);
         $message->setTemplate('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
-        $message->enableQueueHint();
 
         App::getMailer()->send($message);
     }

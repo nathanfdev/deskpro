@@ -1,0 +1,15 @@
+<dp:subject>{{ phrase('agent.emails.subject_error_forwarded_email_dupe') }}</dp:subject>
+{{ phrase('agent.emails.detected_as_forward') }}
+
+<br /><br />
+
+{{ phrase('agent.emails.fwd_dupe') }}<br/>
+<a href="{{ url_full('agent') }}#app.tickets,t:{{old_ticket_id}}">{{ url_full('agent') }}#app.tickets,t:{{old_ticket_id}}</a>
+
+<br /><br />
+
+{{ phrase('agent.emails.fwd_not_processed', {url: app.getSetting('core.deskpro_url') ~ 'agent/'}) }}
+
+<br /><br />
+
+{{ phrase('agent.emails.fwd_resend_without_fwd') }}

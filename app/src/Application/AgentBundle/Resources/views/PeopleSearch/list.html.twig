@@ -37,27 +37,6 @@ pageMeta.persons = {{ people_json|raw }};
 {% endblock pane_header %}
 
 {######################################################################################################################}
-{# LETTER NAV #}
-{######################################################################################################################}
-
-{% block pane_content_outscroll %}
-	{% if people|length or selected_letter != '*' %}
-		<div id="people-list-alpha-list" {% if not people|length %}class="no-results"{% endif %}>
-			<ul>
-				{% for letter in alphabet %}
-					<li class="
-					{% if letter.title == selected_letter %}on{% endif %}
-					{% if loop.first %}alpha_list_first{% elseif loop.last %}alpha_list_last{% endif %}"
-					data-route="listpane:{{ path('agent_peoplesearch_customfilter', letter.params ) }}">
-						<span class="title">{% if letter.title == '*' %}&bull;{% else %}{{ letter.title }}{% endif %}</span>
-					</li>
-				{% endfor %}
-			</ul>
-		</div>
-	{% endif %}
-{% endblock pane_content_outscroll %}
-
-{######################################################################################################################}
 {# CONTENT #}
 {######################################################################################################################}
 

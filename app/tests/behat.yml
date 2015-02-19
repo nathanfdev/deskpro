@@ -1,0 +1,60 @@
+default:
+  suites:
+    default:
+        contexts:
+            - Behat\MinkExtension\Context\MinkContext
+            - DpBehat\TestsContext:
+                session: @session
+                dataset_manager: @dataset_manager
+                em: @doctrine.orm.default_entity_manager
+            - DpBehat\LanguageContext:
+                language_manager: @language_manager
+                em: @doctrine.orm.default_entity_manager
+                lang_repo: @language_repository
+                lang_stack: @language_stack
+            - DpBehat\PortalModeContext:
+                mode_storage: @portal_mode_storage
+                mode_factory: @portal_mode_factory
+            - DpBehat\RouterContext
+  extensions:
+    VIPSoft\CodeCoverageExtension\Extension:
+        drivers:
+            - local
+        report:
+            format: php
+            options:
+                target: coverage/cov/behat.cov
+        filter:
+            whitelist:
+                addUncoveredFilesFromWhitelist: true
+                include:
+                    directories:
+                        '../src/Application/AppBundle':
+                            suffix: .php
+                        '../src/Application/PortalBundle':
+                            suffix: .php
+                        '../src/Application/AuthBundle':
+                            suffix: .php
+                        '../src/Application/LanguageBundle':
+                            suffix: .php
+                        '../src/Application/FormsBundle':
+                            suffix: .php
+                        '../src/Application/PersonBundle':
+                            suffix: .php
+                        '../src/Application/TicketBundle':
+                            suffix: .php
+                exclude:
+                    directories:
+                        '../vendor': ~
+                        '../vendor-src': ~
+    Behat\MinkExtension:
+       sessions:
+         default:
+           symfony2: ~
+    Behat\Symfony2Extension:
+        kernel:
+            bootstrap: features/bootstrap/boot.php
+            path: ../sys/Kernel/PortalKernel.php
+            class: DeskPRO\Kernel\PortalKernel
+            env: test
+            debug: true

@@ -49,34 +49,84 @@ class AgentModeTicketReassign extends AbstractJob
 
     public function run()
     {
-        $max = 1000;
+        $db = App::getDb();
+        $max = 2000;
 
         #------------------------------
-        # Deleted
+        # Deleted -> unassign awaiting agent
         #------------------------------
 
-        $agent_ids = App::getDb()->fetchAllCol("SELECT id FROM people WHERE is_agent = 1 AND is_deleted = 1");
+        $agent_ids = $db->fetchAllCol("SELECT id FROM people WHERE is_agent = 1 AND is_deleted = 1");
 
         if ($max && $agent_ids) {
 
-            $ticket_ids = App::getDb()->fetchAllCol("
+            $ticket_ids = $db->fetchAllCol("
                 SELECT id
                 FROM tickets
-                WHERE status IN ('awaiting_agent', 'awaiting_user') AND agent_id IN (?)
+                WHERE status IN ('awaiting_agent') AND agent_id IN (?)
+                LIMIT $max
             ", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
 
-            foreach ($ticket_ids as $t) {
-                App::getDb()->update(
-                    'tickets',
-                    array('agent_id' => null),
-                    array('id' => $t)
-                );
-                App::getDb()->insert('tickets_logs', array(
-                    'ticket_id'    => $t,
-                    'action_type'  => 'free',
-                    'details'      => serialize(array('message' => 'Unassigning deactivated agent')),
-                    'date_created' => date('Y-m-d H:i:s')
-                ));
+            if ($ticket_ids) {
+                $chunks = array_chunk($ticket_ids, 250);
+                foreach ($chunks as $ids) {
+                    $log_batch = array();
+
+                    $db->updateIn('tickets', array('agent_id' => null), $ids);
+                    $db->updateIn('tickets_search_active', array('agent_id' => null), $ids);
+
+                    foreach ($ids as $id) {
+                        $log_batch[] = array(
+                            'ticket_id'    => $id,
+                            'action_type'  => 'free',
+                            'details'      => serialize(array('message' => 'Unassigned deleted agent')),
+                            'date_created' => date('Y-m-d H:i:s')
+                        );
+                    }
+
+                    $db->batchInsert('tickets_logs', $log_batch, true);
+                }
+
+                $this->logStatus(sprintf("Unassigned %d awaiting_agent tickets from deleted agents", count($ticket_ids)));
+            }
+        }
+
+        #------------------------------
+        # Converted into a user -> unassign all
+        #------------------------------
+
+        $agent_ids = $db->fetchAllCol("SELECT id FROM people WHERE was_agent = 1 AND is_agent = 0");
+
+        if ($max && $agent_ids) {
+
+            $ticket_ids = $db->fetchAllCol("
+                SELECT id
+                FROM tickets
+                WHERE agent_id IN (?)
+                LIMIT $max
+            ", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
+
+            if ($ticket_ids) {
+                $chunks = array_chunk($ticket_ids, 250);
+                foreach ($chunks as $ids) {
+                    $log_batch = array();
+
+                    $db->updateIn('tickets', array('agent_id' => null), $ids);
+                    $db->updateIn('tickets_search_active', array('agent_id' => null), $ids);
+
+                    foreach ($ids as $id) {
+                        $log_batch[] = array(
+                            'ticket_id'    => $id,
+                            'action_type'  => 'free',
+                            'details'      => serialize(array('message' => 'Unassigned agent that was converted to a user')),
+                            'date_created' => date('Y-m-d H:i:s')
+                        );
+                    }
+
+                    $db->batchInsert('tickets_logs', $log_batch, true);
+                }
+
+                $this->logStatus(sprintf("Unassigned %d tickets from agents converted into users", count($ticket_ids)));
             }
         }
     }

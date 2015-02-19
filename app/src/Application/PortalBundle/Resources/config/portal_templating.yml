@@ -1,0 +1,26 @@
+services:
+
+  templating.portal:
+    class: Application\PortalBundle\Templating\PortalTemplating
+    arguments: [@templating.engine.twig]
+
+
+  portal_loader.twig:
+    class: Application\PortalBundle\Twig\PortalLoader
+    arguments: [@brand_stack, @template_repository]
+    tags:
+      - { name: twig.loader }
+
+
+  portal_extension.twig:
+    class: Application\PortalBundle\Twig\PortalExtension
+    arguments: [@brand_stack, @settings_resolver]
+    tags:
+      - { name: twig.extension }
+
+
+  portal_cache.template_map:
+    class: Symfony\Component\Config\ConfigCache
+    arguments:
+      - %kernel.cache_dir%/portalTemplateMap.php
+      - %kernel.debug%

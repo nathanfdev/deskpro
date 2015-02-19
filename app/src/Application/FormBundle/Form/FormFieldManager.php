@@ -46,6 +46,7 @@ use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
+use Application\DeskPRO\Entity\CustomDefFeedback;
 
 /**
  * A service responsible for making sense of "Fields". Usually, special strings (see FormFields class), need to be
@@ -68,6 +69,11 @@ class FormFieldManager
         return $this->createCustomField($field, $agent_interface);
     }
 
+    public function getCustomFeedbackField(CustomDefFeedback $field, $agent_interface)
+    {
+        return $this->createCustomField($field, $agent_interface);
+    }
+
     public function getCustomPersonField(CustomDefPerson $field, $agent_interface)
     {
         return $this->createCustomField($field, $agent_interface);
@@ -83,13 +89,38 @@ class FormFieldManager
         FROM DeskPRO:CustomDefPerson f
         WHERE f.is_user_enabled = true
         AND f.is_enabled = true
+        AND f.handler_class IS NOT NULL
         ORDER BY f.display_order
         ');
 
         return $query->getResult();
     }
 
-    public function getCustomTicketFieldById($id, $agent_interface)
+    /**
+     * @return CustomDefFeedback[]
+     */
+    public function getFeedbackFields()
+    {
+        $fields = array();
+
+        $all_fields = $this->em->getRepository('DeskPRO:CustomDefFeedback')->findAll();
+
+        foreach ($all_fields as $field) {
+            if (!$field->isEnabled()) {
+                continue;
+            }
+
+            if ($field->getParent()) {
+                continue;
+            }
+
+            $fields[] = $field;
+        }
+
+        return $fields;
+    }
+
+    public function getCustomTicketFieldById($id)
     {
         return $this->em->getRepository('DeskPRO:CustomDefTicket')->find($id);
     }
@@ -165,7 +196,7 @@ class FormFieldManager
 
                 return array(
                     'deskpro_custom_field_choice',
-                    $multiple ? 'input' : 'value',
+                    'data',
                     $this->getGeneralOptionsForField($field_type, array(
                         'expanded'     => $expanded,
                         'multiple'     => $multiple,
@@ -246,6 +277,8 @@ class FormFieldManager
 
             $constraints[] = new Length($opts);
         }
+
+        $options['help'] = $field_type->getRealDescription();
 
         // regex
         if ($regex = $field_type->getRegex($isAgent)) {

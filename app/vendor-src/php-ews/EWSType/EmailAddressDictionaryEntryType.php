@@ -7,11 +7,16 @@
  * Represents a single e-mail address for a contact.
  *
  * @package php-ews\Types
+ *
+ * @todo Create a common EntryType class.
+ * @todo Create a common TextEntryType class.
  */
 class EWSType_EmailAddressDictionaryEntryType extends EWSType
 {
     /**
      * The email address represented by this entry.
+     *
+     * @since Exchange 2007
      *
      * @var string
      */
@@ -44,7 +49,7 @@ class EWSType_EmailAddressDictionaryEntryType extends EWSType
      *
      * @since Exchange 2010
      *
-     * @var EWSType_
+     * @var string
      */
     public $Name;
 

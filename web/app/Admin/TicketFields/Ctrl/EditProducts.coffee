@@ -38,7 +38,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
         'layouts': '/ticket_layouts/fields/product'
       }).then( (res) =>
         @products       = res.data.info.products
-        @default_id     = res.data.info.default_id
+        @default_id     = res.data.info.default_id + ""
         @agent_required = res.data.info.agent_required
         @user_required  = res.data.info.user_required
         @enabled        = res.data.info.enabled

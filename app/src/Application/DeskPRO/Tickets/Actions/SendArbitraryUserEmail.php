@@ -140,7 +140,7 @@ class SendArbitraryUserEmail extends AbstractEmailAction
         #-------------------------
 
         foreach ($send_people as $person) {
-            $context->getLogger()->debug(sprintf("[SendArbitraryUserEmail] Sending to Person#%d %s <%s>", $person->id, $person->getDisplayName(), $person->primary_email->email));
+            $context->getLogger()->debug(sprintf("[SendArbitraryUserEmail] Sending to Person#%d %s <%s>", $person->id, $person->getDisplayName(), $person->primary_email ? $person->primary_email->email : '?'));
 
             $build = TicketEmailBuilder::createFromContainer($this->getContainer())
                 ->setTicket($ticket)

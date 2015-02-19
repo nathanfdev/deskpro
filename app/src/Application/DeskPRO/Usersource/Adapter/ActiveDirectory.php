@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Usersource\Adapter;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Identity;
+use Orb\Util\Arrays;
 
 class ActiveDirectory extends AbstractAdapter
 {
@@ -112,7 +113,17 @@ class ActiveDirectory extends AbstractAdapter
             if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findRecordViaEmail result: " . print_r($rec_arr,1));
 
             $raw_info = $rec_arr;
-            $raw_info['identity'] = $rec_arr['dn'];
+
+            if (!empty($raw_info['samaccountname'])) {
+                $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['samaccountname']);
+            } elseif (!empty($raw_info['uid'])) {
+                $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['uid']);
+            }
+            if (!empty($raw_info['distinguishedname'])) {
+                $raw_info['identity'] = Arrays::getFirstItem($raw_info['distinguishedname']);
+            } else {
+                $raw_info['identity'] = Arrays::getFirstItem($raw_info['dn']);
+            }
 
             $auth = $this->getAuthAdapter()->getZendAuthAdapter();
 

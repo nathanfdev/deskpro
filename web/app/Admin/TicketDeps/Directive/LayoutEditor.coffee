@@ -236,7 +236,7 @@ define [
         options: {
           on_newticket: true,
           on_viewticket: true,
-          on_viewticket_mode: "value",
+          on_viewticket_mode: "always",
           on_editticket: true
           criteria: {
             mode: "all",

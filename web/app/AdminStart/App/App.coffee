@@ -55,7 +55,7 @@ define [
 
   AdminStartModule.run(['Api', (Api) ->
     window.setInterval(->
-      Api.sendGet('/my/session/renew-request-token?session_id=' + window.DP_SESSION_ID).success( (data) ->
+      Api.sendGet('/my/session/renew-request-token').success( (data) ->
         if data.request_token
           window.DP_REQUEST_TOKEN = data.request_token
       )

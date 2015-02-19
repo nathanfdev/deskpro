@@ -8,7 +8,7 @@
  *
  * @package php-ews\Enumerations
  *
- * @todo Make this an array type that seperates values by space in the
+ * @todo Make this an array type that separates values by space in the
  * __toString() method.
  */
 class EWSType_DaysOfWeekType extends EWSType
@@ -112,7 +112,7 @@ class EWSType_DaysOfWeekType extends EWSType
     /**
      * Element value.
      *
-     * For multiple values, seperate each value with a space.
+     * For multiple values, separate each value with a space.
      *
      * @var string
      */

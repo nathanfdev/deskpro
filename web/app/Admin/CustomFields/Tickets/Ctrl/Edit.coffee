@@ -13,11 +13,11 @@ define [
         @user_layouts  = data.user_layouts
         @agent_layouts = data.agent_layouts
 
-        if not @field_id
-          for l in @user_layouts
-            l.enabled = true
-          for l in @agent_layouts
-            l.enabled = true
+        if !@field_id
+          for l of @user_layouts
+            @user_layouts[l].enabled = true
+          for l of @agent_layouts
+            @agent_layouts[l].enabled = true
       )
 
     postSave: ->
@@ -26,13 +26,14 @@ define [
         enable_agent_layouts: []
       }
 
-      if not @form.is_agent_field
-        for own k,l of @user_layouts
+      if @form.is_enabled
+        if not @form.is_agent_field
+          for own k,l of @user_layouts
+            if l.enabled
+              postData.enable_user_layouts.push(if l.department then l.department.id else 0)
+        for own k,l of @agent_layouts
           if l.enabled
-            postData.enable_user_layouts.push(if l.department then l.department.id else 0)
-      for own k,l of @agent_layouts
-        if l.enabled
-          postData.enable_agent_layouts.push(if l.department then l.department.id else 0)
+            postData.enable_agent_layouts.push(if l.department then l.department.id else 0)
 
       return @Api.sendPostJson('/ticket_layouts/fields/ticket_field_' + @field_id, postData)
 

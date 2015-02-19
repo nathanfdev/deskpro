@@ -130,6 +130,18 @@ class Imap extends AbstractFetcher
                 $options['secure']   = 'ssl';
                 break;
 
+            case 'office365':
+                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365Config $config */
+                $config = $this->account->incoming_account;
+
+                $options['host']     = 'outlook.office365.com';
+                $options['port']     = 993;
+                $options['user']     = $config->user;
+                $options['password'] = $config->password;
+                $options['mode']     = self::MODE_DELETE; // delete in gmail just means archive
+                $options['secure']   = 'ssl';
+                break;
+
             default:
                 throw new \InvalidArgumentException("Unknown account type: ".$this->account->incoming_account->getType());
         }

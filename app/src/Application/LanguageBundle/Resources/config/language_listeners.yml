@@ -1,0 +1,20 @@
+services:
+
+  language_stack_initializer.listener:
+    class: Application\LanguageBundle\EventListener\LanguageStackInitializeListener
+    arguments: [@language_manager , @logger]
+    tags:
+      - { name: kernel.event_subscriber }
+
+  redirect_exception.language.listener:
+    class: Application\LanguageBundle\EventListener\RedirectExceptionListener
+    arguments: [@logger]
+    tags:
+      - { name: kernel.event_subscriber }
+
+
+  last_language.listener:
+    class: Application\LanguageBundle\EventListener\LastLanguageListener
+    arguments: [@language_stack, @logger]
+    tags:
+      - { name: kernel.event_subscriber }

@@ -15,7 +15,6 @@
 		<input type="hidden" name="terms[status][op]" value="is" />
 		<select name="terms[status][status]">
 			<option value="visible">{{ phrase('agent.feedback.any_status') }}</option>
-			<option {% if filter_form.status.status == 'new' %}selected="selected"{% endif %} value="new">{{ phrase('agent.feedback.status_new') }}</option>
 			<option {% if filter_form.status.status == 'active' %}selected="selected"{% endif %} value="active">{{ phrase('agent.feedback.status_active') }}</option>
 			{% for cat in active_status_cats %}
 				<option {% if filter_form.status.status == cat.id %}selected="selected"{% endif %} value="{{cat.id}}">-- {{cat.title}}</option>

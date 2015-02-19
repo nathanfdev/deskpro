@@ -11,7 +11,7 @@ $container->setParameter('twig.loader.filesystem.class', 'Application\\DeskPRO\\
 $container->setParameter('twig.class', 'Application\\DeskPRO\\Twig\\Environment');
 $container->setParameter('templating.name_parser.class', 'Application\\DeskPRO\\Templating\\TemplateNameParser');
 $container->setParameter('templating.cache_warmer.template_paths.class', 'Application\\DeskPRO\\CacheWarmer\\TemplatePathsCacheWarmer');
-$container->setParameter('twig.options', array('cache' => '%kernel.cache_dir%../twig-compiled', 'charset' => 'UTF-8', 'debug' => '%kernel.debug%', 'auto_reload' => '%kernel.debug%'));
+$container->setParameter('twig.options', array('cache' => '%kernel.cache_dir%/../twig-compiled', 'charset' => 'UTF-8', 'debug' => '%kernel.debug%', 'auto_reload' => '%kernel.debug%'));
 $container->setParameter('templating.locator.class', 'Application\\DeskPRO\\Templating\\Loader\\TemplateLocator');
 $container->setParameter('templating.engine.twig.class', 'Application\\DeskPRO\\Twig\\TwigEngine');
 $container->setParameter('debug.templating.engine.twig.class', 'Application\\DeskPRO\\Twig\\TwigEngine');

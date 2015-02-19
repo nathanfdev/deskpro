@@ -100,8 +100,9 @@ class DbLoader implements LoaderInterface
                         if ($loaded_phrases !== null && isset($loaded_phrases[$phr_id])) {
                             continue;
                         }
-
-                        $phrases[$phr_id] = $phr;
+                        if (empty($phrases[$phr_id])) {
+                            $phrases[$phr_id] = $phr;
+                        }
                     }
                 }
             }

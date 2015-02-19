@@ -11,6 +11,8 @@ define(['cutstring'], function (cutstring) {
 
       fields: {},
 
+      create_meta: {},
+
       fieldName: function (id) {
         if (this.fields[id]) return this.fields[id].name;
       },
@@ -117,6 +119,33 @@ define(['cutstring'], function (cutstring) {
       },
       windowHeight: function() {
           return $($window).height();
+      },
+      getCreateMeta: function(projectId) {
+        var d = $q.defer();
+
+        if (!projectId) {
+          return d.resolve(null);
+        }
+
+        if (undefined !== this.create_meta[projectId]) {
+          d.resolve(this.create_meta[projectId]);
+        }
+
+        var query = meta.projects.length > 3 ? ('?project_id=' + projectId) : '';
+
+        $http.get('/agent/jira/createmeta' + query)
+          .success(function (data, status, headers, config) {
+              if (!data.projects) return d.resolve(null);
+              data.projects.each(function(project){
+                meta.create_meta[project.id] = project;
+              });
+              d.resolve(meta.create_meta[projectId]);
+          })
+          .error(function (data, status, headers, config) {
+              d.resolve(null);
+          });
+
+        return d.promise;
       }
     };
 
@@ -137,12 +166,9 @@ define(['cutstring'], function (cutstring) {
           });
         }
 
-        // 'create' metadata
-        if (data.projects) {
-          data.projects.each(function (project) {
-            meta.projects.push(project);
-          });
-        }
+        data.projects.each(function (project) {
+          meta.projects.push(project);
+        });
 
         data.default_fields_list.each(function (id) {
           meta.default_fields_list.push(id);

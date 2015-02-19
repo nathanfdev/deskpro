@@ -44,4 +44,5 @@ class TagOptions
     public $required = array();
     public $allowed_values = array();
     public $allowed_types = array();
+    public $attribute_expressions = array();
 }

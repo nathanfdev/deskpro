@@ -51,7 +51,7 @@ use Application\DeskPRO\ORM\EntityManager;
  *
  * Using this, you can do both low-level and high-ish-level optations on the portal permissions.
  *
- * Loww level: To signify a change in permissions, you can fetch this service from the container and call
+ * Low level: To signal a change in permissions, you can fetch this service from the container and call
  * invalidatePortalPermissionsCaches(). After this call, all permission maps will be regenerated upon next time they
  * are needed. Invalidate frequently as data changes in admin/agent areas.
  *
@@ -63,7 +63,7 @@ use Application\DeskPRO\ORM\EntityManager;
  */
 class PortalPermissionsManager
 {
-    const CACHE_TIMESTAMP_SETTING_NAME = 'portal.default_permissions_timestamp';
+    const CACHE_TIMESTAMP_SETTING_NAME = 'portal.global_cache_timestamp';
 
     /**
      * @var \Application\DeskPRO\NewSettings\SettingsResolver
@@ -89,6 +89,7 @@ class PortalPermissionsManager
      * @var array
      */
     protected $ug_perms;
+
     /**
      * @var PortalUsergroupDecider
      */
@@ -116,6 +117,20 @@ class PortalPermissionsManager
     }
 
     /**
+     * Updates the settings for the portal permissions timestamp and then forces a reload of global settings
+     *
+     * @return null
+     */
+    public function invalidatePortalPermissionsCaches()
+    {
+        // execute a SQL statement to update the portal.global_cache_timestamp setting
+        $this->conn->executeQuery('REPLACE INTO settings SET name = "' . static::CACHE_TIMESTAMP_SETTING_NAME . '", value = ' . time());
+
+        // force a reload of global settings
+        $this->settingsResolver->getGlobalSettings(true)->get(static::CACHE_TIMESTAMP_SETTING_NAME);
+    }
+
+    /**
      * Returns the PermissionBag for the given person
      *
      * @param Person $person
@@ -123,13 +138,22 @@ class PortalPermissionsManager
      */
     public function getPermissionsBagForPerson(Person $person)
     {
-        if ($this->isCacheDisabled()) {
-            return $this->generatePermissionsMapForPerson($person);
+        $that = $this;
+        $generate = function () use ($that, $person) {
+            return $that->generatePermissionsMapForPerson($person);
+        };
+
+        if (!$this->isCacheDisabled()) {
+            $permissions = $this->cache->get(
+                $this->getCacheKeyForPerson($person),
+                $generate
+            );
+        } else {
+            // no cache available, always generate
+            $permissions = $generate();
         }
 
-        return new PermissionsBag(
-            $this->cache->get($this->getCacheKeyForPerson($person), $this->generatePermissionsMapForPerson($person))
-        );
+        return new PermissionsBag($permissions);
     }
 
     /**
@@ -139,48 +163,55 @@ class PortalPermissionsManager
      */
     public function getPermissionsBagForGuest()
     {
-        if ($this->isCacheDisabled()) {
-            return $this->generatePermissionsMapForGuest();
+        $that = $this;
+        $generate = function () use ($that) {
+            return $that->generatePermissionsMapForGuest();
+        };
+
+        if (!$this->isCacheDisabled()) {
+            $usergoupIds = $this->usergroupDecider->getUsergroupIdsForGuest();
+            $permissions = $this->cache->get(
+                $this->getCacheKeyForUsergroupIds($usergoupIds),
+                $generate
+            );
+        } else {
+            // no cache available, always generate
+            $permissions = $generate();
         }
 
-        $usergoupIds = $this->usergroupDecider->getUsergroupIdsForGuest();
-
-        return new PermissionsBag(
-            $this->cache->get($this->getCacheKeyForUsergroupIds($usergoupIds), $this->generatePermissionsMapForGuest())
-        );
-    }
-
-    /**
-     * Updates the settings for the portal permissions timestamp and then forces a reload of global settings
-     *
-     * @return null
-     */
-    public function invalidatePortalPermissionsCaches()
-    {
-        // execute a SQL statement to update the portal.default_permissions_timestamp setting
-        $this->conn->executeQuery('REPLACE INTO settings SET name = "'.static::CACHE_TIMESTAMP_SETTING_NAME.'", value = '.time());
-
-        // force a reload of global settings
-        $this->settingsResolver->getGlobalSettings(true)->get(static::CACHE_TIMESTAMP_SETTING_NAME);
+        return new PermissionsBag($permissions);
     }
 
     public function getAllowedDepartmentIds(Person $person)
     {
-        $cache_key = $this->getCacheTimestamp().'-'.'deps'.'-'.$this->getCacheKeyForPerson($person);
-
         // TODO: this is just returning back all departments. add logic in the closure for actual permission logic.
         $that = $this;
-        return $this->cache->get($cache_key, function() use ($person, $that) {
+        $generate = function () use ($person, $that) {
             $ids = $that->getEm()->createQuery('SELECT d.id FROM DeskPRO:Department d')->getScalarResult();
-            return array_map(function($val) {
+            return array_map(function ($val) {
                 return $val['id'];
             }, $ids);
-        });
+        };
+
+        if (!$this->isCacheDisabled()) {
+            $cache_key = $this->getCacheTimestamp() . '-deps-' . $this->getCacheKeyForPerson($person);
+
+            return $this->cache->get($cache_key, $generate);
+        }
+
+        // no cache available, always generate
+        return $generate();
     }
 
-    public function getEm()
+    /**
+     * Given a set of ints, combines a hash of them with the current cache timestamp to get the cache key
+     *
+     * @param array $usergroupIds
+     * @return string
+     */
+    public function getCacheKeyForUsergroupIds(array $usergroupIds)
     {
-        return $this->em;
+        return $this->getCacheTimestamp() . '-permissions-' . Usergroup::generateUsergroupSetKey($usergroupIds);
     }
 
     /**
@@ -194,17 +225,6 @@ class PortalPermissionsManager
     }
 
     /**
-     * Given a set of ints, combines a hash of them with the current cache timestamp to get the cache key
-     *
-     * @param array $usergroupIds
-     * @return string
-     */
-    public function getCacheKeyForUsergroupIds(array $usergroupIds)
-    {
-        return $this->getCacheTimestamp().'-'.Usergroup::generateUsergroupSetKey($usergroupIds);
-    }
-
-    /**
      * Given a person, uses IDs from usergroups and does getCacheKeyForUsergroupIds
      *
      * @param Person $person
@@ -212,13 +232,12 @@ class PortalPermissionsManager
      */
     public function getCacheKeyForPerson(Person $person)
     {
-        $usergroupIds = array();
+        // cache THIS for a request. It won't change during a single request!
 
-        foreach ($person->getUsergroups() as $usergroup) {
-            $usergroupIds[] = $usergroup['id'];
-        }
+        // cache this below as well..... it does lots of querying etc
+        $usergroup_ids = $this->usergroupDecider->getUsergroupIdsForPerson($person);
 
-        return $this->getCacheKeyForUsergroupIds($usergroupIds);
+        return $this->getCacheKeyForUsergroupIds($usergroup_ids);
     }
 
     /**
@@ -244,22 +263,27 @@ class PortalPermissionsManager
      * @param Person $person
      * @return array
      */
-    protected function generatePermissionsMapForPerson(Person $person)
+    public function generatePermissionsMapForPerson(Person $person)
     {
         $usergoupIds = $this->usergroupDecider->getUsergroupIdsForPerson($person);
 
         return $this->permissionsLoader->loadPermissionsForGroupSet($usergoupIds);
     }
 
-    protected function generatePermissionsMapForGuest()
+    public function generatePermissionsMapForGuest()
     {
         $usergoupIds = $this->usergroupDecider->getUsergroupIdsForGuest();
 
         return $this->permissionsLoader->loadPermissionsForGroupSet($usergoupIds);
     }
 
-    protected function isCacheDisabled()
+    public function isCacheDisabled()
     {
-        return $this->settingsResolver->getGlobalSettings()->get('disable_permissions_cache', false);
+        return $this->settingsResolver->getGlobalSettings()->get('portal.disable_permissions_cache', false);
+    }
+
+    public function getEm()
+    {
+        return $this->em;
     }
 }

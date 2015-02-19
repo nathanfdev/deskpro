@@ -11,26 +11,6 @@
 class EWSType_UserIdType extends EWSType
 {
     /**
-     * Represents the security descriptor definition language (SDDL) form of the
-     * security identifier (SID).
-     *
-     * @since Exchange 2007 SP1
-     *
-     * @var string
-     */
-    public $SID;
-
-    /**
-     * Represents the primary Simple Mail Transfer Protocol (SMTP) address of an
-     * account to be used for delegate access.
-     *
-     * @since Exchange 2007 SP1
-     *
-     * @var string
-     */
-    public $PrimarySmtpAddress;
-
-    /**
      * Defines the display name of a folder, contact, distribution list, or
      * delegate user.
      *
@@ -58,4 +38,24 @@ class EWSType_UserIdType extends EWSType
      * @var string
      */
     public $ExternalUserIdentity;
+
+    /**
+     * Represents the primary Simple Mail Transfer Protocol (SMTP) address of an
+     * account to be used for delegate access.
+     *
+     * @since Exchange 2007 SP1
+     *
+     * @var string
+     */
+    public $PrimarySmtpAddress;
+
+    /**
+     * Represents the security descriptor definition language (SDDL) form of the
+     * security identifier (SID).
+     *
+     * @since Exchange 2007 SP1
+     *
+     * @var string
+     */
+    public $SID;
 }

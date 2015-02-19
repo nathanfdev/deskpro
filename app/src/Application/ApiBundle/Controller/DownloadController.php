@@ -1021,7 +1021,7 @@ class DownloadController extends AbstractController
      *			),
      *			@SWG\Parameter(
      *				name="usergroup_id[]",
-     *				description="comma seperated IDs of user group that has access. If not provided, defaults to all users.",
+     *				description="comma separated IDs of usergroup that has access. If not provided, defaults to all users.",
      *				paramType="query",
      *				required=false,
      *				type="string"

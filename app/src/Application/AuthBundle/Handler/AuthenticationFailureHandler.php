@@ -34,8 +34,70 @@
 
 namespace Application\AuthBundle\Handler;
 
+use Application\AppBundle\Mailer\NewMailer;
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
+use Doctrine\DBAL\Driver\Connection;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationFailureHandler;
+use Symfony\Component\Security\Http\HttpUtils;
 
 class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
 {
+    /**
+     * @var NewMailer
+     */
+    private $new_mailer;
+
+    /**
+     * @var Connection
+     */
+    private $db;
+
+    /**
+     * @var PersonRepository
+     */
+    private $person_repo;
+
+    public function __construct(HttpKernelInterface $httpKernel, HttpUtils $httpUtils, array $options = array(), LoggerInterface $logger = null, NewMailer $new_mailer, Connection $db, PersonRepository $person_repo)
+    {
+        parent::__construct($httpKernel, $httpUtils, $options, $logger);
+        $this->new_mailer = $new_mailer;
+        $this->db = $db;
+        $this->person_repo = $person_repo;
+    }
+
+
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    {
+        //
+        // run failed login routine from old controller
+        //
+
+        $token = $exception->getToken();
+
+        // Send alert
+        $attempt_person = $this->person_repo->findOneByEmail($token->getUsername());
+        if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email') && !$attempt_person->is_deleted) {
+            $this->new_mailer->sendLoginAlert($attempt_person, false);
+        }
+
+        // Save login log
+        if ($attempt_person) {
+            $this->db->insert('login_log', array(
+                'person_id' => $attempt_person->getId(),
+                'area' => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
+                'is_success' => 0,
+                'ip_address' => dp_get_user_ip_address(),
+                'hostname' => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+                'user_agent' => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+                'date_created' => date('Y-m-d H:i:s')
+            ));
+        }
+
+        return parent::onAuthenticationFailure($request, $exception);
+    }
+
 }

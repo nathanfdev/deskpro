@@ -34,6 +34,7 @@
 
 namespace Application\FormBundle\Form\Type;
 
+use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\FormBundle\Form\FormFieldManager;
 use Doctrine\ORM\EntityManager;
@@ -71,15 +72,36 @@ class CustomDataPersonType extends AbstractType
         /** @var \Application\DeskPRO\Entity\CustomDefTicket $custom_data_field */
         $custom_data_field = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
 
+        if (!$custom_data) {
+            $custom_data = new CustomDataPerson();
+            $event->setData($custom_data);
+        }
+
+        if (!$custom_data->getData()) {
+            $custom_data->setData($custom_data_field->getDefaultValue());
+        }
+
         list($value_name, $form_type, $options) = $this->field_manager->getCustomPersonField($custom_data_field, $config->getOption('agent_interface'));
+
+        if ($config->getOption('ignore_validation')) {
+            $options = array_merge($options, array(
+                'validation_groups' => array(),
+                'constraints' => array()
+            ));
+        }
+
         $form->add($value_name, $form_type, $options);
     }
 
     public function submitEvent(FormEvent $event)
     {
         $config = $event->getForm()->getConfig();
-        /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
+        /** @var \Application\DeskPRO\Entity\CustomDataPerson $custom_data */
         $custom_data = $event->getData();
+        if (!$custom_data) {
+            $custom_data = new CustomDataPerson();
+            $event->setData($custom_data);
+        }
         $field = $config->getOption('custom_data_field');
         $person = $config->getOption('person');
         $custom_data->field = $field;
@@ -88,10 +110,23 @@ class CustomDataPersonType extends AbstractType
 
     public function postSubmitEvent(FormEvent $event)
     {
-        // after successful form submission, we want to make sure this entity is persisted in case it is new
-        /** @var \Application\DeskPRO\Entity\CustomDataPerson $custom_data */
+        /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
         $custom_data = $event->getData();
+        $form = $event->getForm();
+        $config = $form->getConfig();
+
         if ($custom_data->input === null) {
+            $custom_data->input = '';
+        }
+        if ($custom_data->input) {
+            $custom_data->value = 0;
+        }
+
+        // if admin switched from multi select to single select, we need to fix the data object
+        $custom_data_field = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
+        list($value_name, $form_type, $options) = $this->field_manager->getCustomPersonField($custom_data_field, $config->getOption('agent_interface'));
+
+        if (array_key_exists('multiple', $options) && !$options['multiple']) {
             $custom_data->input = '';
         }
     }
@@ -99,7 +134,8 @@ class CustomDataPersonType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'   => 'Application\DeskPRO\Entity\CustomDataPerson'
+            'data_class'   => 'Application\DeskPRO\Entity\CustomDataPerson',
+            'ignore_validation' => false
         ));
         $resolver->setRequired(array(
             'custom_data_field',

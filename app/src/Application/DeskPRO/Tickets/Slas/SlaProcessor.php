@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Slas;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\ORM\StateChange\ChangeSimple;
+use Application\DeskPRO\Tickets\TicketManager;
 use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
@@ -198,9 +199,10 @@ class SlaProcessor
      * Look up SLAs in the db that are past warning threshold and update them.
      *
      * @param  callback $context_factory A factory that returns a new ExecutorContext
+     * @param TicketManager $tm
      * @return int
      */
-    public function processAllFailed($context_factory)
+    public function processAllFailed($context_factory, TicketManager $tm)
     {
         $count = 0;
 
@@ -235,6 +237,7 @@ class SlaProcessor
 
                 $ticket_sla->ticket->disableAutoTicketProcess();
                 $this->executeSlaActions($ticket_sla->ticket, $ticket_sla->sla, 'fail', $context);
+                $tm->saveTicket($ticket_sla->ticket, $context);
             }
         }
 
@@ -246,9 +249,10 @@ class SlaProcessor
      * Look up SLAs in the db that are past failing threshold and update them.
      *
      * @param  callback $context_factory A factory that returns a new ExecutorContext
+     * @param TicketManager $tm
      * @return int
      */
-    public function processAllWarning($context_factory)
+    public function processAllWarning($context_factory, TicketManager $tm)
     {
         $count = 0;
 
@@ -283,6 +287,7 @@ class SlaProcessor
 
                 $ticket_sla->ticket->disableAutoTicketProcess();
                 $this->executeSlaActions($ticket_sla->ticket, $ticket_sla->sla, 'warning', $context);
+                $tm->saveTicket($ticket_sla->ticket, $context);
             }
         }
 
@@ -302,7 +307,7 @@ class SlaProcessor
 
         $state = $ticket->getStateChangeRecorder();
         $state->setCurrentChangeMetadata(array('sla' => $sla, 'sla_status' => $status));
-        $context->getLogger()->info(sprintf("[SlaProcessor] ----- BEGIN SLA.$status #%s :: %s -----", $sla->id, $sla->title));
+        $context->getLogger()->info(sprintf("[SlaProcessor] ----- BEGIN SLA.$status #%s :: %s >> Ticket %d -----", $sla->id, $sla->title, $ticket->id));
 
         try {
             if ($status == TicketSla::STATUS_WARNING) {

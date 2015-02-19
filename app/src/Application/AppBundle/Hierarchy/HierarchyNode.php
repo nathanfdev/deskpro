@@ -35,7 +35,7 @@
 namespace Application\AppBundle\Hierarchy;
 
 
-use Application\FormBundle\Hierarchy\Hierarchy;
+use Application\AppBundle\Hierarchy\Hierarchy;
 
 class HierarchyNode implements \IteratorAggregate, \Countable
 {
@@ -65,6 +65,11 @@ class HierarchyNode implements \IteratorAggregate, \Countable
     protected $children;
 
     /**
+     * @var HierarchyNode
+     */
+    protected $parent;
+
+    /**
      * @param int   $depth the depth into the hierarchy that this exists
      * @param int   $order the order amoung this depth (higher is top of list)
      * @param mixed $data  any arbitrary data stored at this location in the hierarchy
@@ -84,8 +89,14 @@ class HierarchyNode implements \IteratorAggregate, \Countable
 
     public function addChild(HierarchyNode $node)
     {
+        $node->setParent($this);
         $node->setHierarchy($this->hierarchy);
         $this->children[] = $node;
+
+        // bug in php will throw an exception for modifying arrays in some versions of php during usort
+        @usort($this->children, function ($node1, $node2) {
+            return $node2->getOrder() - $node1->getOrder();
+        });
     }
 
     /**
@@ -170,5 +181,55 @@ class HierarchyNode implements \IteratorAggregate, \Countable
         }
 
         return null;
+    }
+
+    private function setParent(HierarchyNode $node)
+    {
+        $this->parent = $node;
+    }
+
+    /**
+     * @return HierarchyNode
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * Ordered list of all parents of this node, starting with root.
+     *
+     * @return HierarchyNode[]
+     */
+    public function getParents()
+    {
+        $parents = array();
+
+        if ($parent = $this->getParent()) {
+            $parents[] = $parent;
+
+            $grant_parents = $parent->getParents();
+            foreach ($grant_parents as $grant_parent) {
+                $parents[] = $grant_parent;
+            }
+
+        }
+
+        return array_reverse($parents);
+    }
+
+    public function countTree($only_count_left_nodes = false)
+    {
+        if ($only_count_left_nodes && $this->count() > 0) {
+            $count = 0; // dont count this node if we only want the leaf nodes
+        } else {
+            $count = 1;
+        }
+
+        foreach ($this->children as $child) {
+            $count += $child->countTree($only_count_left_nodes);
+        }
+
+        return $count;
     }
 }

@@ -123,6 +123,13 @@ class TicketFilter extends DomainObject
     protected $_results = null;
 
     /**
+     * Searcher for the filter
+     *
+     * @var \Application\DeskPRO\Searcher\TicketSearch
+     */
+    protected $_searcher = null;
+
+    /**
      * @return int
      */
     public function getId()
@@ -167,7 +174,18 @@ class TicketFilter extends DomainObject
         }
     }
 
+    /**
+     * @param array $terms
+     */
+    public function setTerms(array $terms = null)
+    {
+        if (!$terms) {
+            $terms = array();
+        }
 
+        $this->setModelField('terms', $terms);
+        $this->_searcher = null;
+    }
 
     /**
      * Reset results so next calls will re-do the search.
@@ -186,6 +204,10 @@ class TicketFilter extends DomainObject
      */
     public function getSearcher(array $force_terms = array())
     {
+        if (!$force_terms && $this->_searcher) {
+            return $this->_searcher;
+        }
+
         $searcher = new \Application\DeskPRO\Searcher\TicketSearch();
 
         if (!$this->sys_name || strpos($this->sys_name, 'archive_') !== 0) {
@@ -236,6 +258,10 @@ class TicketFilter extends DomainObject
         }
         if ($has_org_terms) {
             $searcher->setOrganizationSearch($org_searcher);
+        }
+
+        if (!$force_terms) {
+            $this->_searcher = $searcher;
         }
 
         return $searcher;

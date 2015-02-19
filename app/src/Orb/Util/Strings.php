@@ -2557,6 +2557,16 @@ class Strings
         self::$php_utf8_dir = $dir;
     }
 
+    /**
+     * Check if php_utf8 support is enabled
+     *
+     * @return bool
+     */
+    public static function hasPhpUtf8()
+    {
+        return self::$php_utf8_dir !== null;
+    }
+
     public static function __callStatic($name, $args)
     {
         if (!self::$php_utf8_dir) {

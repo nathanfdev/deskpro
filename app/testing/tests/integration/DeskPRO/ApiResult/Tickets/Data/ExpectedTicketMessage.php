@@ -8,6 +8,7 @@ return array(
     'is_agent_note' => false,
     'creation_system' => 'web',
     'ip_address' => '',
+    'hostname' => '',
     'geo_country' => NULL,
     'email' => '',
     'message_hash' => '61e3bc2f196ab01d6d98c82d23fee2b25f76b0fb',

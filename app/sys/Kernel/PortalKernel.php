@@ -34,7 +34,6 @@
 
 namespace DeskPRO\Kernel;
 
-use Application\AgentBundle\AgentBundle;
 use Application\DeskPRO\App;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -63,16 +62,17 @@ class PortalKernel extends Kernel
             new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
             new \WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
+            new \FOS\HttpCacheBundle\FOSHttpCacheBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
+            new \Application\AgentBundle\AgentBundle(),
             new \Application\PortalBundle\PortalBundle(),
             new \Application\LanguageBundle\LanguageBundle(),
             new \Application\AuthBundle\AuthBundle(),
             new \Application\FormBundle\FormBundle(),
             new \Application\AppBundle\AppBundle(),
             new \Application\PersonBundle\PersonBundle(),
-            new \Application\TicketBundle\TicketBundle(),
-            new AgentBundle(),
+            new \Application\TicketBundle\TicketBundle()
         );
 
         if ('dev' === $this->getEnvironment()
@@ -81,6 +81,10 @@ class PortalKernel extends Kernel
             $bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
             $bundles[] = new \Symfony\Bundle\DebugBundle\DebugBundle();
+        }
+
+        if ('test' === $this->getEnvironment()) {
+            $bundles[] = new \DpBehat\TestBundle\TestBundle();
         }
 
         return $bundles;
@@ -140,25 +144,23 @@ class PortalKernel extends Kernel
      */
     protected function initializeContainer()
     {
-        if ($this->environment == 'dev') {
-            $routing_cache_cleaner = new \Application\DeskPRO\Routing\CacheCleaner();
-            if (!$routing_cache_cleaner->isFresh()) {
-                $routing_cache_cleaner->clearCache();
-            }
-        }
-//
-//      TODO: SKIPPING THIS - might need to come back to this before we ship?
-//
-//		if ($this->environment == 'prod' && !defined('DP_BUILDING') && !defined('DPC_IS_CLOUD')) {
-//			// If the container doesnt exist and we're in prod, then means we're installing an update.
-//			// Halt now. This prevents the system from trying to generate the cache itself,
-//			// even though the new files will be installed in a second.
-//			$cache_file = $this->getCacheDir() . '/' . $this->getContainerClass() . '.php';
-//			if (!is_file($cache_file)) {
-//				echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates' . $cache_file);
-//				exit;
-//			}
-//		}
+        //if ($this->environment == 'dev') {
+        //    $routing_cache_cleaner = new \Application\DeskPRO\Routing\CacheCleaner();
+        //    if (!$routing_cache_cleaner->isFresh()) {
+        //        $routing_cache_cleaner->clearCache();
+        //    }
+        //}
+
+		//if ($this->environment == 'prod' && !defined('DP_BUILDING') && !defined('DPC_IS_CLOUD')) {
+		//	// If the container doesnt exist and we're in prod, then means we're installing an update.
+		//	// Halt now. This prevents the system from trying to generate the cache itself,
+		//	// even though the new files will be installed in a second.
+		//	$cache_file = $this->getCacheDir() . '/' . $this->getContainerClass() . '.php';
+		//	if (!is_file($cache_file)) {
+		//		echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates' . $cache_file);
+		//		exit;
+		//	}
+		//}
 
         // entity loader required to construct symfony container
         // so enable it temporarily while the container builds
@@ -179,7 +181,8 @@ class PortalKernel extends Kernel
     protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
     {
         // Make sure the cache dirs exist
-        $env_dir = realpath($this->getCacheDir() . '/../../');
+        $env_dir = realpath($this->getCacheDir() . '/../..');
+
         if (!is_dir($this->getCacheDir())) {
             mkdir($this->getCacheDir(), 0777, true);
         }

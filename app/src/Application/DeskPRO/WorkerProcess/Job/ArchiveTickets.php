@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use Doctrine\DBAL\Connection;
 
 /**
  * Archives old tickets
@@ -50,9 +51,10 @@ class ArchiveTickets extends AbstractJob
         }
 
         $datecut = date('Y-m-d H:i:s', time() - App::getSetting('core_tickets.auto_archive_time'));
+        $now = date('Y-m-d H:i:s');
 
         $ticket_ids = App::getDb()->fetchAllCol("
-            SELECT id FROM tickets
+            SELECT id FROM tickets_search_active
             WHERE status = 'resolved' AND date_resolved < ?
             LIMIT 3000
         ", array($datecut));
@@ -65,10 +67,18 @@ class ArchiveTickets extends AbstractJob
             'new_status' => 'archived'
         ));
 
-        $date_created = date('Y-m-d H:i:s');
-
         foreach ($ticket_ids as $ids) {
-            $ids_str = implode(',', $ids);
+
+            // Re-fetch IDs from tickets table in case
+            // search table is corrupt
+            $ids = App::getDb()->fetchAllCol("
+                SELECT id FROM tickets
+                WHERE id IN (?) AND status = 'resolved'
+            ", array($ids), array(Connection::PARAM_INT_ARRAY));
+
+            if (!$ids) {
+                continue;
+            }
 
             $batch = array();
             foreach ($ids as $id) {
@@ -78,21 +88,22 @@ class ArchiveTickets extends AbstractJob
                     'id_before'    => 200,
                     'id_after'     => 210,
                     'details'      => $details_arr,
-                    'date_created' => $date_created
+                    'date_created' => $now
                 );
             }
 
-            App::getDb()->executeUpdate(sprintf("
+            App::getDb()->executeUpdate("
                 UPDATE tickets
-                SET status = 'archived', date_archived = '%s' WHERE id IN ($ids_str)
-            ", $datecut));
+                SET status = 'archived', date_archived = ?, date_status = ?
+                WHERE id IN (?)
+            ", array($now, $now, $ids), array(\PDO::PARAM_STR, \PDO::PARAM_STR, Connection::PARAM_INT_ARRAY));
 
             App::getDb()->batchInsert('tickets_logs', $batch);
 
             App::getDb()->executeUpdate("
                 DELETE FROM tickets_search_active
-                WHERE id IN ($ids_str)
-            ");
+                WHERE id IN (?)
+            ", array($ids), array(Connection::PARAM_INT_ARRAY));
         }
 
         if ($count) {

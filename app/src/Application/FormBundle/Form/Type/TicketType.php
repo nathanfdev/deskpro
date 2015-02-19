@@ -34,12 +34,15 @@
 
 namespace Application\FormBundle\Form\Type;
 
+use Application\AppBundle\Hierarchy\HierarchyNode;
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use Application\FormBundle\Captcha\CaptchaDecider;
 use Application\FormBundle\Form\FormFieldManager;
 use Application\FormBundle\Form\TicketFormContext;
 use Application\FormBundle\FormFields;
@@ -47,6 +50,7 @@ use Application\FormBundle\Hierarchy\HierarchyGenerator;
 use Application\FormBundle\TicketLayout\TicketLayoutDiffer;
 use Application\FormBundle\TicketLayout\TicketLayoutFactory;
 use Application\FormBundle\Validator\Constraints\ValidCaptcha;
+use Application\LanguageBundle\Language\LanguageManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
@@ -58,6 +62,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class TicketType extends AbstractType
 {
@@ -85,12 +90,24 @@ class TicketType extends AbstractType
      */
     private $hierarchy_generator;
 
+    /**
+     * @var LanguageManager
+     */
+    private $language_manager;
+
+    /**
+     * @var CaptchaDecider
+     */
+    private $captcha_decider;
+
     public function __construct(
         FormFieldManager $field_manager,
         TicketLayoutFactory $ticket_layout_factory,
         TicketLayoutDiffer $layout_differ,
         HierarchyGenerator $hierarchy_generator,
-        EntityManager $em
+        EntityManager $em,
+        LanguageManager $language_manager,
+        CaptchaDecider $captcha_decider
     )
     {
         $this->layout_differ = $layout_differ;
@@ -98,14 +115,27 @@ class TicketType extends AbstractType
         $this->ticket_layout_factory = $ticket_layout_factory;
         $this->hierarchy_generator = $hierarchy_generator;
         $this->em = $em;
+        $this->language_manager = $language_manager;
+        $this->captcha_decider = $captcha_decider;
     }
 
+    /**
+     * The entire Ticket Form is created using listeners. Nothing exists by default.
+     *
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreData'));
         $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'onPreSubmit'));
     }
 
+    /**
+     * PRE DATA PROCESSING (creates the form based on ticket department)
+     *
+     * @param FormEvent $event
+     */
     public function onPreData(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\Ticket $ticket */
@@ -126,36 +156,10 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param Ticket        $ticket
-     * @param TicketMessage $ticket_message
-     * @param FormInterface $form
-     * @param TicketLayout  $initial_layout
-     * @return TicketFormContext
+     * PRE SUBMIT PROCESSING (the data we get here is a pure array of submitted values) (we then manipulate the form if dep changes)
+     *
+     * @param FormEvent $event
      */
-    protected function createTicketFormContext(Ticket $ticket, TicketMessage $ticket_message = null, FormInterface $form, TicketLayout $initial_layout)
-    {
-        $config = $form->getConfig();
-
-        return new TicketFormContext(
-            $form,
-            $ticket,
-            $ticket_message,
-            $config->getOption('person'),
-            $initial_layout,
-            $config->getOption('ticket_view_context'),
-            $config->getOption('ticket_visibility')
-        );
-    }
-
-    /**
-     * @param FormInterface $form
-     * @return \Application\DeskPRO\NewSettings\SettingsBag
-     */
-    public function getSettingsBag(FormInterface $form)
-    {
-        return $form->getConfig()->getOption('settings');
-    }
-
     public function onPreSubmit(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\Ticket $ticket */
@@ -164,48 +168,157 @@ class TicketType extends AbstractType
         $ticket_message = $form->getConfig()->getOption('ticket_message');
         $pre_submit_data = $event->getData();
 
-        $layout = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ? : null);
+        // calculate the initial layout of the form (before any form submissions took place)
+        $layout = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ?: null);
         $context = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout);
         $initial_layout = $context->getActiveLayout();
 
+        // by default, we treat a submit as a "potentially_rerender", but it wont actually rerender unless
+        // new fields are added to the form.
+        $potentially_rerender_form = true;
+
         // now we need to compare the department's layout and see if we need to add/remove fields before we submit data
         if ($form->has(FormFields::DEPARTMENT) && isset($pre_submit_data[FormFields::DEPARTMENT])) {
-            /** @var \Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList $choice_list */
-            $choice_list = $form->get(FormFields::DEPARTMENT)->getConfig()->getOption('choice_list');
-            $submitted_department = $pre_submit_data[FormFields::DEPARTMENT];
-            $values = $choice_list->getChoicesForValues(array($submitted_department));
-            $submitted_department_id = array_pop($values);
 
-            $destination_layout = $this->ticket_layout_factory->getLayoutForTicketForm($submitted_department_id ? : null);
+            //
+            // here we just get the submitted department id (its not the same as submitted value due to choice lists)
+            //
+            /** @var \Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList $choice_list */
+            // choice types dont submit entity IDS, they submit choice list IDs. So we need to calc the real entity Id.
+            $extracted_data = $this->getTicketDataIds($pre_submit_data, $context);
+            $new_department_id = $extracted_data['department'];
+            //
+            // end get new department id
+            //
+
+            //
+            // Re-render detection
+            //
+            // determine if we actually changed department between requests
+            // this keeps state in a hidden form variable so we know if we
+            // are using the original dep, and need to rerender, OR if we
+            // are on multiple re-renders...
+            // we do this because we only disable validation on new fields
+            // the first time a department is changed.
+            // Errors must still render on subsequent requests!
+            // set potentially_rerender = false if we shouldnt treat this as a rerender
+            if (array_key_exists('last_department_id', $pre_submit_data)) {
+                $last_department_id = $pre_submit_data['last_department_id'];
+
+                // there wasn't actually a change in department between requests. treat validation as if we didnt just
+                // rerender the form
+                if ($new_department_id == $last_department_id) {
+                    $potentially_rerender_form = false;
+                }
+            }
+            if ($context->getForm()->has('last_department_id')) {
+                $context->getForm()->remove('last_department_id');
+            }
+            $context->getForm()->add('last_department_id', 'hidden', array('mapped' => false, 'label' => false));
+            $event->setData(array_merge($pre_submit_data, array('last_department_id' => $new_department_id)));
+            //
+            // end rerender detection
+            //
+
+
+
+            $destination_layout = $this->ticket_layout_factory->getLayoutForTicketForm($new_department_id ?: null);
             $context->setNewLayout($destination_layout);
         }
 
-
-        $this->manipulateForm($initial_layout, $context->getActiveLayout(), $context);
+        $this->manipulateForm($initial_layout, $context->getActiveLayout(), $context, $pre_submit_data, $potentially_rerender_form);
     }
 
-    protected function manipulateForm(Layout $initial_layout, Layout $new_layout, TicketFormContext $context)
+    /**
+     * @param Layout $initial_layout
+     * @param Layout $new_layout
+     * @param TicketFormContext $context
+     * @param array $submitted_data
+     * @param bool $potentially_rerender_form
+     */
+    protected function manipulateForm(Layout $initial_layout, Layout $new_layout, TicketFormContext $context, $submitted_data = array(), $potentially_rerender_form = false)
     {
         $additional_fields = $this->layout_differ->findFieldsToAdd($initial_layout, $new_layout);
         $fields_to_remove = $this->layout_differ->findFieldsToRemove($initial_layout, $new_layout);
 
+        $extracted_data = $this->getTicketDataIds($submitted_data, $context);
+
+        $added_something = false;
         foreach ($additional_fields as $field) {
             if (!$context->hasValidVisibility($field)) {
                 continue;
             }
 
-            if ($field->hasCriteria() && !$field->getCriteria()->isTicketMatch($context->getTicket())) {
-                continue;
+            if (count($submitted_data)) {
+                if ($field->hasCriteria() && !$field->getCriteria()->isSubmittedDataMatch($extracted_data)) {
+                    continue;
+                }
+            } else {
+                if ($field->hasCriteria() && !$field->getCriteria()->isTicketMatch($context->getTicket())) {
+                    continue;
+                }
             }
 
-            $this->addField($context, $field);
+            // if something is added, we need to ensure "submit" is removed (it's re-added at the end, below)
+            if ($context->getForm()->has('submit')) {
+                $context->getForm()->remove('submit');
+            }
+
+            // we signal to the controller that we want to rerender (and NOT submit or process) by adding a hidden field
+            if ($potentially_rerender_form && count($submitted_data) > 0 && !$context->getForm()->has('rerender_form')) {
+                $context->getForm()->add('rerender_form', 'hidden', array('mapped' => false, 'label' => false));
+            }
+
+            $added_something = true;
+
+            $this->addField($context, $field, $potentially_rerender_form);
         }
 
         foreach ($fields_to_remove as $field) {
             $this->removeField($context, $field);
         }
 
+        if (!$added_something && $context->getForm()->has('rerender_form')) {
+            // we didn't add anything new, so remove the signal a re-render
+            $context->getForm()->remove('rerender_form');
+        }
+
         $this->addSubmit($context);
+    }
+
+    /**
+     * Submitted choice values are not submitted with the entity Id. Instead we are given the choice list key.
+     *
+     * This inspects the submitted data on our form and gives us data we're interesed in.
+     *
+     * @param array $submitted_data
+     * @param TicketFormContext $context
+     * @return array the form key and its selected entity ID (or null if not submitted)
+     */
+    private function getTicketDataIds(array $submitted_data, TicketFormContext $context)
+    {
+        $form = $context->getForm();
+
+        $final_data = array();
+
+        $keys = array(FormFields::DEPARTMENT, FormFields::PRODUCT, FormFields::CATEGORY, FormFields::WORKFLOW, FormFields::PRIORITY);
+
+        foreach ($keys as $key) {
+            if (array_key_exists($key, $submitted_data)) {
+                $submitted_value = $submitted_data[$key];
+                $choice = current($form->get($key)->getConfig()->getOption('choice_list')->getChoicesForValues(array($submitted_value)));
+
+                if ($choice instanceof HierarchyNode) {
+                    $choice = $choice->getData();
+                }
+
+                $final_data[$key] = $choice->getId();
+            } else {
+                $final_data[$key] = null;
+            }
+        }
+
+        return $final_data;
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -251,7 +364,7 @@ class TicketType extends AbstractType
         $form_context->getForm()->remove($field->getId());
     }
 
-    private function addField(TicketFormContext $form_context, LayoutField $field)
+    private function addField(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         if ($form_context->getForm()->has($field->getId())) {
             return;
@@ -260,58 +373,58 @@ class TicketType extends AbstractType
         switch ($field->getFieldType()) {
 
             case FormFields::SUBJECT:
-                $this->addSubject($form_context, $field);
+                $this->addSubject($form_context, $field, $ignore_validation);
                 break;
             case FormFields::MESSAGE:
-                $this->addMessage($form_context, $field);
+                $this->addMessage($form_context, $field, $ignore_validation);
                 break;
             case FormFields::DEPARTMENT:
-                $this->addDepartment($form_context, $field);
+                $this->addDepartment($form_context, $field, $ignore_validation);
                 break;
             case FormFields::CATEGORY:
-                $this->addCategory($form_context, $field);
+                $this->addCategory($form_context, $field, $ignore_validation);
                 break;
             case FormFields::PRIORITY:
-                $this->addPriority($form_context, $field);
+                $this->addPriority($form_context, $field, $ignore_validation);
                 break;
             case FormFields::WORKFLOW:
-                $this->addWorkflow($form_context, $field);
+                $this->addWorkflow($form_context, $field, $ignore_validation);
                 break;
             case FormFields::PRODUCT:
-                $this->addProduct($form_context, $field);
+                $this->addProduct($form_context, $field, $ignore_validation);
                 break;
             case FormFields::CAPTCHA:
-                $this->addCaptcha($form_context, $field);
+                $this->addCaptcha($form_context, $field, $ignore_validation);
                 break;
             case FormFields::CC:
-                $this->addCc($form_context, $field);
+                $this->addCc($form_context, $field, $ignore_validation);
                 break;
             case FormFields::ATTACH:
-                $this->addAttach($form_context, $field);
+                $this->addAttach($form_context, $field, $ignore_validation);
                 break;
             case FormFields::USER_EMAIL:
-                $this->addUserEmail($form_context, $field);
+                $this->addUserEmail($form_context, $field, $ignore_validation);
                 break;
             case FormFields::USER_NAME:
-                $this->addUserName($form_context, $field);
+                $this->addUserName($form_context, $field, $ignore_validation);
                 break;
             case FormFields::USER_TIMEZONE:
-                $this->addUserTimezone($form_context, $field);
+                $this->addUserTimezone($form_context, $field, $ignore_validation);
                 break;
             case FormFields::USER_LANGUAGE:
-                $this->addUserLanguage($form_context, $field);
+                $this->addUserLanguage($form_context, $field, $ignore_validation);
                 break;
             case FormFields::USER_FIELD:
-                $this->addCustomUserField($form_context, $field);
+                $this->addCustomUserField($form_context, $field, $ignore_validation);
                 break;
             case FormFields::TICKET_FIELD:
-                $this->addCustomTicketField($form_context, $field);
+                $this->addCustomTicketField($form_context, $field, $ignore_validation);
                 break;
 
         }
     }
 
-    private function addDepartment(TicketFormContext $form_context, LayoutField $field)
+    private function addDepartment(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         $person = $form_context->getForm()->getConfig()->getOption('person');
         $hierarchy = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
@@ -326,19 +439,25 @@ class TicketType extends AbstractType
         ));
     }
 
-    private function addSubject(TicketFormContext $form_context, LayoutField $field)
+    private function addSubject(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
-        $form_context->getForm()->add('plain_subject', 'text', array(
+        $options = array(
             'label' => 'Subject',
             'required' => true,
             'constraints' => array(
                 new NotBlank(array('message' => 'This value is required')),
-                new Length(array('min' => 5, 'minMessage' => 'The subject must be at least 5 characters in length'))
+                new Length(array('min' => 5, 'minMessage' => 'The subject must be at least 5 characters in length.'))
             )
-        ));
+        );
+
+        if ($ignore_validation) {
+            $options = $this->markNoValidation($form_context, $options);
+        }
+
+        $form_context->getForm()->add('plain_subject', 'text', $options);
     }
 
-    private function addMessage(TicketFormContext $form_context, LayoutField $field)
+    private function addMessage(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         if (TicketFormContext::VISIBILITY_NEW !== $form_context->getVisibility()) {
             return;
@@ -353,7 +472,7 @@ class TicketType extends AbstractType
         ));
     }
 
-    private function addUserEmail(TicketFormContext $form_context, LayoutField $field)
+    private function addUserEmail(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         $form_context->getForm()->add($field->getId(), 'deskpro_person_email', array(
             'property_path' => 'person.primary_email',
@@ -361,14 +480,14 @@ class TicketType extends AbstractType
         ));
     }
 
-    private function addUserTimezone(TicketFormContext $form_context, LayoutField $field)
+    private function addUserTimezone(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         $form_context->getForm()->add($field->getId(), 'timezone', array(
             'property_path' => 'person.timezone'
         ));
     }
 
-    private function addUserName(TicketFormContext $form_context, LayoutField $field)
+    private function addUserName(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         $form_context->getForm()->add($field->getId(), 'text', array(
             'property_path' => 'person.name',
@@ -377,15 +496,19 @@ class TicketType extends AbstractType
         ));
     }
 
-    private function addUserLanguage(TicketFormContext $form_context, LayoutField $field)
+    private function addUserLanguage(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
+        if (!$this->language_manager->isMultiLanguagePortal()) {
+            return;
+        }
+
         $form_context->getForm()->add($field->getId(), 'deskpro_language', array(
             'property_path' => 'person.language',
             'view_context'  => $form_context->getViewContext()
         ));
     }
 
-    private function addCustomTicketField(TicketFormContext $form_context, LayoutField $field)
+    private function addCustomTicketField(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         $field_def = $this->field_manager->getCustomTicketFieldById($field->getFieldId(), $form_context);
 
@@ -393,20 +516,27 @@ class TicketType extends AbstractType
             return false;
         }
 
+        $options = array(
+            'custom_data_field' => $field_def,
+            'ticket' => $form_context->getTicket(),
+            'property_path' => sprintf('getCustomDataCollection[%s]', $field->getFieldId()),
+            'agent_interface' => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
+            'label' => false
+        );
+
+        if ($ignore_validation) {
+            $options = $this->markNoValidation($form_context, $options);
+            $options['ignore_validation'] = true;
+        }
+
         $form_context->getForm()->add(
             $field->getId(),
             'deskpro_custom_data_ticket',
-            array(
-                'custom_data_field' => $field_def,
-                'ticket' => $form_context->getTicket(),
-                'property_path' => sprintf('getCustomDataCollection[%s]', $field->getFieldId()),
-                'agent_interface' => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
-                'label'           => false
-            )
+            $options
         );
     }
 
-    private function addCustomUserField(TicketFormContext $form_context, LayoutField $field)
+    private function addCustomUserField(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         $field_def = $this->field_manager->getCustomPersonFieldById($field->getFieldId());
 
@@ -414,20 +544,27 @@ class TicketType extends AbstractType
             return false;
         }
 
+        $options = array(
+            'custom_data_field' => $field_def,
+            'person' => $form_context->getPerson(),
+            'property_path' => sprintf('person.getCustomDataCollection[%s]', $field->getFieldId()),
+            'agent_interface' => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
+            'label' => false
+        );
+
+        if ($ignore_validation) {
+            $options = $this->markNoValidation($form_context, $options);
+            $options['ignore_validation'] = true;
+        }
+
         $form_context->getForm()->add(
             $field->getId(),
             'deskpro_custom_data_person',
-            array(
-                'custom_data_field' => $field_def,
-                'person'            => $form_context->getPerson(),
-                'property_path'     => sprintf('person.getCustomDataCollection[%s]', $field->getFieldId()),
-                'agent_interface' => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
-                'label'           => false
-            )
+            $options
         );
     }
 
-    private function addCategory(TicketFormContext $form_context, LayoutField $field)
+    private function addCategory(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         // we need the brand setting to be correct
         if (!$this->getSettingsBag($form_context->getForm())->get('core.use_ticket_category', false)) {
@@ -438,10 +575,16 @@ class TicketType extends AbstractType
             return;
         }
 
+        if ($default = $this->getSettingsBag($form_context->getForm())->get('core.default_ticket_cat', null)) {
+            if (!$form_context->getTicket()->getCategoryId()) {
+                $form_context->getTicket()->setCategoryId($default);
+            }
+        }
+
         $form_context->getForm()->add($field->getId(), 'deskpro_category', array());
     }
 
-    private function addPriority(TicketFormContext $form_context, LayoutField $field)
+    private function addPriority(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         // we need the brand setting to be correct
         if (!$this->getSettingsBag($form_context->getForm())->get('core.use_ticket_priority', false)) {
@@ -452,10 +595,16 @@ class TicketType extends AbstractType
             return;
         }
 
+        if ($default = $this->getSettingsBag($form_context->getForm())->get('core.default_ticket_pri', null)) {
+            if (!$form_context->getTicket()->getPriorityId()) {
+                $form_context->getTicket()->setPriorityId($default);
+            }
+        }
+
         $form_context->getForm()->add($field->getId(), 'deskpro_priority', array());
     }
 
-    private function addWorkflow(TicketFormContext $form_context, LayoutField $field)
+    private function addWorkflow(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         // we need the brand setting to be correct
         if (!$this->getSettingsBag($form_context->getForm())->get('core.use_ticket_workflow', false)) {
@@ -466,10 +615,16 @@ class TicketType extends AbstractType
             return;
         }
 
+        if ($default = $this->getSettingsBag($form_context->getForm())->get('core.default_ticket_work', null)) {
+            if (!$form_context->getTicket()->getWorkflowId()) {
+                $form_context->getTicket()->setWorkflowId($default);
+            }
+        }
+
         $form_context->getForm()->add($field->getId(), 'deskpro_workflow', array());
     }
 
-    private function addProduct(TicketFormContext $form_context, LayoutField $field)
+    private function addProduct(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         // we need the brand setting to be correct
         if (!$this->getSettingsBag($form_context->getForm())->get('core.use_product', false)) {
@@ -480,21 +635,37 @@ class TicketType extends AbstractType
             return;
         }
 
-        $form_context->getForm()->add($field->getId(), 'deskpro_product', array());
+        if ($default = $this->getSettingsBag($form_context->getForm())->get('core.default_prod_id', null)) {
+            if (!$form_context->getTicket()->getProductId()) {
+                $form_context->getTicket()->setProductId($default);
+            }
+        }
+
+        $form_context->getForm()->add($field->getId(), 'deskpro_product');
     }
 
-    private function addCaptcha(TicketFormContext $form_context, LayoutField $field)
+    private function addCaptcha(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
-        $form_context->getForm()->add($field->getId(), 'deskpro_captcha', array(
-            'mapped'      => false,
+        if (!$this->captcha_decider->shouldRequireTicketCaptchaForCurrentUser()) {
+            return;
+        }
+
+        $options = array(
+            'mapped' => false,
             'error_bubbling' => false,
             'constraints' => array(
                 new ValidCaptcha()
             )
-        ));
+        );
+
+        if ($ignore_validation) {
+            $options = $this->markNoValidation($form_context, $options);
+        }
+
+        $form_context->getForm()->add($field->getId(), 'deskpro_captcha', $options);
     }
 
-    private function addCc(TicketFormContext $form_context, LayoutField $field)
+    private function addCc(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         $form_context->getForm()->add($field->getId(), 'deskpro_cc', array(
             'ticket' => $form_context->getTicket(),
@@ -503,7 +674,7 @@ class TicketType extends AbstractType
         ));
     }
 
-    private function addAttach(TicketFormContext $form_context, LayoutField $field)
+    private function addAttach(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         if ($form_context->getMessage()) {
             $form_context->getForm()->add('attachments', 'ticket_message_attachment_collection', array(
@@ -524,5 +695,44 @@ class TicketType extends AbstractType
         $form_context->getForm()->add('submit', 'submit', array(
             'label' => 'Submit Ticket'
         ));
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param TicketMessage $ticket_message
+     * @param FormInterface $form
+     * @param TicketLayout $initial_layout
+     * @return TicketFormContext
+     */
+    private function createTicketFormContext(Ticket $ticket, TicketMessage $ticket_message = null, FormInterface $form, TicketLayout $initial_layout)
+    {
+        $config = $form->getConfig();
+
+        return new TicketFormContext(
+            $form,
+            $ticket,
+            $ticket_message,
+            $config->getOption('person'),
+            $initial_layout,
+            $config->getOption('ticket_view_context'),
+            $config->getOption('ticket_visibility')
+        );
+    }
+
+    private function markNoValidation(TicketFormContext $form_context, array $options)
+    {
+        return array_merge($options, array(
+            'validation_groups' => array(),
+            'constraints' => array()
+        ));
+    }
+
+    /**
+     * @param FormInterface $form
+     * @return \Application\DeskPRO\NewSettings\SettingsBag
+     */
+    private function getSettingsBag(FormInterface $form)
+    {
+        return $form->getConfig()->getOption('settings');
     }
 }

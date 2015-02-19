@@ -23,6 +23,10 @@
 		<table class="table">
 			<tbody>
 				<tr>
+					<th width="140">Ref</th>
+					<td>{{ ng_var('ViewSource.sendmail.ref') }}</td>
+				</tr>
+				<tr>
 					<th width="140">Date</th>
 					<td><span am-time-ago="ViewSource.sendmail.date_created" title="{{ ng_var('ds.format(ViewSource.sendmail.date_created, "fulltime")') }}"></span></td>
 				</tr>
@@ -34,25 +38,38 @@
 				</tr>
 				<tr>
 					<th>Is Sent?</th>
-					<td ng-class="{'bg-danger': !ViewSource.sendmail.has_sent && ViewSource.sendmail.date_status == 'error', 'bg-success': ViewSource.sendmail.has_sent}">
-						<span ng-if="ViewSource.sendmail.has_sent">Yes &middot; <span am-time-ago="ViewSource.sendmail.date_sent" title="{{ ng_var('ViewSource.sendmail.date_sent') }}"></span></span>
-						<span ng-if="!ViewSource.sendmail.has_sent">No</span>
+					<td ng-class="{'bg-danger': !ViewSource.sendmail.date_send && ViewSource.sendmail.date_status == 'error', 'bg-success': !!ViewSource.sendmail.date_sent}">
+						<span ng-if="ViewSource.sendmail.date_sent">Yes &middot; <span am-time-ago="ViewSource.sendmail.date_sent" title="{{ ng_var('ViewSource.sendmail.date_sent') }}"></span></span>
+						<span ng-if="!ViewSource.sendmail.date_sent">No</span>
 					</td>
 				</tr>
 				<tr>
 					<th>Attempts</th>
 					<td>
-						{{ ng_var('ViewSource.sendmail.attempts') }}
+						{{ ng_var('ViewSource.sendmail.exec_count') }}
 						<span ng-if="ViewSource.sendmail.date_next_attempt">&middot; Next attempt: <span am-time-ago="ViewSource.sendmail.date_next_attempt" title="{{ ng_var('ViewSource.sendmail.date_next_attempt') }}"></span></span>
 					</td>
 				</tr>
 				<tr>
-					<th>Raw "To"</th>
-					<td>{{ ng_var('ViewSource.sendmail.to_address') }}</td>
+					<th>From</th>
+					<td>
+						<div ng-if="ViewSource.sendmail.email_account">
+							<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: ViewSource.sendmail.email_account.id}') }}">
+								{{ ng_var('ViewSource.sendmail.header_from') }}
+							</a>
+						</div>
+						<div ng-if="!ViewSource.sendmail.email_account">
+							{{ ng_var('ViewSource.sendmail.header_from') }}
+						</div>
+					</td>
 				</tr>
 				<tr>
-					<th>Raw "Subject"</th>
-					<td>{{ ng_var('ViewSource.sendmail.subject') }}</td>
+					<th>To</th>
+					<td>{{ ng_var('ViewSource.sendmail.header_to') }}</td>
+				</tr>
+				<tr>
+					<th>Subject</th>
+					<td>{{ ng_var('ViewSource.sendmail.header_subject') }}</td>
 				</tr>
 				<tr>
 					<th>Log</th>

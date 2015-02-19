@@ -82,7 +82,10 @@ class HtmlPurifier implements CleanerPlugin
             $value = preg_replace('/\(#([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\)/', '[#$1]', $value);
         }
 
-        $value = $cleaner->getCleaner('basic')->cleanValue($value, 'string', array(), $cleaner);
+        // Using 'noclean' param because we dont want xss cleaner to operate on the text
+        // we are already passing it through the HTMLPurifier whitelist, so the xss cleaner
+        // will just remove/mangle stuff that we dont actually want touched.
+        $value = $cleaner->getCleaner('basic')->cleanValue($value, 'string', array('noclean' => true), $cleaner);
 
         if ($type == 'html_email_postclean') {
             $value = Strings::postDomDocument($value);

@@ -35,7 +35,10 @@
 namespace Application\AppBundle;
 
 use Application\AppBundle\DependencyInjection\AppExtension;
+use Application\AppBundle\DependencyInjection\Compiler\AppSecretPass;
 use Symfony\Component\Console\Application;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class AppBundle extends Bundle
@@ -44,6 +47,14 @@ class AppBundle extends Bundle
     {
         return new AppExtension();
     }
+
+    public function build(ContainerBuilder $container)
+    {
+        parent::build($container);
+
+        $container->addCompilerPass(new AppSecretPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
+    }
+
 
     public function registerCommands(Application $application)
     {

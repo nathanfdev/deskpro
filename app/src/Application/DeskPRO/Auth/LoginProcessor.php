@@ -152,55 +152,12 @@ class LoginProcessor
                 $this->person->creation_system = 'web.usersource';
             }
 
-            foreach (array('first_name', 'last_name', 'name') as $k) {
-                if (!$this->person[$k] && $mapped_fields->has($k)) {
-                    $this->person[$k] = $mapped_fields->get($k);
-                }
-            }
 
-            if ($mapped_fields->has('picture_data') && !$this->person->picture_blob) {
-                $filename = tempnam(dp_get_tmp_dir(), 'picture');
-                $fp       = @fopen($filename, 'w');
-                if ($fp) {
-                    @fwrite($fp, $mapped_fields->get('picture_data'));
-                    @fclose($fp);
+            $this->updatePersonName($mapped_fields);
+            $this->updatePictureData($mapped_fields, $em);
+            $this->updatePhone($mapped_fields, $em);
+            $this->updateTwitter($mapped_fields, $em);
 
-                    $mime_map = array(
-                        IMAGETYPE_GIF => array('gif', 'image/gif'),
-                        IMAGETYPE_JPEG => array('jpg', 'image/jpeg'),
-                        IMAGETYPE_PNG => array('png', 'image/png'),
-                    );
-                    $image_info = getimagesize($filename);
-                    if ($image_info && $image_info[0] && $image_info[1] && isset($mime_map[$image_info[2]])) {
-                        $mime = $mime_map[$image_info[2]];
-                        $file = new \Symfony\Component\HttpFoundation\File\UploadedFile(
-                            $filename, 'picture.'.$mime[0], $mime[1], strlen($mapped_fields->get('picture_data'))
-                        );
-
-                        $accept = App::getContainer()->getAttachmentAccepter();
-                        $blob   = $accept->accept($file);
-                        $this->person->setPictureBlob($blob);
-                    }
-                }
-                @unlink($filename);
-            }
-
-            $this->persist($em, $this->person);
-
-            // TODO: we need to update this to the person phone_number field when we deprecate the contact data phone number
-            if ($mapped_fields->has('phone')) {
-                $contact_data               = new PersonContactData();
-                $contact_data->contact_type = 'phone';
-                $contact_data->applyFormData(array(
-                    'number' => $mapped_fields->get('phone'),
-                ));
-
-                $contact_data->person = $this->person;
-
-                $this->persist($em, $contact_data);
-            }
-
-            $this->flush($em);
 
             if ($set_email && !$this->person->findEmailAddress($set_email)) {
                 $email_obj = $this->person->addEmailAddressString($set_email);
@@ -208,43 +165,6 @@ class LoginProcessor
                 $this->flush($em);
             }
 
-            if ($mapped_fields->has('twitter')) {
-                $twitter = $mapped_fields->get('twitter');
-
-                App::getDb()->executeUpdate("
-                    INSERT INTO people_twitter_users
-                        (person_id, twitter_user_id, screen_name, is_verified, oauth_token, oauth_token_secret)
-                    VALUES (?, ?, ?, 1, ?, ?)
-                    ON DUPLICATE KEY UPDATE
-                        twitter_user_id = VALUES(twitter_user_id),
-                        screen_name = VALUES(screen_name),
-                        is_verified = 1,
-                        oauth_token = VALUES(oauth_token),
-                        oauth_token_secret = VALUES(oauth_token_secret)
-                ", array($this->person->id, $twitter['user_id'], $twitter['screen_name'], $twitter['oauth_token'], $twitter['oauth_token_secret']));
-
-                $has_account = false;
-                foreach ($this->person->getContactData('twitter') as $twitter_details) {
-                    if ($twitter_details->field_1 == $twitter['screen_name'] || ($twitter_details->field_3 && $twitter_details->field_3 == $twitter['user_id'])) {
-                        $twitter_details->field_10 = '1';
-                        $this->persist($em, $twitter_details);
-                        $has_account = true;
-                    }
-                }
-
-                if (!$has_account) {
-                    $twitter_details               = new \Application\DeskPRO\Entity\PersonContactData();
-                    $twitter_details->contact_type = 'twitter';
-                    $twitter_details->person       = $this->person;
-                    $twitter_details->field_1      = $twitter['screen_name'];
-                    $twitter_details->field_2      = '0';
-                    $twitter_details->field_3      = $twitter['user_id'];
-                    $twitter_details->field_10     = '1';
-                    $this->persist($em, $twitter_details);
-                }
-
-                $this->flush($em);
-            }
 
             // New assoc
             $this->assoc                      = new PersonUsersourceAssoc();
@@ -261,6 +181,14 @@ class LoginProcessor
         #------------------------------
         } else {
             $this->person = $this->assoc['person'];
+
+            // if this setting is true, then always update $this->person via these methods
+            if (App::getSetting('core.usersource_always_update_data')) {
+                $this->updatePersonName($mapped_fields);
+                $this->updatePictureData($mapped_fields, $em);
+                $this->updatePhone($mapped_fields, $em);
+                $this->updateTwitter($mapped_fields, $em);
+            }
 
             // Need to make sure the email address on the local account matches that of the
             // identity (it could have been updated).
@@ -358,6 +286,121 @@ class LoginProcessor
                 $message->attach($attach);
                 App::$container->getMailer()->send($message);
             }
+        }
+    }
+
+    /**
+     * @param $mapped_fields
+     */
+    protected function updatePersonName($mapped_fields)
+    {
+        foreach (array('first_name', 'last_name', 'name') as $k) {
+            if ($mapped_fields->has($k)) {
+                $this->person[$k] = $mapped_fields->get($k);
+            }
+        }
+    }
+
+    /**
+     * @param $mapped_fields
+     * @param $em
+     * @throws \Exception
+     */
+    protected function updateTwitter($mapped_fields, $em)
+    {
+        if ($mapped_fields->has('twitter')) {
+            $twitter = $mapped_fields->get('twitter');
+
+            App::getDb()->executeUpdate("
+                    INSERT INTO people_twitter_users
+                        (person_id, twitter_user_id, screen_name, is_verified, oauth_token, oauth_token_secret)
+                    VALUES (?, ?, ?, 1, ?, ?)
+                    ON DUPLICATE KEY UPDATE
+                        twitter_user_id = VALUES(twitter_user_id),
+                        screen_name = VALUES(screen_name),
+                        is_verified = 1,
+                        oauth_token = VALUES(oauth_token),
+                        oauth_token_secret = VALUES(oauth_token_secret)
+                ", array($this->person->id, $twitter['user_id'], $twitter['screen_name'], $twitter['oauth_token'], $twitter['oauth_token_secret']));
+
+            $has_account = false;
+            foreach ($this->person->getContactData('twitter') AS $twitter_details) {
+                if ($twitter_details->field_1 == $twitter['screen_name'] || ($twitter_details->field_3 && $twitter_details->field_3 == $twitter['user_id'])) {
+                    $twitter_details->field_10 = '1';
+                    $this->persist($em, $twitter_details);
+                    $has_account = true;
+                }
+            }
+
+            if (!$has_account) {
+                $twitter_details = new \Application\DeskPRO\Entity\PersonContactData();
+                $twitter_details->contact_type = 'twitter';
+                $twitter_details->person = $this->person;
+                $twitter_details->field_1 = $twitter['screen_name'];
+                $twitter_details->field_2 = '0';
+                $twitter_details->field_3 = $twitter['user_id'];
+                $twitter_details->field_10 = '1';
+                $this->persist($em, $twitter_details);
+            }
+
+            $this->flush($em);
+        }
+    }
+
+    /**
+     * @param $mapped_fields
+     * @param $em
+     */
+    protected function updatePictureData($mapped_fields, $em)
+    {
+        if ($mapped_fields->has('picture_data')) {
+            $filename = tempnam(dp_get_tmp_dir(), 'picture');
+            $fp = @fopen($filename, 'w');
+            if ($fp) {
+                @fwrite($fp, $mapped_fields->get('picture_data'));
+                @fclose($fp);
+
+                $mime_map = array(
+                    IMAGETYPE_GIF => array('gif', 'image/gif'),
+                    IMAGETYPE_JPEG => array('jpg', 'image/jpeg'),
+                    IMAGETYPE_PNG => array('png', 'image/png')
+                );
+                $image_info = getimagesize($filename);
+                if ($image_info && $image_info[0] && $image_info[1] && isset($mime_map[$image_info[2]])) {
+                    $mime = $mime_map[$image_info[2]];
+                    $file = new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                        $filename, 'picture.' . $mime[0], $mime[1], strlen($mapped_fields->get('picture_data'))
+                    );
+
+                    $accept = App::getContainer()->getAttachmentAccepter();
+                    $blob = $accept->accept($file);
+                    $this->person->setPictureBlob($blob);
+                }
+            }
+            @unlink($filename);
+        }
+
+        $this->persist($em, $this->person);
+    }
+
+    /**
+     * @param $mapped_fields
+     * @param $em
+     */
+    private function updatePhone($mapped_fields, $em)
+    {
+        // TODO: we need to update this to the person phone_number field when we deprecate the contact data phone number
+        if ($mapped_fields->has('phone')) {
+            $contact_data = new PersonContactData();
+            $contact_data->contact_type = 'phone';
+            $contact_data->applyFormData(array(
+                'number' => $mapped_fields->get('phone')
+            ));
+
+            $contact_data->person = $this->person;
+
+            $this->persist($em, $contact_data);
+            $this->flush($em);
         }
     }
 }

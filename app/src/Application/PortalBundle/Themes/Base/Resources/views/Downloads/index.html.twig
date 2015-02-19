@@ -1,7 +1,6 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    {{ page.downloads_breadcrumbs()|raw }}
     <div class="downloads main-downloads">
     <header class="section-header">
         <h1>{{ phrase('portal.downloads.section-title') }}</h1>
@@ -9,6 +8,8 @@
         <p>
             {{ phrase('portal.downloads.section-desc') }}
         </p>
+
+        <a href="{{ path('portal_downloads', { _format: 'rss' }) }}">Subscribe to RSS Feed <i class="fa fa-rss"></i></a>
     </header>
 
     {{ downloads() }}

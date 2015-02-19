@@ -1,0 +1,10 @@
+{% if comments|length %}
+    {% for comment in comments %}
+    <li>
+        {# TODO: CN is this trusted html? #}
+        "{{ comment.content_html_plain|raw }}"
+
+        <strong>{{ comment.userName(true) }}</strong> at <i>{{ comment.date_created|date }}</i>
+    </li>
+    {% endfor %}
+{% endif %}

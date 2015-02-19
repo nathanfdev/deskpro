@@ -191,6 +191,24 @@ class WorkerJobsData extends AbstractDefaultData
 		);
 
 		$jobs[] = array(
+			'id'           => 'news_subscriptions',
+			'worker_group' => 'news_subscriptions',
+			'title'        => 'News Subscriptions',
+			'description'  => 'Sends notifications to users who are subscribed to news articles or news categories',
+			'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\NewsSubscriptions',
+			'run_interval' => Job\NewsSubscriptions::DEFAULT_INTERVAL
+		);
+
+		$jobs[] = array(
+			'id'           => 'downloads_subscriptions',
+			'worker_group' => 'downloads_subscriptions',
+			'title'        => 'Downloads Subscriptions',
+			'description'  => 'Sends notifications to users who are subscribed to downloads or downloads categories',
+			'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\DownloadsSubscriptions',
+			'run_interval' => Job\DownloadsSubscriptions::DEFAULT_INTERVAL
+		);
+
+		$jobs[] = array(
 			'id'           => 'move_blobs',
 			'worker_group' => 'move_blobs',
 			'title'        => 'Move Blobs',

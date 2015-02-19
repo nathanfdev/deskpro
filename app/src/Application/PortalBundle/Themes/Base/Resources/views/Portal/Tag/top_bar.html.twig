@@ -9,28 +9,7 @@
 
     <ul id="menu">
 
-        {% if not is_granted('ROLE_USER') %}
-
-            {% if display_registration_link %}
-            <li>
-                <a href="{{ path('portal_user_registration') }}">Create a new account</a>
-            </li>
-            {% endif %}
-
-            <li>
-                <a href="{{ path('portal_login') }}" class="button">Log In</a>
-            </li>
-
-        {% else %}
-
-            <li>
-                Hi, {{ app.user }}
-            </li>
-            <li>
-                <a href="{{ path('portal_logout') }}" class="button">Logout</a>
-            </li>
-
-        {% endif %}
+        {{ page.small_user_info()|raw }}
 
         {% if is_multi_language %}
         <li>

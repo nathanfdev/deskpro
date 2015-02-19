@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\FormBundle\Collection\CustomDataCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -45,7 +46,8 @@ use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
  */
 class Feedback extends ContentAbstract implements HighlightableModelInterface
 {
-    const STATUS_NEW      = 'new';
+    const CONTENT_TYPE = 'feedback';
+
     const STATUS_ACTIVE   = 'active';
     const STATUS_CLOSED   = 'closed';
     const STATUS_HIDDEN   = 'hidden';
@@ -69,7 +71,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     protected $validating = null;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var \Application\DeskPRO\Entity\FeedbackCategory
      * @SWG\Property(name="category",type="array", items="$ref:FeedbackCategory")
      */
     protected $category;
@@ -123,6 +125,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
      * @var array
      */
     protected $_search_highlights;
+
+    /**
+     * @var CustomDataCollection
+     */
+    protected $cdc;
 
     public function __construct()
     {
@@ -220,6 +227,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->setModelField('category', App::getEntityRepository('DeskPRO:FeedbackCategory')->find($id));
     }
 
+    /**
+     * @param bool $absolute
+     * @return string
+     * @deprecated generate the route properly, check route name is right and use getSlug()
+     */
     public function getLink($absolute = true)
     {
         $url = App::getRouter()->generate('user_feedback_view', array('slug' => $this->getUrlSlug()), $absolute);
@@ -227,6 +239,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return $url;
     }
 
+    /**
+     * @param bool $absolute
+     * @return string
+     * @deprecated generate the route properly, check route name is right and use getSlug()
+     */
     public function getPermalink($absolute = true)
     {
         $url = App::getRouter()->generate('user_feedback_view', array('slug' => $this->id), $absolute);
@@ -239,6 +256,19 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return $this->category->getFullTitle();
     }
 
+    /**
+     * At the moment, there is only one custom_data set, this is just a quick way to access its value in twig
+     */
+    public function getCustomDataSelection()
+    {
+        /** @var \Application\DeskPRO\Entity\CustomDataFeedback $data */
+        if (!$data = $this->custom_data->last()) {
+            return null;
+        }
+
+        return $data->field->getChildById($data->getValue());
+    }
+
     public function setStatus($status)
     {
         $last_status = $this->status;
@@ -246,16 +276,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->_onPropertyChanged('status', $this->status, $status);
         $this->status = $status;
 
-        if ($status == 'approve') {
-            $status = self::STATUS_NEW;
-        }
-
         switch ($status) {
-            case self::STATUS_NEW:
-                $this['hidden_status']   = null;
-                $this['status_category'] = null;
-                break;
-
             case self::STATUS_ACTIVE:
             case self::STATUS_CLOSED:
                 $this['hidden_status'] = null;
@@ -281,10 +302,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         }
 
         switch ($status) {
-            case self::STATUS_NEW:
-                $this['status'] = $status;
-                break;
-
             case self::STATUS_ACTIVE:
             case self::STATUS_CLOSED:
                 $this['status'] = $status;
@@ -417,6 +434,43 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 return null;
             }
         }
+    }
+
+    /**
+     * @return FeedbackStatusCategory
+     */
+    public function getStatusCategory()
+    {
+        return $this->status_category;
+    }
+
+    /**
+     * @param FeedbackStatusCategory $status_category
+     */
+    public function setStatusCategory(FeedbackStatusCategory $status_category = null)
+    {
+        $this->setModelField('status_category', $status_category);
+    }
+
+    public function getCustomDataCollection()
+    {
+        return $this->cdc = $this->cdc ?: new CustomDataCollection($this->custom_data, $this);
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
+    protected function addSlugHistory($old_slug)
+    {
+        $history = new FeedbackSlugHistory($this, $old_slug);
+        $this->slug_history->add($history);
+
+        return $history;
     }
 
     ############################################################################
@@ -596,5 +650,9 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 'dpApi'                => true, 'dpApiDeep'            => true, 'dpApiPrimary'            => true,
             )
         );
+        $metadata->mapOneToMany(array(
+            'fieldName' => 'slug_history', 'targetEntity' => 'Application\DeskPRO\Entity\FeedbackSlugHistory',
+            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback'
+        ));
     }
 }

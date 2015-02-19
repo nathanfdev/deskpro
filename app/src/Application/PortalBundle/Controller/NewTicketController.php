@@ -44,12 +44,14 @@ use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class NewTicketController extends AbstractController
 {
     /**
      * @Route("/new-ticket", name="portal_new_ticket")
      * @Security("is_granted('USE_TICKETS')")
+     * @Cache(smaxage="10 minutes")
      */
     public function newTicketAction(Request $request)
     {
@@ -62,15 +64,17 @@ class NewTicketController extends AbstractController
         $ticket->addMessage($ticket_message);
 
 
-        // do a one through with the GET request to update our model before starting the "real" form
-        $form = $this->createForm('ticket', $ticket, array(
+        if ('GET' === $request->getMethod()) {
+            // do a one through with the GET request to update our model before starting the "real" form
+            $form = $this->createForm('ticket', $ticket, array(
                 'person' => $person,
                 'ticket_message' => $ticket_message,
                 'method' => 'GET',
                 'validation_groups' => false,
                 'settings' => $this->getBrandContainer()->getSettings()
-        ));
-        $form->submit($request->get('ticket', array()), false);
+            ));
+            $form->submit($request->get('ticket', array()), false);
+        }
 
 
         $form = $this->createForm('ticket', $ticket, array(
@@ -80,36 +84,47 @@ class NewTicketController extends AbstractController
         ));
         $form->handleRequest($request);
 
+        $rerendering = false;
+        if ($form->has('rerender_form')) {
+            $rerendering = true;
+        }
+
         if ($form->isValid()) {
 
             // dont process if user hit "more attachments"
             if ($form->getClickedButton()->getConfig()->getName() !== "more_attachments") {
 
-                // deal with guests via negotiating with PersonFactory
-                if ($person instanceof PersonGuest) {
-                    $person = $this->getPersonFactory()->createPersonFromGuest($person);
 
-                    // since the guest is set on the form, we need to update all of the associations
-                    // TODO: we should be able to deal with this better by using a contact to beign with
-                    $ticket->setPerson($person);
-                    $ticket_message->setPerson($person);
-                    foreach ($ticket_message->getAttachments() as $attachment) {
-                        $attachment->setPerson($person);
+                // if the form set a hidden field "rerender_form" then we want to skip actual processing for now
+                if (!$form->has('rerender_form')) {
+
+                    // deal with guests via negotiating with PersonFactory
+                    if ($person instanceof PersonGuest) {
+                        $person = $this->getPersonFactory()->createPersonFromGuest($person);
+
+                        // since the guest is set on the form, we need to update all of the associations
+                        // TODO: we should be able to deal with this better by using a contact to beign with
+                        $ticket->setPerson($person);
+                        $ticket_message->setPerson($person);
+                        foreach ($ticket_message->getAttachments() as $attachment) {
+                            $attachment->setPerson($person);
+                        }
+
                     }
 
+                    $ticket = $this->saveNewTicket($ticket, $person);
+
+                    $this->addFlash('success', 'created.ticket.phrase.here');
+
+                    return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
                 }
-
-                $ticket = $this->saveNewTicket($ticket, $person);
-
-                $this->addFlash('success', 'created.ticket.phrase.here');
-
-                return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
             }
         }
 
         return $this->renderThemeView(
             'Theme:NewTicket:new_ticket.html.twig', array(
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'rerendering' => $rerendering
             )
         );
     }
@@ -120,22 +135,6 @@ class NewTicketController extends AbstractController
     protected function getTicketsRepo()
     {
         return $this->getRepo('DeskPRO:Ticket');
-    }
-
-    /**
-     * @return \Application\DeskPRO\Tickets\TicketManager
-     */
-    protected function getTicketManager()
-    {
-        return $this->get('ticket_manager');
-    }
-
-    /**
-     * @return \Application\PersonBundle\Person\PersonFactory
-     */
-    protected function getPersonFactory()
-    {
-        return $this->get('person_factory');
     }
 
     private function saveNewTicket(Ticket $ticket, Person $person)

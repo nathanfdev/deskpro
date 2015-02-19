@@ -45,22 +45,6 @@ use Symfony\Component\Validator\Constraints\NotNull;
 
 class DepartmentType extends AbstractType
 {
-    /**
-     * @var \Application\FormBundle\Hierarchy\HierarchyGenerator
-     */
-    private $hierarchy_generator;
-
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $em;
-
-    public function __construct(HierarchyGenerator $hierarchy, EntityManager $em)
-    {
-        $this->hierarchy_generator = $hierarchy;
-        $this->em = $em;
-    }
-
     public function getName()
     {
         return 'deskpro_department';
@@ -68,36 +52,21 @@ class DepartmentType extends AbstractType
 
     public function getParent()
     {
-        return 'choice';
+        return 'entity_hierarchy';
     }
-
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->addModelTransformer(new EntityToIdTransformer($this->em->getRepository('DeskPRO:Department')));;
-    }
-
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $hierarchy_generator = $this->hierarchy_generator;
-
-        $resolver->setRequired(array('person'));
-
         $resolver->setDefaults(array(
-            'class'         => 'Application\\DeskPRO\\Entity\\Department',
-            'property'      => 'title',
-            'placeholder'    => 'Select...',
-            'required' => true,
-            'constraints' => array(
-                new NotNull()
-            ),
-            'hierarchy' => function (Options $options) use ($hierarchy_generator) {
-                return $hierarchy_generator->generateTicketDepartmentsHierarchy($options['person']);
-            },
-            'choice_list'   => function(Options $options) {
-                    return $options['hierarchy']->getChoiceList();
+            'choice_list' => function (Options $options) {
+                /** @var \Application\FormBundle\Hierarchy\HierarchyGenerator $hierarchy_generator */
+                $hierarchy_generator = $options['hierarchy_generator'];
+
+                return $hierarchy_generator->generateTicketDepartmentsHierarchy($options['person'])->getChoiceList();
             }
         ));
+
+        $resolver->setRequired(array('person'));
     }
 }
  

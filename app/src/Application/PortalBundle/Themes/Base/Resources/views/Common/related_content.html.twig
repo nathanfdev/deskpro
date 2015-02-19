@@ -1,0 +1,58 @@
+{% for type,related in related_content %}
+        {% if 'news' == type and related|length %}
+            <div class="titled-header">
+                <h4>{{ phrase('portal.general.related-news') }}</h4>
+            </div>
+            <ul>
+                {% for content in related %}
+                    <li>
+                        <a href="{{ path('portal_news_view', { slug: content.slug }) }}">
+                            <i class="fa fa-file-text-o"></i> {{ content.realTitle }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if 'articles' == type and related|length %}
+            <div class="titled-header">
+                <h4>{{ phrase('portal.general.related-pages') }}</h4>
+            </div>
+            <ul>
+                {% for content in related %}
+                    <li>
+                        <a href="{{ path('portal_kb_view', { slug: content.slug }) }}">
+                            <i class="fa fa-file-text-o"></i> {{ content.realTitle }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if 'downloads' == type and related|length %}
+            <div class="titled-header">
+                <h4>{{ phrase('portal.general.related-downloads') }}</h4>
+            </div>
+            <ul>
+                {% for content in related %}
+                    <li>
+                        <a href="{{ path('portal_downloads_view', { slug: content.slug }) }}">
+                            <i class="fa fa-file-text-o"></i> {{ content.realTitle }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if 'feedback' == type and related|length %}
+            <div class="titled-header">
+                <h4>{{ phrase('portal.general.related-feedback') }}</h4>
+            </div>
+            <ul>
+                {% for content in related %}
+                    <li>
+                        <a href="{{ path('portal_feedback_view', { slug: content.slug }) }}">
+                            <i class="fa fa-file-text-o"></i> {{ content.realTitle }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+{% endfor %}

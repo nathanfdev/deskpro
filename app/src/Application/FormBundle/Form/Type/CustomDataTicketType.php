@@ -72,7 +72,24 @@ class CustomDataTicketType extends AbstractType
         /** @var \Application\DeskPRO\Entity\CustomDefTicket $custom_data_field */
         $custom_data_field = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
 
+        if (!$custom_data) {
+            $custom_data = new CustomDataTicket();
+            $event->setData($custom_data);
+        }
+
+        if (!$custom_data->getData()) {
+            $custom_data->setData($custom_data_field->getDefaultValue());
+        }
+
         list($value_name, $form_type, $options) = $this->field_manager->getCustomTicketField($custom_data_field, $config->getOption('agent_interface'));
+
+        if ($config->getOption('ignore_validation')) {
+            $options = array_merge($options, array(
+                'validation_groups' => array(),
+                'constraints' => null
+            ));
+        }
+
         $form->add($value_name, $form_type, $options);
     }
 
@@ -81,6 +98,10 @@ class CustomDataTicketType extends AbstractType
         $config = $event->getForm()->getConfig();
         /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
         $custom_data = $event->getData();
+        if (!$custom_data) {
+            $custom_data = new CustomDataTicket();
+            $event->setData($custom_data);
+        }
         $field = $config->getOption('custom_data_field');
         $ticket = $config->getOption('ticket');
         $custom_data->field = $field;
@@ -91,7 +112,21 @@ class CustomDataTicketType extends AbstractType
     {
         /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
         $custom_data = $event->getData();
+        $form = $event->getForm();
+        $config = $form->getConfig();
+
         if ($custom_data->input === null) {
+            $custom_data->input = '';
+        }
+        if ($custom_data->input) {
+            $custom_data->value = 0;
+        }
+
+        // if admin switched from multi select to single select, we need to fix the data object
+        $custom_data_field = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
+        list($value_name, $form_type, $options) = $this->field_manager->getCustomTicketField($custom_data_field, $config->getOption('agent_interface'));
+
+        if (array_key_exists('multiple', $options) && !$options['multiple']) {
             $custom_data->input = '';
         }
     }
@@ -99,7 +134,8 @@ class CustomDataTicketType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'   => 'Application\DeskPRO\Entity\CustomDataTicket'
+            'data_class'   => 'Application\DeskPRO\Entity\CustomDataTicket',
+            'ignore_validation' => false
         ));
         $resolver->setRequired(array(
             'custom_data_field',

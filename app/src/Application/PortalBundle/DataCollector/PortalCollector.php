@@ -37,6 +37,8 @@ namespace Application\PortalBundle\DataCollector;
 
 use Application\DeskPRO\Brand\BrandStack;
 use Application\LanguageBundle\Language\LanguageStack;
+use Application\PortalBundle\Mode\PortalMode;
+use Application\PortalBundle\Mode\PortalModeStorage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
@@ -52,11 +54,17 @@ class PortalCollector extends DataCollector
      */
     private $language_stack;
 
+    /**
+     * @var PortalModeStorage
+     */
+    private $mode_storage;
 
-    public function __construct(BrandStack $brand_stack, LanguageStack $language_stack)
+
+    public function __construct(BrandStack $brand_stack, LanguageStack $language_stack, PortalModeStorage $mode_storage)
     {
         $this->brand_stack = $brand_stack;
         $this->language_stack = $language_stack;
+        $this->mode_storage = $mode_storage;
     }
 
 
@@ -72,6 +80,7 @@ class PortalCollector extends DataCollector
     {
         $brandContainer = $this->brand_stack->getActive();
         $language = $this->language_stack->getActive();
+        $mode = $this->mode_storage->getMode();
         $this->data     = array(
             'route_name'          => $request->attributes->get('_route'),
             'executed_controller' => $request->attributes->get('_controller'),
@@ -82,10 +91,15 @@ class PortalCollector extends DataCollector
             'language_code'       => $language ? $language->getTwoLetterLanguageCode() : 'N/A',
             'language_id'         => $language ? $language->getId() : 'N/A',
             'language_img'        => $language ? $language->flag_image : null,
+            'mode'                => (string) $mode,
             'settings'            => $brandContainer->getSettings()->toArray()
         );
     }
 
+    public function getMode()
+    {
+        return $this->data['mode'];
+    }
 
     public function getLanguageCode()
     {

@@ -116,6 +116,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     const CREATED_WEB_AGENT      = 'web.agent';
     const CREATED_WEB_USERSOURCE = 'web.usersource';
     const CREATED_GATEWAT_PERSON = 'gateway.person';
+    const CREATED_WEB_API           = 'web.api';
 
     const EVENT_PRE_CREATE = 'person.pre_create';
     const EVENT_POST_CREATE = 'person.post_create';
@@ -423,6 +424,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $department_permissions;
 
     /**
+     * @var string
+     */
+    protected $password_reset_code;
+
+    /**
      * The date the user was inserted into the system
      *
      * @var \DateTime
@@ -440,6 +446,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * @var \DateTime
      */
     protected $date_password_set = null;
+
+    /**
+     * @var \DateTime
+     */
+    protected $date_password_reset_requested = null;
 
     /**
      * The last time the users gravatar (or other 3rd party image) was checked.
@@ -585,7 +596,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             $this->setModelField('timezone', 'UTC');
         }
 
-        $this->custom_data            = new \Doctrine\Common\Collections\ArrayCollection();
         $this->emails                 = new \Doctrine\Common\Collections\ArrayCollection();
         $this->usergroups             = new \Doctrine\Common\Collections\ArrayCollection();
         $this->twitter_accounts       = new \Doctrine\Common\Collections\ArrayCollection();
@@ -634,7 +644,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
     public function getCustomDataCollection()
     {
-        return $this->cdc = $this->cdc ? : new CustomDataCollection($this->custom_data ? $this->custom_data : new ArrayCollection(), $this);
+        return $this->cdc = ($this->cdc ? : new CustomDataCollection($this->custom_data ? $this->custom_data : new ArrayCollection(), $this));
     }
 
     /**
@@ -770,6 +780,54 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this->usergroups;
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getDatePasswordResetRequested()
+    {
+        return $this->date_password_reset_requested;
+    }
+
+    /**
+     * @param \DateTime $date_password_reset_requested
+     */
+    public function setDatePasswordResetRequested(\DateTime $date_password_reset_requested = null)
+    {
+        $this->setModelField('date_password_reset_requested', $date_password_reset_requested);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPasswordResetCode()
+    {
+        return $this->password_reset_code;
+    }
+
+    /**
+     * @param string $password_reset_code
+     */
+    public function setPasswordResetCode($password_reset_code)
+    {
+        $this->setModelField('password_reset_code', $password_reset_code);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isOrganizationManager()
+    {
+        return $this->organization_manager;
+    }
+
+    /**
+     * @return Organization
+     */
+    public function getOrganization()
+    {
+        return $this->organization;
+    }
+
     protected function _onNotCallable($name, $arguments)
     {
         if ($this->_helper_manager) {
@@ -819,8 +877,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getDisplayName($id_fallback = true)
     {
-        if ($this['first_name'] and $this['last_name']) {
-            return $this['first_name'].' '.$this['last_name'];
+        if ($this['first_name'] AND $this['last_name']) {
+            return $this['first_name'] . ' ' . $this['last_name'];
         } elseif ($this['name']) {
             return $this['name'];
         } elseif ($this['last_name']) {
@@ -1501,6 +1559,9 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function addCustomData(CustomDataPerson $data)
     {
+        if (!$this->custom_data) {
+            $this->custom_data = new ArrayCollection();
+        }
         $this->custom_data->add($data);
         $data->person = $this;
         $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
@@ -2735,11 +2796,12 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Person';
 
         $metadata->setPrimaryTable(array(
-            'name'    => 'people',
+            'name' => 'people',
             'indexes' => array(
-                'is_agent_idx' => array( 'columns' => array( 0 => 'is_agent')),
-                'is_confirmed_idx'                             => array( 'columns' => array( 0 => 'is_confirmed')),
-            ),
+                'is_agent_idx' => array( 'columns' => array( 0 => 'is_agent', ), ),
+                'was_agent_idx' => array( 'columns' => array( 0 => 'was_agent', ), ),
+                'is_confirmed_idx' => array( 'columns' => array( 0 => 'is_confirmed', ), ),
+            )
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 
@@ -2754,96 +2816,98 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 $metadata->addEntityListener(
                     $event,
                     'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener',
-                    'on'.ucfirst($event)
+                    'on' . ucfirst($event)
                 );
             }
         }
 
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array( 'fieldName' => 'gravatar_url', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'gravatar_url'));
-        $metadata->mapField(array( 'fieldName' => 'disable_picture', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'disable_picture'));
-        $metadata->mapField(array( 'fieldName' => 'is_contact', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_contact'));
-        $metadata->mapField(array( 'fieldName' => 'is_user', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_user'));
-        $metadata->mapField(array( 'fieldName' => 'is_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent'));
-        $metadata->mapField(array( 'fieldName' => 'was_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'was_agent'));
-        $metadata->mapField(array( 'fieldName' => 'can_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'can_agent'));
-        $metadata->mapField(array( 'fieldName' => 'can_admin', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'can_admin'));
-        $metadata->mapField(array( 'fieldName' => 'can_billing', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'can_billing'));
-        $metadata->mapField(array( 'fieldName' => 'can_reports', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'can_reports'));
-        $metadata->mapField(array( 'fieldName' => 'is_vacation_mode', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_vacation_mode'));
-        $metadata->mapField(array( 'fieldName' => 'disable_autoresponses', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'disable_autoresponses'));
-        $metadata->mapField(array( 'fieldName' => 'disable_autoresponses_log', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'disable_autoresponses_log'));
-        $metadata->mapField(array( 'fieldName' => 'is_confirmed', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_confirmed'));
-        $metadata->mapField(array( 'fieldName' => 'is_agent_confirmed', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent_confirmed'));
-        $metadata->mapField(array( 'fieldName' => 'is_deleted', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_deleted'));
-        $metadata->mapField(array( 'fieldName' => 'is_disabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_disabled'));
-        $metadata->mapField(array( 'fieldName' => 'importance', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'importance'));
-        $metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system'));
-        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
-        $metadata->mapField(array( 'fieldName' => 'first_name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'first_name'));
-        $metadata->mapField(array( 'fieldName' => 'last_name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_name'));
-        $metadata->mapField(array( 'fieldName' => 'title_prefix', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title_prefix'));
-        $metadata->mapField(array( 'fieldName' => 'override_display_name', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'override_display_name'));
-        $metadata->mapField(array( 'fieldName' => 'summary', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'summary'));
-        $metadata->mapField(array( 'fieldName' => 'secret_string', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'secret_string', 'dpqlAccess' => false, 'dpApi' => false));
-        $metadata->mapField(array( 'fieldName' => 'organization_position', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'organization_position'));
-        $metadata->mapField(array( 'fieldName' => 'organization_manager', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'organization_manager'));
-        $metadata->mapField(array( 'fieldName' => 'timezone', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'timezone'));
-        $metadata->mapField(array( 'fieldName' => 'password', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'password', 'dpqlAccess' => false, 'dpApi' => false));
-        $metadata->mapField(array( 'fieldName' => 'password_scheme', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'password_scheme', 'dpqlAccess' => false, 'dpApi' => false));
-        $metadata->mapField(array( 'fieldName' => 'salt', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'salt', 'dpqlAccess' => false, 'dpApi' => false));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
-        $metadata->mapField(array( 'fieldName' => 'date_last_login', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_last_login'));
-        $metadata->mapField(array( 'fieldName' => 'date_password_set', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_password_set'));
-        $metadata->mapField(array( 'fieldName' => 'date_picture_check', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_picture_check'));
-        $metadata->mapField(array( 'fieldName' => 'browser', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'browser'));
+        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array('fieldName' => 'gravatar_url', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'gravatar_url'));
+        $metadata->mapField(array('fieldName' => 'disable_picture', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'disable_picture'));
+        $metadata->mapField(array('fieldName' => 'is_contact', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_contact'));
+        $metadata->mapField(array('fieldName' => 'is_user', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_user'));
+        $metadata->mapField(array('fieldName' => 'is_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent'));
+        $metadata->mapField(array('fieldName' => 'was_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'was_agent'));
+        $metadata->mapField(array('fieldName' => 'can_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'can_agent'));
+        $metadata->mapField(array('fieldName' => 'can_admin', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'can_admin'));
+        $metadata->mapField(array('fieldName' => 'can_billing', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'can_billing'));
+        $metadata->mapField(array('fieldName' => 'can_reports', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'can_reports'));
+        $metadata->mapField(array('fieldName' => 'is_vacation_mode', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_vacation_mode'));
+        $metadata->mapField(array('fieldName' => 'disable_autoresponses', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'disable_autoresponses'));
+        $metadata->mapField(array('fieldName' => 'disable_autoresponses_log', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'disable_autoresponses_log'));
+        $metadata->mapField(array('fieldName' => 'is_confirmed', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_confirmed'));
+        $metadata->mapField(array('fieldName' => 'is_agent_confirmed', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent_confirmed'));
+        $metadata->mapField(array('fieldName' => 'is_deleted', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_deleted'));
+        $metadata->mapField(array('fieldName' => 'is_disabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_disabled'));
+        $metadata->mapField(array('fieldName' => 'importance', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'importance'));
+        $metadata->mapField(array('fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system'));
+        $metadata->mapField(array('fieldName' => 'name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
+        $metadata->mapField(array('fieldName' => 'first_name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'first_name'));
+        $metadata->mapField(array('fieldName' => 'last_name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_name'));
+        $metadata->mapField(array('fieldName' => 'password_reset_code', 'type' => 'string', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'password_reset_code'));
+        $metadata->mapField(array('fieldName' => 'title_prefix', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title_prefix'));
+        $metadata->mapField(array('fieldName' => 'override_display_name', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'override_display_name'));
+        $metadata->mapField(array('fieldName' => 'summary', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'summary'));
+        $metadata->mapField(array('fieldName' => 'secret_string', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'secret_string', 'dpqlAccess' => false, 'dpApi' => false));
+        $metadata->mapField(array('fieldName' => 'organization_position', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'organization_position'));
+        $metadata->mapField(array('fieldName' => 'organization_manager', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'organization_manager'));
+        $metadata->mapField(array('fieldName' => 'timezone', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'timezone'));
+        $metadata->mapField(array('fieldName' => 'password', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'password', 'dpqlAccess' => false, 'dpApi' => false));
+        $metadata->mapField(array('fieldName' => 'password_scheme', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'password_scheme', 'dpqlAccess' => false, 'dpApi' => false));
+        $metadata->mapField(array('fieldName' => 'salt', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'salt', 'dpqlAccess' => false, 'dpApi' => false));
+        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        $metadata->mapField(array('fieldName' => 'date_last_login', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_last_login'));
+        $metadata->mapField(array('fieldName' => 'date_password_set', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_password_set'));
+        $metadata->mapField(array('fieldName' => 'date_picture_check', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_picture_check'));
+        $metadata->mapField(array('fieldName' => 'date_password_reset_requested', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_password_reset_requested'));
+        $metadata->mapField(array('fieldName' => 'browser', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'browser'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'picture_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'picture_blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL)), 'dpApi' => true  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL)), 'dpApi' => true  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'primary_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array('persist'), 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'primary_email_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
-        $metadata->mapOneToMany(array( 'fieldName' => 'emails', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array('persist'), 'mappedBy' => 'person', 'dpApi' => true ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelPerson', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'person', 'orphanRemoval' => true ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataPerson', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'person', 'orphanRemoval' => true, 'dpApi' => true));
-        $metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonContactData', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'person', 'indexBy' => 'id', 'dpApi' => true, 'dpApiDeep' => true ));
-        $metadata->mapManyToMany(array( 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'cascade' => array('persist', 'merge'), 'joinTable' => array( 'name' => 'person2usergroups', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'inverseJoinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))), 'dpApi' => true ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'preferences', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'person'));
-        $metadata->mapOneToMany(array( 'fieldName' => 'usersource_assoc', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc', 'mappedBy' => 'person'));
-        $metadata->mapOneToMany(array( 'fieldName' => 'twitter_users', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonTwitterUser', 'mappedBy' => 'person'));
-        $metadata->mapManyToMany(array( 'fieldName' => 'twitter_accounts', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => 'persons' ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'notes', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonNote', 'mappedBy' => 'person', 'cascade' => array('persist', 'remove') ));
-        $metadata->mapOneToMany(array( 'fieldName'    => 'phone_numbers',
-                                       'targetEntity' => 'Application\\DeskPRO\\Entity\\PhoneNumber',
-                                       'mappedBy'     => 'person', 'cascade' => array('persist'),
-                                       'orphanRemoval' => true,
+        $metadata->mapManyToOne(array('fieldName' => 'picture_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array(0 => array('name' => 'picture_blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL)), 'dpApi' => true));
+        $metadata->mapManyToOne(array('fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array(0 => array('name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array('fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array(0 => array('name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL)), 'dpApi' => true));
+        $metadata->mapManyToOne(array('fieldName' => 'primary_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array('persist'), 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array(0 => array('name' => 'primary_email_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
+        $metadata->mapOneToMany(array('fieldName' => 'emails', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array('persist'), 'mappedBy' => 'person', 'dpApi' => true));
+        $metadata->mapOneToMany(array('fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelPerson', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'person', 'orphanRemoval' => true));
+        $metadata->mapOneToMany(array('fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataPerson', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'person', 'orphanRemoval' => true, 'dpApi' => true));
+        $metadata->mapOneToMany(array('fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonContactData', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'person', 'indexBy' => 'id', 'dpApi' => true, 'dpApiDeep' => true));
+        $metadata->mapManyToMany(array('fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'cascade' => array('persist', 'merge'), 'joinTable' => array('name' => 'person2usergroups', 'schema' => NULL, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'inverseJoinColumns' => array(0 => array('name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))), 'dpApi' => true));
+        $metadata->mapOneToMany(array('fieldName' => 'preferences', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonPref', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'person'));
+        $metadata->mapOneToMany(array('fieldName' => 'usersource_assoc', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc', 'mappedBy' => 'person'));
+        $metadata->mapOneToMany(array('fieldName' => 'twitter_users', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonTwitterUser', 'mappedBy' => 'person'));
+        $metadata->mapManyToMany(array('fieldName' => 'twitter_accounts', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => 'persons'));
+        $metadata->mapOneToMany(array('fieldName' => 'notes', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonNote', 'mappedBy' => 'person', 'cascade' => array('persist', 'remove')));
+        $metadata->mapOneToMany(array('fieldName' => 'phone_numbers',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\PhoneNumber',
+            'mappedBy' => 'person', 'cascade' => array('persist'),
+            'orphanRemoval' => true,
         ));
-        $metadata->mapOneToMany(array( 'fieldName'    => 'department_permissions',
-                                       'targetEntity' => 'Application\\DeskPRO\\Entity\\DepartmentPermission',
-                                       'mappedBy'     => 'person',
+        $metadata->mapOneToMany(array('fieldName' => 'department_permissions',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\DepartmentPermission',
+            'mappedBy' => 'person',
         ));
 
         $metadata->mapManyToMany(array(
-            'fieldName'    => 'teams',
-            'mappedBy'     => 'members',
-            'dpApi'        => true,
+            'fieldName' => 'teams',
+            'mappedBy' => 'members',
+            'dpApi' => true,
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
-            'joinTable'    => array(
-                'name'        => 'agent_team_members',
-                'joinColumns' => array(array( 'name' => 'person_id' )),
-                'inverseJoinColumns'                 => array(array( 'name' => 'team_id' )),
+            'joinTable' => array(
+                'name' => 'agent_team_members',
+                'joinColumns' => array(array('name' => 'person_id')),
+                'inverseJoinColumns' => array(array('name' => 'team_id')),
             ),
         ));
 
         $metadata->mapManyToOne(array(
-            'fieldName'    => 'primary_team',
-            'dpApi'        => true,
+            'fieldName' => 'primary_team',
+            'dpApi' => true,
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
-            'nullable'     => true,
-            'joinColumns'  => array(array(
-                'name'                 => 'primary_team_id',
+            'nullable' => true,
+            'joinColumns' => array(array(
+                'name' => 'primary_team_id',
                 'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'set null',
+                'nullable' => true,
+                'onDelete' => 'set null',
             )),
         ));
     }
@@ -2866,7 +2930,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getRoles()
     {
-        return array();
+        return array('ROLE_USER');
     }
 
     /**
@@ -2912,6 +2976,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function eraseCredentials()
     {
+        $this->_set_plain_password = null;
     }
 
     /**

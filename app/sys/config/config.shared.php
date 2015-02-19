@@ -3,15 +3,19 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 /** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 
-$container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%../doctrine-proxies');
+$container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/../doctrine-proxies');
 $container->setParameter('doctrine.orm.entity_manager.class', 'Application\\DeskPRO\\ORM\\EntityManager');
-// TODO: make this secret just a config.php global
-$container->setParameter('secret', 'LkanlkaJDnKajkdkaKSKDn32Nln2KNb@bn');
+$container->setParameter('secret', "irrelevant - compiler pass will override this");
 $container->setParameter('locale', 'en');
 
 ####################################################################
 # This config is shared between kernels (DpKernel and PortalKernel)
 ####################################################################
+
+// app secret (NOTE; see intall/config.php, as this is copy/pasted to that file)
+$definition = new Definition();
+$definition->setClass('Application\AppBundle\AppSecret\AppSecret');
+$container->setDefinition('app_secret', $definition);
 
 // settings
 $definition = new Definition();
@@ -37,6 +41,68 @@ $definition->setArguments(
 $container->setDefinition('swiftmailer.mailer', $definition);
 
 ############################################################################
+# Listeners
+############################################################################
+
+$definition = new Definition();
+$definition->setClass('Application\AppBundle\EventListener\SecurityHeadersResponseListener');
+$definition->addTag('kernel.event_subscriber');
+$container->setDefinition('listener.security_headers', $definition);
+
+
+############################################################################
+# Form Type
+############################################################################
+
+$definition = new Definition();
+$definition->setClass('Application\DeskPRO\Form\Type\CleanerExtension');
+$definition->setArguments(array(new Reference('deskpro.core.input_cleaner')));
+$definition->addTag('form.type_extension', array('alias' => 'form'));
+$container->setDefinition('form.cleaner_extension', $definition);
+
+############################################################################
+# Input
+############################################################################
+
+// Init readers
+$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_REQUEST', array('accept_json_post' => true)));
+$container->setDefinition('deskpro.core.input_reader_req', $definition);
+
+$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_POST', array('accept_json_post' => true)));
+$container->setDefinition('deskpro.core.input_reader_post', $definition);
+
+$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_GET'));
+$container->setDefinition('deskpro.core.input_reader_get', $definition);
+
+$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_COOKIE'));
+$container->setDefinition('deskpro.core.input_reader_cookie', $definition);
+
+// Cleaner plugin: XssCleaner
+$definition = new Definition('Orb\Input\Cleaner\CleanerPlugin\BasicXss');
+$container->setDefinition('deskpro.core.input_cleaner_plugin_xss', $definition);
+
+// Cleaner plugin: HTML Purifier
+$definition = new Definition('Orb\Input\Cleaner\CleanerPlugin\HtmlPurifier');
+$container->setDefinition('deskpro.core.input_cleaner_plugin_html_purifier', $definition);
+
+// Init cleaner
+$definition = new Definition('Orb\Input\Cleaner\Cleaner');
+$definition->addMethodCall('addCleaner', array(new Reference('deskpro.core.input_cleaner_plugin_xss')));
+$definition->addMethodCall('addCleaner', array(new Reference('deskpro.core.input_cleaner_plugin_html_purifier')));
+$container->setDefinition('deskpro.core.input_cleaner', $definition);
+
+// Init reader
+$definition = new Definition('Application\DeskPRO\Input\Reader', array(new Reference('deskpro.core.input_cleaner')));
+$definition->addMethodCall('addSource', array('req', new Reference('deskpro.core.input_reader_req')));
+$definition->addMethodCall('addSource', array('post', new Reference('deskpro.core.input_reader_post')));
+$definition->addMethodCall('addSource', array('get', new Reference('deskpro.core.input_reader_get')));
+$definition->addMethodCall('addSource', array('cookie', new Reference('deskpro.core.input_reader_cookie')));
+$definition->addMethodCall('setArrayStringSeparator', array('.'));
+$container->setDefinition('deskpro.core.input_reader', $definition);
+
+
+
+############################################################################
 # Doctrine services
 ############################################################################
 
@@ -59,6 +125,20 @@ $definition->setArguments(
     )
 );
 $container->setDefinition('dp.doctrine.entity_listener_resolver', $definition);
+
+// slug listener (sets slugs on content)
+// NOTE: this is duplicated in the InstallExtension so that the install process can use it
+$definition = new Definition();
+$definition->setClass('Application\AppBundle\EventListener\DoctrineContentSlugListener');
+$definition->setArguments(array(new Reference('content_slug_manager')));
+$definition->addTag('doctrine.event_subscriber');
+$container->setDefinition('doctrine_listener.content_slug', $definition);
+// a service to set the correct slug on a content object
+// NOTE: this is duplicated in the InstallExtension so that the install process can use it
+$definition = new Definition();
+$definition->setClass('Application\AppBundle\Service\ContentSlugManager');
+$definition->setArguments(array(new Reference('service_container')));
+$container->setDefinition('content_slug_manager', $definition);
 
 // doctrine.orm.default_query_cache
 $definition = new Definition();
@@ -122,6 +202,14 @@ $definition->setClass('Application\\DeskPRO\\Cache\\Adapter\\SimpleArrayCache');
 $definition->setArguments(array());
 $container->setDefinition('cache.simple_array', $definition);
 
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Cache\\Adapter\\ExpiringDoctrineCache');
+$seconds_in_one_day = 86400;
+$definition->setArguments(array(new Reference('doctrine.orm.default_entity_manager'), $seconds_in_one_day));
+$container->setDefinition('cache.one_day_doctrine', $definition);
+
+// make an alias so we can easily swap out the underlying adapter for a diff implementation of the same concept
+$container->setAlias('cache.one_day', 'cache.one_day_doctrine');
 
 ############################################################################
 # Swiftmailer Configuration
@@ -142,6 +230,15 @@ $container->loadFromExtension(
         'transport' => 'dp_delegating'
     )
 );
+
+
+// deskpro.mail_logger
+$definition = new Definition();
+$definition->setClass('Orb\\Log\\Logger');
+$definition->setFactoryClass('Application\\DeskPRO\\DependencyInjection\\SystemServices\\MailLoggerService');
+$definition->setFactoryMethod('create');
+$definition->setArguments(array(new Reference('service_container')));
+$container->setDefinition('deskpro.mail_logger', $definition);
 
 
 $definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\ActivityLogger', array(

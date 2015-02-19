@@ -1,0 +1,10 @@
+{% if brand_setting('user.news_subscriptions') %}
+    <a href="{{ path('portal_news_post_toggle_subscription', { slug: post.slug }) }}">
+        {% if is_subscribed %}
+            {{ phrase('portal.general.btn-unsubscribe') }}
+        {% else %}
+            {{ phrase('portal.general.btn-subscribe') }}
+        {% endif %}
+        <i class="fa fa-rss"></i>
+    </a>
+{% endif %}

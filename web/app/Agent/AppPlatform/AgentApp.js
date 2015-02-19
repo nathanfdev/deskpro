@@ -18,7 +18,8 @@ define([
   'angularSelect2',
   'angularUiSortable',
   'ngContextMenu',
-  'angularSanitize'
+  'angularSanitize',
+	'jquery.ui.i18n'
 ], function(
   angular,
   Functions,
@@ -42,6 +43,22 @@ define([
 	'ui.select2',
     'ngSanitize'
   ]);
+
+	// set default locale for UI DatePicker
+	if ($.datepicker) {
+		var regional = $.datepicker.regional[''];
+		if (window.DESKPRO_DEFAULT_LANG) {
+			var parts = window.DESKPRO_DEFAULT_LANG.split('_');
+
+			if ($.datepicker.regional[parts[0] + '-' + parts[1]]) {
+				regional = $.datepicker.regional[parts[0] + '-' + parts[1]];
+			} else if ($.datepicker.regional[parts[0]]) {
+				regional = $.datepicker.regional[parts[0]];
+			}
+		}
+		$.datepicker.setDefaults(regional);
+	}
+
 
 	//-------------------------------------------------------------------------
 	// dpAppAssetInterceptor
@@ -690,7 +707,7 @@ define([
 			link: function(scope, $el, attr) {
 
 				window.DP_CLOSE_SEARCH = function() {
-					scope.$apply(function() {
+					scope.$safeApply(function() {
 						scope.isActive = false;
 					});
 				};
@@ -811,9 +828,11 @@ define([
 
 				scope.clearSearch = function() {
 					scope.searchQuery = '';
+					scope.expandedPerson = null;
 					closeAll();
 					$timeout(function() {
 						scope.searchQuery = '';
+						scope.expandedPerson = null;
 						closeAll();
 					});
 				};
@@ -961,6 +980,35 @@ define([
 						resizeDebounced();
 					}
 				});
+
+				scope.loadPersonTickets = function(person) {
+
+					if (person === scope.expandedPerson) {
+						return scope.expandedPerson = null;
+					}
+
+					scope.expandedPerson = person;
+					if (person.tickets) {
+						return;
+					}
+
+					$http({
+						method: 'GET',
+						params: { person_id: person.id },
+						url: 'DP_URL/agent/quick-search/get-person-tickets.json'
+					}).success(function(data) {
+						if (data.results) {
+							person.tickets = data.results;
+						}
+					}).error(function() {
+
+					});
+				};
+
+				scope.openAllTickets = function(person) {
+					scope.clearSearch();
+					DeskPRO_Window.loadListPane(scope.search_url, {postData: {search_person_id: person.id}});
+				};
 			}
 		}
 	}]);

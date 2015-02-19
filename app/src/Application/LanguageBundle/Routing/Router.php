@@ -36,18 +36,35 @@ namespace Application\LanguageBundle\Routing;
 
 
 use Application\DeskPRO\Entity\Language;
-use Application\LanguageBundle\Language\LanguageManager;
 use Application\LanguageBundle\EventListener\LastLanguageListener;
+use Application\LanguageBundle\Language\LanguageManager;
+use Application\PortalBundle\Mode\PortalMode;
+use Application\PortalBundle\Mode\PortalModeStorage;
 use League\Url\Url;
 use Symfony\Bundle\FrameworkBundle\Routing\Router as BaseRouter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
+use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouterInterface;
 
 class Router implements WarmableInterface, RouterInterface, RequestMatcherInterface
 {
+    public static $generating_ignored_routes = array(
+        'serve_blob_sizefit',
+        'serve_default_picture',
+        'serve_blob',
+        'admin_interface',
+        'agent_interface',
+        '_wdt',
+        '_profiler'
+    );
+
     /**
      * @var \Symfony\Bundle\FrameworkBundle\Routing\Router
      */
@@ -58,182 +75,80 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
      */
     private $language_manager;
 
+    /**
+     * @var PortalModeStorage
+     */
+    private $mode_store;
 
-    public function __construct(BaseRouter $router, LanguageManager $language_manager)
+
+    public function __construct(BaseRouter $router, LanguageManager $language_manager, PortalModeStorage $mode_store)
     {
         $this->router = $router;
         $this->language_manager = $language_manager;
+        $this->mode_store = $mode_store;
+        $this->router->setOption('matcher_cache_class', 'ProjectUrlMatcher');
     }
 
+    public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
+    {
+        $generated = $this->router->generate($name, $parameters);
+
+        return $this->buildUrl($generated);
+    }
 
     /**
      * {@inheritdoc}
      */
     public function matchRequest(Request $request)
     {
-        $extractor = new UrlMatcher();
-        $split = $extractor->extractLanguageCode($request->getPathInfo());
-        $code = $split['lang_url_code'];
+        $request_info = new PortalRequestInfo($request, $this->getPortalMode());
 
-        if ('GET' !== $request->getMethod()) {
-            return $this->matchNonGetRequest($request, $code, $split);
+        // if its not safe, or its a special url, just match it immediately
+        if (!$request->isMethodSafe() || $request_info->isSpecialPath()) {
+            $routable_path = $request_info->getRoutablePath();
+            $params = $this->router->match($routable_path);
+            return $params;
         }
 
-        if ($code) {
-            return $this->processUrlLangCode($code, $split);
+        // if there is or isn't a lang code in url when should be, redirect
+        if (
+            ($this->isMultiLanguage() && !$request_info->getLanguageUrlCode())
+            || (!$this->isMultiLanguage() && $request_info->getLanguageUrlCode())
+        ) {
+            throw new RedirectToUrlException(
+                $this->buildUrl($request_info->getRoutablePath())
+            );
         }
 
-        return $this->processNoLangCodeInUrl($request, $split);
+        $routable_path = $request_info->getRoutablePath();
+        $params = $this->router->match($routable_path);
+        return $params;
     }
 
-
-    /**
-     * {@inheritdoc}
-     */
-    public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
+    protected function buildUrl($path)
     {
-        $generated = $this->router->generate($name, $parameters, $referenceType);
+        $url_builder = new PortalUrlBuilder(
+            $path,
+            $this->isMultiLanguage() ? $this->getActiveLanguage() : null,
+            $this->getPortalMode()
+        );
 
-        if (!$this->language_manager->isMultiLanguagePortal()) {
-            return $generated;
-        }
-
-        $language_stack = $this->language_manager->getLanguageStack();
-        if (!$language_stack->getActive()) {
-            $language_stack->pushDefault();
-        }
-
-        $urlCode = $this->language_manager->getLanguageStack()->getActive()->getUrlCode();
-        switch ($referenceType) {
-            case self::ABSOLUTE_PATH:
-                return sprintf(
-                    '/%s%s',
-                    $urlCode,
-                    $generated
-                );
-            case self::ABSOLUTE_URL:
-                $url = Url::createFromUrl($generated);
-                $url->getPath()->prepend($urlCode);
-
-                return (string) $url;
-            default:
-                throw new \InvalidArgumentException(
-                    'we only support generating ABSOLUTE_PATH or ABSOLUTE_URL urls at this time, see LanguageBundle\'s Router'
-                );
-        }
+        return (string)$url_builder;
     }
 
-    /**
-     * @param $code
-     * @param $split
-     * @return array
-     */
-    protected function processUrlLangCode($code, $split)
+    protected function getActiveLanguage()
     {
-        if (!$this->language_manager->isMultiLanguagePortal()) {
-            $this->throwRedirectExceptionTo(null, $split['remaining_pathinfo']);
-        }
-
-        if (!$url_language = $this->language_manager->getLanguage($code)) {
-            // no language exists and enabled in this system
-            $this->throwRedirectExceptionTo(null, $split['remaining_pathinfo']);
-        }
-
-        $this->language_manager->getLanguageStack()->push($url_language);
-
-        return $this->standardMatch($split);
+        return $this->language_manager->getLanguageStack()->getActive();
     }
 
-    /**
-     * @param  Request $request
-     * @param          $split
-     * @return array
-     */
-    protected function processNoLangCodeInUrl(Request $request, $split)
+    protected function getPortalMode()
     {
-        $language_stack = $this->language_manager->getLanguageStack();
-        if (!$this->language_manager->isMultiLanguagePortal()) {
-            $language_stack->pushDefault();
-
-            return $this->standardMatch($split);
-        }
-
-        // now we know its a multi lang desk and there was no long code, so we need to decide about where to redirect:
-        $this->pushDetectedLanguageToStack($request);
-        $this->throwRedirectExceptionTo($language_stack->getActive(), $split['remaining_pathinfo']);
+        return $this->mode_store->getMode();
     }
 
-    /**
-     * Given only a request object, detect the language that this user probably is
-     * This is used for non-GET requests to set the lang (if not provided by
-     *
-     * @param Request $request
-     */
-    public function pushDetectedLanguageToStack(Request $request)
+    protected function isMultiLanguage()
     {
-        $language_stack = $this->language_manager->getLanguageStack();
-
-        if ($language = $this->getLastLangFromCookie($request)) {
-            $language_stack->push($language);
-        } else {
-            // 2. authorized persons preference from Person
-            // 3. failing that, negotiate with http.lang
-            // and finally if we can't find anything:
-            $language_stack->pushDefault();
-        }
-    }
-
-    /**
-     * Throw an exception that will be caught by our kernel.exception listener
-     *
-     * @param  Language               $language
-     * @param                         $url
-     * @throws RedirectToUrlException
-     */
-    protected function throwRedirectExceptionTo(Language $language = null, $url)
-    {
-        $pre = $language ? '/'.$language->getTwoLetterLanguageCode() : '';
-        $url = $pre.$url;
-        throw new RedirectToUrlException($url);
-    }
-
-    /**
-     * @param $split
-     * @return array
-     */
-    protected function standardMatch($split)
-    {
-        return $this->router->match($split['remaining_pathinfo']);
-    }
-
-    /**
-     * @param  Request       $request
-     * @return Language|null
-     */
-    protected function getLastLangFromCookie(Request $request)
-    {
-        if ($lang_code = $request->cookies->get(LastLanguageListener::COOKIE_NAME)) {
-            return $this->language_manager->getLanguage($lang_code);
-        }
-
-        return null;
-    }
-
-    /**
-     * @param  Request $request
-     * @param          $code
-     * @param          $split
-     * @return array
-     */
-    protected function matchNonGetRequest(Request $request, $code, $split)
-    {
-        if (!$url_language = $this->language_manager->getLanguage($code)) {
-            $this->pushDetectedLanguageToStack($request);
-        } else {
-            $this->language_manager->getLanguageStack()->push($url_language);
-        }
-
-        return $this->standardMatch($split);
+        return $this->language_manager->isMultiLanguagePortal();
     }
 
     /**
@@ -275,5 +190,4 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
     {
         return $this->router->getRouteCollection();
     }
-
 }

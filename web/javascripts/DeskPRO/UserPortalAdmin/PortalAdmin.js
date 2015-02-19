@@ -188,6 +188,15 @@ var PortalAdmin = {
 		$('#dp_custom_sidebar_add_simple').on('click', function() {
 			self.tellAdmin('new_sidebar_block_simple');
 		});
+
+		// If a block is not visible/too small (e.g, a block with just script tags)
+		// we need to apply min-height and outline
+		$('.dp-p.dp-template').each(function() {
+			var me = $(this);
+			if (!me.is(':visible') || me.height() < 14) {
+				me.addClass('dp-p-block-hidden')
+			}
+		});
 	},
 
 	/**
@@ -442,6 +451,13 @@ var PortalAdmin_TemplateBlock = new Orb.Class({
 			ev.preventDefault();
 			self.clickEdit();
 		});
+
+		var me = this.el;
+		if (!me.is(':visible') || me.height() < 14) {
+			me.addClass('dp-p-block-hidden')
+		} else {
+			me.removeClass('dp-p-block-hidden')
+		}
 	},
 
 	clickRemove: function() {

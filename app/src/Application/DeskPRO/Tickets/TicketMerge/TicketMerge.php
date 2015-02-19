@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketDeleted;
 use Application\DeskPRO\ORM\StateChange\Ticket\ChangeMerge;
 use Application\DeskPRO\People\PersonContextInterface;
+use Doctrine\DBAL\Connection;
 
 /**
  * Handles merging of one ticket into the other
@@ -366,7 +367,16 @@ class TicketMerge implements PersonContextInterface
             WHERE ticket_id = ?
         ", array($this->ticket['id'], $this->other_ticket['id']));
 
-        // SLAs
+        // Delete SLAs from old ticket that already exist on new one
+        $sla_ids = $this->db->fetchAllCol("SELECT sla_id FROM ticket_slas WHERE ticket_id = ?", array($this->ticket['id']));
+        if ($sla_ids) {
+            $this->db->executeQuery("
+                DELETE FROM ticket_slas
+                WHERE ticket_id = ? AND sla_id IN (?)
+            ", array($this->other_ticket['id'], $sla_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+        }
+
+        // ... and then move the rest of the SLAs over
         $this->db->executeUpdate("
             UPDATE IGNORE ticket_slas
             SET ticket_id = ?

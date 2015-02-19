@@ -63,6 +63,9 @@ class NewPerson
     /** @var string */
     public $timezone;
 
+    /** @var string */
+    public $password;
+
     /** @var Person */
     protected $_person;
 
@@ -100,6 +103,10 @@ class NewPerson
 
         if ($this->timezone) {
             $person->timezone = $this->timezone;
+        }
+
+        if ($this->password) {
+            $person->setPassword($this->password);
         }
 
         if ($this->organization_id) {

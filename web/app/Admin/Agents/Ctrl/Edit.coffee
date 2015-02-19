@@ -15,6 +15,7 @@ define [
     @DEPS      = ['DpLicense']
 
     init: ->
+      window.AGENT_CTRL = this
       @agentId = parseInt(@$stateParams.id)
       @form = {email_primary: '', emails_list: []}
       @hasPermOverrides = false
@@ -74,7 +75,7 @@ define [
       promise.then( (result) =>
         if @agentId
           @agent = result.data.agent.agent
-          @perm_form = result.data.agent.perms
+          @perm_form = result.data.agent.perm_overrides
         else
           @agent = {
             id: 0,
@@ -247,15 +248,16 @@ define [
       return if not suffix or not (@ugEffectivePerms?[typename]? || @perm_form[typename]?)
 
       suffix = "_" + suffix
+      prefix = "modify_"
 
       if @ugEffectivePerms?[typename]?
         for own name, val of @ugEffectivePerms[typename]
-          if val and name.indexOf(suffix) != -1
+          if val and (name.indexOf(suffix) != -1 and name.indexOf(prefix) == 0)
             return true
 
       if @perm_form?[typename]?
         for own name, val of @perm_form[typename]
-          if val and name.indexOf(suffix) != -1
+          if val and (name.indexOf(suffix) != -1 and name.indexOf(prefix) == 0)
             return true
 
       return false
@@ -326,26 +328,32 @@ define [
         })
 
       inst = @$modal.open({
-        templateUrl: @getTemplatePath('Agents/reset-password-modal.html'),
+        templateUrl: @getTemplatePath('Agents/reset-password-modal.html?' + (new Date()).getTime() ),
         controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-          $scope.password = {
+          $scope.password =
             mode: 'random',
             manual: ''
-          }
 
-          $scope.dismiss = ->
-            $modalInstance.dismiss()
+          $scope.dismiss = -> $modalInstance.dismiss()
 
           $scope.saveResetPassword = ->
             $scope.is_saving = true
+            $scope.error = null
+
             if $scope.password.mode == 'set'
-              doReset($scope.password.manual).then(=>
-                $modalInstance.close()
-              , -> $scope.is_saving = false)
+              doReset($scope.password.manual).then(
+                => $modalInstance.close()
+                (res) =>
+                  $scope.is_saving = false
+                  $scope.error = res.data.error_message
+              )
             else
-              doReset(false).then(=>
-                $modalInstance.close()
-              , -> $scope.is_saving = false)
+              doReset(false).then(
+                => $modalInstance.close()
+                (res) =>
+                  $scope.is_saving = false
+                  $scope.error = res.data.error_message
+              )
         ]
       });
 

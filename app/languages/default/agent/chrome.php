@@ -55,6 +55,7 @@
     'agent.chrome.notify_list-dismiss-all'        => 'Dismiss All Notifications',
     'agent.chrome.notify_list-new-messages'       => '<span class="notify-count">0</span> New Notifications',
     'agent.chrome.notify_list-no-notifications'   => 'There are no new notifications',
+    'agent.chrome.notify_list-view-dismissed'     => 'View Dismissed',
     'agent.chrome.quicksearch_adv-explain'        => 'For more advanced search options, select an application:',
     'agent.chrome.quicksearch_info'               => 'The quick search bar lets you search across a range of resources.',
     'agent.chrome.quicksearch_title'              => 'Quick Search Bar',

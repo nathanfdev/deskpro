@@ -25,6 +25,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
       }).then( (result) =>
         @app = result.data.app?.app;
 
+        @$scope.app = @app
+        @$scope.appId = @app?.id
+
         if @app
           @Api.sendDataGet({
             extra_info: '/usersources/' + @usersourceType + '/app-' + @instanceId + '/extra-details',

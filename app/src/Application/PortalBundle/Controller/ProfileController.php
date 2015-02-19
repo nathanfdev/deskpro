@@ -40,9 +40,14 @@ use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class ProfileController extends AbstractController
 {
+    /**
+     * @Route("/register", name="portal_user_registration")
+     * @Cache(smaxage="10 minutes")
+     */
     public function registerAction(Request $request)
     {
         $person = $this->getPersonFactory()->createNewPerson();
@@ -57,6 +62,7 @@ class ProfileController extends AbstractController
             $context = new CreatePersonContext('gateway.person');
             $this->getPersonFactory()->saveNewPerson($person, $context);
             $this->addFlash('success', 'thank.you.for.registering');
+            $request->getSession()->set('last_username', $person->getPrimaryEmail() ? $person->getPrimaryEmail()->getEmail() : '');
 
             return $this->redirectToRoute('portal_login');
         }
@@ -70,6 +76,7 @@ class ProfileController extends AbstractController
     }
 
     /**
+     * @Route("/profile", name="portal_user_profile")
      * @Security("is_granted('EDIT_PROFILE', user)")
      */
     public function editAction(Request $request)
@@ -141,13 +148,5 @@ class ProfileController extends AbstractController
                 'emails_form' => $emails_form->createView()
             )
         );
-    }
-
-    /**
-     * @return \Application\PersonBundle\Person\PersonFactory
-     */
-    public function getPersonFactory()
-    {
-        return $this->get('person_factory');
     }
 }

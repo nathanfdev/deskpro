@@ -76,17 +76,27 @@ class Api
 		} catch (ClientErrorResponseException $e) {
 			$code = $e->getResponse()->getStatusCode();
 
-			if (404 === $code) {
-				throw new NotFoundHttpException($e->getResponse()->getReasonPhrase(), null, 404);
-			}
+            if (404 === $code) {
+                throw new NotFoundHttpException($e->getResponse()->getReasonPhrase(), null, 404);
+            }
 
 			// todo log error message
 			// $json['errorMessages']
-			$json = $e->getResponse()->json();
+            try {
+                $json = $e->getResponse()->json();
+            } catch (\Exception $jsonParseException) {
+                // throw previous exception
+                throw new \Exception($e->getResponse()->getReasonPhrase(), $code);
+            }
+
 
 			if (!empty($json['errors'])) {
 				throw new ApiErrorsException($json['errors']);
 			}
+
+            if (!empty($json['errorMessages'])) {
+                throw new ApiCoreException($json['errorMessages']);
+            }
 
 			throw new \Exception($e->getResponse()->getReasonPhrase(), $code);
 		}
@@ -141,13 +151,60 @@ class Api
 		return $this->post('/issue', $data);
 	}
 
-	/**
-	 * @param $json
-	 * @throws ApiErrorsException
-	 * @throws \Exception
-	 */
+    /**
+     * @param $json
+     * @throws ApiErrorsException
+     * @throws \Exception
+     * @return array
+     */
 	public function createIssueJson($json)
 	{
 		return $this->call(self::API_BASE_PATH . '/issue', 'POST', array('content-type' => 'application/json'), $json);
 	}
+
+    /**
+     * @param $id
+     * @param array $data
+     * @return mixed
+     */
+    public function updateIssue($id, array $data)
+    {
+        return $this->put(sprintf('/issue/%d', $id), $data);
+    }
+
+    /**
+     * @param $id
+     * @param $json
+     * @throws ApiCoreException
+     * @throws ApiErrorsException
+     * @throws \Exception
+     */
+    public function updateIssueJson($id, $json)
+    {
+        return $this->call(
+            sprintf('%s/issue/%d', self::API_BASE_PATH, $id),
+            'PUT',
+            array('content-type' => 'application/json'),
+            $json
+        );
+    }
+
+    /**
+     * @param $jql
+     * @return array
+     * @throws \Exception
+     */
+    public function searchIssues($jql, array $fields)
+    {
+        try {
+            return $this->post('/search', array(
+                'jql' => $jql,
+                'fields' => $fields,
+                'expand' => array('renderedFields'),
+            ));
+        } catch (\Exception $e) {
+            // todo
+            throw $e;
+        }
+    }
 } 

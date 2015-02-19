@@ -38,7 +38,7 @@ require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Console\CronApplication;
-use Application\DeskPRO\PortalBundle\HttpKernel\PortalHttpCache;
+use Application\PortalBundle\HttpCache\PortalHttpCache;
 use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -69,6 +69,17 @@ class KernelBooter
 
         global $DP_CONFIG;
         dp_load_config();
+
+        // Enable/disable display_errors based on enable_display_errors config (default is to hide)
+        if (
+            (isset($DP_CONFIG['enable_display_errors']) && $DP_CONFIG['enable_display_errors'])
+            || (isset($GLOBALS['DP_enable_display_errors']) && $GLOBALS['DP_enable_display_errors'])
+            || (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev'])
+        ) {
+            @ini_set('display_errors', "1");
+        } else {
+            @ini_set('display_errors', "0");
+        }
 
         if (isset($DP_CONFIG['debug']['enable_debug_trace']) && $DP_CONFIG['debug']['enable_debug_trace']) {
             if (!function_exists('xdebug_start_trace')) {
@@ -260,12 +271,17 @@ class KernelBooter
         } else {
             define('DP_INTERFACE', 'user');
 
+            // exit early on asset 404s
+            if (preg_match('#^/web/#', $path)) {
+                header("HTTP/1.0 404 Not Found");
+                echo "File not found. (no asset)";
+                exit;
+            }
+
             try {
 
                 // debug code
-
-                $start = microtime(true);
-
+                $boot = $GLOBALS['index_start_time']; // delete this set from index.php!
                 // end debug code
 
 
@@ -276,42 +292,70 @@ class KernelBooter
                 self::bootstrapEnv();
                 require_once DP_ROOT . "/sys/Kernel/PortalKernel.php";
                 $kernel = new PortalKernel($env, $debug);
+
+                // add our reverse proxy
+                require_once DP_ROOT . "/src/Application/PortalBundle/HttpCache/PortalHttpCache.php";
+                $kernel = new PortalHttpCache($kernel);
+                //
+
                 if ('dev' === $env) {
-                    require_once DP_ROOT . "/src/Application/PortalBundle/HttpKernel/PortalHttpCache.php";
-                    $kernel = new PortalHttpCache($kernel);
                     Debug::enable();
                 }
+
+                // debug code
+                $start = round(microtime(true) * 1000);
+                // end debug code
                 $request = Request::createFromGlobals();
                 $response = $kernel->handle($request);
 
 
+                //
                 // debug code, erase comments to see (erase from $start variable above, as well)
-                // note: ignore the output that might appear at bottom of page due to web profiler
-
                 // below: a log from the kernel of cache hits/misses and a simple profile of page load
-                $log = explode(';', $kernel->getLog());
-                print implode("\n<br>", $log);
-                $starting = "booting: " . $start;
-                $starting .= "<br><br>\n\n";
-                print "<br><br>\n\n" . $starting;
-                $end = microtime(true);
-                print "done: " . $end;
-                print "<br><br>\n\n";
-                print "total: " . ($end - $start);
+                //
+                if (false !== strpos($response->getContent(), '</body>') && '/_' !== substr(rawurldecode($request->getPathInfo()), 0, 2)) {
+                    $end = round(microtime(true) * 1000);
+                    $log = explode(';', $kernel->getLog());
+                    $print_log = "<br><br><br><br><hr><br><h1>Simple Profile</h1><pre>";
+                    $print_log .= "xdebug:             " . (function_exists('xdebug_enable') ? 'enabled' : 'disabled') . "<br>\n";
+                    $print_log .= "kernel env:         " . $env . "<br>\n";
+                    $print_log .= "kernel booter time: " . ((int)$start - (int)$boot) . " ms<br>\n";
+                    $print_log .= "portal kernel time: " . ((int)$end - (int)$start) . " ms<br>\n";
+                    $print_log .= "total time:         <strong>" . ((int)$end - (int)$boot) . ' ms</strong>';
+                    $print_log .= "</pre>";
+                    $print_log .= "<br><hr><br><h1>Master Response Headers</h1><table>";
+                    foreach ($response->headers as $name => $header) {
+                        $print_log .= "<tr><td style=\"min-width: 200px\"><strong>$name</strong></td><td>" . implode(',',$header) . "</td></tr>";
+                    }
+
+                    $print_log .= "</table><br><hr><br><h1>Http Cache Log</h1>";
+                    $print_log .= implode("\n<br>", $log);
+                    $print_log .= "<br><br><br>";
+
+
+                    $content = $response->getContent();
+                    $pos = strripos($content, '</body>');
+                    $content = substr($content, 0, $pos) . $print_log . substr($content, $pos);
+                    $response->setContent($content);
+                    if ($response->headers->has('Content-Length')) {
+                        $content_length = $response->headers->get('Content-Length');
+                        $response->headers->set('Content-Length', $content_length + strlen($print_log));
+                    }
+                }
+                //
+                // end debug code
                 //
 
-                // end debug code
-
-
-                $kernel->terminate($request, $response);
                 $response->send();
+                $kernel->terminate($request, $response);
+
+
 
 
             } catch (DBALException $e) {
 
-                // note: this try catch block is directly copied from old portal code in this booter
-
-                if ($e->getCode() == '2002' || $e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
+                // note: this try catch block is directly copied from old portal code in this booter, but we added code=0
+                if ($e->getCode() == '0' || $e->getCode() == '2002' || $e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
                     // This will show an error page if already installed, so the redirect to install wont happen
                     deskpro_handle_boot_db_exception($e);
 
@@ -384,7 +428,14 @@ class KernelBooter
 
         $GLOBALS['DP_MAIN_REQUEST'] = $request;
 
-        define('DP_REQUEST_URL', $request->getUri());
+        try {
+            define('DP_REQUEST_URL', $request->getUri());
+        } catch (\UnexpectedValueException $e) {
+            // thrown when there is a bad hostname provided
+            header('HTTP/1.1 400 Bad request', true, 401);
+            echo $e->getMessage();
+            exit;
+        }
 
         try {
             if (!$kernel) {

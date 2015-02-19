@@ -1,9 +1,17 @@
 {% if is_granted('ROLE_USER') %}
-{{ app.user }}
+    <strong>{{ app.user }}</strong>
+    <br>
+    <img src="{{ person_picture_url(app.user) }}" alt="{{ app.user }}"/>
+
+    {#{{ dump(ugs|join(',')) }}#}
+    {#{{ dump(ug_key) }}#}
+    {#{{ user_hash }}#}
+    {#{{ dump(perms) }}#}
+
     <ul class="user-info" style="margin-bottom: 40px;">
-        {% if has_tickets %}
+        {% if ticket_count > 0 %}
             <li>
-                <a href="{{ path('portal_tickets') }}">My Tickets</a>
+                <a href="{{ path('portal_tickets') }}">My Tickets ({{ ticket_count }})</a>
             </li>
         {% endif %}
 

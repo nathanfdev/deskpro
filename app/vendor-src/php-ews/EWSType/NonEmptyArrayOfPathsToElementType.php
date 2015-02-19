@@ -4,7 +4,8 @@
  */
 
 /**
- * Definition of the NonEmptyArrayOfPathsToElementType type
+ * Defines additional properties for use in GetItem, UpdateItem, CreateItem,
+ * FindItem, or FindFolder requests.
  *
  * @package php-ews\Types
  */

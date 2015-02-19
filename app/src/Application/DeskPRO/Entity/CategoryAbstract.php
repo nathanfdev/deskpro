@@ -246,6 +246,9 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $ids;
     }
 
+    /**
+     * @return CategoryAbstract[]
+     */
     public function getChildren()
     {
         if ($this->structure_helper) {
@@ -320,5 +323,21 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(array( 'name' => 'CategoryAbstract'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
     }
 }
