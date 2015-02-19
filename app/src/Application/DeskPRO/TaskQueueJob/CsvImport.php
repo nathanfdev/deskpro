@@ -143,7 +143,7 @@ class CsvImport extends AbstractJob
         $complete = false;
         $imported = 0;
 
-        while (microtime(true) - $start_time < $max_time) {
+        while (1 || microtime(true) - $start_time < $max_time) {
             if (feof($fp)) {
                 $complete = true;
                 break;
@@ -407,6 +407,17 @@ class CsvImport extends AbstractJob
                     }
                     $addresses[$info['label']][$map_field] = $column_value;
                     break;
+
+	            case 'language':
+					$language = is_numeric($column_value)
+						? $em->find('DeskPRO:Language', $column_value)
+						: $em->getRepository('DeskPRO:Language')->getByTitle($column_value);
+
+					if ($language) {
+						$person->language = $language;
+					}
+
+		            break;
 
                 default:
                     $custom_field_id = false;

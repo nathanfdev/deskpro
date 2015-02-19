@@ -21,7 +21,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @$scope.importSettings = {fieldMappings: [], additionalMappings: [], skipFirst: 1, welcomeEmail: false, showExtraMappings: {}}
       @showExtraMappingsCases = [
         'organization', 'phone', 'website', 'im', 'twitter', 'linkedin', 'facebook', 'address1', 'address2', 'city',
-        'state', 'post_code', 'country', 'new_custom'
+        'state', 'post_code', 'country', 'new_custom', 'language'
       ]
 
       for key in @showExtraMappingsCases
