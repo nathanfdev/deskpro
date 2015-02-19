@@ -36,6 +36,7 @@ namespace Application\DeskPRO\TaskQueueJob;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonContactData;
 
 class CsvImport extends AbstractJob
 {
@@ -567,8 +568,17 @@ class CsvImport extends AbstractJob
         $contact = new \Application\DeskPRO\Entity\PersonContactData();
         $contact->contact_type = $type;
         $contact->applyFormData($data);
-        $contact->person = $person;
 
+
+	    foreach ($person->contact_data as $cd) {
+		    // todo?
+		    /** @var $cd PersonContactData */
+		    if (mb_strtolower($cd->getSearchString()) === mb_strtolower($contact->getSearchString())) {
+			    return;
+		    }
+	    }
+
+	    $contact->person = $person;
         App::getOrm()->persist($contact);
 
         return $contact;
