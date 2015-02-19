@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\FormBundle\Collection\CustomDataCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 
 /**
@@ -137,9 +138,9 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
         $this->_is_new = true;
 
-        $this->comments    = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->comments    = new ArrayCollection();
+        $this->custom_data = new ArrayCollection();
+        $this->attachments = new ArrayCollection();
     }
 
     /**
@@ -184,6 +185,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     {
         $this->custom_data->add($data);
         $data['feedback'] = $this;
+        $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
     }
 
     /**
@@ -222,9 +224,27 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return $this->category['id'];
     }
 
+    /**
+     * Set a category
+     *
+     * @param FeedbackCategory $category
+     * @return $this
+     */
+    public function setCategory(FeedbackCategory $category = null)
+    {
+        if ($category) {
+            $this->setModelField('category', $category);
+        } else {
+            $this->setModelField('category', -1);
+        }
+
+        return $this;
+    }
+
     public function setCategoryId($id)
     {
         $this->setModelField('category', App::getEntityRepository('DeskPRO:FeedbackCategory')->find($id));
+        return $this;
     }
 
     /**

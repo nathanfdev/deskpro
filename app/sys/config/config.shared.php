@@ -177,7 +177,10 @@ $container->loadFromExtension(
             'default_entity_manager'      => 'default',
             'entity_managers'             => array(
                 'default' => array(
-                    'mappings'                    => array('DeskPRO' => array('type' => 'staticphp')),
+                    'mappings' => array(
+                        'DeskPRO' => array('type' => 'staticphp'),
+                        'EmailBundle' => array('type' => 'staticphp'),
+                    ),
                     'class_metadata_factory_name' => 'Orb\\Doctrine\\ORM\\Mapping\\StaticClassMetadataFactory'
                 )
             )

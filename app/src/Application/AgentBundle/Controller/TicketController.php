@@ -61,6 +61,7 @@ use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\DeskPRO\Tickets\TicketSplit;
+use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Dates;
@@ -541,13 +542,38 @@ class TicketController extends AbstractController
             $ticket_logs = isset($all_ticket_logs[$page-1]) ? $all_ticket_logs[$page-1] : array();
         }
 
-        $info                = array();
+        // Get email status
+        $sendmail_source_ids = array();
+        foreach ($ticket_logs as $l) {
+            if (!empty($l['details']['sendmail_source_id'])) {
+                $sendmail_source_ids[] = $l['details']['sendmail_source_id'];
+            } else if (!empty($l['grouped'])) {
+                foreach ($l['grouped'] as $l2) {
+                    if (!empty($l2['details']['sendmail_source_id'])) {
+                        $sendmail_source_ids[] = $l2['details']['sendmail_source_id'];
+                    }
+                }
+            }
+        }
+
+        if ($sendmail_source_ids) {
+            $sendmail_source_status = $this->db->fetchAllKeyed("
+                SELECT id, status
+                FROM sendmail_sources
+                WHERE id IN (?)
+            ", array($sendmail_source_ids), 'id', array(\Doctrine\DBAL\Connection::PARAM_INT_ARRAY));
+        } else {
+            $sendmail_source_status = array();
+        }
+
+        $info = array();
         $info['ticket']      = $ticket;
         $info['num_pages']   = count($all_ticket_logs);
         $info['cur_page']    = $page;
         $info['ticket_logs'] = $ticket_logs;
         $info['filter']      = $filter;
         $info['counts']      = $counts;
+        $info['sendmail_source_status'] = $sendmail_source_status;
 
         $rendered         = $this->renderView('AgentBundle:Ticket:ticket-logs.html.twig', $info);
         $info['rendered'] = $rendered;
@@ -3092,8 +3118,10 @@ class TicketController extends AbstractController
         }
 
         if ($this->container->getSetting('core_tickets.fwd_use_agent_address')) {
+            $use_from = true;
             $from_email = $this->person->getEmailAddress();
         } else {
+            $use_from = false;
             $from_email = $account->getUseEmailAddress();
         }
 
@@ -3107,8 +3135,14 @@ class TicketController extends AbstractController
         }
 
         $tr = $this->container->getEmailAccountManager()->getTransportForAccount($account);
-        if ($tr) {
-            $email->setForceTransport($tr);
+
+        if ($email instanceof MessageOptionsInterface) {
+            if ($tr) {
+                $email->getMessageOptions()->set(MessageOptionsInterface::OPT_ACCOUNT_ID, $account->id);
+            }
+            if ($use_from) {
+                $email->getMessageOptions()->set(MessageOptionsInterface::OPT_USE_FROM, $from_email);
+            }
         }
 
         $ticketdisplay = new \Application\DeskPRO\Tickets\TicketDisplay($ticket, $this->person);

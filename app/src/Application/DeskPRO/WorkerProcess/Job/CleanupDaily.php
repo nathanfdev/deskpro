@@ -153,21 +153,6 @@ class CleanupDaily extends AbstractJob
         }
 
         #------------------------------
-        # cleanup blobs_storage with no blobs record
-        #------------------------------
-
-        $num = App::getDb()->executeUpdate("
-            DELETE blobs_storage
-            FROM blobs_storage
-            LEFT JOIN blobs ON blobs.id = blobs_storage.blob_id
-            WHERE blobs.id IS NULL
-        ");
-
-        if ($num) {
-            $this->logStatus("Cleaned up $num blobs_storage records without blobs");
-        }
-
-        #------------------------------
         # Temp files
         #------------------------------
 

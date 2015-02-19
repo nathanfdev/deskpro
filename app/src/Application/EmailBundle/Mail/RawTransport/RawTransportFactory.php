@@ -62,6 +62,13 @@ class RawTransportFactory
      */
     public function createTransport(AccountConfigInterface $config)
     {
+        if (function_exists('deskpro_mail_transport_override')) {
+            $tr = deskpro_mail_transport_override($config, $this);
+            if ($tr) {
+                return $tr;
+            }
+        }
+
         switch ($config->getType()) {
             case 'smtp':     $tr = $this->createSmtpTransport($config); break;
             case 'gmail':    $tr = $this->createGmailTransport($config); break;
@@ -78,9 +85,10 @@ class RawTransportFactory
 
     /**
      * @param OutgoingAccount\SmtpConfig $config
+     * @param bool $disable_connect_log
      * @return RawSmtpTransport
      */
-    public function createSmtpTransport(OutgoingAccount\SmtpConfig $config)
+    public function createSmtpTransport(OutgoingAccount\SmtpConfig $config, $disable_connect_log = false)
     {
         $tr = \Swift_SmtpTransport::newInstance(
             $config->host ?: 'localhost',
@@ -96,7 +104,12 @@ class RawTransportFactory
         }
 
         $tr->setTimeout(120);
-        $tr->registerPlugin(new TransportLogger($this->logger));
+
+        $tr_logger = new TransportLogger($this->logger);
+        if ($disable_connect_log) {
+            $tr_logger->disableConnectionLog();
+        }
+        $tr->registerPlugin($tr_logger);
 
         $raw_tr = new RawSmtpTransport($tr);
 

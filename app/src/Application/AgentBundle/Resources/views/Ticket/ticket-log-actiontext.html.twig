@@ -468,7 +468,41 @@
 		<span class="new-val expand" data-set=".set-detail">Agent emailed</span> {{ log.details.to_name }} &lt;{{ log.details.to_email }}&gt;
 	{% endif %}
 
+    {% set status = false %}
+    {% if sendmail_source_status[log.details.sendmail_source_id] %}
+        {% set status = sendmail_source_status[log.details.sendmail_source_id] %}
+        {% if app.user.can_admin %}
+            &mdash; <a href="{{ path('admin') }}#/tickets/ticket_accounts/outgoing-email/{{ status.id }}" target="_blank">Outgoing Email #{{ status.id }}</a>
+        {% else %}
+            &mdash; Outgoing Email #{{ status.id }}
+        {% endif %}
+        &mdash;
+        {% if status.status == 'error' %}
+            <span style="color: #BA0014">ERROR</span>
+        {% elseif status.status == 'aborted' %}
+            <span style="color: #BA0014">ABORTED</span>
+        {% elseif status.status == 'retry' %}
+            <span style="color: #000751">PROCESSING</span>
+        {% elseif status.status == 'complete' %}
+            <span style="color: #1AA100">COMPLETE</span>
+        {% else %}
+            {{ status.status }}
+        {% endif %}
+    {% endif %}
+
 	<div class="expand-set set-detail" style="display: none">
+        {% if status %}
+            {% if status.status == 'error' %}
+                Email was not sent because of an error
+            {% elseif status.status == 'aborted' %}
+                Email was not sent because it was aborted
+            {% elseif status.status == 'retry' %}
+                Email is being sent right now
+            {% elseif status.status == 'complete' %}
+                Email was sent successfully
+            {% endif %}
+            <br/>
+        {% endif %}
 		From: {{ log.details.from_name }} &lt;{{ log.details.from_email }}&gt;<br/>
 		Template: {{ log.details.template }}<br/>
 		{% if log.details.cc_emails %}

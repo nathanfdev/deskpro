@@ -767,7 +767,7 @@
 <script>
 	var pingResponseHandler = function(data) {
 		if ('object' === typeof data && 'pong' === data.response) {
-			window.location.href = '{{ url_full('agent_login', {'return': path('admin') }) }}';
+			window.location.href = '{{ url_full('agent_login', {'return': app.returnUrl }) }}';
 		}
 	};
 	$(function(){

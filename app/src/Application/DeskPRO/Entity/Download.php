@@ -286,6 +286,16 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
+     * @param DownloadCategory $category
+     * @return $this
+     */
+    public function setCategory(DownloadCategory $category = null)
+    {
+        $this->setModelField('category', $category);
+        return $this;
+    }
+
+    /**
      * Add a label
      * @param \Application\DeskPRO\Entity\LabelDownload $label
      */
@@ -293,6 +303,18 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     {
         $label['download'] = $this;
         $this->labels->add($label);
+    }
+
+    /**
+     * Set downloads count
+     *
+     * @param int $num_downloads
+     * @return $this
+     */
+    public function setNumDownloads($num_downloads)
+    {
+        $this->setModelField('num_downloads', $num_downloads);
+        return $this;
     }
 
     /**

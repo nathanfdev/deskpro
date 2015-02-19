@@ -44,6 +44,12 @@ class Organization extends AbstractEntityRepository
     /** @var array|null */
     protected $_organization_names = null;
 
+    /**
+     * @param string $name
+     * @return OrganizationEntity
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function findOneByName($name)
     {
             $qb = $this->getEntityManager()->createQueryBuilder();

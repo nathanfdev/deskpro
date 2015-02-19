@@ -238,6 +238,7 @@ class Product extends CategoryAbstract implements HasPhraseName
     {
         $this->custom_data->add($data);
         $data['product'] = $this;
+        $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
     }
 
     /**

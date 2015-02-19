@@ -200,7 +200,7 @@ class QueueRunner
                 "); // 1 hrs
 
                 foreach ($batch as $r) {
-                    $this->source_mapper->setSourcePending($r);
+                    $this->source_mapper->setSourcePending($r, new \DateTime('-1 seconds'));
                     $did = true;
                 }
             }
@@ -221,10 +221,22 @@ class QueueRunner
                     SELECT * FROM sendmail_sources
                     WHERE status IN ('pending') AND date_status < ?
                     LIMIT 250
-                ", array(date('Y-m-d H:i:s', time() - 3600))); // 1 hrs
+                ", array(date('Y-m-d H:i:s', time() - 1800))); // 30m
 
                 foreach ($batch as $r) {
-                    $this->source_mapper->setSourcePending($r);
+                    $this->source_mapper->setSourcePending($r, new \DateTime('-1 seconds'));
+                    $did = true;
+                }
+
+                // retry statuses
+                $batch = $this->db->fetchAllKeyed("
+                    SELECT * FROM sendmail_sources
+                    WHERE status IN ('retry') AND date_next_attempt < ?
+                    LIMIT 250
+                ", array(date('Y-m-d H:i:s', time())));
+
+                foreach ($batch as $r) {
+                    $this->source_mapper->setSourcePending($r, new \DateTime('-1 seconds'));
                     $did = true;
                 }
             }
@@ -313,7 +325,7 @@ class QueueRunner
             FROM sendmail_sources
             WHERE
               status IN ('pending', 'retry')
-              AND (date_next_attempt < ? OR date_next_attempt IS NULL)
+              AND (date_next_attempt <= ? OR date_next_attempt IS NULL)
               AND id NOT IN (?)
             ORDER BY status ASC, id ASC
             LIMIT {$this->per_batch}

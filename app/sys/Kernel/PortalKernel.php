@@ -65,6 +65,7 @@ class PortalKernel extends Kernel
             new \FOS\HttpCacheBundle\FOSHttpCacheBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
+            new \Application\EmailBundle\EmailBundle(),
             new \Application\AgentBundle\AgentBundle(),
             new \Application\PortalBundle\PortalBundle(),
             new \Application\LanguageBundle\LanguageBundle(),

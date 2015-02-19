@@ -169,7 +169,6 @@ class CleanupHourly extends AbstractJob
 
     private function _cleanupTempAttachments()
     {
-        $now = date('Y-m-d H:i:s');
         $datetime = date('Y-m-d H:i:s', strtotime('-6 hours'));
 
         $blob_ids = App::getDb()->fetchAllCol("
@@ -177,7 +176,7 @@ class CleanupHourly extends AbstractJob
             FROM blobs
             WHERE is_temp = 1 AND date_created < ?
             LIMIT 1000
-        ", array($datetime, $now));
+        ", array($datetime));
 
         $num = 0;
         foreach ($blob_ids as $blob_id) {

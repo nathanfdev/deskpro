@@ -121,6 +121,7 @@ class EmailAccountRepository
     }
 
     /**
+     * @param int $id
      * @return \Application\DeskPRO\Entity\EmailAccount|null
      */
     public function getAccount($id)

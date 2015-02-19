@@ -61,6 +61,16 @@ abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObje
         $this->label = $label;
     }
 
+    /**
+     * Returns label name
+     *
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
     public function __toString()
     {
         return $this->label;

@@ -1150,6 +1150,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           }
 
           if (trigger && action) {
+	          result.id = self.meta.ticket_id;
             DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.new_reply', result, action);
           }
         }
@@ -1390,7 +1391,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var imageEls = $('ul.attachment-list li.is-image a, a.dp-is-image', messageEl);
 
 		DeskPRO_Window.initStickyTips(messageEl);
-		
+		var $triggers = messageEl.find('.with-stickytip');
+		self.addEvent('destroy', function(){
+			$triggers.each(function(){
+				var id = $(this).data('stickytip-target');
+				if (id) $(id).remove();
+			});
+		});
+
 		DeskPRO_Window.util.filedownload(messageEl);
 
 		$('.timeago', messageEl).timeago();
@@ -3140,7 +3148,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				data: postData,
                 success: function(){
                     if (DeskPRO_Window.$scope) {
-                        DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.updated', {subject: setName});
+                        DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.updated', {id: self.meta.ticket_id, subject: setName});
                     }
                 }
 			});

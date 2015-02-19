@@ -42,7 +42,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Swift_Mime_Message;
 
-class Mailer extends \Swift_Mailer
+class Mailer extends \Swift_Mailer implements StorageTransportInterface
 {
     /**
      * @var MessageFactoryInterface
@@ -110,19 +110,6 @@ class Mailer extends \Swift_Mailer
             $message->prepare();
             $this->logger->debug(sprintf("Orb prepare took %.3fs", microtime(true) - $t));
         }
-    }
-
-    /**
-     * Sends the given message. Disables any queue that might be enabled.
-     *
-     * @param Swift_Mime_Message $message
-     * @param string[]           $failedRecipients An array of failures by-reference
-     *
-     * @return integer The number of sent emails
-     */
-    public function sendNow(Swift_Mime_Message $message, &$failedRecipients = null)
-    {
-       // TODO
     }
 
 

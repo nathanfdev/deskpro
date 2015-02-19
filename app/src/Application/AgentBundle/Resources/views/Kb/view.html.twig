@@ -369,7 +369,10 @@ pageMeta.baseId = '{{ baseId }}';
 					<dl class="info-list">
 						<dt>{{ phrase('agent.publish.sticky_words_title') }}</dt>
 						<dd class="ticket-tags tags-wrap noedit-tags">
-							<input type="text" id="{{baseId}}_stickysearch_input" value="{% for label in sticky_search_words %}{{label}},{% endfor %}" />
+							<input type="text" id="{{baseId}}_stickysearch_input"
+							       value="{% for label in sticky_search_words %}{{label}},{% endfor %}"
+							       data-placeholder-new="{{ phrase('agent.publish.add_new_search_word') }}"
+									/>
 							<br class="clear" />
 							<div class="explain">
 								{{ phrase('agent.publish.search_sticky_words_explain') }}

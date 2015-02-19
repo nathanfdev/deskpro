@@ -34,9 +34,11 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use DateTime;
 
 /**
  * Basic properties on content
@@ -129,12 +131,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $hidden_status = null;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     protected $date_created;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     protected $date_published;
 
@@ -261,6 +263,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $this->setModelField('content', $content);
+        return $this;
     }
 
     public function getContentHtml()

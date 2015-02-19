@@ -474,7 +474,6 @@ class KernelErrorHandler
                     $message = App::getMailer()->createMessage();
                     $message->setTo(DP_TECHNICAL_EMAIL);
                     $message->setSubject($email_subject);
-                    $message->disableQueueHint();
 
                     $email_str = nl2br(htmlspecialchars($email_str, \ENT_QUOTES, 'UTF-8'));
                     $message->setBody($email_str, 'text/html');

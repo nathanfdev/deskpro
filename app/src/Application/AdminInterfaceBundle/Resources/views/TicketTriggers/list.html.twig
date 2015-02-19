@@ -141,7 +141,7 @@
 						<div class="pull-right toggle-wrapper">
 							<button dp-toggle-switch ng-model="trigger.is_enabled" ng-change="List.updateTriggerEnabledState(trigger);"></button>
 						</div>
-						<div ng-if="trigger.has_stop_triggers_action" class="pull-right" title="This trigger has a 'stop processing triggers' action. When this trigger matches, any trigger after it will NOT be run.">
+						<div ng-if="trigger.has_stop_triggers_action || trigger.has_delete_ticket_action" class="pull-right" title="This trigger has a 'stop processing triggers' action. When this trigger matches, any trigger after it will NOT be run.">
 							<i class="fa fa-chain-broken"></i>
 						</div>
 						<h4>

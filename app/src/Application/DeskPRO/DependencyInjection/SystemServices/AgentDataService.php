@@ -467,7 +467,11 @@ class AgentDataService
             $agent_id = $agent->id;
         } else {
             try {
-                $agent_id = $this->get($agent)->id;
+                $agent = $this->get($agent);
+                if (!$agent) {
+                    return false;
+                }
+                $agent_id = $agent->id;
             } catch (\InvalidArgumentException $e) {
                 return false;
             }
@@ -477,7 +481,11 @@ class AgentDataService
             $team_id = $team->id;
         } else {
             try {
-                $team_id = $this->getTeam($team)->id;
+                $team = $this->getTeam($team);
+                if ($team) {
+                    return false;
+                }
+                $team_id = $team->id;
             } catch (\InvalidArgumentException $e) {
                 return false;
             }

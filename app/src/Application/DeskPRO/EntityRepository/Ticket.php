@@ -36,7 +36,9 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketDeleted as TicketDeletedEntity;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Orb\Util\Arrays;
@@ -45,54 +47,16 @@ use Orb\Util\Strings;
 
 class Ticket extends AbstractEntityRepository
 {
-    public function saveTicket(Entity\Ticket $ticket)
-    {
-        $this->_em->persist($ticket);
-        $this->_em->flush();
-    }
-
-    public function saveNewMessage(Entity\Ticket $ticket, Entity\TicketMessage $message)
-    {
-        $ticket->addMessage($message);
-
-        $this->_em->persist($message);
-        $this->_em->flush();
-    }
-
-    public function saveNewTicket(Entity\Ticket $ticket, Entity\TicketMessage $message, Entity\Person $person)
-    {
-        $ticket->addMessage($message);
-        $ticket->setPerson($person);
-
-        $this->_em->persist($ticket);
-        $this->_em->persist($message);
-        $this->_em->persist($person);
-        $this->_em->flush();
-    }
-
-    public function getTicketCountForPerson(Entity\Person $person)
-    {
-        $query = $this->_em->createQuery(
-            '
-            SELECT count(t) as c
-            FROM DeskPRO:Ticket t
-            WHERE t.person = :person
-            '
-        );
-
-        $query->setParameter('person', $person);
-
-        return $query->getSingleScalarResult();
-    }
-
     /**
      * The ticket is
      *
-     * @param  Person                                 $person
-     * @return Entity\Ticket
+     * @param PersonEntity $person
+     * @param \DateTime    $date_last_reply
+     *
+     * @return TicketEntity
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function findMostRecentSmsTicketFromPerson(Entity\Person $person, $date_last_reply = null)
+    public function findMostRecentSmsTicketFromPerson(PersonEntity $person, $date_last_reply = null)
     {
         if (!$date_last_reply) {
             $date_last_reply = new \DateTime("now - 3 days");
@@ -315,103 +279,6 @@ class Ticket extends AbstractEntityRepository
         return $tickets;
     }
 
-    protected function getTicketIds(Entity\Person $person)
-    {
-        if ($person->is_agent) {
-            $ids = $this->getEntityManager()->getConnection()->fetchAllCol("
-                SELECT id
-                FROM tickets
-                WHERE person_id = ?
-                ORDER BY id DESC
-                LIMIT 2000
-            ", array($person->id));
-        } else {
-            $ids = $this->getEntityManager()->getConnection()->fetchAllCol("
-                SELECT id FROM tickets WHERE person_id = ?
-                UNION
-                SELECT ticket_id FROM tickets_participants WHERE person_id = ?
-            ", array($person->id, $person->id));
-        }
-
-        if (!$ids) {
-            return array();
-        }
-
-        return $ids;
-    }
-
-    public function findAwaitingAgentTicketsForPerson(Entity\Person $person)
-    {
-        $sort_by = 'date_last_reply';
-
-        $ids = $this->getTicketIds($person);
-
-        $ids = $this->getEntityManager()->getConnection()->fetchAllCol(
-            '
-            SELECT id
-            FROM tickets
-            WHERE id IN (?)
-            AND status = ?
-            ORDER BY GREATEST(
-					COALESCE(date_last_user_reply,0),
-					COALESCE(date_last_agent_reply,0)
-				) DESC
-            ',
-            array($ids, Entity\Ticket::STATUS_AWAITING_AGENT),
-            array(Connection::PARAM_INT_ARRAY)
-        );
-
-        return $this->getByIds($ids, true);
-    }
-
-    public function findAwaitingUserTicketsForPerson(Entity\Person $person)
-    {
-        $sort_by = 'date_last_reply';
-
-        $ids = $this->getTicketIds($person);
-
-        $ids = $this->getEntityManager()->getConnection()->fetchAllCol(
-            '
-            SELECT id
-            FROM tickets
-            WHERE id IN (?)
-            AND status = ?
-            ORDER BY GREATEST(
-					COALESCE(date_last_user_reply,0),
-					COALESCE(date_last_agent_reply,0)
-				) DESC
-            ',
-            array($ids, Entity\Ticket::STATUS_AWAITING_USER),
-            array(Connection::PARAM_INT_ARRAY)
-        );
-
-        return $this->getByIds($ids, true);
-    }
-
-    public function findResolvedTicketsForPerson(Entity\Person $person)
-    {
-        $sort_by = 'date_last_reply';
-
-        $ids = $this->getTicketIds($person);
-
-        $ids = $this->getEntityManager()->getConnection()->fetchAllCol(
-            '
-            SELECT id
-            FROM tickets
-            WHERE id IN (?)
-            AND status = ?
-            ORDER BY GREATEST(
-					COALESCE(date_last_user_reply,0),
-					COALESCE(date_last_agent_reply,0)
-				) DESC
-            ',
-            array($ids, Entity\Ticket::STATUS_RESOLVED),
-            array(Connection::PARAM_INT_ARRAY)
-        );
-
-        return $this->getByIds($ids, true);
-    }
-
     /**
      * Get all tickets a person owns, or is a participant in.
      * This is usually used to fetch a list of tickets for an end-user.
@@ -590,51 +457,9 @@ class Ticket extends AbstractEntityRepository
         }
 
         $counts = array(
-            'person' => 0,
+            'person' => $this->countTicketsForPerson($person),
             'org'    => 0,
         );
-
-        if ($person->is_agent) {
-            $count = App::getDb()->fetchColumn("
-                SELECT COUNT(*)
-                FROM tickets
-                WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
-            ", array($person->id));
-        } else {
-            if ($person->organization && $person->organization_manager) {
-                $count = array_sum(App::getDb()->fetchAllCol("
-                    (
-                        SELECT COUNT(DISTINCT tickets.id)
-                        FROM tickets
-                        WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
-                    )
-                    UNION
-                    (
-                        SELECT COUNT(DISTINCT tickets.id)
-                        FROM tickets
-                        LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
-                        WHERE tickets_participants.person_id = ? AND tickets.organization_id != ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
-                    )
-                ", array($person->id, $person->id, $person->getOrganizationId())));
-            } else {
-                $count = App::getDb()->fetchColumn("
-                    (
-                        SELECT COUNT(DISTINCT tickets.id)
-                        FROM tickets
-                        WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
-                    )
-                    UNION
-                    (
-                        SELECT COUNT(DISTINCT tickets.id)
-                        FROM tickets
-                        LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
-                        WHERE tickets_participants.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
-                    )
-                ", array($person->id, $person->id));
-            }
-        }
-
-        $counts['person'] = $count;
 
         if ($person->organization && $person->organization_manager) {
             $allowed_ids = $person->getPermissionsManager()->Departments->getAllowedIds('tickets');
@@ -738,15 +563,15 @@ class Ticket extends AbstractEntityRepository
     {
         if ($only_open) {
             $status = array(
-                Entity\Ticket::STATUS_AWAITING_AGENT,
-                Entity\Ticket::STATUS_AWAITING_USER
+                TicketEntity::STATUS_AWAITING_AGENT,
+                TicketEntity::STATUS_AWAITING_USER
             );
         } else {
             $status = array(
-                Entity\Ticket::STATUS_AWAITING_AGENT,
-                Entity\Ticket::STATUS_AWAITING_USER,
-                Entity\Ticket::STATUS_ARCHIVED,
-                Entity\Ticket::STATUS_RESOLVED
+                TicketEntity::STATUS_AWAITING_AGENT,
+                TicketEntity::STATUS_AWAITING_USER,
+                TicketEntity::STATUS_ARCHIVED,
+                TicketEntity::STATUS_RESOLVED
             );
         }
 
@@ -903,7 +728,7 @@ class Ticket extends AbstractEntityRepository
      * @param  mixed                              $id
      * @return \Application\DeskPRO\Entity\Ticket
      */
-    public function getTicketByPublicId($ticket_ref, Entity\Person $person_context = null, &$matched_type = null)
+    public function getTicketByPublicId($ticket_ref, PersonEntity $person_context = null, &$matched_type = null)
     {
         if ($person_context && !$person_context->getId()) {
             $person_context = null;
@@ -956,10 +781,10 @@ class Ticket extends AbstractEntityRepository
     /**
      * Find all linked tickets
      *
-     * @param  Entity\Ticket $parent_ticket
+     * @param  TicketEntity $parent_ticket
      * @return array
      */
-    public function getLinkedTickets(Entity\Ticket $parent_ticket)
+    public function getLinkedTickets(TicketEntity $parent_ticket)
     {
         return $this->_em->createQuery("
             SELECT t
