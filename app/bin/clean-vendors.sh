@@ -254,5 +254,54 @@ rm -rfv example
 # node
 ########################################################################################################################
 
-# distro doesnt need any node modules
-rm -rfv $DIR_WEB_NODE/
+cd $DIR_WEB_NODE/
+find . -type d \( \
+    -name ".git" \
+    -o -iname "docs" \
+    -o -iname "doc" \
+    -o -iname "examples" \
+    -o -iname "Tests" \
+\) -exec rm -rfv {} \;
+
+find . -type f \( \
+    -name ".gitignore" \
+    -o -name ".gitmodules" \
+    -o -name ".gitattributes" \
+    -o -name ".gitkeep" \
+    -o -name ".editorconfig" \
+    -o -name ".travis.yml" \
+    -o -name ".coveralls.yml" \
+    -o -name ".scrutinizer.yml" \
+    -o -name "composer.json" \
+    -o -name "composer.lock" \
+    -o -name "build.xml" \
+    -o -name "build.properties" \
+    -o -name "build.properties.dev" \
+    -o -name "package.xml" \
+    -o -name "phpdoc.dist.xml" \
+    -o -name "phpdoc.ini.dist" \
+    -o -name "phpunit.functional.xml.dist" \
+    -o -name "phpunit.xsd" \
+    -o -name "phpunit.bat" \
+    -o -name "phpunit.xml.dist" \
+    -o -iname "CHANGELOG" \
+    -o -iname "CHANGELOG.md" \
+    -o -iname "CHANGELOG.mdown" \
+    -o -iname "CHANGES.md" \
+    -o -iname "CONTRIBUTING" \
+    -o -iname "CONTRIBUTING.md" \
+    -o -iname "NOTICE.md" \
+    -o -iname "README" \
+    -o -iname "README.md" \
+    -o -iname "README.mdown" \
+    -o -iname "README.txt" \
+    -o -iname "README.rst" \
+    -o -iname "README.markdown" \
+    -o -iname "UPGRADE" \
+    -o -iname "UPGRADING" \
+    -o -iname "UPGRADING.md" \
+    -o -iname "UPGRADING.md" \
+    -o -iname "Rakefile" \
+    -o -iname "Gemfile" \
+    -o -iname "Vagrantfile" \
+\) -exec rm -rfvv {} \;

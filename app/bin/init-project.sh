@@ -24,7 +24,7 @@ echo ".. done"
 echo ">> Installing web dependencies"
 cd $DIR_ROOT/web
 npm install --save
-bower install --config.interactive=false --allow-root
+bower install --config.interactive=false --allow-root --save-dev
 echo ".. done"
 
 echo ">> Building web assets"

@@ -2,6 +2,7 @@ var gulp       = require('gulp'),
     gutil      = require('gulp-util'),
     cache      = require('gulp-cached'),
     coffee     = require('gulp-coffee'),
+    babel      = require('gulp-babel'),
     less       = require('gulp-less'),
     sass       = require('gulp-sass'),
     sourcemaps = require('gulp-sourcemaps'),
@@ -17,6 +18,12 @@ var gulp       = require('gulp'),
     lazypipe   = require('lazypipe'),
     del        = require('del'),
     runSeq     = require('run-sequence'),
+    source     = require('vinyl-source-stream'),
+    buffer     = require('vinyl-buffer'),
+    watchify   = require('watchify'),
+    browserify = require('browserify'),
+    remapify   = require('remapify'),
+    uglify     = require('gulp-uglify'),
     deskpro    = {util: {}, taskGen: {}};
 
 
@@ -56,7 +63,7 @@ deskpro.watches = [
   ['./app/Portal*/Resources/style/*.scss',    ['sass:portal:nocache']],
   ['./app/Interface/Resources/style/*.scss',  ['sass:admin:nocache', /*'sass:agent:nocache',*/ 'sass:deskpro:nocache', 'sass:ifce:nocache']],
 
-  ['./app/**/*.js',                           ['cpjs:app']],
+  ['./app/**/*.js',                           ['babel:all']],
   ['./loader/*',                              ['loader:app']]
 ];
 
@@ -80,8 +87,8 @@ deskpro.util.sourceMapRoot = function (file) {
   return up + 'web/app/' + ns;
 };
 
-deskpro.util.coffeeError = function (e) {
-  gutil.log(gutil.colors.white.bgRed('Coffee Error:'), e.name, ' ', e.message);
+deskpro.util.handleError = function (e) {
+  gutil.log(gutil.colors.white.bgRed('Error:'), e.name, ' ', e.message);
 
   var shortName = (e.filename || "").replace(/.*?\/web\/app\//, 'web/app/');
   gutil.log('              ' + shortName, ' Line: ' + e.location.first_line);
@@ -108,10 +115,26 @@ deskpro.taskGen.coffeeScript = function(glob, target_dir) {
     .pipe(gulpif(deskpro.isWatching, plumber()))
     .pipe(sourcemaps.init())
     .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
-    .pipe(coffee().on('error', deskpro.util.coffeeError))
+    .pipe(coffee().on('error', deskpro.util.handleError))
     .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
     .pipe(gulp.dest(target_dir))
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+};
+
+deskpro.taskGen.babelScript = function(glob, target_dir) {
+    if (!target_dir) {
+        target_dir = './app-build/';
+    }
+
+    return gulp.src(glob)
+        .pipe(cache('watch', {optimizeMemory: true}))
+        .pipe(gulpif(deskpro.isWatching, plumber()))
+        .pipe(sourcemaps.init())
+        .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
+        .pipe(babel())
+        .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
+        .pipe(gulp.dest(target_dir))
+        .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
 };
 
 deskpro.taskGen.lessCss = function(glob, target_dir, no_cache) {
@@ -184,6 +207,33 @@ deskpro.taskGen.loaderTpl = function(glob, target_dir) {
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
 };
 
+deskpro.taskGen.browserify = function(source_file, target_dir, target_name, watch) {
+    var bundler, rebundle;
+
+    bundler = browserify(source_file, {
+        paths: ['./node_modules', './app-build'],
+        cache: {}, // required for watchify
+        packageCache: {}, // required for watchify
+        fullPaths: watch // required to be true only for watchify
+    });
+
+    if(watch) {
+        bundler = watchify(bundler)
+    }
+
+    rebundle = function() {
+        return bundler.bundle()
+            .on('error', deskpro.util.handleError)
+            .pipe(source(target_name))
+            .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
+            .pipe(gulp.dest(target_dir))
+            .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+    };
+
+    bundler.on('update', rebundle);
+    return rebundle();
+};
+
 
 //######################################################################################################################
 //# Tasks
@@ -203,20 +253,21 @@ gulp.task('coffee:deskpro', function() { return deskpro.taskGen.coffeeScript('./
 gulp.task('coffee:app', ['coffee:deskpro', 'coffee:ifce', 'coffee:admin', 'coffee:agent', 'coffee:reports', 'coffee:portal']);
 
 //------------------------------
-// Copy JS
+// Babel
 //------------------------------
 
-gulp.task('cpjs:app', function() {
+gulp.task('babel:all',   function() { return deskpro.taskGen.babelScript('./app/**/**/*.js'); });
+gulp.task('babel:app', ['babel:all']);
 
-  var glob       = './app/**/*.js';
-  var target_dir = './app-build/';
+//------------------------------
+// Browserify
+//------------------------------
 
-  return gulp.src(glob)
-    .pipe(cache('watch', {optimizeMemory: true}))
-    .pipe(gulpif(deskpro.isWatching, plumber()))
-    .pipe(gulp.dest(target_dir))
-    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+gulp.task('browserify:portal', function() {
+    return deskpro.taskGen.browserify('./app/Portal/Portal.js', './app-build/Portal', 'bundle.js');
 });
+
+gulp.task('browserify:app', ['browserify:portal']);
 
 //------------------------------
 // Less
@@ -334,6 +385,8 @@ gulp.task('rjs:agent', ['build'], function () {
 //------------------------------
 
 gulp.task('precache', function () {
+  deskpro.isWatching = true;
+
   var globs = [];
   deskpro.watches.forEach(function (w) {
     globs.push(w[0]);
@@ -348,18 +401,24 @@ gulp.task('watch', ['precache'], function () {
   deskpro.watches.forEach(function (w) {
     gulp.watch(w[0], w[1]);
   });
+
+  deskpro.taskGen.browserify('./app/Portal/Portal.js', './app-build/Portal', 'bundle.js', true);
 });
 
 //------------------------------
 // Clean
 //------------------------------
 
-gulp.task('build', ['clean'], function (cb) {
-  runSeq(['coffee:app', 'less:app', 'sass:app', 'cpjs:app', 'loader:app'], cb);
+gulp.task('build__1', ['clean'], function (cb) {
+    runSeq(['coffee:app', 'less:app', 'sass:app', 'loader:app', 'babel:app'], cb);
+});
+
+gulp.task('build', ['build__1'], function (cb) {
+  runSeq(['browserify:app'], cb);
 });
 
 gulp.task('build:prod', ['clean'], function (cb) {
-  runSeq(['rjs:app', 'rjs:agent'], cb);
+  runSeq(['rjs:app', 'rjs:agent', 'browserify:app'], cb);
 });
 
 gulp.task('clean', function (cb) {

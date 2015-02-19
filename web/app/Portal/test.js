@@ -1,0 +1,1 @@
+exports.mytest = "MY STRING";
