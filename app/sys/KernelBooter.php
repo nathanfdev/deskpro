@@ -279,15 +279,6 @@ class KernelBooter
             }
 
             try {
-
-                // debug code
-                $boot = $GLOBALS['index_start_time']; // delete this set from index.php!
-                // end debug code
-
-
-                //
-                // boot and run portal
-                //
                 self::bootstrapLib($debug);
                 self::bootstrapEnv();
                 require_once DP_ROOT . "/sys/Kernel/PortalKernel.php";
@@ -296,62 +287,16 @@ class KernelBooter
                 // add our reverse proxy
                 require_once DP_ROOT . "/src/Application/PortalBundle/HttpCache/PortalHttpCache.php";
                 $kernel = new PortalHttpCache($kernel);
-                //
 
                 if ('dev' === $env) {
                     Debug::enable();
                 }
 
-                // debug code
-                $start = round(microtime(true) * 1000);
-                // end debug code
                 $request = Request::createFromGlobals();
                 $response = $kernel->handle($request);
 
-
-                //
-                // debug code, erase comments to see (erase from $start variable above, as well)
-                // below: a log from the kernel of cache hits/misses and a simple profile of page load
-                //
-                if (false !== strpos($response->getContent(), '</body>') && '/_' !== substr(rawurldecode($request->getPathInfo()), 0, 2)) {
-                    $end = round(microtime(true) * 1000);
-                    $log = explode(';', $kernel->getLog());
-                    $print_log = "<br><br><br><br><hr><br><h1>Simple Profile</h1><pre>";
-                    $print_log .= "xdebug:             " . (function_exists('xdebug_enable') ? 'enabled' : 'disabled') . "<br>\n";
-                    $print_log .= "kernel env:         " . $env . "<br>\n";
-                    $print_log .= "kernel booter time: " . ((int)$start - (int)$boot) . " ms<br>\n";
-                    $print_log .= "portal kernel time: " . ((int)$end - (int)$start) . " ms<br>\n";
-                    $print_log .= "total time:         <strong>" . ((int)$end - (int)$boot) . ' ms</strong>';
-                    $print_log .= "</pre>";
-                    $print_log .= "<br><hr><br><h1>Master Response Headers</h1><table>";
-                    foreach ($response->headers as $name => $header) {
-                        $print_log .= "<tr><td style=\"min-width: 200px\"><strong>$name</strong></td><td>" . implode(',',$header) . "</td></tr>";
-                    }
-
-                    $print_log .= "</table><br><hr><br><h1>Http Cache Log</h1>";
-                    $print_log .= implode("\n<br>", $log);
-                    $print_log .= "<br><br><br>";
-
-
-                    $content = $response->getContent();
-                    $pos = strripos($content, '</body>');
-                    $content = substr($content, 0, $pos) . $print_log . substr($content, $pos);
-                    $response->setContent($content);
-                    if ($response->headers->has('Content-Length')) {
-                        $content_length = $response->headers->get('Content-Length');
-                        $response->headers->set('Content-Length', $content_length + strlen($print_log));
-                    }
-                }
-                //
-                // end debug code
-                //
-
                 $response->send();
                 $kernel->terminate($request, $response);
-
-
-
-
             } catch (DBALException $e) {
 
                 // note: this try catch block is directly copied from old portal code in this booter, but we added code=0
