@@ -236,7 +236,7 @@ gulp.task('less:app', ['less:admin', 'less:reports']);
 
 gulp.task('sass:admin',          function () { return deskpro.taskGen.sassCss('./app/Admin*/Resources/style/*-style.scss'); });
 gulp.task('sass:ifce',           function () { return deskpro.taskGen.sassCss('./app/Interface*/Resources/style/*-style.scss'); });
-gulp.task('sass:portal',         function () { return deskpro.taskGen.sassCss('./app/Interface*/Resources/style/*-style.scss'); });
+gulp.task('sass:portal',         function () { return deskpro.taskGen.sassCss('./app/Portal*/Resources/style/*-style.scss'); });
 
 gulp.task('sass:admin:nocache',   function () { return deskpro.taskGen.sassCss('./app/Admin*/Resources/style/*-style.scss', null, true); });
 gulp.task('sass:deskpro:nocache', function () { return deskpro.taskGen.sassCss('./app/DeskPRO*/Resources/style/*-style.scss', null, true); });
