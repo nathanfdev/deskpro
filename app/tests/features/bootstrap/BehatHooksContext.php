@@ -66,7 +66,7 @@ class BehatHooksContext extends BasePortalContext
             $this->getContainer()->get('dataset_manager')->install('empty');
 
             $warmer = $this->getContainer()->get('cache_warmer');
-            $warmer->enableOptionalWarmers();
+            //$warmer->enableOptionalWarmers();
             $warmer->warmUp(self::getCacheDir());
             self::$warmed_up_cache = true;
 
