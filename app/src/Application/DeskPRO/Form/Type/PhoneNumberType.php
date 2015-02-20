@@ -48,7 +48,7 @@ class PhoneNumberType extends AbstractType
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder->add('number', 'text', array(
-			'required' => true,
+			'required' => false,
 			'label' => false,
 			'attr' => array(
 				'placeholder' => '+19021111111',
