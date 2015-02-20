@@ -44,7 +44,7 @@ class Build1424444388 extends AbstractBuild
     {
         $this->out("Migrate Phone Numbers");
 
-	    $limit = 1;
+	    $limit = 100;
 	    $offset = 0;
 
 	    $sq = '
