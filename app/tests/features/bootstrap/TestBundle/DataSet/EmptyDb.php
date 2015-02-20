@@ -34,6 +34,8 @@
 namespace DpBehat\TestBundle\DataSet;
 
 
+use Application\DeskPRO\Entity\Brand;
+
 class EmptyDb extends AbstractDbSet
 {
     /**
@@ -43,7 +45,12 @@ class EmptyDb extends AbstractDbSet
      */
     protected function installSet()
     {
-        return 0;
+        $em = $this->getEm();
+
+        // we need a brand
+        $brand = new Brand();
+        $em->persist($brand);
+        $em->flush();
     }
 
     public function getId()
