@@ -55,7 +55,8 @@
 		"phpunit/phpcov": "~2.0",
 		"behat/mink-extension": "~2.0@dev",
 		"behat/mink-browserkit-driver": "~1.1",
-		"vipsoft/code-coverage-extension": "*@dev"
+		"vipsoft/code-coverage-extension": "*@dev",
+		"sensiolabs/behat-page-object-extension": "2.0.*@dev"
 	},
 	"preferred-install": "dist"
 }
