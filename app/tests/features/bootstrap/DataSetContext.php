@@ -83,11 +83,14 @@ class DataSetContext extends BasePortalContext
                 return; // this scenario was not tagged as @reinstall, exiting
             }
         }
+        $install_start = time();
         $this->dataset_manager->install($set);
         self::$last_installed_data_set = $set;
         $this->ran_install = true;
         if (self::$reinstall) {
-            print 'successfully reinstalled data set';
+            print 'successfully reinstalled data set (took ' . (time() - $install_start) . ' seconds)';
+        } else {
+            print 'successfully installed data set (took ' . (time() - $install_start) . ' seconds)';
         }
     }
 
