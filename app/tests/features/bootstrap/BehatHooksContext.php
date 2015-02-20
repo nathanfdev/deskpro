@@ -53,6 +53,7 @@ class BehatHooksContext extends BasePortalContext
             $fs->remove($cache);
         }
         $fs->mkdir($cache, 0777);
+        $fs->mkdir($cache . '/annotations', 0777);
         print "made new test folder " . (time() - (int)DP_TESTS_START_TIME) . " seconds in";
     }
 
