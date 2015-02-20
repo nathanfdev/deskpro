@@ -53,6 +53,7 @@ security:
                 login_path: /impersonate/agent-login
                 require_previous_session: false
                 remember_me: false
+                always_use_default_target_path: true
                 default_target_path: /
                 target_path_parameter: _destination
                 use_referer: false

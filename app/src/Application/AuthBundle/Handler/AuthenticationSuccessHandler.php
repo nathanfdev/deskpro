@@ -34,6 +34,7 @@
 
 namespace Application\AuthBundle\Handler;
 
+use Application\AuthBundle\Security\AgentImpersonateToken;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -53,6 +54,10 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
+        if ($token instanceof AgentImpersonateToken) {
+            return $this->httpUtils->createRedirectResponse($request, '/');
+        }
+
         if (
             $token->hasAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH)
             && $token->getAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH)
