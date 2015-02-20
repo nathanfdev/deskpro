@@ -230,7 +230,7 @@ class CsvUpload
                     $example_total++;
 
                     if ($example_total == $column_count) {
-                        // have example for all columns
+                        // h$this->getApiData($result)ave example for all columns
                         break 2;
                     }
                 }
