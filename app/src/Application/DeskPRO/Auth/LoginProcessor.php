@@ -311,6 +311,13 @@ class LoginProcessor
         if ($mapped_fields->has('twitter')) {
             $twitter = $mapped_fields->get('twitter');
 
+            // its possible that this is a new user that is not yet persisted. do this so query below runs ok.
+            if (!$this->person->id) {
+                $em = App::getOrm();
+                $em->persist($this->person);
+                $em->flush();
+            }
+
             App::getDb()->executeUpdate("
                     INSERT INTO people_twitter_users
                         (person_id, twitter_user_id, screen_name, is_verified, oauth_token, oauth_token_secret)
