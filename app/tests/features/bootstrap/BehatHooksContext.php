@@ -39,22 +39,45 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class BehatHooksContext extends BasePortalContext
 {
+    private static $warmed_up_cache = false;
+
     /**
      * @BeforeSuite
      */
     public static function deleteCacheFolder(BeforeSuiteScope $scope)
     {
-        $cache = DP_ROOT . '/sys/cache/portal/test';
+        $cache = self::getCacheDir();
 
         $fs = new Filesystem();
         if (is_dir($cache)) {
             $fs->remove($cache);
         }
         $fs->mkdir($cache, 0777);
+        print "made new test folder " . (time() - (int)DP_TESTS_START_TIME) . " seconds in";
     }
 
-    public function maybeNotReloadData()
+    /**
+     * @BeforeScenario
+     */
+    public function warmupCache()
     {
+        if (!self::$warmed_up_cache) {
+            $this->getContainer()->get('dataset_manager')->install('empty');
 
+            $warmer = $this->getContainer()->get('cache_warmer');
+            $warmer->enableOptionalWarmers();
+            $warmer->warmUp(self::getCacheDir());
+            self::$warmed_up_cache = true;
+
+            print "finished warming cache " . (time() - (int)DP_TESTS_START_TIME) . " seconds in";
+        }
+    }
+
+    /**
+     * @return string
+     */
+    private static function getCacheDir()
+    {
+        return DP_ROOT . '/sys/cache/portal/test';
     }
 }
