@@ -48,7 +48,14 @@ security:
         portal:
             pattern: ^/
             provider: dp_person_user_provider
-            agent_impersonate: ~
+            agent_impersonate:
+                failure_path: /login?retry=auth
+                login_path: /impersonate/agent-login
+                require_previous_session: false
+                remember_me: false
+                default_target_path: /
+                target_path_parameter: _destination
+                use_referer: false
             deskpro_form_login:
                 failure_path: /login?retry=auth
                 login_path: /login

@@ -50,7 +50,7 @@ class AgentImpersonateFactory extends AbstractFactory
 
     public function getPosition()
     {
-        return 'form';
+        return 'pre_auth';
     }
 
     public function getKey()
@@ -87,7 +87,7 @@ class AgentImpersonateFactory extends AbstractFactory
 
     protected function createEntryPoint($container, $id, $config, $defaultEntryPoint)
     {
-        $entryPointId = 'security.authentication.dp_form_entry_point.'.$id;
+        $entryPointId = 'security.authentication.agent_impersonate_entry_point.'.$id;
         $container
             ->setDefinition($entryPointId, new DefinitionDecorator('security.authentication.form_entry_point'))
             ->addArgument(new Reference('security.http_utils'))
