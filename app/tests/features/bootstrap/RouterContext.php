@@ -46,7 +46,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Application\LanguageBundle\Routing\Router;
 
-class RouterContext extends KernelAwareContext
+class RouterContext extends BasePortalContext
 {
     private $generated;
 
@@ -65,6 +65,33 @@ class RouterContext extends KernelAwareContext
     {
         expect($this->generated)->toBe($url);
     }
+
+    /**
+     * @When I generate urls for:
+     */
+    public function iGenerateUrlsFor(TableNode $table)
+    {
+        $this->generated = array();
+
+        foreach ($table->getColumnsHash() as $col) {
+            parse_str($col['params'], $params);
+            $this->generated[] = $this->getRouter()->generate($col['route'], $params ?: array());
+        }
+
+    }
+
+    /**
+     * @Then none of the generated urls should start with :start
+     */
+    public function noneOfTheGeneratedUrlsShouldStartWith($start)
+    {
+        foreach ($this->generated as $uri) {
+            if (0 === strpos($uri, $start)) {
+                throw new \Exception(sprintf('"%s" starts with "%s"', $uri, $start));
+            }
+        }
+    }
+
 
     /**
      * @return Router

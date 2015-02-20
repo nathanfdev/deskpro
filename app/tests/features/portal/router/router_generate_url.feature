@@ -84,3 +84,18 @@ Feature: Generate URLs
     And french is the active language
     When I generate a url for "portal_downloads"
     Then the generated url should be "/admin-mode/fr/downloads"
+
+  Scenario: Some routes should not be generated using the language nor the mode
+    Given the following languages are enabled:
+      | default |
+      | french  |
+    And the active mode is admin
+    And french is the active language
+    When I generate urls for:
+      | route                 | params                              |
+      | agent_interface       |                                     |
+      | admin_interface       |                                     |
+      | serve_blob            | blob_auth_id=foo&filename=bar       |
+      | serve_default_picture | s=foo                               |
+      | serve_blob_sizefit    | blob_auth_id=foo&filename=bar&s=goo |
+    Then none of the generated urls should start with "/admin-mode/fr"

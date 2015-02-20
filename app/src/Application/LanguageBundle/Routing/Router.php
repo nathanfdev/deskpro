@@ -93,6 +93,10 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
     {
         $generated = $this->router->generate($name, $parameters);
 
+        if (in_array($name, self::$generating_ignored_routes)) {
+            return $generated;
+        }
+
         return $this->buildUrl($generated);
     }
 
