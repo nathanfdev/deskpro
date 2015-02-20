@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,72 +29,17 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage EmailBundle
+ * @subpackage
  */
 
-namespace Application\EmailBundle\SourceMapper\PendingQueuer;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Predis;
-
-class RedisPendingQueuer implements PendingQueuerInterface
+class Build1424282194 extends AbstractBuild
 {
-    /**
-     * @var Predis\Client
-     */
-    private $client;
-
-    /**
-     * @var string
-     */
-    private $key;
-
-    /**
-     * @var array
-     */
-    private $data_items = array();
-
-    /**
-     * @param Predis\Client $client
-     * @param string $key
-     */
-    function __construct(Predis\Client $client, $key)
+    public function run()
     {
-        $this->client = $client;
-        $this->key = $key;
-
-        $me = $this;
-        register_shutdown_function(function() use ($me) {
-            try {
-                $me->pushAll();
-            } catch (\Exception $e) {
-                error_log($e->getMessage());
-            }
-        });
-    }
-
-    /**
-     * Pushes all pendning rows to the server
-     */
-    public function pushAll()
-    {
-        foreach ($this->data_items as $d) {
-            $this->client->rpush($this->key, array(json_encode($d)));
-        }
-    }
-
-    /**
-     * @param array $source
-     */
-    public function queueMessageSource(array $source)
-    {
-        $data = array(
-            'id' => $source['id']
-        );
-
-        if (defined('DPC_IS_CLOUD')) {
-            $data['dpc_site_id'] = DPC_SITE_ID;
-        }
-
-        $this->data_items[] = $data;
+        $this->out("Upgrade Ticket Messages Class");
+		$this->execMutateSql("CREATE TABLE tickets_message_email_id (id INT AUTO_INCREMENT NOT NULL, message_id INT DEFAULT NULL, email_id VARCHAR(255) NOT NULL, INDEX IDX_C0D32802537A1329 (message_id), INDEX email_id_idx (email_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 ENGINE = InnoDB DEFAULT CHARSET=utf8");
+		$this->execMutateSql("ALTER TABLE tickets_message_email_id ADD CONSTRAINT FK_C0D32802537A1329 FOREIGN KEY (message_id) REFERENCES tickets_messages (id) ON DELETE CASCADE");
     }
 }

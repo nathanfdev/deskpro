@@ -137,7 +137,6 @@ class SourceSender
 
         } catch (RawTransportException $e) {
             $this->logger->error(sprintf("Exception raised: %s [%s]: %s", get_class($e), $e->getCode(), $e->getMessage()));
-            $this->logger->debug(KernelErrorHandler::formatBacktrace($e->getTrace(), true));
             @fclose($fp);
 
             throw $e;

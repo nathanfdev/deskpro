@@ -665,8 +665,8 @@ class DeskproBlobStorage implements Loggable
         // Can just use the public URL
         if ($blob_row['file_url']) {
             $this->logger->logDebug("[DeskproBlobStorage] (readcopyBlobRowToString) Attempting to fetch via URL: {$blob_row['file_url']}");
-            $data = @file_get_contents($blob_row->file_url);
-            if (!$data || strlen($data) != $blob_row->filesize) {
+            $data = @file_get_contents($blob_row['file_url']);
+            if (!$data || strlen($data) != $blob_row['filesize']) {
                 $this->logger->logDebug("[DeskproBlobStorage] (readcopyBlobRowToString) Failed");
                 $data = null;
             } else {
