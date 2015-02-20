@@ -45,7 +45,7 @@ use Behat\Gherkin\Node\TableNode;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class LanguageContext extends KernelAwareContext
+class LanguageContext extends BasePortalContext
 {
     /**
      * @var LanguageManager

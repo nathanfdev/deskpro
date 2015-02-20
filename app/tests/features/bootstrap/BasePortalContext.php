@@ -34,16 +34,26 @@
 
 namespace DpBehat;
 
+use Behat\MinkExtension\Context\RawMinkContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext as KernelAwareContextInterface;
+use SensioLabs\Behat\PageObjectExtension\Context\PageObjectAware;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Factory as PageObjectFactory;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Element;
 
-abstract class KernelAwareContext implements KernelAwareContextInterface
+abstract class BasePortalContext extends RawMinkContext implements KernelAwareContextInterface, PageObjectAware
 {
     /**
      * @var KernelInterface
      */
     private $kernel;
+
+    /**
+     * @var PageObjectFactory
+     */
+    private $pageObjectFactory = null;
 
     /**
      * Sets Kernel instance.
@@ -78,5 +88,58 @@ abstract class KernelAwareContext implements KernelAwareContextInterface
     public function getContainer()
     {
         return $this->kernel->getContainer();
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return Page
+     *
+     * @throws \RuntimeException
+     */
+    public function getPage($name)
+    {
+        if (null === $this->pageObjectFactory) {
+            throw new \RuntimeException('To create pages you need to pass a factory with setPageObjectFactory()');
+        }
+
+        return $this->pageObjectFactory->createPage($name);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return Element
+     *
+     * @throws \RuntimeException
+     */
+    public function getElement($name)
+    {
+        if (null === $this->pageObjectFactory) {
+            throw new \RuntimeException('To create elements you need to pass a factory with setPageObjectFactory()');
+        }
+
+        return $this->pageObjectFactory->createElement($name);
+    }
+
+    /**
+     * @param PageObjectFactory $pageObjectFactory
+     * @return null
+     */
+    public function setPageObjectFactory(PageObjectFactory $pageObjectFactory)
+    {
+        $this->pageObjectFactory = $pageObjectFactory;
+    }
+
+    /**
+     * @return PageObjectFactory
+     */
+    public function getPageObjectFactory()
+    {
+        if (null === $this->pageObjectFactory) {
+            throw new \RuntimeException('To access the page factory you need to pass it first with setPageObjectFactory()');
+        }
+
+        return $this->pageObjectFactory;
     }
 }
