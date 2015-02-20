@@ -7,3 +7,5 @@ define('DP_INTERFACE', 'user');
 
 require_once __DIR__.'/../../../sys/preboot.php';
 require_once __DIR__.'/../../../sys/autoload.php';
+
+ini_set('max_execution_time', 0);
