@@ -35,6 +35,7 @@ namespace DpBehat\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\InstallBundle\Data\DefaultDataProcessor;
+use DpBehat\TestBundle\UserDetailsRepo;
 
 class FreshDb extends AbstractDbSet
 {
@@ -58,34 +59,44 @@ class FreshDb extends AbstractDbSet
         # Init data
         #------------------------------
 
-        $agent = new \Application\DeskPRO\Entity\Person();
-        $agent->first_name = 'Admin';
-        $agent->last_name = 'Admin';
-        $agent->setEmail('admin@example.com', true);
-        $agent->setPassword('pass');
-        $agent->is_user = true;
-        $agent->is_confirmed = true;
-        $agent->is_agent_confirmed = true;
-        $agent->is_agent = true;
-        $agent->can_agent = true;
-        $agent->can_admin = true;
-        $agent->can_billing = true;
-        $agent->can_reports = true;
+        $admin = $this->addUser(
+            UserDetailsRepo::ADMIN_FIRST_NAME,
+            UserDetailsRepo::ADMIN_LAST_NAME,
+            UserDetailsRepo::ADMIN_EMAIL,
+            UserDetailsRepo::ADMIN_PASS,
+            true,
+            true
+        );
 
-        $em->persist($agent);
-        $em->flush();
+        $agent = $this->addUser(
+            UserDetailsRepo::AGENT_FIRST_NAME,
+            UserDetailsRepo::AGENT_LAST_NAME,
+            UserDetailsRepo::AGENT_EMAIL,
+            UserDetailsRepo::AGENT_PASS,
+            true,
+            false
+        );
+
+        $user = $this->addUser(
+            UserDetailsRepo::USER_FIRST_NAME,
+            UserDetailsRepo::USER_LAST_NAME,
+            UserDetailsRepo::USER_EMAIL,
+            UserDetailsRepo::USER_PASS,
+            true,
+            false
+        );
 
         // we need a brand
         $brand = new Brand();
         $em->persist($brand);
         $em->flush();
 
-        $this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
+        $this->getDb()->insert('permissions', array('person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1));
 
         // Install data stuff
         $AGENTGROUP_ALL = null; // should be defined by the time we finish processing data.php
         $USERGROUP_EVERYONE = null; // should be defined by the time we finish processing data.php
-        $AGENT = $agent; // can be used in data.php
+        $AGENT = $admin; // can be used in data.php
         $WEB_INSTALL = true;
         $IMPORT_INSTALL = false;
 
@@ -105,9 +116,9 @@ class FreshDb extends AbstractDbSet
 
         // For the all agent group, fetch permissions from the template
         if ($AGENTGROUP_ALL) {
-            $ch = new \Application\DeskPRO\ORM\CollectionHelper($agent, 'usergroups');
+            $ch = new \Application\DeskPRO\ORM\CollectionHelper($admin, 'usergroups');
             $ch->setCollection(array($AGENTGROUP_ALL));
-            $em->persist($agent);
+            $em->persist($admin);
             $em->flush();
         }
 
@@ -124,7 +135,7 @@ class FreshDb extends AbstractDbSet
         }
 
         $data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
-        $data_init->admin_user = $agent;
+        $data_init->admin_user = $admin;
         $data_init->run();
 // initial settings so we are "installed"
         $this->getDb()->exec("
@@ -173,5 +184,33 @@ class FreshDb extends AbstractDbSet
         $count++;
 
         return $count;
+    }
+
+    protected function addUser($fname, $lname, $email, $pass, $agent = false, $admin = false)
+    {
+        $new_user = new \Application\DeskPRO\Entity\Person();
+        $new_user->first_name = $fname;
+        $new_user->last_name = $lname;
+        $new_user->setEmail($email, true);
+        $new_user->setPassword($pass);
+        $new_user->is_user = true;
+        $new_user->is_confirmed = true;
+
+        if ($agent || $admin) {
+            $new_user->is_agent_confirmed = true;
+            $new_user->is_agent = true;
+            $new_user->can_agent = true;
+        }
+
+        if ($admin) {
+            $new_user->can_admin = true;
+            $new_user->can_billing = true;
+            $new_user->can_reports = true;
+        }
+
+        $this->getEm()->persist($new_user);
+        $this->getEm()->flush();
+
+        return $new_user;
     }
 }

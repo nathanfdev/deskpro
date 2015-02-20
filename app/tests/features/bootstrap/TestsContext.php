@@ -24,11 +24,6 @@ class TestsContext implements Context, SnippetAcceptingContext
     private $session;
 
     /**
-     * @var DataSetManager
-     */
-    private $dataset_manager;
-
-    /**
      * @var EntityManager
      */
     private $em;
@@ -40,11 +35,10 @@ class TestsContext implements Context, SnippetAcceptingContext
      * You can also pass arbitrary arguments to the
      * context constructor through behat.yml.
      */
-    public function __construct(SessionInterface $session, DataSetManager $dataset_manager, EntityManager $em)
+    public function __construct(SessionInterface $session, EntityManager $em)
     {
         $this->called = false;
         $this->session = $session;
-        $this->dataset_manager = $dataset_manager;
         $this->em = $em;
     }
 
@@ -84,22 +78,6 @@ class TestsContext implements Context, SnippetAcceptingContext
     public function iShouldSeeThatIHaveTheSession()
     {
         expect($this->session)->toHaveType('Symfony\Component\HttpFoundation\Session\SessionInterface');
-    }
-
-    /**
-     * @Given I have access to dataset_manager
-     */
-    public function iHaveAccessToDbsetManager()
-    {
-        expect($this->dataset_manager)->toNotBeNull();
-    }
-
-    /**
-     * @When I install the :set data set
-     */
-    public function iInstallTheFreshDataSet($set)
-    {
-        $this->dataset_manager->install($set);
     }
 
     /**
