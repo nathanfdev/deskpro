@@ -5,7 +5,6 @@ default:
             - Behat\MinkExtension\Context\MinkContext
             - DpBehat\TestsContext:
                 session: @session
-                dataset_manager: @dataset_manager
                 em: @doctrine.orm.default_entity_manager
             - DpBehat\LanguageContext:
                 language_manager: @language_manager
@@ -15,8 +14,19 @@ default:
             - DpBehat\PortalModeContext:
                 mode_storage: @portal_mode_storage
                 mode_factory: @portal_mode_factory
+            - DpBehat\AuthContext:
+                user_details: @user_details
+                token_storage: @security.token_storage
             - DpBehat\RouterContext
+            - DpBehat\BehatHooksContext
+            - DpBehat\DataSetContext:
+                dataset_manager: @dataset_manager
+
   extensions:
+    SensioLabs\Behat\PageObjectExtension:
+      namespaces:
+          page: DpBehat\Page\Portal
+          element: DpBehat\Page\Portal\Element
     VIPSoft\CodeCoverageExtension\Extension:
         drivers:
             - local
@@ -48,6 +58,8 @@ default:
                         '../vendor': ~
                         '../vendor-src': ~
     Behat\MinkExtension:
+       base_url: '/'
+       default_session: default
        sessions:
          default:
            symfony2: ~
