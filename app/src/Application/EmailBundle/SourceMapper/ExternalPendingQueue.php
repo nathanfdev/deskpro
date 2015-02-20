@@ -121,7 +121,7 @@ class ExternalPendingQueue implements SourceMapperInterface
     public function markSourceRetry(array $source, $log_text = null, \DateTime $next_date = null)
     {
         $r = $this->source_mapper->markSourceRetry($source, $log_text, $next_date);
-        $this->queuer->queueMessageSource($r);
+        $r = $this->enqueueMessage($r);
 
         return $r;
     }
@@ -145,7 +145,7 @@ class ExternalPendingQueue implements SourceMapperInterface
     public function setSourcePending(array $source, \DateTime $next_date = null)
     {
         $r = $this->source_mapper->setSourcePending($source, $next_date);
-        $this->queuer->queueMessageSource($r);
+        $r = $this->enqueueMessage($r);
 
         return $r;
     }
