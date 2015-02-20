@@ -183,6 +183,13 @@ class DpLoader extends LoaderAbstract
             $user_token = $_COOKIE['dpvut'];
         }
 
+        if ($user_token) {
+            $user_token = preg_replace('#[^a-zA-Z0-9\-_\.]#', '', $user_token);
+            if (!$user_token) {
+                $user_token = null;
+            }
+        }
+
         $user_ip = $_SERVER['REMOTE_ADDR'];
         if (dp_get_config('trust_proxy_data')) {
             if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
@@ -579,6 +586,7 @@ class DpLoader extends LoaderAbstract
         header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
         header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
         header('Cache-Control: max-age=0,private');
+        header('X-Content-Type-Options: nosniff');
         echo $js_out;
     }
 
@@ -860,6 +868,7 @@ class DpLoader extends LoaderAbstract
         header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
         header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
         header('Cache-Control: max-age=0,private');
+        header('X-Content-Type-Options: nosniff');
         echo $content;
     }
 
@@ -898,6 +907,7 @@ class DpLoader extends LoaderAbstract
         header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
         header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
         header('Cache-Control: max-age=0,private');
+        header('X-Content-Type-Options: nosniff');
         echo $content;
     }
 
@@ -1026,6 +1036,7 @@ class DpLoader extends LoaderAbstract
         header('Content-Disposition: inline; filename=agent-lang-' . $language_id . '.js');
         header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
         header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
+        header('X-Content-Type-Options: nosniff');
         echo $js;
     }
 
@@ -1125,6 +1136,7 @@ class DpLoader extends LoaderAbstract
         header('Content-Disposition: inline; filename=user-lang-' . $language_id . '.js');
         header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
         header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
+        header('X-Content-Type-Options: nosniff');
         echo $js;
     }
 }
