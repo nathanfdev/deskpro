@@ -33,8 +33,10 @@
 
 namespace DpBehat\TestBundle;
 
+use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\Entity\Person;
 
-class UserDetailsRepo 
+class UserDetailsRepo
 {
     const ADMIN_EMAIL = 'admin@deskpro.dev';
     const ADMIN_PASS = 'pass';
@@ -50,6 +52,26 @@ class UserDetailsRepo
     const USER_PASS = '12345';
     const USER_FIRST_NAME = 'Ganon';
     const USER_LAST_NAME = 'User';
+
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
+     * @param $who
+     * @return Person
+     * @throws \Exception
+     */
+    public function getWho($who)
+    {
+        return $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->getEmail($who));
+    }
 
     public function getEmail($who)
     {

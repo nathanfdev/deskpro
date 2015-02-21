@@ -19,6 +19,7 @@ default:
                 token_storage: @security.token_storage
             - DpBehat\RouterContext
             - DpBehat\BehatHooksContext
+            - DpBehat\TicketsContext
             - DpBehat\DataSetContext:
                 dataset_manager: @dataset_manager
 

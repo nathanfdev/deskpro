@@ -142,4 +142,10 @@ abstract class BasePortalContext extends RawMinkContext implements KernelAwareCo
 
         return $this->pageObjectFactory;
     }
+
+    public function persistAndFlush($entity)
+    {
+        $this->getContainer()->get('doctrine.orm.default_entity_manager')->persist($entity);
+        $this->getContainer()->get('doctrine.orm.default_entity_manager')->flush($entity);
+    }
 }

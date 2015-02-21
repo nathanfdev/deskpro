@@ -34,6 +34,7 @@
 
 namespace DpBehat;
 
+use Application\AuthBundle\Security\DpFormLoginToken;
 use Application\DeskPRO\Brand\BrandStack;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
@@ -45,9 +46,15 @@ use Application\PortalBundle\Mode\PortalModeStorage;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Mink\Driver\BrowserKitDriver;
+use Behat\Mink\Exception\UnsupportedDriverActionException;
+use Behat\Mink\Tests\Driver\BrowserKitConfig;
+use Behat\Symfony2Extension\Driver\KernelDriver;
 use Doctrine\ORM\EntityManager;
 use DpBehat\TestBundle\UserDetailsRepo;
+use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 class AuthContext extends BasePortalContext
 {
@@ -109,5 +116,13 @@ class AuthContext extends BasePortalContext
         print $this->user_details->getEmail($who);
 
         expect($user->getPrimaryEmailAddress())->toBeEqualTo($this->user_details->getEmail($who));
+    }
+
+    /**
+     * @Given I am authenticated as :who
+     */
+    public function iAmAuthenticatedAsUser($who)
+    {
+        $this->iLoginWithCredentials($who);
     }
 }

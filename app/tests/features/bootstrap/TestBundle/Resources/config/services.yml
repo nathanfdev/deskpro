@@ -27,3 +27,5 @@ services:
 
   user_details:
       class: DpBehat\TestBundle\UserDetailsRepo
+      arguments:
+        - @doctrine.orm.default_entity_manager
