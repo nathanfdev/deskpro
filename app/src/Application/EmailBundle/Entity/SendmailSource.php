@@ -902,6 +902,26 @@ class SendmailSource implements NotifyPropertyChanged
             'type'       => 'integer',
             'nullable'   => false,
         ));
+	    $metadata->mapField(array(
+		    'columnName' => 'num_targets',
+		    'fieldName'  => 'num_targets',
+		    'type'       => 'integer',
+	    ));
+	    $metadata->mapField(array(
+		    'columnName' => 'num_pending',
+		    'fieldName'  => 'num_pending',
+		    'type'       => 'integer',
+	    ));
+	    $metadata->mapField(array(
+		    'columnName' => 'num_error',
+		    'fieldName'  => 'num_error',
+		    'type'       => 'integer',
+	    ));
+	    $metadata->mapField(array(
+		    'columnName' => 'num_complete',
+		    'fieldName'  => 'num_complete',
+		    'type'       => 'integer',
+	    ));
 
         $metadata->mapManyToOne(array(
             'fieldName'    => 'blob',
