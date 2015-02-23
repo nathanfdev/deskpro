@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e4489a5a15f380ab611d527956e78d2d",
+    "hash": "a92eef06584f3ec2cb44415662d42655",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -2627,16 +2627,16 @@
         },
         {
             "name": "onelogin/php-saml",
-            "version": "2.1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/onelogin/php-saml.git",
-                "reference": "76a5560672089ef5c122ff5afb43057e5d058737"
+                "reference": "1934fe9e57e2e847551da22fed4f4a6ce3070acf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/76a5560672089ef5c122ff5afb43057e5d058737",
-                "reference": "76a5560672089ef5c122ff5afb43057e5d058737",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/1934fe9e57e2e847551da22fed4f4a6ce3070acf",
+                "reference": "1934fe9e57e2e847551da22fed4f4a6ce3070acf",
                 "shasum": ""
             },
             "require": {
@@ -2645,6 +2645,7 @@
             "require-dev": {
                 "pdepend/pdepend": "1.1.0",
                 "phploc/phploc": "*",
+                "phpunit/phpunit": "3.7.31",
                 "satooshi/php-coveralls": "dev-master",
                 "sebastian/phpcpd": "*",
                 "squizlabs/php_codesniffer": "*"
@@ -2673,7 +2674,7 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2014-07-03 19:23:00"
+            "time": "2015-02-20 21:24:08"
         },
         {
             "name": "pagerfanta/pagerfanta",
@@ -5432,6 +5433,7 @@
         "friendsofsymfony/elastica-bundle": 20,
         "fzaninotto/faker": 20,
         "firebase/php-jwt": 20,
+        "onelogin/php-saml": 20,
         "google/apiclient": 20,
         "whatthejeff/nyancat-scoreboard": 20,
         "behat/mink-extension": 20,

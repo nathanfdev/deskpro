@@ -36,7 +36,7 @@
 		"fzaninotto/faker": "1.4.*@dev",
 		"firebase/php-jwt": "dev-master",
 		"league/url": "3.2.1",
-		"onelogin/php-saml": "~2.1.0",
+		"onelogin/php-saml": "dev-master@dev",
 		"google/apiclient": "1.0.*@dev",
 		"sensio/framework-extra-bundle": "~3.0",
 		"pagerfanta/pagerfanta": "~1.0",
