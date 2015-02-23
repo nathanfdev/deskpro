@@ -750,6 +750,11 @@ class SendmailSource implements NotifyPropertyChanged
         return $data;
     }
 
+	public function initPendingCount()
+	{
+		$this->setModelField('num_pending', count($this->getToEmails()) + count($this->getCcEmails()) + count($this->getBccEmails()));
+	}
+
     ############################################################################
     # Doctrine
     ############################################################################
@@ -760,6 +765,9 @@ class SendmailSource implements NotifyPropertyChanged
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\EmailBundle\EntityRepository\SendmailSourceRepository';
+
+	    $metadata->addLifecycleCallback('initPendingCount', 'prePersist');
+
         $metadata->setPrimaryTable(array(
             'name' => 'sendmail_sources',
             'indexes' => array(

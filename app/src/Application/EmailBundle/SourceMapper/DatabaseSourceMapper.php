@@ -239,7 +239,8 @@ class DatabaseSourceMapper implements SourceMapperInterface
             'status'           => $status,
             'date_status'      => $date,
             'date_created'     => $date,
-            'exec_count'       => $exec_count
+            'exec_count'       => $exec_count,
+	        'num_pending'      => count($tos) + count($ccs) + count($bccs),
         );
 
         if ($message instanceof MessageOptionsInterface && ($opts = $message->getMessageOptions()->all())) {
