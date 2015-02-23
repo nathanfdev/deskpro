@@ -390,6 +390,10 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
         }
 
         if ($check_ids) {
+            // Strings to lowercase (1)
+            $check_ids = array_filter($check_ids, function($v) {
+                return is_string($v) ? strtolower($v) : $v;
+            });
             $check_ids = array_fill_keys($check_ids, true);
         }
 
@@ -399,6 +403,11 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
                 $value_id = 0;
             } else {
                 $value_id = $value->$id_prop;
+            }
+
+            // Strings to lowercase (2)
+            if (is_string($value_id)) {
+                $value_id = strtolower($value_id);
             }
 
             if (isset($check_ids[$value_id])) {
