@@ -391,9 +391,9 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
         if ($check_ids) {
             // Strings to lowercase (1)
-            $check_ids = array_filter($check_ids, function($v) {
+            $check_ids = array_map(function($v) {
                 return is_string($v) ? strtolower($v) : $v;
-            });
+            }, $check_ids);
             $check_ids = array_fill_keys($check_ids, true);
         }
 

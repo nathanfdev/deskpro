@@ -24,7 +24,11 @@ abstract class AbstractTicketEntityCheckTest extends AbstractEntityCheckTest
 
         $ticket = new Ticket();
         $ticket->id = $id;
-        $ticket->$prop_name = $object;
+
+        if ($object !== null) {
+            $ticket->$prop_name = $object;
+        }
+
         $this->configureTicket($ticket);
 
         return $ticket;

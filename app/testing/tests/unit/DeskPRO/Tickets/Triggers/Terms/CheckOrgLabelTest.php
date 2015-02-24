@@ -16,6 +16,11 @@ class CheckOrgLabelTest extends AbstractEntityCheckTest
      */
     public function createTicket($id, $object)
     {
+        if ($object === null) {
+            // no test for nulls
+            return null;
+        }
+
         $org = new Organization();
 
         $bogus = new LabelOrganization();

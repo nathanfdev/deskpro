@@ -15,15 +15,28 @@ class CheckUserLanguageTest extends AbstractEntityCheckTest
      */
     public function createTicket($id, $object)
     {
+        if ($object === null) {
+            // no test for nulls
+            return null;
+        }
+
         $person = new Person();
         $person->id = $id;
-        $person->language = $object;
+
+        if ($object !== null) {
+            $person->language = $object;
+        }
 
         $ticket = new Ticket();
         $ticket->id = $id;
         $ticket->person = $person;
 
         return $ticket;
+    }
+
+    protected function useNullTest()
+    {
+        return false;
     }
 
     /**
