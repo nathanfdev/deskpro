@@ -212,10 +212,34 @@ class SendmailSource implements NotifyPropertyChanged
      */
     protected $exec_count = 0;
 
+	/**
+	 * @var int
+	 */
+	protected $num_targets;
+
+	/**
+	 * @var int
+	 */
+	protected $num_pending;
+
+	/**
+	 * @var int
+	 */
+	protected $num_complete;
+
+	/**
+	 * @var int
+	 */
+	protected $num_error;
+
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
         $this->setModelField('date_status', new \DateTime());
+	    $this->num_targets = 0;
+	    $this->num_pending = 0;
+	    $this->num_complete = 0;
+	    $this->num_error = 0;
     }
 
     /**
@@ -750,9 +774,11 @@ class SendmailSource implements NotifyPropertyChanged
         return $data;
     }
 
-	public function initPendingCount()
+	public function initTargetsCount()
 	{
-		$this->setModelField('num_pending', count($this->getToEmails()) + count($this->getCcEmails()) + count($this->getBccEmails()));
+		$count = count($this->getToEmails()) + count($this->getCcEmails()) + count($this->getBccEmails());
+		$this->setModelField('num_targets', $count);
+		$this->setModelField('num_pending', $count);
 	}
 
     ############################################################################
@@ -766,7 +792,7 @@ class SendmailSource implements NotifyPropertyChanged
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\EmailBundle\EntityRepository\SendmailSourceRepository';
 
-	    $metadata->addLifecycleCallback('initPendingCount', 'prePersist');
+	    $metadata->addLifecycleCallback('initTargetsCount', 'prePersist');
 
         $metadata->setPrimaryTable(array(
             'name' => 'sendmail_sources',

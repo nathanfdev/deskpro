@@ -25,26 +25,61 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- * @category Entities
- */
+namespace Application\EmailBundle\Controller;
 
-namespace Application\EmailBundle\EntityRepository;
+use Application\DeskPRO\Controller\AbstractController;
+use Application\DeskPRO\HttpFoundation\Request;
+use Application\EmailBundle\EntityRepository\SendmailSourceStatusRepository;
+use Symfony\Component\HttpFoundation\Response;
+use deskpro_sendgrid\InstallerHandler as SendGridAppInstaller;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
-
-class SendmailSourceRepository extends AbstractEntityRepository
+class CallbackController extends AbstractController
 {
-	public function getIdsByRefs(array $refs)
+	/** @var SendGrid service */
+	protected $service;
+
+	public function handleAction(Request $request)
 	{
-		return $this->getEntityManager()->getConnection()->executeQuery(
-			sprintf('select id, ref from %s where ref in (?)', $this->getTableName()),
-			array($refs),
-			array(Connection::PARAM_STR_ARRAY)
-		)->fetchAll();
+		$response = new Response();
+
+		if (!$this->container->getSetting(SendGridAppInstaller::NAME . '.enabled')) {
+			throw new AccessDeniedHttpException;
+		}
+
+		if (!$data = json_decode($request->getContent(), 1)) {
+			throw new BadRequestHttpException;
+		}
+
+		/** @var SendmailSourceStatusRepository $rep */
+		$rep = $this->em->getRepository('EmailBundle:SendmailSourceStatus');
+
+		foreach ($data as $entry) {
+
+			if (!isset($entry['smtp-id']) || !isset($entry['email']) || !isset($entry['event'])) {
+				throw new BadRequestHttpException;
+			}
+
+			$refparts = explode('@', $entry['smtp-id']);
+			$ref = trim(@$refparts[0], '<>');
+			$email = $entry['email'];
+			$event = $entry['event'];
+			$reason = @$entry['reason'] ?: 'ok';
+
+			unset($entry['smtp-id'], $entry['email'], $entry['reason'], $entry['event']);
+
+			$rep->queueStatus(
+				$ref,
+				$email,
+				$event,
+				$reason,
+				json_encode($entry)
+			);
+		}
+
+		$rep->flush();
+
+		return $response;
 	}
 }
