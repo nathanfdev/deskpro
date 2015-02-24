@@ -114,8 +114,10 @@ class SendmailSourceStatusRepository extends AbstractEntityRepository
 		$found = array();
 		foreach ($ss->getIdsByRefs(array_keys($this->refs)) as $row) {
 			$found[$row['ref']] = 1;
+			if (!@$this->refs[$row['ref']]) continue;
+
 			$this->refs[$row['ref']]['id'] = $row['id'];
-			foreach ($this->refs['keys'] as $key) {
+			foreach ($this->refs[$row['ref']]['keys'] as $key) {
 				$this->params[$key] = $row['id'];
 			}
 		}
