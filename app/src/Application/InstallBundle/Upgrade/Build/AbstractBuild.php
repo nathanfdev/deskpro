@@ -34,6 +34,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Application\DeskPRO\DBAL\SchemaHelper;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Monolog\NullLogger;
 use Psr\Log\LoggerInterface;
@@ -45,6 +46,11 @@ abstract class AbstractBuild
      * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
     protected $container;
+
+    /**
+     * @var SchemaHelper
+     */
+    protected $schema_helper;
 
     /**
      * @var bool
@@ -394,5 +400,20 @@ abstract class AbstractBuild
         $build_id = str_replace('Build', '', $base);
 
         return $build_id;
+    }
+
+    /**
+     * @return SchemaHelper
+     */
+    public function getSchemaHelper()
+    {
+        if ($this->schema_helper) {
+            return $this->schema_helper;
+
+        }
+
+        $this->schema_helper = new SchemaHelper($this->container->getDb());
+
+        return $this->schema_helper;
     }
 }
