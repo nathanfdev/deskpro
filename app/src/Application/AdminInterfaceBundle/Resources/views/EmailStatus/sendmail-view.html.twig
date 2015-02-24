@@ -87,6 +87,26 @@
 						<textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;">{{ ng_var('ViewSource.sendmail_raw') }}</textarea>
 					</td>
 				</tr>
+				<tr ng-if="ViewSource.statuses">
+					<th>
+						Statuses
+						<br/>
+					</th>
+					<td>
+						<table class="table">
+							<tr>
+								<td>Title</td>
+								<td>Description</td>
+								<td>Date</td>
+							</tr>
+							<tr ng-repeat="status in ViewSource.statuses">
+								<td>{{ ng_var('status.email') }}: <strong>{{ ng_var('status.event') }}</strong></td>
+								<td>{{ ng_var('status.info') }}</td>
+								<td>{{ ng_var('status.date_created') }}</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 	</section>

@@ -2,7 +2,7 @@
 	"package_name": "deskpro_sendgrid",
 	"is_native": true,
 	"title": "SendGrid",
-	"description": "Allows you to track emails?",
+	"description": "Allows you to track emails.",
 	"tags": ["emails"],
 	"api_version": 1,
 	"version": 1,

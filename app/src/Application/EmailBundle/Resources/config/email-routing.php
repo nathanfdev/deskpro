@@ -7,7 +7,7 @@ use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
-$collection->create('callback', array(
+$collection->create('email_callback', array(
 	'path'        => '/callback{trailingSlash}',
 	'controller'  => 'EmailBundle:Callback:handle',
     'defaults'    => array('trailingSlash' => '/'),

@@ -53,6 +53,8 @@ class SendmailSourceStatus implements NotifyPropertyChanged
 
 	protected $date_created;
 
+	protected $source;
+
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
@@ -108,7 +110,7 @@ class SendmailSourceStatus implements NotifyPropertyChanged
 
 
 	    $metadata->mapManyToOne(array(
-            'fieldName'    => 'sendmail_source',
+            'fieldName'    => 'source',
             'targetEntity' => 'Application\EmailBundle\Entity\SendmailSource',
             'dpApi'        => true,
             'joinColumns'  => array(array(
@@ -118,6 +120,20 @@ class SendmailSourceStatus implements NotifyPropertyChanged
             ))
         ));
     }
+
+	public function toArray()
+	{
+		$data = array();
+
+		$data['id']             = $this->id;
+		$data['event']          = $this->event_type;
+		$data['email']          = $this->user_email;
+		$data['info']           = $this->event_info;
+		$data['details']        = $this->details;
+		$data['date_created']   = $this->date_created->format('Y-m-d H:i:s');
+
+		return $data;
+	}
 
     public function __getPropValue__($k)     { return $this->$k; }
     public function __setPropValue__($k, $v) { $this->$k = $v; }

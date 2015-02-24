@@ -232,6 +232,11 @@ class SendmailSource implements NotifyPropertyChanged
 	 */
 	protected $num_error;
 
+	/**
+	 * @var SendmailSourceStatus[]
+	 */
+	protected $statuses;
+
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
@@ -635,6 +640,14 @@ class SendmailSource implements NotifyPropertyChanged
         return ($this->options && isset($this->options[$k])) ? $this->options[$k] : $default;
     }
 
+	/**
+	 * @return SendmailSourceStatus[]
+	 */
+	public function getStatuses()
+	{
+		return $this->statuses;
+	}
+
     /**
      * @param string $k
      * @param mixed  $v
@@ -671,6 +684,10 @@ class SendmailSource implements NotifyPropertyChanged
         $data['error_code']     = $this->error_code;
         $data['exec_count']     = $this->exec_count;
         $data['options']        = $this->options;
+	    $data['num_targets']    = $this->num_targets;
+	    $data['num_pending']    = $this->num_pending;
+	    $data['num_error']      = $this->num_error;
+	    $data['num_complete']   = $this->num_complete;
 
         foreach (array('date_created', 'date_status', 'date_sent', 'date_next_attempt') as $date_field) {
             if ($this->$date_field) {
@@ -992,6 +1009,11 @@ class SendmailSource implements NotifyPropertyChanged
                 'onDelete'             => 'set null',
             ))
         ));
+	    $metadata->mapOneToMany(array(
+		    'fieldName'    => 'statuses',
+		    'targetEntity' => 'Application\EmailBundle\Entity\SendmailSourceStatus',
+		    'mappedBy'     => 'source',
+	    ));
     }
 
     public function __getPropValue__($k)     { return $this->$k; }

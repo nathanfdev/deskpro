@@ -109,7 +109,7 @@
 						<th>From</th>
 						<th>To</th>
 						<th>Subject</th>
-						<th>Status</th>
+						<th>Status <span ng-if="tracking_enabled">(total/pending/complete/errors)</span></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -129,7 +129,8 @@
 						</td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_to') }}</td>
 						<td>{{ ng_var('result.header_subject') }}</td>
-						<td>{{ ng_var('result.status') }}</td>
+						<td ng-if="!tracking_enabled">{{ ng_var('result.status') }}</td>
+						<td ng-if="tracking_enabled">{{ ng_var('result.num_targets') }}/{{ ng_var('result.num_pending') }}/{{ ng_var('result.num_complete') }}/{{ ng_var('result.num_error') }}</td>
 					</tr>
 				</tbody>
 			</table>
