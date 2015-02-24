@@ -25,48 +25,63 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\EmailBundle\Controller;
 
-use Application\DeskPRO\Controller\AbstractController;
-use Application\DeskPRO\HttpFoundation\Request;
-use Application\EmailBundle\EntityRepository\SendmailSourceStatusRepository;
-use Application\EmailBundle\Event\Mail;
-use Application\EmailBundle\Event\Subscriber\Sendgrid;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\HttpFoundation\Response;
-use deskpro_sendgrid\InstallerHandler as SendGridAppInstaller;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class CallbackController extends AbstractController
+namespace Application\EmailBundle\Event;
+
+use Symfony\Component\EventDispatcher\Event;
+
+class Mail extends Event
 {
-	/** @var SendGrid service */
-	protected $service;
+	const PROCESSED     = 'processed';
+	const DROPPED       = 'dropped';
+	const DELIVERED     = 'delivered';
+	const DEFERRED      = 'deferred';
+	const BOUNCE        = 'bounce';
+	const OPEN          = 'open';
+	const CLICK         = 'click';
+	const SPAMREPORT    = 'spamreport';
 
-	public function handleAction(Request $request)
+	protected $data;
+
+	public function __construct(array $data = array())
 	{
-		/** @var EventDispatcher $ed */
-		$ed = $this->get('event_dispatcher');
-		$response = new Response();
+		$this->data = $data;
+	}
 
-		if (!$data = json_decode($request->getContent(), 1)) {
-			throw new BadRequestHttpException;
-		}
+	/**
+	 * @param $key
+	 * @param null $default
+	 * @return null
+	 */
+	public function get($key, $default = null)
+	{
+		return $this->has($key) ? $this->data[$key] : $default;
+	}
 
-		if ($this->container->getSetting(SendGridAppInstaller::NAME . '.enabled')) {
-			/** @var SendmailSourceStatusRepository $rep */
-			$rep = $this->em->getRepository('EmailBundle:SendmailSourceStatus');
-			$ed->addSubscriber(new Sendgrid($rep));
-		}
+	/**
+	 * @param $key
+	 * @return bool
+	 */
+	public function has($key)
+	{
+		return array_key_exists($key, $this->data);
+	}
 
-		foreach ($data as $entry) {
-			if (!isset($entry['event'])) {
-				throw new BadRequestHttpException;
-			}
+	/**
+	 * @param $key
+	 * @param $value
+	 */
+	public function set($key, $value)
+	{
+		$this->data[$key] = $value;
+	}
 
-			$event = new Mail($entry);
-			$ed->dispatch($entry['event'], $event);
-		}
-
-		return $response;
+	/**
+	 * @return array
+	 */
+	public function all()
+	{
+		return $this->data;
 	}
 }

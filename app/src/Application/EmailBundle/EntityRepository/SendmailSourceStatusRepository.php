@@ -55,7 +55,7 @@ class SendmailSourceStatusRepository extends AbstractEntityRepository
 	 * @param $info
 	 * @param $details
 	 */
-	public function queueStatus($ref, $email, $event, $info, $details)
+	public function enqueueStatus($ref, $email, $event, $info, $details)
 	{
 		$k = count($this->queries);
 

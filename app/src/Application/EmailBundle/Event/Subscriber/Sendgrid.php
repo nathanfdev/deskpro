@@ -25,48 +25,80 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\EmailBundle\Controller;
+namespace Application\EmailBundle\Event\Subscriber;
 
-use Application\DeskPRO\Controller\AbstractController;
-use Application\DeskPRO\HttpFoundation\Request;
 use Application\EmailBundle\EntityRepository\SendmailSourceStatusRepository;
 use Application\EmailBundle\Event\Mail;
-use Application\EmailBundle\Event\Subscriber\Sendgrid;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\HttpFoundation\Response;
-use deskpro_sendgrid\InstallerHandler as SendGridAppInstaller;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Application\EmailBundle\Event\SendGrid as SendGridEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-class CallbackController extends AbstractController
+class Sendgrid implements EventSubscriberInterface
 {
-	/** @var SendGrid service */
-	protected $service;
+	/**
+	 * @var SendmailSourceStatusRepository
+	 */
+	protected $rep;
 
-	public function handleAction(Request $request)
+	public function __construct(SendmailSourceStatusRepository $rep)
 	{
-		/** @var EventDispatcher $ed */
-		$ed = $this->get('event_dispatcher');
-		$response = new Response();
+		$this->rep = $rep;
+	}
 
-		if (!$data = json_decode($request->getContent(), 1)) {
-			throw new BadRequestHttpException;
+	static public function getSubscribedEvents()
+	{
+		return array(
+			Mail::BOUNCE            => 'addStatusRecord',
+			Mail::CLICK             => 'addStatusRecord',
+			Mail::DEFERRED          => 'addStatusRecord',
+			Mail::DELIVERED         => 'addStatusRecord',
+			Mail::DROPPED           => 'addStatusRecord',
+			Mail::OPEN              => 'addStatusRecord',
+			Mail::PROCESSED         => 'addStatusRecord',
+			Mail::SPAMREPORT        => 'addStatusRecord',
+			KernelEvents::RESPONSE  => 'flush',
+		);
+	}
+
+	/**
+	 * @param SendGridEvent $event
+	 * @param $eventName
+	 * @param EventDispatcher $dispatcher
+	 */
+	public function addStatusRecord(SendGridEvent $event, $eventName, EventDispatcher $dispatcher)
+	{
+		if (!$ref = $event->get('smtp-id')) {
+			throw new \InvalidArgumentException;
 		}
 
-		if ($this->container->getSetting(SendGridAppInstaller::NAME . '.enabled')) {
-			/** @var SendmailSourceStatusRepository $rep */
-			$rep = $this->em->getRepository('EmailBundle:SendmailSourceStatus');
-			$ed->addSubscriber(new Sendgrid($rep));
+		if (!$email = $event->get('email')) {
+			throw new \InvalidArgumentException;
 		}
 
-		foreach ($data as $entry) {
-			if (!isset($entry['event'])) {
-				throw new BadRequestHttpException;
-			}
-
-			$event = new Mail($entry);
-			$ed->dispatch($entry['event'], $event);
+		$refparts = explode('@', trim($ref, '<>'));
+		if (!$ref = @$refparts[0]) {
+			throw new \InvalidArgumentException;
 		}
 
-		return $response;
+		$reason = $event->get('reason') ?: 'ok';
+		$data = $event->all();
+		unset($data['smtp-id'], $data['email'], $data['reason'], $data['event']);
+
+		$this->rep->enqueueStatus(
+			$ref,
+			$email,
+			$eventName,
+			$reason,
+			json_encode($data)
+		);
+	}
+
+	/**
+	 * @throws \Exception
+	 */
+	public function flush()
+	{
+		$this->rep->flush();
 	}
 }
