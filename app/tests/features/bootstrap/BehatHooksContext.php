@@ -44,35 +44,35 @@ class BehatHooksContext extends BasePortalContext
     /**
      * @BeforeSuite
      */
-    public static function deleteCacheFolder(BeforeSuiteScope $scope)
-    {
-        $cache = self::getCacheDir();
-
-        $fs = new Filesystem();
-        if (is_dir($cache)) {
-            $fs->remove($cache);
-        }
-        $fs->mkdir($cache, 0777);
-        $fs->mkdir($cache . '/annotations', 0777);
-        print "made new test folder " . (time() - (int)DP_TESTS_START_TIME) . " seconds in";
-    }
-
-    /**
-     * @BeforeScenario
-     */
-    public function warmupCache()
-    {
-        if (!self::$warmed_up_cache) {
-            $this->getContainer()->get('dataset_manager')->install('empty');
-
-            $warmer = $this->getContainer()->get('cache_warmer');
-            //$warmer->enableOptionalWarmers();
-            $warmer->warmUp(self::getCacheDir());
-            self::$warmed_up_cache = true;
-
-            print "finished warming cache " . (time() - (int)DP_TESTS_START_TIME) . " seconds in";
-        }
-    }
+    // removed due to speed issues while developing
+    //public static function deleteCacheFolder(BeforeSuiteScope $scope)
+    //{
+    //    $cache = self::getCacheDir();
+    //
+    //    $fs = new Filesystem();
+    //    if (is_dir($cache)) {
+    //        $fs->remove($cache);
+    //    }
+    //    $fs->mkdir($cache, 0777);
+    //    $fs->mkdir($cache . '/annotations', 0777);
+    //    print "made new test folder " . (time() - (int)DP_TESTS_START_TIME) . " seconds in";
+    //}
+    ///**
+    // * @BeforeScenario
+    // */
+    //public function warmupCache()
+    //{
+    //    if (!self::$warmed_up_cache) {
+    //        $this->getContainer()->get('dataset_manager')->install('empty');
+    //
+    //        $warmer = $this->getContainer()->get('cache_warmer');
+    //        //$warmer->enableOptionalWarmers();
+    //        $warmer->warmUp(self::getCacheDir());
+    //        self::$warmed_up_cache = true;
+    //
+    //        print "finished warming cache " . (time() - (int)DP_TESTS_START_TIME) . " seconds in";
+    //    }
+    //}
 
     /**
      * @return string
