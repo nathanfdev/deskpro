@@ -1,0 +1,46 @@
+imports:
+    - { resource: config.shared.php }
+
+# Keeping all parameter changes here rather than in various bundles
+parameters:
+  router.options.matcher.cache_class: null
+  portal.session.name: sess_data
+  doctrine.orm.proxy_dir: %kernel.cache_dir%/../../doctrine-proxies
+
+framework:
+    esi:             { enabled: true }
+    fragments:       { path: /_proxy }
+    #translator:      { fallback: "%locale%" }
+    secret:          "irrelevant - compiler pass will override this"
+    router:
+        resource: "%kernel.root_dir%/config/apiv2_routing.yml"
+        strict_requirements: ~
+    form:            ~
+    csrf_protection: ~
+    validation:      { enable_annotations: false }
+    templating:
+        engines: ['twig']
+    default_locale:  "%locale%"
+    trusted_hosts:   ~
+    trusted_proxies:
+        - 127.0.0.1
+    session: ~
+#        handler_id:  session.handler.dbal
+    fragments:       ~
+    http_method_override: true
+
+fos_rest:
+    body_converter:
+        enabled: true
+    routing_loader:
+        default_format: json
+
+sensio_framework_extra:
+    cache:    { annotations: true }
+    security:    { annotations: true }
+
+white_october_pagerfanta:
+    default_view: deskpro
+    exceptions_strategy:
+        out_of_range_page:        to_http_not_found
+        not_valid_current_page:   to_http_not_found

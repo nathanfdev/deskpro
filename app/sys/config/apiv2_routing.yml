@@ -1,0 +1,3 @@
+api_routes:
+    resource: "@ApiV2Bundle/Resources/config/routing_apiv2.yml"
+    prefix: /api/v2

@@ -1,0 +1,2 @@
+_main:
+    resource: apiv2_routing.yml
