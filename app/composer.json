@@ -56,7 +56,9 @@
 		"behat/mink-extension": "~2.0@dev",
 		"behat/mink-browserkit-driver": "~1.1",
 		"vipsoft/code-coverage-extension": "*@dev",
-		"sensiolabs/behat-page-object-extension": "2.0.*@dev"
+		"sensiolabs/behat-page-object-extension": "2.0.*@dev",
+		"friendsofsymfony/rest-bundle": "~1.5",
+		"jms/serializer-bundle": "0.13.*"
 	},
 	"preferred-install": "dist"
 }
