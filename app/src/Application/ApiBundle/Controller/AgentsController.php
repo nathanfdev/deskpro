@@ -146,7 +146,7 @@ class AgentsController extends AbstractController implements ProtectedController
             throw $this->createNotFoundException();
         }
 
-        $serializer = $this->getContainer()->getSystemService('serializer');
+        $serializer = $this->getContainer()->getSerializer();
         $agent_data = $serializer->serialize($agent);
 
         $agent_data['teams'] = array();
@@ -271,13 +271,13 @@ class AgentsController extends AbstractController implements ProtectedController
             );
         }
 
-        if (isset($agent_postdata['primary_phone_number_text'])) {
-            $phone_number = $agent_postdata['primary_phone_number_text'];
+        if (isset($agent_postdata['primary_phone']['number'])) {
+            $phone_number = $agent_postdata['primary_phone']['number'];
             if (!PhoneNumbers::looksEmpty($phone_number)) {
                 if (!PhoneNumbers::isValid($phone_number)) {
                     return $this->createApiErrorInfoResponse('invalid_phone_number',
                         'Invalid phone number format.',
-                        array( 'primary_phone_number_text' => $phone_number ));
+                        array( 'primary_phone' => $phone_number ));
                 }
             }
         }

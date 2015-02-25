@@ -75,11 +75,6 @@ class EditAgent
     public $emails;
 
     /**
-     * @var string
-     */
-    public $primary_phone_number_text;
-
-    /**
      * @var \Application\DeskPRO\Entity\AgentTeam[]
      */
     public $teams;
@@ -108,8 +103,7 @@ class EditAgent
         $this->agent = $person;
         $this->name = $person->name;
         $this->override_name = $person->override_display_name;
-        $this->primary_phone_number = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
-        $this->primary_phone_number_text = $person->getPrimaryPhoneNumberText();
+        $this->primary_phone = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
 
         $this->zones = array();
         if ($person->can_admin) {
@@ -170,9 +164,8 @@ class EditAgent
         $agent->name                  = $this->name;
         $agent->override_display_name = $this->override_name ?: '';
 
-        if (!PhoneNumbers::looksEmpty($this->primary_phone_number_text)) {
-            $this->primary_phone_number->number = $this->primary_phone_number_text;
-            $agent->setPrimaryPhoneNumber($this->primary_phone_number);
+        if (!PhoneNumbers::looksEmpty($this->primary_phone['number'])) {
+            $agent->setPrimaryPhoneNumber($this->primary_phone);
         } else {
             $agent->setPrimaryPhoneNumber(null);
         }

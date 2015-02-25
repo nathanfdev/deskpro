@@ -82,7 +82,7 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
     protected $region;
 
     /**
-     * @var int see Orb\Utils\PhoneNumbers constants for the meanings of the ints stored here
+     * @var int see Orb\Util\PhoneNumbers constants for the meanings of the ints stored here
      */
     protected $guessed_type;
 
@@ -105,31 +105,6 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
     public function getId()
     {
         return $this->id;
-    }
-
-
-    /**
-     * We do logic here (with the help of Google's libphonenumber) to
-     * get the region code, and validate/format the number.
-     *
-     * @param string $number
-     */
-    public function setNumber($number)
-    {
-        if (!PhoneNumbers::isValid($number)) {
-            throw new \InvalidArgumentException("Phone number is invalid");
-        }
-
-        $region = PhoneNumbers::getRegionForNumber($number);
-        $formatted = PhoneNumbers::toE164Format($number);
-        if ($region && $formatted) {
-            $guessed_type = PhoneNumbers::getTypeCode($formatted);
-            $this->setRegion($region);
-            $this->setModelField('number', $formatted);
-            $this->setModelField('guessed_type', $guessed_type);
-        } else {
-            throw new \InvalidArgumentException("Phone number is invalid - couldn't extract region information");
-        }
     }
 
     /**

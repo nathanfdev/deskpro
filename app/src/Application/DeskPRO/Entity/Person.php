@@ -2675,9 +2675,8 @@ class Person extends DomainObject implements HighlightableModelInterface
             );
         }
 
-        $data['primary_phone_number_text'] = $this->getPrimaryPhoneNumberText();
-        $data['primary_phone_number_region'] = $this->getPrimaryPhoneNumberRegion();
-
+	    $pp = $this->getPrimaryPhoneNumber();
+        $data['primary_phone'] = $pp ? $pp->toApiData() : array();
 
         $data['emails'] = array();
         foreach ($this->emails as $eml) {

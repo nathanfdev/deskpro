@@ -184,8 +184,11 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 		contactEditor.on('click', '.add-trigger', function(ev) {
 			var rowTypeEl = $(this).closest('.row-type');
 
-			var tpl = DeskPRO_Window.util.getPlainTpl($('.tpl-new-row', rowTypeEl));
+			var tpl = DeskPRO_Window.util.getPlainTpl($('.tpl-new-row', rowTypeEl)),
+					index = $('ul', rowTypeEl).children().length;
 			tpl = tpl.replace(/%id%/g, Orb.uuid());
+			// symfony form support
+			tpl = tpl.replace(/__name__/g, index);
 
 			var el = $(tpl);
 			el.addClass('new');

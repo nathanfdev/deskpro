@@ -53,8 +53,8 @@ class AgentProfileValidator extends AbstractValidator
     {
         $this->profile = $profile;
 
-        if (!PhoneNumbers::looksEmpty($this->profile->primary_phone_number_text)) {
-            if (!PhoneNumbers::isValid($this->profile->primary_phone_number_text)) {
+        if (!PhoneNumbers::looksEmpty($this->profile->primary_phone['number'])) {
+            if (!PhoneNumbers::isValid($this->profile->primary_phone['number'])) {
                 $this->addError('phone_number.invalid');
             }
         }
