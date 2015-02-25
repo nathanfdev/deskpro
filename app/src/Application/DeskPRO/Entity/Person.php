@@ -1800,6 +1800,13 @@ class Person extends DomainObject implements HighlightableModelInterface
         if (!$this->primary_email && $this->emails->count() < 1) {
             $this->setModelField('primary_email', $email);
         }
+
+	    foreach ($this->emails as $old) {
+		    if ($email->email === $old->email) {
+			    return $email;
+		    }
+	    }
+
         $this->emails->add($email);
         $this->_onPropertyChanged('emails', $this->emails, $this->emails);
 

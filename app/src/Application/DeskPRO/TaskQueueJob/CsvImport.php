@@ -36,6 +36,7 @@ namespace Application\DeskPRO\TaskQueueJob;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonContactData;
 
 class CsvImport extends AbstractJob
 {
@@ -94,6 +95,7 @@ class CsvImport extends AbstractJob
             'field_maps' => false,
             'new_custom_map' => false,
             'skip_first' => true,
+	        'update_if_exists' => true,
             'welcome_email' => false,
             'welcome_from_name' => '',
             'welcome_from_email' => '',
@@ -143,7 +145,7 @@ class CsvImport extends AbstractJob
         $complete = false;
         $imported = 0;
 
-        while (microtime(true) - $start_time < $max_time) {
+        while (1 || microtime(true) - $start_time < $max_time) {
             if (feof($fp)) {
                 $complete = true;
                 break;
@@ -257,6 +259,7 @@ class CsvImport extends AbstractJob
         $secondary_emails = array();
         $addresses = array();
         $errors = array();
+	    $old = null;
 
         foreach ($field_maps AS $column_id => $info) {
             if (empty($info['map'])) {
@@ -284,9 +287,12 @@ class CsvImport extends AbstractJob
                     continue;
                 }
 
-                if ($person_em->findOneByEmail($column_value)) {
-                    $errors[] = sprintf('Email %s already exist', $column_value);
-                    continue;
+                if ($old = $person_em->findOneByEmail($column_value)) {
+	                if (!$this->_data['update_if_exists']) {
+		                $errors[] = sprintf('Email %s already exist', $column_value);
+		                continue;
+	                }
+	                $person = $old;
                 }
 
                 $primary_email = strtolower($column_value);
@@ -299,9 +305,12 @@ class CsvImport extends AbstractJob
                     $errors[] = sprintf('Email %s already exist', $column_value);
                     break;
                 }
-                if ($person_em->findOneByEmail($column_value)) {
-                    $errors[] = sprintf('Email %s already exist', $column_value);
-                    break;
+                if ($old = $person_em->findOneByEmail($column_value)) {
+	                if (!$this->_data['update_if_exists']) {
+		                $errors[] = sprintf('Email %s already exist', $column_value);
+		                break;
+	                }
+	                $person = $old;
                 }
 
                 $secondary_emails[] = strtolower($column_value);
@@ -312,20 +321,20 @@ class CsvImport extends AbstractJob
             $primary_email = array_shift($secondary_emails);
         }
 
-        if (!$primary_email) {
+        if (!$primary_email && !$person['id']) {
             $this->log($errors);
-
             return false;
         }
 
-        $person->addEmailAddressString($primary_email);
+	    $emails = array_flip($person->getEmailAddresses());
+        !isset($emails[$primary_email]) && $person->addEmailAddressString($primary_email);
 
         array_unique($secondary_emails);
         foreach ($secondary_emails AS $secondary_email) {
             if ($secondary_email == $primary_email) {
                 continue;
             }
-            $person->addEmailAddressString($secondary_email);
+	        !isset($emails[$secondary_email]) && $person->addEmailAddressString($secondary_email);
         }
 
         foreach ($field_maps AS $column_id => $info) {
@@ -407,6 +416,17 @@ class CsvImport extends AbstractJob
                     }
                     $addresses[$info['label']][$map_field] = $column_value;
                     break;
+
+	            case 'language':
+					$language = is_numeric($column_value)
+						? $em->find('DeskPRO:Language', $column_value)
+						: $em->getRepository('DeskPRO:Language')->getByTitle($column_value);
+
+					if ($language) {
+						$person->language = $language;
+					}
+
+		            break;
 
                 default:
                     $custom_field_id = false;
@@ -548,8 +568,17 @@ class CsvImport extends AbstractJob
         $contact = new \Application\DeskPRO\Entity\PersonContactData();
         $contact->contact_type = $type;
         $contact->applyFormData($data);
-        $contact->person = $person;
 
+
+	    foreach ($person->contact_data as $cd) {
+		    // todo?
+		    /** @var $cd PersonContactData */
+		    if (mb_strtolower($cd->getSearchString()) === mb_strtolower($contact->getSearchString())) {
+			    return;
+		    }
+	    }
+
+	    $contact->person = $person;
         App::getOrm()->persist($contact);
 
         return $contact;

@@ -127,4 +127,12 @@ class Language extends AbstractEntityRepository
             throw $e;
         }
     }
+
+	public function getByTitle($title)
+	{
+		return $this->getEntityManager()->createQuery('
+				SELECT l FROM DeskPRO:Language l
+				WHERE l.sys_name = :title OR LOWER(l.title) = :title
+			')->setParameter('title', mb_strtolower(trim($title)))->getOneOrNullResult();
+	}
 }
