@@ -44,40 +44,44 @@ class Build1424444388 extends AbstractBuild
     {
         $this->out("Migrate Phone Numbers");
 
-	    $limit = 100;
-	    $offset = 0;
+        $limit = 100;
+        $offset = 0;
 
-	    $sq = '
-	        select * from people_contact_data
-	        where contact_type = "phone" or contact_type = "mobile" or contact_type = "fax"
-	        limit %d, %d
-	        ';
-	    $em = $this->container->getEm();
-	    $ff = $this->container->getFormFactory();
+        $sq = '
+            select * from people_contact_data
+            where contact_type = "phone" or contact_type = "mobile" or contact_type = "fax"
+            limit %d, %d
+        ';
+        $em = $this->container->getEm();
+        $ff = $this->container->getFormFactory();
 
-	    while ($rows = $em->getConnection()->fetchAll(sprintf($sq, $offset, $limit))) {
+        $remove = array();
 
-		    foreach ($rows as $row) {
-			    $phone = new PhoneNumber();
-			    $form = $ff->create(new PhoneNumberType(), $phone);
-			    $form->submit(array('number' => '+' . preg_replace('/[^0-9]/', '', $row['field_10'])));
+        while ($rows = $em->getConnection()->fetchAll(sprintf($sq, $offset, $limit))) {
 
-			    if ($form->isValid()) {
-				    $remove[] = $row['id'];
-				    $phone->person = $em->getReference('DeskPRO:Person', $row['person_id']);
-				    $em->persist($phone);
-				    $em->flush();
-			    }
-		    }
+            foreach ($rows as $row) {
+                $phone = new PhoneNumber();
+                $form = $ff->create(new PhoneNumberType(), $phone);
+                $form->submit(array('number' => '+' . preg_replace('/[^0-9]/', '', $row['field_10'])));
 
-		    $offset += $limit;
-		    $em->clear();
-	    }
+                if ($form->isValid()) {
+                    $remove[] = $row['id'];
+                    $phone->person = $em->getReference('DeskPRO:Person', $row['person_id']);
+                    $em->persist($phone);
+                    $em->flush();
+                }
+            }
 
-	    $em->getConnection()->executeQuery(
-		    'delete from people_contact_data where id in (:ids)',
-		    array('ids' => $remove),
-		    array('ids' => Connection::PARAM_INT_ARRAY)
-	    );
+            $offset += $limit;
+            $em->clear();
+        }
+
+        if ($remove) {
+            $em->getConnection()->executeQuery(
+                'delete from people_contact_data where id in (:ids)',
+                array('ids' => $remove),
+                array('ids' => Connection::PARAM_INT_ARRAY)
+            );
+        }
     }
 }
