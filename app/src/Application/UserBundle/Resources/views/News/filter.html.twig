@@ -37,8 +37,6 @@
 	<div style="position:absolute; top: 6px; right: 8px; z-index: 10;">
 		{% if category %}
 			<a title="{{ app.getSetting('core.deskpro_name') }}: {{ category.full_title }}" href="{{ url('user_news', {slug: category.url_slug, _format: 'rss'}) }}" target="_blank"><img src="{{ asset('images/feed.png') }}" alt="RSS Feed" /></a>
-		{% else %}
-			<a title="{{ app.getSetting('core.deskpro_name') }}" href="{{ url('user_news_home', {_format: 'rss'}) }}" target="_blank"><img src="{{ asset('images/feed.png') }}" alt="RSS Feed" /></a>
 		{% endif %}
 	</div>
 {% endblock %}
@@ -53,10 +51,16 @@
 {% endblock %}
 {% block content %}
 
-<section class="dp-portal-section dp-new-feedback-section">
+<section class="dp-portal-section dp-new-feedback-section" style="position: relative;">
 	<header>
 		<h1>{{ phrase('user.news.title') }}</h1>
 	</header>
+
+	{% if not category %}
+		<div style="position:absolute; top: 6px; right: 8px; z-index: 10;">
+			<a title="{{ app.getSetting('core.deskpro_name') }}" href="{{ url('user_news_home', {_format: 'rss'}) }}" target="_blank"><img src="{{ asset('images/feed.png') }}" alt="RSS Feed" /></a>
+		</div>
+	{% endif %}
 </section>
 
 <section class="dp-portal-section dp-feedback-section">

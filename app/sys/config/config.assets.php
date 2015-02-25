@@ -516,6 +516,8 @@ $CONFIG['user_vendors'] = array(
         'vendor/mootools/mootools-core.min.js',
         'vendor/PIE/PIE.js',
         'vendor/bootstrap/bootstrap-custom.js',
+
+	    'vendor/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js',
     )
 );
 
@@ -556,7 +558,6 @@ $CONFIG['agent_interface_css1'] = array(
         'stylesheets-less/agent/overlayCreateTicket.less',
         'stylesheets-less/agent/dp-source-pane.less',
         'stylesheets-less/agent/dp-list-pane.less',
-        'vendor/bootstrap-datetimepicker-master/build/build_standalone.less',
     )
 );
 
@@ -600,5 +601,7 @@ $CONFIG['agent_vendors_css'] = array(
         'vendor/bootstrap/css/modal.css',
         'vendor/bootstrap/css/dropdown.css',
         'vendor/bootstrap/css/table.css',
+
+	    'vendor/bootstrap-datetimepicker-master/build/build_standalone.css',
     )
 );

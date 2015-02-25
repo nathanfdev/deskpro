@@ -25,7 +25,44 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-return array(
-	'adm.usersources.error_last_usersource_agent' => 'You cannot disable the last agent usersource.',
-	'adm.usersources.error_last_usersource' => 'You cannot disable the last usersource.',
-);
+namespace Application\DeskPRO\Form\Transformer;
+
+use Orb\Util\PhoneNumbers;
+use Symfony\Component\Form\DataTransformerInterface;
+
+class PhoneNumberModelTransformer implements DataTransformerInterface
+{
+	public function transform($number)
+	{
+		return $number;
+	}
+
+	/**
+	 * Transforms a string (number) to an object (issue).
+	 *
+	 * @param  string $number
+	 *
+	 * @return Issue|null
+	 *
+	 * @throws TransformationFailedException if object (issue) is not found.
+	 */
+	public function reverseTransform($number)
+	{
+		if (!$number) {
+			return null;
+		}
+
+		try {
+			if (!$formatted = PhoneNumbers::toE164Format($number)) {
+				return null;
+			}
+			if (!$region = PhoneNumbers::getRegionForNumber($number)) {
+				return null;
+			}
+		} catch (\Exception $e) {
+			return null;
+		}
+
+		return $formatted;
+	}
+}

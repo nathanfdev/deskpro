@@ -438,7 +438,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			onItemClicked: function(info) {
 				var itemEl = $(info.itemEl), action = itemEl.data('action');
 
-				if (action == 'reset-password') {
+				if (action == 'set-password') {
 					DeskPRO_Window.showPrompt(
 						'<div>Enter a new password. The user will be notified.</div>',
 						function(val, wrap) {
@@ -466,6 +466,24 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 							});
 						}
 					);
+				} else if (action == 'reset-password') {
+
+					DeskPRO_Window.showConfirm(
+							self.getEl('reset_password_confirm'),
+							function() {
+								$.ajax({
+									url: BASE_URL + 'agent/login/send-lost.json',
+									type: 'POST',
+									data: { email: self.meta.person.email },
+									dataType: 'json'
+								});
+								self.closeSelf();
+							},
+							null,
+							null, null,
+							400, 260
+					);
+
 				} else if (action == 'delete') {
 					var el = self.getEl('delete_confirm');//.clone();
 					DeskPRO_Window.showConfirm(

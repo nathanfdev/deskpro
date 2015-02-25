@@ -506,12 +506,12 @@ class PersonSearch extends SearcherAbstract
 
                     if (is_array($choice) && isset($choice['phone'])) $choice = $choice['phone'];
 
-                    $choice = preg_replace('#[^0-9A-Za-z]#', '', $choice);
+                    $choice = preg_replace('#[^0-9]#', '', $choice);
                     $joins[] = array(
-                        'people_contact_data',
-                        "LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.contact_type = 'phone')"
+                        'phone_numbers',
+                        "JOIN phone_numbers AS $join_name ON ($join_name.person_id = people.id)"
                     );
-                    $wheres[] = $this->_stringMatch("$join_name.field_10", $op, $choice, false, true);
+                    $wheres[] = $this->_stringMatch("$join_name.number", $op, $choice, false, true);
 
                     break;
 
@@ -983,10 +983,8 @@ class PersonSearch extends SearcherAbstract
 
                 case self::TERM_CONTACT_ADDRESS:
                 case self::TERM_CONTACT_IM:
-                case self::TERM_CONTACT_PHONE:
                     if ($term == self::TERM_CONTACT_ADDRESS) $field = 'addresss';
                     if ($term == self::TERM_CONTACT_IM)      $field = 'instant_message';
-                    if ($term == self::TERM_CONTACT_PHONE)   $field = 'phone';
 
                     $any = false;
                     foreach ($person->getContactData($field) as $cd) {
@@ -1002,6 +1000,23 @@ class PersonSearch extends SearcherAbstract
                         return false;
                     }
                     break;
+
+	            case self::TERM_CONTACT_PHONE:
+					$any = false;
+					foreach ($person->phone_numbers as $pn) {
+						/** @var $pn Entity\PhoneNumber */
+						if (substr($pn['number'], 0, 1) === preg_replace('/[^0-9]/', '', $choice)) {
+							$any = true;
+							if ($op == self::OP_NOTCONTAINS) {
+								return false;
+							}
+						}
+					}
+		            if ($op == self::OP_CONTAINS AND !$any) {
+			            return false;
+		            }
+
+		            break;
 
                 case self::TERM_LABEL:
 

@@ -41,11 +41,14 @@ use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\Log\Event\UserMerged;
 use Application\DeskPRO\Mail\Mailer;
 use Orb\Util\Arrays;
+use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -141,6 +144,15 @@ class PersonController extends AbstractController
             }
             $contact_data[$cd->contact_type][] = $cd->getTemplateVars();
         }
+
+	    $contact_data['phone_numbers'] = $this->createForm('collection', $person->phone_numbers, array(
+		    'type' => new PhoneNumberType(),
+		    'allow_add' => true,
+		    'allow_delete' => true,
+		    'options' => array(
+			    'label' => false
+		    ),
+	    ))->createView();
 
         $session = $this->em->getRepository('DeskPRO:Session')->getSessionForPerson($person);
         if ($session) {
@@ -849,7 +861,7 @@ class PersonController extends AbstractController
     # save-contact-data
     ############################################################################
 
-    public function saveContactDataAction($person_id)
+    public function saveContactDataAction(Request $request, $person_id)
     {
         $person = $this->getPersonOr404($person_id);
 
@@ -871,6 +883,15 @@ class PersonController extends AbstractController
             $contact_data_array[$cd->contact_type][$cd->getId()] = $cd->getTemplateVars();
         }
         $added = array();
+
+	    $phones_form = $this->createForm('collection', $person->phone_numbers, array(
+		    'type' => new PhoneNumberType(),
+		    'allow_add' => true,
+		    'allow_delete' => true,
+		    'options' => array(
+			    'label' => false
+		    ),
+	    ));
 
         try {
 
@@ -985,8 +1006,25 @@ class PersonController extends AbstractController
             throw $e;
         }
 
+	    $phones_form->handleRequest($request);
+	    if ($phones_form->isValid()) {
+		    foreach ($phones_form->getData() as $phone) {
+			    if ($phone->person) continue;
+			    $phone->person = $person;
+			    $this->em->persist($phone);
+		    }
+		    $this->em->flush();
+	    } else {
+		    foreach ($phones_form->getErrors(true, true) as $error) {
+			    /** @var $error FormError */
+			    $errors[] = $error->getMessage();
+		    }
+	    }
+
         // Reset display array
-        $contact_data_array = array();
+        $contact_data_array = array(
+	        'phone_numbers' => $phones_form->createView(),
+        );
         foreach ($person->contact_data as $cd) {
             if (!isset($contact_data_array[$cd->contact_type])) {
                 $contact_data_array[$cd->contact_type] = array();

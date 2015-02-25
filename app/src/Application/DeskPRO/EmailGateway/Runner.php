@@ -846,6 +846,8 @@ class Runner
                 return new Fetcher\Imap($account, 20971520);
             case 'exchange':
                 return new Fetcher\Exchange($account, 20971520);
+	        case 'office365':
+		        return new Fetcher\Pop3($account, 20971520);
             case 'noop':
             case 'null':
                 return new Fetcher\Noop($account);

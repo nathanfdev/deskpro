@@ -297,9 +297,9 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
               postData.date_valid_dow.push(day)
 
           if formTypeOpts.user_validation == 'required'
-            postData.validation_type = 'required'
+            postData.required = true
           if formTypeOpts.agent_validation == 'required'
-            postData.agent_validation_type = 'required'
+            postData.agent_required = true
 
           if formTypeOpts.valid_dates_mode == 'date'
             postData.date_valid_type = 'date'
