@@ -240,7 +240,25 @@ class KernelBooter
 			define('DP_INTERFACE', 'billing');
 		} elseif (preg_match('#^/reports(/|\?|$)#', $path)) {
 			define('DP_INTERFACE', 'reports');
-		} elseif (preg_match('#^/api(/|\?|$)#', $path)) {
+		} elseif (preg_match('#^/api/v2(/|\?|$)#', $path)) {
+            define('DP_INTERFACE', 'apiv2');
+
+            self::bootstrapLib($debug);
+            self::bootstrapEnv();
+            require_once DP_ROOT . "/sys/Kernel/ApiV2Kernel.php";
+            $kernel = new ApiV2Kernel($env, $debug);
+
+            if ('dev' === $env) {
+                Debug::enable();
+            }
+
+            $request = Request::createFromGlobals();
+            $response = $kernel->handle($request);
+            $response->send();
+            $kernel->terminate($request, $response);
+            exit;
+
+        } elseif (preg_match('#^/api(/|\?|$)#', $path)) {
 			define('DP_INTERFACE', 'api');
 		} elseif (preg_match('#^/install(/|\?|$)#', $path)) {
 
@@ -774,7 +792,7 @@ class KernelBooter
                 self::bootstrapConfig();
 
                 if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
-                    $env   = 'dev';
+                    $env = 'dev';
                     $debug = true;
                 }
 
@@ -782,13 +800,40 @@ class KernelBooter
                 self::bootstrapEnv();
 
                 $input = new ArgvInput();
-                $env   = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ? : 'dev');
+                $env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
                 $debug = getenv('SYMFONY_DEBUG') !== '0' && !$input->hasParameterOption(
                         array('--no-debug', '')
                     ) && $env !== 'prod';
 
                 require_once DP_ROOT . '/sys/Kernel/PortalKernel.php';
                 $kernel = new PortalKernel($env, $debug);
+
+                $app = new Application($kernel);
+
+                libxml_disable_entity_loader(false); // needed on some machines
+
+                return $app->run($input);
+            }
+
+            if ($other_kernel == 'apiv2') {
+                self::bootstrapConfig();
+
+                if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
+                    $env = 'dev';
+                    $debug = true;
+                }
+
+                self::bootstrapLib($debug);
+                self::bootstrapEnv();
+
+                $input = new ArgvInput();
+                $env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'dev');
+                $debug = getenv('SYMFONY_DEBUG') !== '0' && !$input->hasParameterOption(
+                        array('--no-debug', '')
+                    ) && $env !== 'prod';
+
+                require_once DP_ROOT . '/sys/Kernel/ApiV2Kernel.php';
+                $kernel = new ApiV2Kernel($env, $debug);
 
                 $app = new Application($kernel);
 
