@@ -50,6 +50,7 @@ use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
+use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
@@ -3396,7 +3397,7 @@ class TicketController extends AbstractController
         ));
     }
 
-    public function newSaveAction()
+    public function newSaveAction(Request $request)
     {
         if (!$this->person->hasPerm('agent_tickets.create')) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -3493,13 +3494,13 @@ class TicketController extends AbstractController
                 }
             }
 
-            if (!$this->in->getString('newticket.subject')) {
+            if (!$request->get('newticket[subject]', null, true)) {
                 $errors['subject'] = true;
             }
-            if (!$this->in->getString('newticket.message')) {
+            if (!$request->get('newticket[message]', null, true)) {
                 $errors['message'] = true;
             }
-            if (!$this->in->getString('newticket.department_id')) {
+            if (!$request->get('newticket[department_id]', null, true)) {
                 $errors['department_id'] = true;
             }
 
