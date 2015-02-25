@@ -63,6 +63,7 @@
     'user.profile.register_password_require_num_symbol'           => 'At least {{count}} symbol|At least {{count}} symbols',
     'user.profile.register_password_unused'            => 'You cannot use a password you have used before',
     'user.profile.register_password_mismatch'          => 'The two password fields did not match.',
+	'user.profile.register_password_short'             => 'The password is too short',
     'user.profile.remove_email_address'                => 'Remove email address',
     'user.profile.remove_your_current_picture'         => 'Remove your current picture',
     'user.profile.repeat_password'                     => 'Repeat Password',
