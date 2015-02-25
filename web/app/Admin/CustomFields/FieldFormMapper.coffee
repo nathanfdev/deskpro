@@ -247,7 +247,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
             postData.max_length = formTypeOpts.max_length
           else if formTypeOpts.user_validation == 'regex'
             postData.validation_type = 'regex'
-            postData.regex = formTypeOpts.validation_regex
+            postData.regex = formTypeOpts.regex
 
           if formTypeOpts.agent_validation == 'required'
             postData.agent_validation_type = 'required'
