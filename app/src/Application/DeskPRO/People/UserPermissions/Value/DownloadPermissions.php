@@ -45,7 +45,6 @@ class DownloadPermissions implements PermissionValueInterface
     /** @var bool  */
     public $no_comment_validate = false;
 
-
     public function getNames()
     {
         return array(

@@ -39,7 +39,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
  * dpdev:compile-js
  *
@@ -70,7 +69,7 @@ class AsseticCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         if ($packs == 'ALL' || $input->getOption('regex')) {
             if ($input->getOption('regex')) {
                 foreach ($assetic_manager->getAllBundleNames() as $k) {
-                    $match = preg_match('#' . $packs . '#', $k);
+                    $match = preg_match('#'.$packs.'#', $k);
                     if ($input->getOption('not') && !$match) {
                         $bundles[] = $k;
                     } elseif (!$input->getOption('not') && $match) {
@@ -99,7 +98,7 @@ class AsseticCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
                     $assetic_manager->writeBuildFileIfStale($name);
                 }
             } catch (\Exception $e) {
-                $msg = substr($e->getMessage(), 0, 550) . "\n... (truncated)";
+                $msg = substr($e->getMessage(), 0, 550)."\n... (truncated)";
                 $output->writeln("<error>Exception: $msg");
 
                 return 1;

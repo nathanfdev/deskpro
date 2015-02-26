@@ -55,14 +55,14 @@ class NewFeedback extends AbstractType
             'type' => 'hidden',
             'required' => false,
             'allow_add' => true,
-            'allow_delete' => true
+            'allow_delete' => true,
         ));
 
         $builder->add('attach_ids', 'collection', array(
             'type' => 'hidden',
             'required' => false,
             'allow_add' => true,
-            'allow_delete' => true
+            'allow_delete' => true,
         ));
     }
 

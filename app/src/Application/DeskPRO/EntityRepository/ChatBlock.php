@@ -49,7 +49,7 @@ class ChatBlock extends AbstractEntityRepository
      */
     public function getBlockForVisitor(VisitorEntity $visitor = null)
     {
-        $datecut = new \DateTime('-' . self::BLOCK_TIMEOUT . ' seconds');
+        $datecut = new \DateTime('-'.self::BLOCK_TIMEOUT.' seconds');
 
         if ($visitor) {
             $block = $this->_em->createQuery("
@@ -68,14 +68,13 @@ class ChatBlock extends AbstractEntityRepository
         return $block;
     }
 
-
     /**
      * @param  string                                $ip_address
      * @return \Application\DeskPRO\Entity\ChatBlock
      */
     public function getBlockForIp($ip_address)
     {
-        $datecut = new \DateTime('-' . self::BLOCK_TIMEOUT . ' seconds');
+        $datecut = new \DateTime('-'.self::BLOCK_TIMEOUT.' seconds');
 
         $block = $this->_em->createQuery("
             SELECT b
@@ -85,7 +84,6 @@ class ChatBlock extends AbstractEntityRepository
 
         return $block;
     }
-
 
     /**
      * @param  string                              $ip_address
@@ -99,7 +97,7 @@ class ChatBlock extends AbstractEntityRepository
             $visitor_id = $visitor->getId();
         }
 
-        $datecut = new \DateTime('-' . self::BLOCK_TIMEOUT . ' seconds');
+        $datecut = new \DateTime('-'.self::BLOCK_TIMEOUT.' seconds');
         $blocked = $this->_em->getConnection()->fetchColumn("
             SELECT id FROM chat_blocks
             WHERE (visitor_id = ? OR ip_address = ?) AND date_created > ?
@@ -108,7 +106,6 @@ class ChatBlock extends AbstractEntityRepository
         return $blocked ? true : false;
     }
 
-
     /**
      * Deletes blocks older than BLOCK_TIMEOUT
      *
@@ -116,7 +113,7 @@ class ChatBlock extends AbstractEntityRepository
      */
     public function cleanupBlocks()
     {
-        $datecut = new \DateTime('-' . self::BLOCK_TIMEOUT . ' seconds');
+        $datecut = new \DateTime('-'.self::BLOCK_TIMEOUT.' seconds');
         $count = $this->_em->getConnection()->executeUpdate("
             DELETE FROM chat_blocks
             WHERE date_created < ?

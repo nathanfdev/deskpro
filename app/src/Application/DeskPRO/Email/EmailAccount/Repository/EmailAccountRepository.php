@@ -58,7 +58,6 @@ class EmailAccountRepository
      */
     private $disabled_accounts;
 
-
     /**
      * @param EntityManager $em
      */
@@ -67,13 +66,14 @@ class EmailAccountRepository
         $this->em = $em;
     }
 
-
     /**
      * Loads account info from the db
      */
     private function preload()
     {
-        if ($this->accounts !== null) return;
+        if ($this->accounts !== null) {
+            return;
+        }
 
         $this->enabled_accounts  = array();
         $this->disabled_accounts = array();
@@ -121,7 +121,7 @@ class EmailAccountRepository
     }
 
     /**
-     * @param int $id
+     * @param  int                                           $id
      * @return \Application\DeskPRO\Entity\EmailAccount|null
      */
     public function getAccount($id)

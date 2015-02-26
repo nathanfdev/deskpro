@@ -62,10 +62,9 @@ class AgentChatController extends AbstractController
 
         return $this->createJsonResponse(array(
             'conversation_id' => $info['conversation']['id'],
-            'new_message_id'  => $info['chat_message']['id']
+            'new_message_id'  => $info['chat_message']['id'],
         ));
     }
-
 
     /**
      * Sending an agent message is less formal in that we automatically
@@ -87,7 +86,7 @@ class AgentChatController extends AbstractController
         return $this->createJsonResponse(array(
             'conversation_id' => $info['conversation']['id'],
             'new_message_id'  => $info['new_message']['id'],
-            'time' => $time
+            'time' => $time,
         ));
     }
 
@@ -124,13 +123,13 @@ class AgentChatController extends AbstractController
                 'agent_id'   => $sess->person['id'],
                 'agent_name' => $sess->person['display_name'],
                 'agent_short_name' => $sess->person->getDisplayContactShort(4),
-                'picture_url' => $sess->person->getPictureUrl(10)
+                'picture_url' => $sess->person->getPictureUrl(10),
             );
         }
 
         return $this->createJsonResponse(array(
             'agent_info'    => $agent_info,
-            'online_agents' => $online_agents
+            'online_agents' => $online_agents,
         ));
     }
 
@@ -148,7 +147,7 @@ class AgentChatController extends AbstractController
         $conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getRecentForPeople($find_agent_ids, $date_cut);
         if (!$conversation) {
             return $this->createJsonResponse(array(
-                'messages' => array()
+                'messages' => array(),
             ));
         }
 
@@ -169,7 +168,7 @@ class AgentChatController extends AbstractController
                 'id'       => $message->id,
                 'agent_id' => $message->author ? $message->author->id : 0,
                 'message'  => $message->content,
-                'time'     => $date->format($this->settings->get('core.date_time'))
+                'time'     => $date->format($this->settings->get('core.date_time')),
             );
         }
 
@@ -210,7 +209,7 @@ class AgentChatController extends AbstractController
             $agent = $this->em->find('DeskPRO:Person', $agent_id);
             $conversations = $this->em->getRepository('DeskPRO:ChatConversation')->getChatsForPeople(array(
                 $this->person['id'],
-                $agent['id']
+                $agent['id'],
             ));
         } else {
             $agent = null;

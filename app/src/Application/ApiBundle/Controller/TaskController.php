@@ -174,12 +174,12 @@ class TaskController extends AbstractController
             'is_completed' => TaskSearch::TERM_IS_COMPLETED,
             'person_id' => TaskSearch::TERM_PERSON_ID,
             'title' => TaskSearch::TERM_TITLE,
-            'visibility' => TaskSearch::TERM_VISIBILITY
+            'visibility' => TaskSearch::TERM_VISIBILITY,
         );
 
         $terms = array();
 
-        foreach ($search_map AS $input => $search_key) {
+        foreach ($search_map as $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ((is_string($value) && strlen($value) > 0) || (!is_string($value) && $value)) {
                 $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
@@ -191,11 +191,11 @@ class TaskController extends AbstractController
         if ($date_created_end) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
                 'date1' => $date_created_start,
-                'date2' => $date_created_end
+                'date2' => $date_created_end,
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start
+                'date1' => $date_created_start,
             ));
         }
 
@@ -204,11 +204,11 @@ class TaskController extends AbstractController
         if ($date_completed_end) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_COMPLETED, 'op' => 'between', 'options' => array(
                 'date1' => $date_completed_start,
-                'date2' => $date_completed_end
+                'date2' => $date_completed_end,
             ));
         } elseif ($date_completed_start) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_COMPLETED, 'op' => 'between', 'options' => array(
-                'date1' => $date_completed_start
+                'date1' => $date_completed_start,
             ));
         }
 
@@ -217,11 +217,11 @@ class TaskController extends AbstractController
         if ($date_due_end) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_DUE, 'op' => 'between', 'options' => array(
                 'date1' => $date_due_start,
-                'date2' => $date_due_end
+                'date2' => $date_due_end,
             ));
         } elseif ($date_due_start) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_DUE, 'op' => 'between', 'options' => array(
-                'date1' => $date_due_start
+                'date1' => $date_due_start,
             ));
         }
 
@@ -239,7 +239,9 @@ class TaskController extends AbstractController
         $result_cache = $this->getApiSearchResult('task', $terms, $extra, $this->in->getUint('cache_id'), new TaskSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
@@ -253,7 +255,7 @@ class TaskController extends AbstractController
             'per_page' => $per_page,
             'total' => count($person_ids),
             'cache_id' => $result_cache->id,
-            'tasks' => $this->getApiData($tasks)
+            'tasks' => $this->getApiData($tasks),
         ));
     }
 
@@ -348,7 +350,7 @@ class TaskController extends AbstractController
 
         $date_due = $this->in->getUint('date_due');
         if ($date_due) {
-            $task->date_due = new \DateTime('@' . $date_due);
+            $task->date_due = new \DateTime('@'.$date_due);
         }
 
         if ($this->in->checkIsset('assigned_agent_id')) {
@@ -482,7 +484,7 @@ class TaskController extends AbstractController
         if ($this->in->checkIsset('date_due')) {
             $date_due = $this->in->getUint('date_due');
             if ($date_due) {
-                $task->date_due = new \DateTime('@' . $date_due);
+                $task->date_due = new \DateTime('@'.$date_due);
             } else {
                 $task->date_due = null;
             }
@@ -679,7 +681,7 @@ class TaskController extends AbstractController
         $task = $this->_getTaskOr404($task_id);
 
         $exists = false;
-        foreach ($task->task_associations AS $assoc) {
+        foreach ($task->task_associations as $assoc) {
             if ($assoc->id == $assoc_id) {
                 $exists = true;
                 break;
@@ -720,7 +722,7 @@ class TaskController extends AbstractController
         $task = $this->_getTaskOr404($task_id);
 
         $exists = false;
-        foreach ($task->task_associations AS $key => $assoc) {
+        foreach ($task->task_associations as $key => $assoc) {
             if ($assoc->id == $assoc_id) {
                 $task->task_associations->remove($key);
                 $this->em->persist($task);
@@ -838,7 +840,7 @@ class TaskController extends AbstractController
         $task = $this->_getTaskOr404($task_id);
 
         $exists = false;
-        foreach ($task->comments AS $comment) {
+        foreach ($task->comments as $comment) {
             if ($comment->id == $comment_id) {
                 $exists = true;
                 break;
@@ -879,7 +881,7 @@ class TaskController extends AbstractController
         $task = $this->_getTaskOr404($task_id);
 
         $exists = false;
-        foreach ($task->comments AS $key => $comment) {
+        foreach ($task->comments as $key => $comment) {
             if ($comment->id == $comment_id) {
                 if ($comment->person->getId() != $this->person->getId()) {
                     throw $this->createNotFoundException();

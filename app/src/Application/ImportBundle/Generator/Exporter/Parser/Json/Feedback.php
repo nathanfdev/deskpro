@@ -31,7 +31,6 @@ use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
-use Orb\Util\Strings;
 use DateTime;
 
 /**
@@ -77,13 +76,11 @@ final class Feedback extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid feedback record found (Skipping): %d', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid feedback record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
-
             } catch (NotArrayException $e) {
                 $this->logWarning(sprintf(
                     'Invalid feedback record `%d` found (Skipping): %s',
@@ -98,7 +95,7 @@ final class Feedback extends AbstractParser
     /**
      * Returns a feedback entity
      *
-     * @param array $feedback
+     * @param  array           $feedback
      * @return Entity\Feedback
      */
     private function exportFeedback(array $feedback)
@@ -106,7 +103,7 @@ final class Feedback extends AbstractParser
         if ($this->isFeedbackValid($feedback)) {
             $entity = new Entity\Feedback();
             $entity
-                ->setDestination('feedback_' . $feedback['oid'])
+                ->setDestination('feedback_'.$feedback['oid'])
                 ->setOid($feedback['oid'])
                 ->setPersonEmail($feedback['person'])
                 ->setLanguage($feedback['language'])
@@ -148,7 +145,7 @@ final class Feedback extends AbstractParser
     /**
      * Check if feedback has all required columns
      *
-     * @param array $feedback
+     * @param  array $feedback
      * @return bool
      */
     private function isFeedbackValid(array $feedback)

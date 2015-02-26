@@ -35,5 +35,4 @@ namespace Application\DeskPRO\People\PermissionLoader;
 
 interface NoCache
 {
-
 }

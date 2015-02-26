@@ -58,7 +58,6 @@ class UsersourceManager
      */
     private $app_manipulator;
 
-
     /**
      * @param EntityManager      $em
      * @param App\AppManipulator $app_manipulator
@@ -92,7 +91,6 @@ class UsersourceManager
         }
     }
 
-
     /**
      * Find a person in a USER usersource based on an email address.
      *
@@ -110,7 +108,6 @@ class UsersourceManager
             if ($adapter instanceof IdentityFinderInterface) {
                 try {
                     if ($identity = $adapter->findIdentityByInput($input)) {
-
                         // if the usersource can return a person directly, return that now
                         if ($identity instanceof Person) {
                             return $identity;
@@ -129,7 +126,6 @@ class UsersourceManager
         return null;
     }
 
-
     /**
      * Get all installed usersources
      *
@@ -147,7 +143,6 @@ class UsersourceManager
         return $this->usersources;
     }
 
-
     /**
      * Get all usersources for the agent/admin area
      *
@@ -160,7 +155,6 @@ class UsersourceManager
             $this->em->getRepository('DeskPRO:Usersource')->getAll()
         );
     }
-
 
     /**
      * @param  string                                   $type
@@ -182,7 +176,6 @@ class UsersourceManager
         return $ret;
     }
 
-
     /**
      * Get usersources with a certain capability
      * @param $capability
@@ -201,7 +194,6 @@ class UsersourceManager
         return $ret;
     }
 
-
     /**
      * @return string
      * @deprecated this shouldn't be used anymore, try to eliminate it form the codebase and use twig extension instead
@@ -211,7 +203,7 @@ class UsersourceManager
         $params['usersource'] = $usersource;
 
         $name = $usersource->getAdapter()->getTypename();
-        $tpl = "DeskPRO:Auth:" . $name . "-" . $type . ".html.twig";
+        $tpl = "DeskPRO:Auth:".$name."-".$type.".html.twig";
 
         if (!isset($params['type'])) {
             $params['type'] = 'user';

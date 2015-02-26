@@ -55,13 +55,17 @@ class CacheExec extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
     public function startQuery($sql, array $params = null, array $types = null)
     {
-        if ($params === null) $params = array();
+        if ($params === null) {
+            $params = array();
+        }
         $this->last_query = array($sql, $params);
     }
 
     public function stopQuery()
     {
-        if (!$this->last_query) return;
+        if (!$this->last_query) {
+            return;
+        }
 
         $this->query_listener->handleQuery($this->last_query[0], $this->last_query[1]);
 

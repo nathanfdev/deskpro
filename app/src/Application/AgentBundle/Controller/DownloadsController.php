@@ -112,7 +112,7 @@ class DownloadsController extends AbstractController
             'download_url' => $blob->getDownloadUrl(true),
             'filename' => $blob['filename'],
             'filesize_readable' => $blob->getReadableFilesize(),
-            'permalink' => $download->getLink()
+            'permalink' => $download->getLink(),
         );
 
         return $this->createJsonResponse($data);
@@ -168,7 +168,7 @@ class DownloadsController extends AbstractController
         $this->em->flush();
 
         return $this->render('AgentBundle:Downloads:view-comment.html.twig', array(
-            'comment' => $comment
+            'comment' => $comment,
         ));
     }
 
@@ -286,7 +286,7 @@ class DownloadsController extends AbstractController
                 }
 
                 $data['file_html'] = $this->renderView('AgentBundle:Downloads:view-fileinfo.html.twig', array(
-                    'download' => $download
+                    'download' => $download,
                 ));
 
                 break;
@@ -304,7 +304,7 @@ class DownloadsController extends AbstractController
                 }
 
                 $data['content_html'] = $this->renderView('AgentBundle:Downloads:view-content-tab.html.twig', array(
-                    'download' => $download
+                    'download' => $download,
                 ));
 
                 $rev = ContentRevisionUtil::findOrCreate($download, array('content'), $this->person);
@@ -377,11 +377,13 @@ class DownloadsController extends AbstractController
 
         $result_helper = DownloadResults::newFromRequest($this, array(
             'category' => $category,
-            'show_all' => $show_all
+            'show_all' => $show_all,
         ));
 
         $page = $this->in->getUint('p');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
         $results = $result_helper->getDownloadsForPage($page);
         $result_cache = $result_helper->getResultCache();
@@ -419,8 +421,8 @@ class DownloadsController extends AbstractController
                 WHERE category_id = ?
             ", array($category->getId()));
 
-            $cat_structure_data = $this->em->getRepository('DeskPRO:DownloadCategory')->getInHierarchy();;
-            $cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id' , 'title', 'children'), true, true);
+            $cat_structure_data = $this->em->getRepository('DeskPRO:DownloadCategory')->getInHierarchy();
+            $cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id', 'title', 'children'), true, true);
             $cat_structure_data = Arrays::multiRenameKey($cat_structure_data, 'title', 'label');
             $cat_structure_data = Arrays::assocToNumericArray($cat_structure_data, 'children');
         }
@@ -473,7 +475,7 @@ class DownloadsController extends AbstractController
             if (!$validator->isValid($newdownload)) {
                 return $this->createJsonResponse(array(
                     'error' => true,
-                    'error_codes' => $validator->getErrorGroups()
+                    'error_codes' => $validator->getErrorGroups(),
                 ));
             }
             $newdownload->save();
@@ -490,7 +492,7 @@ class DownloadsController extends AbstractController
 
             return $this->createJsonResponse(array(
                 'success' => true,
-                'download_id' => $download['id']
+                'download_id' => $download['id'],
             ));
         } else {
             return $this->createJsonResponse(array(

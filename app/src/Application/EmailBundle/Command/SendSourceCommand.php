@@ -26,7 +26,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
@@ -84,6 +83,7 @@ class SendSourceCommand extends ContainerAwareCommand
         $source = $this->getContainer()->getEm()->find('EmailBundle:SendmailSource', $input->getArgument('id'));
         if (!$source) {
             $output->writeln("<error>Unknown SendmailSource ID</error>");
+
             return self::RETURN_NOT_FOUND;
         }
 
@@ -92,16 +92,15 @@ class SendSourceCommand extends ContainerAwareCommand
         ################################################################################################################
 
         if ($input->getOption('info') || $input->getOption('source')) {
-
             if ($input->getOption('info')) {
                 echo Strings::asciiTable(array(
                     array('ID', $source->getId()),
                     array('Ref', $source->getRef()),
                     array('Date', $source->getDateCreated()->format('Y-m-d H:i:s')),
                     array('Status', $source->getStatus()),
-                    array('Is Sent?', $source->getDateSent() ? "Yes :: " . $source->getDateSent()->format('Y-m-d H:i:s') : 'No'),
+                    array('Is Sent?', $source->getDateSent() ? "Yes :: ".$source->getDateSent()->format('Y-m-d H:i:s') : 'No'),
                     array('Next Attempt', $source->getDateNextAttempt() ? $source->getDateNextAttempt()->format('Y-m-d H:i:s') : 'never'),
-                    array('Send Attempts', $source->getExecCount())
+                    array('Send Attempts', $source->getExecCount()),
                 ));
                 echo "\n";
 
@@ -140,6 +139,7 @@ class SendSourceCommand extends ContainerAwareCommand
             $output->writeln(sprintf("<info>Source is marked as %s</info>", $source->getStatus()));
             $output->writeln("<error>Expected PENDING</error>.");
             $output->writeln("Aborting. Use --force if you want to send this email anyway.");
+
             return self::RETURN_EXPECT_PENDING;
         }
 
@@ -147,6 +147,7 @@ class SendSourceCommand extends ContainerAwareCommand
             $output->writeln(sprintf("<info>Source is marked as %s</info>", $source->getStatus()));
             if (!$input->getOption('force')) {
                 $output->writeln("Aborting. Use --force if you want to send this email anyway.");
+
                 return self::RETURN_STATUS_PREVENT;
             }
         }
@@ -158,7 +159,7 @@ class SendSourceCommand extends ContainerAwareCommand
             'dp.email.out.queue',
             'dp.email.out.transport',
             'dp.email.out.mailer',
-            'dp.email.out.raw_transport'
+            'dp.email.out.raw_transport',
         ) as $n) {
             $console_handler = new ConsoleHandler($output);
             $console_handler->setFormatter(new ConsoleFormatter("%start_tag%[%datetime%] %channel%.%level_name%: %message%%end_tag%\n"));

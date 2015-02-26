@@ -132,17 +132,17 @@ class Connection extends \Doctrine\DBAL\Connection
         if (isset($GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) && $GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) {
             $this->transaction_logger = new Logger();
             if ($GLOBALS['DP_CONFIG']['debug']['enable_transaction_log'] == 'separate_files') {
-                $fn = 'db-transactions.'. uniqid('') .'.log';
+                $fn = 'db-transactions.'.uniqid('').'.log';
             } else {
                 $fn = 'db-transactions.log';
             }
-            $this->transaction_logger->addWriter(new \Orb\Log\Writer\Stream(dp_get_log_dir().'/' . $fn));
+            $this->transaction_logger->addWriter(new \Orb\Log\Writer\Stream(dp_get_log_dir().'/'.$fn));
             $this->transaction_logger->logDebug("--- BEGIN PAGE ---");
 
             if (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
-                $this->transaction_logger->logDebug("Command: " . implode(' ', $_SERVER['argv']));
+                $this->transaction_logger->logDebug("Command: ".implode(' ', $_SERVER['argv']));
             } else {
-                $this->transaction_logger->logDebug("URL: " . $_SERVER['PHP_SELF']);
+                $this->transaction_logger->logDebug("URL: ".$_SERVER['PHP_SELF']);
             }
         }
     }
@@ -170,13 +170,15 @@ class Connection extends \Doctrine\DBAL\Connection
         if (!$this->has_run_avoid) {
             try {
                 $this->exec("SET SESSION wait_timeout = 1800");
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
             $this->has_run_avoid = true;
         }
 
         try {
             $this->fetchColumn("SELECT 1");
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
     }
 
     /**
@@ -186,7 +188,9 @@ class Connection extends \Doctrine\DBAL\Connection
      */
     public function getMaxPacketSize()
     {
-        if ($this->_max_packet_size !== null) return $this->_max_packet_size;
+        if ($this->_max_packet_size !== null) {
+            return $this->_max_packet_size;
+        }
 
         $result = $this->fetchAssoc("SHOW variables LIKE 'max_allowed_packet'");
         $this->_max_packet_size = $result['Value'];
@@ -232,7 +236,9 @@ class Connection extends \Doctrine\DBAL\Connection
         $array = array();
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            if (!isset($array[$row[$group_key]])) $array[$row[$group_key]] = array();
+            if (!isset($array[$row[$group_key]])) {
+                $array[$row[$group_key]] = array();
+            }
 
             $val = $row;
             if ($col_key !== null) {
@@ -328,7 +334,7 @@ class Connection extends \Doctrine\DBAL\Connection
                     $cols[] = $k;
                 }
                 $cols_count = count($cols);
-                $value_tpl = '(' . implode(',', array_fill(0, $cols_count, '?')) . ')';
+                $value_tpl = '('.implode(',', array_fill(0, $cols_count, '?')).')';
             }
 
             if (count($vals) != $cols_count) {
@@ -350,7 +356,7 @@ class Connection extends \Doctrine\DBAL\Connection
         # Build sql
         #------------------------------
 
-        $sql = "INSERT " . ($ignore ? 'IGNORE' : '') . " INTO `$table` (`" . implode('`,`', $cols) ."`) VALUES " . implode(',', $value_parts);
+        $sql = "INSERT ".($ignore ? 'IGNORE' : '')." INTO `$table` (`".implode('`,`', $cols)."`) VALUES ".implode(',', $value_parts);
 
         return $this->executeUpdate($sql, $params);
     }
@@ -397,9 +403,9 @@ class Connection extends \Doctrine\DBAL\Connection
                 $placeholders[] = '?';
             }
 
-            $query = 'INSERT IGNORE INTO ' . $tableName
-                . ' (' . implode(', ', $cols) . ')'
-                . ' VALUES (' . implode(', ', $placeholders) . ')';
+            $query = 'INSERT IGNORE INTO '.$tableName
+                .' ('.implode(', ', $cols).')'
+                .' VALUES ('.implode(', ', $placeholders).')';
 
             return $this->executeUpdate($query, array_values($data), $types);
         } catch (\Exception $e) {
@@ -428,9 +434,9 @@ class Connection extends \Doctrine\DBAL\Connection
             $placeholders[] = '?';
         }
 
-        $query = 'REPLACE INTO ' . $tableName
-               . ' (' . implode(', ', $cols) . ')'
-               . ' VALUES (' . implode(', ', $placeholders) . ')';
+        $query = 'REPLACE INTO '.$tableName
+               .' ('.implode(', ', $cols).')'
+               .' VALUES ('.implode(', ', $placeholders).')';
 
         return $this->executeUpdate($query, array_values($data), $types);
     }
@@ -466,7 +472,7 @@ class Connection extends \Doctrine\DBAL\Connection
         $this->connect();
 
         $where = $where ?: '1';
-        $sql = "SELECT COUNT(*) FROM `$tableName` WHERE " . $where;
+        $sql = "SELECT COUNT(*) FROM `$tableName` WHERE ".$where;
 
         return $this->fetchColumn($sql, $params);
     }
@@ -560,7 +566,7 @@ class Connection extends \Doctrine\DBAL\Connection
                         $v = substr($v, 0, 100);
                     }
 
-                    $params[] = 'string:' . $v;
+                    $params[] = 'string:'.$v;
                 } elseif ($v === null) {
                     $params[] = 'NULL';
                 } elseif (is_array($v)) {
@@ -574,32 +580,32 @@ class Connection extends \Doctrine\DBAL\Connection
         }
 
         $write = array();
-        $write[] = "[" . date("Y-m-d H:i:s") . "]";
+        $write[] = "[".date("Y-m-d H:i:s")."]";
 
         if (defined('DP_REQUEST_URL')) {
-            $write[] = "Page_Url: " . DP_REQUEST_URL;
+            $write[] = "Page_Url: ".DP_REQUEST_URL;
             if (!empty($_SERVER['REQUEST_METHOD'])) {
-                $writep[] = "Method: " . $_SERVER['REQUEST_METHOD'];
+                $writep[] = "Method: ".$_SERVER['REQUEST_METHOD'];
             }
         } elseif (defined('DP_INTERFACE') && DP_INTERFACE == 'cli') {
-            $write[] = "Command: " . implode(' ', $_SERVER['argv']);
+            $write[] = "Command: ".implode(' ', $_SERVER['argv']);
         } else {
             $write[] = "UnknownPage";
         }
 
         if (!empty($_SERVER['REMOTE_ADDR'])) {
-            $write[] = "IP: " . $_SERVER['REMOTE_ADDR'];
+            $write[] = "IP: ".$_SERVER['REMOTE_ADDR'];
         }
 
-        $write[] = "Query: " . $query;
+        $write[] = "Query: ".$query;
         if ($params) {
-            $write[] = "Params: " . implode($params);
+            $write[] = "Params: ".implode($params);
         }
 
         $write = implode("\t", $write);
         $write .= "\n";
 
-        @file_put_contents(dp_get_log_dir() . '/db_delete.log', $write, \FILE_APPEND);
+        @file_put_contents(dp_get_log_dir().'/db_delete.log', $write, \FILE_APPEND);
     }
 
     /**
@@ -626,14 +632,13 @@ class Connection extends \Doctrine\DBAL\Connection
         $more_where = '';
         if ($other_wheres) {
             if (is_array($other_wheres)) {
-                $more_where = 'AND ' . implode(' AND ', $other_wheres);
+                $more_where = 'AND '.implode(' AND ', $other_wheres);
             } else {
-                $more_where = 'AND ' . $other_wheres;
+                $more_where = 'AND '.$other_wheres;
             }
-
         }
 
-        return $this->executeUpdate("DELETE FROM `$table` WHERE `$field` $not IN (" . $this->quoteIn($ids) . ") $more_where");
+        return $this->executeUpdate("DELETE FROM `$table` WHERE `$field` $not IN (".$this->quoteIn($ids).") $more_where");
     }
 
     /**
@@ -654,12 +659,12 @@ class Connection extends \Doctrine\DBAL\Connection
 
         $set = array();
         foreach ($data as $columnName => $value) {
-            $set[] = $columnName . ' = ?';
+            $set[] = $columnName.' = ?';
         }
 
         $params = array_values($data);
 
-        $sql = "UPDATE `$table` SET " . implode(', ', $set) . " WHERE `$field` IN (" . $this->quoteIn($ids) . ")";
+        $sql = "UPDATE `$table` SET ".implode(', ', $set)." WHERE `$field` IN (".$this->quoteIn($ids).")";
 
         return $this->executeUpdate($sql, $params, $types);
     }
@@ -708,8 +713,8 @@ class Connection extends \Doctrine\DBAL\Connection
             $level = $this->getTransactionNestingLevel();
             $trans_id = \Orb\Util\Util::baseEncode($this->trans_count++, \Orb\Util\Strings::CHARS_ALPHA_IU);
             $this->trans_ids[] = $trans_id;
-            $backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t\t", $level) . "\t\t");
-            $this->transaction_logger->logDebug("==> Level $level :: <$trans_id>\n" . str_repeat("\t\t", $level) . "TRANSACTION BEGIN\n$backtrace");
+            $backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t\t", $level)."\t\t");
+            $this->transaction_logger->logDebug("==> Level $level :: <$trans_id>\n".str_repeat("\t\t", $level)."TRANSACTION BEGIN\n$backtrace");
         }
     }
 
@@ -752,12 +757,11 @@ class Connection extends \Doctrine\DBAL\Connection
             $e = new \Exception();
             $trans_id = array_pop($this->trans_ids);
             $backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
-            $backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t\t", $level) . "\t\t");
-            $this->transaction_logger->logDebug("<== Level $level :: <$trans_id>\n" . str_repeat("\t\t", $level) . "TRANSACTION COMMITTED\n$backtrace");
+            $backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t\t", $level)."\t\t");
+            $this->transaction_logger->logDebug("<== Level $level :: <$trans_id>\n".str_repeat("\t\t", $level)."TRANSACTION COMMITTED\n$backtrace");
         }
 
         if (!$this->getTransactionNestingLevel()) {
-
             // Set in EntityWatcher
             // If we have got here with a successful commit, then the changes are now
             // properly synced and we dont need the flag set anymore
@@ -800,8 +804,8 @@ class Connection extends \Doctrine\DBAL\Connection
             if ($this->transaction_logger) {
                 $e = new \Exception();
                 $backtrace = \DeskPRO\Kernel\KernelErrorHandler::formatBacktrace($e->getTrace());
-                $backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t", $level) . "\t");
-                $this->transaction_logger->logDebug(str_repeat("\t", $level) . "TRANSACTION ROLLED BACK\n$backtrace");
+                $backtrace = \Orb\Util\Strings::modifyLines($backtrace, str_repeat("\t", $level)."\t");
+                $this->transaction_logger->logDebug(str_repeat("\t", $level)."TRANSACTION ROLLED BACK\n$backtrace");
             }
         }
 

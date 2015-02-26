@@ -130,7 +130,7 @@ class DataInitializer
         );
 
         foreach ($types as $t) {
-            list ($content_type, $table, $entity) = $t;
+            list($content_type, $table, $entity) = $t;
             $all_ids = $this->container->getDb()->fetchAllCol("SELECT id FROM $table ORDER BY id ASC");
             $batch = $this->container->getEm()->getRepository($entity)->getByIds($all_ids);
             if ($batch) {
@@ -209,7 +209,7 @@ class DataInitializer
         foreach ($prefs as $p => $v) {
             $this->container->getDb()->insert('people_prefs', array(
                 'person_id' => $agent->id,
-                'name' => 'agent_notif.' . $p,
+                'name' => 'agent_notif.'.$p,
                 'value_str' => $v,
                 'value_array' => 'N;',
             ));
@@ -218,7 +218,6 @@ class DataInitializer
 
     public function runInitDefaultSla()
     {
-
     }
 
     public function runInitInitialData()

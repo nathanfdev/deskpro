@@ -65,7 +65,7 @@ class KbController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown article $article_id");
         }
 
-        if ($this->in->getBool('do_validate') AND $article['status_code'] == 'hidden.validating' && $this->person->hasPerm('agent_publish.validate')) {
+        if ($this->in->getBool('do_validate') and $article['status_code'] == 'hidden.validating' && $this->person->hasPerm('agent_publish.validate')) {
             $article['status_code'] = Article::STATUS_PUBLISHED;
             $this->em->persist($article);
             $this->em->flush();
@@ -95,7 +95,7 @@ class KbController extends AbstractController
         $content = $article->content;
         $glossary_words = $glossary->findWords($content);
 
-        $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editarticle.' . $article->getId(), $this->person->id);
+        $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editarticle.'.$article->getId(), $this->person->id);
 
         $sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($article);
 
@@ -118,7 +118,7 @@ class KbController extends AbstractController
         // Existing translations
         $trans_langs = $this->db->fetchAllCol('SELECT language_id FROM object_lang WHERE ref = ?', array('articles.'.$article['id']));
         $trans_langs[] = $article->language->getId();
-        $trans_langs = array_combine($trans_langs,$trans_langs);
+        $trans_langs = array_combine($trans_langs, $trans_langs);
 
         foreach ($this->container->getLanguageData()->getAll() as $lang) {
             $this->container->getObjectLangRepository()->preloadObject($lang, $article);
@@ -161,11 +161,11 @@ class KbController extends AbstractController
             'word_defs'            => $word_defs,
         );
 
-        if($is_pdf) {
+        if ($is_pdf) {
             $content_html = $this->renderView('DeskPRO:pdf_agent:view_article.html.twig', $vars);
 
             if (!defined('_MPDF_TEMP_PATH')) {
-                define('_MPDF_TEMP_PATH', dp_get_tmp_dir() . '/pdf');
+                define('_MPDF_TEMP_PATH', dp_get_tmp_dir().'/pdf');
                 if (!is_dir(_MPDF_TEMP_PATH)) {
                     @mkdir(_MPDF_TEMP_PATH, 0777, true);
                 }
@@ -184,14 +184,14 @@ class KbController extends AbstractController
                 'P' // Orientation
             );
 
-            $mpdf->SetBasePath($this->container->getSetting('core.deskpro_url') . '/');
+            $mpdf->SetBasePath($this->container->getSetting('core.deskpro_url').'/');
             $mpdf->WriteHTML($content_html);
 
-            if($this->in->getBool('html')) {
+            if ($this->in->getBool('html')) {
                 $response = new Response();
                 $response->setContent($content_html);
             } else {
-                $mpdf->Output($article->title . '.pdf', 'D');
+                $mpdf->Output($article->title.'.pdf', 'D');
                 exit;
             }
         }
@@ -263,7 +263,7 @@ class KbController extends AbstractController
 
                 $to = $this->em->find('DeskPRO:ArticleCategory', $to_category);
 
-                if(($from_category && !$from) || !$to) {
+                if (($from_category && !$from) || !$to) {
                     $error = $tr->phrase('agent.publish.error_kb_not_in_db');
                     $skip = true;
                     break;
@@ -272,7 +272,7 @@ class KbController extends AbstractController
                 break;
         }
 
-        if(!$skip) {
+        if (!$skip) {
             $affected = 0;
             $perm_failures = 0;
             $missing = 0;
@@ -281,7 +281,7 @@ class KbController extends AbstractController
             foreach ($articles as $article_id) {
                 $article = $this->em->find('DeskPRO:Article', $article_id);
 
-                if(!$article) {
+                if (!$article) {
                     $missing++;
                     continue;
                 }
@@ -323,7 +323,7 @@ class KbController extends AbstractController
                             }
                         }
 
-                        if(!$article->isInCategory($to)) {
+                        if (!$article->isInCategory($to)) {
                             $article->addToCategory($to);
                         }
 
@@ -337,17 +337,17 @@ class KbController extends AbstractController
             $this->em->flush();
             $this->em->commit();
 
-            if($affected < count($articles)) {
+            if ($affected < count($articles)) {
                 $error = $tr->phrase('agent.publish.error_kb_unaffected');
                 $error .= "<br />\n";
 
                 $errors = array();
 
-                if($missing) {
+                if ($missing) {
                     $errors[] = $tr->phrase('agent.publish.error_kb_missing', array('count' => $missing));
                 }
 
-                if($perm_failures) {
+                if ($perm_failures) {
                     $errors[] = $tr->phrase('agent.publish.error_kb_perm_denied', array('count' => $perm_failures));
                 }
 
@@ -439,7 +439,7 @@ class KbController extends AbstractController
                 break;
 
             case 'auto-unpub':
-                $date = date_create('@' . $this->in->getUint('end_timestamp'));
+                $date = date_create('@'.$this->in->getUint('end_timestamp'));
                 $action = $this->in->getString('end_action');
 
                 $article->date_end = $date;
@@ -447,7 +447,7 @@ class KbController extends AbstractController
                 break;
 
             case 'auto-pub':
-                $date = date_create('@' . $this->in->getUint('pub_timestamp'));
+                $date = date_create('@'.$this->in->getUint('pub_timestamp'));
 
                 $article->date_published = $date;
                 break;
@@ -535,7 +535,7 @@ class KbController extends AbstractController
 
                 $data['content_html'] = $this->renderView('AgentBundle:Kb:view-content-tab.html.twig', array(
                     'article' => $article,
-                    'content' => $content
+                    'content' => $content,
                 ));
                 break;
 
@@ -553,7 +553,7 @@ class KbController extends AbstractController
                     }
 
                     $title       = $this->in->getString("title.$lang_id");
-                    $content_val = (string)$this->in->getRaw("content.$lang_id");
+                    $content_val = (string) $this->in->getRaw("content.$lang_id");
 
                     if (!$title && !$content_val) {
                         continue;
@@ -645,7 +645,7 @@ class KbController extends AbstractController
         $this->em->flush();
 
         return $this->render('AgentBundle:Kb:view-comment.html.twig', array(
-            'comment' => $comment
+            'comment' => $comment,
         ));
     }
 
@@ -714,7 +714,7 @@ class KbController extends AbstractController
 
         return $this->createJsonResponse(array(
             'row_html' => $row_html,
-            'pending_article_id' => $pending_article['id']
+            'pending_article_id' => $pending_article['id'],
         ));
     }
 
@@ -800,7 +800,7 @@ class KbController extends AbstractController
         $this->em->commit();
 
         return $this->createJsonResponse(array(
-            'success' => 1
+            'success' => 1,
         ));
     }
 
@@ -824,23 +824,24 @@ class KbController extends AbstractController
         $trans_lang_id = null;
 
         if ($this->in->getBool('pending_translate')) {
-
             $is_trans_view = true;
             $trans_lang_id = $this->in->getUint('language_id');
 
             $result_helper = ArticleResults::newFromRequest($this, array(
                 'pending_translate'      => true,
-                'pending_translate_lang' => $this->in->getUint('language_id')
+                'pending_translate_lang' => $this->in->getUint('language_id'),
             ));
         } else {
             $result_helper = ArticleResults::newFromRequest($this, array(
                 'category' => $category,
-                'show_all' => $show_all
+                'show_all' => $show_all,
             ));
         }
 
         $page = $this->in->getUint('p');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
         $results = $result_helper->getArticlesForPage($page);
         $result_cache = $result_helper->getResultCache();
@@ -881,7 +882,7 @@ class KbController extends AbstractController
             ", array($category->getId()));
 
             $cat_structure_data = $article_categories;
-            $cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id' , 'title', 'children'), true, true);
+            $cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id', 'title', 'children'), true, true);
             $cat_structure_data = Arrays::multiRenameKey($cat_structure_data, 'title', 'label');
             $cat_structure_data = Arrays::assocToNumericArray($cat_structure_data, 'children');
         }
@@ -907,7 +908,7 @@ class KbController extends AbstractController
             'cat_usergroups'     => $cat_usergroups,
             'cat_structure_data' => $cat_structure_data,
 
-            'article_categories' => $article_categories
+            'article_categories' => $article_categories,
         ));
     }
 
@@ -951,7 +952,7 @@ class KbController extends AbstractController
 
         return $this->render('AgentBundle:Kb:newarticle.html.twig', array(
             'article_categories' => $article_categories,
-            'state' => $state
+            'state' => $state,
         ));
     }
 
@@ -972,7 +973,7 @@ class KbController extends AbstractController
             if (!$validator->isValid($newarticle)) {
                 return $this->createJsonResponse(array(
                     'error' => true,
-                    'error_codes' => $validator->getErrorGroups()
+                    'error_codes' => $validator->getErrorGroups(),
                 ));
             }
 
@@ -998,7 +999,7 @@ class KbController extends AbstractController
 
             return $this->createJsonResponse(array(
                 'success' => true,
-                'article_id' => $article['id']
+                'article_id' => $article['id'],
             ));
         } else {
             return $this->createJsonResponse(array(

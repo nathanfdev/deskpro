@@ -39,7 +39,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class NewTask extends AbstractType
 {
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         #------------------------------
@@ -50,7 +49,7 @@ class NewTask extends AbstractType
         $builder->add('date_due', 'datetime', array(
             'widget' => 'single_text',
             'empty_value' => '',
-            'date_format'=>'M/d/y',
+            'date_format' => 'M/d/y',
             'required' => false,
         ));
 
@@ -62,7 +61,7 @@ class NewTask extends AbstractType
             'class' => 'Application\DeskPRO\Entity\AgentTeam',
             'property' => 'name',
             'required' => false,
-            'empty_value'=> '--Agent Team--'
+            'empty_value' => '--Agent Team--',
         ));
 
         $builder->add('assigned_agent', 'entity', array(
@@ -74,7 +73,7 @@ class NewTask extends AbstractType
             },
             'property' => 'name',
             'required' => false,
-            'empty_value'=> '--Agent--'
+            'empty_value' => '--Agent--',
         ));
     }
 

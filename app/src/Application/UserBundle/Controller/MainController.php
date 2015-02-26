@@ -31,7 +31,6 @@
 * @package DeskPRO
 */
 
-
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\People\AccountValidator;
@@ -82,7 +81,6 @@ class MainController extends AbstractController
             $obj = new $type_class($page_display->section, $page_display->data, $this->container, $this->person);
 
             $res = new \Symfony\Component\HttpFoundation\Response($obj->getHtml(), 200);
-
         } else {
             $res = null;
             switch ($type) {
@@ -123,7 +121,7 @@ class MainController extends AbstractController
         $security_token = $this->in->getString('security_token');
         if (!$this->container->checkStaticSecurityToken('attach_temp', $security_token)) {
             return $this->createJsonResponse(array(array(
-                'error_code' => 'invalid_security_token'
+                'error_code' => 'invalid_security_token',
             )), 403);
         }
 
@@ -149,7 +147,7 @@ class MainController extends AbstractController
         }
 
         if ($error) {
-            $error['error'] = $this->container->getTranslator()->phrase('user.error.attach_' . $error['error_code'], $error);
+            $error['error'] = $this->container->getTranslator()->phrase('user.error.attach_'.$error['error_code'], $error);
 
             return $this->createJsonResponse(array($error));
         }
@@ -158,10 +156,10 @@ class MainController extends AbstractController
 
         return $this->createJsonResponse(array(array(
             'blob_id'           => $blob->getId(),
-            'blob_auth_id'      => $blob->id . '-' . $blob->authcode,
+            'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
             'download_url'      => $blob->getDownloadUrl(true),
             'filename'          => $blob->getFilename(),
-            'filesize_readable' => $blob->getReadableFilesize()
+            'filesize_readable' => $blob->getReadableFilesize(),
         )));
     }
 
@@ -185,7 +183,7 @@ class MainController extends AbstractController
             return $this->render('UserBundle:Profile:validate-email-exists.html.twig', array(
                 'email' => $email_exists,
                 'person' => $validator->getPerson(),
-                'ticket_ids' => $validator->getTicketIds()
+                'ticket_ids' => $validator->getTicketIds(),
             ));
         }
 
@@ -202,7 +200,7 @@ class MainController extends AbstractController
         return $this->render('UserBundle:Profile:validate-email-success.html.twig', array(
             'email' => $email,
             'person' => $validator->getPerson(),
-            'ticket_ids' => $validator->getTicketIds()
+            'ticket_ids' => $validator->getTicketIds(),
         ));
     }
 
@@ -222,7 +220,6 @@ class MainController extends AbstractController
 
             $email_exists = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($validator->getValidatingEmail()->getEmail());
             if ($email_exists && $email_exists->person->id != $valdating_email->person->id) {
-
                 // Unset the email on the ticket
                 $ticket->person_email_validating = null;
                 $this->em->persist($ticket);
@@ -231,7 +228,7 @@ class MainController extends AbstractController
                 return $this->render('UserBundle:Profile:validate-email-exists.html.twig', array(
                     'email' => $email_exists,
                     'person' => $validator->getPerson(),
-                    'ticket_ids' => $validator->getTicketIds()
+                    'ticket_ids' => $validator->getTicketIds(),
                 ));
             }
 
@@ -248,7 +245,7 @@ class MainController extends AbstractController
         return $this->render('UserBundle:Profile:validate-email-success.html.twig', array(
             'email' => $email,
             'person' => $validator->getPerson(),
-            'ticket_ids' => $validator->getTicketIds()
+            'ticket_ids' => $validator->getTicketIds(),
         ));
     }
 
@@ -260,10 +257,9 @@ class MainController extends AbstractController
 
         if ($this->person->isGuest()) {
             $person_data = array(
-                'person_id' => 0
+                'person_id' => 0,
             );
         } else {
-
             $person_data = array(
                 'person_id' => $this->person->id,
                 'person_name' => $this->person->name,

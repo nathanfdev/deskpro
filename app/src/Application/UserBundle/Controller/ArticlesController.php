@@ -90,6 +90,7 @@ class ArticlesController extends AbstractController
                 if ($this->db->count('article_categories', array('id' => $category_id))) {
                     return $this->renderLoginOrPermissionError();
                 }
+
                 return $this->renderStandardError('@user.error.not-found-title', '@user.error.not-found', 404);
             }
 
@@ -118,7 +119,7 @@ class ArticlesController extends AbstractController
             $pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
             $limit = array(
                 'offset' => ($pageinfo['curpage']-1) * $per_page,
-                'max' => $per_page
+                'max' => $per_page,
             );
 
             $article_ids = $searcher->getMatches($limit);
@@ -126,7 +127,6 @@ class ArticlesController extends AbstractController
             $articles = $this->em->getRepository('DeskPRO:Article')->getByResultIds($article_ids);
 
             $pageinfo = Numbers::getPaginationPages($total, $page, $per_page);
-
         } else {
             $category = null;
             $category_children = $structure->getArticleRootCategories();
@@ -171,7 +171,6 @@ class ArticlesController extends AbstractController
         ));
     }
 
-
     public function filterAction()
     {
         /** @var $structure \Application\DeskPRO\Publish\Structure */
@@ -210,7 +209,7 @@ class ArticlesController extends AbstractController
         $total = $searcher->getCount();
         $article_ids = $searcher->getMatches(array(
             'offset' => ($page-1) * $per_page,
-            'max' => $per_page
+            'max' => $per_page,
         ));
 
         if ($article_ids) {
@@ -233,7 +232,6 @@ class ArticlesController extends AbstractController
             'section_counts' => $this->em->getRepository('DeskPRO:Article')->getSectionCounts($this->person),
         ));
     }
-
 
     /**
      * View an article listing
@@ -294,9 +292,9 @@ class ArticlesController extends AbstractController
         $rating = $content_rating->getRating();
 
         if ($rating_log_search_id = $content_rating->getSearchLogId()) {
-            $this->session->set('article.' . $article['id'], $rating_log_search_id);
-        } elseif ($this->session->has('article.' . $article['id'])) {
-            $rating_log_search_id = $this->session->get('article.' . $article['id']);
+            $this->session->set('article.'.$article['id'], $rating_log_search_id);
+        } elseif ($this->session->has('article.'.$article['id'])) {
+            $rating_log_search_id = $this->session->get('article.'.$article['id']);
         } else {
             $rating_log_search_id = 0;
         }
@@ -373,7 +371,6 @@ class ArticlesController extends AbstractController
         ));
     }
 
-
     /**
      * @param $article_id
      */
@@ -401,18 +398,18 @@ class ArticlesController extends AbstractController
         if ($exist) {
             $this->db->delete('kb_subscriptions', array(
                 'person_id'  => $this->person->getId(),
-                'article_id' => $article->getId()
+                'article_id' => $article->getId(),
             ));
         } else {
             $this->db->insert('kb_subscriptions', array(
                 'person_id'  => $this->person->getId(),
-                'article_id' => $article->getId()
+                'article_id' => $article->getId(),
             ));
         }
 
         $url = $this->generateUrl('user_articles_article', array('slug' => $article->getUrlSlug()), true);
 
-        return $this->redirect($url . '#dp_sb');
+        return $this->redirect($url.'#dp_sb');
     }
 
     /**
@@ -442,18 +439,18 @@ class ArticlesController extends AbstractController
         if ($exist) {
             $this->db->delete('kb_subscriptions', array(
                 'person_id'   => $this->person->getId(),
-                'category_id' => $category->getId()
+                'category_id' => $category->getId(),
             ));
         } else {
             $this->db->insert('kb_subscriptions', array(
                 'person_id'   => $this->person->getId(),
-                'category_id' => $category->getId()
+                'category_id' => $category->getId(),
             ));
         }
 
         $url = $this->generateUrl('user_articles', array('slug' => $category->getUrlSlug()), true);
 
-        return $this->redirect($url . '#dp_sb');
+        return $this->redirect($url.'#dp_sb');
     }
 
     public function unsubscribeAllAction($person_id, $auth)
@@ -463,7 +460,7 @@ class ArticlesController extends AbstractController
             return $this->renderStandardError('@user.knowledgebase.article_not_found', '@user.error.not-found', 404);
         }
 
-        if (!\Orb\Util\Util::checkStaticSecurityToken($auth, App::getSetting('core.app_secret') . $person->getId() . $person->secret_string)) {
+        if (!\Orb\Util\Util::checkStaticSecurityToken($auth, App::getSetting('core.app_secret').$person->getId().$person->secret_string)) {
             return $this->renderStandardError('@user.knowledgebase.article_not_found', '@user.error.not-found', 404);
         }
 
@@ -480,7 +477,6 @@ class ArticlesController extends AbstractController
 
         return $this->redirectRoute('user');
     }
-
 
     /**
      * Submit a new comment
@@ -521,7 +517,6 @@ class ArticlesController extends AbstractController
         }
 
         if ($this->get('request')->getMethod() == 'POST') {
-
             $trap_fail = false;
             if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
                 $trap_fail = true;
@@ -529,7 +524,7 @@ class ArticlesController extends AbstractController
 
             if (!$this->consumeRequest('newcomment_articles') || $trap_fail) {
                 return $this->redirectRoute('user_articles_article', array(
-                    'slug' => $article->getUrlSlug()
+                    'slug' => $article->getUrlSlug(),
                 ));
             }
 
@@ -539,7 +534,7 @@ class ArticlesController extends AbstractController
                 $this->session->setFlash('comment_error', $validator->getErrors(true));
 
                 return $this->redirectRoute('user_articles_article', array(
-                    'slug' => $article->getUrlSlug()
+                    'slug' => $article->getUrlSlug(),
                 ));
             }
 
@@ -559,7 +554,7 @@ class ArticlesController extends AbstractController
         }
 
         return $this->redirectRoute('user_articles_article', array(
-            'slug' => $article->getUrlSlug()
+            'slug' => $article->getUrlSlug(),
         ));
     }
 }

@@ -67,7 +67,7 @@ final class JsonWriter extends AbstractWriter
      */
     public function writeData(Entity\EntityInterface $entity)
     {
-        if ( ! $this->config) {
+        if (! $this->config) {
             throw new Exception('Generator configuration is not set up');
         }
 
@@ -105,7 +105,7 @@ final class JsonWriter extends AbstractWriter
         foreach ($this->mapping as $destination) {
             /** @var Destination\DestinationInterface $destination */
             if ($entity->getType() === $destination->getEntityType()) {
-                return $this->getDestinationOutputPath($destination) . $entity->getDestination() . '.json';
+                return $this->getDestinationOutputPath($destination).$entity->getDestination().'.json';
             }
         }
 
@@ -143,11 +143,11 @@ final class JsonWriter extends AbstractWriter
     /**
      * Returns destination path
      *
-     * @param Destination\DestinationInterface $destination
+     * @param  Destination\DestinationInterface $destination
      * @return string
      */
     private function getDestinationOutputPath(Destination\DestinationInterface $destination)
     {
-        return $this->config->getOutputPath() . $destination->getEntityOutputPath();
+        return $this->config->getOutputPath().$destination->getEntityOutputPath();
     }
 }

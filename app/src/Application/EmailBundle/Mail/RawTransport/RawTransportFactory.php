@@ -83,10 +83,9 @@ class RawTransportFactory
         return $tr;
     }
 
-
     /**
-     * @param OutgoingAccount\SmtpConfig $config
-     * @param bool $disable_connect_log
+     * @param  OutgoingAccount\SmtpConfig $config
+     * @param  bool                       $disable_connect_log
      * @return RawSmtpTransport
      */
     public function createSmtpTransport(OutgoingAccount\SmtpConfig $config, $disable_connect_log = false)
@@ -117,9 +116,8 @@ class RawTransportFactory
         return $raw_tr;
     }
 
-
     /**
-     * @param OutgoingAccount\GmailConfig $config
+     * @param  OutgoingAccount\GmailConfig $config
      * @return \Swift_SmtpTransport
      */
     public function createGmailTransport(OutgoingAccount\GmailConfig $config)
@@ -136,7 +134,7 @@ class RawTransportFactory
     }
 
     /**
-     * @param OutgoingAccount\Office365Config $config
+     * @param  OutgoingAccount\Office365Config $config
      * @return \Swift_SmtpTransport
      */
     public function createOffice365Transport(OutgoingAccount\Office365Config $config)
@@ -151,7 +149,7 @@ class RawTransportFactory
     }
 
     /**
-     * @param OutgoingAccount\PhpMailConfig $conifg
+     * @param  OutgoingAccount\PhpMailConfig $conifg
      * @return \Swift_MailTransport
      */
     public function createPhpMailTransport(OutgoingAccount\PhpMailConfig $conifg)
@@ -166,12 +164,13 @@ class RawTransportFactory
     }
 
     /**
-     * @param OutgoingAccount\ExchangeConfig $config
+     * @param  OutgoingAccount\ExchangeConfig $config
      * @return RawExchangeTransport
      */
     public function createExchangeTransport(OutgoingAccount\ExchangeConfig $config)
     {
         $decoder = new Rfc2822Decoder();
+
         return new RawExchangeTransport($config, $decoder, $this->logger);
     }
 }

@@ -45,7 +45,7 @@ interface PersonAwareInterface
     /**
      * Set person email
      *
-     * @param string $person_email
+     * @param  string $person_email
      * @return $this
      */
     public function setPersonEmail($person_email);

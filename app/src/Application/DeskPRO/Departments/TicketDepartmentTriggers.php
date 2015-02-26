@@ -35,5 +35,4 @@ namespace Application\DeskPRO\Departments;
 
 class TicketDepartmentTriggers
 {
-
 }

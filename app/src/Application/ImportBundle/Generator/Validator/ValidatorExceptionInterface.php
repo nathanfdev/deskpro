@@ -33,5 +33,4 @@ namespace Application\ImportBundle\Generator\Validator;
  */
 interface ValidatorExceptionInterface
 {
-
 }

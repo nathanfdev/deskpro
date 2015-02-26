@@ -94,7 +94,10 @@ class DownloadSearch extends SearcherAbstract
     {
         $ids = $this->getMatches($limit);
 
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
+
         return App::getEntityRepository('DeskPRO:Download')->getByResultIds($ids);
     }
 
@@ -120,7 +123,7 @@ class DownloadSearch extends SearcherAbstract
 
         $dis_ids = implode(',', $dis_ids);
 
-        return '('.$where.' AND downloads.category_id NOT IN(' . $dis_ids . '))';
+        return '('.$where.' AND downloads.category_id NOT IN('.$dis_ids.'))';
     }
 
     /**
@@ -140,14 +143,14 @@ class DownloadSearch extends SearcherAbstract
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
-                $sql .= $j[1] . " ";
+                $sql .= $j[1]." ";
             } else {
                 $sql .= "LEFT JOIN $j ON $j.download_id = downloads.id ";
             }
         }
 
         if (is_array($order_by)) {
-            list ($order_join, $order_by) = $order_by;
+            list($order_join, $order_by) = $order_by;
 
             $sql .= " $order_join ";
         }
@@ -160,11 +163,11 @@ class DownloadSearch extends SearcherAbstract
         if (!$this->findTerm(self::TERM_AGENT_LIST)) {
             $where_perm = $this->getPermWhere();
             if ($where_perm) {
-                $sql .= $where_perm . ' AND ';
+                $sql .= $where_perm.' AND ';
             }
         }
         if ($parts['wheres']) {
-            $sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
+            $sql .= '('.implode(") AND (", $parts['wheres']).')';
         } else {
             $sql .= '1';
         }
@@ -200,21 +203,20 @@ class DownloadSearch extends SearcherAbstract
         $parts = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
-
         #------------------------------
         # Add joins
         #------------------------------
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
-                $sql .= $j[1] . " ";
+                $sql .= $j[1]." ";
             } else {
                 $sql .= "LEFT JOIN $j ON $j.download_id = downloads.id ";
             }
         }
 
         if (is_array($order_by)) {
-            list ($order_join, $order_by) = $order_by;
+            list($order_join, $order_by) = $order_by;
 
             $sql .= " $order_join ";
         }
@@ -227,11 +229,11 @@ class DownloadSearch extends SearcherAbstract
         if (!$this->findTerm(self::TERM_AGENT_LIST)) {
             $where_perm = $this->getPermWhere();
             if ($where_perm) {
-                $sql .= $where_perm . ' AND ';
+                $sql .= $where_perm.' AND ';
             }
         }
         if ($parts['wheres']) {
-            $sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
+            $sql .= '('.implode(") AND (", $parts['wheres']).')';
         } else {
             $sql .= '1';
         }
@@ -248,7 +250,6 @@ class DownloadSearch extends SearcherAbstract
         return $sql;
     }
 
-
     /**
      * Get the ORDER BY clause based on order info set.
      *
@@ -264,7 +265,7 @@ class DownloadSearch extends SearcherAbstract
         list($type, $dir) = $this->order_by;
 
         $dir = strtoupper($dir);
-        if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
+        if ($dir != self::ORDER_ASC and $dir != self::ORDER_DESC) {
             $dir = self::ORDER_DESC;
         }
 
@@ -288,7 +289,6 @@ class DownloadSearch extends SearcherAbstract
         return $order_by;
     }
 
-
     /**
      * Get the SQL parts we need in the query.
      *
@@ -296,7 +296,9 @@ class DownloadSearch extends SearcherAbstract
      */
     public function getSqlParts()
     {
-        if ($this->sql_parts !== null) return $this->sql_parts;
+        if ($this->sql_parts !== null) {
+            return $this->sql_parts;
+        }
 
         $db = App::getDbRead('search.filter.downloads');
         $tr = App::getTranslator();
@@ -329,17 +331,17 @@ class DownloadSearch extends SearcherAbstract
 
                 case self::TERM_STATUS:
 
-                    $choice = (array)$choice;
+                    $choice = (array) $choice;
                     $choice = array_pop($choice);
 
                     // Normal vis status
-                    if (strpos($choice, '.') === false){
+                    if (strpos($choice, '.') === false) {
                         $status = $choice;
                         $hidden_status = '';
 
                     // Formatted: hidden.hidden_status
                     } else {
-                        list ($status, $hidden_status) = explode('.', $choice, 2);
+                        list($status, $hidden_status) = explode('.', $choice, 2);
                     }
 
                     if ($hidden_status) {
@@ -350,7 +352,7 @@ class DownloadSearch extends SearcherAbstract
 
                     $phrase_vars = array('field' => 'Status', 'value' => ($hidden_status ? $hidden_status : $status));
 
-                    if ($op == self::OP_NOT OR $op == self::OP_NOTCONTAINS) {
+                    if ($op == self::OP_NOT or $op == self::OP_NOTCONTAINS) {
                         $this->summary[] = $tr->phrase('agent.general.x_is_not_y', $phrase_vars);
                     } else {
                         $this->summary[] = $tr->phrase('agent.general.x_is_y', $phrase_vars);
@@ -367,7 +369,7 @@ class DownloadSearch extends SearcherAbstract
 
                 case self::TERM_CATEGORY:
                 case self::TERM_CATEGORY_SPECIFIC:
-                    $base_ids = (array)((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
+                    $base_ids = (array) ((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
                     $ids = array();
 
                     if ($term == self::TERM_CATEGORY_SPECIFIC) {
@@ -383,7 +385,7 @@ class DownloadSearch extends SearcherAbstract
                     $wheres[] = $this->_choiceMatch('downloads.category_id', $op, $ids);
 
                     $this->summary[] = $this->_choiceSummary('Category', $op, $choice, function ($choice) {
-                        $titles = App::getEntityRepository('DeskPRO:DownloadCategory')->getNames((array)$choice);
+                        $titles = App::getEntityRepository('DeskPRO:DownloadCategory')->getNames((array) $choice);
 
                         return $titles;
                     });
@@ -399,14 +401,14 @@ class DownloadSearch extends SearcherAbstract
                     }
 
                     $w = array();
-                    $w[] = '(' . $this->_stringSearch("downloads.title", $op, $string, $type) . ')';
-                    $w[] = '(' . $this->_stringSearch("downloads.content", $op, $string, $type) . ')';
+                    $w[] = '('.$this->_stringSearch("downloads.title", $op, $string, $type).')';
+                    $w[] = '('.$this->_stringSearch("downloads.content", $op, $string, $type).')';
 
-                    $wheres[] = implode(' OR ' , $w);
+                    $wheres[] = implode(' OR ', $w);
                     break;
 
                 case self::TERM_DOWNLOADS:
-                    $choice = (array)$choice;
+                    $choice = (array) $choice;
                     $choice = array_values($choice);
 
                     $wheres[] = $this->_rangeMatch('downloads.num_downloads', $op, $choice);
@@ -451,7 +453,7 @@ class DownloadSearch extends SearcherAbstract
 
                     $choices_in = array();
                     if (is_array($choice)) {
-                        foreach ((array)$choice as $c) {
+                        foreach ((array) $choice as $c) {
                             $choices_in[] = $db->quote($c);
                         }
                         $choices_in = implode(',', $choices_in);
@@ -463,21 +465,21 @@ class DownloadSearch extends SearcherAbstract
                         case self::OP_IS:
                             $joins[] = array(
                                 'labels_downloads',
-                                "LEFT JOIN labels_downloads AS $join_name ON ($join_name.download_id = downloads.id)"
+                                "LEFT JOIN labels_downloads AS $join_name ON ($join_name.download_id = downloads.id)",
                             );
-                            $wheres[] = "$join_name.label = " . $db->quote($choice);
+                            $wheres[] = "$join_name.label = ".$db->quote($choice);
                             break;
                         case self::OP_NOT:
                             $joins[] = array(
                                 'labels_downloads',
-                                "LEFT JOIN labels_downloads AS $join_name ON ($join_name.download_id = downloads.id AND $join_name.label = '.$db->quote($choice).')"
+                                "LEFT JOIN labels_downloads AS $join_name ON ($join_name.download_id = downloads.id AND $join_name.label = '.$db->quote($choice).')",
                             );
                             $wheres[] = "$join_name.person_id IS NULL";
                             break;
                         case self::OP_CONTAINS:
                             $joins[] = array(
                                 'labels_downloads',
-                                "LEFT JOIN labels_downloads AS $join_name ON ($join_name.download_id = downloads.id)"
+                                "LEFT JOIN labels_downloads AS $join_name ON ($join_name.download_id = downloads.id)",
                             );
                             $wheres[] = "$join_name.label IN ($choices_in)";
                             break;
@@ -485,7 +487,7 @@ class DownloadSearch extends SearcherAbstract
                         case self::OP_NOTCONTAINS:
                             $joins[] = array(
                                 'labels_downloads',
-                                "LEFT JOIN labels_downloads AS $join_name ON ($join_name.download_id = downloads.id AND $join_name.label IN ($choices_in)"
+                                "LEFT JOIN labels_downloads AS $join_name ON ($join_name.download_id = downloads.id AND $join_name.label IN ($choices_in)",
                             );
                             $wheres[] = "$join_name.person_id IS NULL";
                             break;
@@ -500,7 +502,7 @@ class DownloadSearch extends SearcherAbstract
 
         $this->sql_parts = array(
             'joins' => $joins,
-            'wheres' => $wheres
+            'wheres' => $wheres,
         );
 
         return $this->sql_parts;

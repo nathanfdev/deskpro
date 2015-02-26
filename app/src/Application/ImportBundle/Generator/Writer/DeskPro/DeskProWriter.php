@@ -33,7 +33,6 @@ use Application\ImportBundle\Generator\LoggerAwareInterface;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Application\ImportBundle\Generator\Writer\DeskPro\Importer\SkipDuplicateInterface;
-use Application\ImportBundle\Generator\Writer\WriterException;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
@@ -106,13 +105,11 @@ final class DeskProWriter extends AbstractWriter
                 }
 
                 $this->entity_manager->flush();
-
             } catch (Importer\Mapper\MapperException $e) {
                 $this->logWarning(sprintf(
                     'Unable to create `%s` with oid `%s`. Reason %s',
                     $entity->getType(), $entity->getOid(), $e->__toString()
                 ));
-
             } catch (Importer\DuplicateException $e) {
                 $this->logWarning(sprintf(
                     'Duplicate entity `%s` with oid `%s` (Skipping)',

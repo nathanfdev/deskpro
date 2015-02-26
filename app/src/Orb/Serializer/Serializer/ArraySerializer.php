@@ -49,7 +49,6 @@ class ArraySerializer implements SerializerInterface
         return $data;
     }
 
-
     /**
      * {@inheritdoc}
      */

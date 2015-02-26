@@ -86,7 +86,6 @@ class TicketEdit implements PersonContextInterface
         /** @var $tcheck \Application\DeskPRO\People\PermissionChecker\TicketChecker */
 
         foreach ($actions as $term => $action) {
-
             $term_id = null;
 
             // $term of ticket_field[12] becomes $term=ticket_field, $term_id=12
@@ -286,7 +285,7 @@ class TicketEdit implements PersonContextInterface
                             break;
                         }
                     }
-                    foreach ((array)$action as $label) {
+                    foreach ((array) $action as $label) {
                         $this->ticket->getLabelManager()->addLabel($label);
                     }
                     break;
@@ -298,7 +297,7 @@ class TicketEdit implements PersonContextInterface
                             break;
                         }
                     }
-                    foreach ((array)$action as $label) {
+                    foreach ((array) $action as $label) {
                         $this->ticket->getLabelManager()->removeLabel($label);
                     }
                     break;

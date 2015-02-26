@@ -63,7 +63,6 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
         return $multi;
     }
 
-
     ###################################################################################################################
     # list
     ####################################################################################################################
@@ -166,7 +165,6 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
         return $this->createSuccessResponse(array('old_id' => $old_id));
     }
 
-
     ####################################################################################################################
     # get-logs
     ####################################################################################################################
@@ -183,10 +181,9 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
         $logs = $this->getApiData($logs);
 
         return $this->createSuccessResponse(array(
-            'logs' => $logs
+            'logs' => $logs,
         ));
     }
-
 
     ####################################################################################################################
     # regenerate
@@ -216,7 +213,7 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
     {
         /** @var $entry \Application\DeskPRO\Entity\ApiKeyLog */
         if (!$entry = $this->em->find('DeskPRO:ApiKeyLog', $logEntryId)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
         /** @var ApiKey $key */
         $key = $entry->key;

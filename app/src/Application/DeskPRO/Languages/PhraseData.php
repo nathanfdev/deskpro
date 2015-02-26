@@ -65,7 +65,6 @@ class PhraseData
         $this->lang_dir     = rtrim($lang_dir, '/');
     }
 
-
     /**
      * @param  TicketDepartments $ticket_deps
      * @param  Language          $language
@@ -90,14 +89,14 @@ class PhraseData
                 $dep = $dep_row['object'];
 
                 if ($type == 'user') {
-                    $id = $phrase_group . '.' . $dep->id . '_user';
-                    $id2 = $phrase_group . '.' . $dep->id . '_title';
+                    $id = $phrase_group.'.'.$dep->id.'_user';
+                    $id2 = $phrase_group.'.'.$dep->id.'_title';
                     $custom = isset($custom_phrases[$id]) ? $custom_phrases[$id] : null;
                     if (!$custom) {
                         $custom = isset($custom_phrases[$id2]) ? $custom_phrases[$id2] : null;
                     }
                 } else {
-                    $id = $phrase_group . '.' . $dep->id . '_title';
+                    $id = $phrase_group.'.'.$dep->id.'_title';
                     $custom = isset($custom_phrases[$id]) ? $custom_phrases[$id] : null;
                 }
 
@@ -107,16 +106,16 @@ class PhraseData
                     'type'    => 'ticket_department',
                     'type_id' => $dep->id,
                     'default' => $dep->title,
-                    'lang'    => $dep->user_title ? : $dep->title,
+                    'lang'    => $dep->user_title ?: $dep->title,
                     'custom'  => $custom,
                     'type'    => $type,
                 );
 
                 // The default for the language
-                $row['lang_default'] = $row['lang'] ? : $row['default'];
+                $row['lang_default'] = $row['lang'] ?: $row['default'];
 
                 // The actual set value that will be used
-                $row['set'] = $row['custom'] ? : $row['lang_default'];
+                $row['set'] = $row['custom'] ?: $row['lang_default'];
 
                 $phrase_data[] = $row;
             }
@@ -124,7 +123,6 @@ class PhraseData
 
         return $phrase_data;
     }
-
 
     /**
      * @param  TicketCategories $ticket_cats
@@ -147,7 +145,7 @@ class PhraseData
             /** @var \Application\DeskPRO\Entity\TicketCategory $cat */
             $cat = $cat_row['object'];
 
-            $id = $phrase_group . '.' . $cat->id . '_title';
+            $id = $phrase_group.'.'.$cat->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -171,7 +169,6 @@ class PhraseData
         return $phrase_data;
     }
 
-
     /**
      * @param  TicketWorkflows $ticket_works
      * @param  Language        $language
@@ -190,7 +187,7 @@ class PhraseData
         $phrase_data = array();
 
         foreach ($ticket_works->getAll() as $work) {
-            $id = $phrase_group . '.' . $work->id . '_title';
+            $id = $phrase_group.'.'.$work->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -214,7 +211,6 @@ class PhraseData
         return $phrase_data;
     }
 
-
     /**
      * @param  TicketPriorities $ticket_pris
      * @param  Language         $language
@@ -233,7 +229,7 @@ class PhraseData
         $phrase_data = array();
 
         foreach ($ticket_pris->getAll() as $pri) {
-            $id = $phrase_group . '.' . $pri->id . '_title';
+            $id = $phrase_group.'.'.$pri->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -257,7 +253,6 @@ class PhraseData
         return $phrase_data;
     }
 
-
     /**
      * @param  ChatDepartments $chat_deps
      * @param  Language        $language
@@ -279,7 +274,7 @@ class PhraseData
             /** @var \Application\DeskPRO\Entity\Department $dep */
             $dep   = $dep_row['object'];
 
-            $id = $phrase_group . '.' . $dep->id . '_title';
+            $id = $phrase_group.'.'.$dep->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -303,7 +298,6 @@ class PhraseData
         return $phrase_data;
     }
 
-
     /**
      * @param  Products $products
      * @param  Language $language
@@ -325,7 +319,7 @@ class PhraseData
             /** @var \Application\DeskPRO\Entity\Product $prod */
             $prod   = $prod_row['object'];
 
-            $id = $phrase_group . '.' . $prod->id . '_title';
+            $id = $phrase_group.'.'.$prod->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -348,7 +342,6 @@ class PhraseData
 
         return $phrase_data;
     }
-
 
     /**
      * @param  FieldManager $fm
@@ -380,7 +373,7 @@ class PhraseData
         }
 
         $fn_get_rows = function (CustomDefAbstract $field, $depth = 0) use ($phrase_group, $custom_phrases, $fm, &$fn_get_rows) {
-            $id = $phrase_group . '.' . $field->id . '_title';
+            $id = $phrase_group.'.'.$field->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -415,7 +408,6 @@ class PhraseData
         return $phrase_data;
     }
 
-
     /**
      * @param  Language $language
      * @return array
@@ -442,7 +434,7 @@ class PhraseData
         $phrase_data = array();
 
         foreach ($all_statuses as $status) {
-            $id = $phrase_group . '.' . $status->id . '_title';
+            $id = $phrase_group.'.'.$status->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -489,7 +481,7 @@ class PhraseData
         $phrase_data = array();
 
         foreach ($all_types as $type) {
-            $id = $phrase_group . '.' . $type->id . '_title';
+            $id = $phrase_group.'.'.$type->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -509,7 +501,6 @@ class PhraseData
 
         return $phrase_data;
     }
-
 
     /**
      * @param  ArticleCategoryRepository $repos
@@ -535,7 +526,7 @@ class PhraseData
             /** @var \Application\DeskPRO\Entity\ArticleCategory $cat */
             $cat = $all[$cat_row['id']];
 
-            $id = $phrase_group . '.' . $cat->id . '_title';
+            $id = $phrase_group.'.'.$cat->id.'_title';
 
             $row = array(
                 'id'      => $id,
@@ -558,7 +549,6 @@ class PhraseData
 
         return $phrase_data;
     }
-
 
     /**
      * @param  Language|null $language
@@ -605,7 +595,6 @@ class PhraseData
 
         return $phrase_data;
     }
-
 
     /**
      * @param  Language $language
@@ -662,7 +651,6 @@ class PhraseData
         return $phrase_data;
     }
 
-
     /**
      * Returns a k=>v array of phrases from the system lang files
      *
@@ -681,19 +669,19 @@ class PhraseData
         }
 
         $path = $this->lang_dir
-            . DIRECTORY_SEPARATOR
-            . $lang_name
-            . DIRECTORY_SEPARATOR
-            . $parts[0]
-            . DIRECTORY_SEPARATOR
-            . $parts[1]
-            . '.php';
+            .DIRECTORY_SEPARATOR
+            .$lang_name
+            .DIRECTORY_SEPARATOR
+            .$parts[0]
+            .DIRECTORY_SEPARATOR
+            .$parts[1]
+            .'.php';
 
         if (!file_exists($path)) {
             return array();
         }
 
-        $phrases = require($path);
+        $phrases = require $path;
 
         return $phrases;
     }

@@ -74,7 +74,6 @@ class GenLanguagePackFile
         $this->phrases[$id] = $phrase;
     }
 
-
     /**
      * Add an array of phrases
      *
@@ -84,7 +83,6 @@ class GenLanguagePackFile
     {
         $this->phrases = array_merge($this->phrases, $phrases);
     }
-
 
     /**
      * Get the generated document as a string
@@ -97,7 +95,6 @@ class GenLanguagePackFile
 
         return $dom->saveXML();
     }
-
 
     /**
      * Write the generated XML document to a file
@@ -113,7 +110,6 @@ class GenLanguagePackFile
             throw new \RuntimeException("Failed to write XML to file");
         }
     }
-
 
     /**
      * Get the generated DOMDocuemtn

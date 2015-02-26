@@ -38,7 +38,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Event;
 use Application\DeskPRO\Entity;
 
-
 /**
  * A message server is something that listenes on the ClientMessages event
  * to handle dispatching messages through various protocols.

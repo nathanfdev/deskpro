@@ -148,7 +148,7 @@ class Pop3 extends AbstractFetcher
                 break;
 
             default:
-                throw new \InvalidArgumentException("Unknown account type: " . $this->account->incoming_account->getType());
+                throw new \InvalidArgumentException("Unknown account type: ".$this->account->incoming_account->getType());
         }
 
         $options['logger'] = $this->logger;
@@ -185,7 +185,8 @@ class Pop3 extends AbstractFetcher
         if ($can === null) {
             try {
                 $can = $this->getStorage()->canUniqueId();
-            } catch(\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         return $can;
@@ -222,7 +223,7 @@ class Pop3 extends AbstractFetcher
 
             $id_to_num = array_flip($this->getStorage()->getUniqueId());
 
-            $this->logger->log("Server has " . count($id_to_num) . " messages", 'debug');
+            $this->logger->log("Server has ".count($id_to_num)." messages", 'debug');
 
             if (count($id_to_num) > 2500) {
                 $this->logger->log("Server has >= 2500 messages, breaking", 'ERR');
@@ -242,7 +243,7 @@ class Pop3 extends AbstractFetcher
                 WHERE email_account_id = ?
             ", array($this->account->getId()));
 
-            $this->logger->log("System has " . count($read_ids) . " tracked IDs", 'debug');
+            $this->logger->log("System has ".count($read_ids)." tracked IDs", 'debug');
 
             foreach ($read_ids as $id) {
                 if (isset($id_to_num[$id])) {
@@ -262,8 +263,7 @@ class Pop3 extends AbstractFetcher
                 }
             }
 
-            $this->logger->log("Message list contains " . count($this->message_list) . " new messages", 'debug');
-
+            $this->logger->log("Message list contains ".count($this->message_list)." new messages", 'debug');
         } else {
             $list = $this->getStorage()->getSize();
 
@@ -272,7 +272,7 @@ class Pop3 extends AbstractFetcher
                 $this->message_list[] = array('num' => $num, 'size' => $size, 'uid' => null);
             }
 
-            $this->logger->log("Message list contains " . count($this->message_list) . " messages", 'debug');
+            $this->logger->log("Message list contains ".count($this->message_list)." messages", 'debug');
         }
     }
 
@@ -312,7 +312,8 @@ class Pop3 extends AbstractFetcher
         if (!$message_id && $this->canUniqueId()) {
             try {
                 $message_id = $this->getStorage()->getProtocol()->uniqueid($message_num);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         $start_time = microtime(true);
@@ -325,11 +326,11 @@ class Pop3 extends AbstractFetcher
         $raw_message->size = $message_size;
 
         if ($this->max_size && $raw_message->size && $raw_message->size > $this->max_size) {
-            $raw_message->content = $this->getStorage()->getProtocol()->top($message_num) . "\n\n";
+            $raw_message->content = $this->getStorage()->getProtocol()->top($message_num)."\n\n";
         } else {
             if ($memory_protection) {
                 $this->logger->logInfo('Memory protected enabled');
-                $content_file = dp_get_backup_dir() . '/eml-' . uniqid('', true) . '.eml';
+                $content_file = dp_get_backup_dir().'/eml-'.uniqid('', true).'.eml';
                 $fp = fopen($content_file, 'w');
                 if ($fp) {
                     $this->getStorage()->getProtocol()->retrieveToStream($message_num, $fp);
@@ -346,7 +347,7 @@ class Pop3 extends AbstractFetcher
                     KernelErrorHandler::logException($e, false);
                 }
 
-                $this->logger->logInfo('Message source saved to: ' . $content_file);
+                $this->logger->logInfo('Message source saved to: '.$content_file);
                 $raw_message->content = file_get_contents($content_file);
                 $this->backup_file = $content_file;
             }
@@ -364,14 +365,14 @@ class Pop3 extends AbstractFetcher
         }
 
         $EOL = "\n";
-        if (strpos($raw_message->content, $EOL . $EOL)) {
-            list($headers, ) = explode($EOL . $EOL, $raw_message->content, 2);
+        if (strpos($raw_message->content, $EOL.$EOL)) {
+            list($headers,) = explode($EOL.$EOL, $raw_message->content, 2);
         } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers, ) = explode("\r\n\r\n", $raw_message->content, 2);
+            list($headers,) = explode("\r\n\r\n", $raw_message->content, 2);
         } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers, ) = explode("\n\n", $raw_message->content, 2);
+            list($headers,) = explode("\n\n", $raw_message->content, 2);
         } else {
-            @list($headers, ) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers,) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
         }
 
         $raw_message->headers = $headers;

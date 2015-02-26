@@ -70,7 +70,6 @@ class PeopleFieldAction extends AbstractAction
         }
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\CustomDefTicket
      */
@@ -79,7 +78,6 @@ class PeopleFieldAction extends AbstractAction
         return $this->field_def;
     }
 
-
     /**
      * @return mixed
      */
@@ -87,7 +85,6 @@ class PeopleFieldAction extends AbstractAction
     {
         return $this->set_value;
     }
-
 
     /**
      * Apply the property to the ticket
@@ -100,7 +97,6 @@ class PeopleFieldAction extends AbstractAction
         $this->field_manager->saveFormToObject($this->set_value['custom_fields'], $person);
     }
 
-
     /**
      * Get an array of actions that would be performed on the ticket
      *
@@ -109,7 +105,7 @@ class PeopleFieldAction extends AbstractAction
     public function getApplyActions(Ticket $ticket)
     {
         return array(
-            array('action' => 'person_field', 'person_field_id' => $this->field_def->id, 'value' => $this->set_value)
+            array('action' => 'person_field', 'person_field_id' => $this->field_def->id, 'value' => $this->set_value),
         );
     }
 
@@ -131,9 +127,9 @@ class PeopleFieldAction extends AbstractAction
         $title = $this->field_def->title;
         $value = $this->set_value;
 
-        $value = isset($value['custom_fields']['field_' . $this->field_def->getId()]) ? $value['custom_fields']['field_' . $this->field_def->getId()] : '';
+        $value = isset($value['custom_fields']['field_'.$this->field_def->getId()]) ? $value['custom_fields']['field_'.$this->field_def->getId()] : '';
         if ($this->field_def->getTypeName() == 'choice') {
-            $value_ids = (array)$value;
+            $value_ids = (array) $value;
             $value = array();
             $titles = $this->field_def->getAllChildTitles();
             foreach ($value_ids as $id) {
@@ -152,6 +148,6 @@ class PeopleFieldAction extends AbstractAction
      */
     public function getActionName()
     {
-        return get_class($this) . '[' . $this->field_def->getId() . ']';
+        return get_class($this).'['.$this->field_def->getId().']';
     }
 }

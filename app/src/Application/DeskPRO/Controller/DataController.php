@@ -41,7 +41,6 @@ class DataController extends AbstractController
     {
         $js = array();
 
-
         $js = implode("\n", $js);
         $response = App::getResponse();
         $response->headers->set('Content-Type', 'application/javascript');
@@ -67,7 +66,7 @@ class DataController extends AbstractController
         \Application\DeskPRO\Service\ErrorReporter::reportJsError($info);
 
         return $this->createJsonResponse(array(
-            'logged' => true
+            'logged' => true,
         ));
     }
 

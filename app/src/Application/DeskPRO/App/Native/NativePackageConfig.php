@@ -65,17 +65,16 @@ class NativePackageConfig
      */
     public static function createFromPackage(AppPackage $package, $app_dir)
     {
-        $path = $app_dir . '/native/native_config.php';
+        $path = $app_dir.'/native/native_config.php';
 
         if (file_exists($path)) {
-            $config = require($path);
+            $config = require $path;
         } else {
             $config = array();
         }
 
         return new self($package->name, $app_dir, $config);
     }
-
 
     /**
      * @param string $native_name
@@ -89,7 +88,6 @@ class NativePackageConfig
         $this->config = $config;
     }
 
-
     /**
      * @return string
      */
@@ -97,7 +95,6 @@ class NativePackageConfig
     {
         return $this->native_name;
     }
-
 
     /**
      * @return string|null
@@ -107,7 +104,6 @@ class NativePackageConfig
         return isset($this->config['api']['package_request_handler']) ? $this->config['api']['package_request_handler'] : null;
     }
 
-
     /**
      * @return string|null
      */
@@ -115,7 +111,6 @@ class NativePackageConfig
     {
         return isset($this->config['api']['app_request_handler']) ? $this->config['api']['app_request_handler'] : null;
     }
-
 
     /**
      * @return string|null
@@ -125,7 +120,6 @@ class NativePackageConfig
         return isset($this->config['agent']['request_handler']) ? $this->config['agent']['request_handler'] : null;
     }
 
-
     /**
      * @return string|null
      */
@@ -133,7 +127,6 @@ class NativePackageConfig
     {
         return isset($this->config['install']['handler']) ? $this->config['install']['handler'] : null;
     }
-
 
     /**
      * @return string|null
@@ -143,7 +136,6 @@ class NativePackageConfig
         return isset($this->config['event']['handler']) ? $this->config['event']['handler'] : null;
     }
 
-
     /**
      * @return array
      */
@@ -151,7 +143,6 @@ class NativePackageConfig
     {
         return isset($this->config['services']) ? $this->config['services'] : array();
     }
-
 
     /**
      * @return string
@@ -165,7 +156,6 @@ class NativePackageConfig
         return $this->class_namespace;
     }
 
-
     /**
      * @return string
      */
@@ -174,12 +164,11 @@ class NativePackageConfig
         return $this->app_dir;
     }
 
-
     /**
      * @return string
      */
     public function getNativeDir()
     {
-        return $this->app_dir . '/native';
+        return $this->app_dir.'/native';
     }
 }

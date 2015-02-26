@@ -57,7 +57,7 @@ class ZipperService
                 break;
 
             case 'pcl_zip':
-                require_once(DP_ROOT . '/vendor-src/pclzip/pclzip.lib.php');
+                require_once DP_ROOT.'/vendor-src/pclzip/pclzip.lib.php';
                 $adapter = new Zip\Adapter\PclZipAdapter();
                 break;
 

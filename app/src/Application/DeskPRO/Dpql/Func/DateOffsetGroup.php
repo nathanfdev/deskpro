@@ -61,8 +61,7 @@ class DateOffsetGroup extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $argCount = count($this->_arguments);
 
         if ($argCount != 1 && $argCount != 2) {
@@ -73,7 +72,7 @@ class DateOffsetGroup extends AbstractFunc
             $value = reset($this->_arguments);
             $prepped = $value->prepare($statement, $section, $stack, $select, $result);
 
-            $name = 'DATE_OFFSET_GROUP(' . $prepped->name() . ')';
+            $name = 'DATE_OFFSET_GROUP('.$prepped->name().')';
             $ifSql = $prepped->sql();
         } else {
             $valueTo = reset($this->_arguments);
@@ -82,8 +81,8 @@ class DateOffsetGroup extends AbstractFunc
             $toPrepped = $valueTo->prepare($statement, $section, $stack, $select, $result);
             $fromPrepped = $valueFrom->prepare($statement, $section, $stack, $select, $result);
 
-            $name = 'DATE_OFFSET_GROUP(' . $toPrepped->name() . ', ' . $fromPrepped->name() . ')';
-            $ifSql = 'UNIX_TIMESTAMP(' . $toPrepped->sql() . ') - UNIX_TIMESTAMP(' . $fromPrepped->sql() . ')';
+            $name = 'DATE_OFFSET_GROUP('.$toPrepped->name().', '.$fromPrepped->name().')';
+            $ifSql = 'UNIX_TIMESTAMP('.$toPrepped->sql().') - UNIX_TIMESTAMP('.$fromPrepped->sql().')';
         }
 
         $groups = array(
@@ -110,7 +109,7 @@ class DateOffsetGroup extends AbstractFunc
         $maxSentinel = 630720000;
 
         $sql = $maxSentinel; // this value must be higher than all the group values
-        foreach ($groups AS $max => $value) {
+        foreach ($groups as $max => $value) {
             $sql = "IF($ifSql < $max, $max, $sql)";
         }
         $sql = "IF($ifSql IS NULL, 0, $sql)";
@@ -132,7 +131,7 @@ class DateOffsetGroup extends AbstractFunc
             if ($max >= $maxSentinel) {
                 $fills[] = array($maxSentinel, $maxSentinel, $maxSentinel);
             }
-            foreach ($groups AS $groupMax => $null) {
+            foreach ($groups as $groupMax => $null) {
                 if ($groupMax <= $max) {
                     $fills[] = array($groupMax, $groupMax, $groupMax);
                 }

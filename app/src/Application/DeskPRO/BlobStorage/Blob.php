@@ -79,7 +79,6 @@ class Blob
         }
     }
 
-
     /**
      * @param $path
      */
@@ -87,7 +86,6 @@ class Blob
     {
         $this->path = $path;
     }
-
 
     /**
      * @return string
@@ -97,7 +95,6 @@ class Blob
         return $this->path;
     }
 
-
     /**
      * @return string
      */
@@ -106,7 +103,6 @@ class Blob
         return $this->content_type;
     }
 
-
     /**
      * @return string
      */
@@ -114,7 +110,6 @@ class Blob
     {
         return $this->filename;
     }
-
 
     /**
      * @return string

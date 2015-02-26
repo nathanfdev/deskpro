@@ -54,7 +54,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         return $multi;
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -117,12 +116,12 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 
         if ($id) {
             return $this->createSuccessResponse(array(
-                'field_id' => $field->id
+                'field_id' => $field->id,
             ));
         } else {
             return $this->createSuccessResponse(array(
                 'field_id' => $field->id,
-                $this->generateUrl('api_ticket_fields_get', array('id' => $field->id))
+                $this->generateUrl('api_ticket_fields_get', array('id' => $field->id)),
             ));
         }
     }
@@ -156,7 +155,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         return $this->createSuccessResponse();
     }
 
-
     ####################################################################################################################
     # list-categories
     ####################################################################################################################
@@ -184,7 +182,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 
         return $this->createApiResponse($data);
     }
-
 
     ####################################################################################################################
     # save-categories
@@ -312,7 +309,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         return $this->createSuccessResponse();
     }
 
-
     ####################################################################################################################
     # list-workflows
     ####################################################################################################################
@@ -334,7 +330,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 
         return $this->createApiResponse($data);
     }
-
 
     ####################################################################################################################
     # save-workflows

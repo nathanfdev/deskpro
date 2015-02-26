@@ -33,7 +33,6 @@
 
 namespace Application\DeskPRO\Controller;
 
-
 class BlobController extends AbstractController
 {
     /**
@@ -52,7 +51,7 @@ class BlobController extends AbstractController
             $file = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
             $response->setContent($file);
         } else {
-            $file = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/assets/favicon.ico');
+            $file = file_get_contents(DP_ROOT.'/src/Application/DeskPRO/Resources/assets/favicon.ico');
 
             $response = $this->container->get('response');
             $response->headers->set('Content-Length', strlen($file));

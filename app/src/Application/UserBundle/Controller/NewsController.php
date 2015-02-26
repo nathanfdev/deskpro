@@ -61,7 +61,9 @@ class NewsController extends AbstractController
         if ($this->in->getUint('p')) {
             $page = $this->in->getUint('p');
         }
-        if (!$page || $page < 1) $page = 1;
+        if (!$page || $page < 1) {
+            $page = 1;
+        }
 
         $search_options = array();
         $search_options['order_by'] = $this->in->getString('order_by');
@@ -73,7 +75,6 @@ class NewsController extends AbstractController
             $category = null;
 
             if ($category_id) {
-
                 if ($category_id && $structure->hasNewsCategory($category_id)) {
                     $category = $structure->getNewsCategory($category_id);
                 }
@@ -82,6 +83,7 @@ class NewsController extends AbstractController
                     if ($this->db->count('news_categories', array('id' => $category_id))) {
                         return $this->renderLoginOrPermissionError();
                     }
+
                     return $this->renderStandardError('@user.error.not-found-title', '@user.error.not-found', 404);
                 }
 
@@ -139,7 +141,7 @@ class NewsController extends AbstractController
         $pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
         $limit = array(
             'offset' => ($pageinfo['curpage']-1) * $per_page,
-            'max' => $per_page
+            'max' => $per_page,
         );
 
         $news_ids = $searcher->getMatches($limit);
@@ -177,7 +179,7 @@ class NewsController extends AbstractController
             'num_results' => $total,
             'pageinfo' => $pageinfo,
             'per_page' => $per_page,
-            'show_more' => $show_more
+            'show_more' => $show_more,
         ));
     }
 
@@ -229,9 +231,9 @@ class NewsController extends AbstractController
         $rating = $content_rating->getRating();
 
         if ($rating_log_search_id = $content_rating->getSearchLogId()) {
-            $this->session->set('news.' . $news['id'], $rating_log_search_id);
-        } elseif ($this->session->has('news.' . $news['id'])) {
-            $rating_log_search_id = $this->session->get('news.' . $news['id']);
+            $this->session->set('news.'.$news['id'], $rating_log_search_id);
+        } elseif ($this->session->has('news.'.$news['id'])) {
+            $rating_log_search_id = $this->session->get('news.'.$news['id']);
         } else {
             $rating_log_search_id = 0;
         }
@@ -255,11 +257,9 @@ class NewsController extends AbstractController
 
             'facebook_like' => isset($facebook_like) ? $facebook_like : null,
 
-            'related_content' => $related_content
+            'related_content' => $related_content,
         ));
     }
-
-
 
     /**
      * Submit a new comment
@@ -305,7 +305,6 @@ class NewsController extends AbstractController
         }
 
         if ($this->get('request')->getMethod() == 'POST') {
-
             $trap_fail = false;
             if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
                 $trap_fail = true;
@@ -313,7 +312,7 @@ class NewsController extends AbstractController
 
             if (!$this->consumeRequest('newcomment_news') || $trap_fail) {
                 return $this->redirectRoute('user_news_view', array(
-                    'slug' => $post->getUrlSlug()
+                    'slug' => $post->getUrlSlug(),
                 ));
             }
 
@@ -323,7 +322,7 @@ class NewsController extends AbstractController
                 $this->session->setFlash('comment_error', $validator->getErrors(true));
 
                 return $this->redirectRoute('user_news_view', array(
-                    'slug' => $post->getUrlSlug()
+                    'slug' => $post->getUrlSlug(),
                 ));
             }
 
@@ -341,7 +340,7 @@ class NewsController extends AbstractController
         }
 
         return $this->redirectRoute('user_news_view', array(
-            'slug' => $post->getUrlSlug()
+            'slug' => $post->getUrlSlug(),
         ));
     }
 }

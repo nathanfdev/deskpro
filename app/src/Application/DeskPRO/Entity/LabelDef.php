@@ -103,7 +103,6 @@ class LabelDef extends DomainObject
         return $table;
     }
 
-
     /**
      * @param string $c
      */
@@ -133,8 +132,8 @@ class LabelDef extends DomainObject
             array(
                  'name'    => 'label_defs',
                  'indexes' => array(
-                     'type_total_idx' => array('columns' => array('label_type', 'total'))
-                 )
+                     'type_total_idx' => array('columns' => array('label_type', 'total')),
+                 ),
             )
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
@@ -167,7 +166,7 @@ class LabelDef extends DomainObject
                 'fieldName'  => 'color',
                 'type'       => 'string',
                 'nullable'   => false,
-                'columnName' => 'color'
+                'columnName' => 'color',
             )
         );
         $metadata->mapField(
@@ -177,7 +176,7 @@ class LabelDef extends DomainObject
                  'precision'  => 0,
                  'scale'      => 0,
                  'nullable'   => false,
-                 'columnName' => 'total'
+                 'columnName' => 'total',
             )
         );
     }

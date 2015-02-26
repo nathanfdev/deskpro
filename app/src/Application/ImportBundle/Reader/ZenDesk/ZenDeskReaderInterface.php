@@ -52,7 +52,7 @@ interface ZenDeskReaderInterface
     /**
      * Returns batch of the users collection of certain ids
      *
-     * @param array $ids
+     * @param  array $ids
      * @return array
      */
     public function getPeopleByIds(array $ids);

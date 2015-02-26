@@ -37,5 +37,4 @@ namespace Application\DeskPRO\EntityRepository;
 
 class LabelNews extends AbstractEntityRepository
 {
-
 }

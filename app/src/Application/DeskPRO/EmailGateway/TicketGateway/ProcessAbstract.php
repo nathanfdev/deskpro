@@ -101,7 +101,6 @@ abstract class ProcessAbstract
      */
     abstract public function run();
 
-
     /**
      * Set the logger
      * @param \Orb\Log\Logger $logger
@@ -110,7 +109,6 @@ abstract class ProcessAbstract
     {
         $this->logger = $logger;
     }
-
 
     /**
      * @return \Orb\Log\Logger
@@ -124,7 +122,6 @@ abstract class ProcessAbstract
         return $this->logger;
     }
 
-
     /**
      * @param string $message
      * @param string $pri
@@ -136,7 +133,6 @@ abstract class ProcessAbstract
         }
     }
 
-
     /**
      * @param string $error
      * @param string $error_type
@@ -147,7 +143,6 @@ abstract class ProcessAbstract
         $this->error_type = $error_type;
     }
 
-
     /**
      * @return string
      */
@@ -155,7 +150,6 @@ abstract class ProcessAbstract
     {
         return $this->error;
     }
-
 
     /**
      * @return string
@@ -165,7 +159,6 @@ abstract class ProcessAbstract
         return $this->error_type;
     }
 
-
     /**
      * @return \Application\DeskPRO\Tickets\TicketManager
      */
@@ -174,7 +167,6 @@ abstract class ProcessAbstract
         return App::getSystemService('ticket_manager');
     }
 
-
     public function handleCc($ticket, array $ccs)
     {
         $account_manager = App::$container->getEmailAccountManager();
@@ -182,7 +174,6 @@ abstract class ProcessAbstract
 
         $count = 0;
         foreach ($ccs as $cc) {
-
             $cc_email = $cc->getEmail();
             $this->logMessage("Checking cc: $cc_email");
 
@@ -251,21 +242,22 @@ abstract class ProcessAbstract
      */
     protected function processBlobs($skip_attach = null)
     {
-        if ($this->processed_blobs !== null) return $this->processed_blobs;
+        if ($this->processed_blobs !== null) {
+            return $this->processed_blobs;
+        }
         $this->processed_blobs = array();
 
         $accept = App::$container->getAttachmentAccepter();
         $r_set = $accept->getRestrictionSet($this->person->is_agent ? 'emails.agent' : 'emails.user');
 
         foreach ($this->reader->getAttachments() as $attach) {
-
             if ($skip_attach && $skip_attach === $attach) {
                 continue;
             }
 
             $props = array(
                 'size' => strlen($attach->getFileContents()),
-                'ext'  => Strings::getExtension($attach->getFileName())
+                'ext'  => Strings::getExtension($attach->getFileName()),
             );
 
             $error = $r_set->getErrorForProperties($props);
@@ -339,9 +331,9 @@ abstract class ProcessAbstract
 
             if ($blob->isImage()) {
                 $this->inline_blobs[$blob->getId()] = $blob;
-                $replace = '[attach:image:' . $blob->getAuthId() . ':' . $blob->getFilenameSafe() . ']';
+                $replace = '[attach:image:'.$blob->getAuthId().':'.$blob->getFilenameSafe().']';
             } else {
-                $replace = '[attach:file:' . $blob->getAuthId() . ':' . $blob->getFilenameSafe() . ']';
+                $replace = '[attach:file:'.$blob->getAuthId().':'.$blob->getFilenameSafe().']';
             }
 
             $body = $inline_images->replaceToken($cid, $replace, $body);

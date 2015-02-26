@@ -50,7 +50,6 @@ class GroupsReposFactory
      */
     private $groups;
 
-
     /**
      * @param  EntityManager      $em
      * @param  string             $entity_name
@@ -71,7 +70,9 @@ class GroupsReposFactory
 
     private function preloadGroups()
     {
-        if ($this->groups !== null) return;
+        if ($this->groups !== null) {
+            return;
+        }
         $this->groups = $this->repos->findAll();
     }
 

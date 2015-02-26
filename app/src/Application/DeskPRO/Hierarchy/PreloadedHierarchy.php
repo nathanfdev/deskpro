@@ -89,7 +89,6 @@ class PreloadedHierarchy
         $this->count_roots = count($this->root_ids);
     }
 
-
     /**
      * Get by ID
      *
@@ -101,7 +100,6 @@ class PreloadedHierarchy
         return isset($this->objects[$id]) ? $this->objects[$id] : null;
     }
 
-
     /**
      * Get an array of objects by an array of IDs
      *
@@ -112,13 +110,14 @@ class PreloadedHierarchy
     {
         $ret = array();
         foreach ($ids as $id) {
-            if (!isset($this->objects[$id])) continue;
+            if (!isset($this->objects[$id])) {
+                continue;
+            }
             $ret[] = $this->objects[$id];
         }
 
         return $ret;
     }
-
 
     /**
      * Check if an object is a child or is a root level
@@ -133,7 +132,6 @@ class PreloadedHierarchy
         return isset($this->child_to_parent[$id]);
     }
 
-
     /**
      * Check if an object is a root level
      *
@@ -144,7 +142,6 @@ class PreloadedHierarchy
     {
         return !$this->isChild($obj_or_id);
     }
-
 
     /**
      * Get the parent object
@@ -161,7 +158,6 @@ class PreloadedHierarchy
 
         return $this->getById($parent_id);
     }
-
 
     /**
      * Get the parent ID
@@ -181,7 +177,6 @@ class PreloadedHierarchy
 
         return $parent_id;
     }
-
 
     /**
      * Get an array of parent IDs from deepest to root.
@@ -207,7 +202,6 @@ class PreloadedHierarchy
         return $parent_ids;
     }
 
-
     /**
      * Get an array of parent objects from deepest to root.
      *
@@ -226,7 +220,6 @@ class PreloadedHierarchy
         return $parents;
     }
 
-
     /**
      * Check if an object has children
      *
@@ -240,7 +233,6 @@ class PreloadedHierarchy
         return isset($this->parent_to_children[$id]);
     }
 
-
     /**
      * @param $obj_or_id
      * @return int
@@ -251,7 +243,6 @@ class PreloadedHierarchy
 
         return isset($this->parent_to_children[$id]) ? count($this->parent_to_children[$id]) : 0;
     }
-
 
     /**
      * Get children on an object
@@ -274,7 +265,6 @@ class PreloadedHierarchy
         return $child_ids;
     }
 
-
     /**
      * @param $obj_or_id
      * @return array
@@ -291,7 +281,6 @@ class PreloadedHierarchy
         return $childs;
     }
 
-
     /**
      * @return array
      */
@@ -299,7 +288,6 @@ class PreloadedHierarchy
     {
         return $this->getByIds($this->root_ids);
     }
-
 
     /**
      * @return array
@@ -309,7 +297,6 @@ class PreloadedHierarchy
         return $this->root_ids;
     }
 
-
     /**
      * @return array
      */
@@ -318,7 +305,6 @@ class PreloadedHierarchy
         return array_keys($this->objects);
     }
 
-
     /**
      * @return array
      */
@@ -326,7 +312,6 @@ class PreloadedHierarchy
     {
         return array_values($this->objects);
     }
-
 
     /**
      * Gets an array of array('object' => $obj, 'depth' => 1), in order.

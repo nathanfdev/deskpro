@@ -103,7 +103,7 @@ class TaskType extends AbstractType implements EventSubscriberInterface
             return;
         }
 
-        list ($type, $id) = explode(':', $data['assigned_agent']);
+        list($type, $id) = explode(':', $data['assigned_agent']);
         $data['assigned_agent'] = null;
         'agent' === $type
             ? $data['assigned_agent'] = $id

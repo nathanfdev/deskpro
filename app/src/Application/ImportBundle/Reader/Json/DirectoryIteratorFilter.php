@@ -53,12 +53,13 @@ class DirectoryIteratorFilter extends \RecursiveFilterIterator
     }
 
     /**
-     * @param boolean $exclude_done
+     * @param  boolean $exclude_done
      * @return $this
      */
     public function setExcludeDone($exclude_done)
     {
-        $this->exclude_done = (bool)$exclude_done;
+        $this->exclude_done = (bool) $exclude_done;
+
         return $this;
     }
 
@@ -76,7 +77,7 @@ class DirectoryIteratorFilter extends \RecursiveFilterIterator
         }
 
         // Already done
-        if ($this->exclude_done && file_exists($current->getPath() . '.done')) {
+        if ($this->exclude_done && file_exists($current->getPath().'.done')) {
             return false;
         }
 

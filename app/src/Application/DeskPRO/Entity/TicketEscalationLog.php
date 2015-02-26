@@ -89,8 +89,6 @@ class TicketEscalationLog extends DomainObject
         return $this->id;
     }
 
-
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -101,7 +99,7 @@ class TicketEscalationLog extends DomainObject
         $metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType        = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->setPrimaryTable(array(
-            'name' => 'ticket_escalation_logs'
+            'name' => 'ticket_escalation_logs',
         ));
 
         $metadata->mapField(array(
@@ -132,8 +130,8 @@ class TicketEscalationLog extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-                'columnDefinition'    => NULL
-            ))
+                'columnDefinition'    => NULL,
+            )),
         ));
         $metadata->mapManyToOne(array(
             'fieldName'    => 'escalation',
@@ -143,8 +141,8 @@ class TicketEscalationLog extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-                'columnDefinition'    => NULL
-            ))
+                'columnDefinition'    => NULL,
+            )),
         ));
     }
 }

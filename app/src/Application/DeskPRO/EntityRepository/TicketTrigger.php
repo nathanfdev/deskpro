@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-
 class TicketTrigger extends AbstractEntityRepository
 {
     /**
@@ -75,7 +74,6 @@ class TicketTrigger extends AbstractEntityRepository
         }
     }
 
-
     /**
      * @param array $run_orders
      */
@@ -108,7 +106,7 @@ class TicketTrigger extends AbstractEntityRepository
                     WHERE email_account_id IS NOT NULL AND event_trigger = 'newticket'
                 ", array($x));
             } else {
-                $tr_id = (int)$tr_id;
+                $tr_id = (int) $tr_id;
                 $db->update('ticket_triggers', array('run_order' => $x), array('id' => $tr_id));
             }
         }

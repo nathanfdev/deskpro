@@ -55,7 +55,6 @@ class FilterUrgency extends AbstractFilterTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

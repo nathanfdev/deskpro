@@ -39,7 +39,9 @@ use Application\DeskPRO\Entity\Person;
 
 class Util
 {
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      * Takes a full name and an email address and tries to parse out a first and last name.
@@ -58,11 +60,11 @@ class Util
         $last_name = null;
 
         if ($full_name && strpos($full_name, ' ') !== false) {
-            list ($first_name, $last_name) = explode(' ', $full_name, 2);
+            list($first_name, $last_name) = explode(' ', $full_name, 2);
         } elseif ($email_address) {
-            list ($email_name,) = explode('@', $email_address, 2);
+            list($email_name,) = explode('@', $email_address, 2);
             if (strpos($email_name, '.') !== false) {
-                list ($first_name, $last_name) = explode('.', $email_name, 2);
+                list($first_name, $last_name) = explode('.', $email_name, 2);
                 $first_name = ucfirst($first_name);
                 $last_name = ucfirst($last_name);
             }
@@ -73,17 +75,16 @@ class Util
             if ($full_name) {
                 $first_name = $full_name;
             } elseif ($email_address) {
-                list ($email_name,) = explode('@', $email_address, 2);
+                list($email_name,) = explode('@', $email_address, 2);
                 $first_name = ucfirst($email_name);
             }
         }
 
         return array(
             $first_name,
-            $last_name
+            $last_name,
         );
     }
-
 
     /**
      * Given an array of permissions, return the overrides that matter. E.g., if a ug has a permission on,
@@ -117,14 +118,12 @@ class Util
         foreach ($ug_perm_matrix as $group => $ug_perms) {
             foreach (array(0, 1) as $run_num) {
                 foreach ($ug_perms as $ug_id => $perms) {
-
                     // Not one we enabled so we dont care
                     if ($ug_id != 'override' && !isset($usergroups[$ug_id])) {
                         continue;
                     }
 
                     foreach ($perms as $perm => $v) {
-
                         if (!$v) {
                             continue; //dont care about non 1's
                         }
@@ -218,20 +217,28 @@ class Util
 
         foreach ($ug_perms as $ug_id => $perms) {
             foreach ($perms as $perm_name => $perm_val) {
-                list ($perm_group, $perm_endname) = explode('.', $perm_name, 2);
+                list($perm_group, $perm_endname) = explode('.', $perm_name, 2);
 
-                if (!isset($ug_perm_matrix[$perm_group])) $ug_perm_matrix[$perm_group] = array();
-                if (!isset($ug_perm_matrix[$perm_group][$ug_id])) $ug_perm_matrix[$perm_group][$ug_id] = array();
+                if (!isset($ug_perm_matrix[$perm_group])) {
+                    $ug_perm_matrix[$perm_group] = array();
+                }
+                if (!isset($ug_perm_matrix[$perm_group][$ug_id])) {
+                    $ug_perm_matrix[$perm_group][$ug_id] = array();
+                }
                 $ug_perm_matrix[$perm_group][$ug_id][$perm_endname] = $perm_val;
             }
         }
 
         foreach ($override_perms as $perm_name => $perm_val) {
             $ug_id = 'override';
-            list ($perm_group, $perm_endname) = explode('.', $perm_name, 2);
+            list($perm_group, $perm_endname) = explode('.', $perm_name, 2);
 
-            if (!isset($ug_perm_matrix[$perm_group])) $ug_perm_matrix[$perm_group] = array();
-            if (!isset($ug_perm_matrix[$perm_group][$ug_id])) $ug_perm_matrix[$perm_group][$ug_id] = array();
+            if (!isset($ug_perm_matrix[$perm_group])) {
+                $ug_perm_matrix[$perm_group] = array();
+            }
+            if (!isset($ug_perm_matrix[$perm_group][$ug_id])) {
+                $ug_perm_matrix[$perm_group][$ug_id] = array();
+            }
             $ug_perm_matrix[$perm_group][$ug_id][$perm_endname] = $perm_val;
         }
 

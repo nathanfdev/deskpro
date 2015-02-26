@@ -73,7 +73,6 @@ class LatestContent
      */
     protected $use_selections;
 
-
     /**
      * @param \Doctrine\ORM\EntityManager $em
      */
@@ -81,7 +80,6 @@ class LatestContent
     {
         $this->em = $em;
     }
-
 
     /**
      * @param array $use_selections
@@ -95,7 +93,6 @@ class LatestContent
         $this->max_feedback = 100;
         $this->count = 100;
     }
-
 
     /**
      * @param $x
@@ -111,7 +108,6 @@ class LatestContent
         return $this;
     }
 
-
     /**
      * @param $x
      * @return LatestContent
@@ -122,7 +118,6 @@ class LatestContent
 
         return $this;
     }
-
 
     /**
      * @param $x
@@ -135,7 +130,6 @@ class LatestContent
         return $this;
     }
 
-
     /**
      * @param $x
      * @return LatestContent
@@ -147,7 +141,6 @@ class LatestContent
         return $this;
     }
 
-
     /**
      * @param $x
      * @return LatestContent
@@ -158,7 +151,6 @@ class LatestContent
 
         return $this;
     }
-
 
     /**
      * @return array
@@ -230,7 +222,7 @@ class LatestContent
                     $counts[$r['type']] = 0;
                 }
 
-                $prop = 'max_' . $r['type'];
+                $prop = 'max_'.$r['type'];
 
                 if ($counts[$r['type']] >= $this->$prop) {
                     continue;

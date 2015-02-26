@@ -51,7 +51,7 @@ class Phone extends AbstractContactData
         $contact_record->field_3 = isset($input['type']) ? $input['type'] : 'phone';
 
         // Searchable value without punctuation etc
-        $contact_record->field_10 = preg_replace('#[^0-9a-zA-Z]#', '', $contact_record->field_1 . $contact_record->field_2);
+        $contact_record->field_10 = preg_replace('#[^0-9a-zA-Z]#', '', $contact_record->field_1.$contact_record->field_2);
     }
 
     /**
@@ -68,7 +68,6 @@ class Phone extends AbstractContactData
             'type' => $contact_record->field_3,
         );
     }
-
 
     /**
      * Return an array of values that are useful to the API

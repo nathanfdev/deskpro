@@ -106,7 +106,7 @@ class OsTicketReader implements OsTicketReaderInterface
             throw new OsTicketReaderException('Unable to get users count', $user_stmt->errorCode(), $user_stmt->errorInfo());
         }
 
-        return (int)$staff_stmt->fetchColumn() + (int)$user_stmt->fetchColumn();
+        return (int) $staff_stmt->fetchColumn() + (int) $user_stmt->fetchColumn();
     }
 
     /**

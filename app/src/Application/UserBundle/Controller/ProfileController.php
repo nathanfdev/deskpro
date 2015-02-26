@@ -87,7 +87,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
             foreach ($field_manager->getFields() as $field) {
                 $errors = $field->getHandler()->validateFormData($custom_fields ?: array());
                 foreach ($errors as $code) {
-                    $invalid_custom_fields['field_' . $field->getId()] = true;
+                    $invalid_custom_fields['field_'.$field->getId()] = true;
                     $invalid_custom_fields[$code] = true;
                     $is_valid = false;
                 }
@@ -125,7 +125,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
                     if (!$picture_error) {
                         $blob = $accept->accept($file);
                         $this->person->setPictureBlob($blob);
-                        $new_blob_key = $blob->getId() . '-' . $blob->getAuthId();
+                        $new_blob_key = $blob->getId().'-'.$blob->getAuthId();
                     }
                 } else {
                     $new_blob_key = $this->in->getString('new_blob_key');
@@ -268,7 +268,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
                     ", array($this->person->id, $access->user_id, $access->screen_name, $access->oauth_token, $access->oauth_token_secret));
 
                     $has_account = false;
-                    foreach ($this->person->getContactData('twitter') AS $twitter_details) {
+                    foreach ($this->person->getContactData('twitter') as $twitter_details) {
                         if ($twitter_details->field_1 == $access->screen_name || ($twitter_details->field_3 && $twitter_details->field_3 == $access->user_id)) {
                             $twitter_details->field_10 = '1';
                             $this->em->persist($twitter_details);
@@ -303,7 +303,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
     {
         $twitter_user_id = null;
 
-        foreach ($this->person->twitter_users AS $account) {
+        foreach ($this->person->twitter_users as $account) {
             if ($account->id == $account_id) {
                 $this->em->remove($account);
                 $twitter_user_id = $account->twitter_user_id;
@@ -312,7 +312,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
         }
 
         if ($twitter_user_id) {
-            foreach ($this->person->getContactData('twitter') AS $twitter_details) {
+            foreach ($this->person->getContactData('twitter') as $twitter_details) {
                 if ($twitter_details->field_3 && $twitter_details->field_3 == $twitter_user_id) {
                     $this->em->remove($twitter_details);
                 }
@@ -355,7 +355,6 @@ class ProfileController extends AbstractController implements RequireUserInterfa
         return $this->redirectRoute('user_profile');
     }
 
-
     ############################################################################
     # removeEmail
     ############################################################################
@@ -381,9 +380,13 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
         $pass_count = false;
         if (!$email['is_validated']) {
-            if (count($validated_emails) >= 1) $pass_count = true;
+            if (count($validated_emails) >= 1) {
+                $pass_count = true;
+            }
         } else {
-            if (count($validated_emails) >= 2) $pass_count = true; // 2 because 1 wil be this email
+            if (count($validated_emails) >= 2) {
+                $pass_count = true;
+            } // 2 because 1 wil be this email
         }
 
         if (!$pass_count) {
@@ -425,7 +428,6 @@ class ProfileController extends AbstractController implements RequireUserInterfa
         return $this->redirectRoute('user_profile');
     }
 
-
     ############################################################################
     # newEmail
     ############################################################################
@@ -441,6 +443,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
         if (!$this->person->checkPassword($this->in->getString('current_password'))) {
             $this->session->setFlash('new_email_invalid_password', 1);
+
             return $this->redirectRoute('user_profile');
         }
 
@@ -494,7 +497,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
         $person = $this->person;
 
         $vars = array(
-            'validating_email' => $validating_email
+            'validating_email' => $validating_email,
         );
 
         $container = $this->container;

@@ -46,7 +46,7 @@ class ContactData
             return self::$instances[$typename];
         }
 
-        $classname = 'Application\\DeskPRO\\ContactData\\' . ucfirst(Strings::underscoreToCamelCase($typename));
+        $classname = 'Application\\DeskPRO\\ContactData\\'.ucfirst(Strings::underscoreToCamelCase($typename));
         if (!class_exists($classname)) {
             throw new \InvalidArgumentException("`$typename` is not a valid type");
         }

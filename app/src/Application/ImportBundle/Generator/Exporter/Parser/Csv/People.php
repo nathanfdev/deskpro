@@ -74,7 +74,6 @@ final class People extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid person record `%d` found (Skipping)', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid person record `%d` found (Skipping): %s',
@@ -99,7 +98,7 @@ final class People extends AbstractParser
         if ($this->isPersonValid($person)) {
             $entity = new Entity\Person();
             $entity
-                ->setDestination('person_' . $num)
+                ->setDestination('person_'.$num)
                 ->setOid($num)
                 ->setAsAgent($this->isAgent($person))
                 ->setName($person['name'])
@@ -115,12 +114,13 @@ final class People extends AbstractParser
     /**
      * Check if person has all required columns
      *
-     * @param array $person
+     * @param  array $person
      * @return bool
      */
     private function isPersonValid(array $person)
     {
         $columns = array('name', 'email');
+
         return $this->hasRequiredColumns($person, $columns);
     }
 
@@ -137,7 +137,7 @@ final class People extends AbstractParser
     /**
      * Check if person is agent
      *
-     * @param array $person
+     * @param  array $person
      * @return bool
      */
     private function isAgent(array $person)

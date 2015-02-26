@@ -58,7 +58,6 @@ class SetDepartment extends AbstractContainerAwareAction implements ActionInterf
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -98,7 +97,7 @@ class SetDepartment extends AbstractContainerAwareAction implements ActionInterf
 
         $dep = $this->getContainer()->getTicketDepartments()->getSettableById($set_dep_id);
         if (!$dep) {
-            $context->getLogger()->debug('[SetDepartment] Unknown department id: ' . $set_dep_id);
+            $context->getLogger()->debug('[SetDepartment] Unknown department id: '.$set_dep_id);
 
             return true;
         }

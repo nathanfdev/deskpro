@@ -84,7 +84,7 @@ class AgentProfileValidator extends AbstractValidator
             $error = null;
             if (!$password_validator->checkPassword($this->profile->password, $this->profile->getPerson(), $error)) {
                 $this->addError('password.invalid');
-                $this->addError('password.invalid.' . $error);
+                $this->addError('password.invalid.'.$error);
             } elseif ($this->profile->password != $this->profile->password2) {
                 $this->addError('password.mismatch');
             }

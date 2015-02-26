@@ -80,7 +80,7 @@ final class FeedbackLabel extends AbstractImporter
     /**
      * Returns a new feedback label entity
      *
-     * @param string $label
+     * @param  string                      $label
      * @return DeskPROEntity\LabelFeedback
      */
     private function createFeedbackLabel($label)
@@ -89,6 +89,7 @@ final class FeedbackLabel extends AbstractImporter
         $entity->setLabel($label);
 
         $this->records->add($entity);
+
         return $entity;
     }
 

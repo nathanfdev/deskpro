@@ -92,7 +92,9 @@ class TicketDisplay implements PersonContextInterface
 
     public function getUserParticipants()
     {
-        if ($this->user_participants !== null) return $this->user_participants;
+        if ($this->user_participants !== null) {
+            return $this->user_participants;
+        }
 
         $this->user_participants = array();
 
@@ -107,7 +109,9 @@ class TicketDisplay implements PersonContextInterface
 
     public function getAgentParticipants()
     {
-        if ($this->agent_participants !== null) return $this->agent_participants;
+        if ($this->agent_participants !== null) {
+            return $this->agent_participants;
+        }
 
         $this->agent_participants = array();
 
@@ -122,7 +126,9 @@ class TicketDisplay implements PersonContextInterface
 
     public function getNotes()
     {
-        if ($this->notes !== null) return $this->notes;
+        if ($this->notes !== null) {
+            return $this->notes;
+        }
 
         $this->getMessages();
 
@@ -139,7 +145,9 @@ class TicketDisplay implements PersonContextInterface
 
     public function getMessages()
     {
-        if ($this->messages !== null) return $this->messages;
+        if ($this->messages !== null) {
+            return $this->messages;
+        }
 
         if ($this->person_type == 'agent') {
             $this->messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages(
@@ -158,7 +166,9 @@ class TicketDisplay implements PersonContextInterface
 
     public function getAttachments()
     {
-        if ($this->attachments !== null) return $this->attachments;
+        if ($this->attachments !== null) {
+            return $this->attachments;
+        }
 
         $this->attachments = App::getEntityRepository('DeskPRO:TicketAttachment')->getTicketAttachments($this->ticket);
 
@@ -167,7 +177,9 @@ class TicketDisplay implements PersonContextInterface
 
     public function getMessagesToAttachments($include_inline = false)
     {
-        if ($this->message_to_attach !== null) return $this->message_to_attach;
+        if ($this->message_to_attach !== null) {
+            return $this->message_to_attach;
+        }
 
         $this->getMessages();
         $this->getAttachments();
@@ -175,7 +187,6 @@ class TicketDisplay implements PersonContextInterface
         $this->message_to_attach = array();
 
         foreach ($this->attachments as $attach) {
-
             if (!$include_inline && $attach->is_inline) {
                 continue;
             }
@@ -211,7 +222,9 @@ class TicketDisplay implements PersonContextInterface
 
     public function getFeedbackRatings()
     {
-        if ($this->user_ratings !== null) return $this->user_ratings;
+        if ($this->user_ratings !== null) {
+            return $this->user_ratings;
+        }
 
         $this->user_ratings = App::getDb()->fetchAllKeyValue("
             SELECT message_id, rating

@@ -147,7 +147,6 @@ class FacebookPage extends DomainObject
      */
     protected $date_created;
 
-
     public function __construct()
     {
         $this->date_created = new \DateTime();
@@ -162,7 +161,6 @@ class FacebookPage extends DomainObject
         $this->page_token_expires = null;
     }
 
-
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);
@@ -170,8 +168,6 @@ class FacebookPage extends DomainObject
 
         return $data;
     }
-
-
 
     ############################################################################
     # Doctrine Metadata

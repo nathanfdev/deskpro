@@ -77,9 +77,7 @@ class ChatDepartmentEditor
         $deps = $this->em->getRepository('DeskPRO:Department')->getByIds($orders);
 
         foreach ($orders as $dep_id) {
-
             if (!isset($deps[$dep_id])) {
-
                 continue;
             }
 
@@ -101,12 +99,10 @@ class ChatDepartmentEditor
     public function removeDepartment(Department $dep, Department $move_to_dep)
     {
         if ($move_to_dep->id == $dep->id) {
-
             throw ValidationException::create("department.move_chat.deps_are_same");
         }
 
         if (count($move_to_dep->getChildren())) {
-
             throw ValidationException::create("department.move_chat.dep_is_parent");
         }
 
@@ -116,7 +112,6 @@ class ChatDepartmentEditor
         $this->db->beginTransaction();
 
         try {
-
             $this->db->executeUpdate(
                 "UPDATE chat_conversations SET department_id = ? WHERE department_id = ?",
                 array($new_id, $old_id)
@@ -126,9 +121,7 @@ class ChatDepartmentEditor
             $this->em->flush();
 
             $this->db->commit();
-
-        } catch(\Exception $e) {
-
+        } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;
         }

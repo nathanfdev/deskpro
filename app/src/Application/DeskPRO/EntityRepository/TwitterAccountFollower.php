@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-
 class TwitterAccountFollower extends AbstractEntityRepository
 {
     /**
@@ -50,7 +49,7 @@ class TwitterAccountFollower extends AbstractEntityRepository
             WHERE  f.account = :account AND f.user = :user
         ")->setParameters(array(
             'account' => $accountId,
-            'user'    => $userId
+            'user'    => $userId,
         ))->getOneOrNullResult();
     }
 
@@ -67,9 +66,9 @@ class TwitterAccountFollower extends AbstractEntityRepository
             WHERE  f.account = :account AND f.user IN (:user)
         ")->setParameters(array(
             'account' => $account_id,
-            'user'    => $user_ids
+            'user'    => $user_ids,
         ))->execute();
-        foreach ($results AS $result) {
+        foreach ($results as $result) {
             $output[$result->user->getId()] = $result;
         }
 

@@ -69,8 +69,9 @@ abstract class AbstractStorageAdapter implements Loggable
         $this->init();
     }
 
-    protected function init() {}
-
+    protected function init()
+    {
+    }
 
     /**
      * @param  Blob   $blob
@@ -85,7 +86,7 @@ abstract class AbstractStorageAdapter implements Loggable
         if ($blob->getMeta('authcode')) {
             $path[] = $blob->getMeta('authcode');
         } else {
-            $path[] = md5(uniqid('', true)) . '-' . $blob->getFilenameSafe();
+            $path[] = md5(uniqid('', true)).'-'.$blob->getFilenameSafe();
         }
 
         return implode('/', $path);

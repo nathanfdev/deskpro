@@ -83,11 +83,8 @@ class WidgetSelections
         $selections = App::getEntityRepository('DeskPRO:DataStore')->getByName('portal_widget_default_links');
 
         if ($selections) {
-
             $selections = $selections->getData('selections');
-
         } else {
-
             $selections = array();
         }
 
@@ -95,8 +92,7 @@ class WidgetSelections
         {
             $result = array();
 
-            foreach($categories as $category) {
-
+            foreach ($categories as $category) {
                 $data = array();
 
                 $data['id']       = $category->id;
@@ -123,7 +119,7 @@ class WidgetSelections
 
             'article_cat_map'     => $article_cat_map,
             'download_cat_map'    => $download_cat_map,
-            'news_cat_map'        => $news_cat_map
+            'news_cat_map'        => $news_cat_map,
         );
     }
 

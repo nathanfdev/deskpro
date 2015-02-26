@@ -16,7 +16,7 @@ class OrganizationRepository extends AbstractRepository implements WithLabelsInt
      * @var array
      */
     protected $highlightFields = array(
-        'name' => array('fragment_size' => 100)
+        'name' => array('fragment_size' => 100),
     );
 
     /**

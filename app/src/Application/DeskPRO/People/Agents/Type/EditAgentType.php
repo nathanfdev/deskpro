@@ -50,7 +50,7 @@ class EditAgentType extends AbstractType
         $builder->add('name', 'text', array('required' => true));
         $builder->add('override_name', 'text', array('required' => false));
 
-	    $builder->add('primary_phone', new PhoneNumberType());
+        $builder->add('primary_phone', new PhoneNumberType());
 
         $builder->add('emails', 'collection', array(
             'type'         => 'email',
@@ -91,7 +91,6 @@ class EditAgentType extends AbstractType
         $builder->add('notification_settings', 'collection');
     }
 
-
     /**
      * @param OptionsResolverInterface $resolver
      */
@@ -102,7 +101,6 @@ class EditAgentType extends AbstractType
             'cascade_validation' => true,
         ));
     }
-
 
     /**
      * @return string

@@ -70,8 +70,6 @@ class RelatedContentFinder
         $this->entity_type = $entity->getTableName();
     }
 
-
-
     /**
      * Get an array of object types and their related ID's.
      *
@@ -86,7 +84,9 @@ class RelatedContentFinder
      */
     public function getRelatedRecords()
     {
-        if ($this->related_records !== null) return $this->related_records;
+        if ($this->related_records !== null) {
+            return $this->related_records;
+        }
 
         $this->related_records = array();
 
@@ -122,7 +122,9 @@ class RelatedContentFinder
      */
     public function getRelatedEntities()
     {
-        if ($this->related_entities !== null) return $this->related_entities;
+        if ($this->related_entities !== null) {
+            return $this->related_entities;
+        }
 
         $this->related_entities = array();
 

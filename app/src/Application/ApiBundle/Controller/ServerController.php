@@ -53,7 +53,6 @@ class ServerController extends AbstractController implements ProtectedController
         return new AdminManagePermission();
     }
 
-
     ####################################################################################################################
     # get Server Reqs
     ####################################################################################################################
@@ -192,7 +191,7 @@ class ServerController extends AbstractController implements ProtectedController
 
         return $this->createApiResponse(
             array(
-                 'server_error_logs' => $server_error_logs->getAll()
+                 'server_error_logs' => $server_error_logs->getAll(),
             )
         );
     }
@@ -211,13 +210,12 @@ class ServerController extends AbstractController implements ProtectedController
         $server_error_log  = $server_error_logs->getById($id);
 
         if (!$server_error_log) {
-
             throw $this->createNotFoundException();
         }
 
         return $this->createApiResponse(
             array(
-                 'server_error_log' => $server_error_log
+                 'server_error_log' => $server_error_log,
             )
         );
     }
@@ -276,7 +274,7 @@ class ServerController extends AbstractController implements ProtectedController
 
         return $this->createApiResponse(
             array(
-                 'server_cron' => $returned_data
+                 'server_cron' => $returned_data,
             )
         );
     }
@@ -300,7 +298,6 @@ class ServerController extends AbstractController implements ProtectedController
         // this is for case when we just cleared cron logs
 
         if ($page == 0) {
-
             $page = 1;
         }
 
@@ -314,7 +311,7 @@ class ServerController extends AbstractController implements ProtectedController
 
         return $this->createApiResponse(
             array(
-                 'server_cron_logs' => $returned_data
+                 'server_cron_logs' => $returned_data,
             )
         );
     }
@@ -362,7 +359,7 @@ class ServerController extends AbstractController implements ProtectedController
 
         return $this->createApiResponse(
             array(
-                 'server_file_uploads' => $returned_data
+                 'server_file_uploads' => $returned_data,
             )
         );
     }
@@ -428,7 +425,7 @@ class ServerController extends AbstractController implements ProtectedController
 
         return $this->createApiResponse(
             array(
-                 'server_file_check' => $server_file_check->getCount()
+                 'server_file_check' => $server_file_check->getCount(),
             )
         );
     }
@@ -443,7 +440,7 @@ class ServerController extends AbstractController implements ProtectedController
 
         return $this->createApiResponse(
             array(
-                 'server_file_check' => $server_file_check->getById($id)
+                 'server_file_check' => $server_file_check->getById($id),
             )
         );
     }
@@ -488,7 +485,7 @@ class ServerController extends AbstractController implements ProtectedController
             'last_run'            => $status->getLastRunDate() ? $status->getLastRunDate()->format('Y-m-d H:i:s') : null,
             'secs_since_last_run' => $status->getSecsSinceLastRun(),
             'is_problem'          => $status->guessIsProblem(),
-            'cron_boot_errors'    => $status->getCronBootErrors()
+            'cron_boot_errors'    => $status->getCronBootErrors(),
         ));
     }
 
@@ -498,7 +495,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function errorStatusAction()
     {
-        $err_reader = new ErrorLogReader(dp_get_log_dir() . '/error.log');
+        $err_reader = new ErrorLogReader(dp_get_log_dir().'/error.log');
         $error_count = $err_reader->quickCount();
 
         $gateway_error_count = $this->em->getRepository('DeskPRO:EmailSource')->countErrorStatus(array('ticket', 'ticketmessage'));
@@ -510,7 +507,6 @@ class ServerController extends AbstractController implements ProtectedController
             'sendmail_error_count' => $sendmail_error_count,
         ));
     }
-
 
     ####################################################################################################################
     # apc-info
@@ -555,7 +551,9 @@ class ServerController extends AbstractController implements ProtectedController
         }
 
         $mins = $this->in->getUint('minutes');
-        if (!$mins) $mins = 0;
+        if (!$mins) {
+            $mins = 0;
+        }
 
         $future = time() + $mins * 60;
         $this->container->getSettingsHandler()->setSetting('core.upgrade_time', $future);
@@ -566,7 +564,7 @@ class ServerController extends AbstractController implements ProtectedController
         $this->container->getSettingsHandler()->setSetting('core.upgrade_started', null);
 
         $this->container->getSettingsHandler()->setSetting('core.helpdesk_disabled_message', $this->in->getString('user_message'));
-        @file_put_contents(dp_get_data_dir() . '/helpdesk-offline-message.txt', $this->in->getString('user_message'));
+        @file_put_contents(dp_get_data_dir().'/helpdesk-offline-message.txt', $this->in->getString('user_message'));
 
         if ($mins) {
             $agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
@@ -594,7 +592,7 @@ class ServerController extends AbstractController implements ProtectedController
                 'backup_files'    => $this->container->getSetting('core.upgrade_backup_files'),
                 'backup_db'       => $this->container->getSetting('core.upgrade_backup_db'),
                 'is_started'      => $this->container->getSetting('core.upgrade_started'),
-                'with_perm_error' => $this->container->getSetting('core.upgrade_error_writeperm')
+                'with_perm_error' => $this->container->getSetting('core.upgrade_error_writeperm'),
             ));
         }
     }

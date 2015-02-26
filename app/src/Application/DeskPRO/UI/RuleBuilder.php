@@ -120,7 +120,9 @@ class RuleBuilder
         $data = array();
 
         foreach ($form as $item) {
-            if (!is_array($item)) continue;
+            if (!is_array($item)) {
+                continue;
+            }
 
             $data_item = array();
             foreach ($this->special_keys as $k) {

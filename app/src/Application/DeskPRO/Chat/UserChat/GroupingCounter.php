@@ -51,7 +51,7 @@ class GroupingCounter
         'department' => 'department_id',
         'agent' => 'agent_id',
         'date_created' => 'date_created',
-        'total_to_ended' => 'total_to_ended'
+        'total_to_ended' => 'total_to_ended',
     );
 
     public function __construct($group_by)
@@ -61,14 +61,14 @@ class GroupingCounter
 
     public function getCounts(ChatConversationSearch $searcher)
     {
-        if(empty($this->group_by)) {
+        if (empty($this->group_by)) {
             return array();
         }
 
         $searcher->setGroupBy($this->group_by);
         $db = App::getDb();
 
-        switch($this->group_by) {
+        switch ($this->group_by) {
             case 'agent_id':
                 $searcher->addJoin('people ON agent_id = people.id');
                 $searcher->setColumns('agent_id AS id, COALESCE(people.name, "Unassigned") AS title, COUNT(*) AS count');
@@ -81,20 +81,21 @@ class GroupingCounter
                 $counts = $db->fetchAll($searcher->getSql());
                 $counts_department = array();
 
-                foreach($counts as $count)
+                foreach ($counts as $count) {
                     $counts_department[$count['id']] = $count;
+                }
 
                 $departments = App::getDataService('Department')->getInHierarchy();
 
-                foreach($departments as $i => $department) {
-                    if(!isset($counts_department[$department['id']])) {
+                foreach ($departments as $i => $department) {
+                    if (!isset($counts_department[$department['id']])) {
                         $departments[$i]['count'] = 0;
                     } else {
                         $departments[$i]['count'] = $counts_department[$department['id']]['count'];
                     }
 
-                    foreach($department['children'] as $h => $child) {
-                        if(!isset($counts_department[$child['id']])) {
+                    foreach ($department['children'] as $h => $child) {
+                        if (!isset($counts_department[$child['id']])) {
                             unset($departments[$i]['children'][$h]);
                             continue;
                         }
@@ -104,8 +105,9 @@ class GroupingCounter
                         $departments[$i]['children'][$h] = $child;
                     }
 
-                    if(!$departments[$i]['count'])
+                    if (!$departments[$i]['count']) {
                         unset($departments[$i]);
+                    }
                 }
 
                 return $departments;
@@ -116,7 +118,7 @@ class GroupingCounter
                 break;
 
             case 'total_to_ended':
-                $searcher->setColumns($this->makeTimeFieldSelect('total_to_ended', 'grouping_var') . ',  COUNT(*) AS count');
+                $searcher->setColumns($this->makeTimeFieldSelect('total_to_ended', 'grouping_var').',  COUNT(*) AS count');
                 $searcher->setGroupBy('grouping_var');
                 $searcher->setOrderBy('grouping_var', 'ASC');
                 break;
@@ -153,7 +155,7 @@ class GroupingCounter
             $parts[] = " WHEN chat_conversations.total_to_ended < $t THEN $t ";
         }
 
-        $sql .= implode('', $parts) . " ELSE ".self::LAST_TIME_MARKER." END AS $select_name";
+        $sql .= implode('', $parts)." ELSE ".self::LAST_TIME_MARKER." END AS $select_name";
 
         return $sql;
     }

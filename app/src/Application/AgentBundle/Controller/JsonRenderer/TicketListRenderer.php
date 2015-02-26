@@ -73,7 +73,6 @@ class TicketListRenderer
      */
     protected $person;
 
-
     /**
      * @param TicketResultsDisplay $ticket_display
      */
@@ -85,7 +84,6 @@ class TicketListRenderer
         $this->db = App::getContainer()->getDb();
         $this->person = $this->container->get('session')->getPerson();
     }
-
 
     /**
      * @param  null|callback $fn_visitor
@@ -137,7 +135,6 @@ class TicketListRenderer
         return $json_array;
     }
 
-
     /**
      * @return string
      */
@@ -149,7 +146,6 @@ class TicketListRenderer
 
         return Util::jsonEncode($this->renderTicketDisplayArray());
     }
-
 
     /**
      * @param  Ticket $ticket
@@ -223,7 +219,7 @@ class TicketListRenderer
                     if (isset($this->cache_orgs[$ticket->organization->getId()])) {
                         $data['organization'] = array(
                             'id' => $this->cache_orgs[$ticket->organization->getId()]->id,
-                            'name' => $this->cache_orgs[$ticket->organization->getId()]->name
+                            'name' => $this->cache_orgs[$ticket->organization->getId()]->name,
                         );
                     }
                     break;
@@ -280,7 +276,7 @@ class TicketListRenderer
         foreach ($this->ticket_display->getTicketSlas($ticket) as $sla) {
             $sla['sla'] = array(
                 'id' => $sla['sla_id'],
-                'title' => $sla['title']
+                'title' => $sla['title'],
             );
             if ($sla['warn_date']) {
                 $sla['warn_date_ts'] = \DateTime::createFromFormat('YYYY-mm-dd H:i:s', $sla['warn_date']);
@@ -294,8 +290,12 @@ class TicketListRenderer
             }
 
             $times = array();
-            if ($sla['warn_date_ts']) $times[] = $sla['warn_date_ts'];
-            if ($sla['fail_date_ts']) $times[] = $sla['fail_date_ts'];
+            if ($sla['warn_date_ts']) {
+                $times[] = $sla['warn_date_ts'];
+            }
+            if ($sla['fail_date_ts']) {
+                $times[] = $sla['fail_date_ts'];
+            }
             if ($times) {
                 $sla['next_trigger_date_ts'] = min($times);
             } else {
@@ -304,7 +304,6 @@ class TicketListRenderer
 
             $data['ticket_slas'][] = $sla;
         }
-
 
         $data['previews'] = array();
         foreach ($this->ticket_display->getTicketPreview($ticket) as $m) {
@@ -364,7 +363,7 @@ class TicketListRenderer
         if ($person->primary_email) {
             $data['primary_email'] = array(
                 'id'    => $person->primary_email->id,
-                'email' => $person->primary_email->email
+                'email' => $person->primary_email->email,
             );
         }
 

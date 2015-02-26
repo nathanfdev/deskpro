@@ -42,7 +42,6 @@ class NewTicket extends ActionTypeAbstract
     /** @var \Application\DeskPRO\Entity\Ticket */
     protected $ticket;
 
-
     /**
      * @param \Application\DeskPRO\Entity\Person $person
      * @param \Application\DeskPRO\Entity\Ticket $ticket
@@ -52,7 +51,6 @@ class NewTicket extends ActionTypeAbstract
         $this->person = $person;
         $this->ticket = $ticket;
     }
-
 
     /**
      * Get a plain array of details that'll be stored in the databaes

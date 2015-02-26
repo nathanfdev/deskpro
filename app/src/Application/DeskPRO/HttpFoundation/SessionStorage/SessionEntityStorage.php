@@ -98,7 +98,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 
         $cookie_name = 'dpsid';
         if (DP_INTERFACE == 'agent' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin') {
-            $cookie_name .= '-' . DP_INTERFACE;
+            $cookie_name .= '-'.DP_INTERFACE;
         }
 
         $this->options['name'] = $cookie_name;
@@ -124,7 +124,6 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 
         $this->setMetadataBag();
     }
-
 
     /**
      * Starts the session.
@@ -175,7 +174,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         // Sessions are deleted on cron, but we'll also enforce it here
         $cutoff = time() - App::getSetting('core.sessions_lifetime');
 
-        $is_valid = ($session AND $session['date_last']->getTimestamp() > $cutoff);
+        $is_valid = ($session and $session['date_last']->getTimestamp() > $cutoff);
         if ($is_valid && App::getSetting('core.session_keepalive_require_page') && $session['date_last_page']) {
             if ($session['date_last_page']->getTimestamp() < $cutoff) {
                 $is_valid = false;
@@ -193,7 +192,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             $this->em->flush();
         }
 
-        $is_started = (bool)session_id();
+        $is_started = (bool) session_id();
 
         session_id($session->getSessionCode());
         $this->session = $session;
@@ -252,7 +251,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             try {
                 $this->db->delete('sessions', array('id' => $session->getId()));
                 $this->em->detach($session);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         return true;
@@ -315,7 +315,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         // because the manager has lost its reference to the session state
         $id = self::getIdFromCode($id);
 
-        $save_hash = md5($id . $data);
+        $save_hash = md5($id.$data);
 
         // No changes were made to the session
         if ($this->last_save_hash && $this->last_save_hash == $save_hash) {
@@ -361,7 +361,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
                     $sess_rec['active_status'] = '';
                 }
                 if ($sess_rec['active_status'] == 'available') {
-                    $sess_rec['is_chat_available'] = isset($_SESSION['_sf2_attributes']['is_chat_available']) ? (int)$_SESSION['_sf2_attributes']['is_chat_available'] : 0;
+                    $sess_rec['is_chat_available'] = isset($_SESSION['_sf2_attributes']['is_chat_available']) ? (int) $_SESSION['_sf2_attributes']['is_chat_available'] : 0;
                 } else {
                     $sess_rec['is_chat_available'] = 0;
                 }
@@ -425,7 +425,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         }
 
         $id = $this->getId();
-        list($entity_id, ) = explode('-', $id, 2);
+        list($entity_id,) = explode('-', $id, 2);
         $entity_id = Util::baseDecode($entity_id, 'base36');
 
         return $entity_id;
@@ -451,9 +451,11 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      */
     public static function getIdFromCode($sess_code)
     {
-        if (!strpos($sess_code, '-')) return null;
+        if (!strpos($sess_code, '-')) {
+            return null;
+        }
 
-        list ($session_id, ) = explode('-', $sess_code, 2);
+        list($session_id,) = explode('-', $sess_code, 2);
 
         $alphabet = str_split('0123456789abcdefghijklmnopqrstuvwxyz');
         $base     = sizeof($alphabet);
@@ -514,13 +516,12 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         $ret = session_regenerate_id($destroy);
 
         if ($this->isStarted() && $this->getEntity()) {
-
             session_write_close();
             $session = new \Application\DeskPRO\Entity\Session();
 
             // hardcoded copy of old session params
             $copyProps = array('interface', 'person', 'visitor', 'user_agent', 'ip_address', 'is_person', 'is_bot',
-                'is_helpdesk', 'active_status', 'is_chat_available');
+                'is_helpdesk', 'active_status', 'is_chat_available', );
             foreach ($copyProps as $prop) {
                 $session[$prop] = $this->session[$prop];
             }

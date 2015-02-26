@@ -67,7 +67,7 @@ class RequireJsConfigGenerator
             return;
         }
 
-        $this->setBaseUrlExpr('"' . addslashes($url) . '"');
+        $this->setBaseUrlExpr('"'.addslashes($url).'"');
     }
 
     /**
@@ -84,7 +84,6 @@ class RequireJsConfigGenerator
         $this->base_url = $url_expr;
     }
 
-
     /**
      * @return string|null
      */
@@ -92,7 +91,6 @@ class RequireJsConfigGenerator
     {
         return $this->base_url;
     }
-
 
     /**
      * @param string $url_args
@@ -105,9 +103,8 @@ class RequireJsConfigGenerator
             return;
         }
 
-        $this->setUrlArgsExpr('"' . addslashes($url_args) . '"');
+        $this->setUrlArgsExpr('"'.addslashes($url_args).'"');
     }
-
 
     /**
      * @param string $url_args_expr
@@ -123,7 +120,6 @@ class RequireJsConfigGenerator
         $this->url_args = $url_args_expr;
     }
 
-
     /**
      * @return string|null
      */
@@ -131,7 +127,6 @@ class RequireJsConfigGenerator
     {
         return $this->url_args;
     }
-
 
     /**
      * @param string $key
@@ -142,7 +137,6 @@ class RequireJsConfigGenerator
         $this->addShimExpr($key, json_encode($config));
     }
 
-
     /**
      * @return array
      */
@@ -150,7 +144,6 @@ class RequireJsConfigGenerator
     {
         return $this->shims;
     }
-
 
     /**
      * @param string $key
@@ -161,16 +154,14 @@ class RequireJsConfigGenerator
         $this->shims[$key] = $expr;
     }
 
-
     /**
      * @param string $key
      * @param string $path
      */
     public function addPath($key, $path)
     {
-        $this->addPathExpr($key, '"' . addslashes($path) . '"');
+        $this->addPathExpr($key, '"'.addslashes($path).'"');
     }
-
 
     /**
      * @param string $key
@@ -181,7 +172,6 @@ class RequireJsConfigGenerator
         $this->paths[$key] = $path_expr;
     }
 
-
     /**
      * @return array
      */
@@ -189,7 +179,6 @@ class RequireJsConfigGenerator
     {
         return $this->paths;
     }
-
 
     /**
      * @return string
@@ -213,7 +202,7 @@ class RequireJsConfigGenerator
                 $parts[] = "\t\t\"$k\": $v";
             }
 
-            $js .= "\t\t" . trim(implode(",\n", $parts));
+            $js .= "\t\t".trim(implode(",\n", $parts));
             $js .= "\n\t},\n";
         }
 
@@ -225,7 +214,7 @@ class RequireJsConfigGenerator
                 $parts[] = "\t\t\"$k\": $v";
             }
 
-            $js .= "\t\t" . trim(implode(",\n", $parts));
+            $js .= "\t\t".trim(implode(",\n", $parts));
             $js .= "\n\t},\n";
         }
 
@@ -242,7 +231,7 @@ class RequireJsConfigGenerator
      */
     public function generateRequireJsConfigCode()
     {
-        return "requirejs.config(" . $this->generateConfigObject() . ");";
+        return "requirejs.config(".$this->generateConfigObject().");";
     }
 
     /**

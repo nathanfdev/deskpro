@@ -49,11 +49,10 @@ class FreeEmailProviders
             return false;
         }
 
-        list (, $domain) = explode('@', $address, 2);
+        list(, $domain) = explode('@', $address, 2);
 
         return self::hasDomain($domain);
     }
-
 
     /**
      * @return array
@@ -62,7 +61,6 @@ class FreeEmailProviders
     {
         return self::$domains;
     }
-
 
     /**
      * @param  string $domain
@@ -78,7 +76,6 @@ class FreeEmailProviders
 
         return isset(self::$domain_map[$domain]);
     }
-
 
     /**
      * @var array

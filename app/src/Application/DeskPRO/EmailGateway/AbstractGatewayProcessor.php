@@ -124,7 +124,7 @@ abstract class AbstractGatewayProcessor
             $this->logger = $options['logger'];
         }
 
-        if($this->account_email_address) {
+        if ($this->account_email_address) {
             $this->logMessage(sprintf("Matched address %s", $this->account_email_address));
         } else {
             $this->logMessage(sprintf('Warning: Could not get matched address for gateway %d', $account->id));
@@ -133,7 +133,7 @@ abstract class AbstractGatewayProcessor
         $to_addresses = array_map(function ($e) { return $e->email; }, $reader->getReceivedAddresses());
         $this->sent_to = implode(',', $to_addresses);
 
-        $this->logMessage('sent_to: ' . $this->sent_to);
+        $this->logMessage('sent_to: '.$this->sent_to);
 
         $this->init();
     }
@@ -150,7 +150,6 @@ abstract class AbstractGatewayProcessor
      */
     protected function init()
     {
-
     }
 
     abstract public function run();
@@ -162,11 +161,12 @@ abstract class AbstractGatewayProcessor
      */
     protected function processBlobs()
     {
-        if ($this->processed_blobs !== null) return $this->processed_blobs;
+        if ($this->processed_blobs !== null) {
+            return $this->processed_blobs;
+        }
         $this->processed_blobs = array();
 
         foreach ($this->reader->getAttachments() as $attach) {
-
             $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
                 $attach->getFileContents(),
                 $attach->getFileName(),

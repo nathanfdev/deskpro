@@ -73,7 +73,6 @@ final class Articles extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid article record `%d` found (Skipping)', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid article record `%d` found (Skipping): %s',
@@ -98,7 +97,7 @@ final class Articles extends AbstractParser
         if ($this->isArticleValid($article)) {
             $entity = new Entity\Article();
             $entity
-                ->setDestination('article_' . $num)
+                ->setDestination('article_'.$num)
                 ->setOid($num)
                 ->setPersonEmail($article['person'])
                 ->setTitle($article['title'])
@@ -124,7 +123,7 @@ final class Articles extends AbstractParser
     /**
      * Check if article has all required columns
      *
-     * @param array $article
+     * @param  array $article
      * @return bool
      */
     private function isArticleValid(array $article)

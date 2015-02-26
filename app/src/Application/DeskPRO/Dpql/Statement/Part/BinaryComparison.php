@@ -76,7 +76,7 @@ class BinaryComparison extends AbstractPart
         Parser::T_OP_GT => '>',
         Parser::T_OP_GTEQ => '>=',
         Parser::T_OP_LT => '<',
-        Parser::T_OP_LTEQ => '<='
+        Parser::T_OP_LTEQ => '<=',
     );
 
     /**
@@ -92,7 +92,7 @@ class BinaryComparison extends AbstractPart
         '>' => '<',
         '>=' => '<=',
         '<' => '>',
-        '<=' => '>='
+        '<=' => '>=',
     );
 
     /**
@@ -128,8 +128,7 @@ class BinaryComparison extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $childStack = $this->getChildStack($stack);
 
         $lhs = $this->lhs;
@@ -167,7 +166,7 @@ class BinaryComparison extends AbstractPart
         }
 
         return new Prepared("({$lhsRes->sql()} $operator {$rhsRes->sql()})", $title, false, 'boolean');
-     }
+    }
 
     /**
      * Renders a part back to DPQL.
@@ -181,7 +180,7 @@ class BinaryComparison extends AbstractPart
     public function toDpql(Display $statement, $section, array $stack)
     {
         return $this->lhs->toDpql($statement, $section, $stack)
-            . ' ' . self::$_operatorMap[$this->operator] . ' '
-            . $this->rhs->toDpql($statement, $section, $stack);
+            .' '.self::$_operatorMap[$this->operator].' '
+            .$this->rhs->toDpql($statement, $section, $stack);
     }
 }

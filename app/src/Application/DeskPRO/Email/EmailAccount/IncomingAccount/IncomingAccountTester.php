@@ -79,7 +79,6 @@ class IncomingAccountTester
         $this->logger->addWriter($this->logger_writer);
     }
 
-
     /**
      * Run the test
      *
@@ -112,7 +111,6 @@ class IncomingAccountTester
         return $this->is_success;
     }
 
-
     /**
      * @return bool
      */
@@ -121,7 +119,6 @@ class IncomingAccountTester
         return $this->is_success;
     }
 
-
     /**
      * @return \Exception
      */
@@ -129,7 +126,6 @@ class IncomingAccountTester
     {
         return $this->exception;
     }
-
 
     /**
      * As part of the test, we fetch the count of messages.
@@ -140,7 +136,6 @@ class IncomingAccountTester
     {
         return $this->message_count;
     }
-
 
     /**
      * Tests Pop3
@@ -174,7 +169,6 @@ class IncomingAccountTester
         }
     }
 
-
     private function _testImap()
     {
         /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ImapConfig $account_config */
@@ -204,7 +198,7 @@ class IncomingAccountTester
                 $ids = $storage->getAllMessageUids();
             }
 
-            $this->logger->logInfo("Read IDs: " . implode(', ', $ids));
+            $this->logger->logInfo("Read IDs: ".implode(', ', $ids));
             $this->message_count = count($ids);
 
             $this->is_success = true;
@@ -215,7 +209,6 @@ class IncomingAccountTester
             $this->is_success = false;
         }
     }
-
 
     private function _testExchange()
     {
@@ -249,7 +242,7 @@ class IncomingAccountTester
 
             $ids = $storage->searchIds(100, $unread_only, $folder);
 
-            $this->logger->logInfo("Read IDs: " . implode(', ', $ids));
+            $this->logger->logInfo("Read IDs: ".implode(', ', $ids));
             $this->message_count = count($ids);
 
             $this->is_success = true;
@@ -260,7 +253,6 @@ class IncomingAccountTester
             $this->is_success = false;
         }
     }
-
 
     /**
      * Tests Gmail

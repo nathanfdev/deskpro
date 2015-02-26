@@ -57,7 +57,6 @@ class Mapper
 
         // We'll try to generate it
         } else {
-
             // Example:
             // agent_team
             // agent-team
@@ -68,8 +67,8 @@ class Mapper
             $class = ucfirst(Strings::dashToCamelCase($class));
         }
 
-        $action_class = $class . 'Action';
-        $modifier_class = $class . 'Modifier';
+        $action_class = $class.'Action';
+        $modifier_class = $class.'Modifier';
         if (is_class($action_class)) {
             return $action_class;
         } elseif (is_class($modifier_class)) {

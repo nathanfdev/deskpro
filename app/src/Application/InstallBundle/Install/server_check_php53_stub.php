@@ -5,14 +5,14 @@ function deskpro_handle_boot_db_exception($e)
     if (dp_get_config('is_installed_flag')) {
         $error_info = '';
         if (!defined('DP_NO_SHOW_DB_ERR')) {
-            $error_info = "<hr />" . $e->getCode() . ' ' . $e->getMessage();
+            $error_info = "<hr />".$e->getCode().' '.$e->getMessage();
 
             $error_info = str_replace(DP_DATABASE_HOST, '...', $error_info);
             $error_info = str_replace(DP_DATABASE_NAME, '...', $error_info);
             $error_info = str_replace(DP_DATABASE_USER, '...', $error_info);
             $error_info = str_replace(DP_DATABASE_PASSWORD, '...', $error_info);
 
-            switch($e->getCode()) {
+            switch ($e->getCode()) {
                 case 1049:
                     $error_info .= '<hr />The database could not be found. Please ensure the correct database is listed in config.php.';
                     break;

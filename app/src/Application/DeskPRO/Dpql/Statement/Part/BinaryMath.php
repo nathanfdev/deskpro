@@ -74,7 +74,7 @@ class BinaryMath extends AbstractPart
         Parser::T_OP_PLUS => '+',
         Parser::T_OP_MINUS => '-',
         Parser::T_OP_MULTIPLY => '*',
-        Parser::T_OP_DIVIDE => '/'
+        Parser::T_OP_DIVIDE => '/',
     );
 
     /**
@@ -110,8 +110,7 @@ class BinaryMath extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $childStack = $this->getChildStack($stack);
 
         $lhs = $this->lhs->prepare($statement, $section, $childStack, $select, $result);
@@ -135,7 +134,7 @@ class BinaryMath extends AbstractPart
     public function toDpql(Display $statement, $section, array $stack)
     {
         return $this->lhs->toDpql($statement, $section, $stack)
-            . ' ' . self::$_operatorMap[$this->operator] . ' '
-            . $this->rhs->toDpql($statement, $section, $stack);
+            .' '.self::$_operatorMap[$this->operator].' '
+            .$this->rhs->toDpql($statement, $section, $stack);
     }
 }

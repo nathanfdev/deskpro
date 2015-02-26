@@ -44,7 +44,7 @@ class Toggle extends HandlerAbstract
     public function getFormField($data = null)
     {
         $setData = null;
-        if ($data AND !empty($data['value'])) {
+        if ($data and !empty($data['value'])) {
             $setData = true;
         }
 
@@ -59,7 +59,7 @@ class Toggle extends HandlerAbstract
 
         if (!empty($form_data[$name])) {
             return array(
-                array($this->field_def['id'], 'value', 1)
+                array($this->field_def['id'], 'value', 1),
             );
         }
 
@@ -84,7 +84,7 @@ class Toggle extends HandlerAbstract
         }
 
         $options = array(
-            'required' => $this->field_def->getOption($opt_prefix . 'required')
+            'required' => $this->field_def->getOption($opt_prefix.'required'),
         );
 
         if ($options['required']) {

@@ -36,5 +36,4 @@ namespace Application\DeskPRO\App\Native\RequestHandler;
 
 class ApiAppRequestContext extends AbstractNativeAppRequestContext
 {
-
 }

@@ -61,12 +61,20 @@ class UserTypePermission implements PermissionStrategyInterface
     public function userHasPermission(ApiUser $api_user, $context_info = null)
     {
         $person = $api_user->person;
-        if (!$person) return false;
+        if (!$person) {
+            return false;
+        }
 
         switch ($this->type) {
-            case self::ADMIN: if ($person->is_agent && $person->can_admin) return true; break;
-            case self::AGENT: if ($person->is_agent) return true; break;
-            case self::USER:  if (!$person->is_deleted || !$person->is_disabled) return true; break;
+            case self::ADMIN: if ($person->is_agent && $person->can_admin) {
+     return true;
+ } break;
+            case self::AGENT: if ($person->is_agent) {
+     return true;
+ } break;
+            case self::USER:  if (!$person->is_deleted || !$person->is_disabled) {
+      return true;
+  } break;
         }
 
         return false;

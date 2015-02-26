@@ -61,11 +61,11 @@ class ReservedTimeoutRule extends AbstractSupervisorRule
             ',
             array(
                 'reserved_state' => Job::STATUS_RESERVED,
-                'short_time_ago' => $this->date_ago
+                'short_time_ago' => $this->date_ago,
             ),
             array(
                 'reserved_state' => 'string',
-                'short_time_ago' => 'datetime'
+                'short_time_ago' => 'datetime',
             )
         );
         $result = $query->fetch();
@@ -75,9 +75,7 @@ class ReservedTimeoutRule extends AbstractSupervisorRule
                 throw new JobSupervisorException("Found $total reserved jobs that were not executed. Putting them back in the queue.");
             }
         }
-
     }
-
 
     /**
      * {@inheritdoc}
@@ -98,13 +96,13 @@ class ReservedTimeoutRule extends AbstractSupervisorRule
                 'reserved_status' => Job::STATUS_RESERVED,
                 'short_time_ago'  => $this->date_ago,
                 'waiting_status'  => Job::STATUS_WAITING,
-                'now'             => new \DateTime()
+                'now'             => new \DateTime(),
             ),
             array(
                 'reserved_status' => 'string',
                 'short_time_ago'  => 'datetime',
                 'waiting_status'  => 'string',
-                'now'             => 'datetime'
+                'now'             => 'datetime',
             )
         );
 

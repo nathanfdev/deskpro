@@ -55,7 +55,6 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
         return $this->identity_helper;
     }
 
-
     /**
      * Get a collection of entities by ID
      *
@@ -65,7 +64,9 @@ class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
      */
     public function getByIds(array $ids, $keep_order = false)
     {
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
         $class = $this->getName();
 

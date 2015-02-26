@@ -57,7 +57,7 @@ class ImportCommand extends AbstractExportCommand
 
         $config = $this->createGeneratorConfig($input, $this->importEntityTypesQueue());
         $config->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO);
-        if ( ! $config->getInputPath()) {
+        if (! $config->getInputPath()) {
             throw new \Exception('Input path must be specified');
         }
 
@@ -71,7 +71,6 @@ class ImportCommand extends AbstractExportCommand
                 'Done. Importing was successful. Look at the log file `%s` to see details.',
                 $config->getLogPath()
             ));
-
         } catch (Generator\GeneratorException $e) {
             $output->writeln('');
             foreach ($e->getExceptions() as $exception) {
@@ -84,7 +83,6 @@ class ImportCommand extends AbstractExportCommand
                     $config->getLogPath()
                 ));
             }
-
         } catch (\Exception $e) {
             $logger->critical($e->getMessage());
 

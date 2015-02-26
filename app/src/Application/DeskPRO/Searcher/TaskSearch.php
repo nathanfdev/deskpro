@@ -48,7 +48,6 @@ class TaskSearch extends SearcherAbstract
     const TERM_DATE_COMPLETED         = 'date_completed';
     const TERM_DATE_DUE               = 'date_due';
 
-
     /**
      * Run the search and return an array of matching ID's.
      *
@@ -74,21 +73,20 @@ class TaskSearch extends SearcherAbstract
         $parts = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
-
         #------------------------------
         # Add joins
         #------------------------------
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
-                $sql .= $j[1] . " ";
+                $sql .= $j[1]." ";
             } else {
                 $sql .= "LEFT JOIN $j ON $j.task_id = tasks.id ";
             }
         }
 
         if (is_array($order_by)) {
-            list ($order_join, $order_by) = $order_by;
+            list($order_join, $order_by) = $order_by;
 
             $sql .= " $order_join ";
         }
@@ -102,7 +100,7 @@ class TaskSearch extends SearcherAbstract
 
             $this->person->loadHelper('Agent');
             if ($this->person->Agent->getTeamIds()) {
-                $where = "((tasks.person_id = $person_id OR tasks.assigned_agent_id = $person_id OR tasks.assigned_agent_team_id IN (" . implode(',', $this->person->Agent->getTeamIds()) . ")) OR tasks.visibility = 1)";
+                $where = "((tasks.person_id = $person_id OR tasks.assigned_agent_id = $person_id OR tasks.assigned_agent_team_id IN (".implode(',', $this->person->Agent->getTeamIds()).")) OR tasks.visibility = 1)";
             } else {
                 $where = "((tasks.person_id = $person_id OR tasks.assigned_agent_id = $person_id) OR tasks.visibility = 1)";
             }
@@ -111,7 +109,7 @@ class TaskSearch extends SearcherAbstract
         }
 
         if ($parts['wheres']) {
-            $where .= ' AND ' . implode(" AND ", $parts['wheres']);
+            $where .= ' AND '.implode(" AND ", $parts['wheres']);
         }
 
         $sql .= "WHERE $where";
@@ -122,8 +120,6 @@ class TaskSearch extends SearcherAbstract
 
         return $sql;
     }
-
-
 
     /**
      * Get the ORDER BY clause based on order info set.
@@ -140,7 +136,7 @@ class TaskSearch extends SearcherAbstract
         list($type, $dir) = $this->order_by;
 
         $dir = strtoupper($dir);
-        if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
+        if ($dir != self::ORDER_ASC and $dir != self::ORDER_DESC) {
             $dir = self::ORDER_DESC;
         }
 
@@ -191,8 +187,6 @@ class TaskSearch extends SearcherAbstract
         return $order_by;
     }
 
-
-
     /**
      * Get the SQL parts we need in the query.
      *
@@ -208,7 +202,6 @@ class TaskSearch extends SearcherAbstract
         $joins = array();
 
         foreach ($this->terms as $info) {
-
             list($term, $op, $choice) = $info;
 
             $term_id = null;
@@ -292,8 +285,7 @@ class TaskSearch extends SearcherAbstract
 
         return array(
             'joins' => $joins,
-            'wheres' => $wheres
+            'wheres' => $wheres,
         );
     }
-
 }

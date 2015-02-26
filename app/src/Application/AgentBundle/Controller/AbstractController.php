@@ -35,7 +35,6 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 use Application\DeskPRO\Service\CheckWhitelistedIP;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -78,11 +77,10 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             if ($this->request->isXmlHttpRequest()) {
                 $data = array(
                     'error' => 'session_expired',
-                    'redirect_login' => $this->generateUrl('agent_login')
+                    'redirect_login' => $this->generateUrl('agent_login'),
                 );
 
                 return $this->createJsonResponse($data, 403);
-
             } else {
                 if ($this->isPostRequest()) {
                     $return = $this->get('router')->generate('agent');
@@ -91,7 +89,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
                 }
 
                 return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
-                    'return' => $return
+                    'return' => $return,
                 ));
             }
         }
@@ -104,20 +102,20 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             if ($this->request->isXmlHttpRequest()) {
                 $data = array(
                     'error' => 'invalid_request_token',
-                    'redirect_login' => $this->generateUrl('agent_login')
+                    'redirect_login' => $this->generateUrl('agent_login'),
                 );
 
                 return $this->createJsonResponse($data, 403);
             } else {
-				return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
-					'return' => $this->get('router')->generate('agent')
-				));
+                return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
+                    'return' => $this->get('router')->generate('agent'),
+                ));
             }
         }
 
         if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
             return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
-                'ip' => dp_get_user_ip_address()
+                'ip' => dp_get_user_ip_address(),
             ));
         }
 
@@ -137,8 +135,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         return false;
     }
-
-
 
     /**
      * Create a reponse that indicates a permissions error.

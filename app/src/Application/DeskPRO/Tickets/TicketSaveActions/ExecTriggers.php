@@ -53,7 +53,6 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
      */
     private $action_applicator;
 
-
     /**
      * @param TicketTriggerRepository   $trigger_repos
      * @param ActionApplicatorInterface $action_applicator
@@ -63,7 +62,6 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
         $this->trigger_repos = $trigger_repos;
         $this->action_applicator = $action_applicator;
     }
-
 
     /**
      * @param  Ticket                            $ticket
@@ -95,7 +93,7 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
                 'total_to_first_reply' => true,
                 'locked_by_agent' => true,
                 'count_agent_replies' => true,
-                'count_user_replies' => true
+                'count_user_replies' => true,
             );
             foreach ($ticket->getStateChangeRecorder()->getChangedFields() as $f) {
                 if (!isset($exclude_types[$f]) && strpos($f, 'date_') === false) {
@@ -155,7 +153,6 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
         }
     }
 
-
     /**
      * @param TicketTrigger            $trigger
      * @param Ticket                   $ticket
@@ -174,9 +171,9 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
             case 'user':
                 $mode_var = $trigger->by_user_mode;
                 break;
-			case 'system':
-				$mode_var = $trigger->by_app_mode;
-				break;
+            case 'system':
+                $mode_var = $trigger->by_app_mode;
+                break;
         }
         if ($mode_var) {
             $is_method_match = in_array($context->getEventMethod(), $mode_var);

@@ -62,8 +62,7 @@ abstract class AbstractNativeAppRequestContext extends AbstractRequestContext
         NativeApp $native_app,
         Person $agent,
         $action
-    )
-    {
+    ) {
         $this->native_app = $native_app;
         parent::__construct(
             $container,
@@ -83,7 +82,6 @@ abstract class AbstractNativeAppRequestContext extends AbstractRequestContext
         return $this->native_app;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\AppInstance
      */
@@ -91,7 +89,6 @@ abstract class AbstractNativeAppRequestContext extends AbstractRequestContext
     {
         return $this->native_app->getApp();
     }
-
 
     /**
      * @param  string $name
@@ -102,7 +99,7 @@ abstract class AbstractNativeAppRequestContext extends AbstractRequestContext
     {
         if (isset($GLOBALS['SETTINGS'])) {
             $setting_id = $this->getPackage()->name;
-            $setting_id_specific = $setting_id . '.' . $this->getApp()->id;
+            $setting_id_specific = $setting_id.'.'.$this->getApp()->id;
 
             if (isset($GLOBALS['SETTINGS'][$setting_id][$name])) {
                 return $GLOBALS['SETTINGS'][$setting_id][$name];

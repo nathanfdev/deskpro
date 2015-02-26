@@ -66,6 +66,7 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
     public function setPeopleStorage(PeopleStorageInterface $storage)
     {
         $this->people_storage = $storage;
+
         return $this;
     }
 
@@ -107,7 +108,7 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
 
                 $entity = new Entity\Ticket();
                 $entity
-                    ->setDestination('ticket_' . $ticket['id'])
+                    ->setDestination('ticket_'.$ticket['id'])
                     ->setOid($ticket['id'])
                     ->setRef($ticket['id'])
                     ->setPersonEmail($person_email)
@@ -165,7 +166,7 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
     /**
      * Check if ticket has all required columns
      *
-     * @param array $ticket
+     * @param  array $ticket
      * @return bool
      */
     private function hasRequiredTicketColumns(array $ticket)
@@ -188,7 +189,7 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
     /**
      * Returns all unique people ids of the found ZenDesk tickets
      *
-     * @param array $tickets
+     * @param  array $tickets
      * @return array
      */
     private function getTicketsPeopleIds(array $tickets)
@@ -209,7 +210,7 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
     /**
      * Returns people from reader by ids
      *
-     * @param array $ids
+     * @param  array $ids
      * @return array
      */
     private function getPeople($ids)

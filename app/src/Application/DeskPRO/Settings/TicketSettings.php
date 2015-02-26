@@ -102,9 +102,8 @@ class TicketSettings
         'reply_reassign_auto_change_status' => true,
         'reply_resolve_auto_close_tab'      => true,
 
-        'view_reverse_order' => true
+        'view_reverse_order' => true,
     );
-
 
     /**
      * @param Settings $settings
@@ -115,51 +114,50 @@ class TicketSettings
         $this->resetSettings();
     }
 
-
     /**
      * Resets settings based on stored values.
      */
     public function resetSettings()
     {
-        $this->satisfaction_enabled       = (bool)$this->settings->get('core.tickets.enable_feedback');
-        $this->satisfaction_agentread     = (bool)$this->settings->get('core.tickets.feedback_agents_read');
+        $this->satisfaction_enabled       = (bool) $this->settings->get('core.tickets.enable_feedback');
+        $this->satisfaction_agentread     = (bool) $this->settings->get('core.tickets.feedback_agents_read');
 
-        $this->kbsuggest_web_enabled      = (bool)$this->settings->get('core.show_ticket_suggestions');
+        $this->kbsuggest_web_enabled      = (bool) $this->settings->get('core.show_ticket_suggestions');
 
-        $this->timelog_enabled            = (bool)$this->settings->get('core_tickets.enable_timelog');
-        $this->timelog_autostart          = (bool)$this->settings->get('core_tickets.billing_auto_timer');
+        $this->timelog_enabled            = (bool) $this->settings->get('core_tickets.enable_timelog');
+        $this->timelog_autostart          = (bool) $this->settings->get('core_tickets.billing_auto_timer');
 
-        $this->billinglog_enabled         = (bool)$this->settings->get('core_tickets.enable_billing');
+        $this->billinglog_enabled         = (bool) $this->settings->get('core_tickets.enable_billing');
         $this->billinglog_currency        = $this->settings->get('core_tickets.billing_currency');
 
-        $this->lock_auto_enabled          = (bool)$this->settings->get('core_tickets.lock_on_view');
-        $this->lock_autorelease_enabled   = (bool)$this->settings->get('core_tickets.unlock_on_close');
-        $this->lock_timeout               = (int)$this->settings->get('core_tickets.lock_lifetime');
+        $this->lock_auto_enabled          = (bool) $this->settings->get('core_tickets.lock_on_view');
+        $this->lock_autorelease_enabled   = (bool) $this->settings->get('core_tickets.unlock_on_close');
+        $this->lock_timeout               = (int) $this->settings->get('core_tickets.lock_lifetime');
 
-        $this->ref_enabled                = (bool)$this->settings->get('core.tickets.use_ref');
+        $this->ref_enabled                = (bool) $this->settings->get('core.tickets.use_ref');
 
         if ($this->ref_enabled && $this->settings->get('core.ref_pattern')) {
             $this->ref_custom_enabled        = true;
             $this->ref_custom_pattern        = $this->settings->get('core.ref_pattern');
-            $this->ref_custom_pattern_digits = (int)$this->settings->get('core.ref_append_counter');
+            $this->ref_custom_pattern_digits = (int) $this->settings->get('core.ref_append_counter');
         }
 
         $this->agent_defaults['newticket_status']                     = $this->settings->get('core_tickets.new_status');
         $this->agent_defaults['newticket_agent']                      = $this->settings->get('core_tickets.new_assign') ?: null;
         $this->agent_defaults['newticket_team']                       = $this->settings->get('core_tickets.new_assignteam') ?: null;
-        $this->agent_defaults['newticket_user_notify']                = (bool)$this->settings->get('core_tickets.new_default_send_user_notify');
+        $this->agent_defaults['newticket_user_notify']                = (bool) $this->settings->get('core_tickets.new_default_send_user_notify');
         $this->agent_defaults['reply_status']                         = $this->settings->get('core_tickets.reply_status');
         $this->agent_defaults['reply_agent_unassigned']               = $this->settings->get('core_tickets.reply_assign_unassigned') ?: null;
         $this->agent_defaults['reply_agent_assigned']                 = $this->settings->get('core_tickets.reply_assign_assigned') ?: null;
         $this->agent_defaults['reply_team_unassigned']                = $this->settings->get('core_tickets.reply_assignteam_unassigned') ?: null;
         $this->agent_defaults['reply_team_assigned']                  = $this->settings->get('core_tickets.reply_assignteam_assigned') ?: null;
-        $this->agent_defaults['reply_user_notify']                    = (bool)$this->settings->get('core_tickets.default_send_user_notify');
-        $this->agent_defaults['reply_reassign_auto_change_status']    = (bool)$this->settings->get('core_tickets.reassign_auto_change_status');
-        $this->agent_defaults['reply_resolve_auto_close_tab']         = (bool)$this->settings->get('core_tickets.resolve_auto_close_tab');
-        $this->agent_defaults['view_reverse_order']                   = (bool)$this->settings->get('core_tickets.default_ticket_reverse_order');
+        $this->agent_defaults['reply_user_notify']                    = (bool) $this->settings->get('core_tickets.default_send_user_notify');
+        $this->agent_defaults['reply_reassign_auto_change_status']    = (bool) $this->settings->get('core_tickets.reassign_auto_change_status');
+        $this->agent_defaults['reply_resolve_auto_close_tab']         = (bool) $this->settings->get('core_tickets.resolve_auto_close_tab');
+        $this->agent_defaults['view_reverse_order']                   = (bool) $this->settings->get('core_tickets.default_ticket_reverse_order');
 
-        $this->add_agent_ccs     = (bool)$this->settings->get('core_tickets.add_agent_ccs');
-        $this->gateway_max_email = (int)$this->settings->get('core.gateway_max_email');
+        $this->add_agent_ccs     = (bool) $this->settings->get('core_tickets.add_agent_ccs');
+        $this->gateway_max_email = (int) $this->settings->get('core.gateway_max_email');
 
         $wh = $this->settings->get('core_tickets.work_hours');
         if ($wh) {
@@ -178,7 +176,6 @@ class TicketSettings
             $this->from_email_headers = array('from', 'reply-to', 'x-original-from');
         }
     }
-
 
     /**
      * @return array
@@ -214,7 +211,6 @@ class TicketSettings
         return $export_settings;
     }
 
-
     /**
      * @param array $set_settings
      */
@@ -237,32 +233,31 @@ class TicketSettings
         }
     }
 
-
     /**
      * Persists settings
      */
     public function saveSettings()
     {
-        $this->settings->setSetting('core.tickets.enable_feedback',      (int)$this->satisfaction_enabled);
-        $this->settings->setSetting('core.tickets.feedback_agents_read', (int)$this->satisfaction_agentread);
-        $this->settings->setSetting('core.show_ticket_suggestions',      (int)$this->kbsuggest_web_enabled);
+        $this->settings->setSetting('core.tickets.enable_feedback',      (int) $this->satisfaction_enabled);
+        $this->settings->setSetting('core.tickets.feedback_agents_read', (int) $this->satisfaction_agentread);
+        $this->settings->setSetting('core.show_ticket_suggestions',      (int) $this->kbsuggest_web_enabled);
 
-        $this->settings->setSetting('core_tickets.enable_timelog',       (int)$this->timelog_enabled);
+        $this->settings->setSetting('core_tickets.enable_timelog',       (int) $this->timelog_enabled);
 
         if ($this->timelog_enabled) {
-            $this->settings->setSetting('core_tickets.billing_auto_timer',   (int)$this->timelog_autostart);
+            $this->settings->setSetting('core_tickets.billing_auto_timer',   (int) $this->timelog_autostart);
         } else {
             $this->settings->setSetting('core_tickets.billing_auto_timer',   0);
         }
 
-        $this->settings->setSetting('core_tickets.enable_billing',       (int)$this->billinglog_enabled);
+        $this->settings->setSetting('core_tickets.enable_billing',       (int) $this->billinglog_enabled);
         $this->settings->setSetting('core_tickets.billing_currency',     $this->billinglog_currency);
 
-        $this->settings->setSetting('core_tickets.lock_on_view',         (int)$this->lock_auto_enabled);
-        $this->settings->setSetting('core_tickets.unlock_on_close',      (int)$this->lock_autorelease_enabled);
-        $this->settings->setSetting('core_tickets.lock_lifetime',        (int)$this->lock_timeout);
+        $this->settings->setSetting('core_tickets.lock_on_view',         (int) $this->lock_auto_enabled);
+        $this->settings->setSetting('core_tickets.unlock_on_close',      (int) $this->lock_autorelease_enabled);
+        $this->settings->setSetting('core_tickets.lock_lifetime',        (int) $this->lock_timeout);
 
-        $this->settings->setSetting('core.tickets.use_ref',              (int)$this->ref_enabled);
+        $this->settings->setSetting('core.tickets.use_ref',              (int) $this->ref_enabled);
 
         if ($this->ref_enabled) {
             if ($this->ref_custom_enabled) {

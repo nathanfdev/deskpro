@@ -38,7 +38,7 @@ interface PeopleStorageInterface
     /**
      * Set users collection
      *
-     * @param array $people
+     * @param  array $people
      * @return $this
      */
     public function setPeople(array $people);
@@ -46,7 +46,7 @@ interface PeopleStorageInterface
     /**
      * Add users collection
      *
-     * @param array $people
+     * @param  array $people
      * @return $this
      */
     public function addPeople(array $people);
@@ -68,7 +68,7 @@ interface PeopleStorageInterface
     /**
      * Returns the list of ids that not found in the storage
      *
-     * @param int[] $request_ids
+     * @param  int[] $request_ids
      * @return int[]
      */
     public function getNotContainsIds(array $request_ids);

@@ -53,7 +53,6 @@ class FilterEmailAccount extends AbstractFilterTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

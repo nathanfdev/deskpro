@@ -34,8 +34,6 @@
 
 namespace Orb\Log;
 
-
-
 /**
  * A logger class.
  *
@@ -70,7 +68,7 @@ class Logger
         self::NOTICE   => 'NOTICE',
         self::INFO     => 'INFO',
         self::DEBUG    => 'DEBUG',
-        self::STRICT    => 'STRICT'
+        self::STRICT    => 'STRICT',
     );
 
     /**
@@ -104,23 +102,19 @@ class Logger
      */
     protected $default_disabled = true;
 
-
-
     public function __construct()
     {
         $this->_writer_chain = new Writer\WriterChain();
     }
-
 
     /**
      * Disable logger
      */
     public function disable()
     {
-        $this->disabled	= true;
+        $this->disabled    = true;
         $this->default_disabled = false;
     }
-
 
     /**
      * Enable logger
@@ -131,7 +125,6 @@ class Logger
         $this->default_disabled = false;
     }
 
-
     /**
      * Is the logger enabled?
      * @return bool
@@ -140,7 +133,6 @@ class Logger
     {
         return !$this->disabled;
     }
-
 
     /**
      * Add a priroty
@@ -162,8 +154,6 @@ class Logger
         return $this;
     }
 
-
-
     /**
      * Add a filter to be applied to every item.
      *
@@ -177,8 +167,6 @@ class Logger
     {
         $this->_writer_chain->addFilter($filter);
     }
-
-
 
     /**
      * Add a new writer to this logger.
@@ -241,7 +229,7 @@ class Logger
             if ($priority == 'ERROR') {
                 $priority = 'ERR';
             }
-            $priority = constant('Orb\\Log\\Logger::' . strtoupper($priority));
+            $priority = constant('Orb\\Log\\Logger::'.strtoupper($priority));
         }
 
         $info[LogItem::MESSAGE] = $message;
@@ -280,7 +268,7 @@ class Logger
             $dump = self::varToString($var);
         }
 
-        $this->log($name . ": " . $dump, $priority);
+        $this->log($name.": ".$dump, $priority);
     }
 
     /**
@@ -308,9 +296,9 @@ class Logger
         if (is_resource($var)) {
             return '[resource]';
         }
-        $str = (string)$var;
+        $str = (string) $var;
         if (strlen($str) > 1000) {
-            $str = substr($str, 0, 1000) . "...(clipped)";
+            $str = substr($str, 0, 1000)."...(clipped)";
         }
 
         return $str;
@@ -414,7 +402,7 @@ class Logger
             return;
         }
 
-        if ($this->_session_name AND !$log_item[LogItem::SESSION_NAME]) {
+        if ($this->_session_name and !$log_item[LogItem::SESSION_NAME]) {
             $log_item[LogItem::SESSION_NAME] = $this->_session_name;
         }
 
@@ -451,7 +439,7 @@ class Logger
      */
     public function getTotalTime($name = 'default', $reset = true)
     {
-        $name_e = $name . '__end';
+        $name_e = $name.'__end';
 
         if (!isset($this->_timers[$name])) {
             throw new \InvalidArgumentException("Timer not started: $name");

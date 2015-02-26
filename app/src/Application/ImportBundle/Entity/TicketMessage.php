@@ -100,6 +100,7 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     public function setPersonEmail($person_email)
     {
         $this->person_email = $person_email;
+
         return $this;
     }
 
@@ -112,12 +113,13 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * @param DateTime $date_created
+     * @param  DateTime $date_created
      * @return $this
      */
     public function setDateCreated(DateTime $date_created)
     {
         $this->date_created = $date_created;
+
         return $this;
     }
 
@@ -130,12 +132,13 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * @param string $message_text
+     * @param  string $message_text
      * @return $this
      */
     public function setMessageText($message_text)
     {
         $this->message_text = $message_text;
+
         return $this;
     }
 
@@ -148,12 +151,13 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * @param string $message_html
+     * @param  string $message_html
      * @return $this
      */
     public function setMessageHtml($message_html)
     {
         $this->message_html = $message_html;
+
         return $this;
     }
 
@@ -176,12 +180,13 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * @param boolean $is_note
+     * @param  boolean $is_note
      * @return $this
      */
     public function setAsNote($is_note)
     {
         $this->is_note = $is_note;
+
         return $this;
     }
 
@@ -198,12 +203,13 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     /**
      * Add a message attachment
      *
-     * @param Attachment $attachment
+     * @param  Attachment $attachment
      * @return $this
      */
     public function addAttachment(Attachment $attachment)
     {
         $this->attachments->attach($attachment);
+
         return $this;
     }
 

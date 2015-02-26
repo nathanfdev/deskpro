@@ -94,7 +94,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
     public function run()
     {
         // Better dupe checking based on the actual email being submitted.
-        if($this->reader->hasProperty('email_source') && $this->reader->getProperty('email_source')->uid && $this->account) {
+        if ($this->reader->hasProperty('email_source') && $this->reader->getProperty('email_source')->uid && $this->account) {
             $has_processed = App::getDb()->fetchColumn("
                 SELECT id
                 FROM email_sources
@@ -130,7 +130,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
         // If the detector didnt find a person, doesnt mean they dont exist
         $person = $person_processor->findPerson($this->reader->getFromAddress());
         if (!$person || !$person->is_agent || $person->is_deleted) {
-            $this->logMessage('[ArticleGatewayProcessor] No person or not an agent for email: ' . $this->reader->getFromAddress()->getEmail());
+            $this->logMessage('[ArticleGatewayProcessor] No person or not an agent for email: '.$this->reader->getFromAddress()->getEmail());
             $this->error = \Application\DeskPRO\Entity\EmailSource::ERR_PERM_INSUFFICIENT;
 
             if ($this->account) {
@@ -145,7 +145,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
                         AND status = 'error'
                         AND error_code = 'perm_insufficient'
                     LIMIT 1
-                ", array($this->account->getId(), $cutoff_date, '%' . $this->reader->getFromAddress()->getEmail() . '%'));
+                ", array($this->account->getId(), $cutoff_date, '%'.$this->reader->getFromAddress()->getEmail().'%'));
 
                 if ($has_processed) {
                     return null;
@@ -255,7 +255,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 
         try {
             if ($this->processBlobs()) {
-                foreach ($this->processBlobs() AS $blob) {
+                foreach ($this->processBlobs() as $blob) {
                     $attach = new \Application\DeskPRO\Entity\ArticleAttachment();
                     $attach->blob = $blob;
                     $attach->person = $person;
@@ -266,7 +266,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
             App::getOrm()->persist($article);
             App::getOrm()->flush();
 
-            $this->logMessage('[ArticleGatewayProcessor] Created article ' . $article['id']);
+            $this->logMessage('[ArticleGatewayProcessor] Created article '.$article['id']);
 
             App::getDb()->commit();
         } catch (\Exception $e) {
@@ -281,7 +281,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
     {
         $this->person = $agent;
 
-        $this->logMessage('[ArticleGatewayProcessor] Forwarded article by ' . $agent->getId() . ' ' . $agent->getDisplayContact());
+        $this->logMessage('[ArticleGatewayProcessor] Forwarded article by '.$agent->getId().' '.$agent->getDisplayContact());
 
         #------------------------------
         # Read in email props and create cutter
@@ -342,7 +342,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 
         try {
             if ($this->processBlobs()) {
-                foreach ($this->processBlobs() AS $blob) {
+                foreach ($this->processBlobs() as $blob) {
                     $attach = new \Application\DeskPRO\Entity\ArticleAttachment();
                     $attach->blob = $blob;
                     $attach->person = $agent;
@@ -353,7 +353,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
             App::getOrm()->persist($article);
             App::getOrm()->flush();
 
-            $this->logMessage('[ArticleGatewayProcessor] Created article ' . $article['id']);
+            $this->logMessage('[ArticleGatewayProcessor] Created article '.$article['id']);
 
             App::getDb()->commit();
         } catch (\Exception $e) {
@@ -386,7 +386,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 
             if ($blob->isImage()) {
                 $this->inline_blobs[$blob->getId()] = $blob;
-                $replace = '<img src="' . $blob->getDownloadUrl() . '" alt="" />';
+                $replace = '<img src="'.$blob->getDownloadUrl().'" alt="" />';
 
                 $body = $inline_images->replaceToken($cid, $replace, $body);
             }

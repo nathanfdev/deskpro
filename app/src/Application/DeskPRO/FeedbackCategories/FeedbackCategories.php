@@ -75,7 +75,6 @@ class FeedbackCategories
         $this->feedback_categories = $this->em->getRepository('DeskPRO:CustomDefFeedback')->getAllFlatData($this->parent_category);
     }
 
-
     /**
      * Resets this repository so the next time data is requested form it, it will
      * be queried again.
@@ -137,7 +136,6 @@ class FeedbackCategories
         $this->parent_category = $this->em->getRepository('DeskPRO:CustomDefFeedback')->getCategoryField();
 
         if (!$this->parent_category) {
-
             $this->parent_category                = new CustomDefFeedback();
             $this->parent_category->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
             $this->parent_category->title         = 'Category';
@@ -156,7 +154,6 @@ class FeedbackCategories
     public function getParentCategory()
     {
         if (!$this->parent_category) {
-
             $this->createInitialFeedbackCategoryIfNotDefined();
         }
 
@@ -174,9 +171,7 @@ class FeedbackCategories
         $feedback_categories = $this->em->getRepository('DeskPRO:CustomDefFeedback')->getByIds($newOrders);
 
         foreach ($newOrders as $id) {
-
             if (!isset($feedback_categories[$id])) {
-
                 continue;
             }
 

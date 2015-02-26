@@ -108,7 +108,7 @@ class CustomFieldData extends DomainObject
         $metadata->setPrimaryTable(array(
             'name' => 'custom_field_data',
             'uniqueConstraints' => array(
-                'unique_idx' => array('columns' => array('owner_id', 'definition_id'))
+                'unique_idx' => array('columns' => array('owner_id', 'definition_id')),
             ),
         ));
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomFieldData';

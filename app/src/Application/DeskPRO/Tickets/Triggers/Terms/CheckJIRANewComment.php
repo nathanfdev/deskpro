@@ -46,45 +46,45 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckJIRANewComment extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addValidNames('message');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addValidNames('message');
 
+        return $options;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
-		$state = $ticket->getStateChangeRecorder();
-		$op = $this->getTermOperator();
-		/** @var ChangeData $change */
-		$change = $state->getCombinedChangeForField('jira.comment');
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $options = $this->getTermOptions();
+        $state = $ticket->getStateChangeRecorder();
+        $op = $this->getTermOperator();
+        /** @var ChangeData $change */
+        $change = $state->getCombinedChangeForField('jira.comment');
 
-		$data = $change ? $change->getData() : array();
+        $data = $change ? $change->getData() : array();
 
-		if (!$data) {
-			return 'not_isset' === $op;
-		}
-		if ('isset' === $op) {
-			return true;
-		}
-		$comment = $data['body'];
+        if (!$data) {
+            return 'not_isset' === $op;
+        }
+        if ('isset' === $op) {
+            return true;
+        }
+        $comment = $data['body'];
 
-		$strings = array();
+        $strings = array();
 
-		$strings[] = $comment;
-		$strings[] = trim(preg_replace('#\s+#' , ' ', strip_tags($comment)));
+        $strings[] = $comment;
+        $strings[] = trim(preg_replace('#\s+#', ' ', strip_tags($comment)));
 
-		$value = TermValue::createWithValue($strings);
+        $value = TermValue::createWithValue($strings);
 
-		return $this->isStringMatch($ticket, $context, $value, $options['message']);
-	}
+        return $this->isStringMatch($ticket, $context, $value, $options['message']);
+    }
 }

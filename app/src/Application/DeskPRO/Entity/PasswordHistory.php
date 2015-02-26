@@ -75,7 +75,6 @@ class PasswordHistory extends DomainObject
      */
     protected $date_created;
 
-
     public function __construct()
     {
         $this->date_created = new \DateTime();
@@ -91,7 +90,7 @@ class PasswordHistory extends DomainObject
         $metadata->inheritanceType      = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
         $metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PasswordHistory';
-        $metadata->setPrimaryTable(array('name' => 'password_history',));
+        $metadata->setPrimaryTable(array('name' => 'password_history'));
         $metadata->mapField(array(
             'columnName' => 'id',
             'fieldName'  => 'id',

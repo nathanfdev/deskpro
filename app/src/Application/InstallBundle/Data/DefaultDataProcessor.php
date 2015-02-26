@@ -69,7 +69,7 @@ class DefaultDataProcessor
 
     public function __construct(DeskproContainer $container, $root_dir = null)
     {
-        if ($root_dir === null){
+        if ($root_dir === null) {
             $root_dir = DP_ROOT.'/src/Application/InstallBundle/Data/DefaultData';
         }
 
@@ -79,7 +79,6 @@ class DefaultDataProcessor
         $this->logger = new NullLogger();
     }
 
-
     /**
      * @param LoggerInterface $logger
      */
@@ -88,13 +87,14 @@ class DefaultDataProcessor
         $this->logger = $logger;
     }
 
-
     /**
      * Loads install data if its not already loaded
      */
     private function initDataInfo()
     {
-        if ($this->data_info !== null) return;
+        if ($this->data_info !== null) {
+            return;
+        }
 
         $row = $this->container->getDb()->fetchAssoc("SELECT id, data FROM datastore WHERE name = 'sys.install.default_data' LIMIT 1");
         $data = null;
@@ -112,7 +112,6 @@ class DefaultDataProcessor
         $this->data_info = $data;
     }
 
-
     /**
      * Save data info
      */
@@ -122,10 +121,9 @@ class DefaultDataProcessor
         $this->container->getDb()->insert('datastore', array(
             'name' => 'sys.install.default_data',
             'auth' => Strings::random(15),
-            'data' => serialize($this->data_info)
+            'data' => serialize($this->data_info),
         ));
     }
-
 
     /**
      * @param  string $classname
@@ -137,7 +135,6 @@ class DefaultDataProcessor
 
         return in_array($classname, $this->data_info['installed']);
     }
-
 
     /**
      * @return array
@@ -152,8 +149,10 @@ class DefaultDataProcessor
 
         $dir = dir($this->root_dir);
         while (($f = $dir->read()) !== false) {
-            if ($f == '.' || $f == '..' || strpos($f, 'Abstract') !== false) continue;
-            $classname = 'Application\\InstallBundle\\Data\\DefaultData\\' . str_replace('.php', '', $f);
+            if ($f == '.' || $f == '..' || strpos($f, 'Abstract') !== false) {
+                continue;
+            }
+            $classname = 'Application\\InstallBundle\\Data\\DefaultData\\'.str_replace('.php', '', $f);
 
             if (class_exists($classname)) {
                 $this->data_classes[] = $classname;
@@ -174,7 +173,6 @@ class DefaultDataProcessor
         return $this->data_classes;
     }
 
-
     /**
      * Installs new data classes that havent been marked as installed yet.
      *
@@ -187,7 +185,9 @@ class DefaultDataProcessor
         }
 
         foreach ($this->getDataClasses() as $classname) {
-            if ($this->isInstalled($classname)) continue;
+            if ($this->isInstalled($classname)) {
+                continue;
+            }
 
             if ($specific_class) {
                 if (strtolower($classname) != $specific_class && strtolower(Util::getBaseClassname($classname)) != $specific_class) {
@@ -195,7 +195,7 @@ class DefaultDataProcessor
                 }
             }
 
-            $this->logger->info("Running install on " . Util::getBaseClassname($classname));
+            $this->logger->info("Running install on ".Util::getBaseClassname($classname));
             $start_time = microtime(true);
 
             $obj = new $classname($this->container, $this->logger);
@@ -207,7 +207,6 @@ class DefaultDataProcessor
             $this->logger->info(sprintf("... done in %.4fs", microtime(true)-$start_time));
         }
     }
-
 
     /**
      * Installs new data classes that havent been marked as installed yet, or runs sync if it has.
@@ -228,7 +227,7 @@ class DefaultDataProcessor
             }
 
             if (!$this->isInstalled($classname)) {
-                $this->logger->info("Running install via upgrade on " . Util::getBaseClassname($classname));
+                $this->logger->info("Running install via upgrade on ".Util::getBaseClassname($classname));
                 $start_time = microtime(true);
 
                 $obj = new $classname($this->container, $this->logger);
@@ -239,7 +238,7 @@ class DefaultDataProcessor
 
                 $this->logger->info(sprintf("... done in %.4fs", microtime(true)-$start_time));
             } else {
-                $this->logger->info("Running sync on " . Util::getBaseClassname($classname));
+                $this->logger->info("Running sync on ".Util::getBaseClassname($classname));
                 $start_time = microtime(true);
 
                 $obj = new $classname($this->container, $this->logger);
@@ -249,7 +248,6 @@ class DefaultDataProcessor
             }
         }
     }
-
 
     /**
      * Resets data classes
@@ -270,7 +268,7 @@ class DefaultDataProcessor
             }
 
             if (!$this->isInstalled($classname)) {
-                $this->logger->info("Running install via upgrade on " . Util::getBaseClassname($classname));
+                $this->logger->info("Running install via upgrade on ".Util::getBaseClassname($classname));
                 $start_time = microtime(true);
 
                 $obj = new $classname($this->container, $this->logger);
@@ -281,7 +279,7 @@ class DefaultDataProcessor
 
                 $this->logger->info(sprintf("... done in %.4fs", microtime(true)-$start_time));
             } else {
-                $this->logger->info("Running reset on " . Util::getBaseClassname($classname));
+                $this->logger->info("Running reset on ".Util::getBaseClassname($classname));
                 $start_time = microtime(true);
 
                 $obj = new $classname($this->container, $this->logger);

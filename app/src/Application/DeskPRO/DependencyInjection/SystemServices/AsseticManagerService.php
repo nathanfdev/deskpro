@@ -37,14 +37,13 @@ namespace Application\DeskPRO\DependencyInjection\SystemServices;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
-
 class AsseticManagerService
 {
     public static function create(DeskproContainer $container, array $options = array())
     {
         $manager = new \Application\DeskPRO\Assetic\AsseticManager(
             App::getConfigFromFile('assets'),
-            realpath(DP_ROOT . '/../web'),
+            realpath(DP_ROOT.'/../web'),
             'build'
         );
 

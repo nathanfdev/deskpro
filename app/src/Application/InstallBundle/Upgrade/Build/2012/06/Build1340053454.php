@@ -48,7 +48,7 @@ class Build1340053454 extends AbstractBuild
                 VALUES (1, NULL, NULL, NULL, 'Default Style', 'Default Style', 'stylesheets/user', '2012-06-18 20:20:20', X'613A303A7B7D', '2012-06-18 20:20:20');
             ");
         } else {
-            $this->out("Style record okay: " . implode(',', $style_ids));
+            $this->out("Style record okay: ".implode(',', $style_ids));
         }
     }
 }

@@ -56,7 +56,6 @@ class CheckCategory extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

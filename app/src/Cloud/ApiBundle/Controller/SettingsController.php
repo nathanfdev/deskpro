@@ -78,7 +78,7 @@ class SettingsController extends BaseSettingsController
             $domain = preg_replace('#^https?://#', '', strtolower($in_settings->get('cloud_custom_domain')));
             $domain = trim($domain, '/');
 
-            $url_test = 'http://' . $domain . '/';
+            $url_test = 'http://'.$domain.'/';
             $url_bits = @parse_url($url_test);
 
             if (empty($url_bits['host']) || strpos($url_bits['host'], 'deskpro.com') !== false || $url_bits['host'] != $domain) {
@@ -94,9 +94,9 @@ class SettingsController extends BaseSettingsController
             }
 
             if ($set_settings['core.cloud_url_ssl']) {
-                $url = 'https://' . $domain . '/';
+                $url = 'https://'.$domain.'/';
             } else {
-                $url = 'http://' . $domain . '/';
+                $url = 'http://'.$domain.'/';
             }
             $set_settings['core.deskpro_url'] = $url;
 
@@ -110,7 +110,7 @@ class SettingsController extends BaseSettingsController
                 $this->em->persist($tmpdata);
                 $this->em->flush();
 
-                $url = DP_MA_SERVER . '/cloud/call/'.DPC_SITE_ID.'/'. $tmpdata->getCode();
+                $url = DP_MA_SERVER.'/cloud/call/'.DPC_SITE_ID.'/'.$tmpdata->getCode();
 
                 try {
                     $client = new \Zend\Http\Client(null, array('timeout' => 15, 'sslverifypeer' => false));
@@ -121,15 +121,14 @@ class SettingsController extends BaseSettingsController
                     return $this->createApiErrorResponse('error_activating_domain', 'There was a problem activating your custom domain. Please try again later.');
                 }
             }
-
         } else {
             $set_settings['cloud_custom_domain'] = null;
 
-            $set_settings['core.cloud_url_ssl'] = (bool)$in_settings->get('cloud_url_ssl');
+            $set_settings['core.cloud_url_ssl'] = (bool) $in_settings->get('cloud_url_ssl');
             if ($set_settings['core.cloud_url_ssl']) {
-                $url = 'https://' . DPC_SITE_DOMAIN . '/';
+                $url = 'https://'.DPC_SITE_DOMAIN.'/';
             } else {
-                $url = 'http://' . DPC_SITE_DOMAIN . '/';
+                $url = 'http://'.DPC_SITE_DOMAIN.'/';
             }
             $set_settings['core.deskpro_url'] = $url;
         }

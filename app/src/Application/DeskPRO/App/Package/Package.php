@@ -53,7 +53,7 @@ class Package
     {
         $this->path = rtrim($path, '/');
 
-        $reader = ManifestReader::newFromFile($path . '/manifest.json');
+        $reader = ManifestReader::newFromFile($path.'/manifest.json');
         if ($reader->isError()) {
             throw new \InvalidArgumentException(sprintf(
                 "Invalid manifest %s: %s %s",
@@ -64,7 +64,6 @@ class Package
         }
         $this->manifest = $reader->getManifest();
     }
-
 
     /**
      * @param  AppPackage $def         Existing app package to update. Otherwise, a new package is created.
@@ -89,7 +88,7 @@ class Package
         $def->is_single    = $this->manifest->getIsSingle();
         $def->scopes       = array(AppPackage::SCOPE_AGENT);
         $def->tags         = $this->manifest->getTags() ?: array();
-		$def->trigger_events = $this->manifest->getTriggerEvents();
+        $def->trigger_events = $this->manifest->getTriggerEvents();
         $def->settings_def = $this->manifest->getSettingsDef();
         $def->native_name  = $this->manifest->getIsNative() ? $def->name : null;
 
@@ -104,7 +103,6 @@ class Package
         return $this->manifest;
     }
 
-
     /**
      * @return string
      */
@@ -113,63 +111,58 @@ class Package
         return $this->path;
     }
 
-
     /**
      * @param  int    $size The size of the icon we want
      * @return string
      */
     public function getIconFilePath($size)
     {
-        $path = $this->path . '/res/icons/app_'.$size.'.png';
+        $path = $this->path.'/res/icons/app_'.$size.'.png';
         if (!file_exists($path)) {
             return null;
         }
 
         return $path;
     }
-
 
     /**
      * @return string
      */
     public function getReadmeFilePath()
     {
-        $path = $this->path . '/README';
+        $path = $this->path.'/README';
         if (!file_exists($path)) {
             return null;
         }
 
         return $path;
     }
-
 
     /**
      * @return string|null
      */
     public function getAppJsFilePath()
     {
-        $path = $this->path . '/app.js';
+        $path = $this->path.'/app.js';
         if (!file_exists($path)) {
             return null;
         }
 
         return $path;
     }
-
 
     /**
      * @return string|null
      */
     public function getModuleJsFilePath()
     {
-        $path = $this->path . '/module.js';
+        $path = $this->path.'/module.js';
         if (!file_exists($path)) {
             return null;
         }
 
         return $path;
     }
-
 
     /**
      * @return array
@@ -179,7 +172,6 @@ class Package
         return $this->readAssetPath('js');
     }
 
-
     /**
      * @return array
      */
@@ -187,7 +179,6 @@ class Package
     {
         return $this->readAssetPath('css');
     }
-
 
     /**
      * @return array
@@ -197,7 +188,6 @@ class Package
         return $this->readAssetPath('html');
     }
 
-
     /**
      * @return array
      */
@@ -206,7 +196,6 @@ class Package
         return $this->readAssetPath('res');
     }
 
-
     /**
      * @param  string $path_name
      * @return array
@@ -214,7 +203,7 @@ class Package
     private function readAssetPath($path_name)
     {
         $assets   = array();
-        $path     = @realpath($this->path . '/' . $path_name);
+        $path     = @realpath($this->path.'/'.$path_name);
         $path_std = str_replace('\\', '/', $path);
 
         if (!$path || !is_dir($path)) {
@@ -232,7 +221,7 @@ class Package
             /** @var $file \SplFileInfo */
 
             $full_path  = $file->getRealPath();
-            $asset_path = str_replace($path_std . '/', '', str_replace('\\', '/', $full_path));
+            $asset_path = str_replace($path_std.'/', '', str_replace('\\', '/', $full_path));
             $file_name  = $file->getFilename();
 
             if ($path_name == 'res') {

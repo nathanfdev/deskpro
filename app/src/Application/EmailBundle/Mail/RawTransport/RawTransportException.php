@@ -39,5 +39,4 @@ namespace Application\EmailBundle\Mail\RawTransport;
  */
 class RawTransportException extends \RuntimeException
 {
-
 }

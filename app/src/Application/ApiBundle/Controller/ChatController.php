@@ -130,7 +130,7 @@ class ChatController extends AbstractController
 
         $terms = array();
 
-        foreach ($search_map AS $input => $search_key) {
+        foreach ($search_map as $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ($value) {
                 $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
@@ -142,11 +142,11 @@ class ChatController extends AbstractController
         if ($date_created_end) {
             $terms[] = array('type' => ChatConversationSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
                 'date1' => $date_created_start,
-                'date2' => $date_created_end
+                'date2' => $date_created_end,
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => ChatConversationSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start
+                'date1' => $date_created_start,
             ));
         }
 
@@ -166,7 +166,9 @@ class ChatController extends AbstractController
         $result_cache = $this->getApiSearchResult('chat', $terms, $extra, $this->in->getUint('cache_id'), new ChatConversationSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
@@ -180,7 +182,7 @@ class ChatController extends AbstractController
             'per_page' => $per_page,
             'total' => count($person_ids),
             'cache_id' => $result_cache->id,
-            'chats' => $this->getApiData($chats)
+            'chats' => $this->getApiData($chats),
         ));
     }
 

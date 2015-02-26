@@ -50,7 +50,7 @@ class ChatDepartmentType extends AbstractType
             array(
                  'type'         => new PermissionRowType(),
                  'allow_add'    => true,
-                 'allow_delete' => true
+                 'allow_delete' => true,
             )
         );
         $builder->add(
@@ -63,7 +63,7 @@ class ChatDepartmentType extends AbstractType
                      return $er->createQueryBuilder('d')->where(
                          'd.is_chat_enabled = true AND d.parent IS NULL'
                      )->orderBy('d.display_order', 'ASC');
-                 }
+                 },
             )
         );
     }
@@ -73,7 +73,7 @@ class ChatDepartmentType extends AbstractType
         $resolver->setDefaults(
             array(
                  'data_class'         => 'Application\\DeskPRO\\Departments\\ChatDepartmentEdit',
-                 'cascade_validation' => true
+                 'cascade_validation' => true,
             )
         );
     }
@@ -82,5 +82,4 @@ class ChatDepartmentType extends AbstractType
     {
         return 'department_edit';
     }
-
 }

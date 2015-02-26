@@ -25,7 +25,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 namespace Application\ImportBundle\Reader\ZenDesk;
 
 use Zendesk\API\Client;
@@ -59,7 +58,6 @@ class ZenDeskReaderFactory
         if (isset($dp_config['api_token'])) {
             $config->setApiToken($dp_config['api_token']);
         }
-
 
         $client = new Client($config->getSubdomain(), $config->getUsername());
         $client->setAuth($config->getAuthType(), $config->getAuthValue());

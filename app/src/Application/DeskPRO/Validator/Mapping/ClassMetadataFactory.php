@@ -112,13 +112,13 @@ class ClassMetadataFactory extends LazyLoadingMetadataFactory
                     $parts = explode('|', $val);
 
                     foreach ($parts as $key => $part) {
-                        $parts[$key] = '[' . $name . '] ' . $part;
+                        $parts[$key] = '['.$name.'] '.$part;
                     }
 
                     $val = implode('|', $parts);
                     $constraint->$prop = $val;
                 } else {
-                    $constraint->$prop = '[' . $name . '] ' . $val;
+                    $constraint->$prop = '['.$name.'] '.$val;
                 }
             }
         }

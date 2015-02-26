@@ -90,7 +90,6 @@ class AuditLog extends DomainObject
      */
     protected $date_created;
 
-
     /**
      * @param mixed|null $object
      */
@@ -104,7 +103,6 @@ class AuditLog extends DomainObject
         }
     }
 
-
     /**
      * @param Person $person
      */
@@ -113,7 +111,6 @@ class AuditLog extends DomainObject
         $this->setModelField('person', $person);
         $this->setModelField('person_name', $person->getDisplayContact());
     }
-
 
     /**
      * @param string $context Optinally context id
@@ -127,7 +124,6 @@ class AuditLog extends DomainObject
             $this['person_name'] .= " <$context>";
         }
     }
-
 
     /**
      * @param  mixed                     $object
@@ -146,7 +142,6 @@ class AuditLog extends DomainObject
         $this['object_id']   = $object_id;
     }
 
-
     /**
      * Add data that was cahgned.
      *
@@ -156,16 +151,17 @@ class AuditLog extends DomainObject
      */
     public function addChangeData($field_id, $old_val, $new_val)
     {
-        if (!$this->data) $this->data = array();
+        if (!$this->data) {
+            $this->data = array();
+        }
 
         $this->data[] = array(
             'type'     => self::UPDATE,
             'field_id' => $field_id,
             'old_val'  => $old_val,
-            'new_val'  => $new_val
+            'new_val'  => $new_val,
         );
     }
-
 
     /**
      * Ge the object type/id in standard naming format
@@ -174,9 +170,8 @@ class AuditLog extends DomainObject
      */
     public function getObjectName()
     {
-        return $this->object_type . '@' . $this->object_id;
+        return $this->object_type.'@'.$this->object_id;
     }
-
 
     /**
      * Get an object type from an object param:
@@ -200,13 +195,12 @@ class AuditLog extends DomainObject
                     return $object_type;
                 }
 
-                return (string)$object;
+                return (string) $object;
             } else {
                 return null;
             }
         }
     }
-
 
     /**
      * Get an object ID from an object param:
@@ -232,7 +226,6 @@ class AuditLog extends DomainObject
 
         return null;
     }
-
 
     /**
      * Get standard object name for an object
@@ -266,13 +259,13 @@ class AuditLog extends DomainObject
             'name' => 'auditlog',
         ));
 
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'person_name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'person_name', ));
-        $metadata->mapField(array( 'fieldName' => 'op', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'op', ));
-        $metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', ));
-        $metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', ));
-        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'data', ));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ) ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'person_name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'person_name'));
+        $metadata->mapField(array( 'fieldName' => 'op', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'op'));
+        $metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type'));
+        $metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id'));
+        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'data'));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL)) ));
     }
 }

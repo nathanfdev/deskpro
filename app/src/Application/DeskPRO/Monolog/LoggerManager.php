@@ -51,7 +51,6 @@ class LoggerManager
         $this->factory = $factory;
     }
 
-
     /**
      * @param  string       $id
      * @param  string|array $config
@@ -78,7 +77,6 @@ class LoggerManager
         return $this->loggers[$id];
     }
 
-
     /**
      * @param  string          $id
      * @param  Logger          $logger
@@ -93,7 +91,6 @@ class LoggerManager
         $this->loggers[$id] = $logger;
     }
 
-
     /**
      * @param  string $id
      * @return bool
@@ -102,7 +99,6 @@ class LoggerManager
     {
         return isset($this->loggers[$id]);
     }
-
 
     /**
      * Unsets a registered logger.
@@ -116,7 +112,6 @@ class LoggerManager
             unset($this->loggers[$id]);
         }
     }
-
 
     /**
      * Destroys a registered logger if it exists.
@@ -139,7 +134,6 @@ class LoggerManager
         $this->destroyLoggerInstance($logger);
     }
 
-
     /**
      * Unsets all processors handlers on a logger instance. For handlers that have a 'close'
      * method, that method is called now (e.g., messages may be flushed).
@@ -154,13 +148,15 @@ class LoggerManager
                     $h->close();
                 }
             }
-        } catch (\LogicException $e) {}
+        } catch (\LogicException $e) {
+        }
 
         try {
-            while ($h = $logger->popProcessor()) { }
-        } catch (\LogicException $e) {}
+            while ($h = $logger->popProcessor()) {
+            }
+        } catch (\LogicException $e) {
+        }
     }
-
 
     /**
      * Create a new logger.

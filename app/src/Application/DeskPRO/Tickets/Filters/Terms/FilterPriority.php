@@ -55,7 +55,6 @@ class FilterPriority extends AbstractFilterTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

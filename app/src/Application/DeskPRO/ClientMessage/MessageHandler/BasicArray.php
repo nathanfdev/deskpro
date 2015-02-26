@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\ClientMessage\MessageHandler;
 
-
 /**
  * A basic message encoder simply returns the data.
  */

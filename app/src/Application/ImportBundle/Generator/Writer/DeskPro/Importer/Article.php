@@ -79,6 +79,7 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
         }
 
         $this->records->add($article);
+
         return $this->records;
     }
 

@@ -59,7 +59,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
      * Get json reader config
      * todo add support to exclude done files
      *
-     * @param string $record_type
+     * @param  string     $record_type
      * @return JsonConfig
      */
     protected function getReaderConfig($record_type)
@@ -70,7 +70,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * Exports custom fields
      *
-     * @param array $custom_fields
+     * @param  array             $custom_fields
      * @return Entity\Collection
      */
     protected function exportCustomFields(array $custom_fields)
@@ -84,7 +84,6 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
                 } else {
                     $this->logWarning(sprintf('Invalid custom field record `%d` found (Skipping)', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid custom field record `%d` found (Skipping): %s',
@@ -99,7 +98,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * Returns a custom field entity
      *
-     * @param array $custom_field
+     * @param  array                   $custom_field
      * @return Entity\CustomField|null
      */
     protected function exportCustomField(array $custom_field)
@@ -120,7 +119,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * Check if an attachment has all required columns
      *
-     * @param array $attachment
+     * @param  array $attachment
      * @return bool
      */
     protected function isAttachmentValid(array $attachment)
@@ -142,7 +141,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * Check if custom field has all required columns
      *
-     * @param array $custom_field
+     * @param  array $custom_field
      * @return bool
      */
     protected function isCustomFieldValid(array $custom_field)

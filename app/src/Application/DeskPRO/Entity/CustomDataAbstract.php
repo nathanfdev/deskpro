@@ -94,22 +94,24 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     }
 
     /**
-     * @param int $value
+     * @param  int   $value
      * @return $this
      */
     public function setValue($value)
     {
         $this->setModelField('value', $value);
+
         return $this;
     }
 
     /**
-     * @param string $input
+     * @param  string $input
      * @return $this
      */
     public function setInput($input)
     {
         $this->setModelField('input', $input);
+
         return $this;
     }
 
@@ -131,7 +133,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
                 return $this->value ? $this->value : $this->input;
         }
     }
-
 
     public function getFieldId()
     {

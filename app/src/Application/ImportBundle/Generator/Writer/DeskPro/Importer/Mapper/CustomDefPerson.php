@@ -69,10 +69,10 @@ final class CustomDefPerson implements MapperInterface, MapperByTitleInterface
     {
         /** @var Entity\CustomDefPerson $record */
         $record = $this->repository->findOneBy($criteria);
-        if ( ! $record && $throw_exception) {
+        if (! $record && $throw_exception) {
             throw new MapperException('Custom def people not found', $criteria);
         }
-        if ( ! $this->isSupportType($record->getTypeName())) {
+        if (! $this->isSupportType($record->getTypeName())) {
             throw new MapperException(
                 sprintf('Custom field  does not support type `%s`', $record->getTypeName()),
                 $criteria
@@ -93,7 +93,7 @@ final class CustomDefPerson implements MapperInterface, MapperByTitleInterface
     /**
      * Returns true if a type is supported by the custom field entity
      *
-     * @param string $type
+     * @param  string $type
      * @return bool
      */
     public function isSupportType($type)

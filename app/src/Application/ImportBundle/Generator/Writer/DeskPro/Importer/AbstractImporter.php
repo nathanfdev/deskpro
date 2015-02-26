@@ -82,7 +82,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     /**
      * Returns a language by title
      *
-     * @param string $title
+     * @param  string                      $title
      * @return DeskPROEntity\Language|null
      */
     protected function findLanguage($title)

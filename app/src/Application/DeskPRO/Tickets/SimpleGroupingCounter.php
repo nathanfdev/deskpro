@@ -56,9 +56,9 @@ class SimpleGroupingCounter extends GroupingCounter
         $group_by = 'GROUP BY field1';
         $db = App::getDb();
 
-        $select_fields[] = $db->quoteIdentifier('tickets.' . $this->grouping1) . ' AS field1';
+        $select_fields[] = $db->quoteIdentifier('tickets.'.$this->grouping1).' AS field1';
         if ($this->grouping2) {
-            $select_fields[] = $db->quoteIdentifier('tickets.' . $this->grouping2) . ' AS field2';
+            $select_fields[] = $db->quoteIdentifier('tickets.'.$this->grouping2).' AS field2';
             $group_by .= ', field2';
         }
         $select_fields[] = 'COUNT(*) AS total';
@@ -66,9 +66,9 @@ class SimpleGroupingCounter extends GroupingCounter
         $wheres = array('tickets.id IN (?)');
 
         $sql = "
-            SELECT " . implode(', ', $select_fields) . "
+            SELECT ".implode(', ', $select_fields)."
             FROM tickets
-            WHERE " . implode(' AND ', $wheres) . "
+            WHERE ".implode(' AND ', $wheres)."
             $group_by WITH ROLLUP
         ";
 

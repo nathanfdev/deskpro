@@ -61,7 +61,6 @@ class Reader extends BaseReader
         return $this->getCleanValue($name, 'str', $source_name, null);
     }
 
-
     /**
      * Gets a string and strips HTML.
      *
@@ -73,7 +72,6 @@ class Reader extends BaseReader
     {
         return $this->getCleanValue($name, 'str_nohtml', $source_name, null);
     }
-
 
     /**
      * Gets a raw string. No UTF-8 fixing, no trimming, etc.
@@ -87,7 +85,6 @@ class Reader extends BaseReader
         return $this->getCleanValue($name, 'str_raw', $source_name, null);
     }
 
-
     /**
      * Gets a boolean.
      *
@@ -99,7 +96,6 @@ class Reader extends BaseReader
     {
         return $this->getCleanValue($name, 'bool', $source_name, null);
     }
-
 
     /**
      * Gets a 1/0 based on boolean input.
@@ -113,7 +109,6 @@ class Reader extends BaseReader
         return $this->getCleanValue($name, 'ibool', $source_name, null);
     }
 
-
     /**
      * Gets an integer.
      *
@@ -125,7 +120,6 @@ class Reader extends BaseReader
     {
         return $this->getCleanValue($name, 'int', $source_name, null);
     }
-
 
     /**
      * Gets an unsigned integer.
@@ -139,7 +133,6 @@ class Reader extends BaseReader
         return $this->getCleanValue($name, 'uint', $source_name, null);
     }
 
-
     /**
      * Gets a float.
      *
@@ -151,7 +144,6 @@ class Reader extends BaseReader
     {
         return $this->getCleanValue($name, 'float', $source_name, null);
     }
-
 
     /**
      * Gets an unsigned float.
@@ -165,7 +157,6 @@ class Reader extends BaseReader
         return $this->getCleanValue($name, 'ufloat', $source_name, null);
     }
 
-
     /**
      * Gets an array of integers (with keys discarded)
      *
@@ -177,7 +168,6 @@ class Reader extends BaseReader
     {
         return $this->getCleanValueArray($name, 'int', 'discard', $source_name);
     }
-
 
     /**
      * Gets an array of unsigned integers (with keys discarded)
@@ -191,7 +181,6 @@ class Reader extends BaseReader
         return $this->getCleanValueArray($name, 'uint', 'discard', $source_name);
     }
 
-
     /**
      * Gets an array of strings (with keys discarded)
      *
@@ -203,7 +192,6 @@ class Reader extends BaseReader
     {
         return $this->getCleanValueArray($name, 'str', 'discard', $source_name);
     }
-
 
     /**
      * Gets an array of id=>string (where id is uint).
@@ -217,7 +205,6 @@ class Reader extends BaseReader
         return $this->getCleanValueArray($name, 'str', 'uint', $source_name);
     }
 
-
     /**
      * Gets an array of id=>int (where id is uint).
      *
@@ -229,7 +216,6 @@ class Reader extends BaseReader
     {
         return $this->getCleanValueArray($name, 'int', 'uint', $source_name);
     }
-
 
     /**
      * Gets an array of id=>uint (where id is uint).

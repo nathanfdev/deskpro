@@ -39,9 +39,9 @@ class Build1418321332 extends AbstractBuild
     public function run()
     {
         $this->out("Fix FK cascade on feedback_category2usergroup");
-		$this->execMutateSql("ALTER TABLE feedback_category2usergroup DROP FOREIGN KEY FK_B304B93C12469DE2", true);
-		$this->execMutateSql("ALTER TABLE feedback_category2usergroup DROP FOREIGN KEY FK_B304B93CD2112630", true);
-		$this->execMutateSql("ALTER TABLE feedback_category2usergroup ADD CONSTRAINT FK_B304B93C12469DE2 FOREIGN KEY (category_id) REFERENCES feedback_categories (id) ON DELETE CASCADE", true);
-		$this->execMutateSql("ALTER TABLE feedback_category2usergroup ADD CONSTRAINT FK_B304B93CD2112630 FOREIGN KEY (usergroup_id) REFERENCES usergroups (id) ON DELETE CASCADE", true);
+        $this->execMutateSql("ALTER TABLE feedback_category2usergroup DROP FOREIGN KEY FK_B304B93C12469DE2", true);
+        $this->execMutateSql("ALTER TABLE feedback_category2usergroup DROP FOREIGN KEY FK_B304B93CD2112630", true);
+        $this->execMutateSql("ALTER TABLE feedback_category2usergroup ADD CONSTRAINT FK_B304B93C12469DE2 FOREIGN KEY (category_id) REFERENCES feedback_categories (id) ON DELETE CASCADE", true);
+        $this->execMutateSql("ALTER TABLE feedback_category2usergroup ADD CONSTRAINT FK_B304B93CD2112630 FOREIGN KEY (usergroup_id) REFERENCES usergroups (id) ON DELETE CASCADE", true);
     }
 }

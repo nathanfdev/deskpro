@@ -48,7 +48,6 @@ class Finder
      */
     private $em;
 
-
     /**
      * @param EntityManager $em
      * @param FinderFilter  $filter
@@ -59,7 +58,6 @@ class Finder
         $this->filter = $filter;
     }
 
-
     /**
      * @return array
      */
@@ -68,15 +66,14 @@ class Finder
         $q = $this->getQb();
         $q->select('COUNT(s)');
 
-        $count     = (int)$q->getQuery()->getSingleScalarResult();
+        $count     = (int) $q->getQuery()->getSingleScalarResult();
         $num_pages = ceil($count / $this->filter->getPerPage());
 
         return array(
             'count'     => $count,
-            'num_pages' => $num_pages
+            'num_pages' => $num_pages,
         );
     }
-
 
     /**
      * @return \Application\EmailBundle\Entity\SendmailSource[]
@@ -91,7 +88,6 @@ class Finder
 
         return $q->getQuery()->execute();
     }
-
 
     /**
      * @return \Doctrine\ORM\QueryBuilder

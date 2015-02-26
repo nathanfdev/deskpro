@@ -136,7 +136,6 @@ class EditEmailAccount
         $this->outgoing_type   = $account->outgoing_account ? $account->outgoing_account->getType() : '';
     }
 
-
     /**
      * Applies form to the entities.
      */
@@ -189,7 +188,7 @@ class EditEmailAccount
 
         if (!$trigger) {
             $trigger = new TicketTrigger();
-            $trigger->is_enabled = (bool)$em->getConnection()->fetchColumn("SELECT id FROM ticket_triggers WHERE email_account_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?", array($trigger->event_trigger));
+            $trigger->is_enabled = (bool) $em->getConnection()->fetchColumn("SELECT id FROM ticket_triggers WHERE email_account_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?", array($trigger->event_trigger));
             $trigger->email_account = $this->account;
             $trigger->event_trigger = 'newticket';
             $trigger->by_agent_mode = array('email');
@@ -199,13 +198,14 @@ class EditEmailAccount
         $actions = new TriggerActions();
         try {
             $actions->importFromArray(array('actions' => $trigger_actions));
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         $terms = new TriggerTerms();
         $terms->addTermFromArray(array(
             'type'    => 'CheckEmailAccount',
             'op'      => 'is',
-            'options' => array('email_account_ids' => array($this->account->id))
+            'options' => array('email_account_ids' => array($this->account->id)),
         ));
 
         $trigger->title     = "New Ticket";
@@ -247,7 +247,6 @@ class EditEmailAccount
                 return null;
         }
     }
-
 
     /**
      * @return \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface

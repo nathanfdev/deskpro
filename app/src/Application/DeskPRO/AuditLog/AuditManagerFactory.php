@@ -44,7 +44,7 @@ class AuditManagerFactory
         $audit_manager  = new AuditManager();
 
         if (dp_get_config('debug.write_audit_log_file')) {
-            $audit_writer   = new AuditFileWriter(dp_get_log_dir() . '/audit.log');
+            $audit_writer   = new AuditFileWriter(dp_get_log_dir().'/audit.log');
             $audit_manager->addWriter($audit_writer);
         }
 
@@ -68,7 +68,7 @@ class AuditManagerFactory
 
     public static function getAuditListener(AuditManager $audit_manager)
     {
-        $audit_defs     = require(DP_ROOT.'/sys/config/auditlog-defs.php');
+        $audit_defs     = require DP_ROOT.'/sys/config/auditlog-defs.php';
         $audit_listener = new AuditDoctrineListener($audit_manager, $audit_defs);
 
         if (!(defined('DP_INTERFACE') && DP_INTERFACE == 'api')) {

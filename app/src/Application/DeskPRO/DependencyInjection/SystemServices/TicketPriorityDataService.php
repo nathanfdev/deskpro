@@ -73,7 +73,6 @@ class TicketPriorityDataService extends BaseRepositoryService
      */
     protected $default_id;
 
-
     /**
      * @param  \Application\DeskPRO\DependencyInjection\DeskproContainer $container
      * @param  array                                                     $options
@@ -81,7 +80,9 @@ class TicketPriorityDataService extends BaseRepositoryService
      */
     public static function create(DeskproContainer $container, array $options = null)
     {
-        if (!$options) $options = array();
+        if (!$options) {
+            $options = array();
+        }
         $options['entity'] = 'Application\\DeskPRO\\Entity\\TicketPriority';
         $options['translator'] = $container->getTranslator();
         $options['default_id'] = $container->getSetting('core.default_ticket_pri');
@@ -93,7 +94,6 @@ class TicketPriorityDataService extends BaseRepositoryService
         return $o;
     }
 
-
     /**
      * Sets some useful objects from options
      */
@@ -103,7 +103,6 @@ class TicketPriorityDataService extends BaseRepositoryService
         $this->default_id = $this->options['default_id'];
         $this->continer   = $this->options['container'];
     }
-
 
     /**
      * @param  int                                        $pri_id
@@ -116,7 +115,6 @@ class TicketPriorityDataService extends BaseRepositoryService
         return isset($this->pris[$pri_id]) ? $this->pris[$pri_id] : null;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\TicketPriority[]
      */
@@ -126,7 +124,6 @@ class TicketPriorityDataService extends BaseRepositoryService
 
         return $this->pris;
     }
-
 
     /**
      * Loads all tikcet priorities into this object
@@ -155,7 +152,6 @@ class TicketPriorityDataService extends BaseRepositoryService
             $p->getTitle();
         }
     }
-
 
     /**
      * @param  int[]    $for_ids

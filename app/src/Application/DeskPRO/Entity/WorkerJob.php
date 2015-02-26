@@ -113,7 +113,6 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
-
     /**
      * Is the task running right now?
      *
@@ -135,7 +134,6 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 
         return false;
     }
-
 
     /**
      * Guess if the task has crashed or did crash
@@ -161,7 +159,6 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
         return false;
     }
 
-
     /**
      * @return int
      */
@@ -178,7 +175,6 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
         return $now - $start;
     }
 
-
     /**
      * Get the date of the next run
      *
@@ -192,11 +188,10 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
             $d = new \DateTime();
         }
 
-        $d->add(new \DateInterval('PT' . $this->interval . 'S'));
+        $d->add(new \DateInterval('PT'.$this->interval.'S'));
 
         return $d;
     }
-
 
     /**
      * @return string
@@ -215,7 +210,6 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
         return \Orb\Util\Dates::secsToReadable($diff, 2, 'short');
     }
 
-
     /**
      * Get interval in readable Enlgish
      *
@@ -225,7 +219,6 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
     {
         return \Orb\Util\Dates::secsToReadable($this->interval, 5, 'short');
     }
-
 
     /**
      * @param \Application\DeskPRO\Log\Logger $logger
@@ -243,13 +236,12 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
         return $job;
     }
 
-
     /**
      * @return bool
      */
     public function isReady()
     {
-        if (!$this->interval OR !$this->last_start_date) {
+        if (!$this->interval or !$this->last_start_date) {
             return true;
         }
 
@@ -261,7 +253,6 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
         return false;
     }
 
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -270,7 +261,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\WorkerJob';
-        $metadata->setPrimaryTable(array('name' => 'worker_jobs',));
+        $metadata->setPrimaryTable(array('name' => 'worker_jobs'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(array(
             'fieldName'  => 'id',

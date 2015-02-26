@@ -35,5 +35,4 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
  */
 final class DuplicateException extends \Exception
 {
-
 }

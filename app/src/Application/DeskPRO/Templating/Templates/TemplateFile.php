@@ -50,7 +50,6 @@ class TemplateFile extends Template
      */
     private $type;
 
-
     /**
      * @param string $name
      */
@@ -64,9 +63,9 @@ class TemplateFile extends Template
             throw new \InvalidArgumentException("Invalid template name: {$this->getName()}");
         }
 
-        list ($bundle, $dir, $file) = $parts;
+        list($bundle, $dir, $file) = $parts;
 
-        $path = DP_ROOT . "/src/Application/$bundle/Resources/views/";
+        $path = DP_ROOT."/src/Application/$bundle/Resources/views/";
         if ($dir) {
             $path .= "$dir/";
         }
@@ -74,7 +73,6 @@ class TemplateFile extends Template
 
         $this->file_path = $path;
     }
-
 
     /**
      * Check if the template file exists
@@ -86,7 +84,6 @@ class TemplateFile extends Template
         return file_exists($this->file_path);
     }
 
-
     /**
      * @return bool
      */
@@ -95,7 +92,6 @@ class TemplateFile extends Template
         return false;
     }
 
-
     /**
      * @return string
      */
@@ -103,7 +99,6 @@ class TemplateFile extends Template
     {
         return $this->file_path;
     }
-
 
     /**
      * @return string
@@ -121,7 +116,6 @@ class TemplateFile extends Template
         return $this->content;
     }
 
-
     /**
      * @return null
      */
@@ -130,7 +124,6 @@ class TemplateFile extends Template
         return null;
     }
 
-
     /**
      * @return null
      */
@@ -138,7 +131,6 @@ class TemplateFile extends Template
     {
         return null;
     }
-
 
     /**
      * @return string

@@ -141,7 +141,6 @@ class NewTicket
         $this->person = new NewTicketPerson();
     }
 
-
     /**
      * @return Ticket
      */
@@ -280,7 +279,7 @@ class NewTicket
                 // New person, coming right up
                 $new_cc_person = Person::newContactPerson(array(
                     'email' => $info['email'],
-                    'name' => !empty($info['name']) ? $info['name'] : ''
+                    'name' => !empty($info['name']) ? $info['name'] : '',
                 ));
                 $this->_em->persist($new_cc_person);
 
@@ -323,7 +322,7 @@ class NewTicket
         $standard = array(
             'subject', 'status', 'agent_id', 'agent_team_id',
             'department_id', 'category_id', 'priority_id', 'workflow_id',
-            'product_id', 'notify_template'
+            'product_id', 'notify_template',
         );
         if (!$this->status) {
             $this->status = 'awaiting_agent';
@@ -334,7 +333,6 @@ class NewTicket
         }
 
         $ticket->person = $person;
-
 
         #------------------------------
         # Message
@@ -360,7 +358,6 @@ class NewTicket
 
         // Message Attachments
         foreach ($this->attach as $blob_id) {
-
             $blob = $this->_em->getRepository('DeskPRO:Blob')->find($blob_id);
 
             $attach = new TicketAttachment();

@@ -53,17 +53,16 @@ class CheckDepartment extends AbstractTicketLayoutTerm
         return $is_match;
     }
 
-
     /**
      * {@inheritDoc}
      */
     public function compileJsCheck()
     {
         $js_ids = array();
-        foreach ((array)$this->options['department_ids'] as $id) {
-            $js_ids[] = (int)$id;
+        foreach ((array) $this->options['department_ids'] as $id) {
+            $js_ids[] = (int) $id;
         }
-        $js_ids = "[" . implode(',', $js_ids) . "]";
+        $js_ids = "[".implode(',', $js_ids)."]";
         $op = $this->op == self::OP_NOT ? '===' : '!==';
 
         $js = <<<JS

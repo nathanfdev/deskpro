@@ -56,7 +56,6 @@ class TicketEscalationsController extends AbstractController implements Protecte
         return $multi;
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -79,7 +78,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
         }
 
         return $this->createApiResponse(array(
-            'escalations' => $data
+            'escalations' => $data,
         ));
     }
 
@@ -104,7 +103,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
         $esc['terms_any'] = $crit2->exportToArray();
 
         return $this->createApiResponse(array(
-            'escalation' => $esc
+            'escalation' => $esc,
         ));
     }
 
@@ -156,7 +155,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
         $this->em->flush();
 
         return $this->createSuccessResponse(array(
-            'escalation_id' => $esc->id
+            'escalation_id' => $esc->id,
         ));
     }
 
@@ -176,7 +175,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
         $this->em->flush();
 
         return $this->createSuccessResponse(array(
-            'old_id' => $id
+            'old_id' => $id,
         ));
     }
 

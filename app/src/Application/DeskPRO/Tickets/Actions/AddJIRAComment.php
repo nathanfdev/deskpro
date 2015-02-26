@@ -50,65 +50,67 @@ use Orb\Util\CheckedOptionsArray;
  */
 class AddJIRAComment extends AbstractContainerAwareAction implements ActionInterface, NoopableInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('by_agent_id');
-		$options->addRequiredNames('note_text');
-		$options->addValidNames('by_assigned_agent');
-		$options->addValidNames('no_formatter');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('by_agent_id');
+        $options->addRequiredNames('note_text');
+        $options->addValidNames('by_assigned_agent');
+        $options->addValidNames('no_formatter');
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$agent = null;
-		if ($this->getActionOption('by_assigned_agent') && $ticket->agent) {
-			$agent = $ticket->agent;
-		}
-		if (!$agent) {
-			$agent = $this->getContainer()->getAgentData()->get($this->getActionOption('by_agent_id'));
-		}
+        return $options;
+    }
 
-		if (!$agent) {
-			return;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $agent = null;
+        if ($this->getActionOption('by_assigned_agent') && $ticket->agent) {
+            $agent = $ticket->agent;
+        }
+        if (!$agent) {
+            $agent = $this->getContainer()->getAgentData()->get($this->getActionOption('by_agent_id'));
+        }
 
-		$note_text = $this->getActionOption('note_text');
+        if (!$agent) {
+            return;
+        }
 
-		if (!$this->getActionOption('no_formatter')) {
-			$formatter = new SnippetFormatter($this->getContainer()->getTwig());
-			$formatter->addVar('user_vars', $context->getUserVars());
-			$note_text = $formatter->formatText($note_text, $ticket);
-		}
+        $note_text = $this->getActionOption('note_text');
 
-		/** @var JIRA $js */
-		$js = $this->getContainer()->get(JIRA::NAME);
-		foreach ($ticket->jira_issues as $issue) {
-			try {
-				$js->createComment($issue['issue_id'], $agent, $ticket, $note_text);
-			} catch (\Exception $e) {
-				$context->getLogger()->error(
-					sprintf("[JIRAAddComment] Exception: [%s] %s", $e->getCode(), $e->getMessage()),
-					array('exception' => $e)
-				);
-			}
-		}
-	}
+        if (!$this->getActionOption('no_formatter')) {
+            $formatter = new SnippetFormatter($this->getContainer()->getTwig());
+            $formatter->addVar('user_vars', $context->getUserVars());
+            $note_text = $formatter->formatText($note_text, $ticket);
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		/** @var JIRA $js */
-		$js = $this->getContainer()->get(JIRA::NAME);
-		return !$js->isEnabled();
-	}
+        /** @var JIRA $js */
+        $js = $this->getContainer()->get(JIRA::NAME);
+        foreach ($ticket->jira_issues as $issue) {
+            try {
+                $js->createComment($issue['issue_id'], $agent, $ticket, $note_text);
+            } catch (\Exception $e) {
+                $context->getLogger()->error(
+                    sprintf("[JIRAAddComment] Exception: [%s] %s", $e->getCode(), $e->getMessage()),
+                    array('exception' => $e)
+                );
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        /** @var JIRA $js */
+        $js = $this->getContainer()->get(JIRA::NAME);
+
+        return !$js->isEnabled();
+    }
 }

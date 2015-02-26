@@ -57,7 +57,7 @@ class TextSnippetsController extends AbstractController
         }
 
         return $this->render("AgentBundle:TextSnippets:$typename-widget-shell.html.twig", array(
-            'snippet_cats' => $snippet_cats
+            'snippet_cats' => $snippet_cats,
         ));
     }
 
@@ -132,7 +132,6 @@ class TextSnippetsController extends AbstractController
             $snippets = array();
 
             $filter_string = Strings::utf8_strtolower($filter_string);
-
 
             foreach ($snippets_all as $snippet) {
                 $match_lang   = false;
@@ -335,7 +334,7 @@ class TextSnippetsController extends AbstractController
         if ($has_snippets) {
             return $this->createJsonResponse(array(
                 'error' => true,
-                'error_code' => 'not_empty'
+                'error_code' => 'not_empty',
             ));
         }
 
@@ -344,7 +343,7 @@ class TextSnippetsController extends AbstractController
 
         return $this->createJsonResponse(array(
             'success' => true,
-            'category_id' => $id
+            'category_id' => $id,
         ));
     }
 }

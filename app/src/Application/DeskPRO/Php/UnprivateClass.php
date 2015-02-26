@@ -59,7 +59,6 @@ class UnprivateClass
         $this->strip_comments = true;
     }
 
-
     /**
      * @return string
      */

@@ -33,7 +33,6 @@
 
 namespace Application\DeskPRO\CustomFields;
 
-
 /**
  * @deprecated Use the FieldFanager with the field manager service
  */

@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
 
-
 /**
  * Similar to Content except this just takes a template name and renders it.
  *
@@ -55,7 +54,7 @@ class OmniSearch extends PortalItemAbstract
         $html = $this->renderView('UserBundle:Portal:omnisearch-topsection.html.twig', array(
             'section' => $this->section,
             'options' => $this->options,
-            'query'   => $query
+            'query'   => $query,
         ));
 
         return $html;
@@ -64,7 +63,7 @@ class OmniSearch extends PortalItemAbstract
     public function getJsAssets()
     {
         return array(
-            'javascripts/DeskPRO/User/ElementHandler/OmniSearch.js'
+            'javascripts/DeskPRO/User/ElementHandler/OmniSearch.js',
         );
     }
 }

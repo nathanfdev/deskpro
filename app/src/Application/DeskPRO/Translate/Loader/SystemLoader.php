@@ -52,7 +52,7 @@ class SystemLoader implements LoaderInterface
         $lang_packs = array();
 
         // Always read from the default because it has the core phrases
-        $lang_packs[] = DP_ROOT . '/languages/default';
+        $lang_packs[] = DP_ROOT.'/languages/default';
 
         if ($language && $language->base_filepath) {
             $lang_packs[] = str_replace('%DP_ROOT%', DP_ROOT, $language->base_filepath);
@@ -69,10 +69,10 @@ class SystemLoader implements LoaderInterface
 
                 // agent.something => agent/something.php
                 if (count($group_parts) == 2) {
-                    $file = $path . '/' . $group_parts[0] . '/' . $group_parts[1] . '.php';
+                    $file = $path.'/'.$group_parts[0].'/'.$group_parts[1].'.php';
                 // agent => agent/agent.php
                 } else {
-                    $file = $path . '/' . $group_parts[0] . '/' . $group_parts[0] . '.php';
+                    $file = $path.'/'.$group_parts[0].'/'.$group_parts[0].'.php';
                 }
 
                 $file_phrases = $this->loadFile($file);
@@ -96,7 +96,7 @@ class SystemLoader implements LoaderInterface
         }
 
         if (is_file($file)) {
-            $file_phrases = include($file);
+            $file_phrases = include $file;
             if ($file_phrases && is_array($file_phrases)) {
                 $this->loaded_files[$file] = $file_phrases;
             }

@@ -46,7 +46,6 @@ class PhpMailConfig implements AccountConfigInterface
         return array('PhpMail' => true);
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -56,7 +55,6 @@ class PhpMailConfig implements AccountConfigInterface
 
         return $obj;
     }
-
 
     /**
      * {@inheritDoc}

@@ -78,14 +78,12 @@ class ChoiceDataTransformer  implements DataTransformerInterface
             return array('value' => null);
         }
 
-
         // single choice
         if ($value instanceof CustomFieldData) {
             $this->previous[$value->definition['id']] = $value;
 
             return array('value' => $value->definition);
         }
-
 
         // multiple choices
         if (is_array($value)) {
@@ -98,7 +96,7 @@ class ChoiceDataTransformer  implements DataTransformerInterface
             return array('value' => $coll);
         }
 
-        throw new TransformationFailedException;
+        throw new TransformationFailedException();
     }
 
     /**
@@ -117,7 +115,6 @@ class ChoiceDataTransformer  implements DataTransformerInterface
 
             return null;
         }
-
 
         // single choice
         if ($value instanceof CustomFieldDefinition) {
@@ -139,7 +136,6 @@ class ChoiceDataTransformer  implements DataTransformerInterface
             return $data;
         }
 
-
         // multiple choices
         if ($value instanceof ArrayCollection || is_array($value)) {
             $ret = array();
@@ -159,7 +155,7 @@ class ChoiceDataTransformer  implements DataTransformerInterface
             return $ret;
         }
 
-        throw new TransformationFailedException;
+        throw new TransformationFailedException();
     }
 
     /**

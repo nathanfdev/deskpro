@@ -76,13 +76,11 @@ final class News extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid news record found (Skipping): %d', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid news record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
-
             } catch (NotArrayException $e) {
                 $this->logWarning(sprintf(
                     'Invalid news record `%d` found (Skipping): %s',
@@ -97,7 +95,7 @@ final class News extends AbstractParser
     /**
      * Returns a news entity
      *
-     * @param array $news
+     * @param  array       $news
      * @return Entity\News
      */
     private function exportNews(array $news)
@@ -105,7 +103,7 @@ final class News extends AbstractParser
         if ($this->isNewsValid($news)) {
             $entity = new Entity\News();
             $entity
-                ->setDestination('news_' . $news['oid'])
+                ->setDestination('news_'.$news['oid'])
                 ->setOid($news['oid'])
                 ->setPersonEmail($news['person'])
                 ->setLanguage($news['language'])
@@ -147,7 +145,7 @@ final class News extends AbstractParser
     /**
      * Check if news has all required columns
      *
-     * @param array $news
+     * @param  array $news
      * @return bool
      */
     private function isNewsValid(array $news)

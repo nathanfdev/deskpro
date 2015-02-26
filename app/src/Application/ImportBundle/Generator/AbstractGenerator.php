@@ -61,6 +61,7 @@ abstract class AbstractGenerator
     public function setConfig(GeneratorConfig $config)
     {
         $this->config = $config;
+
         return $this;
     }
 
@@ -70,6 +71,7 @@ abstract class AbstractGenerator
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+
         return $this;
     }
 
@@ -79,6 +81,7 @@ abstract class AbstractGenerator
     public function setProgressBarHelper(ProgressBar $progress_bar)
     {
         $this->progress_bar = $progress_bar;
+
         return $this;
     }
 

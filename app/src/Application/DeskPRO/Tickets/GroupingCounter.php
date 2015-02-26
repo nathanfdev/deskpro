@@ -77,7 +77,6 @@ class GroupingCounter
      */
     public function getDisplayArray()
     {
-
         #------------------------------
         # Connect counts to titles
         #------------------------------
@@ -95,8 +94,9 @@ class GroupingCounter
         $items = array();
 
         foreach ($titles1 as $field1 => $field1_title) {
-
-            if (!isset($counts[$field1])) continue;
+            if (!isset($counts[$field1])) {
+                continue;
+            }
 
             $countinfo = $counts[$field1];
 
@@ -106,11 +106,11 @@ class GroupingCounter
             $row['total'] = $countinfo['total'];
 
             if (!empty($countinfo['sub'])) {
-
                 $row['sub'] = array();
                 foreach ($titles2 as $field2 => $field2_title) {
-
-                    if (!isset($countinfo['sub'][$field2])) continue;
+                    if (!isset($countinfo['sub'][$field2])) {
+                        continue;
+                    }
                     $countinfo2 = $countinfo['sub'][$field2];
 
                     $row2 = array();
@@ -190,7 +190,6 @@ class GroupingCounter
         }
     }
 
-
     /**
      * Get the raw counts
      *
@@ -236,15 +235,14 @@ class GroupingCounter
 
             // perms only matter if person has permissions applied at all
             if ($agent->getDisallowedDepartments()) {
-
                 $where_perm = array();
                 $where_perm[] = "tickets.agent = {$agent['id']}";
 
                 if ($agent->getAgentTeamIds()) {
-                    $where_perm[] = "tickets.agent_team IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+                    $where_perm[] = "tickets.agent_team IN (".implode(',', $agent->getAgentTeamIds()).")";
                 }
 
-                $where_perm[] = "tickets.department IN (" . implode(',', $agent->getAllowedDepartments()) . ")";
+                $where_perm[] = "tickets.department IN (".implode(',', $agent->getAllowedDepartments()).")";
                 $where_perm[] = "part_check.person = {$agent['id']}";
 
                 $where_perm = implode(' OR ', $where_perm);
@@ -254,15 +252,15 @@ class GroupingCounter
 
             switch ($this->mode) {
                 case self::MODE_AGENT:
-                    $wheres[] = 'tickets.agent = ' . $agent['id'];
+                    $wheres[] = 'tickets.agent = '.$agent['id'];
                     break;
 
                 case self::MODE_AGENT_TEAM:
-                    $wheres[] = "tickets.agent_team IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+                    $wheres[] = "tickets.agent_team IN (".implode(',', $agent->getAgentTeamIds()).")";
                     break;
 
                 case self::MODE_PARTICIPANT:
-                    $wheres[] = "tickets.agent_team IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+                    $wheres[] = "tickets.agent_team IN (".implode(',', $agent->getAgentTeamIds()).")";
                     break;
 
                 case self::MODE_ALL:
@@ -274,28 +272,27 @@ class GroupingCounter
             }
 
             $sql = "
-                SELECT " . implode(', ', $select_fields) . "
+                SELECT ".implode(', ', $select_fields)."
                 FROM tickets
                 $join
                 LEFT JOIN tickets_participants ON (tickets_participants.ticket = tickets.id)
                 LEFT JOIN tickets_participants AS part_check ON (part_check.ticket = tickets.id)
-                WHERE " . implode(' AND ', $wheres) . "
+                WHERE ".implode(' AND ', $wheres)."
                 $group_by WITH ROLLUP
             ";
 
         // We have ticket IDs already (mode = specify)
         } else {
-
             if (!$this->tickets) {
                 return array();
             }
 
-            $wheres[] = "tickets.id IN (" . implode(',', $this->tickets) . ")";
+            $wheres[] = "tickets.id IN (".implode(',', $this->tickets).")";
             $sql = "
-                SELECT " . implode(', ', $select_fields) . "
+                SELECT ".implode(', ', $select_fields)."
                 FROM tickets
                 $join
-                WHERE " . implode(' AND ', $wheres) . "
+                WHERE ".implode(' AND ', $wheres)."
                 $group_by WITH ROLLUP
             ";
         }
@@ -375,11 +372,10 @@ class GroupingCounter
             $last_t = $t;
         }
 
-        $sql .= implode('', $parts) . " ELSE ".self::LAST_TIME_MARKER." END AS $select_name";
+        $sql .= implode('', $parts)." ELSE ".self::LAST_TIME_MARKER." END AS $select_name";
 
         return $sql;
     }
-
 
     /**
      * Get information about strucutred counts and titles.
@@ -402,13 +398,12 @@ class GroupingCounter
 
         $counts_structured = array();
         foreach ($counts as $count) {
-
             // Store ID's
             if ($count['field1'] !== null) {
                 $ids1[] = $count['field1'];
             }
 
-            if ($this->grouping2 AND $count['field2'] !== null) {
+            if ($this->grouping2 and $count['field2'] !== null) {
                 $ids2[] = $count['field2'];
             }
 
@@ -417,8 +412,12 @@ class GroupingCounter
             #------------------------------
 
             // Set ROLLUP's (totals) to -1
-            if ($count['field1'] === null) $count['field1'] = -1;
-            if ($this->grouping2 AND $count['field2'] === null) $count['field2'] = -1;
+            if ($count['field1'] === null) {
+                $count['field1'] = -1;
+            }
+            if ($this->grouping2 and $count['field2'] === null) {
+                $count['field2'] = -1;
+            }
 
             // Init array keys
             if (!isset($counts_structured[$count['field1']])) {
@@ -455,11 +454,9 @@ class GroupingCounter
             'titles2' => $titles2,
             'ids1'    => $ids1,
             'ids2'    => $ids2,
-            'counts'  => $counts_structured
+            'counts'  => $counts_structured,
         );
     }
-
-
 
     /**
      * Get's a hierarchy array of titles for use in a template.
@@ -556,8 +553,8 @@ class GroupingCounter
                     ");
 
                     foreach ($all as $r) {
-                        if ($r['first_name'] AND $r['last_name']) {
-                            $name = $r['first_name'] . ' ' . $r['last_name'];
+                        if ($r['first_name'] and $r['last_name']) {
+                            $name = $r['first_name'].' '.$r['last_name'];
                         } elseif ($r['name']) {
                             $name = $r['name'];
                         } elseif ($r['last_name']) {
@@ -566,7 +563,7 @@ class GroupingCounter
                             $name = $r['first_name'];
                         } elseif ($r['email']) {
                             $email = $r['email'];
-                            list ($name,) = explode('@', $email, 2);
+                            list($name,) = explode('@', $email, 2);
 
                             $name = str_replace('_', ' ', $name);
                             $name = str_replace('.', ' ', $name);
@@ -715,8 +712,6 @@ class GroupingCounter
         return $times;
     }
 
-
-
     /**
      * Set mode which defines which kinds of tickets we want.
      *
@@ -736,8 +731,6 @@ class GroupingCounter
         }
     }
 
-
-
     /**
      * Set the grouping fields.
      *
@@ -749,7 +742,6 @@ class GroupingCounter
         $this->grouping1 = $grouping1 ? $grouping1 : 'department';
         $this->grouping2 = $grouping2 ? $grouping2 : null;
     }
-
 
     /**
      * Transforms a grouping var and choice into a search term for TicketSearch
@@ -773,12 +765,12 @@ class GroupingCounter
 
                     return array('type' => $groupvar, 'op' => 'between', 'options' => array('date1' => $date1, 'date2' => $date2));
                 } elseif ($key == (count($times) - 1)) {
-                    $date = new \DateTime('@' . (time() - 14515201));
+                    $date = new \DateTime('@'.(time() - 14515201));
 
                     return array('type' => $groupvar, 'op' => 'lte', 'options' => array('date1' => $date));
                 } else {
-                    $date1 = new \DateTime('-' . $times[$key] . ' seconds');
-                    $date2 = new \DateTime('-' . $times[$key-1] . ' seconds');
+                    $date1 = new \DateTime('-'.$times[$key].' seconds');
+                    $date2 = new \DateTime('-'.$times[$key-1].' seconds');
 
                     return array('type' => $groupvar, 'op' => 'between', 'options' => array('date1' => $date1, 'date2' => $date2));
                 }
@@ -816,7 +808,7 @@ class GroupingCounter
                     return array(
                         'type' => "ticket_field[$fid]",
                         'op' => 'is',
-                        'options' => array('value' => $groupchoice)
+                        'options' => array('value' => $groupchoice),
                     );
                 }
 

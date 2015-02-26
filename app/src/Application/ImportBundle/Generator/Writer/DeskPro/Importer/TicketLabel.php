@@ -80,7 +80,7 @@ final class TicketLabel extends AbstractImporter
     /**
      * Returns a new ticket label entity
      *
-     * @param string $label
+     * @param  string                    $label
      * @return DeskPROEntity\LabelTicket
      */
     private function createTicketLabel($label)

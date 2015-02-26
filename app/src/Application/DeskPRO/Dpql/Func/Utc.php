@@ -59,8 +59,7 @@ class Utc extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if (count($this->_arguments) != 1) {
             throw new Exception('UTC() can only accept 1 argument');
         }
@@ -68,7 +67,7 @@ class Utc extends AbstractFunc
         $arg = reset($this->_arguments);
 
         $prepared = $arg->prepare($statement, $section, $stack, $select, $result);
-        $prepared->setName('UTC(' . $prepared->name() . ')');
+        $prepared->setName('UTC('.$prepared->name().')');
 
         return $prepared;
     }

@@ -68,7 +68,7 @@ final class TicketLabel implements MapperInterface
     {
         /** @var Entity\LabelTicket $record */
         $record = $this->repository->findOneBy($criteria);
-        if ( ! $record && $throw_exception) {
+        if (! $record && $throw_exception) {
             throw new MapperException('Ticket label not found', $criteria);
         }
 

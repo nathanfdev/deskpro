@@ -82,7 +82,7 @@ class SettingsProfile
     /** @var array */
     public $remove_emails;
 
-	public $primary_phone;
+    public $primary_phone;
 
     /**
      * @var \Application\DeskPRO\Entity\Person
@@ -104,22 +104,22 @@ class SettingsProfile
 
         // store the text, for the user to operate on, but keep track of the PhoneNumber object (or create a new one)
         // this is acting like a DataTransformer.
-	    $this->primary_phone = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
-	    if (!$this->primary_phone['region']) {
-		    $this->primary_phone['region'] = $defaultCountryCode;
-	    }
+        $this->primary_phone = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
+        if (!$this->primary_phone['region']) {
+            $this->primary_phone['region'] = $defaultCountryCode;
+        }
 
         $this->override_display_name = $person->override_display_name;
         $this->email = $person->getPrimaryEmailAddress();
         $this->timezone = $person->timezone;
         $this->language_id = $person->getLanguage()->getId();
 
-        $this->ticket_close_reply = (bool)$person->getPref('agent.ticket_close_reply', true);
-        $this->ticket_close_note = (bool)$person->getPref('agent.ticket_close_note', false);
-        $this->ticket_go_next_reply = (bool)$person->getPref('agent.ticket_go_next_reply', false);
-        $this->hide_claimed_chat = (bool)$person->getPref('agent.hide_claimed_chat', false);
+        $this->ticket_close_reply = (bool) $person->getPref('agent.ticket_close_reply', true);
+        $this->ticket_close_note = (bool) $person->getPref('agent.ticket_close_note', false);
+        $this->ticket_go_next_reply = (bool) $person->getPref('agent.ticket_go_next_reply', false);
+        $this->hide_claimed_chat = (bool) $person->getPref('agent.hide_claimed_chat', false);
         $this->default_team_id = $person->getPref('agent.ticket_default_team_id');
-        $this->ticket_reverse_order = (bool)$person->getPref('agent.ticket_reverse_order');
+        $this->ticket_reverse_order = (bool) $person->getPref('agent.ticket_reverse_order');
         if ($this->default_team_id === null) {
             $teams = $person->getAgent()->getTeams();
             $last_team = end($teams);
@@ -167,7 +167,6 @@ class SettingsProfile
 
         $primary_email = $person->getPrimaryEmail();
         if ($primary_email->email != $this->email) {
-
             $found_email = $person->findEmailAddress($this->email);
             if ($found_email) {
                 $new_primary_email = $found_email;
@@ -237,7 +236,6 @@ class SettingsProfile
         try {
             $this->em->flush();
             $this->em->commit();
-
         } catch (\Exception $e) {
             $this->em->rollback();
             throw $e;

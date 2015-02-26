@@ -81,7 +81,9 @@ class PrefsLoader
         $custom_filters = array();
         foreach ($filters as $f) {
             if ($f->sys_name) {
-                if (strpos($f->sys_name, '_w_hold') !== false || strpos($f->sys_name, 'archive_') === 0) continue;
+                if (strpos($f->sys_name, '_w_hold') !== false || strpos($f->sys_name, 'archive_') === 0) {
+                    continue;
+                }
                 $sys_filters[] = $f;
             } else {
                 $custom_filters[] = $f;
@@ -99,7 +101,9 @@ class PrefsLoader
         ", array($this->person->id));
 
         foreach ($filter_subs as $info) {
-            if (!isset($filters[$info['filter_id']])) continue;
+            if (!isset($filters[$info['filter_id']])) {
+                continue;
+            }
 
             $filter = $filters[$info['filter_id']];
             $subs = array('email' => array(), 'alert' => array());
@@ -131,12 +135,12 @@ class PrefsLoader
         $user_prefs = new OptionsArray($user_prefs);
 
         $prefs->setFilterNotifyPrefs('email', array(
-            'override_all'     => (bool)$user_prefs->get('agent_notify_override.all.email'),
-            'override_forward' => (bool)$user_prefs->get('agent_notify_override.forward.email'),
+            'override_all'     => (bool) $user_prefs->get('agent_notify_override.all.email'),
+            'override_forward' => (bool) $user_prefs->get('agent_notify_override.forward.email'),
         ));
         $prefs->setFilterNotifyPrefs('alert', array(
-            'override_all'     => (bool)$user_prefs->get('agent_notify_override.all.alert'),
-            'override_forward' => (bool)$user_prefs->get('agent_notify_override.forward.alert'),
+            'override_all'     => (bool) $user_prefs->get('agent_notify_override.all.alert'),
+            'override_forward' => (bool) $user_prefs->get('agent_notify_override.forward.alert'),
         ));
 
         #------------------------------
@@ -183,7 +187,6 @@ class PrefsLoader
         return $prefs;
     }
 
-
     /**
      * @param  array $filter_subs
      * @param  array $other_subs
@@ -226,7 +229,6 @@ class PrefsLoader
         #------------------------------
 
         if ($other_subs) {
-
             foreach ($other_subs as $info) {
                 $app_name    = !empty($info['type']) ? $info['type'] : null;
                 $email_types = !empty($info['email']) ? $info['email'] : array();

@@ -25,10 +25,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
-
 namespace Application\DeskPRO\Form\Type;
-
 
 use Application\DeskPRO\Form\Transformer\PhoneNumberModelTransformer;
 use Orb\Util\PhoneNumbers;
@@ -37,61 +34,60 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PhoneNumberType extends AbstractType
 {
-	/**
-	 * {@inheritdoc}
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('number', 'text', array(
-			'required' => false,
-			'label' => false,
-			'attr' => array(
-				'placeholder' => '+19021111111',
-				'class' => 'phone_number',
-			),
-			'constraints' => array(
-				new NotBlank(array('message' => 'Phone number is invalid.')),
-			),
-		));
-		$builder->get('number')->addModelTransformer(new PhoneNumberModelTransformer());
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('number', 'text', array(
+            'required' => false,
+            'label' => false,
+            'attr' => array(
+                'placeholder' => '+19021111111',
+                'class' => 'phone_number',
+            ),
+            'constraints' => array(
+                new NotBlank(array('message' => 'Phone number is invalid.')),
+            ),
+        ));
+        $builder->get('number')->addModelTransformer(new PhoneNumberModelTransformer());
 
-		$builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event){
-			$data = $event->getForm()->getData();
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+            $data = $event->getForm()->getData();
 
-			/**
-			 * moved from PhoneNumber entity:
-			 * We do logic here (with the help of Google's libphonenumber) to
-			 * get the region code, and validate/format the number.
-			 */
+            /**
+             * moved from PhoneNumber entity:
+             * We do logic here (with the help of Google's libphonenumber) to
+             * get the region code, and validate/format the number.
+             */
 
-			if ($data && $data['number']) {
-				$number = $data['number'];
-				$data['region'] = PhoneNumbers::getRegionForNumber($number);
-				$data['guessed_type'] = PhoneNumbers::getTypeCode($number);
-			}
-		});
-	}
+            if ($data && $data['number']) {
+                $number = $data['number'];
+                $data['region'] = PhoneNumbers::getRegionForNumber($number);
+                $data['guessed_type'] = PhoneNumbers::getTypeCode($number);
+            }
+        });
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(array(
-			'data_class' => 'Application\DeskPRO\Entity\PhoneNumber',
-		));
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class' => 'Application\DeskPRO\Entity\PhoneNumber',
+        ));
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getName()
-	{
-		return 'phone_number';
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'phone_number';
+    }
 }

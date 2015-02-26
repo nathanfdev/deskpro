@@ -89,7 +89,7 @@ class TicketAccessCode extends AbstractEntityRepository
                 SELECT tac
                 FROM DeskPRO:TicketAccessCode tac
                 WHERE tac.ticket = ?1 AND tac.person = ?2
-            ")->setParameters(array(1=>$ticket, 2=>$person))->setMaxResults(1)->getSingleResult();
+            ")->setParameters(array(1 => $ticket, 2 => $person))->setMaxResults(1)->getSingleResult();
 
             return $rec;
         } catch (\Doctrine\ORM\NoResultException $e) {

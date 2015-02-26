@@ -47,7 +47,7 @@ abstract class Repository
      */
     public function getEntityClass()
     {
-        return '\Orb\\Jira\\Entity\\' . $this->_entityClass;
+        return '\Orb\\Jira\\Entity\\'.$this->_entityClass;
     }
 
     /**
@@ -58,7 +58,7 @@ abstract class Repository
     public function getEndpoint($full = true)
     {
         if ($full) {
-            return 'rest/api/latest/' . $this->_endPoint;
+            return 'rest/api/latest/'.$this->_endPoint;
         }
 
         return $this->_endPoint;
@@ -72,12 +72,12 @@ abstract class Repository
      */
     public function find($id)
     {
-        $client		= $this->_client;
+        $client        = $this->_client;
 
-        $endPoint	= $this->getEndpoint();
+        $endPoint    = $this->getEndpoint();
 
         if (empty($endPoint)) {
-            $client->addError('The class "' . __CLASS__ . '" does not have the endpoint defined . . did you forget it?');
+            $client->addError('The class "'.__CLASS__.'" does not have the endpoint defined . . did you forget it?');
 
             return false;
         }
@@ -91,7 +91,7 @@ abstract class Repository
         }
 
         try {
-            $response = $client->get($endPoint . $id);
+            $response = $client->get($endPoint.$id);
         } catch (\Exception $e) {
             $client->addError($e->getMessage(), $e->getCode());
 
@@ -99,18 +99,18 @@ abstract class Repository
         }
 
         if (!$response || !count($response)) {
-            $client->addError('Resource Not Found: ' . $id);
+            $client->addError('Resource Not Found: '.$id);
 
             return false;
         }
 
         if (!method_exists($this->getEntityClass(), 'fromArray')) {
-            $client->addError('The class "' . __CLASS__ . '" does not have a "fromArray" method defined . . did you forget it?');
+            $client->addError('The class "'.__CLASS__.'" does not have a "fromArray" method defined . . did you forget it?');
         }
 
-        $class	= $this->getEntityClass();
+        $class    = $this->getEntityClass();
 
-        $entity	= new $class($response);
+        $entity    = new $class($response);
 
         if ($entity && is_a($entity, $this->getEntityClass())) {
             return $entity;
@@ -164,7 +164,7 @@ abstract class Repository
      */
     public function remove(\Orb\Jira\Entity\Issue $issue, \Orb\Jira\Service $client)
     {
-        return $client->delete($this->getEndpoint() . '/' . $issue->getId());
+        return $client->delete($this->getEndpoint().'/'.$issue->getId());
     }
 
     /**

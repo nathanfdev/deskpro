@@ -234,9 +234,10 @@ class LogCollector implements HandlerInterface, LogCollectorInterface
     public function getLogForMessage($source_id)
     {
         if (isset($this->msg_lines[$source_id])) {
-            $ret = implode("\n", array_map(function($r) {
+            $ret = implode("\n", array_map(function ($r) {
                 return trim($r['formatted']);
             }, $this->msg_lines[$source_id]));
+
             return $ret;
         } else {
             return "";

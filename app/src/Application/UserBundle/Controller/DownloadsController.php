@@ -58,7 +58,9 @@ class DownloadsController extends AbstractController
         $structure = $this->container->getSystemService('publish_structure');
 
         $page = $this->in->getUint('p');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
         $search_options = array();
         $search_options['order_by'] = $this->in->getString('order_by');
@@ -75,6 +77,7 @@ class DownloadsController extends AbstractController
                 if ($this->db->count('download_categories', array('id' => $category_id))) {
                     return $this->renderLoginOrPermissionError();
                 }
+
                 return $this->renderStandardError('@user.error.not-found-title', '@user.error.not-found', 404);
             }
 
@@ -106,7 +109,7 @@ class DownloadsController extends AbstractController
             $pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 5);
             $limit = array(
                 'offset' => ($pageinfo['curpage']-1) * $per_page,
-                'max' => $per_page
+                'max' => $per_page,
             );
 
             $download_ids = $searcher->getMatches($limit);
@@ -154,7 +157,6 @@ class DownloadsController extends AbstractController
         ));
     }
 
-
     /**
      * View a file
      *
@@ -197,9 +199,9 @@ class DownloadsController extends AbstractController
         $rating = $content_rating->getRating();
 
         if ($rating_log_search_id = $content_rating->getSearchLogId()) {
-            $this->session->set('download.' . $download['id'], $rating_log_search_id);
-        } elseif ($this->session->has('download.' . $download['id'])) {
-            $rating_log_search_id = $this->session->get('download.' . $download['id']);
+            $this->session->set('download.'.$download['id'], $rating_log_search_id);
+        } elseif ($this->session->has('download.'.$download['id'])) {
+            $rating_log_search_id = $this->session->get('download.'.$download['id']);
         } else {
             $rating_log_search_id = 0;
         }
@@ -226,10 +228,9 @@ class DownloadsController extends AbstractController
             'category' => $category,
             'category_path' => $category_path,
 
-            'related_content' => $related_content
+            'related_content' => $related_content,
         ));
     }
-
 
     /**
      * @param $slug
@@ -256,7 +257,6 @@ class DownloadsController extends AbstractController
 
         return $this->redirectRoute('serve_blob', array('blob_auth_id' => $download->blob->auth_id, 'filename' => $download->getFilenameSafe()));
     }
-
 
     /**
      * Submit a new comment
@@ -302,7 +302,6 @@ class DownloadsController extends AbstractController
         }
 
         if ($this->get('request')->getMethod() == 'POST') {
-
             $trap_fail = false;
             if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
                 $trap_fail = true;

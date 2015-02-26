@@ -44,7 +44,7 @@ class MailLoggerService
         $logger = new Logger();
 
         if ($container->getSysConfig('debug.mail.enable_mail_log')) {
-            $writer = new \Orb\Log\Writer\Stream($container->getLogDir() . '/mailer.log');
+            $writer = new \Orb\Log\Writer\Stream($container->getLogDir().'/mailer.log');
             $writer->enableNewStreamPerWrite();
             $logger->addWriter($writer);
         }

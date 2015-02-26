@@ -167,7 +167,6 @@ class AgentDataService
         }
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\Person[]
      */
@@ -178,7 +177,6 @@ class AgentDataService
         return $this->agents;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\AgentTeam[]
      */
@@ -188,7 +186,6 @@ class AgentDataService
 
         return $this->agent_teams;
     }
-
 
     /**
      * @param  array    $for_ids
@@ -207,7 +204,6 @@ class AgentDataService
         return $ret;
     }
 
-
     /**
      * @return int[]
      */
@@ -218,7 +214,6 @@ class AgentDataService
         return $this->ids;
     }
 
-
     /**
      * @return int[]
      */
@@ -228,7 +223,6 @@ class AgentDataService
 
         return $this->team_ids;
     }
-
 
     /**
      * @param  int                                     $id
@@ -245,7 +239,6 @@ class AgentDataService
         return null;
     }
 
-
     /**
      * @param  int  $id
      * @return bool
@@ -256,7 +249,6 @@ class AgentDataService
 
         return isset($this->agents[$id]);
     }
-
 
     /**
      * Get an array of agents by ids
@@ -271,7 +263,7 @@ class AgentDataService
         $agents = array();
 
         foreach ($ids as $id) {
-            $id = (int)$id;
+            $id = (int) $id;
             if (isset($this->agents[$id])) {
                 $agents[$id] = $this->agents[$id];
             }
@@ -279,7 +271,6 @@ class AgentDataService
 
         return $agents;
     }
-
 
     /**
      * Returns an array of valid agent IDs in $ids. Optionally
@@ -309,7 +300,6 @@ class AgentDataService
         return $valid_ids;
     }
 
-
     /**
      * @param  string                             $email
      * @return \Application\DeskPRO\Entity\Person
@@ -324,7 +314,6 @@ class AgentDataService
 
         return null;
     }
-
 
     /**
      * Get an array of agents who are online now (have active sessions).
@@ -348,7 +337,6 @@ class AgentDataService
         return $this->online_agent_ids;
     }
 
-
     /**
      * @return array
      */
@@ -364,7 +352,6 @@ class AgentDataService
         return $agents;
     }
 
-
     /**
      * Check if an agent is online
      *
@@ -379,7 +366,6 @@ class AgentDataService
         return isset($this->online_agent_ids[$id]);
     }
 
-
     /**
      * Count how many agents are currently online
      *
@@ -389,7 +375,6 @@ class AgentDataService
     {
         return count($this->online_agent_ids);
     }
-
 
     /**
      * @param  int                                        $id
@@ -406,7 +391,6 @@ class AgentDataService
         return null;
     }
 
-
     /**
      * @param  int  $id
      * @return bool
@@ -417,7 +401,6 @@ class AgentDataService
 
         return isset($this->agent_teams[$id]);
     }
-
 
     /**
      * Get an array of agents by ids
@@ -432,7 +415,7 @@ class AgentDataService
         $teams = array();
 
         foreach ($ids as $id) {
-            $id = (int)$id;
+            $id = (int) $id;
             if (isset($this->agent_teams[$id])) {
                 $teams[$id] = $this->agent_teams[$id];
             }
@@ -440,7 +423,6 @@ class AgentDataService
 
         return $teams;
     }
-
 
     /**
      * @param  int|\Application\DeskPRO\Entity\Person  $agent
@@ -456,7 +438,7 @@ class AgentDataService
         $agent = $this->get($aid);
 
         if (!$agent) {
-            throw new \InvalidArgumentException;
+            throw new \InvalidArgumentException();
         }
 
         if (empty($this->agent_to_teams[$agent->id])) {
@@ -473,7 +455,6 @@ class AgentDataService
 
         return $teams;
     }
-
 
     /**
      * @param  int|\Application\DeskPRO\Entity\Person    $agent
@@ -511,9 +492,9 @@ class AgentDataService
         }
 
         $this->preloadTeamMap();
+
         return isset($this->agent_to_teams[$agent_id][$team_id]);
     }
-
 
     /**
      * @param  int|\Application\DeskPRO\Entity\Person  $agent
@@ -529,7 +510,7 @@ class AgentDataService
         $agent = $this->get($aid);
 
         if (!$agent) {
-            throw new \InvalidArgumentException;
+            throw new \InvalidArgumentException();
         }
 
         if (empty($this->agent_to_groups[$agent->id])) {
@@ -538,7 +519,6 @@ class AgentDataService
 
         return $this->agent_to_groups[$agent->id];
     }
-
 
     /**
      * @param  int|\Application\DeskPRO\Entity\AgentTeam $team
@@ -554,7 +534,7 @@ class AgentDataService
         $team = $this->getTeam($tid);
 
         if (!$team) {
-            throw new \InvalidArgumentException;
+            throw new \InvalidArgumentException();
         }
 
         if (empty($this->team_to_agents[$team->id])) {
@@ -571,7 +551,6 @@ class AgentDataService
 
         return $agents;
     }
-
 
     /**
      * Selects agents based on some kind of selector:
@@ -605,11 +584,11 @@ class AgentDataService
         }
 
         if (is_numeric($selector)) {
-            $selector = 'agent:' . $selector;
+            $selector = 'agent:'.$selector;
         }
 
         if (strpos($selector, ':')) {
-            list ($type, $option) = explode(':', $selector, 2);
+            list($type, $option) = explode(':', $selector, 2);
         } else {
             $type = $selector;
             $option = null;
@@ -639,7 +618,6 @@ class AgentDataService
                     $return = $this->getAgentsForTeam($ticket_context->agent_team);
                 }
                 break;
-
 
             // Agent followers
             case 'ticket_followers':

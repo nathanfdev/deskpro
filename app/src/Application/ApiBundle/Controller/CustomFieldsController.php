@@ -68,20 +68,20 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
     {
         $context = strtolower($context);
         if (!in_array($context, $this->allowed['context'])) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
-        return 'Application\DeskPRO\Entity\\' . Container::camelize($context);
+        return 'Application\DeskPRO\Entity\\'.Container::camelize($context);
     }
 
     protected function filterOwnerClass($owner)
     {
         $owner = strtolower($owner);
         if (!in_array($owner, $this->allowed['owner'])) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
-        return 'Application\DeskPRO\Entity\\' . Container::camelize($owner);
+        return 'Application\DeskPRO\Entity\\'.Container::camelize($owner);
     }
 
     ####################################################################################################################
@@ -149,12 +149,12 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
     {
         /** @var $definition CustomFieldDefinition */
         if (!$definition = $this->em->find('DeskPRO:CustomFieldDefinition', $id)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $context = $this->filterContextClass($request->get('context'));
         if (!$context = $this->em->find($context, $request->get('context_id'))) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $form = $this->createForm(new SimpleDefinitionType(), null, array(
@@ -190,17 +190,16 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
     {
         $post = $this->in->getAll('req');
         if (!$id || !($definition = $this->getDefinition($id))) {
-
             if (empty($post['form_type']) || empty($post['context_class'])) {
-                throw new NotFoundHttpException;
+                throw new NotFoundHttpException();
             }
             $definition = new CustomFieldDefinition();
 
             // todo quite dirty
             $formType = Container::camelize($post['form_type']);
             $contextClass = Container::camelize($post['context_class']);
-            $definition['form_type'] = 'Application\DeskPRO\Form\Type\CustomFields\\' . $formType . 'Type';
-            $definition['context_class'] = 'Application\DeskPRO\Entity\\' . $contextClass;
+            $definition['form_type'] = 'Application\DeskPRO\Form\Type\CustomFields\\'.$formType.'Type';
+            $definition['context_class'] = 'Application\DeskPRO\Entity\\'.$contextClass;
             $definition['owner_class'] = 'Application\DeskPRO\Entity\Ticket';
 
             $this->em->persist($definition);

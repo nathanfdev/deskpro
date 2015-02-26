@@ -88,7 +88,7 @@ class Build1400056732 extends AbstractBuild
         $copy_list = array(
             'DeskPRO:emails_user:ticket-autoclose-warn.html.twig' => array(
                 'file'     => DP_ROOT.'/src/Application/DeskPRO/Resources/views/emails_user/ticket-autoclose-warn.html.twig',
-                'new_name' => 'DeskPRO:emails_custom:user_autoclose_warn.html.twig'
+                'new_name' => 'DeskPRO:emails_custom:user_autoclose_warn.html.twig',
             ),
         );
 
@@ -150,7 +150,9 @@ class Build1400056732 extends AbstractBuild
 
         $proc_actions = function ($actions) use ($copy_list) {
             $actions = @json_decode($actions, true);
-            if (!$actions || empty($actions['@DATA']['actions'])) return null;
+            if (!$actions || empty($actions['@DATA']['actions'])) {
+                return null;
+            }
 
             $did = false;
             foreach ($actions['@DATA']['actions'] as &$act) {

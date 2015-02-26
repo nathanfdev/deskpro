@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\People\ActivityLogger\ActionType;
 
-
 class NewCommentDownload extends NewCommentAbstract
 {
     public function getDetails()
@@ -42,6 +41,7 @@ class NewCommentDownload extends NewCommentAbstract
         $details = parent::getDetails();
         $details['download_id'] = $this->comment->download['id'];
         $details['download_title'] = $this->comment->download['title'];
-	    return $details;
+
+        return $details;
     }
 }

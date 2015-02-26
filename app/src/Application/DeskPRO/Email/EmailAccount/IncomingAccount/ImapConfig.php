@@ -91,7 +91,6 @@ class ImapConfig implements AccountConfigInterface
      */
     public $archive_mailbox = null;
 
-
     /**
      * {@inheritDoc}
      */
@@ -106,10 +105,9 @@ class ImapConfig implements AccountConfigInterface
             'no_validation'   => $this->no_validation,
             'mode'            => $this->mode,
             'read_mailbox'    => $this->read_mailbox,
-            'archive_mailbox' => $this->archive_mailbox
+            'archive_mailbox' => $this->archive_mailbox,
         );
     }
-
 
     /**
      * {@inheritDoc}
@@ -124,7 +122,6 @@ class ImapConfig implements AccountConfigInterface
         return $obj;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -132,7 +129,6 @@ class ImapConfig implements AccountConfigInterface
     {
         return 'imap';
     }
-
 
     ############################################################################
     # Validation Metadata
@@ -143,10 +139,10 @@ class ImapConfig implements AccountConfigInterface
         $metadata->addPropertyConstraint('host', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('port', new Constraints\GreaterThan(array('value' => 1)));
         $metadata->addPropertyConstraint('secure_mode', new Constraints\Choice(array(
-            'choices' => array('none', 'ssl', 'tls')
+            'choices' => array('none', 'ssl', 'tls'),
         )));
         $metadata->addPropertyConstraint('mode', new Constraints\Choice(array(
-            'choices' => array('read', 'delete', 'archive')
+            'choices' => array('read', 'delete', 'archive'),
         )));
     }
 }

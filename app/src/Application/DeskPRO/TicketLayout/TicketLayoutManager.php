@@ -48,7 +48,6 @@ class TicketLayoutManager
      */
     private $agent_layouts;
 
-
     /**
      * @param  \Application\DeskPRO\Entity\TicketLayout[] $ticket_layouts
      * @return TicketLayoutManager
@@ -72,7 +71,6 @@ class TicketLayoutManager
 
         return new self($user_layouts, $agent_layouts);
     }
-
 
     /**
      * @param  array               $ticket_layouts
@@ -100,7 +98,6 @@ class TicketLayoutManager
         return new self($user_layouts, $agent_layouts);
     }
 
-
     /**
      * @param LayoutCollection $user_layouts
      * @param LayoutCollection $agent_layouts
@@ -111,7 +108,6 @@ class TicketLayoutManager
         $this->agent_layouts = $agent_layouts;
     }
 
-
     /**
      * @return LayoutCollection
      */
@@ -119,7 +115,6 @@ class TicketLayoutManager
     {
         return $this->user_layouts;
     }
-
 
     /**
      * @return LayoutCollection
@@ -129,7 +124,6 @@ class TicketLayoutManager
         return $this->agent_layouts;
     }
 
-
     /**
      * @return array
      */
@@ -138,7 +132,6 @@ class TicketLayoutManager
         return $this->_collectLayoutItems($this->user_layouts);
     }
 
-
     /**
      * @return array
      */
@@ -146,7 +139,6 @@ class TicketLayoutManager
     {
         return $this->_collectLayoutItems($this->user_layouts);
     }
-
 
     /**
      * @param  LayoutCollection $coll

@@ -49,7 +49,6 @@ class GooglePlus extends AbstractAdapter
         );
     }
 
-
     /**
      * @return \Orb\Auth\Adapter\Google
      */
@@ -68,7 +67,7 @@ class GooglePlus extends AbstractAdapter
     public function getCapabilities()
     {
         return array(
-            UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN		);
+            UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN,        );
     }
 
     /**

@@ -64,7 +64,9 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
 
     protected function _initPref()
     {
-        if ($this->pref !== null) return;
+        if ($this->pref !== null) {
+            return;
+        }
 
         $this->pref = $this->person->getPref($this->pref_name);
         if (!$this->pref) {
@@ -88,7 +90,7 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
     {
         return array(
             'getHelpMessages' => '_getThis',
-            'shouldShowMessage' => 'shouldShowMessage'
+            'shouldShowMessage' => 'shouldShowMessage',
         );
     }
 
@@ -110,7 +112,7 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
     {
         $this->_initPref();
 
-        return (in_array(self::ALL, $this->pref['value']) OR in_array($id, $this->pref['value']));
+        return (in_array(self::ALL, $this->pref['value']) or in_array($id, $this->pref['value']));
     }
 
     public function dismiss($id)

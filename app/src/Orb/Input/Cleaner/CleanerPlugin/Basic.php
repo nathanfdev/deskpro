@@ -105,21 +105,21 @@ class Basic implements CleanerPlugin
 
         switch ($type) {
             case 'bool':
-                $value = (bool)$value;
+                $value = (bool) $value;
                 break;
 
             case 'bool_int':
             case 'ibool':
-                $value = (int)((bool)$value);
+                $value = (int) ((bool) $value);
                 break;
 
             case 'int':
             case 'integer':
-                $value = (int)$value;
+                $value = (int) $value;
                 break;
 
             case 'uint':
-                $value = (int)$value;
+                $value = (int) $value;
 
                 if ($value < 0) {
                     $value = 0;
@@ -128,11 +128,11 @@ class Basic implements CleanerPlugin
 
             case 'num':
             case 'number':
-                $value = ((string)$value) + 0;
+                $value = ((string) $value) + 0;
                 break;
 
             case 'unum':
-                $value = ((string)$value) + 0;
+                $value = ((string) $value) + 0;
 
                 if ($value < 0) {
                     $value = 0;
@@ -140,11 +140,11 @@ class Basic implements CleanerPlugin
                 break;
 
             case 'float':
-                $value = (float)$value;
+                $value = (float) $value;
                 break;
 
             case 'ufloat':
-                $value = (float)$value;
+                $value = (float) $value;
                 if ($value < 0) {
                     $value = 0.0;
                 }
@@ -152,46 +152,57 @@ class Basic implements CleanerPlugin
 
             case 'str':
             case 'string':
-                if (!is_scalar($value)) $value = '';
+                if (!is_scalar($value)) {
+                    $value = '';
+                }
                 $value = trim($this->cleanString($value));
                 break;
 
             case 'str_notrim':
-                if (!is_scalar($value)) $value = '';
-                $value = (string)$this->cleanString($value);
+                if (!is_scalar($value)) {
+                    $value = '';
+                }
+                $value = (string) $this->cleanString($value);
                 break;
 
             case 'str_nohtml':
             case 'nohtml':
-                if (!is_scalar($value)) $value = '';
+                if (!is_scalar($value)) {
+                    $value = '';
+                }
                 $value = htmlspecialchars(trim($this->cleanString($value)));
                 break;
 
             case 'str_striphtml':
             case 'striphtml':
-                if (!is_scalar($value)) $value = '';
+                if (!is_scalar($value)) {
+                    $value = '';
+                }
                 $value = strip_tags(trim($this->cleanString($value)));
                 break;
 
             case 'str_simple':
             case 'str_key':
-                if (!is_scalar($value)) $value = '';
+                if (!is_scalar($value)) {
+                    $value = '';
+                }
                 $value = preg_replace('#[^a-zA-Z0-9 _\-\.:]#', '', trim($this->cleanString($value)));
                 break;
 
             case 'str_raw':
-                if (!is_scalar($value)) $value = '';
-                $value = (string)$value;
+                if (!is_scalar($value)) {
+                    $value = '';
+                }
+                $value = (string) $value;
                 break;
 
             case 'array':
-                $value = (array)$value;
+                $value = (array) $value;
                 break;
         }
 
         return $value;
     }
-
 
     /**
      * If a string has mb characters, this will ensure the string is well-formed and

@@ -60,15 +60,14 @@ abstract class AbstractJob
         $this->init();
     }
 
-
-    protected function init() { }
-
+    protected function init()
+    {
+    }
 
     /**
      * Run the task
      */
     abstract public function run();
-
 
     /**
      * Log a status message. These should include information about how many records

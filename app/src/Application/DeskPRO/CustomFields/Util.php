@@ -51,13 +51,11 @@ class Util
     {
         $data = $this->createDataHierarchy($field_datas, $field_defs);
         $data = Arrays::walkKeys($data, function (&$k) {
-            $k = 'field_' . $k;
+            $k = 'field_'.$k;
         });
 
         return $data;
     }
-
-
 
     /**
      * This converts a collection of data items into an array structure
@@ -102,8 +100,6 @@ class Util
 
         return $structure;
     }
-
-
 
     /**
      * Use this to get a structured "data array" used with form handlers render(). This essentially emulates

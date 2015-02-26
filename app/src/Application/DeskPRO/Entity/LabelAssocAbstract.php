@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-
 /**
  * Base labels associations class
  *
@@ -51,7 +50,6 @@ abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObje
      * @var string
      */
     protected $label;
-
 
     /**
      * @param string $label

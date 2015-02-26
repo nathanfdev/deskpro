@@ -105,7 +105,6 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
         $this->sendmail_source_id = $sendmail_source_id;
     }
 
-
     /**
      * @return string
      */
@@ -114,7 +113,6 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
         return $this->field_id;
     }
 
-
     /**
      * @return array
      */
@@ -122,7 +120,6 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
     {
         return null;
     }
-
 
     /**
      * @return array
@@ -139,7 +136,7 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
             'from_email'         => $this->from_email,
             'template'           => $this->template,
             'sendmail_source_id' => $this->sendmail_source_id,
-            'id_after'           => $this->sendmail_source_id
+            'id_after'           => $this->sendmail_source_id,
         );
     }
 

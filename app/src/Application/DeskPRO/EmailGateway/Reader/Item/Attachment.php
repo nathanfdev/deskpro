@@ -33,7 +33,6 @@
 
 namespace Application\DeskPRO\EmailGateway\Reader\Item;
 
-
 class Attachment
 {
     /** @var string */

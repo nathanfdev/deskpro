@@ -55,14 +55,13 @@ class EmailAccountsController extends BaseEmailAccountsController
             };
             $count = 0;
             do {
-                $data['address_name'] = 'contact' . ($count ? $count : '') . '@' . DPC_SITE_DOMAIN;
+                $data['address_name'] = 'contact'.($count ? $count : '').'@'.DPC_SITE_DOMAIN;
                 $count++;
             } while ($check($data['address_name']) > 0);
         }
 
         if ($data['account_type'] == 'tickets') {
-
-            $data['address'] = $data['address_name'] . '@' . DPC_SITE_DOMAIN;
+            $data['address'] = $data['address_name'].'@'.DPC_SITE_DOMAIN;
 
             $data['other_addresses'] = explode(',', @$data['other_addresses'] ?: '');
             $data['other_addresses'] = Arrays::func($data['other_addresses'], 'trim');
@@ -96,7 +95,6 @@ class EmailAccountsController extends BaseEmailAccountsController
 
             // All incoming types are 'noop' because they aren't actually processed in the same way on cron
             $data['incoming_type'] = 'noop';
-
         } elseif ($data['account_type'] == 'outgoing') {
             throw $this->createNotFoundException();
         } else {

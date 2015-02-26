@@ -55,7 +55,7 @@ class SyncDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerA
             $start = microtime(true);
 
             $classes = \Application\DeskPRO\DataSync\AbstractDataSync::getAvailableSyncClasses();
-            foreach ($classes AS $name => $class) {
+            foreach ($classes as $name => $class) {
                 /* @var $sync \Application\DeskPRO\DataSync\AbstractDataSync */
                 $sync = new $class();
                 $res = $sync->syncBaseToLive();

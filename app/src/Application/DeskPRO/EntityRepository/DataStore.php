@@ -41,15 +41,21 @@ class DataStore extends AbstractEntityRepository
     public function getByCode($code, $type = null)
     {
         $info = DataStoreEntity::getPartsFromCode($code);
-        if (!$info) return null;
+        if (!$info) {
+            return null;
+        }
 
         $tmpdata = $this->find($info['id']);
-        if ($tmpdata['auth'] != $info['auth']) return null;
+        if ($tmpdata['auth'] != $info['auth']) {
+            return null;
+        }
 
-        if ($type AND $tmpdata->getType() != $type) return null;
+        if ($type and $tmpdata->getType() != $type) {
+            return null;
+        }
+
         return $tmpdata;
     }
-
 
     /**
      * Get data by its unique name

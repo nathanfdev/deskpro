@@ -64,7 +64,6 @@ class LoginLogs
      */
     private $filter_agent;
 
-
     /**
      * @param EntityManager    $em
      * @param AgentDataService $agent_data
@@ -75,7 +74,6 @@ class LoginLogs
         $this->agent_data = $agent_data;
     }
 
-
     /**
      * @param Person $agent
      */
@@ -83,7 +81,6 @@ class LoginLogs
     {
         $this->filter_agent = $agent;
     }
-
 
     /**
      * @param int $per_page
@@ -96,7 +93,6 @@ class LoginLogs
 
         return $this;
     }
-
 
     /**
      * @param int $page
@@ -114,7 +110,6 @@ class LoginLogs
         return $this;
     }
 
-
     /**
      * @return array
      */
@@ -125,7 +120,7 @@ class LoginLogs
             FROM login_log
             LEFT JOIN people ON (people.id = login_log.person_id)
             WHERE people.is_agent
-            " . ($this->filter_agent ? " AND people.id = {$this->filter_agent->id} " : '') . "
+            ".($this->filter_agent ? " AND people.id = {$this->filter_agent->id} " : '')."
             ORDER BY login_log.id DESC
             LIMIT $this->from, $this->per_page
         ");

@@ -59,8 +59,7 @@ class Alias extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if (count($this->_arguments) != 2) {
             throw new Exception('ALIAS() can only accept 2 arguments');
         }

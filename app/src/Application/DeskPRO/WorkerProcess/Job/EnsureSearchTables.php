@@ -84,8 +84,8 @@ class EnsureSearchTables extends AbstractJob
                 'data' => array(
                     'type'        => 'admin',
                     'person_id'   => 0,
-                    'person_name' => 'System'
-                )
+                    'person_name' => 'System',
+                ),
             ));
 
             App::getOrm()->persist($cm);

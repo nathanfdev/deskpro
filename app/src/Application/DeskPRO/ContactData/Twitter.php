@@ -76,7 +76,7 @@ class Twitter extends AbstractContactData
                     if ($contact_data->id) {
                         App::getDb()->delete($table, array(
                             $column => $id,
-                            'screen_name' => $old_name
+                            'screen_name' => $old_name,
                         ));
                     }
 
@@ -109,12 +109,12 @@ class Twitter extends AbstractContactData
         if ($contact_record instanceof \Application\DeskPRO\Entity\PersonContactData) {
             App::getDb()->delete('people_twitter_users', array(
                 'person_id' => $contact_record->person->id,
-                'screen_name' => $contact_record->field_1
+                'screen_name' => $contact_record->field_1,
             ));
         } elseif ($contact_record instanceof \Application\DeskPRO\Entity\OrganizationContactData) {
             App::getDb()->delete('organizations_twitter_users', array(
                 'organization_id' => $contact_record->organization->id,
-                'screen_name' => $contact_record->field_1
+                'screen_name' => $contact_record->field_1,
             ));
         }
     }
@@ -129,8 +129,8 @@ class Twitter extends AbstractContactData
         return array(
             'comment' => $contact_record->comment,
             'username' => $contact_record->field_1,
-            'profile_url' => 'http://twitter.com/' . $contact_record->field_1,
-            'display_feed' => $contact_record->field_2
+            'profile_url' => 'http://twitter.com/'.$contact_record->field_1,
+            'display_feed' => $contact_record->field_2,
         );
     }
 

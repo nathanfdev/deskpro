@@ -54,19 +54,19 @@ class Build1356604502 extends AbstractBuild
         );
 
         $db = $this->container->getDb();
-        foreach ($types AS $type => $table) {
+        foreach ($types as $type => $table) {
             $totals = $db->fetchAllKeyValue("
                 SELECT label, COUNT(*)
                 FROM $table
                 GROUP BY label
             ");
             $db->beginTransaction();
-            foreach ($totals AS $label => $total) {
+            foreach ($totals as $label => $total) {
                 $db->executeUpdate("
                     INSERT INTO label_defs (label_type, label, total)
                     VALUES (?, ?, ?)
                     ON DUPLICATE KEY UPDATE total = total + VALUES(total)
-                ", array($type . 's', $label, $total));
+                ", array($type.'s', $label, $total));
             }
             $db->commit();
         }

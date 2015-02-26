@@ -31,7 +31,6 @@ use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\DeskPRO\Tickets\TicketManager;
 use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
-use Orb\Util\Strings;
 
 /**
  * DeskPro ticket importer
@@ -125,13 +124,14 @@ final class Ticket extends AbstractImporter
         }
 
         $this->records->add($ticket);
+
         return $this->records;
     }
 
     /**
      * Returns the importing DeskPro doctrine ticket message entity
      *
-     * @param Entity\TicketMessage $importing_entity
+     * @param  Entity\TicketMessage        $importing_entity
      * @return DeskPROEntity\TicketMessage
      */
     private function createTicketMessage(Entity\TicketMessage $importing_entity)
@@ -155,6 +155,7 @@ final class Ticket extends AbstractImporter
         }
 
         $this->records->add($message);
+
         return $message;
     }
 
@@ -168,13 +169,14 @@ final class Ticket extends AbstractImporter
      */
     private function createAttachment(Entity\Attachment $importing_entity, $message_person_email)
     {
-        $email = $importing_entity->getPersonEmail() ? : $message_person_email;
+        $email = $importing_entity->getPersonEmail() ?: $message_person_email;
         $attachment = new DeskPROEntity\TicketAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
             ->setBlob($this->blob_adapter->createByAttachment($importing_entity));
 
         $this->records->add($attachment);
+
         return $attachment;
     }
 
@@ -192,6 +194,7 @@ final class Ticket extends AbstractImporter
         $participant->setPerson($this->getPersonMapper()->findOneByEmail($email));
 
         $this->records->add($participant);
+
         return $participant;
     }
 
@@ -336,6 +339,7 @@ final class Ticket extends AbstractImporter
         }
 
         $this->records->add($entity);
+
         return $entity;
     }
 

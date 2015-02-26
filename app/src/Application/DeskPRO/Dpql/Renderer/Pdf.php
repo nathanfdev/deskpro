@@ -72,11 +72,10 @@ class Pdf extends Html
 
         $content_html = App::getTemplating()->render('DeskPRO:pdf_agent:report-builder.html.twig', array(
             'html' => $html,
-            'title' => $this->_title
+            'title' => $this->_title,
         ));
 
-        $mpdf = new \mPDF_mPDF
-        (
+        $mpdf = new \mPDF_mPDF(
             'utf-8', // Language/Character set
             'A4', // Size
             '8', // Default Font Size

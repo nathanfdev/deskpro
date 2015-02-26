@@ -53,14 +53,14 @@ class AttachmentAccepterService
             foreach (array('agent', 'user') as $type) {
                 $res = new \Application\DeskPRO\Attachments\RestrictionSet();
 
-                $max_size  = $container->getSetting('core.' . $prefix . 'attach_'.$type.'_maxsize');
+                $max_size  = $container->getSetting('core.'.$prefix.'attach_'.$type.'_maxsize');
 
                 if ($prefix != 'emails.') {
                     $max_size = min($effective_max_size, $max_size);
                 }
 
-                $must_exts = $container->getSetting('core.' . $prefix . 'attach_'.$type.'_must_exts');
-                $not_exts  = $container->getSetting('core.' . $prefix . 'attach_'.$type.'_not_exts');
+                $must_exts = $container->getSetting('core.'.$prefix.'attach_'.$type.'_must_exts');
+                $not_exts  = $container->getSetting('core.'.$prefix.'attach_'.$type.'_not_exts');
 
                 if ($must_exts) {
                     $must_exts = explode(',', strtolower($must_exts));
@@ -78,7 +78,7 @@ class AttachmentAccepterService
 
                 $res->setMaxSize($max_size)->setAllowedExts($must_exts)->setDisallowedExts($not_exts);
 
-                $accepter->addRestrictionSet($prefix . $type, $res);
+                $accepter->addRestrictionSet($prefix.$type, $res);
             }
         }
 

@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\People\PermissionChecker;
 
-
 class GeneralChecker extends AbstractChecker
 {
     /**

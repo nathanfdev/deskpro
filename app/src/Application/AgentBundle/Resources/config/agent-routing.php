@@ -1,7 +1,9 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 
-require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php');
-require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php');
+require_once DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php';
+require_once DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php';
 
 use Application\DeskPRO\Routing\RouteCollection;
 
@@ -232,7 +234,7 @@ $collection->create('agent_send_lost', array(
 
 $collection->create('agent_whitelist_ip', array(
     'path'        => '/whitelist-ip/{code}',
-    'controller'  => 'AgentBundle:Login:whitelistIp'
+    'controller'  => 'AgentBundle:Login:whitelistIp',
 ));
 
 $collection->create('agent_settings', array(
@@ -1418,21 +1420,21 @@ $collection->create('agent_task_ics_all_tasks', array(
     'path'         => '/tasks/{id}-{authcode}/all.ics',
     'controller'   => 'AgentBundle:Task:iCal',
     'defaults'     => array('filter' => 'all'),
-    'requirements' => array('authcode' => '.*', 'id' => '^\\d+$' )
+    'requirements' => array('authcode' => '.*', 'id' => '^\\d+$' ),
 ));
 
 $collection->create('agent_task_ics_assigned_tasks', array(
     'path'         => '/tasks/{id}-{authcode}/assigned.ics',
     'controller'   => 'AgentBundle:Task:iCal',
     'defaults'     => array('filter' => 'assigned'),
-    'requirements' => array('authcode' => '.*', 'id' => '^\\d+$')
+    'requirements' => array('authcode' => '.*', 'id' => '^\\d+$'),
 ));
 
 $collection->create('agent_task_ics_delegated_tasks', array(
     'path'         => '/tasks/{id}-{authcode}/delegated.ics',
     'controller'   => 'AgentBundle:Task:iCal',
     'defaults'     => array('filter' => 'delegated'),
-    'requirements' => array('authcode' => '.*', 'id' => '^\\d+$')
+    'requirements' => array('authcode' => '.*', 'id' => '^\\d+$'),
 ));
 
 $collection->create('agent_publish_getsectiondata', array(
@@ -2186,18 +2188,15 @@ $collection->create('agent_apps_run', array(
 ));
 
 $collection->create('agent_label_definitions_list', array(
-	'path'          => '/labels/definitions',
-	'controller'    => 'AgentBundle:Labels:listDefinitions',
-	'methods'       => array('GET'),
+    'path'          => '/labels/definitions',
+    'controller'    => 'AgentBundle:Labels:listDefinitions',
+    'methods'       => array('GET'),
 ));
 
-
-
-
 $collection->create('agent_jira_meta', array(
-	'path'          => '/jira/meta',
-	'controller'    => 'AgentBundle:Jira:getMeta',
-	'methods'       => array('GET'),
+    'path'          => '/jira/meta',
+    'controller'    => 'AgentBundle:Jira:getMeta',
+    'methods'       => array('GET'),
 ));
 
 $collection->create('agent_jira_createmeta', array(
@@ -2207,16 +2206,16 @@ $collection->create('agent_jira_createmeta', array(
 ));
 
 $collection->create('agent_jira_search', array(
-	'path'          => '/jira/search',
-	'controller'    => 'AgentBundle:Jira:search',
-	'methods'       => array('GET'),
+    'path'          => '/jira/search',
+    'controller'    => 'AgentBundle:Jira:search',
+    'methods'       => array('GET'),
 ));
 
 $collection->create('agent_jira_ticket_issues_create', array(
-	'path'          => '/jira/ticket/{ticketId}/issue',
-	'controller'    => 'AgentBundle:Jira:createIssue',
-	'methods'       => array('POST'),
-	'requirements'  => array('ticketId' => '\\d+'),
+    'path'          => '/jira/ticket/{ticketId}/issue',
+    'controller'    => 'AgentBundle:Jira:createIssue',
+    'methods'       => array('POST'),
+    'requirements'  => array('ticketId' => '\\d+'),
 ));
 
 $collection->create('agent_jira_ticket_issue_update', array(
@@ -2227,33 +2226,31 @@ $collection->create('agent_jira_ticket_issue_update', array(
 ));
 
 $collection->create('agent_jira_ticket_issues_list', array(
-	'path'          => '/jira/ticket/{ticketId}/issue',
-	'controller'    => 'AgentBundle:Jira:issues',
-	'methods'       => array('GET'),
-	'requirements'  => array('ticketId' => '\\d+'),
+    'path'          => '/jira/ticket/{ticketId}/issue',
+    'controller'    => 'AgentBundle:Jira:issues',
+    'methods'       => array('GET'),
+    'requirements'  => array('ticketId' => '\\d+'),
 ));
 
 $collection->create('agent_jira_ticket_issue_comments', array(
-	'path'          => '/jira/ticket/{ticketId}/issue/{issueId}/comments',
-	'controller'    => 'AgentBundle:Jira:addComment',
-	'methods'       => array('POST'),
-	'requirements'  => array('ticketId' => '\\d+', 'issueId' => '\\d+'),
+    'path'          => '/jira/ticket/{ticketId}/issue/{issueId}/comments',
+    'controller'    => 'AgentBundle:Jira:addComment',
+    'methods'       => array('POST'),
+    'requirements'  => array('ticketId' => '\\d+', 'issueId' => '\\d+'),
 ));
 
 $collection->create('agent_jira_ticket_issue_link', array(
-	'path'          => '/jira/ticket/{ticketId}/issue/{issueId}/link',
-	'controller'    => 'AgentBundle:Jira:link',
-	'methods'       => array('POST'),
-	'requirements'  => array('ticketId' => '\\d+', 'issueId' => '\\d+'),
+    'path'          => '/jira/ticket/{ticketId}/issue/{issueId}/link',
+    'controller'    => 'AgentBundle:Jira:link',
+    'methods'       => array('POST'),
+    'requirements'  => array('ticketId' => '\\d+', 'issueId' => '\\d+'),
 ));
 
 $collection->create('agent_jira_ticket_issue_unlink', array(
-	'path'          => '/jira/ticket/{ticketId}/issue/{issueId}/link',
-	'controller'    => 'AgentBundle:Jira:unlink',
-	'methods'       => array('DELETE'),
-	'requirements'  => array('ticketId' => '\\d+', 'issueId' => '\\d+'),
+    'path'          => '/jira/ticket/{ticketId}/issue/{issueId}/link',
+    'controller'    => 'AgentBundle:Jira:unlink',
+    'methods'       => array('DELETE'),
+    'requirements'  => array('ticketId' => '\\d+', 'issueId' => '\\d+'),
 ));
-
-
 
 return $collection;

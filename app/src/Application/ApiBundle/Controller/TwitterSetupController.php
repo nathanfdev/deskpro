@@ -46,7 +46,6 @@ class TwitterSetupController extends AbstractController implements ProtectedCont
         return new AdminManagePermission();
     }
 
-
     ####################################################################################################################
     # twitter-setup
     ####################################################################################################################

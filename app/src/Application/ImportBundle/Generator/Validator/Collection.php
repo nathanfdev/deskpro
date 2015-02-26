@@ -41,19 +41,20 @@ final class Collection extends AbstractCollection
     /**
      * Add a validator
      *
-     * @param ValidatorInterface $validator
+     * @param  ValidatorInterface $validator
      * @return $this
      */
     public function attach(ValidatorInterface $validator)
     {
         $this->collection[] = $validator;
+
         return $this;
     }
 
     /**
      * Returns a new collection contains validators of current type
      *
-     * @param string $type
+     * @param  string     $type
      * @return Collection
      */
     public function getByRecordType($type)

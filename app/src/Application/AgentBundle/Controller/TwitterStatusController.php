@@ -25,7 +25,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
@@ -104,7 +103,6 @@ class TwitterStatusController extends AbstractController
             case 'type': return array('type' => $group_value);
             default: return array();
         }
-
     }
 
     protected function _adjustPage($count, $page = null, $per_page = null)
@@ -143,11 +141,13 @@ class TwitterStatusController extends AbstractController
         $conditions = array_merge(array(
             'include_archived' => $this->in->getBool('include.archived'),
             'include_self' => $this->in->getBool('include.account'),
-            'type' => $type
+            'type' => $type,
         ), $this->_getGroupConditions($group, $group_value), $conditions);
 
         $page = $this->in->getUint('page');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
         $per_page = TwitterAccount::DEFAULT_LIMIT;
 
         /** @var $statusRepository \Application\DeskPRO\EntityRepository\TwitterAccountStatus */
@@ -171,7 +171,7 @@ class TwitterStatusController extends AbstractController
             'total_count' => $total_count,
             'per_page' => $per_page,
             'page' => $page,
-            'showing_to' => min($total_count, $page * $per_page)
+            'showing_to' => min($total_count, $page * $per_page),
         );
 
         if ($this->in->getBool('last')) {
@@ -273,7 +273,7 @@ class TwitterStatusController extends AbstractController
 
         return $this->render('AgentBundle:TwitterStatus:status-overlay.html.twig', array(
             'account_status' => $account_status,
-            'parents' => array_reverse($parents)
+            'parents' => array_reverse($parents),
         ));
     }
 
@@ -285,7 +285,7 @@ class TwitterStatusController extends AbstractController
 
         $twitter_service = new \Application\DeskPRO\Service\Twitter();
 
-        foreach ($account_statuses AS $account_status) {
+        foreach ($account_statuses as $account_status) {
             /** @var $account_status TwitterAccountStatus */
             if (!$account_status->account->hasPerson($this->person)) {
                 continue;
@@ -310,17 +310,17 @@ class TwitterStatusController extends AbstractController
                     $split = $this->in->getBool('split');
                     if (strlen($text)) {
                         if ($type == 'public' && strpos($text, '@'.$account_status->status->user->screen_name) === false) {
-                            $text = '@' . $account_status->status->user->screen_name . ' ' . $text;
+                            $text = '@'.$account_status->status->user->screen_name.' '.$text;
                         }
 
                         $twitter_service = new \Application\DeskPRO\Service\Twitter();
                         $response = $twitter_service->sendAccountMessage($type, $text, $split, $account_status->account, $account_status);
 
                         if ($response['new_account_statuses']) {
-                            foreach ($response['new_account_statuses'] AS $new_account_status) {
+                            foreach ($response['new_account_statuses'] as $new_account_status) {
                                 $reply_html = $this->renderView('AgentBundle:TwitterStatus:reply-li.html.twig', array(
                                     'account_status' => $account_status,
-                                    'reply' => $new_account_status
+                                    'reply' => $new_account_status,
                                 ));
                                 $html[] = $reply_html;
 
@@ -365,7 +365,7 @@ class TwitterStatusController extends AbstractController
         $this->em->flush();
 
         return $this->createJsonResponse(array(
-            'success' => true
+            'success' => true,
         ));
     }
 
@@ -384,7 +384,7 @@ class TwitterStatusController extends AbstractController
 
         $notify_agent_ids = array();
         preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $this->in->getString('text'), $matches, PREG_SET_ORDER);
-        foreach ($matches AS $match) {
+        foreach ($matches as $match) {
             $notify_agent_ids[] = $match[1];
         }
 
@@ -405,7 +405,7 @@ class TwitterStatusController extends AbstractController
 
         $html = $this->renderView('AgentBundle:TwitterStatus:note-li.html.twig', array(
             'account_status' => $account_status,
-            'note' => $note
+            'note' => $note,
         ));
 
         $this->_insertUpdatedTweetClientMessage($account_status,
@@ -417,13 +417,13 @@ class TwitterStatusController extends AbstractController
             $agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
 
             $notify_agent_ids = array_unique($notify_agent_ids);
-            foreach ($notify_agent_ids AS $k => $agent_id) {
+            foreach ($notify_agent_ids as $k => $agent_id) {
                 if ($agent_id == $this->person->id || !isset($agents[$agent_id])) {
                     unset($notify_agent_ids[$k]);
                 }
             }
             if ($notify_agent_ids) {
-                $notify_text = $this->person->getDisplayName() . " alerted you in a note for {{tw-$account_status->id}}: " . $account_status->status->getClippedText(70);
+                $notify_text = $this->person->getDisplayName()." alerted you in a note for {{tw-$account_status->id}}: ".$account_status->status->getClippedText(70);
                 $agent_chat->sendAgentMessage($notify_text, $notify_agent_ids);
             }
         }
@@ -431,7 +431,7 @@ class TwitterStatusController extends AbstractController
         return $this->createJsonResponse(array(
             'success' => $success,
             'error' => $error,
-            'html' => $html
+            'html' => $html,
         ));
     }
 
@@ -469,10 +469,10 @@ class TwitterStatusController extends AbstractController
                 $error = $output['error'];
 
                 if ($output['new_account_statuses']) {
-                    foreach ($output['new_account_statuses'] AS $new_account_status) {
+                    foreach ($output['new_account_statuses'] as $new_account_status) {
                         $reply_html[] = $this->renderView('AgentBundle:TwitterStatus:reply-li.html.twig', array(
                             'account_status' => $account_status,
-                            'reply' => $new_account_status
+                            'reply' => $new_account_status,
                         ));
                         $html[] = $reply_html;
 
@@ -492,7 +492,7 @@ class TwitterStatusController extends AbstractController
             'error' => $error,
             'retweet' => $retweet,
             'html' => $html,
-            'archived' => $archived
+            'archived' => $archived,
         ));
     }
 
@@ -531,7 +531,7 @@ class TwitterStatusController extends AbstractController
         $archived = false;
         if (strlen($text)) {
             if ($type == 'public' && strpos($text, '@'.$account_status->status->user->screen_name) === false) {
-                $text = '@' . $account_status->status->user->screen_name . ' ' . $text;
+                $text = '@'.$account_status->status->user->screen_name.' '.$text;
             }
 
             $twitter_service = new \Application\DeskPRO\Service\Twitter();
@@ -540,10 +540,10 @@ class TwitterStatusController extends AbstractController
             $success = $response['success'];
             $error = $response['error'];
             if ($response['new_account_statuses']) {
-                foreach ($response['new_account_statuses'] AS $new_account_status) {
+                foreach ($response['new_account_statuses'] as $new_account_status) {
                     $reply_html = $this->renderView('AgentBundle:TwitterStatus:reply-li.html.twig', array(
                         'account_status' => $account_status,
-                        'reply' => $new_account_status
+                        'reply' => $new_account_status,
                     ));
                     $html[] = $reply_html;
 
@@ -563,7 +563,7 @@ class TwitterStatusController extends AbstractController
             'success' => $success,
             'html' => $html,
             'error' => $error,
-            'archived' => $archived
+            'archived' => $archived,
         ));
     }
 
@@ -624,11 +624,11 @@ class TwitterStatusController extends AbstractController
             return $this->createJsonResponse(array(
                 'success' => true,
                 'error' => null,
-                'parsed_text' => $account_status->status->long->getParsedText())
+                'parsed_text' => $account_status->status->long->getParsedText(), )
             );
         } else {
             return $this->render('AgentBundle:TwitterStatus:edit-overlay.html.twig', array(
-                'long' => $account_status->status->long
+                'long' => $account_status->status->long,
             ));
         }
     }
@@ -691,11 +691,11 @@ class TwitterStatusController extends AbstractController
         $old_agent_team_id = 0;
 
         if ($account_status->agent) {
-            $old_assign = 'agent:' . $account_status->agent->id;
-            $old_agent_id = $account_status->agent->id;;
+            $old_assign = 'agent:'.$account_status->agent->id;
+            $old_agent_id = $account_status->agent->id;
         } elseif ($account_status->agent_team) {
-            $old_assign = 'agent_team:' . $account_status->agent_team->id;
-            $old_agent_team_id = $account_status->agent_team->id;;
+            $old_assign = 'agent_team:'.$account_status->agent_team->id;
+            $old_agent_team_id = $account_status->agent_team->id;
         } else {
             $old_assign = '';
         }
@@ -718,9 +718,9 @@ class TwitterStatusController extends AbstractController
         }
 
         if ($account_status->agent) {
-            $new_assignment = 'agent:' . $account_status->agent->getId();
+            $new_assignment = 'agent:'.$account_status->agent->getId();
         } elseif ($account_status->agent_team) {
-            $new_assignment = 'agent_team:' . $account_status->agent_team->getId();
+            $new_assignment = 'agent_team:'.$account_status->agent_team->getId();
         } else {
             $new_assignment = '';
         }
@@ -735,7 +735,7 @@ class TwitterStatusController extends AbstractController
                     ),
                     'old_assignment' => $old_assign,
                     'old_agent_id' => $old_agent_id,
-                    'old_agent_team_id' => $old_agent_team_id
+                    'old_agent_team_id' => $old_agent_team_id,
                 )
             );
 

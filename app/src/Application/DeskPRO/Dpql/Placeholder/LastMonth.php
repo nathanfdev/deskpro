@@ -58,7 +58,7 @@ class LastMonth extends AbstractDateRange
         $endDate->modify('-1 day');
 
         $endDateValue = $endDate->format('Y-m-d');
-        $startDateValue = $endDate->format('Y-m') . '-01';
+        $startDateValue = $endDate->format('Y-m').'-01';
 
         return array("$startDateValue to $endDateValue", "$startDateValue 00:00:00", "$endDateValue 23:59:59");
     }

@@ -44,7 +44,9 @@ class ContentLabelCloud
 
     public function getCloud()
     {
-        if ($this->cloud !== null) return $this->cloud;
+        if ($this->cloud !== null) {
+            return $this->cloud;
+        }
 
         $counts = array(
             'articles'     => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('articles', 25),
@@ -56,7 +58,9 @@ class ContentLabelCloud
         $label_counts = array();
         foreach ($counts as $type_counts) {
             foreach ($type_counts as $label => $count) {
-                if (!isset($label_counts[$label])) $label_counts[$label] = 0;
+                if (!isset($label_counts[$label])) {
+                    $label_counts[$label] = 0;
+                }
                 $label_counts[$label] += $count;
             }
         }

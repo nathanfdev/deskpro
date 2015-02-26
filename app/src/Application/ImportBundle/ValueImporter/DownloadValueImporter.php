@@ -48,7 +48,7 @@ class DownloadValueImporter extends AbstractValueImporter
      */
     public function importValue($dval)
     {
-//        if (!($dval instanceof DownloadValue)) {
+        //        if (!($dval instanceof DownloadValue)) {
 //            throw new \InvalidArgumentException("This importer can only import Downloads");
 //        }
 //        if (empty($dval->title) || empty($dval->content)) {

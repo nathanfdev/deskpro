@@ -108,13 +108,13 @@ class CacheCleaner
         }
 
         $this->routing_files = array(
-            DP_ROOT  . '/src/Application/AdminInterfaceBundle/Resources/config/admin-interface-routing.php',
-            DP_ROOT  . '/src/Application/ReportsInterfaceBundle/Resources/config/reports-interface-routing.php',
-            DP_ROOT  . '/src/Application/AgentBundle/Resources/config/agent-routing.php',
-            DP_ROOT  . '/src/Application/ApiBundle/Resources/config/api-routing.php',
-            DP_ROOT  . '/src/Application/UserBundle/Resources/config/user-routing.php',
-            DP_ROOT  . '/src/Application/InstallBundle/Resources/config/install-routing.php',
-            DP_ROOT  . '/src/Application/DeskPRO/Resources/config/dp-routing.php'
+            DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/config/admin-interface-routing.php',
+            DP_ROOT.'/src/Application/ReportsInterfaceBundle/Resources/config/reports-interface-routing.php',
+            DP_ROOT.'/src/Application/AgentBundle/Resources/config/agent-routing.php',
+            DP_ROOT.'/src/Application/ApiBundle/Resources/config/api-routing.php',
+            DP_ROOT.'/src/Application/UserBundle/Resources/config/user-routing.php',
+            DP_ROOT.'/src/Application/InstallBundle/Resources/config/install-routing.php',
+            DP_ROOT.'/src/Application/DeskPRO/Resources/config/dp-routing.php',
         );
 
         return $this->routing_files;
@@ -127,7 +127,7 @@ class CacheCleaner
         }
 
         $this->gen_files = array();
-        foreach (array('DpKernel','Install') as $k) {
+        foreach (array('DpKernel', 'Install') as $k) {
             $this->gen_files[] = dp_get_cache_dir().'/dev/'.$k.'KernelDevUrlGenerator.php';
             $this->gen_files[] = dp_get_cache_dir().'/dev/'.$k.'KernelDevUrlMatcher.php';
             $this->gen_files[] = dp_get_cache_dir().'/prod/'.$k.'KernelDevUrlGenerator.php';

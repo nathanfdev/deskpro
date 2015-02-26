@@ -59,7 +59,6 @@ class EventContext
      */
     private $native_app;
 
-
     /**
      * @param string           $event_id
      * @param array            $event_data
@@ -73,7 +72,6 @@ class EventContext
         $this->container  = $container;
         $this->native_app = $native_app;
     }
-
 
     /**
      * Given an event ID, check to see if this event is of this type. This uses dot notation to separate

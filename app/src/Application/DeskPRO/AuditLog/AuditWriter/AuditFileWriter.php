@@ -50,7 +50,6 @@ class AuditFileWriter implements AuditWriterInterface
         $this->file_path = $file_path;
     }
 
-
     /**
      * Write a log entry
      *
@@ -62,7 +61,7 @@ class AuditFileWriter implements AuditWriterInterface
     {
         $fp = fopen($this->file_path, 'a');
         if (!$fp) {
-            throw new \Exception("Could not open log file for writing: " . $this->file_path);
+            throw new \Exception("Could not open log file for writing: ".$this->file_path);
         }
 
         foreach ($logs as $log) {
@@ -74,14 +73,13 @@ class AuditFileWriter implements AuditWriterInterface
         fclose($fp);
     }
 
-
     /**
      * @param  AuditLog $log
      * @return string
      */
     private function _formatLog(AuditLog $log)
     {
-        $str = '[' . date('Y-m-d H:i:s') . '] ' . $log->getObjectName() . ' ' . $log->op . ' by ' . $log->person_name;
+        $str = '['.date('Y-m-d H:i:s').'] '.$log->getObjectName().' '.$log->op.' by '.$log->person_name;
         if ($log->data) {
             foreach ($log->data as $row) {
                 $new_val = isset($row['new_val']) && $row['new_val'] ? $row['new_val'] : 'none';

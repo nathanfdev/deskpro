@@ -43,7 +43,7 @@ class PersonProps implements \ArrayAccess
 {
     /** @var array */
     protected static $prop_names = array(
-        'name' => 1, 'email' => 1
+        'name' => 1, 'email' => 1,
     );
 
     /**
@@ -67,7 +67,7 @@ class PersonProps implements \ArrayAccess
             $this->first_name = $person['first_name'];
             $this->last_name  = $person['last_name'];
             if ($person['first_name'] && $person['last_name']) {
-                $this->name = $this->first_name . ' ' . $this->last_name;
+                $this->name = $this->first_name.' '.$this->last_name;
             } elseif ($person['name']) {
                 $this->name = $person['name'];
             } else {
@@ -78,8 +78,26 @@ class PersonProps implements \ArrayAccess
         }
     }
 
-    public function offsetExists($offset) { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
-    public function offsetGet($offset) { if (isset(self::$prop_names[$offset])) return $this->$offset; }
-    public function offsetSet($offset, $value) { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
-    public function offsetUnset($offset) { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
+    public function offsetExists($offset)
+    {
+        return (isset(self::$prop_names[$offset]) && isset($this->$offset));
+    }
+    public function offsetGet($offset)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            return $this->$offset;
+        }
+    }
+    public function offsetSet($offset, $value)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            $this->$offset = $value;
+        }
+    }
+    public function offsetUnset($offset)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            $this->$offset = null;
+        }
+    }
 }

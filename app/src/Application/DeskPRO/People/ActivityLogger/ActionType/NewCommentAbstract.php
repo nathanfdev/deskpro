@@ -42,7 +42,6 @@ abstract class NewCommentAbstract extends ActionTypeAbstract
     /** @var \Application\DeskPRO\Entity\CommentAbstract */
     protected $comment;
 
-
     /**
      * @param \Application\DeskPRO\Entity\Person          $person
      * @param \Application\DeskPRO\Entity\CommentAbstract $comment
@@ -52,7 +51,6 @@ abstract class NewCommentAbstract extends ActionTypeAbstract
         $this->person = $person;
         $this->comment = $comment;
     }
-
 
     /**
      * Get a plain array of details that'll be stored in the databaes

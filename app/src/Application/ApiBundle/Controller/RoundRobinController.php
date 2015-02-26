@@ -50,7 +50,6 @@ class RoundRobinController extends AbstractController implements ProtectedContro
         return new UserTypePermission(UserTypePermission::AGENT);
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -161,11 +160,9 @@ class RoundRobinController extends AbstractController implements ProtectedContro
     protected function isTriggerActionClear($action, $roundRobinId = null)
     {
         if ($action instanceof SetRoundRobin) {
-
             if (!$roundRobinId || $action->getActionOption('id') == $roundRobinId) {
                 return false;
             }
-
         } elseif ($action instanceof ActionComposite) {
             foreach ($action as $subAction) {
                 if (!$this->isTriggerActionClear($subAction)) {
@@ -185,7 +182,9 @@ class RoundRobinController extends AbstractController implements ProtectedContro
             $newActions = new TriggerActions();
             /** @var TriggerActions $actions */
             $actions = $trigger->actions;
-            if (!$actions) continue;
+            if (!$actions) {
+                continue;
+            }
 
             foreach ($actions as $action) {
                 if ($this->isTriggerActionClear($action, $roundRobinId)) {

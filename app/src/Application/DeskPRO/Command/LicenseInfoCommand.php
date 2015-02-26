@@ -49,12 +49,12 @@ class LicenseInfoCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $lic = License::getLicense();
 
         if ($lic->isLicenseCodeError()) {
-            echo "License Error: " . $lic->getLicenseCodeError();
+            echo "License Error: ".$lic->getLicenseCodeError();
 
             return 1;
         }
 
-        echo "License ID: " . $lic->getLicenseId();
+        echo "License ID: ".$lic->getLicenseId();
         echo "\n";
 
         echo "Expires: ";
@@ -65,7 +65,7 @@ class LicenseInfoCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             if ($diff < 1) {
                 echo " (EXPIRED)";
             } else {
-                echo " (" . \Orb\Util\Dates::secsToReadable($diff, 3) . ")";
+                echo " (".\Orb\Util\Dates::secsToReadable($diff, 3).")";
             }
         } else {
             echo "Never";

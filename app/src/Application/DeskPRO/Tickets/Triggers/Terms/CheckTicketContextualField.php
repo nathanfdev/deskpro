@@ -78,12 +78,11 @@ class CheckTicketContextualField extends AbstractTriggerTerm
         return $this->isStringMatch($ticket, $context, TermValue::createWithValue($value), $options->get('value'));
     }
 
-
     /**
      * @return string
      */
     public function getTermType()
     {
-        return 'CheckTicketContextualField' . $this->getTermOptions()->get('field_id');
+        return 'CheckTicketContextualField'.$this->getTermOptions()->get('field_id');
     }
 }

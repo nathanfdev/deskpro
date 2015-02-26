@@ -51,7 +51,7 @@ class Build1366140032 extends AbstractBuild
                 $this->container->getDb()->replace('permissions', array(
                     'usergroup_id' => $ug_id,
                     'name'         => "agent_tickets.modify_messages_$n",
-                    'value'        => 1
+                    'value'        => 1,
                 ));
             }
         }

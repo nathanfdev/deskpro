@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\ResourceScanner;
 
-
 /**
  * Scans the filesystem for an array of all templates
  */
@@ -43,7 +42,6 @@ class TemplateFiles
     /** @var bool */
     protected $use_map_file = true;
 
-
     /**
      * @param bool $use_map_file
      */
@@ -51,7 +49,6 @@ class TemplateFiles
     {
         $this->use_map_file = $use_map_file;
     }
-
 
     /**
      * Get the map array
@@ -70,7 +67,6 @@ class TemplateFiles
 
         return $map;
     }
-
 
     /**
      * Scans the filesystem to generate the map on-demand
@@ -98,12 +94,12 @@ class TemplateFiles
                 $filepath = str_replace('\\', '/', $filepath);
                 $dir = str_replace('\\', '/', $dir);
 
-                $tplname = str_replace($dir . '/', ':', $filepath);
+                $tplname = str_replace($dir.'/', ':', $filepath);
                 $tplname = str_replace('/', ':', $tplname);
                 if (substr_count($tplname, ':') < 2) {
-                    $tplname = ':' . $tplname; // for layouts that are in top dir, MyBundle::layout
+                    $tplname = ':'.$tplname; // for layouts that are in top dir, MyBundle::layout
                 }
-                $tplname = $bundle . $tplname;
+                $tplname = $bundle.$tplname;
 
                 // Dev templates arent included
                 if (strpos($tplname, ':Dev:') !== false) {
@@ -119,7 +115,6 @@ class TemplateFiles
 
         return $tpl_info;
     }
-
 
     /**
      * Templates that should be categorized as "user portal" type templates.
@@ -139,7 +134,6 @@ class TemplateFiles
         return $map;
     }
 
-
     /**
      * Non-user portal templates
      */
@@ -157,7 +151,6 @@ class TemplateFiles
 
         return $map;
     }
-
 
     /**
      * Email templates
@@ -177,7 +170,6 @@ class TemplateFiles
         return $map;
     }
 
-
     /**
      * Group the map into [bundle][dir][tplname]
      *
@@ -195,8 +187,12 @@ class TemplateFiles
                 $dir = 'TOP';
             }
 
-            if (!isset($grouped[$bundle])) $grouped[$bundle] = array();
-            if (!isset($grouped[$bundle][$dir])) $grouped[$bundle][$dir] = array();
+            if (!isset($grouped[$bundle])) {
+                $grouped[$bundle] = array();
+            }
+            if (!isset($grouped[$bundle][$dir])) {
+                $grouped[$bundle][$dir] = array();
+            }
 
             $grouped[$bundle][$dir][$k] = $v;
             $grouped[$bundle][$dir][$k]['shortname'] = str_replace('.twig', '', $m[3]);
@@ -204,7 +200,6 @@ class TemplateFiles
 
         return $grouped;
     }
-
 
     /**
      * @param  array $map
@@ -223,8 +218,12 @@ class TemplateFiles
                 $dir = 'TOP';
             }
 
-            if (!isset($grouped[$bundle])) $grouped[$bundle] = array();
-            if (!isset($grouped[$bundle][$dir])) $grouped[$bundle][$dir] = array('count_changed' => 0, 'count_outdated' => 0, 'templates' => array());
+            if (!isset($grouped[$bundle])) {
+                $grouped[$bundle] = array();
+            }
+            if (!isset($grouped[$bundle][$dir])) {
+                $grouped[$bundle][$dir] = array('count_changed' => 0, 'count_outdated' => 0, 'templates' => array());
+            }
 
             $v['name'] = $k;
             $v['shortname'] = str_replace('.twig', '', $m[3]);

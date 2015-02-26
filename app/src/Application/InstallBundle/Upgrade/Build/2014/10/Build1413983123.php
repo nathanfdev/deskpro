@@ -75,7 +75,9 @@ class Build1413983123 extends AbstractBuild
             // This song and dance is because we cant just str_replace in serialized
             // array (length change and would screw it up)
             $val = @unserialize($val);
-            if (!$val) continue;
+            if (!$val) {
+                continue;
+            }
             $val = @json_encode($val);
             $val = str_replace('closed', 'archived', $val);
             $val = @json_decode($val, true);

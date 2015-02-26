@@ -196,7 +196,7 @@ class UserStream extends \UserstreamPhirehose
                 'account_id' => $this->account['id'],
                 'event' => $event,
                 'data' => serialize($status),
-                'date_created' => gmdate('Y-m-d H:i:s')
+                'date_created' => gmdate('Y-m-d H:i:s'),
             );
 
             if ($this->write_callback) {

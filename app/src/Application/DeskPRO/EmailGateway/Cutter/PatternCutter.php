@@ -70,7 +70,6 @@ class PatternCutter implements QuoteDef
      */
     private $require_from = array();
 
-
     /**
      * How many quotes to remove (counts from bottom). 0 is unlimited.
      *
@@ -80,7 +79,6 @@ class PatternCutter implements QuoteDef
     {
         $this->limit = $limit;
     }
-
 
     /**
      * Sets how many lines from the end of the document a section can be before it is not considered.
@@ -98,7 +96,6 @@ class PatternCutter implements QuoteDef
     {
         $this->max_lines_from_end = $max;
     }
-
 
     /**
      * Sets which email addresses must match in a matched pattern for the pattern to really match.
@@ -203,10 +200,8 @@ class PatternCutter implements QuoteDef
 
         // Limiting how many we are trimming from the end
         if ($this->limit) {
-
             $parts = explode(HtmlMatcher::CUT_MARK, $body);
             if (count($parts) > 1) {
-
                 $do_pop = true;
                 $last = $parts[count($parts) - 1];
                 $last = trim(Strings::html2Text($last));

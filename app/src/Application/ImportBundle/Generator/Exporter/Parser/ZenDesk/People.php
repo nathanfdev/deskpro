@@ -65,6 +65,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     public function setPeopleStorage(PeopleStorageInterface $storage)
     {
         $this->people_storage = $storage;
+
         return $this;
     }
 
@@ -95,7 +96,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
 
                 $entity = new Entity\Person();
                 $entity
-                    ->setDestination('person_' . $person['id'])
+                    ->setDestination('person_'.$person['id'])
                     ->setOid($person['id'])
                     ->setName($person['name'])
                     ->setTimezone($timezone)
@@ -117,7 +118,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
 
                 $entity->addEmail($person['email']);
 
-                $user_fields = (array)$person['user_fields'];
+                $user_fields = (array) $person['user_fields'];
                 foreach ($user_fields as $user_field) {
                     $entity->addCustomField($this->exportCustomField($user_field));
                 }
@@ -163,7 +164,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     /**
      * Check if person has all required columns
      *
-     * @param array $person
+     * @param  array $person
      * @return bool
      */
     private function hasRequiredPersonColumns(array $person)

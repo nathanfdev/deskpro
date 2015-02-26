@@ -42,7 +42,6 @@ class TicketDepartments extends LazyPreloadedHierarchy
      */
     private $default_id;
 
-
     /**
      * @return array
      */
@@ -50,7 +49,6 @@ class TicketDepartments extends LazyPreloadedHierarchy
     {
         return $this->em->getRepository('DeskPRO:Department')->getTicketDepartments();
     }
-
 
     /**
      * This sets the 'default department' preference.

@@ -47,13 +47,20 @@ class ApiKey extends AbstractEntityRepository
 
     public function findByKeyString($key_string)
     {
-        if (strpos($key_string, ':') === false) return null;
+        if (strpos($key_string, ':') === false) {
+            return null;
+        }
 
-        list ($id, $code) = explode(':', $key_string, 2);
+        list($id, $code) = explode(':', $key_string, 2);
 
         $apikey = $this->find($id);
-        if (!$apikey) return null;
-        if ($apikey['code'] != $code) return null;
+        if (!$apikey) {
+            return null;
+        }
+        if ($apikey['code'] != $code) {
+            return null;
+        }
+
         return $apikey;
     }
 
@@ -80,10 +87,10 @@ class ApiKey extends AbstractEntityRepository
     public function getApiKeyTitles(array $ids = null)
     {
         $output = array();
-        foreach ($this->getAllApiKeys() AS $key) {
+        foreach ($this->getAllApiKeys() as $key) {
             if ($ids === null || in_array($key->id, $ids)) {
                 $output[$key->id] = ($key->person ? $key->person->display_name : 'Super User')
-                    . ($key->note ? " ($key->note)" : '');
+                    .($key->note ? " ($key->note)" : '');
             }
         }
 
@@ -123,7 +130,7 @@ class ApiKey extends AbstractEntityRepository
             App::getDb()->delete(
                 'api_key_rate_limit',
                 array(
-                     'api_key_id' => $api_key->id
+                     'api_key_id' => $api_key->id,
                 )
             );
         }
@@ -134,7 +141,7 @@ class ApiKey extends AbstractEntityRepository
                 'api_key_id'    => $api_key->id,
                 'hits'          => 0,
                 'created_stamp' => time(),
-                'reset_stamp'   => time() + $interval
+                'reset_stamp'   => time() + $interval,
             );
         }
 

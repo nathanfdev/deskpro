@@ -47,7 +47,7 @@ class WhiteListedIp extends AbstractEntityRepository
             FROM DeskPRO:WhiteListedIp w
             WHERE w.person = ?1
             ORDER BY w.id DESC
-        ")->execute(array(1=> $person));
+        ")->execute(array(1 => $person));
 
         foreach ($ip_array as $ip) {
             $output[] = $ip['ip_address'];

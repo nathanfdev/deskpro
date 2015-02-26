@@ -62,7 +62,6 @@ class TicketFilter extends AbstractEntityRepository
         return $filters;
     }
 
-
     /**
      * Updates display orders of $filter_ids
      * @param array $filter_ids
@@ -80,11 +79,13 @@ class TicketFilter extends AbstractEntityRepository
         }
     }
 
-
     public function getAllForActiveAgents()
     {
         $online_agents = App::getEntityRepository('DeskPRO:Person')->getActiveAgents(true);
-        if (!$online_agents) return array();
+        if (!$online_agents) {
+            return array();
+        }
+
         return $this->getAllForAgents($online_agents);
     }
 
@@ -127,7 +128,9 @@ class TicketFilter extends AbstractEntityRepository
         }
 
         $teams = App::getEntityRepository('DeskPRO:AgentTeam')->getAllTeamIdsForAgents($agents);
-        if (!$teams) $teams = array(0);
+        if (!$teams) {
+            $teams = array(0);
+        }
 
         $agent_ids = implode(',', $agent_ids);
         $teams = implode(',', $teams);
@@ -203,7 +206,6 @@ class TicketFilter extends AbstractEntityRepository
         return $filters;
     }
 
-
     /**
      * Gets an array of all team filters, grouped by agent team id.
      *
@@ -236,7 +238,6 @@ class TicketFilter extends AbstractEntityRepository
         return $grouped_filters;
     }
 
-
     /**
      * Gets an array of all agent filters, grouped by agent id.
      *
@@ -268,7 +269,6 @@ class TicketFilter extends AbstractEntityRepository
 
         return $grouped_filters;
     }
-
 
     /**
      *
@@ -373,8 +373,8 @@ class TicketFilter extends AbstractEntityRepository
     {
         $ticket_filter_id = null;
 
-        if (is_int($var) OR ctype_digit($var)) {
-            $ticket_filter_id = (int)$var;
+        if (is_int($var) or ctype_digit($var)) {
+            $ticket_filter_id = (int) $var;
         } elseif (\is_object($var)) {
             if ($var instanceof Entity\TicketFilter) {
                 return $var;

@@ -38,7 +38,7 @@ use Application\ImportBundle\Exception\DuplicateValueException;
 
 class CustomDefTicketValueImporter extends AbstractCustomDefValueImporter
 {
-//    /** @var string */
+    //    /** @var string */
 //    protected $mapped_column = 'ticket_id';
 //    /** @var string */
 //    protected $mapper_class = 'custom_def_ticket';
@@ -68,5 +68,4 @@ class CustomDefTicketValueImporter extends AbstractCustomDefValueImporter
 //
 //        return $this->processCustomField($custom_value);
 //    }
-
 }

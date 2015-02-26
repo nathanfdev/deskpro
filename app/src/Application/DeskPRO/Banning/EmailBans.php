@@ -105,7 +105,6 @@ class EmailBans
     public function setPage($page)
     {
         if ($page == 0) {
-
             $page = 1;
         }
 
@@ -150,7 +149,6 @@ class EmailBans
         );
     }
 
-
     /**
      * Resets this repository so the next time data is requested form it, it will
      * be queried again.
@@ -193,7 +191,6 @@ class EmailBans
         $result = array();
 
         foreach ($this->email_bans as $email_ban) {
-
             $result[] = array('banned_email' => $email_ban);
         }
 

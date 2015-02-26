@@ -39,7 +39,6 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 
-
 class OpenTicketController extends AbstractController
 {
     public function preAction($action, $arguments = null)
@@ -74,19 +73,18 @@ class OpenTicketController extends AbstractController
             if (!$person) {
                 $person = Person::newContactPerson(array(
                     'email' => $this->in->getString('email'),
-                    'name'  => $this->in->getString('name')
+                    'name'  => $this->in->getString('name'),
                 ));
                 $this->em->persist($person);
             }
 
             $context = $ticket_manager->createUserExecutorContext($ticket->person, 'newreply', 'api');
-
         } else {
             // Not allowed to create new tickets using this service
             if (!$this->apikey && !$this->api_token && !dp_get_config('allow_open_ticket_create')) {
                 $response = $this->createApiErrorResponse('invalid_auth', 'Please provide a valid API key or token', 401);
                 $response->headers->add(array(
-                    'WWW-Authenticate' => 'Basic realm="API"'
+                    'WWW-Authenticate' => 'Basic realm="API"',
                 ));
 
                 return $response;
@@ -96,7 +94,7 @@ class OpenTicketController extends AbstractController
             if (!$person) {
                 $person = Person::newContactPerson(array(
                     'email' => $this->in->getString('email'),
-                    'name'  => $this->in->getString('name')
+                    'name'  => $this->in->getString('name'),
                 ));
                 $this->em->persist($person);
             }
@@ -138,7 +136,7 @@ class OpenTicketController extends AbstractController
 
         return $this->createJsonResponse(array(
             'success' => true,
-            'tac' => $ticket->getAccessCode()
+            'tac' => $ticket->getAccessCode(),
         ));
     }
 }

@@ -73,7 +73,6 @@ class FeedbackModerate implements PersonContextInterface
         $this->setPersonContext($person);
     }
 
-
     /**
      * @param \Application\DeskPRO\Entity\Person $person
      */
@@ -81,7 +80,6 @@ class FeedbackModerate implements PersonContextInterface
     {
         $this->person_context = $person;
     }
-
 
     /**
      * @param \Application\DeskPRO\Entity\Feedback $feedback
@@ -106,7 +104,7 @@ class FeedbackModerate implements PersonContextInterface
         $this->translator->setTemporaryLanguage($feedback->person->getLanguage(), function () use ($mailer, $feedback, $agent) {
             $vars = array(
                 'feedback' => $feedback,
-                'agent' => $agent
+                'agent' => $agent,
             );
 
             $message = $mailer->createMessage();
@@ -116,7 +114,6 @@ class FeedbackModerate implements PersonContextInterface
             $mailer->send($message);
         });
     }
-
 
     /**
      * @param \Application\DeskPRO\Entity\Feedback $feedback

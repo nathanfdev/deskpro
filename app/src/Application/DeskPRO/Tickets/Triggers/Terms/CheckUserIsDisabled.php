@@ -53,7 +53,6 @@ class CheckUserIsDisabled extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -62,11 +61,17 @@ class CheckUserIsDisabled extends AbstractTriggerTerm
         $is_disabled = $ticket->person->is_disabled;
 
         if ($is_disabled) {
-            if ($this->getTermOperator() == 'is') return true;
-            else return false;
+            if ($this->getTermOperator() == 'is') {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            if ($this->getTermOperator() == 'is') return false;
-            else return true;
+            if ($this->getTermOperator() == 'is') {
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 }

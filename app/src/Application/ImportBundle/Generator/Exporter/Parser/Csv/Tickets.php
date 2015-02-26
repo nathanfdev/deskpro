@@ -85,7 +85,6 @@ final class Tickets extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid ticket record `%d` found (Skipping)', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid ticket record `%d` found (Skipping): %s',
@@ -100,7 +99,7 @@ final class Tickets extends AbstractParser
     /**
      * Returns a ticket entity
      *
-     * @param array $ticket
+     * @param  array              $ticket
      * @return Entity\Ticket|null
      */
     private function exportTicket(array $ticket)
@@ -108,7 +107,7 @@ final class Tickets extends AbstractParser
         if ($this->isTicketValid($ticket)) {
             $entity = new Entity\Ticket();
             $entity
-                ->setDestination(self::TICKET_PREFIX . $ticket['id'])
+                ->setDestination(self::TICKET_PREFIX.$ticket['id'])
                 ->setOid($ticket['id'])
                 ->setRef($ticket['id'])
                 ->setSubject($ticket['subject'])
@@ -140,7 +139,7 @@ final class Tickets extends AbstractParser
                 if ($entity) {
                     foreach ($attachments as $attachment) {
                         /** @var Entity\Attachment $attachment */
-                        if ($attachment->getDestination() === self::MESSAGE_PREFIX . $entity->getOid()) {
+                        if ($attachment->getDestination() === self::MESSAGE_PREFIX.$entity->getOid()) {
                             $entity->addAttachment($attachment);
                         }
                     }
@@ -150,7 +149,6 @@ final class Tickets extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid ticket message record `%d` found (Skipping)', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid ticket message record `%d` found (Skipping): %s',
@@ -165,7 +163,7 @@ final class Tickets extends AbstractParser
     /**
      * Returns a ticket message
      *
-     * @param array $message
+     * @param  array                     $message
      * @return Entity\TicketMessage|null
      */
     private function exportMessage(array $message)
@@ -173,7 +171,7 @@ final class Tickets extends AbstractParser
         if ($this->isValidMessage($message)) {
             $entity = new Entity\TicketMessage();
             $entity
-                ->setDestination(self::TICKET_PREFIX . $message['ticket_id'])
+                ->setDestination(self::TICKET_PREFIX.$message['ticket_id'])
                 ->setOid($message['message_id'])
                 ->setPersonEmail($message['user'])
                 ->setMessageText($message['message_text'])
@@ -198,7 +196,7 @@ final class Tickets extends AbstractParser
     /**
      * Check if ticket has all required columns
      *
-     * @param array $ticket
+     * @param  array $ticket
      * @return bool
      */
     private function isTicketValid(array $ticket)
@@ -218,7 +216,7 @@ final class Tickets extends AbstractParser
     /**
      * Check if ticket message has all required columns
      *
-     * @param array $message
+     * @param  array $message
      * @return bool
      */
     private function isValidMessage(array $message)

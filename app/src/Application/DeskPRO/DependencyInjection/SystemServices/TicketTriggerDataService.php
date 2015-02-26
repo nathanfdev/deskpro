@@ -58,14 +58,15 @@ class TicketTriggerDataService extends BaseRepositoryService
      */
     protected $all;
 
-
     /**
      * @param \Application\DeskPRO\DependencyInjection\DeskproContainer $container
      * @param array                                                     $options
      */
     public static function create(DeskproContainer $container, array $options = null)
     {
-        if (!$options) $options = array();
+        if (!$options) {
+            $options = array();
+        }
         $options['entity'] = 'Application\\DeskPRO\\Entity\\TicketTrigger';
         $options['container']  = $container;
 
@@ -75,7 +76,6 @@ class TicketTriggerDataService extends BaseRepositoryService
         return $o;
     }
 
-
     /**
      * Sets some useful objects from options
      */
@@ -83,7 +83,6 @@ class TicketTriggerDataService extends BaseRepositoryService
     {
         $this->continer   = $this->options['container'];
     }
-
 
     /**
      * Get a trigger or escalation
@@ -98,7 +97,6 @@ class TicketTriggerDataService extends BaseRepositoryService
         return isset($this->all[$trigger_id]) ? $this->all[$trigger_id] : null;
     }
 
-
     /**
      * Get all triggers and escalations
      *
@@ -110,7 +108,6 @@ class TicketTriggerDataService extends BaseRepositoryService
 
         return $this->all;
     }
-
 
     /**
      * Get all triggers
@@ -124,7 +121,6 @@ class TicketTriggerDataService extends BaseRepositoryService
         return $this->triggers;
     }
 
-
     /**
      * Get all escalations
      *
@@ -136,7 +132,6 @@ class TicketTriggerDataService extends BaseRepositoryService
 
         return $this->escalations;
     }
-
 
     /**
      * Loads all tikcet priorities into this object

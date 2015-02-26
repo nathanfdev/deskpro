@@ -112,7 +112,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
         );
 
         foreach ($commands as $cmd) {
-            $application->add(new $cmd);
+            $application->add(new $cmd());
         }
     }
 

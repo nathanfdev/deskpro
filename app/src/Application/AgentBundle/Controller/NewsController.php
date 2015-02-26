@@ -142,7 +142,7 @@ class NewsController extends AbstractController
         $this->em->flush();
 
         return $this->render('AgentBundle:News:view-comment.html.twig', array(
-            'comment' => $comment
+            'comment' => $comment,
         ));
     }
 
@@ -215,7 +215,7 @@ class NewsController extends AbstractController
                     : $this->in->getCleanValue('content', 'html');
 
                 $data['content_html'] = $this->renderView('AgentBundle:News:view-content-tab.html.twig', array(
-                    'news' => $news
+                    'news' => $news,
                 ));
 
                 $rev = ContentRevisionUtil::findOrCreate($news, 'content', $this->person);
@@ -238,7 +238,7 @@ class NewsController extends AbstractController
                 break;
 
             case 'auto-unpub':
-                $date = date_create('@' . $this->in->getUint('end_timestamp'));
+                $date = date_create('@'.$this->in->getUint('end_timestamp'));
                 $action = $this->in->getString('end_action');
 
                 $news->date_end = $date;
@@ -251,7 +251,7 @@ class NewsController extends AbstractController
                 break;
 
             case 'auto-pub':
-                $date = date_create('@' . $this->in->getUint('pub_timestamp'));
+                $date = date_create('@'.$this->in->getUint('pub_timestamp'));
 
                 $news->date_published = $date;
                 break;
@@ -314,11 +314,13 @@ class NewsController extends AbstractController
 
         $result_helper = NewsResults::newFromRequest($this, array(
             'category' => $category,
-            'show_all' => $show_all
+            'show_all' => $show_all,
         ));
 
         $page = $this->in->getUint('p');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
         $results = $result_helper->getNewsForPage($page);
         $result_cache = $result_helper->getResultCache();
@@ -356,8 +358,8 @@ class NewsController extends AbstractController
                 WHERE category_id = ?
             ", array($category->getId()));
 
-            $cat_structure_data = $this->em->getRepository('DeskPRO:NewsCategory')->getInHierarchy();;
-            $cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id' , 'title', 'children'), true, true);
+            $cat_structure_data = $this->em->getRepository('DeskPRO:NewsCategory')->getInHierarchy();
+            $cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id', 'title', 'children'), true, true);
             $cat_structure_data = Arrays::multiRenameKey($cat_structure_data, 'title', 'label');
             $cat_structure_data = Arrays::assocToNumericArray($cat_structure_data, 'children');
         }
@@ -389,7 +391,7 @@ class NewsController extends AbstractController
 
         return $this->render('AgentBundle:News:newnews.html.twig', array(
             'news_categories' => $news_categories,
-            'state' => $state
+            'state' => $state,
         ));
     }
 
@@ -410,7 +412,7 @@ class NewsController extends AbstractController
             if (!$validator->isValid($newnews)) {
                 return $this->createJsonResponse(array(
                     'error' => true,
-                    'error_codes' => $validator->getErrorGroups()
+                    'error_codes' => $validator->getErrorGroups(),
                 ));
             }
             $newnews->save();
@@ -427,7 +429,7 @@ class NewsController extends AbstractController
 
             return $this->createJsonResponse(array(
                 'success' => true,
-                'news_id' => $news['id']
+                'news_id' => $news['id'],
             ));
         } else {
             return $this->createJsonResponse(array(

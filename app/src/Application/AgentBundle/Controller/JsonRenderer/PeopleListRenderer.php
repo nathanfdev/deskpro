@@ -61,14 +61,12 @@ class PeopleListRenderer
      */
     private $cache_orgs;
 
-
     public function __construct(DeskproContainer $container)
     {
         $this->container = $container;
         $this->em = $container->getEm();
         $this->db = $container->getDb();
     }
-
 
     /**
      * @param  PeopleResultsDisplay $display
@@ -118,7 +116,6 @@ class PeopleListRenderer
 
         return $json_array;
     }
-
 
     /**
      * @param  PeopleResultsDisplay $display
@@ -173,7 +170,7 @@ class PeopleListRenderer
         if ($entity->primary_email) {
             $data['primary_email'] = array(
                 'id'    => $entity->primary_email->id,
-                'email' => $entity->primary_email->email
+                'email' => $entity->primary_email->email,
             );
         }
 
@@ -193,14 +190,13 @@ class PeopleListRenderer
         $data['picture_url_22'] = $entity->getPictureUrl(22);
         $data['picture_url_16'] = $entity->getPictureUrl(16);
 
-
         $custom_data = $display->getUserFieldData($entity);
         if ($custom_data) {
             $field_manager = $this->container->getPersonFieldManager();
 
             $rendered_data = $field_manager->getRenderedToText($field_manager->createFieldDataFromArray($custom_data));
             foreach ($rendered_data as $fid => $v) {
-                $data['person_fields[' . $fid . ']'] = array(
+                $data['person_fields['.$fid.']'] = array(
                     'title' => $v['title'],
                     'value' => $v['rendered'],
                 );

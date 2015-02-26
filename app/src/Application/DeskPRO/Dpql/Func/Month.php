@@ -59,8 +59,7 @@ class Month extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if (count($this->_arguments) != 1) {
             throw new Exception('MONTH() can only accept 1 argument.');
         }
@@ -68,8 +67,8 @@ class Month extends AbstractFunc
         $expression = reset($this->_arguments);
         $prepped = $expression->prepare($statement, $section, $stack, $select, $result);
 
-        $sql = 'MONTH(' . $prepped->sql() . ')';
-        $res = new Prepared($sql, 'MONTH(' . $prepped->name() . ')', false, 'numberraw');
+        $sql = 'MONTH('.$prepped->sql().')';
+        $res = new Prepared($sql, 'MONTH('.$prepped->name().')', false, 'numberraw');
 
         $res->setGroupFill(function ($min, $max) {
             $fills = array();

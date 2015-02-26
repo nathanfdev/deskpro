@@ -57,8 +57,7 @@ class Y extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if ($section != 'group') {
             throw new Exception('Y() may only be used in GROUP BY.');
         }
@@ -70,7 +69,7 @@ class Y extends AbstractFunc
         $childStack = $stack;
         array_shift($childStack); // pop this off the stack - it doesn't exist to the children
 
-        foreach ($this->_arguments AS $arg) {
+        foreach ($this->_arguments as $arg) {
             if ($arg instanceof \Application\DeskPRO\Dpql\Statement\Part\NullValue) {
                 continue;
             }

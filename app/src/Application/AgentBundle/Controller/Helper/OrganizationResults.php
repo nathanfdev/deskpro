@@ -36,7 +36,6 @@ namespace Application\AgentBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ResultCache;
-use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 
 /**
@@ -77,8 +76,6 @@ class OrganizationResults
         return $helper;
     }
 
-
-
     public function __construct($controller, $perPage = self::PER_PAGE_DEFAULT)
     {
         $this->controller = $controller;
@@ -90,8 +87,6 @@ class OrganizationResults
         return $this->perPage;
     }
 
-
-
     /**
      * Set people IDs for the search results
      * @param array $people_ids
@@ -100,8 +95,6 @@ class OrganizationResults
     {
         $this->organization_ids = $people_ids;
     }
-
-
 
     /**
      * Get people IDs
@@ -113,7 +106,6 @@ class OrganizationResults
         return $this->organization_ids;
     }
 
-
     /**
      * Get people for a particular page
      *
@@ -123,8 +115,6 @@ class OrganizationResults
     {
         return $this->_getPageFromOrgsIds($this->getOrganizationIds(), $page, $this->getPerPage());
     }
-
-
 
     protected function _getPageFromOrgsIds(array $org_ids, $page, $per_page)
     {

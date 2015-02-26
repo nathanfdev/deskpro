@@ -94,7 +94,6 @@ class ObjectTranslatable
         // because it is called during postLoad which causes problems in Doctrine
     }
 
-
     /**
      * Set the default languages to try (in order). These are used when $lang is null in the get prop methods.
      */
@@ -102,7 +101,6 @@ class ObjectTranslatable
     {
         $this->try_langs = $try_langs;
     }
-
 
     /**
      * Gets the try langs
@@ -128,7 +126,6 @@ class ObjectTranslatable
         return $try;
     }
 
-
     /**
      * @return \Application\DeskPRO\ORM\EntityManager
      */
@@ -137,7 +134,6 @@ class ObjectTranslatable
         return App::getOrm();
     }
 
-
     /**
      * @return \Application\DeskPRO\Translate\ObjectLangRepository
      */
@@ -145,7 +141,6 @@ class ObjectTranslatable
     {
         return App::getSystemService('object_lang_repository');
     }
-
 
     /**
      * @param  string $prop
@@ -188,7 +183,6 @@ class ObjectTranslatable
 
         return null;
     }
-
 
     /**
      * @param  string $prop

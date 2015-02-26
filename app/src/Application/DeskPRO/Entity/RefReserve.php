@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -77,7 +76,7 @@ class RefReserve extends DomainObject
         $metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType = ClassMetadataInfo::GENERATOR_TYPE_NONE;
         $metadata->setPrimaryTable(array(
-            'name' => 'ref_reserve'
+            'name' => 'ref_reserve',
         ));
 
         $metadata->mapField(array(
@@ -86,7 +85,7 @@ class RefReserve extends DomainObject
             'type'       => 'string',
             'length'     => 50,
             'nullable'   => false,
-            'id'         => true
+            'id'         => true,
         ));
         $metadata->mapField(array(
             'columnName' => 'ref',
@@ -94,7 +93,7 @@ class RefReserve extends DomainObject
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-            'id'         => true
+            'id'         => true,
         ));
         $metadata->mapField(array(
             'fieldName'  => 'date_created',

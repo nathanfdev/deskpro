@@ -55,7 +55,6 @@ class FilterCreationSystem extends AbstractFilterTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

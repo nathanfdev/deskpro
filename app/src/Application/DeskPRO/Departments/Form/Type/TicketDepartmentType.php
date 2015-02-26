@@ -47,14 +47,14 @@ class TicketDepartmentType extends AbstractType
         $builder->add('permissions', 'collection', array(
             'type'         => new PermissionRowType(),
             'allow_add'    => true,
-            'allow_delete' => true
+            'allow_delete' => true,
         ));
         $builder->add('move_department', 'entity', array(
             'class'         => 'DeskPRO:Department',
             'required'      => false,
             'query_builder' => function (EntityRepository $er) {
                 return $er->createQueryBuilder('d')->where('d.is_tickets_enabled = true AND d.parent IS NULL')->orderBy('d.display_order', 'ASC');
-            }
+            },
         ));
     }
 
@@ -63,7 +63,7 @@ class TicketDepartmentType extends AbstractType
         $resolver->setDefaults(
             array(
                  'data_class'         => 'Application\\DeskPRO\\Departments\\TicketDepartmentEdit',
-                 'cascade_validation' => true
+                 'cascade_validation' => true,
             )
         );
     }
@@ -72,5 +72,4 @@ class TicketDepartmentType extends AbstractType
     {
         return 'department_edit';
     }
-
 }

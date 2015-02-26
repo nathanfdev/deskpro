@@ -81,7 +81,7 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
      */
     private function getParserByType($type)
     {
-        if ( ! $this->config) {
+        if (! $this->config) {
             throw new Exception('Generator configuration is not set up');
         }
 

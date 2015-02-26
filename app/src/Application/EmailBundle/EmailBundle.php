@@ -42,7 +42,6 @@ class EmailBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {
-
     }
 
     /**
@@ -57,7 +56,7 @@ class EmailBundle extends Bundle
         );
 
         foreach ($commands as $cmd) {
-            $application->add(new $cmd);
+            $application->add(new $cmd());
         }
     }
 

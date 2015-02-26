@@ -59,9 +59,9 @@ class LastWeek extends AbstractDateRange
 
         if ($startAdjust) {
             if ($startAdjust > 0) {
-                $date->modify('-' . $startAdjust . ' days');
+                $date->modify('-'.$startAdjust.' days');
             } else {
-                $date->modify('-' . (7 + $startAdjust) . ' days');
+                $date->modify('-'.(7 + $startAdjust).' days');
             }
         }
 

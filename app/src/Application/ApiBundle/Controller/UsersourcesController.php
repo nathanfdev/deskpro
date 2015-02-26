@@ -34,7 +34,6 @@
 
 namespace Application\ApiBundle\Controller;
 
-
 use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\Usersource;
 use League\Url\Url;
@@ -55,14 +54,13 @@ class UsersourcesController extends AbstractController
 
         $usersources = array_map(
             function (Usersource $us) {
-                return array ('usersource' => $us->toApiData(), 'app' => $us->app ? $us->app->toApiData() : null);
+                return array('usersource' => $us->toApiData(), 'app' => $us->app ? $us->app->toApiData() : null);
             },
             (array) $sources
         );
 
         return $this->createApiResponse(array('usersources' => $usersources));
     }
-
 
     public function availableAppPackagesAction($interface)
     {
@@ -98,7 +96,6 @@ class UsersourcesController extends AbstractController
         return $this->createApiResponse($available_packages);
     }
 
-
     public function getUsersourceAction($type, $id)
     {
         if ($id === 'deskpro') {
@@ -116,21 +113,20 @@ class UsersourcesController extends AbstractController
         $source = $sources->getFirstOrNull();
 
         if (!$source) {
-            throw $this->createNotFoundException('usersource id=' . $id . ' not found for type=' . $type);
+            throw $this->createNotFoundException('usersource id='.$id.' not found for type='.$type);
         }
 
         return $this->createApiResponse(
             array(
                 'usersource' => $source->toApiData(),
-                'app'        => $source->app ? $source->app->toApiData() : null
+                'app'        => $source->app ? $source->app->toApiData() : null,
             )
         );
     }
 
-
     public function getUsersourceExtraAction($type, $id)
     {
-            $sources = $this->getUsersourceManager()->getAll();
+        $sources = $this->getUsersourceManager()->getAll();
 
         if ($type === Usersource::TYPE_USER) {
             $sources = $sources->configuredForUsers(true);
@@ -147,7 +143,7 @@ class UsersourcesController extends AbstractController
         }
 
         if (!$source) {
-            throw $this->createNotFoundException('usersource id=' . $id . ' not found');
+            throw $this->createNotFoundException('usersource id='.$id.' not found');
         }
 
         $adapter = $this->container->getSystemService('usersource_auth_adapter_factory')->getAuthAdapter($source, null, $type);
@@ -156,23 +152,23 @@ class UsersourcesController extends AbstractController
         if ($adapter instanceof ExtraDetailsInterface) {
             try {
                 $details = $adapter->getExtraDetails();
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         return $this->createApiResponse(
             array(
-                'usersource_details' => $details
+                'usersource_details' => $details,
             )
         );
     }
-
 
     public function postUsersourceAction($type, $id)
     {
         $source = $this->findUsersourceOfType($id, $type);
 
         if (!$source) {
-            throw $this->createNotFoundException('usersource id=' . $id . ' not found for type=' . $type);
+            throw $this->createNotFoundException('usersource id='.$id.' not found for type='.$type);
         }
 
         $source->title = $this->in->getString('title');
@@ -185,11 +181,10 @@ class UsersourcesController extends AbstractController
         return $this->createApiResponse(
             array(
                 'usersource' => $source->toApiData(),
-                'app'        => $source->app ? $source->app->toApiData() : null
+                'app'        => $source->app ? $source->app->toApiData() : null,
             )
         );
     }
-
 
     public function getIframeAction($app_id, $interface)
     {
@@ -213,7 +208,7 @@ class UsersourcesController extends AbstractController
             return $this->createApiErrorResponse(
 
                 'not found',
-                'could not find usersource for "' . $interface . '" interface with app id "'.$app_id.'"'
+                'could not find usersource for "'.$interface.'" interface with app id "'.$app_id.'"'
             );
         }
 
@@ -233,7 +228,7 @@ class UsersourcesController extends AbstractController
             $vars = array_merge(
                 array(
                     'iframe_url' => '',
-                    'render'     => true
+                    'render'     => true,
                 ),
                 $adapter->getIframeTemplateParams(false)
             );
@@ -243,12 +238,11 @@ class UsersourcesController extends AbstractController
                     'iframe_html' => $this->renderView(
                             'DeskPRO:Auth:_sso_iframe_for_test.html.twig',
                             $vars
-                        )
+                        ),
                 )
             );
         }
     }
-
 
     public function updateDisplayOrderAction()
     {
@@ -258,7 +252,6 @@ class UsersourcesController extends AbstractController
         return $this->createApiSuccessResponse();
     }
 
-
     /**
      * @return \Application\DeskPRO\Usersource\UsersourceManager
      */
@@ -266,7 +259,6 @@ class UsersourcesController extends AbstractController
     {
         return $this->container->getSystemService('usersource_manager');
     }
-
 
     /**
      * @param $id

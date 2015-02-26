@@ -72,7 +72,6 @@ class Session implements SessionInterface
      */
     public $metadata = array();
 
-
     /**
      * @param SessionStorageInterface $storage
      */
@@ -80,8 +79,6 @@ class Session implements SessionInterface
     {
         $this->storage = $storage;
     }
-
-
 
     /**
      * Gets a session object who is sandboxed to a specific sub-key (namespace)
@@ -99,8 +96,6 @@ class Session implements SessionInterface
 
         return $this->namespaces[$namespace];
     }
-
-
 
     /**
      * Starts the session storage.
@@ -121,8 +116,6 @@ class Session implements SessionInterface
         $this->has_started = true;
     }
 
-
-
     /**
      * Checks if a data item is defined.
      *
@@ -135,8 +128,6 @@ class Session implements SessionInterface
 
         return isset($this->data[$name]);
     }
-
-
 
     /**
      * Returns a data item.
@@ -152,8 +143,6 @@ class Session implements SessionInterface
         return isset($this->data[$name]) ? $this->data[$name] : $default;
     }
 
-
-
     /**
      * Sets a data item.
      *
@@ -167,8 +156,6 @@ class Session implements SessionInterface
         $this->data[$name] = $value;
     }
 
-
-
     /**
      * Returns data.
      *
@@ -181,8 +168,6 @@ class Session implements SessionInterface
         return $this->data;
     }
 
-
-
     /**
      * Sets data.
      *
@@ -194,8 +179,6 @@ class Session implements SessionInterface
         $this->data = $data;
     }
 
-
-
     /**
      * Clear all set data
      */
@@ -203,8 +186,6 @@ class Session implements SessionInterface
     {
         $this->data = array();
     }
-
-
 
     /**
      * Removes a data item.
@@ -216,8 +197,6 @@ class Session implements SessionInterface
         $this->start();
         unset($this->data[$name]);
     }
-
-
 
     public function __destruct()
     {

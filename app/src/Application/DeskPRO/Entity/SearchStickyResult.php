@@ -59,8 +59,6 @@ class SearchStickyResult extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $object_id = null;
 
-
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -69,10 +67,10 @@ class SearchStickyResult extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\SearchStickyResult';
-        $metadata->setPrimaryTable(array( 'name' => 'search_sticky_result', ));
+        $metadata->setPrimaryTable(array( 'name' => 'search_sticky_result'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'word', 'type' => 'string', 'length' => 150, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'word', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'word', 'type' => 'string', 'length' => 150, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'word', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', 'id' => true));
     }
 }

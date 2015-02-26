@@ -37,10 +37,8 @@ namespace Orb\Auth\Adapter;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Util\Arrays;
-
 use Orb\Log\Logger;
 use Orb\Log\Loggable;
-
 use Doctrine\DBAL\Connection;
 
 class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggable
@@ -109,9 +107,13 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 
         try {
             $this->db = call_user_func($this->db_callback);
-            if ($this->logger) $this->logger->logDebug("Database connection success");
+            if ($this->logger) {
+                $this->logger->logDebug("Database connection success");
+            }
         } catch (\Exception $e) {
-            if ($this->logger) $this->logger->logDebug("Error trying to connect to database: {$e->getCode()} {$e->getMessage()}");
+            if ($this->logger) {
+                $this->logger->logDebug("Error trying to connect to database: {$e->getCode()} {$e->getMessage()}");
+            }
 
             return null;
         }
@@ -140,18 +142,24 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
      */
     public function setFormData(array $form_data)
     {
-        $this->set_username = !empty($form_data['username']) ? (string)$form_data['username'] : '';
-        $this->set_password = !empty($form_data['password']) ? (string)$form_data['password'] : '';
+        $this->set_username = !empty($form_data['username']) ? (string) $form_data['username'] : '';
+        $this->set_password = !empty($form_data['password']) ? (string) $form_data['password'] : '';
     }
 
     public function authenticate()
     {
         if (!$this->set_username) {
-            if ($this->logger) $this->logger->logDebug("Missing username");
+            if ($this->logger) {
+                $this->logger->logDebug("Missing username");
+            }
+
             return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_username', 'error_message' => 'No username provided'));
         }
         if (!$this->set_password) {
-            if ($this->logger) $this->logger->logDebug("Missing password");
+            if ($this->logger) {
+                $this->logger->logDebug("Missing password");
+            }
+
             return new Result(Result::FAILURE, null, array('error_code' => 'missing_input_password', 'error_message' => 'No password provided'));
         }
 
@@ -161,12 +169,11 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 
             $log_opt = $this->options->all();
             $log_opt['db_password'] = '***';
-            $this->logger->log("Options: " . trim(Arrays::implodeTemplate($log_opt, "{KEY}: {VAL}\n")), Logger::DEBUG);
+            $this->logger->log("Options: ".trim(Arrays::implodeTemplate($log_opt, "{KEY}: {VAL}\n")), Logger::DEBUG);
             $this->logger->log("Request: {$this->set_username}:{$this->set_password}", Logger::DEBUG);
         }
 
         try {
-
             $try = array();
             if (\Orb\Validator\StringEmail::isValueValid($this->set_username)) {
                 $try[] = 'getUserInfoForEmail';
@@ -194,10 +201,12 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
             }
 
             if (!$userinfo) {
-                if ($this->logger) $this->logger->logDebug("Invalid credentials");
+                if ($this->logger) {
+                    $this->logger->logDebug("Invalid credentials");
+                }
+
                 return new Result(Result::FAILURE_INVALID_CREDS);
             }
-
         } catch (\Exception $e) {
             if ($this->logger) {
                 $this->logger->log("Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR);
@@ -209,9 +218,8 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
         $identity = $this->getIdentityFromUserInfo($userinfo);
 
         if ($this->logger) {
-
             if ($userinfo) {
-                $this->logger->log("Found user " . $identity->getIdentity(), Logger::DEBUG);
+                $this->logger->log("Found user ".$identity->getIdentity(), Logger::DEBUG);
             } else {
                 $this->logger->log("No user found", Logger::DEBUG);
             }
@@ -221,7 +229,6 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 
         return new Result(Result::SUCCESS, $identity);
     }
-
 
     /**
      * Get an Identity from a userinfo array
@@ -256,7 +263,6 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
         return $identity;
     }
 
-
     /**
      * Checks an inputted password against a found user info record to see if it matches
      *
@@ -285,7 +291,6 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
         return ($userinfo[$field] == $password_compare);
     }
 
-
     /**
      * Get user info from a username
      *
@@ -305,7 +310,7 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
         $table = $this->options[self::OPT_TABLE];
         $field = $this->options[self::OPT_FIELD_USERNAME];
         $driver =  $this->db->getDriver()->getName();
-        if ($driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' || $driver == 'sqlsrv' || $driver == 'pdo_odbc') {
+        if ($driver == 'pdo_dblib' || $driver == 'pdo_sqlsrv' || $driver == 'sqlsrv' || $driver == 'pdo_odbc') {
             $field_e = $this->db->quote($username, \PDO::PARAM_STR);
             $sql = "SELECT TOP 1 * FROM $table WHERE $field = $field_e";
             $result = $this->db->fetchAssoc($sql);
@@ -320,7 +325,6 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 
         return $result;
     }
-
 
     /**
      * Get user info from an email address
@@ -340,7 +344,7 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
         $table = $this->options[self::OPT_TABLE];
         $field = $this->options[self::OPT_FIELD_EMAIL];
         $driver =  $this->db->getDriver()->getName();
-        if ($driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' || $driver == 'sqlsrv' || $driver == 'pdo_odbc') {
+        if ($driver == 'pdo_dblib' || $driver == 'pdo_sqlsrv' || $driver == 'sqlsrv' || $driver == 'pdo_odbc') {
             $field_e = $this->db->quote($email, \PDO::PARAM_STR);
             $sql = "SELECT TOP 1 * FROM $table WHERE $field = $field_e";
             $result = $this->db->fetchAssoc($sql);
@@ -355,7 +359,6 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 
         return $result;
     }
-
 
     /**
      * Get user info from an email address
@@ -372,7 +375,7 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
         }
 
         $driver =  $this->db->getDriver()->getName();
-        if ($driver == 'pdo_dblib'|| $driver == 'pdo_sqlsrv' || $driver == 'sqlsrv' || $driver == 'pdo_odbc') {
+        if ($driver == 'pdo_dblib' || $driver == 'pdo_sqlsrv' || $driver == 'sqlsrv' || $driver == 'pdo_odbc') {
             $field_e = $this->db->quote($id, \PDO::PARAM_STR);
             $sql = "SELECT TOP 1 * FROM $table WHERE $field = $field_e ";
             $result = $this->db->fetchAssoc($sql);
@@ -387,7 +390,6 @@ class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggabl
 
         return $result;
     }
-
 
     /**
      * @return array

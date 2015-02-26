@@ -93,6 +93,7 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
             ->setNumDownloads($entity->getNumDownloads());
 
         $this->records->add($download);
+
         return $this->records;
     }
 

@@ -76,8 +76,7 @@ class ColumnStar extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $parts = $this->parts;
         $table = array_shift($parts);
 
@@ -93,7 +92,7 @@ class ColumnStar extends AbstractPart
 
         $partsSoFar = array($table);
 
-        foreach ($parts AS $partKey => $part) {
+        foreach ($parts as $partKey => $part) {
             $partsSoFar[] = $part;
             $partsString = implode('.', $partsSoFar);
 
@@ -102,19 +101,19 @@ class ColumnStar extends AbstractPart
             }
 
             // are we referencing a field?
-            foreach ($repository->getFieldMappings() AS $key => $field) {
+            foreach ($repository->getFieldMappings() as $key => $field) {
                 if (strtolower($key) == $part) {
                     throw new Exception("Select star conditions may only include references to tables or associations (did not expect $partsString).");
                 }
             }
 
-            foreach ($repository->getAssociationMappings() AS $association) {
+            foreach ($repository->getAssociationMappings() as $association) {
                 if (empty($association['joinColumns'])) {
                     // need to know how to make the join; ignore this
                     continue;
                 }
 
-                foreach ($association['joinColumns'] AS $joinColumn) {
+                foreach ($association['joinColumns'] as $joinColumn) {
                     // are we referencing a field that is only listed in an association?
                     if (strtolower($joinColumn['name']) == $part) {
                         throw new Exception("Select star conditions may only include references to tables or associations (did not expect $partsString).");
@@ -122,7 +121,7 @@ class ColumnStar extends AbstractPart
                 }
             }
 
-            foreach ($repository->getReportAssociations() AS $name => $association) {
+            foreach ($repository->getReportAssociations() as $name => $association) {
                 if (strtolower($name) == $part) {
                     $target = $association['targetEntity'];
                     $childRepository = $target::getRepository();
@@ -136,7 +135,7 @@ class ColumnStar extends AbstractPart
                 }
             }
 
-            foreach ($repository->getAssociationMappings() AS $association) {
+            foreach ($repository->getAssociationMappings() as $association) {
                 // are we referencing an association?
                 if (strtolower($association['fieldName']) == $part) {
                     $target = $association['targetEntity'];
@@ -178,7 +177,7 @@ class ColumnStar extends AbstractPart
             throw new Exception('Did not get to end of column references');
         }
 
-        foreach ($repository->getFieldMappings() AS $key => $field) {
+        foreach ($repository->getFieldMappings() as $key => $field) {
             if (isset($field['dpqlAccess']) && !$field['dpqlAccess']) {
                 continue;
             }
@@ -186,7 +185,7 @@ class ColumnStar extends AbstractPart
             $column = new Column(array_merge($partsSoFar, array($key)));
             $statement->addPreparedSelectField($column->prepare($statement, $section, $stack, $select, $result));
         }
-        foreach ($repository->getAssociationMappings() AS $association) {
+        foreach ($repository->getAssociationMappings() as $association) {
             if ((isset($association['dpqlAccess']) && !$association['dpqlAccess'])
                 || $association['type'] == ClassMetadataInfo::MANY_TO_MANY
             ) {
@@ -197,7 +196,8 @@ class ColumnStar extends AbstractPart
                 try {
                     $column = new Column(array_merge($partsSoFar, array($association['fieldName'])));
                     $statement->addPreparedSelectField($column->prepare($statement, $section, $stack, $select, $result));
-                } catch (Exception $e) {}
+                } catch (Exception $e) {
+                }
             } elseif (preg_match('/CustomData([a-zA-Z]+)$/', $association['targetEntity'], $match)) {
                 switch ($match[1]) {
                     case 'Article': $type = 'articles'; break;
@@ -209,8 +209,8 @@ class ColumnStar extends AbstractPart
                 }
 
                 if ($type) {
-                    foreach (App::getApi('custom_fields.' . $type)->getFields() AS $field) {
-                        $column = new Column(array_merge($partsSoFar, array($association['fieldName'] . "[$field->id]")));
+                    foreach (App::getApi('custom_fields.'.$type)->getFields() as $field) {
+                        $column = new Column(array_merge($partsSoFar, array($association['fieldName']."[$field->id]")));
                         $statement->addPreparedSelectField(
                             $column->prepare($statement, $section, $stack, $select, $result), $field->title
                         );
@@ -233,6 +233,6 @@ class ColumnStar extends AbstractPart
      */
     public function toDpql(Display $statement, $section, array $stack)
     {
-        return implode('.', $this->parts) . '.*';
+        return implode('.', $this->parts).'.*';
     }
 }

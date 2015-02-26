@@ -50,18 +50,18 @@ class Template extends AbstractEntityRepository
     public function getTemplateForStyle($template_name, $style = null)
     {
         try {
-            if ($style === null OR $style === 0) {
+            if ($style === null or $style === 0) {
                 $q = $this->getEntityManager()->createQuery("
                     SELECT t
                     FROM DeskPRO:Template t
                     WHERE t.style IS NULL AND t.name = ?1
-                ")->setParameters(array(1=>$template_name));
+                ")->setParameters(array(1 => $template_name));
             } else {
                 $q = $this->getEntityManager()->createQuery("
                     SELECT t
                     FROM DeskPRO:Template t
                     WHERE t.style = ?1 AND t.name = ?2
-                ")->setParameters(array(1=>$style, 2=>$template_name));
+                ")->setParameters(array(1 => $style, 2 => $template_name));
             }
 
             $r = $q->getSingleResult();

@@ -73,7 +73,7 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 
         if ($this->getActionOption('add_org_managers') && $ticket->organization) {
             $managers = $this->getContainer()->getEm()->getRepository('DeskPRO:Organization')->getManagers($ticket->organization);
-            foreach ($managers AS $manager) {
+            foreach ($managers as $manager) {
                 if (!$ticket->hasParticipantPerson($manager)) {
                     $context->getLogger()->debug(sprintf("[SetCcs] Adding org manager %d %s %s", $manager->id, $manager->getDisplayName(), $manager->primary_email->email));
                     $ticket->addParticipantPerson($manager);
@@ -91,7 +91,9 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
             foreach ($this->getActionOption('add_emails') as $email) {
                 $email = trim($email);
 
-                if (!$email) continue;
+                if (!$email) {
+                    continue;
+                }
                 if ($ticket->hasParticipantEmailAddress($email)) {
                     continue;
                 }

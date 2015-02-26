@@ -115,7 +115,6 @@ class AgentsController extends AbstractController implements ProtectedController
         return $this->createApiResponse($data);
     }
 
-
     ####################################################################################################################
     # list-deleted-agents
     ####################################################################################################################
@@ -132,7 +131,6 @@ class AgentsController extends AbstractController implements ProtectedController
 
         return $this->createApiResponse($data);
     }
-
 
     ####################################################################################################################
     # get-agent
@@ -165,7 +163,7 @@ class AgentsController extends AbstractController implements ProtectedController
         $data = array(
             'agent' => $agent_data,
             'perms' => $perm_loader->getEffectivePermissions()->toArray(),
-            'perm_overrides' => $perm_loader->getOverridePermissions()->toArray()
+            'perm_overrides' => $perm_loader->getOverridePermissions()->toArray(),
         );
 
         if ($this->in->getBool('extended')) {
@@ -215,7 +213,6 @@ class AgentsController extends AbstractController implements ProtectedController
             'perms'           => $perm_loader->getEffectivePermissions()->toArray(),
         ));
     }
-
 
     ####################################################################################################################
     # save-agent
@@ -290,7 +287,7 @@ class AgentsController extends AbstractController implements ProtectedController
         $existPersons = $this->em->getRepository('DeskPRO:Person')->findByEmails($set_emails);
 
         // we have a dupe email error
-        if(count($existPersons) > 1) {
+        if (count($existPersons) > 1) {
             $error_info = array('existing' => array());
 
             foreach ($existPersons as $person) {
@@ -302,7 +299,6 @@ class AgentsController extends AbstractController implements ProtectedController
             }
 
             return $this->createApiErrorInfoResponse('dupe_email', 'One or more email addresses are already in use by other users', $error_info);
-
         }
 
         #-------------------------
@@ -339,7 +335,9 @@ class AgentsController extends AbstractController implements ProtectedController
         // Promoting an existing user to an agent needs to call the preNewAgent callback
         if (!$agent['is_agent']) {
             $r = $this->preNewAgent(1);
-            if ($r) return $r;
+            if ($r) {
+                return $r;
+            }
         }
 
         // If the record isnt a user yet, then we need to set an initial password
@@ -419,7 +417,9 @@ class AgentsController extends AbstractController implements ProtectedController
 
             $set_perms = array();
             foreach ($dep_perm_overrides['tickets'] as $did => $p) {
-                if (!($dep = $ticket_deps->getById($did))) continue;
+                if (!($dep = $ticket_deps->getById($did))) {
+                    continue;
+                }
                 if (count($dep->children)) {
                     continue;
                 }
@@ -432,7 +432,9 @@ class AgentsController extends AbstractController implements ProtectedController
             }
 
             foreach ($dep_perm_overrides['chat'] as $did => $p) {
-                if (!($dep = $chat_deps->getById($did))) continue;
+                if (!($dep = $chat_deps->getById($did))) {
+                    continue;
+                }
                 if (count($dep->children)) {
                     continue;
                 }
@@ -469,7 +471,6 @@ class AgentsController extends AbstractController implements ProtectedController
             $this->_saveProfileData($agent, $data);
         }
 
-
         #-------------------------
         # Send welcome email
         #-------------------------
@@ -484,7 +485,7 @@ class AgentsController extends AbstractController implements ProtectedController
         #-------------------------
 
         return $this->createApiCreateResponse(array(
-            'person_id' => $agent->id
+            'person_id' => $agent->id,
         ), $this->generateUrl('api_agents_get', array('id' => $agent->id), UrlGeneratorInterface::ABSOLUTE_URL));
     }
 
@@ -579,7 +580,8 @@ class AgentsController extends AbstractController implements ProtectedController
 
             try {
                 $this->container->getBlobStorage()->deleteBlobRecord($old_blob);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
 
             $this->em->persist($person);
         }
@@ -591,7 +593,8 @@ class AgentsController extends AbstractController implements ProtectedController
 
                 try {
                     $this->container->getBlobStorage()->deleteBlobRecord($old_blob);
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
 
                 $this->em->persist($person);
             }
@@ -605,7 +608,6 @@ class AgentsController extends AbstractController implements ProtectedController
 
         $this->em->flush();
     }
-
 
     ####################################################################################################################
     # reset-password
@@ -661,10 +663,9 @@ class AgentsController extends AbstractController implements ProtectedController
         }
 
         return $this->createSuccessResponse(array(
-            'emailed' => $did_email
+            'emailed' => $did_email,
         ));
     }
-
 
     ####################################################################################################################
     # delete-agent
@@ -700,7 +701,6 @@ class AgentsController extends AbstractController implements ProtectedController
         return $this->createSuccessResponse();
     }
 
-
     ####################################################################################################################
     # undelete-agent
     ####################################################################################################################
@@ -735,7 +735,6 @@ class AgentsController extends AbstractController implements ProtectedController
         return $this->createSuccessResponse(array('person_id' => $agent->id));
     }
 
-
     ####################################################################################################################
     # generate-login-token
     ####################################################################################################################
@@ -750,7 +749,7 @@ class AgentsController extends AbstractController implements ProtectedController
 
         $tmp = TmpData::create('admin_agent_login', array(
             'admin_id' => $this->person->getId(),
-            'agent_id' => $agent->id
+            'agent_id' => $agent->id,
         ), '+5 minutes');
         $this->em->persist($tmp);
         $this->em->flush();
@@ -761,7 +760,6 @@ class AgentsController extends AbstractController implements ProtectedController
             'valid_until_ts' => $tmp->date_expire->getTimestamp(),
         ));
     }
-
 
     ####################################################################################################################
     # get-notify-prefs-tables
@@ -792,7 +790,9 @@ class AgentsController extends AbstractController implements ProtectedController
 
         foreach ($filters as $f) {
             if ($f->sys_name) {
-                if (strpos($f->sys_name, '_w_hold') !== false || strpos($f->sys_name, 'archive_') === 0) continue;
+                if (strpos($f->sys_name, '_w_hold') !== false || strpos($f->sys_name, 'archive_') === 0) {
+                    continue;
+                }
                 $sys_filters[] = $f;
             } else {
                 $custom_filters[] = $f;
@@ -836,7 +836,7 @@ class AgentsController extends AbstractController implements ProtectedController
         }
 
         foreach (Prefs::$apps as $app => $bool) {
-            $method = 'build' . ucfirst($app) . 'Table';
+            $method = 'build'.ucfirst($app).'Table';
             if (!method_exists($table_gen, $method)) {
                 throw new \Exception('Wrong app name or table not exists');
             }
@@ -876,7 +876,7 @@ class AgentsController extends AbstractController implements ProtectedController
                 return $this->createApiErrorResponse('file_not_found', 'File not found');
             }
 
-            $csv_file = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
+            $csv_file = dp_get_tmp_dir().'/blob-'.$blob->getId().'.csv';
 
             if (!file_exists($csv_file) || !is_readable($csv_file)) {
                 file_put_contents($csv_file, $this->container->getBlobStorage()->copyBlobRecordToString($blob));
@@ -897,7 +897,9 @@ class AgentsController extends AbstractController implements ProtectedController
                 $delimeter = 1 === count($row) ? substr($row[0], 13, 1) : ',';
 
                 while ($row = fgetcsv($fp, null, $delimeter)) {
-                    if (!$email = trim($row[0])) continue;
+                    if (!$email = trim($row[0])) {
+                        continue;
+                    }
                     $agent_emails[] = $email;
                 }
             }
@@ -929,7 +931,7 @@ class AgentsController extends AbstractController implements ProtectedController
 
         return $this->createApiResponse(array(
             'okay' => false,
-            'need_plan' => $new_plan
+            'need_plan' => $new_plan,
         ));
     }
 
@@ -961,7 +963,7 @@ class AgentsController extends AbstractController implements ProtectedController
             return $this->createApiErrorResponse('file_not_found', 'File not found');
         }
 
-        $csv_file = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
+        $csv_file = dp_get_tmp_dir().'/blob-'.$blob->getId().'.csv';
 
         if (!file_exists($csv_file) || !is_readable($csv_file)) {
             file_put_contents($csv_file, $this->container->getBlobStorage()->copyBlobRecordToString($blob));
@@ -1006,8 +1008,9 @@ class AgentsController extends AbstractController implements ProtectedController
 
         $ret = array();
         while ($row = fgetcsv($fp, null, $delimeter)) {
-
-            if (!$email = trim($row[0])) continue;
+            if (!$email = trim($row[0])) {
+                continue;
+            }
 
             $data = array(
                 'email' => $email,
@@ -1028,11 +1031,15 @@ class AgentsController extends AbstractController implements ProtectedController
                 $data['zones'][] = 'reports';
             }
             foreach (explode(',', $row[2]) as $group) {
-                if (!$group = (int) trim($group)) continue;
+                if (!$group = (int) trim($group)) {
+                    continue;
+                }
                 $data['agent_groups'][] = $group;
             }
             foreach (explode(',', $row[3]) as $team) {
-                if (!$team = (int) trim($team)) continue;
+                if (!$team = (int) trim($team)) {
+                    continue;
+                }
                 $data['teams'][] = $team;
             }
 

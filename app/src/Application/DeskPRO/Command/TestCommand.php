@@ -26,7 +26,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
@@ -64,6 +63,7 @@ class TestCommand extends ContainerAwareCommand
     {
         echo __FILE__;
         echo "\n";
+
         return 0;
     }
 }

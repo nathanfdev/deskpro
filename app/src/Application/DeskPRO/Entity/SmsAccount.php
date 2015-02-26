@@ -99,14 +99,12 @@ class SmsAccount extends DomainObject
      */
     protected $test_code;
 
-
     public function __construct()
     {
         $this->is_enabled = false;
         $this->is_connected = false;
         $this->is_tested = false;
     }
-
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
@@ -141,12 +139,12 @@ class SmsAccount extends DomainObject
         $metadata->mapField(
             array(
                 'fieldName' => 'type', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0,
-                'nullable'  => false, 'columnName' => 'type'
+                'nullable'  => false, 'columnName' => 'type',
             )
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'params', 'type' => 'array', 'columnName' => 'params', 'nullable' => true
+                'fieldName' => 'params', 'type' => 'array', 'columnName' => 'params', 'nullable' => true,
             )
         );
         $metadata->mapField(
@@ -172,7 +170,7 @@ class SmsAccount extends DomainObject
         );
         $metadata->mapField(
             array(
-                'fieldName' => 'test_code', 'type' => 'string', 'columnName' => 'test_code', 'nullable' => true
+                'fieldName' => 'test_code', 'type' => 'string', 'columnName' => 'test_code', 'nullable' => true,
             )
         );
         $metadata->mapOneToOne(
@@ -184,9 +182,9 @@ class SmsAccount extends DomainObject
                 'joinColumns'   => array(
                     array(
                         'name'     => 'phone_number_id', 'referencedColumnName' => 'id', 'nullable' => true,
-                        'onDelete' => 'SET NULL'
-                    )
-                )
+                        'onDelete' => 'SET NULL',
+                    ),
+                ),
             )
         );
     }

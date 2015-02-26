@@ -69,18 +69,18 @@ class CsvUpload
             return array('error' => 'no_file');
         }
 
-        if (!is_uploaded_file($file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename())) {
+        if (!is_uploaded_file($file->getPath().DIRECTORY_SEPARATOR.$file->getFilename())) {
             return array('error' => 'no_move');
         }
 
         $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
-            $file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename(),
+            $file->getPath().DIRECTORY_SEPARATOR.$file->getFilename(),
             $file->getClientOriginalName(),
             'text/csv'
         );
 
-        $csv_path = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
-        copy($file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename(), $csv_path);
+        $csv_path = dp_get_tmp_dir().'/blob-'.$blob->getId().'.csv';
+        copy($file->getPath().DIRECTORY_SEPARATOR.$file->getFilename(), $csv_path);
 
         return $this->_returnUploadFileResponse($blob->getId(), $file->getClientOriginalName(), $options);
     }
@@ -98,7 +98,7 @@ class CsvUpload
     {
         $has_email = false;
 
-        foreach ($field_maps AS $map_field) {
+        foreach ($field_maps as $map_field) {
             if (!empty($map_field['map']) && $map_field['map'] == 'primary_email') {
                 $has_email = true;
                 break;
@@ -119,7 +119,7 @@ class CsvUpload
             'blob_id'       => $blob->getId(),
             'field_maps'    => $field_maps,
             'skip_first'    => $skip_first,
-	        'update_if_exists' => $update_if_exists,
+            'update_if_exists' => $update_if_exists,
             'welcome_email' => $welcome_email,
             'user_filename' => $user_filename,
             'options'       => $options,
@@ -147,9 +147,7 @@ class CsvUpload
                 'status'  => '',
                 'message' => 'No import data available.',
             );
-
         } else {
-
             /** @var TaskQueue $task */
             $task   = end($tasks);
             $data = $task['task_data'];
@@ -187,7 +185,7 @@ class CsvUpload
 
     protected function _returnUploadFileResponse($filename, $user_filename, array $options = array())
     {
-        $csv_path = dp_get_tmp_dir() . '/blob-' . $filename . '.csv';
+        $csv_path = dp_get_tmp_dir().'/blob-'.$filename.'.csv';
         $blob     = App::getOrm()->find('DeskPRO:Blob', $filename);
 
         if (!$blob) {
@@ -195,7 +193,6 @@ class CsvUpload
         }
 
         if (!is_file($csv_path)) {
-
             App::getContainer()->getBlobStorage()->copyBlobRecordToFile($csv_path, $blob);
         }
 
@@ -209,7 +206,6 @@ class CsvUpload
         $example_total = 0;
 
         for ($i = 0; $i < 100; $i++) {
-
             $row = @fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
 
             if (!$row) {
@@ -222,10 +218,8 @@ class CsvUpload
                 continue;
             }
 
-            foreach ($row AS $id => $value) {
-
+            foreach ($row as $id => $value) {
                 if ($value !== '' && !isset($examples[$id])) {
-
                     $examples[$id] = $value;
                     $example_total++;
 
@@ -251,6 +245,5 @@ class CsvUpload
             'show_welcome_email' => $show_welcome_email,
             'options'            => $originalOptions,
         );
-
     }
 }

@@ -40,163 +40,151 @@ use Application\DeskPRO\UserRules\UserRuleEdit;
 
 class UserRulesController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		return new AdminManagePermission();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new AdminManagePermission();
+    }
 
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
+    public function listAction()
+    {
+        /**
+         * @var \Application\DeskPRO\UserRules\UserRules $user_rules
+         */
 
-	public function listAction()
-	{
-		/**
-		 * @var \Application\DeskPRO\UserRules\UserRules $user_rules
-		 */
+        $user_rules = $this->container->getSystemService('user_rules');
 
-		$user_rules = $this->container->getSystemService('user_rules');
+        return $this->createApiResponse(
+            array(
+                 'user_rules' => $user_rules->getAllAsArray(),
+            )
+        );
+    }
 
-		return $this->createApiResponse(
-			array(
-				 'user_rules' => $user_rules->getAllAsArray(),
-			)
-		);
-	}
+    ###################################################################################################################
+    # get
+    ####################################################################################################################
 
-	###################################################################################################################
-	# get
-	####################################################################################################################
+    public function getAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\UserRules\UserRules $user_rules
+         */
 
-	public function getAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\UserRules\UserRules $user_rules
-		 */
+        $user_rules = $this->container->getSystemService('user_rules');
+        $user_rule  = $user_rules->getWithUsergroup($id);
 
-		$user_rules = $this->container->getSystemService('user_rules');
-		$user_rule  = $user_rules->getWithUsergroup($id);
+        if (!$user_rule) {
+            throw $this->createNotFoundException();
+        }
 
-		if (!$user_rule) {
+        return $this->createApiResponse(
+            array(
+                 'user_rule' => $user_rule,
+            )
+        );
+    }
 
-			throw $this->createNotFoundException();
-		}
+    ####################################################################################################################
+    # save
+    ####################################################################################################################
 
-		return $this->createApiResponse(
-			array(
-				 'user_rule' => $user_rule
-			)
-		);
-	}
+    public function saveAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\UserRules\UserRules $user_rules
+         */
 
-	####################################################################################################################
-	# save
-	####################################################################################################################
+        $user_rules = $this->container->getSystemService('user_rules');
 
-	public function saveAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\UserRules\UserRules $user_rules
-		 */
+        if ($id) {
+            $user_rule = $user_rules->getById($id);
 
-		$user_rules = $this->container->getSystemService('user_rules');
+            if (!$user_rule) {
+                throw $this->createNotFoundException();
+            }
+        } else {
+            $user_rule = $user_rules->createNew();
+        }
 
-		if ($id) {
+        $postData = $this->in->getAll('post');
 
-			$user_rule = $user_rules->getById($id);
+        $user_rule_edit = new UserRuleEdit($user_rule);
 
-			if (!$user_rule) {
+        $form = $this->createForm(new UserRuleType(), $user_rule_edit, array('cascade_validation' => true));
+        $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'user_rule'), true);
 
-				throw $this->createNotFoundException();
-			}
-		} else {
+        if ($form->isValid()) {
+            $user_rule_edit->save($this->em);
+        } else {
+            throw ValidationException::create($this->getFormValidationErrorsString($form));
+        }
 
-			$user_rule = $user_rules->createNew();
-		}
+        return $this->createApiResponse(
+            array(
+                 'success' => true,
+                 'id'      => $user_rule->id,
+            )
+        );
+    }
 
-		$postData = $this->in->getAll('post');
+    ####################################################################################################################
+    # remove
+    ####################################################################################################################
 
-		$user_rule_edit = new UserRuleEdit($user_rule);
+    public function removeAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\UserRules\UserRules $user_rules
+         */
 
-		$form = $this->createForm(new UserRuleType(), $user_rule_edit, array('cascade_validation' => true));
-		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'user_rule'), true);
+        $user_rules = $this->container->getSystemService('user_rules');
+        $user_rule  = $user_rules->getById($id);
 
-		if ($form->isValid()) {
+        if (!$user_rule) {
+            throw $this->createNotFoundException();
+        }
 
-			$user_rule_edit->save($this->em);
+        $old_id = $user_rule->id;
 
-		} else {
+        $this->db->beginTransaction();
 
-			throw ValidationException::create($this->getFormValidationErrorsString($form));
-		}
+        try {
+            $this->em->remove($user_rule);
+            $this->em->flush();
 
-		return $this->createApiResponse(
-			array(
-				 'success' => true,
-				 'id'      => $user_rule->id,
-			)
-		);
-	}
+            $this->db->commit();
+        } catch (\Exception $e) {
+            $this->db->rollback();
+            throw $e;
+        }
 
-	####################################################################################################################
-	# remove
-	####################################################################################################################
+        return $this->createSuccessResponse(array('old_id' => $old_id));
+    }
 
-	public function removeAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\UserRules\UserRules $user_rules
-		 */
+    ####################################################################################################################
+    # apply
+    ####################################################################################################################
 
-		$user_rules = $this->container->getSystemService('user_rules');
-		$user_rule  = $user_rules->getById($id);
+    public function applyAction($id, $page_id)
+    {
+        /**
+         * @var \Application\DeskPRO\UserRules\UserRules $user_rules
+         */
 
-		if (!$user_rule) {
+        $user_rules = $this->container->getSystemService('user_rules');
+        $user_rule  = $user_rules->getById($id);
 
-			throw $this->createNotFoundException();
-		}
+        if (!$user_rule) {
+            throw $this->createNotFoundException();
+        }
 
-		$old_id = $user_rule->id;
-
-		$this->db->beginTransaction();
-
-		try {
-
-			$this->em->remove($user_rule);
-			$this->em->flush();
-
-			$this->db->commit();
-
-		} catch(\Exception $e) {
-
-			$this->db->rollback();
-			throw $e;
-		}
-
-		return $this->createSuccessResponse(array('old_id' => $old_id));
-	}
-
-	####################################################################################################################
-	# apply
-	####################################################################################################################
-
-	public function applyAction($id, $page_id)
-	{
-		/**
-		 * @var \Application\DeskPRO\UserRules\UserRules $user_rules
-		 */
-
-		$user_rules = $this->container->getSystemService('user_rules');
-		$user_rule  = $user_rules->getById($id);
-
-		if (!$user_rule) {
-			throw $this->createNotFoundException();
-		}
-
-		return $this->createApiResponse($user_rules->applyRuleToUsers($user_rule, $page_id));
-	}
+        return $this->createApiResponse($user_rules->applyRuleToUsers($user_rule, $page_id));
+    }
 }

@@ -46,8 +46,6 @@ class Person extends AbstractScraper
      */
     protected $highrise;
 
-
-
     /**
      * @param  int           $person_id
      * @return ItemInterface
@@ -65,7 +63,7 @@ class Person extends AbstractScraper
 
         $item = new \Orb\Scraper\Item(
             $person_id,
-            trim($data['first-name'] . ' ' . $data['last-name']),
+            trim($data['first-name'].' '.$data['last-name']),
             $data
         );
 

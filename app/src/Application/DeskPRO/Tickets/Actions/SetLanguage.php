@@ -57,7 +57,6 @@ class SetLanguage extends AbstractContainerAwareAction implements ActionInterfac
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -76,7 +75,6 @@ class SetLanguage extends AbstractContainerAwareAction implements ActionInterfac
 
         $ticket->language = $lang;
     }
-
 
     /**
      * {@inheritDoc}
@@ -99,7 +97,6 @@ class SetLanguage extends AbstractContainerAwareAction implements ActionInterfac
 
         return false;
     }
-
 
     /**
      * {@inheritDoc}

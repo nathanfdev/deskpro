@@ -48,7 +48,7 @@ class ProductFieldsManagerService
                 'entity_name'        => 'DeskPRO:CustomDefProduct',
                 'data_entity_class'  => 'Application\\DeskPRO\\Entity\\CustomDataProduct',
                 'data_entity_name'   => 'DeskPRO:CustomDataProduct',
-                'disabled'           => $container->getSetting('core.use_product_fields') ? false : true
+                'disabled'           => $container->getSetting('core.use_product_fields') ? false : true,
             )
         );
 

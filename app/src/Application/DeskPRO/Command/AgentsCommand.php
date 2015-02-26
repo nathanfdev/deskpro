@@ -66,7 +66,6 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
         $this->addOption('agent-id', 'd', InputOption::VALUE_REQUIRED, 'Agent ID', null);
     }
 
-
     /**
      * @return \Doctrine\ORM\EntityManager
      */
@@ -74,7 +73,6 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
     {
         return $this->getContainer()->getEm();
     }
-
 
     /**
      * @param  string                                  $caption
@@ -95,7 +93,6 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
         return $agent;
     }
-
 
     /**
      * @param  string                                  $caption
@@ -136,7 +133,6 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
         }
     }
 
-
     /**
      * @param  InputInterface  $input
      * @param  OutputInterface $output
@@ -170,7 +166,6 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
         }
     }
 
-
     /**
      * @return int
      */
@@ -185,7 +180,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
                 $a->id,
                 $a->display_name,
                 $a->email_address,
-                $a->can_admin ? '*' : ''
+                $a->can_admin ? '*' : '',
             );
         }
 
@@ -196,7 +191,6 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
         return 0;
     }
-
 
     /**
      * @return int
@@ -223,7 +217,6 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
         return 0;
     }
 
-
     /**
      * @return int
      */
@@ -249,7 +242,6 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
         return 0;
     }
 
-
     /**
      * @return int
      */
@@ -274,7 +266,6 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
         return 0;
     }
-
 
     /**
      * @return int
@@ -303,14 +294,14 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
         $existing_ips = $repo->getIpsForPerson($agent);
 
         if (in_array($ip_address, $existing_ips)) {
-            $this->output->writeln($ip_address . " is already whitelisted for {$agent->display_name} <$agent->email_address>");
+            $this->output->writeln($ip_address." is already whitelisted for {$agent->display_name} <$agent->email_address>");
 
             return 1;
         }
 
         $whitelisted_ip = new Entity\WhiteListedIp();
-        $whitelisted_ip['person']	= $agent;
-        $whitelisted_ip['ip_address']	= $ip_address;
+        $whitelisted_ip['person']    = $agent;
+        $whitelisted_ip['ip_address']    = $ip_address;
 
         $this->getContainer()->getEm()->persist($whitelisted_ip);
         $this->getContainer()->getEm()->flush();

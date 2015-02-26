@@ -78,7 +78,6 @@ class BanEmail extends DomainObject
     public function setBannedEmail($email)
     {
         if (strpos($email, '*') !== false) {
-
             $this['is_pattern'] = true;
         }
 
@@ -93,7 +92,7 @@ class BanEmail extends DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\BanEmail';
-        $metadata->setPrimaryTable(array('name' => 'ban_emails',));
+        $metadata->setPrimaryTable(array('name' => 'ban_emails'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(

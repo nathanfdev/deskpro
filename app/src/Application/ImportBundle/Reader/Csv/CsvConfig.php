@@ -74,12 +74,13 @@ class CsvConfig
     }
 
     /**
-     * @param string $resource
+     * @param  string $resource
      * @return $this
      */
     public function setResource($resource)
     {
         $this->resource = $resource;
+
         return $this;
     }
 
@@ -92,12 +93,13 @@ class CsvConfig
     }
 
     /**
-     * @param string $delimiter
+     * @param  string $delimiter
      * @return $this
      */
     public function setDelimiter($delimiter)
     {
         $this->delimiter = $delimiter;
+
         return $this;
     }
 
@@ -110,12 +112,13 @@ class CsvConfig
     }
 
     /**
-     * @param string $enclosure
+     * @param  string $enclosure
      * @return $this
      */
     public function setEnclosure($enclosure)
     {
         $this->enclosure = $enclosure;
+
         return $this;
     }
 
@@ -128,12 +131,13 @@ class CsvConfig
     }
 
     /**
-     * @param string $escape
+     * @param  string $escape
      * @return $this
      */
     public function setEscape($escape)
     {
         $this->escape = $escape;
+
         return $this;
     }
 }

@@ -59,15 +59,15 @@ class LabelsController extends AbstractController implements ProtectedController
     public function updateDefinitionAction()
     {
         if (!$old = $this->in->getArrayValue('old')) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         if (!$new = $this->in->getArrayValue('new')) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         if (!isset($new['label_type']) || !isset($new['label']) || !isset($new['color'])) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $label = trim($new['label']);
@@ -87,11 +87,11 @@ class LabelsController extends AbstractController implements ProtectedController
     {
         $rep = $this->rep();
         if (!$label = $this->in->getString('label')) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         if ((!$type = $this->in->getString('label_type')) || !$rep::valid($type)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $color = $this->in->getString('color');
@@ -102,7 +102,6 @@ class LabelsController extends AbstractController implements ProtectedController
             $definition['label_type'] = $type;
             $definition['label'] = trim($label);
             $this->em->persist($definition);
-
         } else {
             $rep->renameLabelDef($definition['label'], trim($label), $color, $type);
         }
@@ -115,7 +114,6 @@ class LabelsController extends AbstractController implements ProtectedController
 
         return $this->createApiResponse($definition->toApiData());
     }
-
 
     ####################################################################################################################
     # remove

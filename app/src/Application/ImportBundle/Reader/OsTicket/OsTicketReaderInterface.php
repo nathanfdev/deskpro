@@ -84,7 +84,7 @@ interface OsTicketReaderInterface
     /**
      * Returns ticket messages
      *
-     * @param int $ticket_id
+     * @param  int   $ticket_id
      * @return mixed
      */
     public function findMessages($ticket_id);
@@ -92,7 +92,7 @@ interface OsTicketReaderInterface
     /**
      * Returns ticket message attachments
      *
-     * @param int $message_id
+     * @param  int   $message_id
      * @return array
      */
     public function findMessageAttachments($message_id);
@@ -100,7 +100,7 @@ interface OsTicketReaderInterface
     /**
      * Returns department
      *
-     * @param int $id
+     * @param  int   $id
      * @return mixed
      */
     public function findDepartmentById($id);
@@ -108,7 +108,7 @@ interface OsTicketReaderInterface
     /**
      * Returns staff email by id
      *
-     * @param int $id
+     * @param  int   $id
      * @return mixed
      */
     public function findStaffEmailById($id);
@@ -116,7 +116,7 @@ interface OsTicketReaderInterface
     /**
      * Returns user email by id
      *
-     * @param int $id
+     * @param  int   $id
      * @return mixed
      */
     public function findUserEmailById($id);
@@ -124,7 +124,7 @@ interface OsTicketReaderInterface
     /**
      * Returns team name by id
      *
-     * @param int $id
+     * @param  int   $id
      * @return mixed
      */
     public function findTeamNameById($id);
@@ -132,7 +132,7 @@ interface OsTicketReaderInterface
     /**
      * Returns timezone by id
      *
-     * @param int $id
+     * @param  int   $id
      * @return mixed
      */
     public function findTimezoneById($id);
@@ -140,7 +140,7 @@ interface OsTicketReaderInterface
     /**
      * Returns ticket message attachment by id
      *
-     * @param int $file_id
+     * @param  int   $file_id
      * @return mixed
      */
     public function findAttachmentData($file_id);

@@ -42,7 +42,6 @@ use Orb\Auth\Result;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
 
-
 /**
  * The Local adapter handles local logins using an email address or username and a password.
  */
@@ -123,12 +122,12 @@ class Local implements AdapterInterface, FormLoginInterface, Loggable
         try {
             /** @var \Application\DeskPRO\Entity\Person $person */
             $person = $qb->getQuery()->getSingleResult();
-        } catch (\Doctrine\ORM\NoResultException $e) {}
+        } catch (\Doctrine\ORM\NoResultException $e) {
+        }
 
         if ($this->logger) {
-
             if ($person) {
-                $this->logger->log("Found user " . $person->getId(), Logger::DEBUG);
+                $this->logger->log("Found user ".$person->getId(), Logger::DEBUG);
             } else {
                 $this->logger->log("No user found", Logger::DEBUG);
             }
@@ -138,7 +137,7 @@ class Local implements AdapterInterface, FormLoginInterface, Loggable
             );
         }
 
-        if (!$person OR !$person->checkPassword($this->password)) {
+        if (!$person or !$person->checkPassword($this->password)) {
             return new Result(Result::FAILURE_INVALID_CREDS);
         }
 
@@ -146,7 +145,7 @@ class Local implements AdapterInterface, FormLoginInterface, Loggable
             $person['id'],
             array(
                 'email' => $person->primary_email->email,
-                'email_confirmed' => true
+                'email_confirmed' => true,
             )
         );
         $identity->setFriendlyIdentity($person->primary_email->email);

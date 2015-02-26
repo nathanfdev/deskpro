@@ -54,7 +54,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
         'person' => 1, 'ticket' => 1, 'language' => 1,
         'custom_ticket_fields' => 1, 'custom_user_fields' => 1, 'new_message' => 1, 'creation_system' => 1, 'creation_system_option' => array(),
         'require_login' => 1, 'attach_blobs' => 1, 'blobs_inline_ids' => 1, 'gateway' => 1, 'gateway_address' => 1,
-        'sent_to' => 1, 'logger' => 1, 'do_dupe_check' => 1
+        'sent_to' => 1, 'logger' => 1, 'do_dupe_check' => 1,
     );
 
     /**
@@ -107,7 +107,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 
     public function __construct($creation_system, Entity\Person $person = null, Entity\Ticket $ticket = null)
     {
-        if ($person AND !$person['id']) {
+        if ($person and !$person['id']) {
             $person = null;
         }
 
@@ -165,7 +165,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
         $email_validating = null;
 
         if ($this->person_context->isGuest()) {
-
             $email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($this->person->email);
 
             // Email already exists on an account
@@ -178,7 +177,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
                         $person->name = $this->person->name;
                     }
                     $this->require_login = true;
-
                 } else {
                     $person = $email->person;
                     if ($this->person->name) {
@@ -191,7 +189,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
                 // as an email address that requires validation. If validation is disabled,
                 // NewticketAction toggles it off
             } else {
-
                 // They might come from a user source
                 $person_processor = new PersonFromEmailProcessor();
                 $eml = new EmailAddress();
@@ -358,16 +355,16 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
             $ticket_message['message_raw'] = $this->ticket->message_raw;
         }
 
-            $attach = null;
-            if ($this->ticket->new_upload) {
-                $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
+        $attach = null;
+        if ($this->ticket->new_upload) {
+            $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
                     $this->ticket->new_upload->getRealPath(),
                     $this->ticket->new_upload->getClientOriginalName(),
                     $this->ticket->new_upload->getClientMimeType()
                 );
-                $attach = new \Application\DeskPRO\Entity\TicketAttachment();
-                $attach['blob'] = $blob;
-                $attach['person'] = $person;
+            $attach = new \Application\DeskPRO\Entity\TicketAttachment();
+            $attach['blob'] = $blob;
+            $attach['person'] = $person;
 
             $ticket_message->addAttachment($attach);
         }
@@ -427,12 +424,12 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
         if (!empty($tracker_extra['fwd_cc_unknown'])) {
             $ticket->getTicketLogger()->recordMultiPropertyChanged('log_actions', null, array(
                 'type' => 'Free',
-                'message' => "Unknown users in CC line: " . $tracker_extra['fwd_cc_unknown']
+                'message' => "Unknown users in CC line: ".$tracker_extra['fwd_cc_unknown'],
             ));
             unset($tracker_extra['fwd_cc_unknown']);
         }
 
-        foreach ($tracker_extra AS $k => $v) {
+        foreach ($tracker_extra as $k => $v) {
             $ticket->getTicketLogger()->recordExtra($k, $v);
         }
 
@@ -482,7 +479,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
         App::getOrm()->beginTransaction();
 
         try {
-
             /** @var TicketFieldManager $field_manager */
             $field_manager = App::getSystemService('ticket_fields_manager');
             $post_custom_fields = $this->custom_ticket_fields;
@@ -504,7 +500,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
             $ticket_manager->saveTicket($ticket, $context);
             App::getOrm()->flush();
             App::getOrm()->commit();
-
         } catch (\Application\DeskPRO\Tickets\DuplicateTicketException $e) {
             App::getDb()->rollback();
             $ticket = App::getOrm()->find('DeskPRO:Ticket', $e->ticket_id);
@@ -569,8 +564,26 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
         return $cc_person;
     }
 
-    public function offsetExists($offset) { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
-    public function offsetGet($offset) { if (isset(self::$prop_names[$offset])) return $this->$offset; }
-    public function offsetSet($offset, $value) { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
-    public function offsetUnset($offset) { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
+    public function offsetExists($offset)
+    {
+        return (isset(self::$prop_names[$offset]) && isset($this->$offset));
+    }
+    public function offsetGet($offset)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            return $this->$offset;
+        }
+    }
+    public function offsetSet($offset, $value)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            $this->$offset = $value;
+        }
+    }
+    public function offsetUnset($offset)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            $this->$offset = null;
+        }
+    }
 }

@@ -34,7 +34,6 @@
 
 namespace Application\AgentBundle\Controller;
 
-
 class UserTrackController extends AbstractController
 {
     ####################################################################################################################
@@ -43,7 +42,7 @@ class UserTrackController extends AbstractController
 
     public function winHeaderTableAction()
     {
-        $cut = new \DateTime("@" . (time() - $this->settings->get('core_chat.user_online_time')));
+        $cut = new \DateTime("@".(time() - $this->settings->get('core_chat.user_online_time')));
 
         $visitors = $this->em->createQuery("
             SELECT v, t, ti, ts, p
@@ -57,7 +56,7 @@ class UserTrackController extends AbstractController
         ")->setMaxResults(100)->execute(array($cut));
 
         return $this->render('AgentBundle:UserTrack:header-table.html.twig', array(
-            'visitors' => $visitors
+            'visitors' => $visitors,
         ));
     }
 

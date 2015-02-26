@@ -95,6 +95,7 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     public function setPersonEmail($person_email)
     {
         $this->person_email = $person_email;
+
         return $this;
     }
 
@@ -107,12 +108,13 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * @param string $blob_data
+     * @param  string $blob_data
      * @return $this
      */
     public function setBlobData($blob_data)
     {
         $this->blob_data = $blob_data;
+
         return $this;
     }
 
@@ -125,12 +127,13 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * @param string $blob_url
+     * @param  string $blob_url
      * @return $this
      */
     public function setBlobUrl($blob_url)
     {
         $this->blob_url = $blob_url;
+
         return $this;
     }
 
@@ -143,12 +146,13 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * @param string $blob_path
+     * @param  string $blob_path
      * @return $this
      */
     public function setBlobPath($blob_path)
     {
         $this->blob_path = $blob_path;
+
         return $this;
     }
 
@@ -161,12 +165,13 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * @param string $file_name
+     * @param  string $file_name
      * @return $this
      */
     public function setFileName($file_name)
     {
         $this->file_name = $file_name;
+
         return $this;
     }
 
@@ -179,12 +184,13 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * @param string $content_type
+     * @param  string $content_type
      * @return $this
      */
     public function setContentType($content_type)
     {
         $this->content_type = $content_type;
+
         return $this;
     }
 
@@ -197,12 +203,13 @@ final class Attachment extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * @param boolean $is_inline
+     * @param  boolean $is_inline
      * @return $this
      */
     public function setAsInline($is_inline)
     {
-        $this->is_inline = (bool)$is_inline;
+        $this->is_inline = (bool) $is_inline;
+
         return $this;
     }
 

@@ -100,6 +100,7 @@ final class Person extends AbstractImporter
         }
 
         $this->records->add($person);
+
         return $this->records;
     }
 
@@ -136,7 +137,7 @@ final class Person extends AbstractImporter
     /**
      * Returns a person email entity
      *
-     * @param string $email_string
+     * @param  string                    $email_string
      * @return DeskPROEntity\PersonEmail
      */
     private function findOrCreatePersonEmail($email_string)
@@ -214,6 +215,7 @@ final class Person extends AbstractImporter
         }
 
         $this->records->add($entity);
+
         return $entity;
     }
 

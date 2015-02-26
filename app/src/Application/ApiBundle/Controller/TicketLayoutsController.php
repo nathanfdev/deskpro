@@ -56,7 +56,6 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
         return $multi;
     }
 
-
     ####################################################################################################################
     # get
     ####################################################################################################################
@@ -97,10 +96,9 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
                 'user'  => $ticket_layout->user_layout->exportToArray(),
                 'agent' => $ticket_layout->agent_layout->exportToArray(),
             ),
-            'is_default' => $is_default
+            'is_default' => $is_default,
         ));
     }
-
 
     ####################################################################################################################
     # stats
@@ -137,7 +135,6 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
         ));
     }
 
-
     ####################################################################################################################
     # save
     ####################################################################################################################
@@ -170,7 +167,10 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
             $a_o = isset($a['display_order']) ? $a['display_order'] : 0;
             $b_o = isset($b['display_order']) ? $b['display_order'] : 0;
 
-            if ($a_o == $b_o) return 0;
+            if ($a_o == $b_o) {
+                return 0;
+            }
+
             return $a_o < $b_o ? -1 : 1;
         };
 
@@ -204,7 +204,6 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
         return $this->createSuccessResponse();
     }
 
-
     ####################################################################################################################
     # delete
     ####################################################################################################################
@@ -220,7 +219,6 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 
         return $this->createSuccessResponse();
     }
-
 
     ####################################################################################################################
     # get-field-status
@@ -238,24 +236,28 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
             $dep = null;
             if ($id) {
                 $dep = $dm->getById($id);
-                if (!$dep) continue;
+                if (!$dep) {
+                    continue;
+                }
                 $dep = $dep->toApiData();
             }
             $agent_status[$id] = array(
                 'department' => $dep,
-                'enabled' => $layout->has($field_id)
+                'enabled' => $layout->has($field_id),
             );
         }
         foreach ($lm->getUserLayouts() as $id => $layout) {
             $dep = null;
             if ($id) {
                 $dep = $dm->getById($id);
-                if (!$dep) continue;
+                if (!$dep) {
+                    continue;
+                }
                 $dep = $dep->toApiData();
             }
             $user_status[$id] = array(
                 'department' => $dep,
-                'enabled' => $layout->has($field_id)
+                'enabled' => $layout->has($field_id),
             );
         }
 
@@ -263,7 +265,10 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
             $ao = $a['department'] ? $a['department']['display_order'] : -1000;
             $bo = $b['department'] ? $b['department']['display_order'] : -1000;
 
-            if ($ao == $bo) return 0;
+            if ($ao == $bo) {
+                return 0;
+            }
+
             return $ao < $bo ? -1 : 1;
         };
         uasort($agent_status, $sort_fn);
@@ -271,7 +276,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 
         return $this->createApiResponse(array(
             'agent_layouts' => $agent_status,
-            'user_layouts'  => $user_status
+            'user_layouts'  => $user_status,
         ));
     }
 
@@ -318,7 +323,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
                     'on_editticket' => true,
                     'on_viewticket' => true,
                     'on_viewticket_mode' => 'value',
-                    'on_newticket' => true
+                    'on_newticket' => true,
                 ));
                 $user_layout->add($field, 'message');
                 $change = true;
@@ -333,7 +338,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
                     'on_editticket' => true,
                     'on_viewticket' => true,
                     'on_viewticket_mode' => 'value',
-                    'on_newticket' => true
+                    'on_newticket' => true,
                 ));
                 $agent_layout->add($field, 'message');
                 $change = true;

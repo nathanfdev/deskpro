@@ -44,7 +44,6 @@ class MysqlResultsTransformer
         $this->em = $em;
     }
 
-
     /**
      * @param  array $results
      * @return array
@@ -75,7 +74,7 @@ class MysqlResultsTransformer
             $ent_objects = $this->em->getRepository($ent)->getByIds($ids, true);
             if ($ent_objects) {
                 foreach ($ent_objects as $o) {
-                    $key = $ent . ':' . $o->id;
+                    $key = $ent.':'.$o->id;
                     $objects[$key] = $o;
                 }
             }
@@ -88,7 +87,7 @@ class MysqlResultsTransformer
         $sorted_objects = array();
         foreach ($results as $hit) {
             $ent = $this->getEntityFromType($hit['object_type']);
-            $key = $ent . ':' . $hit['object_id'];
+            $key = $ent.':'.$hit['object_id'];
             if (isset($objects[$key])) {
                 $sorted_objects[] = $objects[$key];
             }
@@ -96,7 +95,6 @@ class MysqlResultsTransformer
 
         return $sorted_objects;
     }
-
 
     /**
      * @param  string                    $type

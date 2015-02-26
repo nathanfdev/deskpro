@@ -70,10 +70,9 @@ class Parentheses extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $prepared = $this->expression->prepare($statement, $section, $stack, $select, $result);
-        $prepared->setName('(' . $prepared->name() . ')');
+        $prepared->setName('('.$prepared->name().')');
 
         return $prepared;
     }
@@ -89,6 +88,6 @@ class Parentheses extends AbstractPart
      */
     public function toDpql(Display $statement, $section, array $stack)
     {
-        return '(' . $this->expression->toDpql($statement, $section, $stack) . ')';
+        return '('.$this->expression->toDpql($statement, $section, $stack).')';
     }
 }

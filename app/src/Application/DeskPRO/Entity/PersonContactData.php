@@ -49,8 +49,6 @@ class PersonContactData extends ContactDataAbstract
      */
     protected $person;
 
-
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -66,35 +64,35 @@ class PersonContactData extends ContactDataAbstract
             Events::preUpdate,
             Events::postUpdate,
             Events::preRemove,
-            Events::postRemove
+            Events::postRemove,
         );
         foreach ($events as $event) {
             $metadata->addEntityListener(
                 $event,
                 'Application\DeskPRO\Entity\EventListener\PersonContactDataChangeLogListener',
-                'on' . ucfirst($event)
+                'on'.ucfirst($event)
             );
         }
 
-        $metadata->setPrimaryTable(array( 'name' => 'people_contact_data', ));
+        $metadata->setPrimaryTable(array( 'name' => 'people_contact_data'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->addLifecycleCallback('_preSave', 'prePersist');
         $metadata->addLifecycleCallback('_preSave', 'preUpdate');
         $metadata->addLifecycleCallback('_preDelete', 'preRemove');
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'contact_type', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'contact_type', ));
-        $metadata->mapField(array( 'fieldName' => 'comment', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'comment', ));
-        $metadata->mapField(array( 'fieldName' => 'field_1', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_1', ));
-        $metadata->mapField(array( 'fieldName' => 'field_2', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_2', ));
-        $metadata->mapField(array( 'fieldName' => 'field_3', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_3', ));
-        $metadata->mapField(array( 'fieldName' => 'field_4', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_4', ));
-        $metadata->mapField(array( 'fieldName' => 'field_5', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_5', ));
-        $metadata->mapField(array( 'fieldName' => 'field_6', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_6', ));
-        $metadata->mapField(array( 'fieldName' => 'field_7', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_7', ));
-        $metadata->mapField(array( 'fieldName' => 'field_8', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_8', ));
-        $metadata->mapField(array( 'fieldName' => 'field_9', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_9', ));
-        $metadata->mapField(array( 'fieldName' => 'field_10', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_10', ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'contact_type', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'contact_type'));
+        $metadata->mapField(array( 'fieldName' => 'comment', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'comment'));
+        $metadata->mapField(array( 'fieldName' => 'field_1', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_1'));
+        $metadata->mapField(array( 'fieldName' => 'field_2', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_2'));
+        $metadata->mapField(array( 'fieldName' => 'field_3', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_3'));
+        $metadata->mapField(array( 'fieldName' => 'field_4', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_4'));
+        $metadata->mapField(array( 'fieldName' => 'field_5', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_5'));
+        $metadata->mapField(array( 'fieldName' => 'field_6', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_6'));
+        $metadata->mapField(array( 'fieldName' => 'field_7', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_7'));
+        $metadata->mapField(array( 'fieldName' => 'field_8', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_8'));
+        $metadata->mapField(array( 'fieldName' => 'field_9', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_9'));
+        $metadata->mapField(array( 'fieldName' => 'field_10', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'field_10'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
     }
 }

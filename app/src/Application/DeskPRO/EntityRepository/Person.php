@@ -49,7 +49,6 @@ class Person extends AbstractEntityRepository
     /** @var IdentityHelper */
     protected $identity_helper;
 
-
     public function findOneByPhoneNumber($from_number)
     {
         $phone_number = $this->getEntityManager()->getRepository('DeskPRO:PhoneNumber')->findByNumber($from_number);
@@ -118,7 +117,6 @@ class Person extends AbstractEntityRepository
         return $deleted_agents;
     }
 
-
     /**
      * Gets a count of active agents (suitable for license checks)
      *
@@ -132,7 +130,6 @@ class Person extends AbstractEntityRepository
             WHERE is_agent = 1 AND is_deleted = 0
         ");
     }
-
 
     /**
      * Give a department and get back the agents that are in that department.
@@ -189,7 +186,6 @@ class Person extends AbstractEntityRepository
         return null;
     }
 
-
     /**
      * Get agent names
      *
@@ -221,7 +217,7 @@ class Person extends AbstractEntityRepository
 
     public function getPersonNames($for_ids)
     {
-        $for_ids = (array)$for_ids;
+        $for_ids = (array) $for_ids;
         if (!$for_ids) {
             return array();
         }
@@ -233,7 +229,6 @@ class Person extends AbstractEntityRepository
             ORDER BY name
         ', array($for_ids), array(Connection::PARAM_INT_ARRAY));
     }
-
 
     /**
      * Get all online and active (not away) agents.
@@ -265,7 +260,6 @@ class Person extends AbstractEntityRepository
 
         $sessions = $sessions_q->setParameter('cutoff', $cutoff)->execute();
 
-
         $online_agents = array();
         foreach ($sessions as $s) {
             if ($ids_only) {
@@ -281,7 +275,6 @@ class Person extends AbstractEntityRepository
 
         return $online_agents;
     }
-
 
     /**
      * @return array
@@ -299,11 +292,10 @@ class Person extends AbstractEntityRepository
         return $agent_ids;
     }
 
-
     /**
      * Find a person by their email address.
      *
-     * @param  string $email
+     * @param  string       $email
      * @return PersonEntity
      */
     public function findOneByEmail($email, $for_write = false)
@@ -343,7 +335,7 @@ class Person extends AbstractEntityRepository
 
     public function searchByEmailStartingWith($email, $limit = null)
     {
-        $email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
+        $email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email).'%';
 
         return $this->getEntityManager()->createQuery("
             SELECT p
@@ -356,7 +348,7 @@ class Person extends AbstractEntityRepository
 
     public function searchByEmail($email, $limit = null)
     {
-        $email = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
+        $email = '%'.str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email).'%';
 
         return $this->getEntityManager()->createQuery("
             SELECT p
@@ -367,10 +359,11 @@ class Person extends AbstractEntityRepository
         ")->setParameter(1, $email)->setMaxResults($limit)->execute();
     }
 
-
     public function getPeopleFromIds(array $ids)
     {
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
         $people = $this->getEntityManager()->createQuery("
             SELECT p
@@ -384,7 +377,9 @@ class Person extends AbstractEntityRepository
 
     public function getPeopleResultsFromIds(array $ids)
     {
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
         $people = $this->getEntityManager()->createQuery("
             SELECT p
@@ -398,7 +393,7 @@ class Person extends AbstractEntityRepository
 
     public function search($q, $limit = null)
     {
-        $q = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
+        $q = '%'.str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q).'%';
 
         if (App::getSystemService('usersource_manager')->getUsersources()) {
             return $this->getEntityManager()->createQuery("
@@ -413,7 +408,7 @@ class Person extends AbstractEntityRepository
                     OR (e.email LIKE ?4)
                     OR (a.identity_friendly LIKE ?5)
                 ORDER BY p.date_last_login DESC, p.id DESC
-            ")->setParameters(array(1=> $q, 2=> $q, 3=> $q, 4=>$q, 5=>$q))->setMaxResults($limit)->execute();
+            ")->setParameters(array(1 => $q, 2 => $q, 3 => $q, 4 => $q, 5 => $q))->setMaxResults($limit)->execute();
         } else {
             return $this->getEntityManager()->createQuery("
                 SELECT p
@@ -421,10 +416,9 @@ class Person extends AbstractEntityRepository
                 LEFT JOIN p.emails e
                 WHERE (p.name LIKE ?1) OR (p.first_name LIKE ?2) OR (p.last_name LIKE ?3) OR (e.email LIKE ?4)
                 ORDER BY p.date_last_login DESC, p.id DESC
-            ")->setParameters(array(1=> $q, 2=> $q, 3=> $q, 4=>$q))->setMaxResults($limit)->execute();
+            ")->setParameters(array(1 => $q, 2 => $q, 3 => $q, 4 => $q))->setMaxResults($limit)->execute();
         }
     }
-
 
     public function getOrganizationMembers(OrganizationEntity $org, $page = 1, $limit = 50)
     {
@@ -435,7 +429,7 @@ class Person extends AbstractEntityRepository
             FROM DeskPRO:Person p INDEX BY p.id
             WHERE p.organization = ?1 AND p.is_deleted = false
             ORDER BY p.organization_manager DESC, p.last_name ASC, p.first_name ASC
-        ")->setFirstResult(($page - 1)*$limit)->setMaxResults($limit)->execute(array(1=> $org));
+        ")->setFirstResult(($page - 1)*$limit)->setMaxResults($limit)->execute(array(1 => $org));
     }
 
     public function getOrganizationMemberIds(OrganizationEntity $org)
@@ -445,14 +439,13 @@ class Person extends AbstractEntityRepository
             SELECT p.id
             FROM DeskPRO:Person p
             WHERE p.organization = ?1
-        ")->execute(array(1=> $org));
-        foreach ($results AS $result) {
+        ")->execute(array(1 => $org));
+        foreach ($results as $result) {
             $ids[] = $result['id'];
         }
 
         return $ids;
     }
-
 
     public function getUsergroupMembers(UsergroupEntity $ug)
     {
@@ -473,7 +466,6 @@ class Person extends AbstractEntityRepository
             WHERE usergroup_id = ?
         ", array($ug->id));
     }
-
 
     /**
      * @return void
@@ -499,7 +491,9 @@ class Person extends AbstractEntityRepository
 
         $grouped = array();
         foreach ($chat_counts as $id => $cnt) {
-            if (!isset($grouped[$cnt])) $grouped[$cnt] = array();
+            if (!isset($grouped[$cnt])) {
+                $grouped[$cnt] = array();
+            }
             $grouped[$cnt][] = $id;
         }
 
@@ -611,14 +605,13 @@ class Person extends AbstractEntityRepository
         $q = strtolower($q);
 
         if (BigMode::isBigMode(BigMode::PERSON_AUTOCOMPLETE)) {
-
             if (!strlen($q) && $startWith) {
                 return $db->fetchAllKeyed("
                     SELECT p.id, p.first_name, p.last_name, p.name, e.email
                     FROM people p
                     LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
                     WHERE $agent_sql
-                    " . ($excludeOrg ? " p.organization_id != $excludeOrg " : '1') . "
+                    ".($excludeOrg ? " p.organization_id != $excludeOrg " : '1')."
                     ORDER BY p.id DESC
                     LIMIT $limit
                 ");
@@ -630,7 +623,7 @@ class Person extends AbstractEntityRepository
                     WHERE
                         $agent_sql
                         LOWER(e.email) LIKE ?
-                        " . ($excludeOrg ? " AND (p.organization_id IS NULL OR p.organization_id != $excludeOrg) " : '') . "
+                        ".($excludeOrg ? " AND (p.organization_id IS NULL OR p.organization_id != $excludeOrg) " : '')."
                     GROUP BY p.id
                     ORDER BY p.date_last_login DESC, p.id DESC
                     LIMIT $limit
@@ -643,7 +636,7 @@ class Person extends AbstractEntityRepository
                     FROM people p
                     LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
                     WHERE $agent_sql
-                    " . ($excludeOrg ? " p.organization_id != $excludeOrg " : '1') . "
+                    ".($excludeOrg ? " p.organization_id != $excludeOrg " : '1')."
                     ORDER BY p.name ASC
                     LIMIT $limit
                 ");
@@ -658,7 +651,7 @@ class Person extends AbstractEntityRepository
                         OR LOWER(p.name) LIKE ?
                         OR LOWER(p.first_name) LIKE ?
                         OR LOWER(p.last_name) LIKE ?)
-                        " . ($excludeOrg ? " AND (p.organization_id IS NULL OR p.organization_id != $excludeOrg) " : '') . "
+                        ".($excludeOrg ? " AND (p.organization_id IS NULL OR p.organization_id != $excludeOrg) " : '')."
                     GROUP BY p.id
                     ORDER BY p.date_last_login DESC, p.id DESC
                     LIMIT $limit

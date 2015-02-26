@@ -62,6 +62,7 @@ class ZenDeskReader implements ZenDeskReaderInterface
     public function getPeopleCount()
     {
         $result = $this->client->users()->findAll(array('per_page' => 1));
+
         return $result->count;
     }
 
@@ -85,7 +86,7 @@ class ZenDeskReader implements ZenDeskReaderInterface
 
         if (is_array($result->users)) {
             foreach ($result->users as $person) {
-                $people[] = (array)$person;
+                $people[] = (array) $person;
             }
         }
 
@@ -101,7 +102,7 @@ class ZenDeskReader implements ZenDeskReaderInterface
         $result = $this->client->users()->find(array('id' => $ids));
         if (is_array($result->users)) {
             foreach ($result->users as $person) {
-                $people[] = (array)$person;
+                $people[] = (array) $person;
             }
         }
 
@@ -116,6 +117,7 @@ class ZenDeskReader implements ZenDeskReaderInterface
     public function getTicketsCount()
     {
         $result = $this->client->tickets()->findAll(array('per_page' => 1));
+
         return $result->count;
     }
 
@@ -129,7 +131,7 @@ class ZenDeskReader implements ZenDeskReaderInterface
 
         if (is_array($result->tickets)) {
             foreach ($result->tickets as $ticket) {
-                $tickets[] = (array)$ticket;
+                $tickets[] = (array) $ticket;
             }
         }
 

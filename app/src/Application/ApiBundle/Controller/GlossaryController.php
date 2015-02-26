@@ -34,7 +34,6 @@
 
 namespace Application\ApiBundle\Controller;
 
-
 /**
 * @SWG\Resource(
 * 	resourcePath="/glossary",
@@ -139,7 +138,7 @@ class GlossaryController extends AbstractController
         $def->definition = $this->in->getString('definition');
 
         $words = array();
-        foreach ($this->in->getCleanValueArray('word', 'string') AS $word) {
+        foreach ($this->in->getCleanValueArray('word', 'string') as $word) {
             $words[] = $def->addWord($word);
         }
 
@@ -151,7 +150,7 @@ class GlossaryController extends AbstractController
         $this->em->flush();
 
         $ids = array();
-        foreach ($words AS $word) {
+        foreach ($words as $word) {
             $ids[] = $word->id;
         }
 
@@ -274,7 +273,7 @@ class GlossaryController extends AbstractController
             $def->definition = $this->in->getString('definition');
         }
 
-        foreach ($this->in->getCleanValueArray('word', 'string') AS $word) {
+        foreach ($this->in->getCleanValueArray('word', 'string') as $word) {
             $def->addWord($word);
         }
 

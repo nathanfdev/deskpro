@@ -88,7 +88,7 @@ class Lexer
         'LIMIT', 'OFFSET', 'AS', 'NULL',
         'AND', 'OR', 'NOT', 'IN', 'LIKE', 'REGEXP',
         'ASC', 'DESC',
-        'INTERVAL'
+        'INTERVAL',
     );
 
     /**
@@ -117,7 +117,7 @@ class Lexer
         'NOT' => 'NOT',
         'IN' => 'IN',
         'LIKE' => 'LIKE',
-        'REGEXP' => 'REGEXP'
+        'REGEXP' => 'REGEXP',
     );
 
     /**
@@ -145,7 +145,7 @@ class Lexer
 
     public function yylex()
     {
-        return $this->{'yylex' . $this->_yy_state}();
+        return $this->{'yylex'.$this->_yy_state}();
     }
 
     public function yypushstate($state)
@@ -164,11 +164,9 @@ class Lexer
         $this->_yy_state = $state;
     }
 
-
-
     public function yylex1()
     {
-        $tokenMap = array (
+        $tokenMap = array(
               1 => 0,
               2 => 0,
               3 => 0,
@@ -189,13 +187,13 @@ class Lexer
         $yy_global_pattern = '/\G(\\s+)|\G(,)|\G(\\()|\G(\\))|\G(;)|\G(@)|\G(\'([^\\\\\']+|\\\\.)*\')|\G(-?([0-9]*\\.[0-9]+|[0-9]+))|\G(%[a-zA-Z0-9_:.]+%)|\G([a-zA-Z_][a-zA-Z0-9_]*\\.([a-zA-Z_][a-zA-Z0-9_]*(\\[[a-zA-Z0-9_]+\\])?\\.)*\\*)|\G([a-zA-Z_][a-zA-Z0-9_]*\\.([a-zA-Z_][a-zA-Z0-9_]*(\\[[a-zA-Z0-9_]+\\])?\\.)*[a-zA-Z_][a-zA-Z0-9_]*(\\[[a-zA-Z0-9_]+\\])?)|\G(\\+|-|\\*|\/|!=|<>|>=|<=|<|>|=|&&|\\|\\||!)|\G([a-zA-Z_][a-zA-Z0-9_]*)/';
 
         do {
-            if (preg_match($yy_global_pattern,$this->_input, $yymatches, null, $this->_counter)) {
+            if (preg_match($yy_global_pattern, $this->_input, $yymatches, null, $this->_counter)) {
                 $yysubmatches = $yymatches;
                 $yymatches = array_filter($yymatches, 'strlen'); // remove empty sub-patterns
                 if (!count($yymatches)) {
-                    throw new Exception('Error: lexing failed because a rule matched' .
-                        ' an empty string.  Input "' . substr($this->_input,
-                        $this->_counter, 5) . '... state INITIAL');
+                    throw new Exception('Error: lexing failed because a rule matched'.
+                        ' an empty string.  Input "'.substr($this->_input,
+                        $this->_counter, 5).'... state INITIAL');
                 }
                 next($yymatches); // skip global match
                 $this->token = key($yymatches); // token number
@@ -207,7 +205,7 @@ class Lexer
                     $yysubmatches = array();
                 }
                 $this->value = current($yymatches); // token value
-                $r = $this->{'yy_r1_' . $this->token}($yysubmatches);
+                $r = $this->{'yy_r1_'.$this->token}($yysubmatches);
                 if ($r === null) {
                     $this->_counter += strlen($this->value);
                     $this->line += substr_count($this->value, "\n");
@@ -248,7 +246,7 @@ class Lexer
                             throw new Exception('cannot do yymore for the last token');
                         }
                         $yysubmatches = array();
-                        if (preg_match('/' . $yy_yymore_patterns[$this->token][1] . '/',
+                        if (preg_match('/'.$yy_yymore_patterns[$this->token][1].'/',
                               $this->_input, $yymatches, null, $this->_counter)) {
                             $yysubmatches = $yymatches;
                             $yymatches = array_filter($yymatches, 'strlen'); // remove empty sub-patterns
@@ -264,7 +262,7 @@ class Lexer
                                 $yysubmatches = array();
                             }
                         }
-                        $r = $this->{'yy_r1_' . $this->token}($yysubmatches);
+                        $r = $this->{'yy_r1_'.$this->token}($yysubmatches);
                     } while ($r !== null && !is_bool($r));
                     if ($r === true) {
                         // we have changed state
@@ -287,69 +285,76 @@ class Lexer
                     }
                 }
             } else {
-                throw new Exception('Unexpected input at line' . $this->line .
-                    ': ' . $this->_input[$this->_counter]);
+                throw new Exception('Unexpected input at line'.$this->line.
+                    ': '.$this->_input[$this->_counter]);
             }
             break;
         } while (true);
-
     } // end function
 
     const INITIAL = 1;
     public function yy_r1_1($yy_subpatterns)
     {
- return false;     }
+        return false;
+    }
     public function yy_r1_2($yy_subpatterns)
     {
- $this->token = Parser::T_COMMA;     }
+        $this->token = Parser::T_COMMA;
+    }
     public function yy_r1_3($yy_subpatterns)
     {
- $this->token = Parser::T_LEFT_PAREN;     }
+        $this->token = Parser::T_LEFT_PAREN;
+    }
     public function yy_r1_4($yy_subpatterns)
     {
- $this->token = Parser::T_RIGHT_PAREN;     }
+        $this->token = Parser::T_RIGHT_PAREN;
+    }
     public function yy_r1_5($yy_subpatterns)
     {
- $this->token = Parser::T_SEMICOLON;     }
+        $this->token = Parser::T_SEMICOLON;
+    }
     public function yy_r1_6($yy_subpatterns)
     {
- $this->token = Parser::T_AT;     }
+        $this->token = Parser::T_AT;
+    }
     public function yy_r1_7($yy_subpatterns)
     {
- $this->token = Parser::T_QUOTED;     }
+        $this->token = Parser::T_QUOTED;
+    }
     public function yy_r1_9($yy_subpatterns)
     {
- $this->token = Parser::T_NUMBER;     }
+        $this->token = Parser::T_NUMBER;
+    }
     public function yy_r1_11($yy_subpatterns)
     {
- $this->token = Parser::T_PLACEHOLDER;     }
+        $this->token = Parser::T_PLACEHOLDER;
+    }
     public function yy_r1_12($yy_subpatterns)
     {
- $this->token = Parser::T_COLUMN_STAR;     }
+        $this->token = Parser::T_COLUMN_STAR;
+    }
     public function yy_r1_15($yy_subpatterns)
     {
- $this->token = Parser::T_COLUMN;     }
+        $this->token = Parser::T_COLUMN;
+    }
     public function yy_r1_19($yy_subpatterns)
     {
-
-    if (isset($this->_operatorMap[$this->value])) {
-        $this->token = constant(__NAMESPACE__ . '\\Parser::T_OP_' . $this->_operatorMap[$this->value]);
-    } else {
-        throw new Exception("Unknown operator $this->value");
-    }
+        if (isset($this->_operatorMap[$this->value])) {
+            $this->token = constant(__NAMESPACE__.'\\Parser::T_OP_'.$this->_operatorMap[$this->value]);
+        } else {
+            throw new Exception("Unknown operator $this->value");
+        }
     }
     public function yy_r1_20($yy_subpatterns)
     {
+        $upper = strtoupper($this->value);
 
-    $upper = strtoupper($this->value);
-
-    if (isset($this->_operatorMap[$upper])) {
-        $this->token = constant(__NAMESPACE__ . '\\Parser::T_OP_' . $this->_operatorMap[$upper]);
-    } elseif (in_array($upper, $this->_reserved)) {
-        $this->token = constant(__NAMESPACE__ . '\\Parser::T_' . $upper);
-    }  else {
-        $this->token = Parser::T_LITERAL;
+        if (isset($this->_operatorMap[$upper])) {
+            $this->token = constant(__NAMESPACE__.'\\Parser::T_OP_'.$this->_operatorMap[$upper]);
+        } elseif (in_array($upper, $this->_reserved)) {
+            $this->token = constant(__NAMESPACE__.'\\Parser::T_'.$upper);
+        } else {
+            $this->token = Parser::T_LITERAL;
+        }
     }
-    }
-
 }

@@ -65,7 +65,6 @@ class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface
      */
     private $logger;
 
-
     /**
      * @param TicketDetectorInterface $detector
      */

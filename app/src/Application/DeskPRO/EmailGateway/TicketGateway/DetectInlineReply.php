@@ -78,7 +78,6 @@ class DetectInlineReply implements Loggable
         $this->reader = $reader;
     }
 
-
     /**
      * @param \Orb\Log\Logger $logger
      */
@@ -87,7 +86,6 @@ class DetectInlineReply implements Loggable
         $this->logger = $logger;
     }
 
-
     /**
      * @return \Orb\Log\Logger
      */
@@ -95,7 +93,6 @@ class DetectInlineReply implements Loggable
     {
         return $this->logger;
     }
-
 
     /**
      * How much longer/shorter does a messag eneed to be before we think its an inline reply
@@ -108,7 +105,6 @@ class DetectInlineReply implements Loggable
     {
         $this->threshold = $threshold;
     }
-
 
     /**
      * Check to see if we've detected an inline reply
@@ -132,12 +128,16 @@ class DetectInlineReply implements Loggable
             return null;
         }
 
-        if ($this->logger) $this->logger->logDebug('[DetectInlineReply] Found ' . count($message_texts) .' texts');
+        if ($this->logger) {
+            $this->logger->logDebug('[DetectInlineReply] Found '.count($message_texts).' texts');
+        }
         $ticket_messages = $this->em->getRepository('DeskPRO:TicketMessage')->getByIds(array_keys($message_texts));
 
         foreach ($message_texts as $message_id => $message_text) {
             if (!isset($ticket_messages[$message_id])) {
-                if ($this->logger) $this->logger->logDebug('[DetectInlineReply] Invalid message text for id ' . $message_id);
+                if ($this->logger) {
+                    $this->logger->logDebug('[DetectInlineReply] Invalid message text for id '.$message_id);
+                }
                 continue;
             }
 
@@ -146,9 +146,14 @@ class DetectInlineReply implements Loggable
             $real_message_text = $this->normalizeMessage($ticket_message->message);
 
             $diff = $this->getMessageDifference($message_text, $real_message_text);
-            if ($this->logger) $this->logger->logDebug('[DetectInlineReply] Message diff for message ' . $message_id . ' is ' . $diff);
+            if ($this->logger) {
+                $this->logger->logDebug('[DetectInlineReply] Message diff for message '.$message_id.' is '.$diff);
+            }
             if ($diff >= $this->threshold) {
-                if ($this->logger) $this->logger->logDebug('[DetectInlineReply] -- Match. Diff over threshold of ' . $this->threshold);
+                if ($this->logger) {
+                    $this->logger->logDebug('[DetectInlineReply] -- Match. Diff over threshold of '.$this->threshold);
+                }
+
                 return $ticket_message;
             }
         }
@@ -197,13 +202,19 @@ class DetectInlineReply implements Loggable
 
         $body = $this->reader->getBodyHtml()->getBodyUtf8();
         if (!$body) {
-            if ($this->logger) $this->logger->logDebug('[DetectInlineReply] No body');
+            if ($this->logger) {
+                $this->logger->logDebug('[DetectInlineReply] No body');
+            }
+
             return $this->message_texts;
         }
 
         $matches = 0;
         if (!preg_match_all('#<a[^>]*dp_message_([0-9]+)_begin[^>]*>(.*?)<a[^>]*dp_message_\\1_end#s', $body, $matches, \PREG_SET_ORDER)) {
-            if ($this->logger) $this->logger->logDebug('[DetectInlineReply] No message texts');
+            if ($this->logger) {
+                $this->logger->logDebug('[DetectInlineReply] No message texts');
+            }
+
             return $this->message_texts;
         }
 
@@ -211,7 +222,9 @@ class DetectInlineReply implements Loggable
             $message_id = $match[1];
             $message    = $match[2];
 
-            if ($this->logger) $this->logger->logDebug('[DetectInlineReply] Found message: ' . $message_id);
+            if ($this->logger) {
+                $this->logger->logDebug('[DetectInlineReply] Found message: '.$message_id);
+            }
 
             // Trim off the </a> which is part of the marker
             if (($pos = stripos($message, '</a>')) !== false) {
@@ -222,14 +235,18 @@ class DetectInlineReply implements Loggable
 
             // Too short to try and guess
             if (!$message || strlen($message) < 100) {
-                if ($this->logger) $this->logger->logDebug('[DetectInlineReply] -- Too short for guess');
+                if ($this->logger) {
+                    $this->logger->logDebug('[DetectInlineReply] -- Too short for guess');
+                }
                 continue;
             }
 
             $this->message_texts[$message_id] = $message;
 
             if (count($this->message_texts) >= $this->history_limit) {
-                if ($this->logger) $this->logger->logDebug('[DetectInlineReply] Reached history limit of ' . $this->history_limit);
+                if ($this->logger) {
+                    $this->logger->logDebug('[DetectInlineReply] Reached history limit of '.$this->history_limit);
+                }
                 break;
             }
         }

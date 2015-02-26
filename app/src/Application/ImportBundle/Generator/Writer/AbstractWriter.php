@@ -37,5 +37,4 @@ use Application\ImportBundle\Generator\AbstractGenerator;
  */
 abstract class AbstractWriter extends AbstractGenerator implements WriterInterface
 {
-
 }

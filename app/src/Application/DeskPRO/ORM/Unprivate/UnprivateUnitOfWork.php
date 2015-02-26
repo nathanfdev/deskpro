@@ -1,14 +1,25 @@
 <?php
 /* This file has been auto-generated. See build-vendors-mutate.php */
 namespace Application\DeskPRO\ORM\Unprivate;
-use Doctrine\ORM\Configuration, Doctrine\ORM\Persisters, Doctrine\ORM\EntityManager, Doctrine\ORM\Events, Doctrine\ORM\Event, Doctrine\ORM\Query, Doctrine\ORM\Internal, Doctrine\ORM\NativeQuery, Doctrine\ORM\QueryBuilder, Doctrine\ORM\PersistentCollection, Doctrine\ORM\ORMInvalidArgumentException, Doctrine\ORM\ORMException, Doctrine\ORM\OptimisticLockException, Doctrine\ORM\TransactionRequiredException, Doctrine\ORM\EntityNotFoundException;
+
+use Doctrine\ORM\Persisters;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Events;
+use Doctrine\ORM\Event;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\Internal;
+use Doctrine\ORM\PersistentCollection;
+use Doctrine\ORM\ORMInvalidArgumentException;
+use Doctrine\ORM\ORMException;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\TransactionRequiredException;
+use Doctrine\ORM\EntityNotFoundException;
 use Exception;
 use InvalidArgumentException;
 use UnexpectedValueException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\NotifyPropertyChanged;
-use Doctrine\Common\PropertyChangedListener;
 use Doctrine\Common\Persistence\ObjectManagerAware;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Proxy\Proxy;
@@ -55,10 +66,10 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
     }
     public function commit($entity = null)
     {
-                if ($this->evm->hasListeners(Events::preFlush)) {
+        if ($this->evm->hasListeners(Events::preFlush)) {
             $this->evm->dispatchEvent(Events::preFlush, new PreFlushEventArgs($this->em));
         }
-                if ($entity === null) {
+        if ($entity === null) {
             $this->computeChangeSets();
         } elseif (is_object($entity)) {
             $this->computeSingleEntityChangeSet($entity);
@@ -67,7 +78,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 $this->computeSingleEntityChangeSet($object);
             }
         }
-        if ( ! ($this->entityInsertions ||
+        if (! ($this->entityInsertions ||
                 $this->entityDeletions ||
                 $this->entityUpdates ||
                 $this->collectionUpdates ||
@@ -75,14 +86,16 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 $this->orphanRemovals)) {
             $this->dispatchOnFlushEvent();
             $this->dispatchPostFlushEvent();
-            return;         }
+
+            return;
+        }
         if ($this->orphanRemovals) {
             foreach ($this->orphanRemovals as $orphan) {
                 $this->remove($orphan);
             }
         }
         $this->dispatchOnFlushEvent();
-                $commitOrder = $this->getCommitOrder();
+        $commitOrder = $this->getCommitOrder();
         $conn = $this->em->getConnection();
         $conn->beginTransaction();
         try {
@@ -96,16 +109,16 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                     $this->executeUpdates($class);
                 }
             }
-                        if ($this->extraUpdates) {
+            if ($this->extraUpdates) {
                 $this->executeExtraUpdates();
             }
-                        foreach ($this->collectionDeletions as $collectionToDelete) {
+            foreach ($this->collectionDeletions as $collectionToDelete) {
                 $this->getCollectionPersister($collectionToDelete->getMapping())->delete($collectionToDelete);
             }
-                        foreach ($this->collectionUpdates as $collectionToUpdate) {
+            foreach ($this->collectionUpdates as $collectionToUpdate) {
                 $this->getCollectionPersister($collectionToUpdate->getMapping())->update($collectionToUpdate);
             }
-                        if ($this->entityDeletions) {
+            if ($this->entityDeletions) {
                 for ($count = count($commitOrder), $i = $count - 1; $i >= 0; --$i) {
                     $this->executeDeletions($commitOrder[$i]);
                 }
@@ -116,11 +129,11 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
             $conn->rollback();
             throw $e;
         }
-                foreach ($this->visitedCollections as $coll) {
+        foreach ($this->visitedCollections as $coll) {
             $coll->takeSnapshot();
         }
         $this->dispatchPostFlushEvent();
-                $this->entityInsertions =
+        $this->entityInsertions =
         $this->entityUpdates =
         $this->entityDeletions =
         $this->extraUpdates =
@@ -142,28 +155,28 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
     {
         $state = $this->getEntityState($entity);
         if ($state !== self::STATE_MANAGED && $state !== self::STATE_REMOVED) {
-            throw new \InvalidArgumentException("Entity has to be managed or scheduled for removal for single computation " . self::objToStr($entity));
+            throw new \InvalidArgumentException("Entity has to be managed or scheduled for removal for single computation ".self::objToStr($entity));
         }
         $class = $this->em->getClassMetadata(get_class($entity));
         if ($state === self::STATE_MANAGED && $class->isChangeTrackingDeferredImplicit()) {
             $this->persist($entity);
         }
-                $this->computeScheduleInsertsChangeSets();
+        $this->computeScheduleInsertsChangeSets();
         if ($class->isReadOnly) {
             return;
         }
-                if ($entity instanceof Proxy && ! $entity->__isInitialized__) {
+        if ($entity instanceof Proxy && ! $entity->__isInitialized__) {
             return;
         }
-                $oid = spl_object_hash($entity);
-        if ( ! isset($this->entityInsertions[$oid]) && isset($this->entityStates[$oid])) {
+        $oid = spl_object_hash($entity);
+        if (! isset($this->entityInsertions[$oid]) && isset($this->entityStates[$oid])) {
             $this->computeChangeSet($class, $entity);
         }
     }
     protected function executeExtraUpdates()
     {
         foreach ($this->extraUpdates as $oid => $update) {
-            list ($entity, $changeset) = $update;
+            list($entity, $changeset) = $update;
             $this->entityChangeSets[$oid] = $changeset;
             $this->getEntityPersister(get_class($entity))->update($entity);
         }
@@ -174,6 +187,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         if (isset($this->entityChangeSets[$oid])) {
             return $this->entityChangeSets[$oid];
         }
+
         return array();
     }
     public function computeChangeSet(ClassMetadata $class, $entity)
@@ -182,7 +196,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         if (isset($this->readOnlyObjects[$oid])) {
             return;
         }
-        if ( ! $class->isInheritanceTypeNone()) {
+        if (! $class->isInheritanceTypeNone()) {
             $class = $this->em->getClassMetadata(get_class($entity));
         }
         $invoke = $this->listenersInvoker->getSubscribedSystems($class, Events::preFlush) & ~ListenersInvoker::INVOKE_MANAGER;
@@ -199,28 +213,28 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                     }
                     $value = new ArrayCollection($value->getValues());
                 }
-                                if ( ! $value instanceof Collection) {
+                if (! $value instanceof Collection) {
                     $value = new ArrayCollection($value);
                 }
                 $assoc = $class->associationMappings[$name];
-                                $value = new PersistentCollection(
+                $value = new PersistentCollection(
                     $this->em, $this->em->getClassMetadata($assoc['targetEntity']), $value
                 );
                 $value->setOwner($entity, $assoc);
-                $value->setDirty( ! $value->isEmpty());
+                $value->setDirty(! $value->isEmpty());
                 $class->reflFields[$name]->setValue($entity, $value);
                 $actualData[$name] = $value;
                 continue;
             }
-            if (( ! $class->isIdentifier($name) || ! $class->isIdGeneratorIdentity()) && ($name !== $class->versionField)) {
+            if ((! $class->isIdentifier($name) || ! $class->isIdGeneratorIdentity()) && ($name !== $class->versionField)) {
                 $actualData[$name] = $value;
             }
         }
-        if ( ! isset($this->originalEntityData[$oid])) {
-                                    $this->originalEntityData[$oid] = $actualData;
+        if (! isset($this->originalEntityData[$oid])) {
+            $this->originalEntityData[$oid] = $actualData;
             $changeSet = array();
             foreach ($actualData as $propName => $actualValue) {
-                if ( ! isset($class->associationMappings[$propName])) {
+                if (! isset($class->associationMappings[$propName])) {
                     $changeSet[$propName] = array(null, $actualValue);
                     continue;
                 }
@@ -231,20 +245,20 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
             }
             $this->entityChangeSets[$oid] = $changeSet;
         } else {
-                                    $originalData           = $this->originalEntityData[$oid];
+            $originalData           = $this->originalEntityData[$oid];
             $isChangeTrackingNotify = $class->isChangeTrackingNotify();
             $changeSet              = ($isChangeTrackingNotify && isset($this->entityChangeSets[$oid]))
                 ? $this->entityChangeSets[$oid]
                 : array();
             foreach ($actualData as $propName => $actualValue) {
-                                if ( ! (isset($originalData[$propName]) || array_key_exists($propName, $originalData))) {
+                if (! (isset($originalData[$propName]) || array_key_exists($propName, $originalData))) {
                     continue;
                 }
                 $orgValue = $originalData[$propName];
-                                if ($orgValue === $actualValue) {
+                if ($orgValue === $actualValue) {
                     continue;
                 }
-                                if ( ! isset($class->associationMappings[$propName])) {
+                if (! isset($class->associationMappings[$propName])) {
                     if ($isChangeTrackingNotify) {
                         continue;
                     }
@@ -252,18 +266,21 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                     continue;
                 }
                 $assoc = $class->associationMappings[$propName];
-                                                                if ($actualValue instanceof PersistentCollection) {
+                if ($actualValue instanceof PersistentCollection) {
                     $owner = $actualValue->getOwner();
-                    if ($owner === null) {                         $actualValue->setOwner($entity, $assoc);
-                    } else if ($owner !== $entity) {                         if (!$actualValue->isInitialized()) {
-                            $actualValue->initialize();                         }
+                    if ($owner === null) {
+                        $actualValue->setOwner($entity, $assoc);
+                    } elseif ($owner !== $entity) {
+                        if (!$actualValue->isInitialized()) {
+                            $actualValue->initialize();
+                        }
                         $newValue = clone $actualValue;
                         $newValue->setOwner($entity, $assoc);
                         $class->reflFields[$propName]->setValue($entity, $newValue);
                     }
                 }
                 if ($orgValue instanceof PersistentCollection) {
-                                        $coid = spl_object_hash($orgValue);
+                    $coid = spl_object_hash($orgValue);
                     if (isset($this->collectionDeletions[$coid])) {
                         continue;
                     }
@@ -286,7 +303,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 $this->entityUpdates[$oid]      = $entity;
             }
         }
-                foreach ($class->associationMappings as $field => $assoc) {
+        foreach ($class->associationMappings as $field => $assoc) {
             if (($val = $class->reflFields[$field]->getValue($entity)) !== null) {
                 $this->computeAssociationChanges($assoc, $val);
                 if (!isset($this->entityChangeSets[$oid]) &&
@@ -303,13 +320,13 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
     }
     public function computeChangeSets()
     {
-                $this->computeScheduleInsertsChangeSets();
-                foreach ($this->identityMap as $className => $entities) {
+        $this->computeScheduleInsertsChangeSets();
+        foreach ($this->identityMap as $className => $entities) {
             $class = $this->em->getClassMetadata($className);
-                        if ($class->isReadOnly) {
+            if ($class->isReadOnly) {
                 continue;
             }
-                                    switch (true) {
+            switch (true) {
                 case ($class->isChangeTrackingDeferredImplicit()):
                     $entitiesToProcess = $entities;
                     break;
@@ -320,11 +337,11 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                     $entitiesToProcess = array();
             }
             foreach ($entitiesToProcess as $entity) {
-                                if ($entity instanceof Proxy && ! $entity->__isInitialized__) {
+                if ($entity instanceof Proxy && ! $entity->__isInitialized__) {
                     continue;
                 }
-                                $oid = spl_object_hash($entity);
-                if ( ! isset($this->entityInsertions[$oid]) && isset($this->entityStates[$oid])) {
+                $oid = spl_object_hash($entity);
+                if (! isset($this->entityInsertions[$oid]) && isset($this->entityStates[$oid])) {
                     $this->computeChangeSet($class, $entity);
                 }
             }
@@ -342,11 +359,11 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
             }
             $this->visitedCollections[$coid] = $value;
         }
-                                $unwrappedValue = ($assoc['type'] & ClassMetadata::TO_ONE) ? array($value) : $value->unwrap();
+        $unwrappedValue = ($assoc['type'] & ClassMetadata::TO_ONE) ? array($value) : $value->unwrap();
         $targetClass    = $this->em->getClassMetadata($assoc['targetEntity']);
         foreach ($unwrappedValue as $key => $entry) {
             $state = $this->getEntityState($entry, self::STATE_NEW);
-            if ( ! ($entry instanceof $assoc['targetEntity'])) {
+            if (! ($entry instanceof $assoc['targetEntity'])) {
                 throw new ORMException(
                     sprintf(
                         'Found entity of type %s on association %s#%s, but expecting %s',
@@ -359,7 +376,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
             }
             switch ($state) {
                 case self::STATE_NEW:
-                    if ( ! $assoc['isCascadePersist']) {
+                    if (! $assoc['isCascadePersist']) {
                         throw ORMInvalidArgumentException::newEntityFoundThroughRelationship($assoc, $entry);
                     }
                     $this->persistNew($targetClass, $entry);
@@ -367,8 +384,8 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                     break;
                 case self::STATE_REMOVED:
                                                             if ($assoc['type'] & ClassMetadata::TO_MANY) {
-                        unset($value[$key]);
-                    }
+                                                                unset($value[$key]);
+                                                            }
                     break;
                 case self::STATE_DETACHED:
                                                             throw ORMInvalidArgumentException::detachedEntityFoundThroughRelationship($assoc, $entry);
@@ -385,9 +402,9 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
             $this->listenersInvoker->invoke($class, Events::prePersist, $entity, new LifecycleEventArgs($entity, $this->em), $invoke);
         }
         $idGen = $class->idGenerator;
-        if ( ! $idGen->isPostInsertGenerator()) {
+        if (! $idGen->isPostInsertGenerator()) {
             $idValue = $idGen->generate($this->em, $entity);
-            if ( ! $idGen instanceof \Doctrine\ORM\Id\AssignedGenerator) {
+            if (! $idGen instanceof \Doctrine\ORM\Id\AssignedGenerator) {
                 $idValue = array($class->identifier[0] => $idValue);
                 $class->setIdentifierValues($entity, $idValue);
             }
@@ -399,24 +416,24 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
     public function recomputeSingleEntityChangeSet(ClassMetadata $class, $entity)
     {
         $oid = spl_object_hash($entity);
-        if ( ! isset($this->entityStates[$oid]) || $this->entityStates[$oid] != self::STATE_MANAGED) {
+        if (! isset($this->entityStates[$oid]) || $this->entityStates[$oid] != self::STATE_MANAGED) {
             throw ORMInvalidArgumentException::entityNotManaged($entity);
         }
-                if ($class->isChangeTrackingNotify()) {
+        if ($class->isChangeTrackingNotify()) {
             return;
         }
-        if ( ! $class->isInheritanceTypeNone()) {
+        if (! $class->isInheritanceTypeNone()) {
             $class = $this->em->getClassMetadata(get_class($entity));
         }
         $actualData = array();
         foreach ($class->reflFields as $name => $refProp) {
-            if (( ! $class->isIdentifier($name) || ! $class->isIdGeneratorIdentity())
+            if ((! $class->isIdentifier($name) || ! $class->isIdGeneratorIdentity())
                 && ($name !== $class->versionField)
                 && ! $class->isCollectionValuedAssociation($name)) {
                 $actualData[$name] = $refProp->getValue($entity);
             }
         }
-        if ( ! isset($this->originalEntityData[$oid])) {
+        if (! isset($this->originalEntityData[$oid])) {
             throw new \RuntimeException('Cannot call recomputeSingleEntityChangeSet before computeChangeSet on an entity.');
         }
         $originalData = $this->originalEntityData[$oid];
@@ -430,7 +447,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         if ($changeSet) {
             if (isset($this->entityChangeSets[$oid])) {
                 $this->entityChangeSets[$oid] = array_merge($this->entityChangeSets[$oid], $changeSet);
-            } else if ( ! isset($this->entityInsertions[$oid])) {
+            } elseif (! isset($this->entityInsertions[$oid])) {
                 $this->entityChangeSets[$oid] = $changeSet;
                 $this->entityUpdates[$oid]    = $entity;
             }
@@ -455,7 +472,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         }
         $postInsertIds = $persister->executeInserts();
         if ($postInsertIds) {
-                        foreach ($postInsertIds as $id => $entity) {
+            foreach ($postInsertIds as $id => $entity) {
                 $oid     = spl_object_hash($entity);
                 $idField = $class->identifier[0];
                 $class->reflFields[$idField]->setValue($entity, $id);
@@ -483,7 +500,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 $this->listenersInvoker->invoke($class, Events::preUpdate, $entity, new PreUpdateEventArgs($entity, $this->em, $this->entityChangeSets[$oid]), $preUpdateInvoke);
                 $this->recomputeSingleEntityChangeSet($class, $entity);
             }
-            if ( ! empty($this->entityChangeSets[$oid])) {
+            if (! empty($this->entityChangeSets[$oid])) {
                 $persister->update($entity);
             }
             unset($this->entityUpdates[$oid]);
@@ -508,7 +525,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 $this->originalEntityData[$oid],
                 $this->entityStates[$oid]
             );
-                                                if ( ! $class->isIdentifierNatural()) {
+            if (! $class->isIdentifierNatural()) {
                 $class->reflFields[$class->identifier[0]]->setValue($entity, null);
             }
             if ($invoke !== ListenersInvoker::INVOKE_NONE) {
@@ -522,7 +539,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
             $entityChangeSet = array_merge($this->entityInsertions, $this->entityUpdates, $this->entityDeletions);
         }
         $calc = $this->getCommitOrderCalculator();
-                                                $newNodes = array();
+        $newNodes = array();
         foreach ($entityChangeSet as $entity) {
             $className = $this->em->getClassMetadata(get_class($entity))->name;
             if ($calc->hasClass($className)) {
@@ -532,23 +549,23 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
             $calc->addClass($class);
             $newNodes[] = $class;
         }
-                while ($class = array_pop($newNodes)) {
+        while ($class = array_pop($newNodes)) {
             foreach ($class->associationMappings as $assoc) {
-                if ( ! ($assoc['isOwningSide'] && $assoc['type'] & ClassMetadata::TO_ONE)) {
+                if (! ($assoc['isOwningSide'] && $assoc['type'] & ClassMetadata::TO_ONE)) {
                     continue;
                 }
                 $targetClass = $this->em->getClassMetadata($assoc['targetEntity']);
-                if ( ! $calc->hasClass($targetClass->name)) {
+                if (! $calc->hasClass($targetClass->name)) {
                     $calc->addClass($targetClass);
                     $newNodes[] = $targetClass;
                 }
                 $calc->addDependency($targetClass, $class);
-                                if ( ! $targetClass->subClasses) {
+                if (! $targetClass->subClasses) {
                     continue;
                 }
                 foreach ($targetClass->subClasses as $subClassName) {
                     $targetSubClass = $this->em->getClassMetadata($subClassName);
-                    if ( ! $calc->hasClass($subClassName)) {
+                    if (! $calc->hasClass($subClassName)) {
                         $calc->addClass($targetSubClass);
                         $newNodes[] = $targetSubClass;
                     }
@@ -556,6 +573,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 }
             }
         }
+
         return $calc->getCommitOrder();
     }
     public function scheduleForInsert($entity)
@@ -588,13 +606,13 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
     public function scheduleForUpdate($entity)
     {
         $oid = spl_object_hash($entity);
-        if ( ! isset($this->entityIdentifiers[$oid])) {
+        if (! isset($this->entityIdentifiers[$oid])) {
             throw ORMInvalidArgumentException::entityHasNoIdentity($entity, "scheduling for update");
         }
         if (isset($this->entityDeletions[$oid])) {
             throw ORMInvalidArgumentException::entityIsRemoved($entity, "schedule for update");
         }
-        if ( ! isset($this->entityUpdates[$oid]) && ! isset($this->entityInsertions[$oid])) {
+        if (! isset($this->entityUpdates[$oid]) && ! isset($this->entityInsertions[$oid])) {
             $this->entityUpdates[$oid] = $entity;
         }
     }
@@ -615,6 +633,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
     public function isScheduledForDirtyCheck($entity)
     {
         $rootEntityName = $this->em->getClassMetadata(get_class($entity))->rootEntityName;
+
         return isset($this->scheduledForDirtyCheck[$rootEntityName][spl_object_hash($entity)]);
     }
     public function scheduleForDelete($entity)
@@ -625,15 +644,17 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 $this->removeFromIdentityMap($entity);
             }
             unset($this->entityInsertions[$oid], $this->entityStates[$oid]);
-            return;         }
-        if ( ! $this->isInIdentityMap($entity)) {
+
+            return;
+        }
+        if (! $this->isInIdentityMap($entity)) {
             return;
         }
         $this->removeFromIdentityMap($entity);
         if (isset($this->entityUpdates[$oid])) {
             unset($this->entityUpdates[$oid]);
         }
-        if ( ! isset($this->entityDeletions[$oid])) {
+        if (! isset($this->entityDeletions[$oid])) {
             $this->entityDeletions[$oid] = $entity;
             $this->entityStates[$oid]    = self::STATE_REMOVED;
         }
@@ -645,6 +666,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
     public function isEntityScheduled($entity)
     {
         $oid = spl_object_hash($entity);
+
         return isset($this->entityInsertions[$oid])
             || isset($this->entityUpdates[$oid])
             || isset($this->entityDeletions[$oid]);
@@ -661,6 +683,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
             return false;
         }
         $this->identityMap[$className][$idHash] = $entity;
+
         return true;
     }
     public function getEntityState($entity, $assume = null)
@@ -672,9 +695,9 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         if ($assume !== null) {
             return $assume;
         }
-                                        $class = $this->em->getClassMetadata(get_class($entity));
+        $class = $this->em->getClassMetadata(get_class($entity));
         $id    = $class->getIdentifierValues($entity);
-        if ( ! $id) {
+        if (! $id) {
             return self::STATE_NEW;
         }
         if ($class->containsForeignIdentifier) {
@@ -683,24 +706,26 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         switch (true) {
             case ($class->isIdentifierNatural());
                                 if ($class->isVersioned) {
-                    return ($class->getFieldValue($entity, $class->versionField))
+                                    return ($class->getFieldValue($entity, $class->versionField))
                         ? self::STATE_DETACHED
                         : self::STATE_NEW;
-                }
+                                }
                                 if ($this->tryGetById($id, $class->rootEntityName)) {
-                    return self::STATE_DETACHED;
-                }
+                                    return self::STATE_DETACHED;
+                                }
                                 if ($this->getEntityPersister($class->name)->exists($entity)) {
-                    return self::STATE_DETACHED;
-                }
+                                    return self::STATE_DETACHED;
+                                }
+
                 return self::STATE_NEW;
-            case ( ! $class->idGenerator->isPostInsertGenerator()):
+            case (! $class->idGenerator->isPostInsertGenerator()):
                                 if ($this->tryGetById($id, $class->rootEntityName)) {
-                    return self::STATE_DETACHED;
-                }
+                                    return self::STATE_DETACHED;
+                                }
                                 if ($this->getEntityPersister($class->name)->exists($entity)) {
-                    return self::STATE_DETACHED;
-                }
+                                    return self::STATE_DETACHED;
+                                }
+
                 return self::STATE_NEW;
             default:
                 return self::STATE_DETACHED;
@@ -718,8 +743,10 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         if (isset($this->identityMap[$className][$idHash])) {
             unset($this->identityMap[$className][$idHash]);
             unset($this->readOnlyObjects[$oid]);
+
             return true;
         }
+
         return false;
     }
     public function getByIdHash($idHash, $rootClassName)
@@ -731,12 +758,13 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         if (isset($this->identityMap[$rootClassName][$idHash])) {
             return $this->identityMap[$rootClassName][$idHash];
         }
+
         return false;
     }
     public function isInIdentityMap($entity)
     {
         $oid = spl_object_hash($entity);
-        if ( ! isset($this->entityIdentifiers[$oid])) {
+        if (! isset($this->entityIdentifiers[$oid])) {
             return false;
         }
         $classMetadata = $this->em->getClassMetadata(get_class($entity));
@@ -744,6 +772,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         if ($idHash === '') {
             return false;
         }
+
         return isset($this->identityMap[$classMetadata->rootEntityName][$idHash]);
     }
     public function containsIdHash($idHash, $rootClassName)
@@ -759,15 +788,16 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
     {
         $oid = spl_object_hash($entity);
         if (isset($visited[$oid])) {
-            return;         }
+            return;
+        }
         $visited[$oid] = $entity;
         $class = $this->em->getClassMetadata(get_class($entity));
-                                        $entityState = $this->getEntityState($entity, self::STATE_NEW);
+        $entityState = $this->getEntityState($entity, self::STATE_NEW);
         switch ($entityState) {
             case self::STATE_MANAGED:
                                 if ($class->isChangeTrackingDeferredExplicit()) {
-                    $this->scheduleForDirtyCheck($entity);
-                }
+                                    $this->scheduleForDirtyCheck($entity);
+                                }
                 break;
             case self::STATE_NEW:
                 $this->persistNew($class, $entity);
@@ -779,7 +809,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
             case self::STATE_DETACHED:
                                 throw ORMInvalidArgumentException::detachedEntityCannot($entity, "persisted");
             default:
-                throw new UnexpectedValueException("Unexpected entity state: $entityState." . self::objToStr($entity));
+                throw new UnexpectedValueException("Unexpected entity state: $entityState.".self::objToStr($entity));
         }
         $this->cascadePersist($entity, $visited);
     }
@@ -792,9 +822,10 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
     {
         $oid = spl_object_hash($entity);
         if (isset($visited[$oid])) {
-            return;         }
+            return;
+        }
         $visited[$oid] = $entity;
-                        $this->cascadeRemove($entity, $visited);
+        $this->cascadeRemove($entity, $visited);
         $class       = $this->em->getClassMetadata(get_class($entity));
         $entityState = $this->getEntityState($entity);
         switch ($entityState) {
@@ -811,12 +842,13 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
             case self::STATE_DETACHED:
                 throw ORMInvalidArgumentException::detachedEntityCannot($entity, "removed");
             default:
-                throw new UnexpectedValueException("Unexpected entity state: $entityState." . self::objToStr($entity));
+                throw new UnexpectedValueException("Unexpected entity state: $entityState.".self::objToStr($entity));
         }
     }
     public function merge($entity)
     {
         $visited = array();
+
         return $this->doMerge($entity, $visited);
     }
     protected function flattenIdentifier($class, $id)
@@ -831,23 +863,25 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 $flatId[$idField] = $idValue;
             }
         }
+
         return $flatId;
     }
     protected function doMerge($entity, array &$visited, $prevManagedCopy = null, $assoc = null)
     {
         $oid = spl_object_hash($entity);
         if (isset($visited[$oid])) {
-            return $visited[$oid];         }
+            return $visited[$oid];
+        }
         $visited[$oid] = $entity;
         $class = $this->em->getClassMetadata(get_class($entity));
-                                        $managedCopy = $entity;
+        $managedCopy = $entity;
         if ($this->getEntityState($entity, self::STATE_DETACHED) !== self::STATE_MANAGED) {
             if ($entity instanceof Proxy && ! $entity->__isInitialized()) {
                 $this->em->getProxyFactory()->resetUninitializedProxy($entity);
                 $entity->__load();
             }
-                        $id = $class->getIdentifierValues($entity);
-                        if ( ! $id) {
+            $id = $class->getIdentifierValues($entity);
+            if (! $id) {
                 $managedCopy = $this->newInstance($class);
                 $this->persistNew($class, $managedCopy);
             } else {
@@ -856,15 +890,15 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                     : $id;
                 $managedCopy = $this->tryGetById($flatId, $class->rootEntityName);
                 if ($managedCopy) {
-                                        if ($this->getEntityState($managedCopy) == self::STATE_REMOVED) {
+                    if ($this->getEntityState($managedCopy) == self::STATE_REMOVED) {
                         throw ORMInvalidArgumentException::entityIsRemoved($managedCopy, "merge");
                     }
                 } else {
-                                        $managedCopy = $this->em->find($class->name, $flatId);
+                    $managedCopy = $this->em->find($class->name, $flatId);
                 }
                 if ($managedCopy === null) {
-                                                            if ( ! $class->isIdentifierNatural()) {
-                        throw new EntityNotFoundException;
+                    if (! $class->isIdentifierNatural()) {
+                        throw new EntityNotFoundException();
                     }
                     $managedCopy = $this->newInstance($class);
                     $class->setIdentifierValues($managedCopy, $id);
@@ -879,15 +913,15 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 $reflField          = $class->reflFields[$class->versionField];
                 $managedCopyVersion = $reflField->getValue($managedCopy);
                 $entityVersion      = $reflField->getValue($entity);
-                                if ($managedCopyVersion != $entityVersion) {
+                if ($managedCopyVersion != $entityVersion) {
                     throw OptimisticLockException::lockFailedVersionMismatch($entity, $entityVersion, $managedCopyVersion);
                 }
             }
-                        foreach ($class->reflClass->getProperties() as $prop) {
+            foreach ($class->reflClass->getProperties() as $prop) {
                 $name = $prop->name;
                 $prop->setAccessible(true);
-                if ( ! isset($class->associationMappings[$name])) {
-                    if ( ! $class->isIdentifier($name)) {
+                if (! isset($class->associationMappings[$name])) {
+                    if (! $class->isIdentifier($name)) {
                         $prop->setValue($managedCopy, $prop->getValue($entity));
                     }
                 } else {
@@ -896,9 +930,9 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                         $other = $prop->getValue($entity);
                         if ($other === null) {
                             $prop->setValue($managedCopy, null);
-                        } else if ($other instanceof Proxy && !$other->__isInitialized__) {
-                                                        continue;
-                        } else if ( ! $assoc2['isCascadeMerge']) {
+                        } elseif ($other instanceof Proxy && !$other->__isInitialized__) {
+                            continue;
+                        } elseif (! $assoc2['isCascadeMerge']) {
                             if ($this->getEntityState($other) === self::STATE_DETACHED) {
                                 $targetClass = $this->em->getClassMetadata($assoc2['targetEntity']);
                                 $relatedId = $targetClass->getIdentifierValues($other);
@@ -914,13 +948,13 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                     } else {
                         $mergeCol = $prop->getValue($entity);
                         if ($mergeCol instanceof PersistentCollection && !$mergeCol->isInitialized()) {
-                                                                                    continue;
+                            continue;
                         }
                         $managedCol = $prop->getValue($managedCopy);
                         if (!$managedCol) {
                             $managedCol = new PersistentCollection($this->em,
                                     $this->em->getClassMetadata($assoc2['targetEntity']),
-                                    new ArrayCollection
+                                    new ArrayCollection()
                                     );
                             $managedCol->setOwner($managedCopy, $assoc2);
                             $prop->setValue($managedCopy, $managedCol);
@@ -928,7 +962,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                         }
                         if ($assoc2['isCascadeMerge']) {
                             $managedCol->initialize();
-                                                        if (!$managedCol->isEmpty() && $managedCol !== $mergeCol) {
+                            if (!$managedCol->isEmpty() && $managedCol !== $mergeCol) {
                                 $managedCol->unwrap()->clear();
                                 $managedCol->setDirty(true);
                                 if ($assoc2['isOwningSide'] && $assoc2['type'] == ClassMetadata::MANY_TO_MANY && $class->isChangeTrackingNotify()) {
@@ -939,7 +973,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                     }
                 }
                 if ($class->isChangeTrackingNotify()) {
-                                        $this->propertyChanged($managedCopy, $name, null, $prop->getValue($managedCopy));
+                    $this->propertyChanged($managedCopy, $name, null, $prop->getValue($managedCopy));
                 }
             }
             if ($class->isChangeTrackingDeferredExplicit()) {
@@ -958,8 +992,9 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 }
             }
         }
-                $visited[spl_object_hash($managedCopy)] = true;
+        $visited[spl_object_hash($managedCopy)] = true;
         $this->cascadeMerge($entity, $managedCopy, $visited);
+
         return $managedCopy;
     }
     public function detach($entity)
@@ -971,7 +1006,8 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
     {
         $oid = spl_object_hash($entity);
         if (isset($visited[$oid])) {
-            return;         }
+            return;
+        }
         $visited[$oid] = $entity;
         switch ($this->getEntityState($entity, self::STATE_DETACHED)) {
             case self::STATE_MANAGED:
@@ -991,7 +1027,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
             case self::STATE_DETACHED:
                 return;
         }
-        if ( ! $noCascade) {
+        if (! $noCascade) {
             $this->cascadeDetach($entity, $visited);
         }
     }
@@ -1004,7 +1040,8 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
     {
         $oid = spl_object_hash($entity);
         if (isset($visited[$oid])) {
-            return;         }
+            return;
+        }
         $visited[$oid] = $entity;
         $class = $this->em->getClassMetadata(get_class($entity));
         if ($this->getEntityState($entity) !== self::STATE_MANAGED) {
@@ -1080,12 +1117,12 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                     continue;
                 }
                 if ($relatedEntities instanceof PersistentCollection) {
-                                        $relatedEntities = $relatedEntities->unwrap();
+                    $relatedEntities = $relatedEntities->unwrap();
                 }
                 foreach ($relatedEntities as $relatedEntity) {
                     $this->doMerge($relatedEntity, $visited, $managedCopy, $assoc);
                 }
-            } else if ($relatedEntities !== null) {
+            } elseif ($relatedEntities !== null) {
                 $this->doMerge($relatedEntities, $visited, $managedCopy, $assoc);
             }
         }
@@ -1132,8 +1169,8 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 case ($relatedEntities instanceof Collection):
                 case (is_array($relatedEntities)):
                                         foreach ($relatedEntities as $relatedEntity) {
-                        $entitiesToCascade[] = $relatedEntity;
-                    }
+                                            $entitiesToCascade[] = $relatedEntity;
+                                        }
                     break;
                 case ($relatedEntities !== null):
                     $entitiesToCascade[] = $relatedEntities;
@@ -1156,7 +1193,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         $class = $this->em->getClassMetadata(get_class($entity));
         switch ($lockMode) {
             case \Doctrine\DBAL\LockMode::OPTIMISTIC;
-                if ( ! $class->isVersioned) {
+                if (! $class->isVersioned) {
                     throw OptimisticLockException::notVersioned($class->name);
                 }
                 if ($lockVersion === null) {
@@ -1184,8 +1221,9 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
     public function getCommitOrderCalculator()
     {
         if ($this->commitOrderCalculator === null) {
-            $this->commitOrderCalculator = new Internal\CommitOrderCalculator;
+            $this->commitOrderCalculator = new Internal\CommitOrderCalculator();
         }
+
         return $this->commitOrderCalculator;
     }
     public function clear($entityName = null)
@@ -1230,7 +1268,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
     public function scheduleCollectionDeletion(PersistentCollection $coll)
     {
         $coid = spl_object_hash($coll);
-                        if (isset($this->collectionUpdates[$coid])) {
+        if (isset($this->collectionUpdates[$coid])) {
             unset($this->collectionUpdates[$coid]);
         }
         $this->collectionDeletions[$coid] = $coll;
@@ -1245,6 +1283,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         if ($entity instanceof \Doctrine\Common\Persistence\ObjectManagerAware) {
             $entity->injectObjectManager($this->em, $class);
         }
+
         return $entity;
     }
     public function createEntity($className, array $data, &$hints = array())
@@ -1277,6 +1316,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 foreach ($class->identifier as $fieldName) {
                     $class->reflFields[$fieldName]->setValue($unmanagedProxy, null);
                 }
+
                 return $unmanagedProxy;
             }
             if ($entity instanceof Proxy && ! $entity->__isInitialized()) {
@@ -1285,15 +1325,15 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 if ($entity instanceof NotifyPropertyChanged) {
                     $entity->addPropertyChangedListener($this);
                 }
-                                if ($overrideLocalValues && $entity instanceof ObjectManagerAware) {
+                if ($overrideLocalValues && $entity instanceof ObjectManagerAware) {
                     $entity->injectObjectManager($this->em, $class);
                 }
             } else {
                 $overrideLocalValues = isset($hints[Query::HINT_REFRESH]);
-                                if(isset($hints[Query::HINT_REFRESH_ENTITY])) {
+                if (isset($hints[Query::HINT_REFRESH_ENTITY])) {
                     $overrideLocalValues = $hints[Query::HINT_REFRESH_ENTITY] === $entity;
                 }
-                                if ($overrideLocalValues && $entity instanceof ObjectManagerAware) {
+                if ($overrideLocalValues && $entity instanceof ObjectManagerAware) {
                     $entity->injectObjectManager($this->em, $class);
                 }
             }
@@ -1312,7 +1352,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
             }
             $overrideLocalValues = true;
         }
-        if ( ! $overrideLocalValues) {
+        if (! $overrideLocalValues) {
             return $entity;
         }
         foreach ($data as $field => $value) {
@@ -1320,41 +1360,41 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 $class->reflFields[$field]->setValue($entity, $value);
             }
         }
-                unset($this->eagerLoadingEntities[$class->rootEntityName][$idHash]);
+        unset($this->eagerLoadingEntities[$class->rootEntityName][$idHash]);
         if (isset($this->eagerLoadingEntities[$class->rootEntityName]) && ! $this->eagerLoadingEntities[$class->rootEntityName]) {
             unset($this->eagerLoadingEntities[$class->rootEntityName]);
         }
-                if (isset($hints[Query::HINT_FORCE_PARTIAL_LOAD])) {
+        if (isset($hints[Query::HINT_FORCE_PARTIAL_LOAD])) {
             return $entity;
         }
         foreach ($class->associationMappings as $field => $assoc) {
-                        if (isset($hints['fetchAlias']) && isset($hints['fetched'][$hints['fetchAlias']][$field])) {
+            if (isset($hints['fetchAlias']) && isset($hints['fetched'][$hints['fetchAlias']][$field])) {
                 continue;
             }
             $targetClass = $this->em->getClassMetadata($assoc['targetEntity']);
             switch (true) {
                 case ($assoc['type'] & ClassMetadata::TO_ONE):
-                    if ( ! $assoc['isOwningSide']) {
-                                                $class->reflFields[$field]->setValue($entity, $this->getEntityPersister($assoc['targetEntity'])->loadOneToOneEntity($assoc, $entity));
+                    if (! $assoc['isOwningSide']) {
+                        $class->reflFields[$field]->setValue($entity, $this->getEntityPersister($assoc['targetEntity'])->loadOneToOneEntity($assoc, $entity));
                         continue 2;
                     }
                     $associatedId = array();
                                         foreach ($assoc['targetToSourceKeyColumns'] as $targetColumn => $srcColumn) {
-                        $joinColumnValue = isset($data[$srcColumn]) ? $data[$srcColumn] : null;
-                        if ($joinColumnValue !== null) {
-                            if ($targetClass->containsForeignIdentifier) {
-                                $associatedId[$targetClass->getFieldForColumn($targetColumn)] = $joinColumnValue;
-                            } else {
-                                $associatedId[$targetClass->fieldNames[$targetColumn]] = $joinColumnValue;
-                            }
-                        }
-                    }
-                    if ( ! $associatedId) {
-                                                $class->reflFields[$field]->setValue($entity, null);
+                                            $joinColumnValue = isset($data[$srcColumn]) ? $data[$srcColumn] : null;
+                                            if ($joinColumnValue !== null) {
+                                                if ($targetClass->containsForeignIdentifier) {
+                                                    $associatedId[$targetClass->getFieldForColumn($targetColumn)] = $joinColumnValue;
+                                                } else {
+                                                    $associatedId[$targetClass->fieldNames[$targetColumn]] = $joinColumnValue;
+                                                }
+                                            }
+                                        }
+                    if (! $associatedId) {
+                        $class->reflFields[$field]->setValue($entity, null);
                         $this->originalEntityData[$oid][$field] = null;
                         continue;
                     }
-                    if ( ! isset($hints['fetchMode'][$class->name][$field])) {
+                    if (! isset($hints['fetchMode'][$class->name][$field])) {
                         $hints['fetchMode'][$class->name][$field] = $assoc['fetch'];
                     }
                                                                                                     $relatedIdHash = implode(' ', $associatedId);
@@ -1366,8 +1406,8 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                                 !$targetClass->isIdentifierComposite &&
                                 $newValue instanceof Proxy &&
                                 $newValue->__isInitialized__ === false) {
-                                $this->eagerLoadingEntities[$targetClass->rootEntityName][$relatedIdHash] = current($associatedId);
-                            }
+                                                                                                                    $this->eagerLoadingEntities[$targetClass->rootEntityName][$relatedIdHash] = current($associatedId);
+                                                                                                                }
                             break;
                         case ($targetClass->subClasses):
                                                                                                                 $newValue = $this->getEntityPersister($assoc['targetEntity'])->loadOneToOneEntity($assoc, $entity, $associatedId);
@@ -1390,7 +1430,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                             $this->identityMap[$targetClass->rootEntityName][$relatedIdHash] = $newValue;
                             if (
                                 $newValue instanceof NotifyPropertyChanged &&
-                                ( ! $newValue instanceof Proxy || $newValue->__isInitialized())
+                                (! $newValue instanceof Proxy || $newValue->__isInitialized())
                             ) {
                                 $newValue->addPropertyChangedListener($this);
                             }
@@ -1405,7 +1445,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                     }
                     break;
                 default:
-                                        $pColl = new PersistentCollection($this->em, $targetClass, new ArrayCollection);
+                                        $pColl = new PersistentCollection($this->em, $targetClass, new ArrayCollection());
                     $pColl->setOwner($entity, $assoc);
                     $pColl->setInitialized(false);
                     $reflField = $class->reflFields[$field];
@@ -1424,17 +1464,18 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 $this->listenersInvoker->invoke($class, Events::postLoad, $entity, new LifecycleEventArgs($entity, $this->em), $invoke);
             }
         }
+
         return $entity;
     }
     public function triggerEagerLoads()
     {
-        if ( ! $this->eagerLoadingEntities) {
+        if (! $this->eagerLoadingEntities) {
             return;
         }
-                $eagerLoadingEntities       = $this->eagerLoadingEntities;
+        $eagerLoadingEntities       = $this->eagerLoadingEntities;
         $this->eagerLoadingEntities = array();
         foreach ($eagerLoadingEntities as $entityName => $ids) {
-            if ( ! $ids) {
+            if (! $ids) {
                 continue;
             }
             $class = $this->em->getClassMetadata($entityName);
@@ -1467,6 +1508,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         if (isset($this->originalEntityData[$oid])) {
             return $this->originalEntityData[$oid];
         }
+
         return array();
     }
     public function setOriginalEntityData($entity, array $data)
@@ -1490,6 +1532,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         $values = $this->isInIdentityMap($entity)
             ? $this->getEntityIdentifier($entity)
             : $class->getIdentifierValues($entity);
+
         return isset($values[$class->identifier[0]]) ? $values[$class->identifier[0]] : null;
     }
     public function tryGetById($id, $rootClassName)
@@ -1498,6 +1541,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         if (isset($this->identityMap[$rootClassName][$idHash])) {
             return $this->identityMap[$rootClassName][$idHash];
         }
+
         return false;
     }
     public function scheduleForDirtyCheck($entity)
@@ -1512,6 +1556,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
     public function size()
     {
         $countArray = array_map(function ($item) { return count($item); }, $this->identityMap);
+
         return array_sum($countArray);
     }
     public function getEntityPersister($entityName)
@@ -1534,6 +1579,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 $persister = new Persisters\UnionSubclassPersister($this->em, $class);
         }
         $this->persisters[$entityName] = $persister;
+
         return $this->persisters[$entityName];
     }
     public function getCollectionPersister(array $association)
@@ -1551,6 +1597,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
                 break;
         }
         $this->collectionPersisters[$type] = $persister;
+
         return $this->collectionPersisters[$type];
     }
     public function registerManaged($entity, array $id, array $data)
@@ -1560,7 +1607,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         $this->entityStates[$oid]       = self::STATE_MANAGED;
         $this->originalEntityData[$oid] = $data;
         $this->addToIdentityMap($entity);
-        if ($entity instanceof NotifyPropertyChanged && ( ! $entity instanceof Proxy || $entity->__isInitialized())) {
+        if ($entity instanceof NotifyPropertyChanged && (! $entity instanceof Proxy || $entity->__isInitialized())) {
             $entity->addPropertyChangedListener($this);
         }
     }
@@ -1573,10 +1620,11 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         $oid   = spl_object_hash($entity);
         $class = $this->em->getClassMetadata(get_class($entity));
         $isAssocField = isset($class->associationMappings[$propertyName]);
-        if ( ! $isAssocField && ! isset($class->fieldMappings[$propertyName])) {
-            return;         }
-                $this->entityChangeSets[$oid][$propertyName] = array($oldValue, $newValue);
-        if ( ! isset($this->scheduledForDirtyCheck[$class->rootEntityName][$oid])) {
+        if (! $isAssocField && ! isset($class->fieldMappings[$propertyName])) {
+            return;
+        }
+        $this->entityChangeSets[$oid][$propertyName] = array($oldValue, $newValue);
+        if (! isset($this->scheduledForDirtyCheck[$class->rootEntityName][$oid])) {
             $this->scheduleForDirtyCheck($entity);
         }
     }
@@ -1604,6 +1652,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
     {
         if ($obj instanceof Proxy) {
             $obj->__load();
+
             return;
         }
         if ($obj instanceof PersistentCollection) {
@@ -1612,20 +1661,21 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
     }
     protected static function objToStr($obj)
     {
-        return method_exists($obj, '__toString') ? (string)$obj : get_class($obj).'@'.spl_object_hash($obj);
+        return method_exists($obj, '__toString') ? (string) $obj : get_class($obj).'@'.spl_object_hash($obj);
     }
     public function markReadOnly($object)
     {
-        if ( ! is_object($object) || ! $this->isInIdentityMap($object)) {
+        if (! is_object($object) || ! $this->isInIdentityMap($object)) {
             throw ORMInvalidArgumentException::readOnlyRequiresManagedEntity($object);
         }
         $this->readOnlyObjects[spl_object_hash($object)] = true;
     }
     public function isReadOnly($object)
     {
-        if ( ! is_object($object)) {
+        if (! is_object($object)) {
             throw ORMInvalidArgumentException::readOnlyRequiresManagedEntity($object);
         }
+
         return isset($this->readOnlyObjects[spl_object_hash($object)]);
     }
     protected function dispatchOnFlushEvent()
@@ -1657,6 +1707,7 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
         $id2 = isset($this->entityIdentifiers[$oid2])
             ? $this->entityIdentifiers[$oid2]
             : $this->flattenIdentifier($class, $class->getIdentifierValues($entity2));
+
         return $id1 === $id2 || implode(' ', $id1) === implode(' ', $id2);
     }
 }

@@ -76,7 +76,7 @@ class LoginHelper
         ')->setParameter(1, true)->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
         $return = $this->controller->request->getReturnParam();
-        if ($return AND $return[0] != '/') {
+        if ($return and $return[0] != '/') {
             // Always be a path on the current domain,
             // or else it might be a trick to go to some other domain etc
             $return = '';
@@ -85,10 +85,10 @@ class LoginHelper
         $vars = $vars + array(
             'usersources'      => $usersources,
             'usersource_forms' => $this->_getUsersourceLoginForms($usersources),
-            'return'           => $return
+            'return'           => $return,
         );
 
-        return $this->controller->render($this->tpl_prefix . ':index.html.twig', $vars);
+        return $this->controller->render($this->tpl_prefix.':index.html.twig', $vars);
     }
 
     protected function _getUsersourceLoginForms($usersources)
@@ -97,18 +97,16 @@ class LoginHelper
 
         foreach ($usersources as $usersource) {
             $parts = explode('\\', $usersource['handler_class']);
-            $tpl_name = $this->tpl_prefix . 'login-form-.html.twig' . strtolower(array_pop($parts));
+            $tpl_name = $this->tpl_prefix.'login-form-.html.twig'.strtolower(array_pop($parts));
 
             $forms[] = array(
                 'usersource' => $usersource,
-                'html' => $this->tpl->render($tpl_name, array('usersource' => $usersource))
+                'html' => $this->tpl->render($tpl_name, array('usersource' => $usersource)),
             );
         }
 
         return $forms;
     }
-
-
 
     ############################################################################
     # /logout
@@ -128,9 +126,8 @@ class LoginHelper
         $this->controller->session->replace(array());
         $this->controller->session->save();
 
-        return $this->controller->redirectRoute($this->route_prefix . '_login');
+        return $this->controller->redirectRoute($this->route_prefix.'_login');
     }
-
 
     ############################################################################
     # /login/authenticate
@@ -165,7 +162,6 @@ class LoginHelper
         $this->controller->session->set('auth_person_id', $identity->getIdentity());
 
         if ($person['is_agent']) {
-
             // Set their status to available by default
             $this->controller->session->set('dp_active_status', 'available');
 
@@ -173,7 +169,7 @@ class LoginHelper
                 'agent_id'   => $person['id'],
                 'agent_name' => $person['display_name'],
                 'agent_short_name' => $person->getDisplayContactShort(4),
-                'picture_url' => $person->getPictureUrl(10)
+                'picture_url' => $person->getPictureUrl(10),
             );
 
             // Announce if its an agent
@@ -218,13 +214,11 @@ class LoginHelper
         #------------------------------
         # Other types should return a result right away
         #------------------------------
-
         } else {
             $result = $adapter->authenticate();
 
             // Valid
             if ($result->isValid()) {
-
                 $login_processor = new LoginProcessor($usersource, $result->getIdentity());
                 $person = $login_processor->getPerson();
 
@@ -254,7 +248,7 @@ class LoginHelper
     {
         $return = $this->controller->request->getReturnParam();
 
-        return $this->controller->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+        return $this->controller->redirectRoute($this->route_prefix.'_login', array('return' => $return));
     }
 
     ############################################################################
@@ -278,7 +272,6 @@ class LoginHelper
 
         // Valid
         if ($result->isValid()) {
-
             $login_processor = new LoginProcessor($usersource, $result->getIdentity());
             $person = $login_processor->getPerson();
 
@@ -289,10 +282,9 @@ class LoginHelper
 
         // Error, go back to login
         } else {
-            return $this->controller->redirect($this->controller->get('router')->generate($this->route_prefix . '_login', array()));
+            return $this->controller->redirect($this->controller->get('router')->generate($this->route_prefix.'_login', array()));
         }
     }
-
 
     ############################################################################
 
@@ -305,7 +297,7 @@ class LoginHelper
         }
 
         if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
-            $adapter->setCallbackUrl($this->generateUrl($this->route_prefix . '_login_callback', array('usersource_id' => $usersource['id']), true));
+            $adapter->setCallbackUrl($this->generateUrl($this->route_prefix.'_login_callback', array('usersource_id' => $usersource['id']), true));
         }
 
         if ($adapter instanceof \Orb\Auth\Adapter\SessionStateInterface) {

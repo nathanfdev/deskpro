@@ -51,7 +51,6 @@ class UrgencyAction extends AbstractAction implements PermissionableAction
         $this->num = $num;
     }
 
-
     /**
      * Apply the property to the ticket
      *
@@ -61,7 +60,6 @@ class UrgencyAction extends AbstractAction implements PermissionableAction
     {
         $ticket['urgency'] = $ticket['urgency'] + $this->num;
     }
-
 
     /**
      * {@inheritDoc}
@@ -75,7 +73,6 @@ class UrgencyAction extends AbstractAction implements PermissionableAction
         return true;
     }
 
-
     /**
      * Get an array of actions that would be performed on the ticket
      *
@@ -84,10 +81,9 @@ class UrgencyAction extends AbstractAction implements PermissionableAction
     public function getApplyActions(Ticket $ticket)
     {
         return array(
-            array('action' => 'urgency', 'urgency' => $ticket['urgency'] + $this->num)
+            array('action' => 'urgency', 'urgency' => $ticket['urgency'] + $this->num),
         );
     }
-
 
     /**
      * Get the number modifier
@@ -98,7 +94,6 @@ class UrgencyAction extends AbstractAction implements PermissionableAction
     {
         return $this->num;
     }
-
 
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
@@ -115,7 +110,9 @@ class UrgencyAction extends AbstractAction implements PermissionableAction
     public function getDescription($as_html = true)
     {
         $tr = App::getTranslator();
-        if (!$this->num) return '';
+        if (!$this->num) {
+            return '';
+        }
 
         if ($this->num < 0) {
             return $tr->phrase('agent.tickets.decrease_urgency_action', array('amount' => abs($this->num)));

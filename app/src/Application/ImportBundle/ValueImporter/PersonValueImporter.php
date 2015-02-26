@@ -50,16 +50,16 @@ class PersonValueImporter extends AbstractValueImporter
      * @var array
      */
     protected $supported_custom_field_types = array(
-        'Application\DeskPRO\CustomFields\Handler\Text'
+        'Application\DeskPRO\CustomFields\Handler\Text',
     );
 
     /**
-     * @param mixed $pval
+     * @param  mixed                                                $pval
      * @throws \Application\ImportBundle\Exception\BadDataException
      */
     public function importValue($pval)
     {
-//        if (!($pval instanceof PersonValue)) {
+        //        if (!($pval instanceof PersonValue)) {
 //            throw new \InvalidArgumentException("This importer can only import PersonValue");
 //        }
 
@@ -202,7 +202,7 @@ class PersonValueImporter extends AbstractValueImporter
         #------------------------------
 
         if ($this->isTestMode() === false) {
-//            $update_rec = array();
+            //            $update_rec = array();
 
 //            if (isset($existing_person_id)) {
 //                $exist_id = $this->getMappers()->findIdFromMappedValue(MapperInterface::TYPE_PERSON, $existing_person_id);

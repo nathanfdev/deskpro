@@ -51,7 +51,6 @@ class DeskPRO extends AbstractAdapter implements IdentityFinderInterface
         return $identity->getRawData();
     }
 
-
     public function findIdentityByInput($input)
     {
         /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
@@ -78,7 +77,7 @@ class DeskPRO extends AbstractAdapter implements IdentityFinderInterface
     {
         return array(
             UsersourceInfo::CAPABILITY_FORM_LOGIN,
-            UsersourceInfo::CAPABILITY_FIND_IDENTITY
+            UsersourceInfo::CAPABILITY_FIND_IDENTITY,
         );
     }
 

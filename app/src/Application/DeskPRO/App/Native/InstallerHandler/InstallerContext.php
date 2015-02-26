@@ -61,7 +61,6 @@ class InstallerContext
      */
     private $usersource;
 
-
     /**
      * @param DeskproContainer $container
      * @param NativeApp        $native_app
@@ -76,7 +75,6 @@ class InstallerContext
         $this->usersource      = $usersource;
     }
 
-
     /**
      * @return array
      */
@@ -84,7 +82,6 @@ class InstallerContext
     {
         return $this->raw_form;
     }
-
 
     /**
      * @param  string $name
@@ -95,7 +92,6 @@ class InstallerContext
         return Arrays::getValue($this->raw_form, $name);
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\AppInstance
      */
@@ -103,7 +99,6 @@ class InstallerContext
     {
         return $this->native_app;
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\AppInstance
@@ -113,7 +108,6 @@ class InstallerContext
         return $this->native_app->getApp();
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\AppPackage
      */
@@ -121,7 +115,6 @@ class InstallerContext
     {
         return $this->native_app->getPackage();
     }
-
 
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
@@ -131,7 +124,6 @@ class InstallerContext
         return $this->container;
     }
 
-
     /**
      * @return Usersource|null
      */
@@ -139,7 +131,6 @@ class InstallerContext
     {
         return $this->usersource;
     }
-
 
     /**
      * @return \Application\DeskPRO\DBAL\Connection
@@ -149,7 +140,6 @@ class InstallerContext
         return $this->container->getDb();
     }
 
-
     /**
      * @return \Doctrine\ORM\EntityManager
      */
@@ -157,7 +147,6 @@ class InstallerContext
     {
         return $this->container->getEm();
     }
-
 
     /**
      * @return \Application\DeskPRO\Usersource\UsersourceManager

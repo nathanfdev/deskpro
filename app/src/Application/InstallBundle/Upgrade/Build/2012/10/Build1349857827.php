@@ -42,7 +42,7 @@ class Build1349857827 extends AbstractBuild
         $this->execMutateSql("
             UPDATE people_emails
             LEFT JOIN people ON (people.id = people_emails.person_id)
-            SET people_emails.is_validated = 1, people_emails.date_validated = '" . datE('Y-m-d H:i:s') . "'
+            SET people_emails.is_validated = 1, people_emails.date_validated = '".datE('Y-m-d H:i:s')."'
             WHERE people.is_confirmed = 1 AND people_emails.is_validated = 0
         ");
     }

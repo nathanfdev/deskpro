@@ -114,7 +114,6 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
         return $this->person_context;
     }
 
-
     /**
      * @param array $attach_ids
      */
@@ -128,13 +127,11 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
         }
     }
 
-
     public function save()
     {
         $this->em->getConnection()->beginTransaction();
 
         try {
-
             #------------------------------
             # Handle the person first
             #------------------------------
@@ -146,7 +143,6 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
             $email_validating = null;
 
             if ($this->person_context->isGuest()) {
-
                 $person_processor = new PersonFromEmailProcessor();
                 $person = $person_processor->findPersonByEmailAddress($this->person_email);
 
@@ -187,7 +183,6 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
                         $email_validating->email = $this->person_email;
                         $email_validating->person = $person;
                         $this->em->persist($email_validating);
-
                     } else {
                         $person = $email_validating->person;
                     }
@@ -305,7 +300,6 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
                     App::getMailer()->send($message);
                 });
             }
-
         } catch (\Exception $e) {
             $this->em->rollback();
             throw $e;

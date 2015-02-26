@@ -73,7 +73,7 @@ class ExportCommand extends AbstractExportCommand
             throw new Exception('Output path must be specified');
         }
         if ($config->needInputPath()) {
-            if ( ! $config->getInputPath()) {
+            if (! $config->getInputPath()) {
                 throw new Exception('Input path must be specified');
             }
             if ($config->getInputPath() === $config->getOutputPath()) {
@@ -91,7 +91,6 @@ class ExportCommand extends AbstractExportCommand
                 'Done. Exporting was successful. Look at the log file `%s` to see details.',
                 $config->getLogPath()
             ));
-
         } catch (Generator\GeneratorException $e) {
             $output->writeln('');
             $output->writeln('');
@@ -105,7 +104,6 @@ class ExportCommand extends AbstractExportCommand
                     $config->getLogPath()
                 ));
             }
-
         } catch (Exception $e) {
             $output->writeln('');
             $output->writeln('');

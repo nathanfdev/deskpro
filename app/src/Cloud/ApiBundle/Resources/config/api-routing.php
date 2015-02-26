@@ -1,7 +1,9 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 
-require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php');
-require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php');
+require_once DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php';
+require_once DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php';
 
 use Application\DeskPRO\Routing\RouteCollection;
 
@@ -51,13 +53,13 @@ $collection->create('api_dpc_call_resetpass', array(
 $collection->create('api_cloud_urlsettings', array(
     'path'       => '/settings/cloud/url-settings',
     'controller' => 'CloudApiBundle:Settings:getUrlSettings',
-    'methods'    => array('GET')
+    'methods'    => array('GET'),
 ));
 
 $collection->create('api_cloud_urlsettings_save', array(
     'path'       => '/settings/cloud/url-settings',
     'controller' => 'CloudApiBundle:Settings:saveUrlSettings',
-    'methods'    => array('POST')
+    'methods'    => array('POST'),
 ));
 
 $collection->rewriteController('ApiBundle:Settings', 'CloudApiBundle:Settings');

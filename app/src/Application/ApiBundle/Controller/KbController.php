@@ -148,12 +148,12 @@ class KbController extends AbstractController
             'label' => ArticleSearch::TERM_LABEL,
             'new' => ArticleSearch::TERM_NEW,
             'popular' => ArticleSearch::TERM_POPULAR,
-            'status' => ArticleSearch::TERM_STATUS
+            'status' => ArticleSearch::TERM_STATUS,
         );
 
         $terms = array();
 
-        foreach ($search_map AS $input => $search_key) {
+        foreach ($search_map as $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ($value) {
                 $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
@@ -165,11 +165,11 @@ class KbController extends AbstractController
         if ($date_created_end) {
             $terms[] = array('type' => ArticleSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
                 'date1' => $date_created_start,
-                'date2' => $date_created_end
+                'date2' => $date_created_end,
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => ArticleSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start
+                'date1' => $date_created_start,
             ));
         }
 
@@ -186,7 +186,9 @@ class KbController extends AbstractController
         $result_cache = $this->getApiSearchResult('article', $terms, $extra, $this->in->getUint('cache_id'), new ArticleSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
@@ -200,7 +202,7 @@ class KbController extends AbstractController
             'per_page' => $per_page,
             'total' => count($ids),
             'cache_id' => $result_cache->id,
-            'articles' => $this->getApiData($articles)
+            'articles' => $this->getApiData($articles),
         ));
     }
 
@@ -317,12 +319,11 @@ class KbController extends AbstractController
         $content_lang = array();
 
         if (is_array($_POST['title']) && is_array($_POST['content'])) {
-
             foreach ($this->container->getLanguageData()->getAll() as $lang) {
                 $lang_id = $lang->getId();
 
                 $title       = $this->in->getString("title.$lang_id");
-                $content_val = (string)$this->in->getRaw("content.$lang_id");
+                $content_val = (string) $this->in->getRaw("content.$lang_id");
 
                 if ($lang_id == $article->language->getId()) {
                     $set_title   = $title;
@@ -337,10 +338,9 @@ class KbController extends AbstractController
                 $title_lang[$lang->getId()] = $title;
                 $content_lang[$lang->getId()] = $content_val;
             }
-
         } else {
             $set_title   = $this->in->getString('title');
-            $set_content = (string)$this->in->getRaw('content');
+            $set_content = (string) $this->in->getRaw('content');
         }
 
         if ($set_title) {
@@ -363,22 +363,22 @@ class KbController extends AbstractController
 
         $date = $this->in->getUint('date');
         if ($date) {
-            $article->date_created = new \DateTime('@' . $date);
+            $article->date_created = new \DateTime('@'.$date);
             if ($status == 'published') {
-                $article->date_published = new \DateTime('@' . $date);
+                $article->date_published = new \DateTime('@'.$date);
             }
         }
 
         if ($this->in->checkIsset('date_published') && $status != 'published') {
             $date_published = $this->in->getUint('date_published');
             if ($date_published) {
-                $article->date_published = new \DateTime('@' . $date_published);
+                $article->date_published = new \DateTime('@'.$date_published);
             }
         }
 
         $date_end = $this->in->getUint('date_end');
         if ($date_end) {
-            $article->date_end = new \DateTime('@' . $date_end);
+            $article->date_end = new \DateTime('@'.$date_end);
             $article->end_action = $this->in->getString('end_action') ?: Article::END_ACTION_DELETE;
         }
 
@@ -584,7 +584,6 @@ class KbController extends AbstractController
         $revs = array();
 
         if (is_array($_POST['title']) && is_array($_POST['content'])) {
-
             $set_title   = null;
             $set_content = null;
 
@@ -592,7 +591,7 @@ class KbController extends AbstractController
                 $lang_id = $lang->getId();
 
                 $title       = $this->in->getString("title.$lang_id");
-                $content_val = (string)$this->in->getRaw("content.$lang_id");
+                $content_val = (string) $this->in->getRaw("content.$lang_id");
 
                 if ($lang_id == $article->language->getId()) {
                     $set_title   = $title;
@@ -612,7 +611,7 @@ class KbController extends AbstractController
             }
         } else {
             $set_title   = $this->in->getString('title');
-            $set_content = (string)$this->in->getRaw('content');
+            $set_content = (string) $this->in->getRaw('content');
         }
 
         if ($set_title && $set_title != $article->title) {
@@ -655,7 +654,7 @@ class KbController extends AbstractController
         if ($this->in->checkIsset('date_published') && $article->status != 'published') {
             $date_published = $this->in->getUint('date_published');
             if ($date_published) {
-                $article->date_published = new \DateTime('@' . $date_published);
+                $article->date_published = new \DateTime('@'.$date_published);
             } else {
                 $article->date_published = null;
             }
@@ -664,7 +663,7 @@ class KbController extends AbstractController
         if ($this->in->checkIsset('date_end')) {
             $date_end = $this->in->getUint('date_end');
             if ($date_end) {
-                $article->date_end = new \DateTime('@' . $date_end);
+                $article->date_end = new \DateTime('@'.$date_end);
                 $article->end_action = $this->in->getString('end_action') ?: Article::END_ACTION_DELETE;
             } else {
                 $article->date_end = null;
@@ -674,7 +673,7 @@ class KbController extends AbstractController
 
         $this->_insertArticleAttachments($article);
 
-        foreach ($revs AS $rev) {
+        foreach ($revs as $rev) {
             $this->em->persist($rev);
         }
         $this->em->persist($article);
@@ -698,7 +697,7 @@ class KbController extends AbstractController
         }
         $accept = $this->container->getAttachmentAccepter();
 
-        foreach ($attachments AS $file) {
+        foreach ($attachments as $file) {
             $error = $accept->getError($file, 'agent');
             if (!$error) {
                 $blob = $accept->accept($file);
@@ -1119,7 +1118,7 @@ class KbController extends AbstractController
             if (!$error) {
                 $blob = $accept->accept($file);
             } else {
-                $message = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+                $message = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
 
                 return $this->createApiErrorResponse($error['error_code'], $message);
             }
@@ -1173,7 +1172,7 @@ class KbController extends AbstractController
     {
         $article = $this->_getArticleOr404($article_id);
         $exists = false;
-        foreach ($article->attachments AS $attachment) {
+        foreach ($article->attachments as $attachment) {
             if ($attachment->id == $attachment_id) {
                 $exists = true;
                 break;
@@ -1212,7 +1211,7 @@ class KbController extends AbstractController
     public function deleteArticleAttachmentAction($article_id, $attachment_id)
     {
         $article = $this->_getArticleOr404($article_id);
-        foreach ($article->attachments AS $k => $attachment) {
+        foreach ($article->attachments as $k => $attachment) {
             if ($attachment->id == $attachment_id) {
                 $article->attachments->remove($k);
                 $this->em->remove($attachment);
@@ -1387,7 +1386,7 @@ class KbController extends AbstractController
         $comments = $this->em->getRepository('DeskPRO:ArticleComment')->getValidatingComments();
         $entity_key = 'article';
         $output = array();
-        foreach ($comments AS $key => $value) {
+        foreach ($comments as $key => $value) {
             $output[$key] = $value->toApiData(false, true);
             if ($value->$entity_key) {
                 $output[$key][$entity_key] = $value->$entity_key->toApiData(false, false);
@@ -1491,13 +1490,13 @@ class KbController extends AbstractController
             $this->em->persist($category);
             $this->em->flush();
 
-            foreach ($usergroup_ids AS $usergroup_id) {
+            foreach ($usergroup_ids as $usergroup_id) {
                 if (!$usergroup_id) {
                     continue;
                 }
                 App::getDb()->insert('article_category2usergroup', array(
                     'category_id'  => $category->getId(),
-                    'usergroup_id' => $usergroup_id
+                    'usergroup_id' => $usergroup_id,
                 ));
             }
 
@@ -1600,7 +1599,6 @@ class KbController extends AbstractController
             $category->title = $title;
         }
 
-
         if ($this->in->checkIsset('parent_id')) {
             $parent_id = $this->in->getUint('parent_id');
             if ($parent_id) {
@@ -1700,7 +1698,7 @@ class KbController extends AbstractController
         $category = $this->_getCategoryOr404($category_id);
 
         $terms = array(
-            array('type' => ArticleSearch::TERM_CATEGORY_SPECIFIC, 'op' => 'contains', 'options' => array($category->id))
+            array('type' => ArticleSearch::TERM_CATEGORY_SPECIFIC, 'op' => 'contains', 'options' => array($category->id)),
         );
 
         $order_by = $this->in->getString('order');
@@ -1716,7 +1714,9 @@ class KbController extends AbstractController
         $result_cache = $this->getApiSearchResult('article', $terms, $extra, $this->in->getUint('cache_id'), new ArticleSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
@@ -1730,7 +1730,7 @@ class KbController extends AbstractController
             'per_page' => $per_page,
             'total' => count($ids),
             'cache_id' => $result_cache->id,
-            'articles' => $this->getApiData($articles)
+            'articles' => $this->getApiData($articles),
         ));
     }
 
@@ -1798,7 +1798,7 @@ class KbController extends AbstractController
         }
 
         $exists = false;
-        foreach ($category->usergroups AS $group) {
+        foreach ($category->usergroups as $group) {
             if ($group->id == $group_id) {
                 $exists = true;
                 break;
@@ -1808,7 +1808,7 @@ class KbController extends AbstractController
         if (!$exists) {
             $this->db->insert('article_category2usergroup', array(
                 'category_id' => $category->id,
-                'usergroup_id' => $group_id
+                'usergroup_id' => $group_id,
             ));
         }
 
@@ -1849,7 +1849,7 @@ class KbController extends AbstractController
         $category = $this->_getCategoryOr404($category_id);
 
         $exists = false;
-        foreach ($category->usergroups AS $group) {
+        foreach ($category->usergroups as $group) {
             if ($group->id == $group_id) {
                 $exists = true;
                 break;
@@ -1889,7 +1889,7 @@ class KbController extends AbstractController
     {
         $category = $this->_getCategoryOr404($category_id);
 
-        foreach ($category->usergroups AS $key => $group) {
+        foreach ($category->usergroups as $key => $group) {
             if ($group->id == $group_id) {
                 $category->usergroups->remove($key);
                 $this->em->persist($category);

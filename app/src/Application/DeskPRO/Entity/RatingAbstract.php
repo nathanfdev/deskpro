@@ -140,14 +140,16 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
         $this->_onPropertyChanged('visitor', $this->visitor, $visitor);
         $this->visitor = $visitor;
 
-        if ($visitor === null) return;
+        if ($visitor === null) {
+            return;
+        }
 
         $this['ip_address'] = $visitor['ip_address'];
 
-        if (!$this->name AND $visitor['name']) {
+        if (!$this->name and $visitor['name']) {
             $this['name'] = $visitor['name'];
         }
-        if (!$this->email AND $visitor['email']) {
+        if (!$this->email and $visitor['email']) {
             $this['email'] = $visitor['email'];
         }
     }

@@ -61,7 +61,6 @@ class SmartSprites implements FilterInterface
 
     public function filterDump(AssetInterface $asset)
     {
-
     }
 
     public function filterLoad(AssetInterface $asset)
@@ -75,7 +74,7 @@ class SmartSprites implements FilterInterface
         $pb->setWorkingDirectory(dirname($this->smartsprites_bin));
 
         $prefix = preg_replace('#[^0-9a-zA-Z\-_]#', '-', $asset->getSourcePath());
-        $tmpfile = $asset->getSourceRoot() . '/' . $prefix . '-' . substr(sha1(time().rand(11111, 99999)), 0, 7) . '.css';
+        $tmpfile = $asset->getSourceRoot().'/'.$prefix.'-'.substr(sha1(time().rand(11111, 99999)), 0, 7).'.css';
         $expect_outfile = str_replace('.css', '-sprite.css', $tmpfile);
 
         if (file_put_contents($tmpfile, $asset->getContent()) === false) {
@@ -95,7 +94,7 @@ class SmartSprites implements FilterInterface
                 unlink($expect_outfile);
             }
 
-            throw new \RuntimeException("[SmartSprites] " . $proc->getCommandLine() . "\n\n" . $proc->getOutput() . "\n\n" . $proc->getErrorOutput());
+            throw new \RuntimeException("[SmartSprites] ".$proc->getCommandLine()."\n\n".$proc->getOutput()."\n\n".$proc->getErrorOutput());
         }
 
         // No file means SmartSprites just didnt need to do anything,

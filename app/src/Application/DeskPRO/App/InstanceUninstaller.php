@@ -71,7 +71,6 @@ class InstanceUninstaller
         $this->em      = $em;
     }
 
-
     /**
      * @param DeskproContainer $container
      */
@@ -84,9 +83,7 @@ class InstanceUninstaller
 
         $this->em->remove($this->app);
         $this->em->flush();
-
     }
-
 
     /**
      * @param  AppPackage                $package
@@ -112,7 +109,7 @@ class InstanceUninstaller
                 $usersource = $q->getOneOrNullResult();
 
                 if (!$usersource) {
-                    throw new \UnexpectedValueException('a usersource app instance MUST have a usersource pointing to it, app.id=' . $app->id . ' does not!');
+                    throw new \UnexpectedValueException('a usersource app instance MUST have a usersource pointing to it, app.id='.$app->id.' does not!');
                 }
             }
 
@@ -121,7 +118,6 @@ class InstanceUninstaller
 
         return new InstallerContext($container, null, $settings);
     }
-
 
     /**
      * Native apps have their own install handler (usually), but we always return the NoopInstallerHandler so we always have a handler

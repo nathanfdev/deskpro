@@ -34,7 +34,6 @@
 
 namespace Application\AgentBundle\Controller;
 
-
 /**
  * The mediabrowser does everything via ajax.
  */
@@ -63,7 +62,7 @@ class MediaBrowserController extends AbstractController
             $data[] = array(
                 'blob_id' => $blob_id,
                 'is_image' => $blob->isImage(),
-                'row_html' => $this->renderView('AgentBundle:MediaBrowser:file-row.html.twig', array('blob' => $blob))
+                'row_html' => $this->renderView('AgentBundle:MediaBrowser:file-row.html.twig', array('blob' => $blob)),
             );
         }
 
@@ -91,7 +90,7 @@ class MediaBrowserController extends AbstractController
 
         $im = new \Imagick();
         $im->readImageBlob($file, $blob['filename']);
-        $im->cropimage($this->in->getInt('w'),$this->in->getInt('h'),$this->in->getInt('x'),$this->in->getInt('y'));
+        $im->cropimage($this->in->getInt('w'), $this->in->getInt('h'), $this->in->getInt('x'), $this->in->getInt('y'));
 
         $new_blob = $this->container->getBlobStorage()->createBlobRecordFromString(
             $im->getImageBlob(),
@@ -126,7 +125,6 @@ class MediaBrowserController extends AbstractController
         ));
     }
 
-
     ############################################################################
     # get-recent
     ############################################################################
@@ -144,7 +142,6 @@ class MediaBrowserController extends AbstractController
             'recent_blob_objects' => $recent_blob_objects,
         ));
     }
-
 
     ############################################################################
     # update-blob

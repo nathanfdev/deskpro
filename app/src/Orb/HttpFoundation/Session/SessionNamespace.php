@@ -55,7 +55,7 @@ class SessionNamespace implements SessionInterface
     protected function __construct(\Orb\HttpFoundation\Session\Session $session, $namespace)
     {
         $this->session = $session;
-        $this->namespace = '__' . $namespace;
+        $this->namespace = '__'.$namespace;
     }
 
     /**
@@ -145,7 +145,9 @@ class SessionNamespace implements SessionInterface
     public function remove($name)
     {
         $this->start();
-        if (!isset($this->session->data[$this->namespace])) return;
+        if (!isset($this->session->data[$this->namespace])) {
+            return;
+        }
 
         unset($this->session->data[$this->namespace][$name]);
 

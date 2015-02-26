@@ -49,7 +49,6 @@ class TicketSlasController extends AbstractController implements ProtectedContro
         return new AdminManagePermission();
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -71,7 +70,7 @@ class TicketSlasController extends AbstractController implements ProtectedContro
         }
 
         return $this->createApiResponse(array(
-            'slas' => $data
+            'slas' => $data,
         ));
     }
 
@@ -89,7 +88,7 @@ class TicketSlasController extends AbstractController implements ProtectedContro
         $data = $this->getApiData($sla);
 
         return $this->createApiResponse(array(
-            'sla' => $data
+            'sla' => $data,
         ));
     }
 
@@ -162,7 +161,7 @@ class TicketSlasController extends AbstractController implements ProtectedContro
         $this->em->flush();
 
         return $this->createSuccessResponse(array(
-            'sla_id' => $sla->id
+            'sla_id' => $sla->id,
         ));
     }
 

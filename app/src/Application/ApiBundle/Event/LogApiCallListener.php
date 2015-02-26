@@ -27,9 +27,7 @@
 
 namespace Application\ApiBundle\Event;
 
-
 use \Application\ApiBundle\Request\RequestAuth;
-use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\HttpKernel\Event\PrePostEvent;
 use Application\DeskPRO\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
@@ -41,7 +39,8 @@ class LogApiCallListener
     {
         try {
             $this->_do($event, $eventName, $dispatcher);
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
     }
 
     private function _do(PrePostEvent $event, $eventName, ContainerAwareEventDispatcher $dispatcher)

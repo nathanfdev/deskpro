@@ -75,7 +75,6 @@ final class Downloads extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid download record `%d` found (Skipping)', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid download record `%d` found (Skipping): %s',
@@ -101,7 +100,7 @@ final class Downloads extends AbstractParser
         if ($this->isDownloadValid($download) && $this->isAttachmentValid($download, 'person')) {
             $entity = new Entity\Download();
             $entity
-                ->setDestination(self::DOWNLOAD_PREFIX . $num)
+                ->setDestination(self::DOWNLOAD_PREFIX.$num)
                 ->setOid($num)
                 ->setPersonEmail($download['person'])
                 ->setTitle($download['title'])
@@ -126,7 +125,7 @@ final class Downloads extends AbstractParser
     /**
      * Check if download has all required columns
      *
-     * @param array $download
+     * @param  array $download
      * @return bool
      */
     private function isDownloadValid(array $download)

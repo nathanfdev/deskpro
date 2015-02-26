@@ -35,5 +35,4 @@ namespace Application\ImportBundle\Generator\Exporter\Parser;
  */
 final class NoColumnException extends \Exception
 {
-
 }

@@ -47,7 +47,7 @@ class TicketProps implements \ArrayAccess
         'message_raw' => 1, 'notify_email' => 1, 'cc_emails' => 1,
         'new_upload' => 1, 'attach_ids' => 1, 'attach_ids_authed' => 1,
         'department_id' => 1, 'category_id' => 1, 'priority_id' => 1, 'product_id' => 1,
-        'workflow_id' => 1
+        'workflow_id' => 1,
     );
 
     /** @var string */
@@ -93,8 +93,26 @@ class TicketProps implements \ArrayAccess
         $this->workflow_id     = App::getSetting('core.default_ticket_work') ?: 0;
     }
 
-    public function offsetExists($offset) { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
-    public function offsetGet($offset) { if (isset(self::$prop_names[$offset])) return $this->$offset; }
-    public function offsetSet($offset, $value) { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
-    public function offsetUnset($offset) { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
+    public function offsetExists($offset)
+    {
+        return (isset(self::$prop_names[$offset]) && isset($this->$offset));
+    }
+    public function offsetGet($offset)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            return $this->$offset;
+        }
+    }
+    public function offsetSet($offset, $value)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            $this->$offset = $value;
+        }
+    }
+    public function offsetUnset($offset)
+    {
+        if (isset(self::$prop_names[$offset])) {
+            $this->$offset = null;
+        }
+    }
 }

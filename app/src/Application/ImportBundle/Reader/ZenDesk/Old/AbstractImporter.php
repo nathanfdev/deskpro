@@ -131,10 +131,9 @@ abstract class AbstractImporter
         $this->db = $this->db;
 
         if (file_exists(DP_ROOT.'/src/Application/InstallBundle/Data/schema.php')) {
-            $this->schema_file = include(DP_ROOT.'/src/Application/InstallBundle/Data/schema.php');
+            $this->schema_file = include DP_ROOT.'/src/Application/InstallBundle/Data/schema.php';
         }
     }
-
 
     /**
      * Returns true when we can detect a large database and can link to the kb article
@@ -165,7 +164,7 @@ abstract class AbstractImporter
             }
         }
 
-        return (bool)$this->archive_days;
+        return (bool) $this->archive_days;
     }
 
     /**
@@ -180,7 +179,6 @@ abstract class AbstractImporter
         return $this->archive_days;
     }
 
-
     /**
      * Called before initalizing. Use this to check $config to ensure
      * everything is alright.
@@ -189,18 +187,15 @@ abstract class AbstractImporter
      */
     abstract public function validateOptions();
 
-
     /**
      * Called before the first step to initialize anything.
      */
     abstract public function setupImport($mode = 'run');
 
-
     /**
      * Called after all steps are finished to cleanup anything.
      */
     abstract public function cleanupImport();
-
 
     /**
      * The number of steps this importer has.
@@ -209,11 +204,10 @@ abstract class AbstractImporter
      */
     abstract public function countSteps();
 
-
     /**
      * Get a step
      *
-     * @param int $step
+     * @param  int                                                    $step
      * @return \Application\DeskPRO\Import\Importer\Step\AbstractStep
      */
     abstract public function getStep($step);
@@ -221,11 +215,10 @@ abstract class AbstractImporter
     /**
      * Get a step title
      *
-     * @param int $step
+     * @param  int    $step
      * @return string
      */
     abstract public function getStepTitle($step);
-
 
     /**
      * Called before a step is run
@@ -234,9 +227,7 @@ abstract class AbstractImporter
      */
     public function preRunStep($step)
     {
-
     }
-
 
     /**
      * Called after a step is run
@@ -245,19 +236,16 @@ abstract class AbstractImporter
      */
     public function postRunStep($step)
     {
-
     }
 
-
     /**
-     * @param int $step
+     * @param  int  $step
      * @return bool
      */
     public function hasStep($step)
     {
         return ($step <= $this->countSteps());
     }
-
 
     /**
      * @return \Orb\Log\Logger
@@ -267,7 +255,6 @@ abstract class AbstractImporter
         return $this->logger;
     }
 
-
     /**
      * @param $message
      */
@@ -276,9 +263,8 @@ abstract class AbstractImporter
         $this->logger->log($message, 'INFO');
     }
 
-
     /**
-     * @return string $name Get a value for $name fom config, otherwise get the config object itself
+     * @return string                 $name Get a value for $name fom config, otherwise get the config object itself
      * @return \Orb\Util\OptionsArray
      */
     public function getConfig($name = null)
@@ -290,7 +276,6 @@ abstract class AbstractImporter
         return $this->config;
     }
 
-
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
@@ -298,7 +283,6 @@ abstract class AbstractImporter
     {
         return $this->container;
     }
-
 
     /**
      * The ID of the importer
@@ -308,9 +292,9 @@ abstract class AbstractImporter
     public function getId()
     {
         $basename = \Orb\Util\Util::getBaseClassname($this);
+
         return strtolower(str_replace('Importer', '', $basename));
     }
-
 
     /**
      * @return \Application\DeskPRO\DBAL\Connection
@@ -320,7 +304,6 @@ abstract class AbstractImporter
         return $this->db;
     }
 
-
     /**
      * @return \Doctrine\ORM\EntityManager
      */
@@ -328,7 +311,6 @@ abstract class AbstractImporter
     {
         return $this->container->getEm();
     }
-
 
     /**
      * Save an ID mapping
@@ -342,7 +324,7 @@ abstract class AbstractImporter
         $values = array(
             'typename' => $type,
             'old_id' => $old_id,
-            'new_id' => $new_id
+            'new_id' => $new_id,
         );
 
         if ($buffer) {
@@ -360,7 +342,6 @@ abstract class AbstractImporter
         }
         $this->cached_maps[$type][$old_id] = $new_id;
     }
-
 
     /**
      * Sends all of the mapped ids to the import_map table
@@ -390,7 +371,7 @@ abstract class AbstractImporter
                 }
             }
 
-            $sql_parts[] = '(' . implode(',', $quoted) . ')';
+            $sql_parts[] = '('.implode(',', $quoted).')';
         }
 
         $sql .= implode(',', $sql_parts);
@@ -401,7 +382,6 @@ abstract class AbstractImporter
 
         $this->buffered_save_mapped_ids = array();
     }
-
 
     /**
      * Get the new Id by looking up the old one
@@ -418,7 +398,7 @@ abstract class AbstractImporter
                 $data = $this->db->fetchAll("
 					SELECT typename, old_id, new_id
 					FROM import_map
-					WHERE typename IN ('" . implode("','", array_keys($this->cache_map_types)) . "')
+					WHERE typename IN ('".implode("','", array_keys($this->cache_map_types))."')
 					/*DP_QLOG_NOLOG*/
 				");
                 $this->cached_maps = array();
@@ -450,10 +430,9 @@ abstract class AbstractImporter
         return $id;
     }
 
-
     /**
-     * @param string $type
-     * @param array $old_ids
+     * @param  string $type
+     * @param  array  $old_ids
      * @return array
      */
     public function getMappedNewIdsArray($type, array $old_ids)
@@ -495,7 +474,6 @@ abstract class AbstractImporter
 
         return $ret;
     }
-
 
     /**
      * Get the old Id by looking up the new one

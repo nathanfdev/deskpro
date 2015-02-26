@@ -31,7 +31,6 @@ use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
-use DateTime;
 use DateTimeZone;
 
 /**
@@ -77,13 +76,11 @@ final class People extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid person record found (Skipping): %d', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid person record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
-
             } catch (NotArrayException $e) {
                 $this->logWarning(sprintf(
                     'Invalid person record `%d` found (Skipping): %s',
@@ -98,7 +95,7 @@ final class People extends AbstractParser
     /**
      * Returns a person entity
      *
-     * @param array $person
+     * @param  array              $person
      * @return Entity\Person|null
      */
     private function exportPerson(array $person)
@@ -106,7 +103,7 @@ final class People extends AbstractParser
         if ($this->isPersonValid($person)) {
             $entity = new Entity\Person();
             $entity
-                ->setDestination('ticket_' . $person['oid'])
+                ->setDestination('ticket_'.$person['oid'])
                 ->setOid($person['oid'])
                 ->setAsAgent($person['is_agent'])
                 ->setAsUser($person['is_user'])
@@ -161,7 +158,7 @@ final class People extends AbstractParser
     /**
      * Check if person has all required columns
      *
-     * @param array $person
+     * @param  array $person
      * @return bool
      */
     private function isPersonValid(array $person)

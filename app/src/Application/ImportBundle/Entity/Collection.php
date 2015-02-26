@@ -38,19 +38,20 @@ use Application\ImportBundle\AbstractCollection;
 final class Collection extends AbstractCollection
 {
     /**
-     * @param EntityInterface $entity
+     * @param  EntityInterface $entity
      * @return $this
      */
     public function attach(EntityInterface $entity)
     {
         $this->collection[] = $entity;
+
         return $this;
     }
 
     /**
      * Merge another entity collection
      *
-     * @param Collection $collection
+     * @param  Collection $collection
      * @return $this
      */
     public function merge(Collection $collection)

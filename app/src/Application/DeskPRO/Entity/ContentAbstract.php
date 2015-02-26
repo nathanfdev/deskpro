@@ -193,7 +193,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param string $slug
+     * @param  string $slug
      * @return $this
      */
     public function setSlug($slug)
@@ -206,22 +206,24 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param Person $person
+     * @param  Person $person
      * @return $this
      */
     public function setPerson(Person $person)
     {
         $this->setModelField('person', $person);
+
         return $this;
     }
 
     /**
-     * @param Language $language
+     * @param  Language $language
      * @return $this
      */
     public function setLanguage(Language $language = null)
     {
         $this->setModelField('language', $language);
+
         return $this;
     }
 
@@ -265,7 +267,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getStatusCode()
     {
         if ($this->hidden_status) {
-            return 'hidden.' . $this->hidden_status;
+            return 'hidden.'.$this->hidden_status;
         } else {
             return $this->status;
         }
@@ -275,7 +277,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         // Find attach replacements: ![attach:{$blob['authcode']}:{$blob['filename']}]
         $fn = function ($m) {
-            return App::getSetting('core.deskpro_url') . 'file.php/' . $m[1] . '/' . urlencode($m[2]);
+            return App::getSetting('core.deskpro_url').'file.php/'.$m[1].'/'.urlencode($m[2]);
         };
         $content = preg_replace_callback('#!\[attach:([0-9A-Z]+):(.*?)\]#', $fn, $content);
 
@@ -289,6 +291,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $this->setModelField('content', $content);
+
         return $this;
     }
 
@@ -345,7 +348,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $content = str_replace(array("\r\n", "\n"), " ", $content);
 
         if (Strings::utf8_strlen($content) > $length) {
-            $content = Strings::utf8_substr($content, 0, $length) . '...';
+            $content = Strings::utf8_substr($content, 0, $length).'...';
         }
 
         return $content;
@@ -353,7 +356,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     public function getUrlSlug()
     {
-        return $this->id . '-' . $this->slug;
+        return $this->id.'-'.$this->slug;
     }
 
     abstract public function getLink();
@@ -377,7 +380,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
             $this->_authors[$this->person['id']] = $this->person;
         }
 
-        $ent = $this->getEntityName() . 'Revision';
+        $ent = $this->getEntityName().'Revision';
         $field = strtolower(str_replace('DeskPRO:', '', $this->getEntityName()));
 
         $revs = App::getOrm()->createQuery("
@@ -480,12 +483,11 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         if ($this->_label_manager === null) {
             $name = Util::getBaseClassname($this);
-            $this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:Label' . $name);
+            $this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:Label'.$name);
         }
 
         return $this->_label_manager;
     }
-
 
     /**
      * @return string
@@ -502,7 +504,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $name;
     }
 
-
     /**
      * @return string
      */
@@ -510,7 +511,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->title;
     }
-
 
     /**
      * @return string
@@ -528,7 +528,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('title', $title);
     }
 
-
     /**
      * @return string
      */
@@ -538,32 +537,35 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param DateTime $date_created
+     * @param  DateTime $date_created
      * @return $this
      */
     public function setDateCreated(DateTime $date_created)
     {
         $this->setModelField('date_created', $date_created);
+
         return $this;
     }
 
     /**
-     * @param DateTime $date_published
+     * @param  DateTime $date_published
      * @return $this
      */
     public function setDatePublished(DateTime $date_published = null)
     {
         $this->setModelField('date_published', $date_published);
+
         return $this;
     }
 
     /**
-     * @param int $view_count
+     * @param  int   $view_count
      * @return $this
      */
     public function setViewsCount($view_count)
     {
         $this->setModelField('view_count', $view_count);
+
         return $this;
     }
 }

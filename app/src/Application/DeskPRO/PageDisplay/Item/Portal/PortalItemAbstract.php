@@ -86,7 +86,6 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
      */
     protected function init()
     {
-
     }
 
     /**
@@ -97,7 +96,6 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
     {
         $this->person_context = $person;
     }
-
 
     /**
      * Get the HTML for this item that'll be outputted into the page

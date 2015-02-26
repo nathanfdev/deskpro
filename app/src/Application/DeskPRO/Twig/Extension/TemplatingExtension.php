@@ -330,21 +330,27 @@ class TemplatingExtension extends \Twig_Extension
     public function gravatar($email, $size = 80)
     {
         $hash = strtolower(md5($email));
-        $url = 'http://www.gravatar.com/avatar/' . $hash . '?';
-        $url .= '&d=' . App::get('router')->generate('serve_default_picture', array('s' => $size), true);
+        $url = 'http://www.gravatar.com/avatar/'.$hash.'?';
+        $url .= '&d='.App::get('router')->generate('serve_default_picture', array('s' => $size), true);
 
         return $url;
     }
 
     public function getFirst($var)
     {
-        if (!$var) return null;
+        if (!$var) {
+            return null;
+        }
+
         return \Orb\Util\Arrays::getFirstItem($var);
     }
 
     public function getLast($var)
     {
-        if (!$var) return null;
+        if (!$var) {
+            return null;
+        }
+
         return \Orb\Util\Arrays::getLastItem($var);
     }
 
@@ -393,7 +399,7 @@ class TemplatingExtension extends \Twig_Extension
                 $dots = '...';
             }
 
-            return trim(substr($str, 0, $width). $dots);
+            return trim(substr($str, 0, $width).$dots);
         } else {
             return trim(substr($str, 0, $width));
         }
@@ -434,7 +440,7 @@ class TemplatingExtension extends \Twig_Extension
 
     public function crc32($string)
     {
-        $string = (string)$string;
+        $string = (string) $string;
 
         return sprintf("%u", crc32($string));
     }
@@ -466,10 +472,10 @@ class TemplatingExtension extends \Twig_Extension
 
         $url = App::getSetting('core.deskpro_url');
 
-        foreach ($id_map AS $prefix => $info) {
+        foreach ($id_map as $prefix => $info) {
             $html = preg_replace(
-                '/\{\{\s*' . $prefix . '-(\d+)\s*\}\}/',
-                '<a href="' . $url . $info[1] . '$1">' . $info[0] . ' #$1</a>',
+                '/\{\{\s*'.$prefix.'-(\d+)\s*\}\}/',
+                '<a href="'.$url.$info[1].'$1">'.$info[0].' #$1</a>',
                 $html
             );
         }
@@ -503,7 +509,7 @@ class TemplatingExtension extends \Twig_Extension
     public function explodeString($string, $del = ',')
     {
         $ret = array();
-        $string = (string)$string;
+        $string = (string) $string;
 
         foreach (explode($del, $string) as $p) {
             $ret[] = trim($p);
@@ -527,7 +533,7 @@ class TemplatingExtension extends \Twig_Extension
         $less_use_css = App::getConfig('debug.less_use_css_dir', false);
         $disable_client_cache = App::getConfig('debug.disable_client_cache', false);
 
-        if ($raw_packs && (in_array($name, $raw_packs) OR in_array('all', $raw_packs) OR (in_array('all -vendors', $raw_packs) && $name != 'agent_vendors'))) {
+        if ($raw_packs && (in_array($name, $raw_packs) or in_array('all', $raw_packs) or (in_array('all -vendors', $raw_packs) && $name != 'agent_vendors'))) {
             $urls = $this->getAsseticRaw($name);
         } else {
             $urls = array($this->getAssetic($name));
@@ -544,17 +550,17 @@ class TemplatingExtension extends \Twig_Extension
         foreach ($urls as $url) {
             $type = Strings::getExtension($url);
 
-            $url .= '?' . $qs_append;
+            $url .= '?'.$qs_append;
 
             switch ($type) {
                 case 'js':
-                    $html[] = '<script type="text/javascript" src="' . $url . '"></script>';
+                    $html[] = '<script type="text/javascript" src="'.$url.'"></script>';
                     break;
                 case 'css':
                     if (!isset($options['media'])) {
                         $options['media'] = 'screen,print';
                     }
-                    $html[] = '<link rel="stylesheet" type="text/css" media="' . $options['media'] .'" href="' . $url .'" />';
+                    $html[] = '<link rel="stylesheet" type="text/css" media="'.$options['media'].'" href="'.$url.'" />';
                     break;
                 case 'less':
                     if (!isset($options['media'])) {
@@ -564,9 +570,9 @@ class TemplatingExtension extends \Twig_Extension
                     if ($less_use_css && strpos($url, '/stylesheets-less/') !== false) {
                         $url = str_replace('/stylesheets-less/', '/stylesheets/', $url);
                         $url = str_replace('.less', '.css', $url);
-                        $html[] = '<link rel="stylesheet" type="text/css" media="' . $options['media'] .'" href="' . $url .'" />';
+                        $html[] = '<link rel="stylesheet" type="text/css" media="'.$options['media'].'" href="'.$url.'" />';
                     } else {
-                        $html[] = '<link rel="stylesheet/less" type="text/css" media="' . $options['media'] .'" href="' . $url .'" />';
+                        $html[] = '<link rel="stylesheet/less" type="text/css" media="'.$options['media'].'" href="'.$url.'" />';
                     }
                     break;
             }
@@ -616,7 +622,7 @@ class TemplatingExtension extends \Twig_Extension
         $string = htmlspecialchars($string);
         foreach ($words as $w) {
             $w = htmlspecialchars($w);
-            $string = preg_replace('#(\\b)(' . preg_quote($w, '#') . ')(\\b)#iu', '$1<em>$2</em>$3', $string);
+            $string = preg_replace('#(\\b)('.preg_quote($w, '#').')(\\b)#iu', '$1<em>$2</em>$3', $string);
         }
 
         return $string;
@@ -632,7 +638,7 @@ class TemplatingExtension extends \Twig_Extension
 
         // get template name
         $name = $usersource->getAdapter()->getTypename();
-        $tpl  = "DeskPRO:Auth:" . $name . "-" . $type . ".html.twig";
+        $tpl  = "DeskPRO:Auth:".$name."-".$type.".html.twig";
 
         $html = $this->getTemplating()->render($tpl, $params);
 
@@ -649,10 +655,14 @@ class TemplatingExtension extends \Twig_Extension
         // Backwards compat calls: args shifted back one
         if (!is_array($context)) {
             $args = func_get_args();
-            if (!isset($args[1])) $args[1] = 'F j, Y H:i';
-            if (!isset($args[2])) $args[2] = null;
+            if (!isset($args[1])) {
+                $args[1] = 'F j, Y H:i';
+            }
+            if (!isset($args[2])) {
+                $args[2] = null;
+            }
 
-            list ($date, $format, $timezone) = $args;
+            list($date, $format, $timezone) = $args;
             $context = null;
         }
 
@@ -691,12 +701,13 @@ class TemplatingExtension extends \Twig_Extension
                 try {
                     $date_str = $date;
                     $date = new \DateTime($date_str);
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
         }
 
         if (!($date instanceof \DateTime)) {
-            $date_str = (string)$date;
+            $date_str = (string) $date;
 
             return "invalid_date($date_str)";
         }
@@ -745,29 +756,29 @@ class TemplatingExtension extends \Twig_Extension
             'L' => '', 'o' => '', 'Y' => 'yy', 'y' => 'y',
             'a' => '', 'A' => '', 'B' => '', 'g' => '',
             'G' => '', 'h' => '', 'H' => '', 'i' => '',
-            's' => '', 'u' => ''
+            's' => '', 'u' => '',
         );
 
         $format_len = strlen($format);
         $new_format = array();
         $escaping   = false;
 
-        for($i = 0; $i < $format_len; $i++) {
+        for ($i = 0; $i < $format_len; $i++) {
             $char = $format[$i];
-            if($char === '\\') {
+            if ($char === '\\') {
                 $i++;
-                if($escaping) {
+                if ($escaping) {
                     $new_format[] = $format[$i];
                 } else {
-                    $new_format[] = '\'' . $format[$i];
+                    $new_format[] = '\''.$format[$i];
                 }
                 $escaping = true;
             } else {
-                if($escaping) {
+                if ($escaping) {
                     $new_format[] = "'";
                     $escaping = false;
                 }
-                if(isset($php_sym[$char])) {
+                if (isset($php_sym[$char])) {
                     $new_format[] = $php_sym[$char];
                 } else {
                     $new_format[] = $char;
@@ -823,12 +834,12 @@ class TemplatingExtension extends \Twig_Extension
             $html = '';
         }
 
-        $html .= '<input type="hidden" name="' . $field_name . '" value="' . App::getSession()
+        $html .= '<input type="hidden" name="'.$field_name.'" value="'.App::getSession()
                 ->getEntity()
-                ->generateSecurityToken($name, 43200) . '" />';
-        $html .= '<input type="hidden" name="_rt" value="' . App::getSession()
+                ->generateSecurityToken($name, 43200).'" />';
+        $html .= '<input type="hidden" name="_rt" value="'.App::getSession()
                 ->getEntity()
-                ->generateSecurityToken('request_token', 10800) . '" class="dp_request_token" />';
+                ->generateSecurityToken('request_token', 10800).'" class="dp_request_token" />';
 
         $html .= '<!--DP_FORM_TOKEN_END-->';
 
@@ -905,7 +916,7 @@ class TemplatingExtension extends \Twig_Extension
             $var_type = get_class($var);
 
             // Passes Some\MyClass as well as just MyClass, but not SomeOther\MyClass against Some\MyClass
-            return (strpos($var_type, $type) !== false AND Util::getBaseClassname($var_type) == Util::getBaseClassname($type));
+            return (strpos($var_type, $type) !== false and Util::getBaseClassname($var_type) == Util::getBaseClassname($type));
         }
     }
 
@@ -918,17 +929,17 @@ class TemplatingExtension extends \Twig_Extension
 
     public function encNum($num)
     {
-        return Util::baseEncode((int)$num, Util::LETTERS_ALPHABET);
+        return Util::baseEncode((int) $num, Util::LETTERS_ALPHABET);
     }
 
     public function decNum($num)
     {
-        return Util::baseDecode((int)$num, Util::LETTERS_ALPHABET);
+        return Util::baseDecode((int) $num, Util::LETTERS_ALPHABET);
     }
 
     public function rand($min = 1, $max = 10)
     {
-        return mt_rand((int)$min, (int)$max);
+        return mt_rand((int) $min, (int) $max);
     }
 
     public function isUserGuest($person = null)
@@ -1023,9 +1034,9 @@ class TemplatingExtension extends \Twig_Extension
     public function elUid($prefix = 'dp_')
     {
         return $prefix
-               . Util::baseEncode(time() - strtotime('-15 days'), 'base36') // 4 digits. 15 days to save a few digits
-               . Util::baseEncode(mt_rand(36, 1295), 'base36') // 2 digits
-               . Util::baseEncode(Util::requestUniqueId(), 'base36'); // 1-2 digits
+               .Util::baseEncode(time() - strtotime('-15 days'), 'base36') // 4 digits. 15 days to save a few digits
+.Util::baseEncode(mt_rand(36, 1295), 'base36') // 2 digits
+.Util::baseEncode(Util::requestUniqueId(), 'base36'); // 1-2 digits
     }
 
     /**
@@ -1051,7 +1062,7 @@ class TemplatingExtension extends \Twig_Extension
 
     public function helpdeskUrl($path)
     {
-        return App::getSetting('core.deskpro_url') . ltrim($path, '/');
+        return App::getSetting('core.deskpro_url').ltrim($path, '/');
     }
 
     public function isHelpdeskPath($path)
@@ -1066,7 +1077,7 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         $path = Strings::canonicalPath($path);
-        $root_path = '/' . trim($this->container->get('router')->getGenerator()->generate('user', array(), false), '/');
+        $root_path = '/'.trim($this->container->get('router')->getGenerator()->generate('user', array(), false), '/');
 
         if (strpos($path, $root_path) !== 0) {
             return false;
@@ -1139,7 +1150,7 @@ class TemplatingExtension extends \Twig_Extension
 
         $attributes = array(
             'dir' => ($language->is_rtl ? 'dir="rtl"' : 'dir="ltr"'),
-            'lang' => 'lang="' . htmlspecialchars(substr($language->locale, 0, 2), \ENT_QUOTES, 'UTF-8') . '"'
+            'lang' => 'lang="'.htmlspecialchars(substr($language->locale, 0, 2), \ENT_QUOTES, 'UTF-8').'"',
         );
 
         return implode(' ', $attributes);
@@ -1233,10 +1244,10 @@ class TemplatingExtension extends \Twig_Extension
         if (!$url) {
             $url = App::getSetting('core.deskpro_url');
             $url = trim(str_replace('/index.php', '', $url), '/');
-            $url .= (App::getConfig('static_path') ?: '/web') . '/';
+            $url .= (App::getConfig('static_path') ?: '/web').'/';
         }
 
-        return $url . ltrim($location, '/');
+        return $url.ltrim($location, '/');
     }
 
     public function rawUrlEncode($str)
@@ -1298,7 +1309,7 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         if (!file_exists($path)) {
-            $e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException("File does not exist: " . $path);
+            $e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException("File does not exist: ".$path);
             \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e);
 
             return '';
@@ -1318,14 +1329,14 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         if (!file_exists($path)) {
-            $e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException("File does not exist: " . $path);
+            $e = new \Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException("File does not exist: ".$path);
             \DeskPRO\Kernel\KernelErrorHandler::logException($e, false, 'tpl_include_php_file');
 
             return '';
         }
 
         ob_start();
-        include($path);
+        include $path;
         $content = ob_get_clean();
 
         return $content;
@@ -1378,12 +1389,12 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         $output = '';
-        foreach ($widgets AS $widget) {
+        foreach ($widgets as $widget) {
             $output .= $this->_insertWidget($baseId, $widget,
                 '<div class="profile-box-container" id="{id}_container">'
-                    . '<header><h4 id="{id}_tab">{title}</h4></header>'
-                    . '<section class="widget-content" id="{id}" data-widget="{widget}">{html}</section>'
-                . '</div>',
+                    .'<header><h4 id="{id}_tab">{title}</h4></header>'
+                    .'<section class="widget-content" id="{id}" data-widget="{widget}">{html}</section>'
+                .'</div>',
                 $data
             );
         }
@@ -1394,6 +1405,7 @@ class TemplatingExtension extends \Twig_Extension
     public function getWidgetsRaw($page, $location, $position = '')
     {
         return '';
+
         return $this->_getPageLocationWidgets($page, $location, $position);
     }
 
@@ -1409,8 +1421,8 @@ class TemplatingExtension extends \Twig_Extension
         } else {
             if ($position === '') {
                 $output = array();
-                foreach ($this->_widgetCache[$page][$location] AS $widgets) {
-                    foreach ($widgets AS $widget) {
+                foreach ($this->_widgetCache[$page][$location] as $widgets) {
+                    foreach ($widgets as $widget) {
                         $output[] = $widget;
                     }
                 }
@@ -1443,12 +1455,12 @@ class TemplatingExtension extends \Twig_Extension
     {
         $originalCount = count($tabs);
 
-        foreach ($this->_getPageLocationWidgets($page, $location, 'tab') AS $widget) {
+        foreach ($this->_getPageLocationWidgets($page, $location, 'tab') as $widget) {
             $htmlId = $this->getWidgetHtmlId($baseId, $widget);
             $tabs[$htmlId] = $widget->title;
         }
 
-        foreach ($tabs AS $key => $title) {
+        foreach ($tabs as $key => $title) {
             if ($title === false) {
                 unset($tabs[$key]);
             }
@@ -1457,21 +1469,21 @@ class TemplatingExtension extends \Twig_Extension
         if (!$tabs) {
             return '';
         } elseif (count($tabs) == 1 && $originalCount == 1) {
-            return '<h4>' . reset($tabs) . '</h4>';
+            return '<h4>'.reset($tabs).'</h4>';
         } else {
             $tabHtml = array();
             $on = false;
-            foreach ($tabs AS $id => $title) {
+            foreach ($tabs as $id => $title) {
                 if (!$on) {
                     $onHtml = ' class="on"';
                     $on = true;
                 } else {
                     $onHtml = '';
                 }
-                $tabHtml[] = '<li data-tab-for="#' . $id . '" id="' . $id . '_tab"' . $onHtml . '>' . $title . '</li>';
+                $tabHtml[] = '<li data-tab-for="#'.$id.'" id="'.$id.'_tab"'.$onHtml.'>'.$title.'</li>';
             }
 
-            return '<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs"><ul>' . implode('', $tabHtml) . '</ul></nav>';
+            return '<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs"><ul>'.implode('', $tabHtml).'</ul></nav>';
         }
     }
 
@@ -1517,7 +1529,7 @@ class TemplatingExtension extends \Twig_Extension
                 $vars = array_merge(
                     array(
                         'iframe_url' => '',
-                        'render'     => true
+                        'render'     => true,
                     ),
                     $adapter->getIframeTemplateParams($is_first_page)
                 );
@@ -1534,7 +1546,7 @@ class TemplatingExtension extends \Twig_Extension
         // needs to stay because Magento native app still uses this
         $legacyOutput = $this->legacyMagentoPluginCode($interface, $person, $is_first_page);
 
-        return $iFrameOutput . $legacyOutput;
+        return $iFrameOutput.$legacyOutput;
     }
 
     /**
@@ -1551,7 +1563,7 @@ class TemplatingExtension extends \Twig_Extension
             UsersourceInfo::CAPABILITY_SSO_JS
         );
         $output     = array();
-        foreach ($sources AS $source) {
+        foreach ($sources as $source) {
             /** @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $factory */
             $factory = $this->container->getSystemService('usersource_auth_adapter_factory');
             $adapter = $factory->getAuthAdapter($source, SsoLoginActionInterface::CONTEXT_BACKGROUND);
@@ -1601,11 +1613,10 @@ class TemplatingExtension extends \Twig_Extension
         return array_key_exists($key, $array) ? $array[$key] : null;
     }
 
-
     public function countLines($str)
     {
         if (is_object($str) && method_exists($str, '__toString')) {
-            $str = (string)$str;
+            $str = (string) $str;
         }
         if (!is_scalar($str)) {
             return 0;
@@ -1664,14 +1675,14 @@ class TemplatingExtension extends \Twig_Extension
         $source = App::getContainer()->getTemplating()->getSource($name);
         $source = str_replace('<script>',  '%startScript%', $source);
         $source = str_replace('</script>',  '%endScript%', $source);
-        $source = '<script type="text/x-deskpro-tmpl" id="'.$id.'">' . $source . '</script>';
+        $source = '<script type="text/x-deskpro-tmpl" id="'.$id.'">'.$source.'</script>';
 
         return $source;
     }
 
     public function ngVar($var)
     {
-        return '{{' . $var . '}}';
+        return '{{'.$var.'}}';
     }
 
     public function ngPluralPhrase($phrase_name)
@@ -1705,7 +1716,7 @@ class TemplatingExtension extends \Twig_Extension
 
     public function ngBind($var)
     {
-        return '<span ng-bind="' . htmlspecialchars($var) . '"></span>';
+        return '<span ng-bind="'.htmlspecialchars($var).'"></span>';
     }
 
     public function ngStaticVar($var)
@@ -1719,7 +1730,7 @@ class TemplatingExtension extends \Twig_Extension
 
         $tpl = App::getContainer()->getTemplating();
         if (!$tpl->exists($name)) {
-            return '<!-- No such template exists: ' . $name . ' -->';
+            return '<!-- No such template exists: '.$name.' -->';
         }
 
         $rendered = $tpl->render($name, $context);
@@ -1734,9 +1745,9 @@ class TemplatingExtension extends \Twig_Extension
         if (strpos($rendered, '<script') !== false) {
             // If it has inner script tags we should be using our special dp-ng-template tag and encode the tpl as json
             $json = \Application\DeskPRO\Util::jsonEncode(array('template' => $rendered));
-            $html = '<script type="text/dp-ng-template" id="'.$save_name.'">' . $json . '</script>';
+            $html = '<script type="text/dp-ng-template" id="'.$save_name.'">'.$json.'</script>';
         } else {
-            $html = '<script type="text/ng-template" id="'.$save_name.'">' . $rendered . '</script>';
+            $html = '<script type="text/ng-template" id="'.$save_name.'">'.$rendered.'</script>';
         }
 
         return $html;
@@ -1744,12 +1755,12 @@ class TemplatingExtension extends \Twig_Extension
 
     public function ngHref($route, $params = '{}')
     {
-        return '{{ state_path(\'' . addslashes($route) . '\', ' . str_replace(array("'", '"'), array('&apos;', '&quot;'), $params) . ') }}';
+        return '{{ state_path(\''.addslashes($route).'\', '.str_replace(array("'", '"'), array('&apos;', '&quot;'), $params).') }}';
     }
 
     public function ngHrefVar($route_var, $params = '{}')
     {
-        return '{{ state_path(' . $route_var . ', ' . str_replace(array("'", '"'), array('&apos;', '&quot;'), $params) . ') }}';
+        return '{{ state_path('.$route_var.', '.str_replace(array("'", '"'), array('&apos;', '&quot;'), $params).') }}';
     }
 
     public function smartWrap($string, $len = 50, $break = null)
@@ -1824,7 +1835,7 @@ class TemplatingExtension extends \Twig_Extension
             $sid .= 'DEV-';
         }
         if (defined('DP_BUILD_TIME')) {
-            $sid .= '#' . DP_BUILD_TIME . '-';
+            $sid .= '#'.DP_BUILD_TIME.'-';
         } else {
             $sid .= '#0-';
         }

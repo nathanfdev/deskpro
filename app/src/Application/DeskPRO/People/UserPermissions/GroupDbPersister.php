@@ -73,7 +73,7 @@ class GroupDbPersister
             $obj = $perms->$coll_name;
             foreach ($obj->getNames() as $prop) {
                 if ($obj->$prop) {
-                    $set_perms[] = $real_name . '.' . $prop;
+                    $set_perms[] = $real_name.'.'.$prop;
                 }
             }
         }
@@ -86,7 +86,6 @@ class GroupDbPersister
             foreach ($new_perms as $p) {
                 $ins[] = array('usergroup_id' => $group->id, 'name' => $p, 'value' => 1);
             }
-
         }
 
         $this->db->beginTransaction();

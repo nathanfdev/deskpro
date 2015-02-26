@@ -56,7 +56,6 @@ class FeedbackStatusesController extends AbstractController implements Protected
         return $multi;
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -77,7 +76,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
                  'statuses' => array(
                      'active_statuses' => $active_statuses,
                      'closed_statuses' => $closed_statuses,
-                 )
+                 ),
             )
         );
     }
@@ -115,14 +114,12 @@ class FeedbackStatusesController extends AbstractController implements Protected
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
 
         if ($id) {
-
             $feedback_status   = $feedback_statuses->getById($id);
 
             if (!$feedback_status) {
                 throw $this->createNotFoundException();
             }
         } else {
-
             $feedback_status = $feedback_statuses->createNew();
         }
 
@@ -134,7 +131,6 @@ class FeedbackStatusesController extends AbstractController implements Protected
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_status'), true);
 
         if ($form->isValid()) {
-
             $feedback_status_edit->save($this->em);
         } else {
             return $this->createApiValidationErrorResponse(
@@ -164,7 +160,6 @@ class FeedbackStatusesController extends AbstractController implements Protected
         $feedback_status   = $feedback_statuses->getById($id);
 
         if (!$feedback_status) {
-
             throw $this->createNotFoundException();
         }
 
@@ -172,7 +167,6 @@ class FeedbackStatusesController extends AbstractController implements Protected
         $move_to_feedback_status = $feedback_statuses->getById($move_to);
 
         if (!$move_to_feedback_status) {
-
             throw ValidationException::create(
                 "feedback_status.remove.move_feedback_statuses",
                 "You must select a feedback status to move existing feedback into"
@@ -180,7 +174,6 @@ class FeedbackStatusesController extends AbstractController implements Protected
         }
 
         if ($move_to_feedback_status->getId() == $feedback_status->getId()) {
-
             throw ValidationException::create(
                 "feedback_status.remove.move_feedback_statuses",
                 "You must choose a different feedback status"
@@ -192,7 +185,6 @@ class FeedbackStatusesController extends AbstractController implements Protected
         $this->db->beginTransaction();
 
         try {
-
             $this->db->executeUpdate(
                 "UPDATE feedback SET status_category_id = ? WHERE status_category_id = ?",
                 array($move_to, $old_id)
@@ -202,9 +194,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
             $this->em->flush();
 
             $this->db->commit();
-
-        } catch(\Exception $e) {
-
+        } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;
         }

@@ -37,7 +37,6 @@ class SearchContextFactory
      */
     private $container;
 
-
     /**
      * @param DeskproContainer $container
      */
@@ -45,7 +44,6 @@ class SearchContextFactory
     {
         $this->container = $container;
     }
-
 
     /**
      * @param  Person                 $person

@@ -33,8 +33,6 @@
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -67,20 +65,20 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 
         $email_pre_html = "";
         if ($email_pre) {
-            $email_pre_html = "<div>" . nl2br($email_pre) . "</div>";
+            $email_pre_html = "<div>".nl2br($email_pre)."</div>";
         }
 
         $uid = uniqid('', true);
 
         $from_lines = array();
         if ($input->hasOption('from-email')) {
-            $from_lines[] = "From: " . $input->getOption('from-email');
+            $from_lines[] = "From: ".$input->getOption('from-email');
         }
         if ($input->hasOption('reply-to-email')) {
-            $from_lines[] = "Reply-To: " . $input->getOption('reply-to-email');
+            $from_lines[] = "Reply-To: ".$input->getOption('reply-to-email');
         }
         if ($input->hasOption('original-from-email')) {
-            $from_lines[] = "X-Original-From: " . $input->getOption('original-from-email');
+            $from_lines[] = "X-Original-From: ".$input->getOption('original-from-email');
         }
 
         $from_lines = implode("\n", $from_lines);
@@ -89,8 +87,8 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         $fwd_footer_html = '';
         if ($fwd_for) {
             $fwd_footer = "\n\n----- Forwarded Message -----\nFrom: $fwd_for\nSubject: $subject\n\nOriginal message from the user\n\n";
-            $fwd_footer_html = "<div>" . nl2br($fwd_footer) . "</div>";
-            $subject = "FW: " . $subject;
+            $fwd_footer_html = "<div>".nl2br($fwd_footer)."</div>";
+            $subject = "FW: ".$subject;
         }
 
         if (!$input->getOption('with-image') && !$input->getOption('attach')) {
@@ -130,7 +128,6 @@ $fwd_footer_html
 
 SRC;
         } else {
-
             if ($input->getOption('attach')) {
                 $file = file_get_contents($input->getOption('attach'));
                 $filename = basename(realpath($input->getOption('attach')));
@@ -149,7 +146,6 @@ SRC;
                 if ($filename == 'winmail.dat') {
                     $filetype = 'application/ms-tnef';
                 }
-
             } else {
                 $file = file_get_contents(DP_ROOT.'/../web/images/admin/agent-screen.png');
                 $filename = 'agent-screen.png';
@@ -206,7 +202,6 @@ $file
 
 --50c77e34_725a06fb_dfd0--
 SRC;
-
         }
         $from_email = $input->getOption('from-email');
         $to_email   = $input->getOption('to-email');

@@ -79,7 +79,7 @@ final class Tickets extends AbstractParser
                 } else {
                     $entity = new Entity\Ticket();
                     $entity
-                        ->setDestination('ticket_' . ($num + $offset))
+                        ->setDestination('ticket_'.($num + $offset))
                         ->setRef($ticket['number'])
                         ->setDepartment($this->reader->findDepartmentById($ticket['dept_id']))
                         ->setPersonEmail($this->reader->findUserEmailById($ticket['user_id']))
@@ -108,7 +108,7 @@ final class Tickets extends AbstractParser
     /**
      * Returns a collection of the ticket messages
      *
-     * @param int $ticket_id
+     * @param  int               $ticket_id
      * @return Entity\Collection
      */
     private function exportMessages($ticket_id)
@@ -142,7 +142,7 @@ final class Tickets extends AbstractParser
     /**
      * Returns a collection of the ticket message attachments
      *
-     * @param int $message_id
+     * @param  int               $message_id
      * @return Entity\Collection
      */
     private function exportAttachments($message_id)
@@ -170,7 +170,7 @@ final class Tickets extends AbstractParser
     /**
      * Get ticket status by raw data
      *
-     * @param array $ticket
+     * @param  array  $ticket
      * @return string
      */
     private function getTicketStatus(array $ticket)
@@ -189,7 +189,7 @@ final class Tickets extends AbstractParser
     /**
      * Get ticket message person email
      *
-     * @param array $message
+     * @param  array       $message
      * @return null|string
      */
     private function getMessagePersonEmail(array $message)
@@ -197,7 +197,6 @@ final class Tickets extends AbstractParser
         $email = null;
         if ($message['thread_type'] === 'R' && $message['staff_id']) {
             $email = $this->reader->findStaffEmailById($message['staff_id']);
-
         } elseif ($message['thread_type'] === 'M' && $message['user_id']) {
             $email = $this->reader->findUserEmailById($message['user_id']);
         }
@@ -208,7 +207,7 @@ final class Tickets extends AbstractParser
     /**
      * Check if ticket has all required columns
      *
-     * @param array $ticket
+     * @param  array $ticket
      * @return bool
      */
     private function hasRequiredTicketColumns(array $ticket)
@@ -231,7 +230,7 @@ final class Tickets extends AbstractParser
     /**
      * Check if ticket message has all required columns
      *
-     * @param array $message
+     * @param  array $message
      * @return bool
      */
     private function hasRequiredMessageColumns(array $message)
@@ -249,7 +248,7 @@ final class Tickets extends AbstractParser
     /**
      * Check if ticket message attachment has all required columns
      *
-     * @param array $attachment
+     * @param  array $attachment
      * @return bool
      */
     private function hasRequiredAttachmentColumns(array $attachment)

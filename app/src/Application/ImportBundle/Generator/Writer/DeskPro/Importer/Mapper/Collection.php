@@ -40,12 +40,13 @@ final class Collection extends AbstractCollection
     /**
      * Add a record mapper
      *
-     * @param MapperInterface $mapper
+     * @param  MapperInterface $mapper
      * @return $this
      */
     public function attach(MapperInterface $mapper)
     {
         $this->collection[$mapper->getType()] = $mapper;
+
         return $this;
     }
 

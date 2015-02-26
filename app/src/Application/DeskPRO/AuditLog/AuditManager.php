@@ -66,7 +66,6 @@ class AuditManager
         $this->writers = new CompositeCaller();
     }
 
-
     /**
      * Disable the audit manager
      */
@@ -74,7 +73,6 @@ class AuditManager
     {
         $this->disabled = true;
     }
-
 
     /**
      * Enable the audit manager
@@ -84,7 +82,6 @@ class AuditManager
         $this->disabled = false;
     }
 
-
     /**
      * Check if the audit manager is enabled
      */
@@ -93,7 +90,6 @@ class AuditManager
         return !$this->disabled;
     }
 
-
     /**
      * @param Person $person
      */
@@ -101,7 +97,6 @@ class AuditManager
     {
         $this->default_performer = $person;
     }
-
 
     /**
      * Add a writer
@@ -113,7 +108,6 @@ class AuditManager
         $this->writers->addObject($writer);
     }
 
-
     /**
      * @param  mixed    $object
      * @param  string   $field_id
@@ -123,7 +117,9 @@ class AuditManager
      */
     public function recordChange($object, $field_id, $old_val, $new_val)
     {
-        if ($this->disabled) return null;
+        if ($this->disabled) {
+            return null;
+        }
 
         $name = AuditLog::getObjectNameFromVar($object);
 
@@ -147,14 +143,15 @@ class AuditManager
         return $audit_log;
     }
 
-
     /**
      * @param  mixed    $object
      * @return AuditLog
      */
     public function recordCreated($object)
     {
-        if ($this->disabled) return null;
+        if ($this->disabled) {
+            return null;
+        }
 
         $name = AuditLog::getObjectNameFromVar($object);
         $audit_log = new AuditLog(AuditLog::CREATE, $object);
@@ -167,14 +164,15 @@ class AuditManager
         return $audit_log;
     }
 
-
     /**
      * @param  mixed    $object
      * @return AuditLog
      */
     public function recordDelete($object)
     {
-        if ($this->disabled) return null;
+        if ($this->disabled) {
+            return null;
+        }
 
         $name = AuditLog::getObjectNameFromVar($object);
         $audit_log = new AuditLog(AuditLog::DELETE, $object);
@@ -187,7 +185,6 @@ class AuditManager
         return $audit_log;
     }
 
-
     /**
      * Write logs
      *
@@ -195,7 +192,9 @@ class AuditManager
      */
     public function flushLogs()
     {
-        if ($this->disabled) return;
+        if ($this->disabled) {
+            return;
+        }
 
         $ret = $this->writers->callMethod('writeLogs', array($this->pending_logs), null, true);
 

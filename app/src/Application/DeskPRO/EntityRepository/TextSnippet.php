@@ -64,10 +64,12 @@ class TextSnippet extends AbstractEntityRepository
             ->setParameter(2, $agent)
             ->execute();
 
-        if (!$coll) return array();
+        if (!$coll) {
+            return array();
+        }
+
         return $this->groupSnippetCollection($coll);
     }
-
 
     /**
      * Get all snippets for an agent with limits
@@ -109,7 +111,6 @@ class TextSnippet extends AbstractEntityRepository
         return $coll;
     }
 
-
     /**
      * Count all of an agents snippets
      *
@@ -128,7 +129,6 @@ class TextSnippet extends AbstractEntityRepository
                 AND (text_snippets.person_id = ? OR text_snippet_categories.is_global = 1)
         ", array($typename, $agent->getId()));
     }
-
 
     /**
      * Group a collection of snippets

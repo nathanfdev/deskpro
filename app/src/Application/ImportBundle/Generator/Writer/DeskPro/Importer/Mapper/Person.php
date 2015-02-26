@@ -66,7 +66,7 @@ final class Person implements MapperInterface
     public function findOneBy(array $criteria, $throw_exception = true)
     {
         $record = $this->repository->findOneBy($criteria);
-        if ( ! $record && $throw_exception) {
+        if (! $record && $throw_exception) {
             throw new MapperException('Person not found', $criteria);
         }
 
@@ -85,7 +85,7 @@ final class Person implements MapperInterface
     public function findOneByEmail($email, $throw_exception = true)
     {
         $record = $this->repository->findOneByEmail($email);
-        if ( ! $record && $throw_exception) {
+        if (! $record && $throw_exception) {
             throw new MapperException('Person not found', array('email' => $email));
         }
 

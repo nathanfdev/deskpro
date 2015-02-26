@@ -59,8 +59,7 @@ class Now extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if (count($this->_arguments)) {
             throw new Exception('NOW() can only accept 0 arguments');
         }

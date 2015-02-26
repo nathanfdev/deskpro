@@ -146,7 +146,6 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         return Strings::extractRegexMatch('#@(.*?)$#', $this->email, 1);
     }
 
-
     /**
      * Gets the gravatar URL for this email
      *
@@ -156,7 +155,7 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
     public function getGravatarUrl($secure = null)
     {
         // Null means detect
-        if ($secure === null AND App::isWebRequest()) {
+        if ($secure === null and App::isWebRequest()) {
             $request = App::getRequest();
             if ($request->isSecure()) {
                 $secure = true;
@@ -165,15 +164,13 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 
         $hash = strtolower(md5($this->email));
         if ($secure) {
-            $url = 'https://secure.gravatar.com/avatar/' . $hash . '?';
+            $url = 'https://secure.gravatar.com/avatar/'.$hash.'?';
         } else {
-            $url = 'http://www.gravatar.com/avatar/' . $hash . '?';
+            $url = 'http://www.gravatar.com/avatar/'.$hash.'?';
         }
 
         return $url;
     }
-
-
 
     /**
      * Checks to see if the gravatar for this email address is actually a real avatar (not a default).
@@ -188,10 +185,10 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
             $is_real = false;
 
             $hash = strtolower(md5($this->email));
-            $check_url = 'http://www.gravatar.com/avatar/' . $hash . '?d=404';
+            $check_url = 'http://www.gravatar.com/avatar/'.$hash.'?d=404';
 
             $headers = @get_headers($check_url);
-            if ($headers AND !empty($headers[0])) {
+            if ($headers and !empty($headers[0])) {
                 if (strpos($headers[0], '200') !== false) {
                     $is_real = true;
                 }
@@ -201,29 +198,27 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         return $is_real;
     }
 
-
-
     /**
      * Set email
      *
-     * @param string $email
+     * @param  string $email
      * @return $this
      */
     public function setEmail($email)
     {
         if ($email) {
-
             if (!strpos($email, '@')) {
                 throw new \InvalidArgumentException("Email address is invalid");
             }
 
             $this->setModelField('email', strtolower($email));
-            list (, $email_domain) = explode('@', $email, 2);
+            list(, $email_domain) = explode('@', $email, 2);
         } else {
             $email = null;
         }
 
         $this->setModelField('email_domain', $email_domain);
+
         return $this;
     }
 
@@ -250,9 +245,8 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
-
     /**
-     * @param Person $person
+     * @param  Person $person
      * @return $this
      */
     public function setPerson(Person $person)
@@ -264,7 +258,6 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 
         return $this;
     }
-
 
     public function _postPersist()
     {
@@ -285,8 +278,6 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -302,21 +293,21 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
                 'email_domain_idx' => array('columns' => array('email_domain')),
             ),
             'uniqueConstraints' => array(
-                'email_idx' => array('columns' => array('email'))
+                'email_idx' => array('columns' => array('email')),
             ),
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->addLifecycleCallback('_postPersist', 'postPersist');
         $metadata->addLifecycleCallback('_verifyEmailAddress', 'prePersist');
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email', ));
-        $metadata->mapField(array( 'fieldName' => 'email_domain', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_domain', ));
-        $metadata->mapField(array( 'fieldName' => 'is_own_validated', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_own_validated', ));
-        $metadata->mapField(array( 'fieldName' => 'is_validated', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_validated', ));
-        $metadata->mapField(array( 'fieldName' => 'comment', 'type' => 'text', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'comment', ));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-        $metadata->mapField(array( 'fieldName' => 'date_validated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_validated', ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email'));
+        $metadata->mapField(array( 'fieldName' => 'email_domain', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email_domain'));
+        $metadata->mapField(array( 'fieldName' => 'is_own_validated', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_own_validated'));
+        $metadata->mapField(array( 'fieldName' => 'is_validated', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_validated'));
+        $metadata->mapField(array( 'fieldName' => 'comment', 'type' => 'text', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'comment'));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        $metadata->mapField(array( 'fieldName' => 'date_validated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_validated'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'emails', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'emails', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
     }
 }

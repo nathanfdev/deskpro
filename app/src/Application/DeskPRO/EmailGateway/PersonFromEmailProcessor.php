@@ -58,15 +58,13 @@ class PersonFromEmailProcessor
      */
     public function passPerson(EmailAddress $from, Entity\Person $person)
     {
-        if (!$person['first_name'] AND !$person['last_name']) {
+        if (!$person['first_name'] and !$person['last_name']) {
             if ($from->getName()) {
                 $person['name'] = $from->getName();
                 App::getOrm()->persist($person);
             }
         }
     }
-
-
 
     /**
      * Finds a person based on the From in the email address.
@@ -94,12 +92,11 @@ class PersonFromEmailProcessor
         return null;
     }
 
-
     /**
      * Finds a person based on the From in the email address.
      *
      * @param  string                             $email_address The email address as a string
-     * @param  string|null $name
+     * @param  string|null                        $name
      * @return \Application\DeskPRO\Entity\Person
      */
     public function findPersonByEmailAddress($email_address, $name = null)
@@ -115,10 +112,9 @@ class PersonFromEmailProcessor
         return $this->findPerson($email);
     }
 
-
     /**
      * @param $email_address
-     * @param null $name
+     * @param  null          $name
      * @return Entity\Person
      */
     public function createPersonByEmailAddress($email_address, $name = null)
@@ -133,8 +129,6 @@ class PersonFromEmailProcessor
 
         return $this->createPerson($email, true);
     }
-
-
 
     /**
      * Creates a person based on the From email address.
@@ -169,7 +163,7 @@ class PersonFromEmailProcessor
                 'creation_system'    => $this->creation_system,
                 'name'               => $from->getNameUtf8() ?: '',
                 'is_confirmed'       => 1,
-                'is_agent_confirmed' => App::getSetting('core.agent_validation') ? 0 : 1
+                'is_agent_confirmed' => App::getSetting('core.agent_validation') ? 0 : 1,
             ));
 
             // Create new person record (no chance of conflicts here)
@@ -182,7 +176,7 @@ class PersonFromEmailProcessor
             // this may fail (races)
 
             $email_address = strtolower($from->getEmail());
-            list (, $email_domain) = explode('@', $email_address, 2);
+            list(, $email_domain) = explode('@', $email_address, 2);
 
             $db->insert('people_emails', array(
                 'person_id' => $person_id,
@@ -195,12 +189,11 @@ class PersonFromEmailProcessor
             $email_id = $db->lastInsertId();
 
             $db->update('people', array(
-                'primary_email_id' => $email_id
+                'primary_email_id' => $email_id,
             ), array('id' => $person_id));
 
             $db->commit();
         } catch (\Exception $e) {
-
             // We expect/handle a duplicate key error here
             // and re-run ourselves which should fetch the (now available)
             // person record.

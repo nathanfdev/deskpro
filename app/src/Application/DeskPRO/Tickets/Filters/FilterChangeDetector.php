@@ -34,11 +34,9 @@
 
 namespace Application\DeskPRO\Tickets\Filters;
 
-
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketFilter;
-use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Monolog\Logger;
 
@@ -102,7 +100,6 @@ class FilterChangeDetector
         }
     }
 
-
     /**
      * Add a filter check for an agent explicitly. Usually this only goes through
      * detection for chagned filters, but sometimes you need to know if a ticket
@@ -119,7 +116,6 @@ class FilterChangeDetector
 
         $this->explicit_filter_scopes[$filter->id]['scopes'][] = $agent;
     }
-
 
     /**
      * @param  array $affected_filters
@@ -148,7 +144,7 @@ class FilterChangeDetector
                 $agent_scopes[] = $filter->person;
             }
 
-            $agent_scopes = array_filter($agent_scopes, function($a) { return $a->is_agent && !$a->is_deleted && !$a->is_disabled; });
+            $agent_scopes = array_filter($agent_scopes, function ($a) { return $a->is_agent && !$a->is_deleted && !$a->is_disabled; });
 
             if (!$agent_scopes) {
                 continue;
@@ -156,7 +152,7 @@ class FilterChangeDetector
 
             $check_list[$filter->id] = array(
                 'filter' => $filter,
-                'scopes' => $agent_scopes
+                'scopes' => $agent_scopes,
             );
         }
 
@@ -168,7 +164,6 @@ class FilterChangeDetector
 
         return array_values($check_list);
     }
-
 
     /**
      * @param  Ticket                   $ticket
@@ -258,7 +253,6 @@ class FilterChangeDetector
         $start = microtime(true);
         foreach ($filter_checks as $filter_check) {
             foreach ($filter_check['scopes'] as $agent) {
-
                 if (!$agent->is_agent) {
                     $agent_perm_cache[$agent->id] = array('old' => false, 'new' => false);
                 }
@@ -296,7 +290,6 @@ class FilterChangeDetector
 
         $time = microtime(true);
         foreach ($filter_checks as $filter_check) {
-
             $filter       = $filter_check['filter'];
             $agent_scopes = $filter_check['scopes'];
 
@@ -305,10 +298,11 @@ class FilterChangeDetector
             $filter_change = new FilterChange($filter);
             $changed[$filter->id] = $filter_change;
 
-            if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] ----- BEGIN #%d %s -- %d scopes -----", $filter->id, $filter->title, count($agent_scopes)));
+            if ($this->extended_log_info) {
+                $logger->debug(sprintf("[FilterChangeDetector] ----- BEGIN #%d %s -- %d scopes -----", $filter->id, $filter->title, count($agent_scopes)));
+            }
 
             foreach ($agent_scopes as $agent) {
-
                 // A filter could belong to an agent that isn't an agent anymore
                 if (!$agent->is_agent) {
                     continue;
@@ -362,7 +356,7 @@ class FilterChangeDetector
                         $searcher = $filter->getSearcher(array(
                             array('type' => 'status', 'op' => 'ignore'),
                             array('type' => 'hidden_status', 'op' => 'ignore'),
-                            array('type' => 'is_hold', 'op' => 'ignore')
+                            array('type' => 'is_hold', 'op' => 'ignore'),
                         ));
 
                         // Reset because we have to re-run to get proper result for add/del lists
@@ -405,7 +399,6 @@ class FilterChangeDetector
 
                     if ($orig_match && $agent_perm_old) {
                         $filter_change->originalMatchForAgent($agent);
-
                     }
                     if ($new_match && $agent_perm_new) {
                         $filter_change->newMatchForAgent($agent);
@@ -429,17 +422,22 @@ class FilterChangeDetector
                         $new_match_real  = $new_match;
                     }
 
-                    if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] New match: %s -- Orig match: %s", $new_match ? 'yes' : 'no', $orig_match ? 'yes' : 'no'));
+                    if ($this->extended_log_info) {
+                        $logger->debug(sprintf("[FilterChangeDetector] New match: %s -- Orig match: %s", $new_match ? 'yes' : 'no', $orig_match ? 'yes' : 'no'));
+                    }
                     if (!$orig_match) {
-                        if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] \tOrig failed term: %s", $orig_match_failterm));
+                        if ($this->extended_log_info) {
+                            $logger->debug(sprintf("[FilterChangeDetector] \tOrig failed term: %s", $orig_match_failterm));
+                        }
                     }
                     if (!$new_match) {
-                        if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] \tNew failed term: %s", $new_match_failterm));
+                        if ($this->extended_log_info) {
+                            $logger->debug(sprintf("[FilterChangeDetector] \tNew failed term: %s", $new_match_failterm));
+                        }
                     }
 
                     if ($new_match_real !== null && $orig_match_real !== null && !isset($generic_match_cache[$filter->id]) && !isset($not_cachable_filters[$filter->id])) {
                         if (!$searcher->needsPersonContext()) {
-
                             // Two types of matches:
 
                             // Pre-matches are matches with any special logic
@@ -468,22 +466,32 @@ class FilterChangeDetector
                     }
                 } // end RESULT_NOT_CACHED
 
-                if (!$orig_match AND !$new_match) {
-                    if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both no-match)", $agent->id));
-                } elseif ($orig_match AND $new_match) {
-                    if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both match)", $agent->id));
-                } elseif ($orig_match AND !$new_match) {
-                    if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: removed from list", $agent->id));
+                if (!$orig_match and !$new_match) {
+                    if ($this->extended_log_info) {
+                        $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both no-match)", $agent->id));
+                    }
+                } elseif ($orig_match and $new_match) {
+                    if ($this->extended_log_info) {
+                        $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both match)", $agent->id));
+                    }
+                } elseif ($orig_match and !$new_match) {
+                    if ($this->extended_log_info) {
+                        $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: removed from list", $agent->id));
+                    }
                     $filter_change->removeForAgent($agent);
-                } elseif (!$orig_match AND $new_match) {
-                    if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: added to list", $agent->id));
+                } elseif (!$orig_match and $new_match) {
+                    if ($this->extended_log_info) {
+                        $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: added to list", $agent->id));
+                    }
                     $filter_change->addForAgent($agent);
                 }
 
                 $scope_counts++;
             }
 
-            if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] DONE FILTER #%d :: %.4fs", $filter->id, microtime(true)-$filter_ts));
+            if ($this->extended_log_info) {
+                $logger->debug(sprintf("[FilterChangeDetector] DONE FILTER #%d :: %.4fs", $filter->id, microtime(true)-$filter_ts));
+            }
         }
 
         $changed_filters = array();

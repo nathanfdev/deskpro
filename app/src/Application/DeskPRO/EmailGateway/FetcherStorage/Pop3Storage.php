@@ -74,7 +74,6 @@ class Pop3Storage implements FetcherStorageInterface
      */
     private $logger;
 
-
     /**
      * @param string      $host
      * @param string      $port
@@ -100,7 +99,6 @@ class Pop3Storage implements FetcherStorageInterface
             $this->secure = 'tls';
         }
     }
-
 
     /**
      * @return \Application\DeskPRO\EmailGateway\Storage\Pop3

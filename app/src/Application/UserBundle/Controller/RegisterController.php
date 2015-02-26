@@ -165,7 +165,6 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 
                 // User not validating if they have an added email address already
                 if ($person->primary_email) {
-
                     $this->session->set('auth_person_id', $person->id);
                     $this->session->set('dp_interface', DP_INTERFACE);
 

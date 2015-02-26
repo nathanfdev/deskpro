@@ -42,7 +42,6 @@ class NewTicketReply extends ActionTypeAbstract
     /** @var \Application\DeskPRO\Entity\TicketMessage */
     protected $ticket_message;
 
-
     /**
      * @param \Application\DeskPRO\Entity\Person        $person
      * @param \Application\DeskPRO\Entity\TicketMessage $ticket_message
@@ -52,7 +51,6 @@ class NewTicketReply extends ActionTypeAbstract
         $this->person = $person;
         $this->ticket_message = $ticket_message;
     }
-
 
     /**
      * Get a plain array of details that'll be stored in the databaes
@@ -64,7 +62,7 @@ class NewTicketReply extends ActionTypeAbstract
             'ticket_id'  => $this->ticket_message->ticket['id'],
             'message_id' => $this->ticket_message['id'],
             'subject' => $this->ticket_message->ticket['subject'],
-            'message'    => $this->ticket_message->getMessageText()
+            'message'    => $this->ticket_message->getMessageText(),
         );
     }
 }

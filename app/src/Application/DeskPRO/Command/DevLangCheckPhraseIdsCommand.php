@@ -51,7 +51,7 @@ class DevLangCheckPhraseIdsCommand extends \Symfony\Bundle\FrameworkBundle\Comma
         $phrase_ids = $phrase_loader->getPhraseIds();
         unset($phrase_loader);
 
-        $phrase_ids = array_combine($phrase_ids,$phrase_ids);
+        $phrase_ids = array_combine($phrase_ids, $phrase_ids);
 
         #------------------------------
         # Read all DeskPRO files to try and find

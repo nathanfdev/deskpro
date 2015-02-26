@@ -70,7 +70,6 @@ class DetectAutoresponders implements TicketSaveActionInterface
      */
     private $max_replies_time;
 
-
     /**
      * @param EntityManager $em
      * @param int           $max_tickets
@@ -87,7 +86,6 @@ class DetectAutoresponders implements TicketSaveActionInterface
         $this->max_replies      = $max_replies;
         $this->max_replies_time = $max_replies_time;
     }
-
 
     /**
      * @param  Ticket                                     $ticket
@@ -136,11 +134,12 @@ class DetectAutoresponders implements TicketSaveActionInterface
         #------------------------------
 
         if ($this->max_replies && $context->getEventType() == 'newreply') {
-
             $message = $ticket->getStateChangeRecorder()->getNewUserReplies();
             $message = array_pop($message);
 
-            if (!$message) return;
+            if (!$message) {
+                return;
+            }
 
             $context->getLogger()->info(sprintf("[DetectAutoresponders] Checking %d %s for more than %d replies in %ds", $message->person->id, $message->person->getDisplayContact(), $this->max_replies, $this->max_replies_time));
 

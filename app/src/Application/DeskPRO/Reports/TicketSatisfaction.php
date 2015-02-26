@@ -49,7 +49,6 @@ class TicketSatisfaction
         $this->em = $em;
     }
 
-
     /**
      * @param  int   $page
      * @return array
@@ -73,7 +72,6 @@ class TicketSatisfaction
 
         return $vars;
     }
-
 
     /**
      * @param  string $date

@@ -50,7 +50,7 @@ class CoreExtension extends Extension
         $definition->setScope('request');
         $definition->setArguments(array(
             new Reference('doctrine.orm.entity_manager'),
-            new Reference('request')
+            new Reference('request'),
         ));
         $container->setDefinition('deskpro.api.request_auth', $definition);
 
@@ -75,7 +75,7 @@ class CoreExtension extends Extension
         $container
             ->register('kernel.listener.controller_post_action', 'Application\\ApiBundle\\Event\\LogApiCallListener')
             ->addTag('kernel.event_listener', array(
-                'event' => 'DeskPRO_onControllerPostAction', 'method' => 'onControllerPostAction')
+                'event' => 'DeskPRO_onControllerPostAction', 'method' => 'onControllerPostAction', )
             )
         ;
     }

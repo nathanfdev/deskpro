@@ -99,7 +99,6 @@ class StatusCheck
         }
 
         if ($last < $cut_close) {
-
             $this->conversation->addSystemMessage(
                 App::getTranslator()->phrase('agent.general.msg_user_timeout'),
                 true
@@ -122,7 +121,6 @@ class StatusCheck
             App::getOrm()->flush();
         }
     }
-
 
     /**
      * The checks run by the user:
@@ -148,7 +146,6 @@ class StatusCheck
 
             // And need to insert a "new chat" event for agents
             if (App::getSetting('core_chat.assign_mode') == 'round_robin') {
-
                 $assign_agent = App::getEntityRepository('DeskPRO:Person')->getChatAgentRoundRobin();
                 $conversation->agent = $assign_agent;
 
@@ -158,7 +155,6 @@ class StatusCheck
                     $msg
                 ));
             } else {
-
                 $client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatMessages(
                     'sys',
                     $this->conversation,

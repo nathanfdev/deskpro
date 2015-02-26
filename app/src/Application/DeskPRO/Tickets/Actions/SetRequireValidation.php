@@ -58,7 +58,6 @@ class SetRequireValidation extends AbstractContainerAwareAction implements Actio
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -76,7 +75,6 @@ class SetRequireValidation extends AbstractContainerAwareAction implements Actio
 
         $this->getContainer()->getEm()->persist($email);
     }
-
 
     /**
      * {@inheritDoc}

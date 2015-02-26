@@ -25,7 +25,9 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-if (php_sapi_name() !== 'cli') die('CLI only');
+if (php_sapi_name() !== 'cli') {
+    die('CLI only');
+}
 
 ini_set('display_errors', true);
 
@@ -79,9 +81,9 @@ namespace Application\\DeskPRO\\Dpql;
 ';
 
     $contents = file_get_contents('Parser.php');
-    $contents = preg_replace('#^(<\?php)#i', '$1' . "\n$prefixCode", $contents);
+    $contents = preg_replace('#^(<\?php)#i', '$1'."\n$prefixCode", $contents);
     $contents = preg_replace('#(implements\s+)(ArrayAccess)#i', '$1\\\\$2', $contents);
     file_put_contents('Parser.php', $contents);
 
-    echo 'Parser build complete.' . PHP_EOL;
+    echo 'Parser build complete.'.PHP_EOL;
 }

@@ -52,7 +52,6 @@ class Saml extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
         );
     }
 
-
     /**
      * @return \deskpro_magento\Usersource\Auth\Magento
      */
@@ -63,18 +62,15 @@ class Saml extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
         return new \Orb\Auth\Adapter\Saml($options);
     }
 
-
     public function getAgentLogoutRedirectUrl()
     {
         return '';
     }
 
-
     public function getUserLogoutRedirectUrl()
     {
         return '';
     }
-
 
     /**
      * @return array
@@ -83,7 +79,7 @@ class Saml extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
     {
         $capabilities = array(
             UsersourceInfo::CAPABILITY_SSO,
-            UsersourceInfo::CAPABILITY_SSO_JS
+            UsersourceInfo::CAPABILITY_SSO_JS,
         );
 
         if (isset($this->usersource->options['login_custom_text']) && $custom_button_text = $this->usersource->options['login_custom_text']) {

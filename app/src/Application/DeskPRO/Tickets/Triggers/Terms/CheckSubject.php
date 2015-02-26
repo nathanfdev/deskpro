@@ -56,7 +56,6 @@ class CheckSubject extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

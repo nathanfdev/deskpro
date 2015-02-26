@@ -57,7 +57,6 @@ class SetEmailAccount extends AbstractContainerAwareAction implements ActionInte
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -77,7 +76,6 @@ class SetEmailAccount extends AbstractContainerAwareAction implements ActionInte
 
         $ticket->email_account = $account;
     }
-
 
     /**
      * {@inheritDoc}
@@ -99,7 +97,6 @@ class SetEmailAccount extends AbstractContainerAwareAction implements ActionInte
 
         return false;
     }
-
 
     /**
      * {@inheritDoc}

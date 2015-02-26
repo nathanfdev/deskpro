@@ -56,7 +56,6 @@ class CheckStatus extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

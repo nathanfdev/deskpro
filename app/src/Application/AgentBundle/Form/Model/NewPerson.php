@@ -122,7 +122,6 @@ class NewPerson
 
             $person->organization = $org;
             $person->organization_position = $this->organization_position;
-
         }
 
         foreach ($this->usergroup_ids as $ug_id) {

@@ -89,7 +89,10 @@ class NewsSearch extends SearcherAbstract
     {
         $ids = $this->getMatches($limit);
 
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
+
         return App::getEntityRepository('DeskPRO:News')->getByResultIds($ids);
     }
 
@@ -115,7 +118,7 @@ class NewsSearch extends SearcherAbstract
 
         $dis_ids = implode(',', $dis_ids);
 
-        return '('.$where.' AND news.category_id NOT IN(' . $dis_ids . '))';
+        return '('.$where.' AND news.category_id NOT IN('.$dis_ids.'))';
     }
 
     /**
@@ -135,14 +138,14 @@ class NewsSearch extends SearcherAbstract
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
-                $sql .= $j[1] . " ";
+                $sql .= $j[1]." ";
             } else {
                 $sql .= "LEFT JOIN $j ON $j.news_id = news.id ";
             }
         }
 
         if (is_array($order_by)) {
-            list ($order_join, $order_by) = $order_by;
+            list($order_join, $order_by) = $order_by;
 
             $sql .= " $order_join ";
         }
@@ -155,11 +158,11 @@ class NewsSearch extends SearcherAbstract
         if (!$this->findTerm(self::TERM_AGENT_LIST)) {
             $where_perm = $this->getPermWhere();
             if ($where_perm) {
-                $sql .= $where_perm . ' AND ';
+                $sql .= $where_perm.' AND ';
             }
         }
         if ($parts['wheres']) {
-            $sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
+            $sql .= '('.implode(") AND (", $parts['wheres']).')';
         } else {
             $sql .= '1';
         }
@@ -181,21 +184,20 @@ class NewsSearch extends SearcherAbstract
         $parts = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
-
         #------------------------------
         # Add joins
         #------------------------------
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
-                $sql .= $j[1] . " ";
+                $sql .= $j[1]." ";
             } else {
                 $sql .= "LEFT JOIN $j ON $j.news_id = news.id ";
             }
         }
 
         if (is_array($order_by)) {
-            list ($order_join, $order_by) = $order_by;
+            list($order_join, $order_by) = $order_by;
 
             $sql .= " $order_join ";
         }
@@ -208,11 +210,11 @@ class NewsSearch extends SearcherAbstract
         if (!$this->findTerm(self::TERM_AGENT_LIST)) {
             $where_perm = $this->getPermWhere();
             if ($where_perm) {
-                $sql .= $where_perm . ' AND ';
+                $sql .= $where_perm.' AND ';
             }
         }
         if ($parts['wheres']) {
-            $sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
+            $sql .= '('.implode(") AND (", $parts['wheres']).')';
         } else {
             $sql .= '1';
         }
@@ -229,7 +231,6 @@ class NewsSearch extends SearcherAbstract
         return $sql;
     }
 
-
     /**
      * Get the ORDER BY clause based on order info set.
      *
@@ -245,7 +246,7 @@ class NewsSearch extends SearcherAbstract
         list($type, $dir) = $this->order_by;
 
         $dir = strtoupper($dir);
-        if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
+        if ($dir != self::ORDER_ASC and $dir != self::ORDER_DESC) {
             $dir = self::ORDER_DESC;
         }
 
@@ -261,7 +262,6 @@ class NewsSearch extends SearcherAbstract
         return $order_by;
     }
 
-
     /**
      * Get the summary of crtiera
      *
@@ -276,7 +276,6 @@ class NewsSearch extends SearcherAbstract
         return $summary;
     }
 
-
     /**
      * Get the SQL parts we need in the query.
      *
@@ -284,7 +283,9 @@ class NewsSearch extends SearcherAbstract
      */
     public function getSqlParts()
     {
-        if ($this->sql_parts !== null) return $this->sql_parts;
+        if ($this->sql_parts !== null) {
+            return $this->sql_parts;
+        }
 
         $db = App::getDbRead('search.filter.news');
         $tr = App::getTranslator();
@@ -317,17 +318,17 @@ class NewsSearch extends SearcherAbstract
 
                 case self::TERM_STATUS:
 
-                    $choice = (array)$choice;
+                    $choice = (array) $choice;
                     $choice = array_pop($choice);
 
                     // Normal vis status
-                    if (strpos($choice, '.') === false){
+                    if (strpos($choice, '.') === false) {
                         $status = $choice;
                         $hidden_status = '';
 
                     // Formatted: hidden.hidden_status
                     } else {
-                        list ($status, $hidden_status) = explode('.', $choice, 2);
+                        list($status, $hidden_status) = explode('.', $choice, 2);
                     }
 
                     if ($hidden_status) {
@@ -338,7 +339,7 @@ class NewsSearch extends SearcherAbstract
 
                     $phrase_vars = array('field' => 'Status', 'value' => ($hidden_status ? $hidden_status : $status));
 
-                    if ($op == self::OP_NOT OR $op == self::OP_NOTCONTAINS) {
+                    if ($op == self::OP_NOT or $op == self::OP_NOTCONTAINS) {
                         $this->summary[] = $tr->phrase('agent.general.x_is_not_y', $phrase_vars);
                     } else {
                         $this->summary[] = $tr->phrase('agent.general.x_is_y', $phrase_vars);
@@ -364,10 +365,10 @@ class NewsSearch extends SearcherAbstract
                     }
 
                     $w = array();
-                    $w[] = "(" . $this->_stringSearch("news.title", $op, $string, $type) . ")";
-                    $w[] = "(" . $this->_stringSearch("news.content", $op, $string, $type) . ")";
+                    $w[] = "(".$this->_stringSearch("news.title", $op, $string, $type).")";
+                    $w[] = "(".$this->_stringSearch("news.content", $op, $string, $type).")";
 
-                    $wheres[] = implode(' OR ' , $w);
+                    $wheres[] = implode(' OR ', $w);
                     break;
 
                 case self::TERM_PUBLISHED:
@@ -406,7 +407,7 @@ class NewsSearch extends SearcherAbstract
 
                 case self::TERM_CATEGORY:
                 case self::TERM_CATEGORY_SPECIFIC:
-                    $base_ids = (array)((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
+                    $base_ids = (array) ((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
                     $ids = array();
 
                     if ($term == self::TERM_CATEGORY_SPECIFIC) {
@@ -422,7 +423,7 @@ class NewsSearch extends SearcherAbstract
                     $wheres[] = $this->_choiceMatch('news.category_id', $op, $ids);
 
                     $this->summary[] = $this->_choiceSummary('Category', $op, $choice, function ($choice) {
-                        $titles = App::getEntityRepository('DeskPRO:NewsCategory')->getNames((array)$choice);
+                        $titles = App::getEntityRepository('DeskPRO:NewsCategory')->getNames((array) $choice);
 
                         return $titles;
                     });
@@ -442,7 +443,7 @@ class NewsSearch extends SearcherAbstract
 
                     $choices_in = array();
                     if (is_array($choice)) {
-                        foreach ((array)$choice as $c) {
+                        foreach ((array) $choice as $c) {
                             $choices_in[] = $db->quote($c);
                         }
                         $choices_in = implode(',', $choices_in);
@@ -454,21 +455,21 @@ class NewsSearch extends SearcherAbstract
                         case self::OP_IS:
                             $joins[] = array(
                                 'labels_news',
-                                "LEFT JOIN labels_news AS $join_name ON ($join_name.news_id = news.id)"
+                                "LEFT JOIN labels_news AS $join_name ON ($join_name.news_id = news.id)",
                             );
-                            $wheres[] = "$join_name.label = " . $db->quote($choice);
+                            $wheres[] = "$join_name.label = ".$db->quote($choice);
                             break;
                         case self::OP_NOT:
                             $joins[] = array(
                                 'labels_news',
-                                "LEFT JOIN labels_news AS $join_name ON ($join_name.news_id = news.id AND $join_name.label = '.$db->quote($choice).')"
+                                "LEFT JOIN labels_news AS $join_name ON ($join_name.news_id = news.id AND $join_name.label = '.$db->quote($choice).')",
                             );
                             $wheres[] = "$join_name.person_id IS NULL";
                             break;
                         case self::OP_CONTAINS:
                             $joins[] = array(
                                 'labels_news',
-                                "LEFT JOIN labels_news AS $join_name ON ($join_name.news_id = news.id)"
+                                "LEFT JOIN labels_news AS $join_name ON ($join_name.news_id = news.id)",
                             );
                             $wheres[] = "$join_name.label IN ($choices_in)";
                             break;
@@ -476,7 +477,7 @@ class NewsSearch extends SearcherAbstract
                         case self::OP_NOTCONTAINS:
                             $joins[] = array(
                                 'labels_news',
-                                "LEFT JOIN labels_news AS $join_name ON ($join_name.news_id = news.id AND $join_name.label IN ($choices_in)"
+                                "LEFT JOIN labels_news AS $join_name ON ($join_name.news_id = news.id AND $join_name.label IN ($choices_in)",
                             );
                             $wheres[] = "$join_name.person_id IS NULL";
                             break;
@@ -489,7 +490,7 @@ class NewsSearch extends SearcherAbstract
 
         $this->sql_parts = array(
             'joins' => $joins,
-            'wheres' => $wheres
+            'wheres' => $wheres,
         );
 
         return $this->sql_parts;

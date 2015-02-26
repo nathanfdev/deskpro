@@ -104,13 +104,11 @@ class Permission extends DomainObject
 
     public function __toString()
     {
-        $str = '[' . $this->name . ':';
+        $str = '['.$this->name.':';
 
         if ($prop->value !== null) {
-
             $str .= $prop->data;
         } else {
-
             $str .= 'NULL';
         }
 
@@ -118,7 +116,6 @@ class Permission extends DomainObject
 
         return $str;
     }
-
 
     /**
      * Combine an array of permissions into a superduper array of effective permissions.
@@ -132,7 +129,6 @@ class Permission extends DomainObject
         $effective_perms = array();
 
         foreach ($perms as $perm) {
-
             if (is_array($perm)) {
                 $k = $perm['name'];
                 $v = $perm['value'];
@@ -142,21 +138,18 @@ class Permission extends DomainObject
             }
 
             if (!Numbers::isInteger($v)) {
-
-                $v = (int)$v;
+                $v = (int) $v;
             }
 
             // If it hasnt been set yet, or the one we have is "lower",
             // then take the new value.
             if (!isset($effective_perms[$k]) || (is_int($v) && $effective_perms[$k] < $v)) {
-
                 $effective_perms[$k] = $v;
             }
         }
 
         return $effective_perms;
     }
-
 
     ############################################################################
     # Doctrine Metadata
@@ -165,7 +158,7 @@ class Permission extends DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array('name' => 'permissions',));
+        $metadata->setPrimaryTable(array('name' => 'permissions'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(

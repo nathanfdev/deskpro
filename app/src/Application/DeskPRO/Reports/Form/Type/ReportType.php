@@ -49,7 +49,7 @@ class ReportType extends AbstractType
         $resolver->setDefaults(
             array(
                  'data_class'         => 'Application\\DeskPRO\\Reports\\ReportEdit',
-                 'cascade_validation' => true
+                 'cascade_validation' => true,
             )
         );
     }
@@ -58,5 +58,4 @@ class ReportType extends AbstractType
     {
         return 'report_edit';
     }
-
 }

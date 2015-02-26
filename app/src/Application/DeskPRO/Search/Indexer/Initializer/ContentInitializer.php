@@ -56,7 +56,7 @@ abstract class ContentInitializer extends AbstractInitializer
             $total += $this->runForType('feedback',     'DeskPRO:Feedback');
             $total += $this->runForType('news',     'DeskPRO:News');
         } catch (\Exception $e) {
-            $this->logger->log('Exception: ' . $e->getMessage(), Logger::ERR);
+            $this->logger->log('Exception: '.$e->getMessage(), Logger::ERR);
             throw $e;
         }
 

@@ -58,8 +58,7 @@ class Total extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if ($section != 'select') {
             throw new Exception('TOTAL() may only be used in SELECT.');
         }

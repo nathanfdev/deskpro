@@ -78,7 +78,6 @@ class IpBanEdit
         $this->db->beginTransaction();
 
         try {
-
             $this->db->executeUpdate(
                 "DELETE FROM ban_ips WHERE banned_ip = ?",
                 array($this->old_ip)
@@ -96,9 +95,7 @@ class IpBanEdit
             $em->flush();
 
             $this->db->commit();
-
-        } catch(\Exception $e) {
-
+        } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;
         }

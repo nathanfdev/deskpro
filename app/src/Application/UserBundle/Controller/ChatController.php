@@ -90,7 +90,9 @@ class ChatController extends AbstractController
             $this->container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
 
             if ($user_typing = $this->in->getString('user_typing')) {
-                if ($user_typing == '__dpnone__') $user_typing = '';
+                if ($user_typing == '__dpnone__') {
+                    $user_typing = '';
+                }
                 $chat_manager->setUserTypingIndicator($convo, $user_typing);
             }
 
@@ -109,7 +111,6 @@ class ChatController extends AbstractController
             if ($last_id) {
                 $data['last_id'] = $last_id;
             }
-
         } else {
             $channels = array();
             $channels[] = $convo->getChannelId();
@@ -125,7 +126,7 @@ class ChatController extends AbstractController
                     if ($message['created_by_client'] != $session['id']) {
                         $data['messages'][] = array(
                             $message['channel'],
-                            $message['data']
+                            $message['data'],
                         );
                     }
 
@@ -155,7 +156,6 @@ class ChatController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
-
     /**
      * Handles a user sending a new message
      *
@@ -180,7 +180,7 @@ class ChatController extends AbstractController
                 }
                 $response = $this->createJsonResponse(array(
                     'conversation_id' => false,
-                    'error' => $error
+                    'error' => $error,
                 ));
                 $response->setLastModified(date_create('-1 day'));
                 $response->setExpires(date_create("-1 day"));
@@ -232,9 +232,9 @@ class ChatController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">" . htmlspecialchars($blob->filename) . "</a> (" . $blob->getReadableFilesize() . ")";
+        $msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">".htmlspecialchars($blob->filename)."</a> (".$blob->getReadableFilesize().")";
         if ($blob->isImage()) {
-            $msg .= '<div class="file-thumb"><img src="' . $blob->getThumbnailUrl(50, true) . '" /></div>';
+            $msg .= '<div class="file-thumb"><img src="'.$blob->getThumbnailUrl(50, true).'" /></div>';
         }
 
         /** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
@@ -255,7 +255,6 @@ class ChatController extends AbstractController
 
         return $this->createJsonResponse($msg->getInfo());
     }
-
 
     /**
      * Sends client messages to show typing indicator
@@ -280,7 +279,6 @@ class ChatController extends AbstractController
 
         return $this->createJsonResponse(array());
     }
-
 
     /**
      * This inits a session, and sets the various cookies. Then
@@ -410,7 +408,7 @@ class ChatController extends AbstractController
 
         $vars = array(
             'convo' => $convo,
-            'convo_messages' => $convo_messages
+            'convo_messages' => $convo_messages,
         );
 
         $email_subject = 'Chat Transcript';
@@ -470,7 +468,6 @@ class ChatController extends AbstractController
 
         return $this->createJsonResponse(array('success' => true));
     }
-
 
     /**
      * @param $session_code

@@ -66,7 +66,6 @@ class SlaCalculator
      */
     private $fail_time;
 
-
     /**
      * @param                    $type
      * @param WorkHoursInterface $work_hours
@@ -80,7 +79,6 @@ class SlaCalculator
         $this->warn_time  = $warn_time;
         $this->fail_time  = $fail_time;
     }
-
 
     /**
      * Calculates a date in the future where a SLA fail/warn status is breached.
@@ -108,11 +106,11 @@ class SlaCalculator
                         $wait_time += time() - $ticket->date_user_waiting->getTimestamp();
                     }
 
-                    return new \DateTime('+' . ($delay - $wait_time) . ' seconds', new \DateTimeZone('UTC'));
+                    return new \DateTime('+'.($delay - $wait_time).' seconds', new \DateTimeZone('UTC'));
                 } else {
                     $wait_time = 0;
                     if ($ticket->waiting_times) {
-                        foreach ($ticket->waiting_times AS $waiting) {
+                        foreach ($ticket->waiting_times as $waiting) {
                             if ($waiting['type'] == 'user') {
                                 $wait_time += $this->work_hours->getWorkTimeBetween($waiting['start'], $waiting['end']);
                             }
@@ -132,7 +130,6 @@ class SlaCalculator
         return null;
     }
 
-
     /**
      * Calculate the date the ticket will reach warning status.
      *
@@ -144,7 +141,6 @@ class SlaCalculator
         return $this->_calculateDate($ticket, $this->warn_time->getSecs());
     }
 
-
     /**
      * Calculate the date the ticket will reach failing status.
      *
@@ -155,7 +151,6 @@ class SlaCalculator
     {
         return $this->_calculateDate($ticket, $this->fail_time->getSecs());
     }
-
 
     /**
      * Calculate the date that the SLA completed, or null if it is not completed.
@@ -186,7 +181,9 @@ class SlaCalculator
         if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
             if ($ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp()) {
                 // don't auto resolve sla on ticket creation, even if created by an agent
-                if ($ticket->date_first_agent_reply) $dates[] = $ticket->date_first_agent_reply->getTimestamp();
+                if ($ticket->date_first_agent_reply) {
+                    $dates[] = $ticket->date_first_agent_reply->getTimestamp();
+                }
                 $dates[] = $ticket->date_last_agent_reply->getTimestamp();
             }
         }
@@ -196,7 +193,7 @@ class SlaCalculator
         }
 
         if ($dates) {
-            return new \DateTime('@' . min($dates));
+            return new \DateTime('@'.min($dates));
         }
 
         return null;
@@ -215,7 +212,7 @@ class SlaCalculator
 
         if ($this->type == self::TYPE_WAITING_TIME) {
             $time = 0;
-            foreach ($ticket->waiting_times AS $waiting) {
+            foreach ($ticket->waiting_times as $waiting) {
                 if ($waiting['type'] == 'user' && $waiting['start'] < $end_ts) {
                     $time += $this->work_hours->getWorkTimeBetween($waiting['start'], min($end_ts, $waiting['end']));
                 }
@@ -240,7 +237,9 @@ class SlaCalculator
         if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
             if ($ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp()) {
                 // don't auto resolve sla on ticket creation, even if created by an agent
-                if ($ticket->date_first_agent_reply) $times[] = $ticket->date_first_agent_reply->getTimestamp();
+                if ($ticket->date_first_agent_reply) {
+                    $times[] = $ticket->date_first_agent_reply->getTimestamp();
+                }
             }
         }
 
@@ -252,7 +251,7 @@ class SlaCalculator
             $times[] = $ticket->date_resolved->getTimestamp();
         }
 
-        return new \DateTime('@' . min($times));
+        return new \DateTime('@'.min($times));
     }
 
     /**

@@ -64,7 +64,7 @@ class DevCheckReservedWordsCommand extends \Symfony\Bundle\FrameworkBundle\Comma
         if ($bad) {
             $output->writeln(sprintf("<error>There are %d tables using reserved words</error>", count($bad)));
             foreach ($bad as $table => $c) {
-                echo "$table: " . implode(', ', $c) . "\n";
+                echo "$table: ".implode(', ', $c)."\n";
             }
         } else {
             $output->writeln(sprintf("<info>All tables check out fine</info>"));

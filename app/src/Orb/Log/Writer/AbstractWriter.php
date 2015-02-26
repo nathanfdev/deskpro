@@ -33,6 +33,7 @@
  */
 
 namespace Orb\Log\Writer;
+
 use \Orb\Log\LogItem;
 
 /**
@@ -82,7 +83,9 @@ abstract class AbstractWriter
     public function filterLogItem(LogItem $log_item)
     {
         // Not initialized, means no filters
-        if ($this->_filter_chain === null) return $log_item;
+        if ($this->_filter_chain === null) {
+            return $log_item;
+        }
 
         $log_item = $this->_filter_chain->filter($log_item);
 
@@ -123,6 +126,5 @@ abstract class AbstractWriter
      */
     public function shutdown()
     {
-
     }
 }

@@ -102,7 +102,6 @@ class LogItem extends AbstractEntityRepository
         }
     }
 
-
     /**
      * Count all error log items
      *
@@ -116,8 +115,6 @@ class LogItem extends AbstractEntityRepository
             WHERE log_name = ?
         ", array('error_log'));
     }
-
-
 
     /**
      * Get an array of error logs
@@ -140,8 +137,6 @@ class LogItem extends AbstractEntityRepository
           ->setMaxResults($per_page)
           ->execute();
     }
-
-
 
     /**
      * Deletes all error logs

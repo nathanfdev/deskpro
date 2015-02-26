@@ -83,7 +83,7 @@ class FeedbackController extends AbstractController
             'feedback_cats'      => $feedback_cats,
             'active_status_cats' => $active_status_cats,
             'closed_status_cats' => $closed_status_cats,
-            'feedback_tag_index' => $feedback_tag_index
+            'feedback_tag_index' => $feedback_tag_index,
         ));
 
         return $this->createJsonResponse($data);
@@ -165,7 +165,7 @@ class FeedbackController extends AbstractController
             'feedback_categories'  => $feedback_categories,
             'active_status_cats'   => $active_status_cats,
             'closed_status_cats'   => $closed_status_cats,
-            'perms'                => $perms
+            'perms'                => $perms,
         ));
     }
 
@@ -211,7 +211,7 @@ class FeedbackController extends AbstractController
         return $this->createJsonResponse(array(
             'success' => true,
             'feedback_id' => $feedback['id'],
-            'html' => $ret
+            'html' => $ret,
         ));
     }
 
@@ -222,8 +222,6 @@ class FeedbackController extends AbstractController
         if (!$feedback) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
-
-
 
         $cat  = $this->em->find('DeskPRO:FeedbackCategory', $category_id);
 
@@ -344,7 +342,7 @@ class FeedbackController extends AbstractController
         $commenting->newCommentNotify($comment);
 
         return $this->render('AgentBundle:Feedback:view-comment.html.twig', array(
-            'comment' => $comment
+            'comment' => $comment,
         ));
     }
 
@@ -437,7 +435,7 @@ class FeedbackController extends AbstractController
                     : $this->in->getCleanValue('content', 'html');
 
                 $data['content_html'] = $this->renderView('AgentBundle:Feedback:view-content-tab.html.twig', array(
-                    'feedback' => $feedback
+                    'feedback' => $feedback,
                 ));
 
                 $rev = ContentRevisionUtil::findOrCreate($feedback, array('content'), $this->person);
@@ -546,7 +544,7 @@ class FeedbackController extends AbstractController
         return $this->createJsonResponse(array(
             'success' => true,
             'id' => $feedback['id'],
-            'old_id' => $old_feedback_id
+            'old_id' => $old_feedback_id,
         ));
     }
 
@@ -570,7 +568,6 @@ class FeedbackController extends AbstractController
         );
     }
 
-
     /**
      * A shortcut to run a filter on a category
      *
@@ -582,8 +579,8 @@ class FeedbackController extends AbstractController
         $top_result_helper = FeedbackResults::newFromRequest($this, array(
             'specific_terms' => array(
                 'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
-                'status'   => array('type' => 'status', 'op' => 'not', 'status' => 'hidden')
-            )
+                'status'   => array('type' => 'status', 'op' => 'not', 'status' => 'hidden'),
+            ),
         ));
 
         if ($this->in->getString('subgroup')) {
@@ -591,7 +588,7 @@ class FeedbackController extends AbstractController
                 'specific_terms' => array(
                     'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
                     'status' => array('type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')),
-                )
+                ),
             ));
         } else {
             $result_helper = $top_result_helper;
@@ -643,7 +640,6 @@ class FeedbackController extends AbstractController
         );
     }
 
-
     /**
      * A shortcut to run a filter on a label
      *
@@ -656,7 +652,7 @@ class FeedbackController extends AbstractController
             'specific_terms' => array(
                 array('type' => 'label', 'op' => 'is', 'label' => $label),
                 array('type' => 'status', 'op' => 'not', 'status' => 'hidden'),
-                array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
+                array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
             ),
         ));
 
@@ -666,11 +662,10 @@ class FeedbackController extends AbstractController
             array(
                 'list_type' => 'label',
                 'label' => $label,
-                'page_title' => $label
+                'page_title' => $label,
             )
         );
     }
-
 
     /**
      * A shortcut to run a filter on a status
@@ -684,19 +679,19 @@ class FeedbackController extends AbstractController
         // or an integer which will be treated as a status category (Active > Planned for example)
 
         if (strpos($status, '.') !== false) {
-            list ($status, $v_status) = explode('.', $status);
+            list($status, $v_status) = explode('.', $status);
             $top_result_helper = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
                     'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
-                    'v_status' => array('type' => 'hidden_status', 'op' => 'is', 'hidden_status' => $v_status)
-                )
+                    'v_status' => array('type' => 'hidden_status', 'op' => 'is', 'hidden_status' => $v_status),
+                ),
             ));
         } else {
             $top_result_helper = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
                     'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
-                    'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
-                )
+                    'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
+                ),
             ));
         }
 
@@ -705,8 +700,8 @@ class FeedbackController extends AbstractController
                 'specific_terms' => array(
                     'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
                     'category' => array('type' => 'category', 'op' => 'is', 'category' => $this->in->getString('subgroup')),
-                    'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
-                )
+                    'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
+                ),
             ));
         } else {
             $result_helper = $top_result_helper;
@@ -729,7 +724,6 @@ class FeedbackController extends AbstractController
         );
     }
 
-
     /**
      * This takes a result helper and just handles rendering it
      *
@@ -747,8 +741,12 @@ class FeedbackController extends AbstractController
         $result_cache = $result_helper->getResultCache();
 
         $page = $this->in->getUint('p');
-        if (!$page) $page = $this->in->getUint('page');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = $this->in->getUint('page');
+        }
+        if (!$page) {
+            $page = 1;
+        }
 
         $feedback = $result_helper->getFeedbackForPage($page);
 
@@ -824,7 +822,7 @@ class FeedbackController extends AbstractController
         $this->em->commit();
 
         return $this->createJsonResponse(array(
-            'success' => 1
+            'success' => 1,
         ));
     }
 
@@ -858,7 +856,7 @@ class FeedbackController extends AbstractController
             'feedback_categories'    => $feedback_categories,
             'active_status_cats' => $active_status_cats,
             'closed_status_cats' => $closed_status_cats,
-            'state'              => $state
+            'state'              => $state,
         ));
     }
 
@@ -877,7 +875,7 @@ class FeedbackController extends AbstractController
             if (!$validator->isValid($newfeedback)) {
                 return $this->createJsonResponse(array(
                     'error' => true,
-                    'error_codes' => $validator->getErrorGroups()
+                    'error_codes' => $validator->getErrorGroups(),
                 ));
             }
             $newfeedback->save();
@@ -888,7 +886,7 @@ class FeedbackController extends AbstractController
 
             return $this->createJsonResponse(array(
                 'success' => true,
-                'feedback_id' => $feedback['id']
+                'feedback_id' => $feedback['id'],
             ));
         } else {
             return $this->createJsonResponse(array(

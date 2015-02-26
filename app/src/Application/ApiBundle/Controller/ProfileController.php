@@ -40,7 +40,7 @@ class ProfileController extends AbstractController
         //TODO refactor+test
         $this->db->replace('people_prefs', array(
             'person_id'   => $this->person->getId(),
-            'name'        => 'inhelp.' . $id,
+            'name'        => 'inhelp.'.$id,
             'value_str'   => $state,
             'value_array' => 'N;',
         ));

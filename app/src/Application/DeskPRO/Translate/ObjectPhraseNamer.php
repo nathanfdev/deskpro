@@ -48,16 +48,16 @@ class ObjectPhraseNamer
         $id = null;
         if (method_exists($object, 'getId')) {
             $id = $object->getId();
-        } elseif ($object instanceof \ArrayAccess AND isset($object['id'])) {
+        } elseif ($object instanceof \ArrayAccess and isset($object['id'])) {
             $id = $object['id'];
         }
 
         if ($id) {
             $baseclass = Util::getBaseClassname($object);
-            $prefix = 'obj_' . strtolower($baseclass) . '.';
-            $name = $prefix . $id;
+            $prefix = 'obj_'.strtolower($baseclass).'.';
+            $name = $prefix.$id;
             if ($property) {
-                $name .= '_' . $property;
+                $name .= '_'.$property;
             }
 
             return $name;

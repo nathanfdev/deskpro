@@ -40,5 +40,4 @@ namespace Application\EmailBundle\Mail\RawTransport;
  */
 class UnrecoverableRawTransportException extends \RuntimeException
 {
-
 }

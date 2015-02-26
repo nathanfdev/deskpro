@@ -93,8 +93,7 @@ class BanIp extends DomainObject
 
         $parts = explode('.', $ip);
 
-        if (count($parts) < 1 OR count($parts) > 4) {
-
+        if (count($parts) < 1 or count($parts) > 4) {
             throw new \InvalidArgumentException('Invalid IP address: `'.$ip.'`');
         }
 
@@ -102,7 +101,6 @@ class BanIp extends DomainObject
         $end   = array();
 
         foreach ($parts as $part) {
-
             $start[] = $part;
             $end[]   = $part;
         }
@@ -111,17 +109,13 @@ class BanIp extends DomainObject
         // so we'll fill them in automatically
 
         while (count($start) < 4) {
-
             $start[] = 0;
             $end[]   = 255;
         }
 
         if (count($parts) < 4) {
-
-            $human = implode('.', $parts) . '.*';
-
+            $human = implode('.', $parts).'.*';
         } else {
-
             $human = implode('.', $parts);
         }
 
@@ -138,7 +132,7 @@ class BanIp extends DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\BanIp';
-        $metadata->setPrimaryTable(array('name' => 'ban_ips',));
+        $metadata->setPrimaryTable(array('name' => 'ban_ips'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(

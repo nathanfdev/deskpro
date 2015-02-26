@@ -59,8 +59,7 @@ class StackGroup extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if (count($this->_arguments) != 2) {
             throw new Exception('STACK_GROUP() can only accept 2 arguments.');
         }
@@ -89,7 +88,7 @@ class StackGroup extends AbstractFunc
 
             $sql = $prepped->sql();
 
-            return new Prepared($sql, 'STACK_GROUP(' . $prepped->name() . ', ' . $preppedGroup->name() . ')', $prepped->printed());
+            return new Prepared($sql, 'STACK_GROUP('.$prepped->name().', '.$preppedGroup->name().')', $prepped->printed());
         } else {
             return $prepped;
         }

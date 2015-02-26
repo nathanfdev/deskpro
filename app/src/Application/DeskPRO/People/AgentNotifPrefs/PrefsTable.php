@@ -49,7 +49,6 @@ class PrefsTable
      */
     private $prefs;
 
-
     /**
      * @param Prefs     $prefs
      * @param Translate $tr
@@ -60,7 +59,6 @@ class PrefsTable
         $this->tr    = $tr;
     }
 
-
     /**
      * @return array
      */
@@ -68,7 +66,6 @@ class PrefsTable
     {
         return $this->buildAppTable('chat');
     }
-
 
     /**
      * @return array
@@ -78,7 +75,6 @@ class PrefsTable
         return $this->buildAppTable('task');
     }
 
-
     /**
      * @return array
      */
@@ -86,7 +82,6 @@ class PrefsTable
     {
         return $this->buildAppTable('twitter');
     }
-
 
     /**
      * @return array
@@ -96,7 +91,6 @@ class PrefsTable
         return $this->buildAppTable('feedback');
     }
 
-
     /**
      * @return array
      */
@@ -104,7 +98,6 @@ class PrefsTable
     {
         return $this->buildAppTable('publish');
     }
-
 
     /**
      * @return array
@@ -114,7 +107,6 @@ class PrefsTable
         return $this->buildAppTable('crm');
     }
 
-
     /**
      * @return array
      */
@@ -122,7 +114,6 @@ class PrefsTable
     {
         return $this->buildAppTable('account');
     }
-
 
     /**
      * @param  string $app_name
@@ -132,7 +123,7 @@ class PrefsTable
     {
         $cols = array();
 
-        $method_name = 'get' . ucfirst($app_name) . 'NotifyTypes';
+        $method_name = 'get'.ucfirst($app_name).'NotifyTypes';
 
         $email_types = $this->prefs->$method_name('email');
         $alert_types = $this->prefs->$method_name('alert');
@@ -188,7 +179,7 @@ class PrefsTable
                 $name = "{$base_name}_$t";
                 $row['cols'][] = array(
                     'name'  => $name,
-                    'value' => (isset($values[$name]) && $values[$name]) ? true : false
+                    'value' => (isset($values[$name]) && $values[$name]) ? true : false,
                 );
             }
 
@@ -201,7 +192,6 @@ class PrefsTable
             'rows'    => $rows,
         );
     }
-
 
     /**
      * @param         $type
@@ -225,7 +215,7 @@ class PrefsTable
         foreach (array('created', 'newleave', 'user_activity', 'agent_activity', 'agent_note', 'property_change') as $c) {
             $sys_table_cols[] = array(
                 'name'  => $c,
-                'title' => $this->tr->phrase("agent.prefs.inbox_{$c}_title")
+                'title' => $this->tr->phrase("agent.prefs.inbox_{$c}_title"),
             );
         }
 
@@ -272,7 +262,7 @@ class PrefsTable
                         $col[] = array(
                             'name'  => $opt,
                             'desc'  => $desc,
-                            'value' => (isset($values[$opt]) && $values[$opt]) ? true : false
+                            'value' => (isset($values[$opt]) && $values[$opt]) ? true : false,
                         );
                     }
                 }
@@ -288,7 +278,6 @@ class PrefsTable
         );
     }
 
-
     /**
      * @param  string                                     $type
      * @param  \Application\DeskPRO\Entity\TicketFilter[] $custom_filters
@@ -300,7 +289,7 @@ class PrefsTable
         foreach (array('created', 'new', 'user_activity', 'agent_activity', 'agent_note', 'property_change') as $c) {
             $custom_table_cols[] = array(
                 'name'  => $c,
-                'title' => $this->tr->phrase("agent.prefs.filter_{$c}_title")
+                'title' => $this->tr->phrase("agent.prefs.filter_{$c}_title"),
             );
         }
 
@@ -312,7 +301,7 @@ class PrefsTable
                 array('user_activity'),
                 array('agent_activity'),
                 array('agent_note'),
-                array('property_change')
+                array('property_change'),
             );
 
             $row = array(
@@ -328,7 +317,7 @@ class PrefsTable
                     $col[] = array(
                         'name'  => $opt,
                         'desc'  => $this->tr->phrase("agent.prefs.filter_{$type}_{$opt}_desc"),
-                        'value' => (isset($values[$opt]) && $values[$opt]) ? true : false
+                        'value' => (isset($values[$opt]) && $values[$opt]) ? true : false,
                     );
                 }
                 $row['cols'][] = $col;

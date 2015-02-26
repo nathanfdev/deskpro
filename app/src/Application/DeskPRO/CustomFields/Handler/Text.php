@@ -45,7 +45,7 @@ class Text extends HandlerAbstract
     public function getFormField($data = null)
     {
         $setData = null;
-        if ($data AND (!empty($data['value']) || (isset($data['value']) && ($data['value'] === '0' || $data['value'] === 0)))) {
+        if ($data and (!empty($data['value']) || (isset($data['value']) && ($data['value'] === '0' || $data['value'] === 0)))) {
             $setData = $data['value'];
         }
 
@@ -67,7 +67,7 @@ class Text extends HandlerAbstract
         }
 
         return array(
-            array($this->field_def['id'], 'input', $value)
+            array($this->field_def['id'], 'input', $value),
         );
     }
 
@@ -90,7 +90,7 @@ class Text extends HandlerAbstract
 
         $options = array();
         foreach (array('required', 'min_length', 'max_length', 'regex') as $k) {
-            $options[$k] = $this->field_def->getOption($opt_prefix . $k);
+            $options[$k] = $this->field_def->getOption($opt_prefix.$k);
         }
 
         if ($options['required']) {

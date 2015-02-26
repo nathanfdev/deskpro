@@ -110,7 +110,6 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
         return $this->getData('_type');
     }
 
-
     /**
      * Set the type
      *
@@ -120,7 +119,6 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->setData('_type', $type);
     }
-
 
     /**
      * Get some data from the extra array
@@ -133,7 +131,6 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
 
         return (isset($this->data[$key]) ? $this->data[$key] : $default);
     }
-
 
     /**
      * Set some data on the extra array.
@@ -154,15 +151,13 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
         $this->_onPropertyChanged('data', $old, $this->data);
     }
 
-
     /**
      * @return string
      */
     public function getCode()
     {
-        return Util::baseEncode($this->id, Util::LETTERS_ALPHABET) . '-' . $this->auth;
+        return Util::baseEncode($this->id, Util::LETTERS_ALPHABET).'-'.$this->auth;
     }
-
 
     /**
      * Splits a code into its id and auth
@@ -173,7 +168,9 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
     public static function getPartsFromCode($code)
     {
         $parts = explode('-', $code, 2);
-        if (count($parts) != 2) return null;
+        if (count($parts) != 2) {
+            return null;
+        }
 
         $parts[0] = Util::baseDecode($parts[0], Util::LETTERS_ALPHABET);
 
@@ -182,8 +179,6 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
             'auth' => $parts[1],
         );
     }
-
-
 
     ############################################################################
     # Doctrine Metadata
@@ -196,14 +191,14 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setPrimaryTable(array(
             'name' => 'datastore',
             'indexes' => array(
-                'name_idx' => array('columns' => array('name'))
-            )
+                'name_idx' => array('columns' => array('name')),
+            ),
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'name', ));
-        $metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
-        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'name'));
+        $metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth'));
+        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

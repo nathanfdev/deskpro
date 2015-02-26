@@ -27,14 +27,13 @@
 
 namespace Application\DeskPRO\JIRA;
 
-
 class ApiCoreException extends \Exception
 {
-	public $errors;
+    public $errors;
 
-	public function __construct(array $errors)
-	{
-		$this->errors = $errors;
-		parent::__construct('API Error', 400);
-	}
-} 
+    public function __construct(array $errors)
+    {
+        $this->errors = $errors;
+        parent::__construct('API Error', 400);
+    }
+}

@@ -62,7 +62,9 @@ abstract class CustomFieldTypeAbstract extends AbstractType
         $this->buildCustomFieldForm($builder, $options);
     }
 
-    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options) {}
+    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
+    {
+    }
 
     public function getName()
     {

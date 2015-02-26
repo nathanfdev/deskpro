@@ -70,7 +70,9 @@ class AuditLogController extends AbstractController implements ProtectedControll
         ");
 
         $people_ids = array();
-        foreach ($recs as $r) $people_ids[] = $r['person_id'] ?: null;
+        foreach ($recs as $r) {
+            $people_ids[] = $r['person_id'] ?: null;
+        }
         $people_ids = Arrays::removeFalsey($people_ids);
 
         $people = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids);
@@ -84,13 +86,22 @@ class AuditLogController extends AbstractController implements ProtectedControll
                 $data = unserialize($rec['data']);
                 $new_val = array();
                 foreach ($data as $r) {
-                    $v = $r['new_val'];;
-                    if ($v === true) $v = 'true';
-                    if ($v === false) $v = 'false';
-                    if ($v === null) $v = 'null';
+                    $v = $r['new_val'];
+                    if ($v === true) {
+                        $v = 'true';
+                    }
+                    if ($v === false) {
+                        $v = 'false';
+                    }
+                    if ($v === null) {
+                        $v = 'null';
+                    }
                     if (is_array($v)) {
-                        if (empty($v)) $v = '[]';
-                        else $v = '[' . implode(',', $v) . ']';
+                        if (empty($v)) {
+                            $v = '[]';
+                        } else {
+                            $v = '['.implode(',', $v).']';
+                        }
                     }
                     $new_val[$r['field_id']] = $v;
                 }
@@ -113,7 +124,7 @@ class AuditLogController extends AbstractController implements ProtectedControll
             'total'     => $total,
             'per_page'  => $per_page,
             'page'      => $page,
-            'num_pages' => $num_pages
+            'num_pages' => $num_pages,
         ));
     }
 
