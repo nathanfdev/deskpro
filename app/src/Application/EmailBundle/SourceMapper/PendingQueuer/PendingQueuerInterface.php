@@ -39,7 +39,7 @@ interface PendingQueuerInterface
     /**
      * Adds a message to an external queue service.
      *
-     * @param  array $source
+     * @param array $source
      * @return void
      */
     public function queueMessageSource(array $source);

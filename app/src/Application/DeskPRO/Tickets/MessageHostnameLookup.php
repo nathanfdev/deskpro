@@ -52,7 +52,7 @@ class MessageHostnameLookup
     }
 
     /**
-     * @param  TicketMessage $message
+     * @param TicketMessage $message
      * @return string|null
      */
     public function lookupForMessage(TicketMessage $message)

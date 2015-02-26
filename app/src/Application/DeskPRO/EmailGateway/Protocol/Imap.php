@@ -56,6 +56,7 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
      */
     protected $stream_timeout = 15;
 
+
     /**
      * @param string $host
      * @param null   $port
@@ -76,6 +77,7 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
         parent::__construct($host, $port, $ssl ? strtoupper($ssl) : $ssl);
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -84,7 +86,7 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
         $ssl = $ssl ? strtoupper($ssl) : $ssl;
 
         if ($ssl == 'SSL') {
-            $host = 'ssl://'.$host;
+            $host = 'ssl://' . $host;
         }
 
         if ($port === null) {
@@ -126,7 +128,7 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
             throw new Exception\RuntimeException('cannot read - connection closed?');
         }
 
-        $this->logger->logDebug("<== ".$line);
+        $this->logger->logDebug("<== " . $line);
 
         return $line;
     }
@@ -138,15 +140,15 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
     {
         if (!$tag) {
             ++$this->tagCount;
-            $tag = 'TAG'.$this->tagCount;
+            $tag = 'TAG' . $this->tagCount;
         }
 
-        $line = $tag.' '.$command;
+        $line = $tag . ' ' . $command;
 
         foreach ($tokens as $token) {
             if (is_array($token)) {
-                $this->logger->logDebug("==> ".$line.' '.$token[0]);
-                if (fwrite($this->socket, $line.' '.$token[0]."\r\n") === false) {
+                $this->logger->logDebug("==> " . $line . ' ' . $token[0]);
+                if (fwrite($this->socket, $line . ' ' . $token[0] . "\r\n") === false) {
                     $this->logger->logDebug("==> !!! cannot write - connection closed?");
                     throw new Exception\RuntimeException('cannot write - connection closed?');
                 }
@@ -156,12 +158,12 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
                 }
                 $line = $token[1];
             } else {
-                $line .= ' '.$token;
+                $line .= ' ' . $token;
             }
         }
 
-        $this->logger->logDebug("==> ".$line);
-        if (fwrite($this->socket, $line."\r\n") === false) {
+        $this->logger->logDebug("==> " . $line);
+        if (fwrite($this->socket, $line . "\r\n") === false) {
             $this->logger->logDebug("==> !!! cannot write - connection closed?");
             throw new Exception\RuntimeException('cannot write - connection closed?');
         }
@@ -193,9 +195,9 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
         } elseif ($to === null) {
             $set = (int) $from;
         } elseif ($to === INF) {
-            $set = (int) $from.':*';
+            $set = (int) $from . ':*';
         } else {
-            $set = (int) $from.':'.(int) $to;
+            $set = (int) $from . ':' . (int) $to;
         }
 
         $items = (array) $items;
@@ -269,6 +271,7 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
         return $result;
     }
 
+
     /**
      * STORE by UID
      *
@@ -283,7 +286,7 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
     {
         $item = 'FLAGS';
         if ($mode == '+' || $mode == '-') {
-            $item = $mode.$item;
+            $item = $mode . $item;
         }
         if ($silent) {
             $item .= '.SILENT';
@@ -295,9 +298,9 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
         } elseif ($to === null) {
             $set = (int) $from;
         } elseif ($to === INF) {
-            $set = (int) $from.':*';
+            $set = (int) $from . ':*';
         } else {
-            $set = (int) $from.':'.(int) $to;
+            $set = (int) $from . ':' . (int) $to;
         }
 
         $result = $this->requestAndResponse('UID STORE', array($set, $item, $flags), $silent);

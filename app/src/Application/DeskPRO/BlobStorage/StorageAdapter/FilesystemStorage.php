@@ -58,12 +58,13 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
         $this->base_path = rtrim($this->options->get('base_path'), '/\\');
 
         if ($this->options->has('file_mode')) {
-            $this->file_mode = (int) $this->options->get('file_mode');
+            $this->file_mode = (int)$this->options->get('file_mode');
         }
         if ($this->options->has('dir_mode')) {
-            $this->file_mode = (int) $this->options->get('dir_mode');
+            $this->file_mode = (int)$this->options->get('dir_mode');
         }
     }
+
 
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
@@ -75,10 +76,11 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 
         $exists = is_file($path);
 
-        $this->logger->logInfo("[FilesystemStorage] (checkBlobExists) $path ".($exists ? 'exists' : 'no exist'));
+        $this->logger->logInfo("[FilesystemStorage] (checkBlobExists) $path " . ($exists ? 'exists' : 'no exist'));
 
         return $exists;
     }
+
 
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
@@ -105,6 +107,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
         return $res;
     }
 
+
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
      * @param $data
@@ -116,10 +119,11 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
         $ret = @fwrite($fp, $data);
         @fclose($fp);
 
-        $this->logger->logInfo("[FilesystemStorage] (writeBlobString) Wrote ".Numbers::filesizeDisplay($ret)." from string to ".$this->resolvePath($blob->getPath()));
+        $this->logger->logInfo("[FilesystemStorage] (writeBlobString) Wrote " . Numbers::filesizeDisplay($ret) . " from string to " . $this->resolvePath($blob->getPath()));
 
         return $ret;
     }
+
 
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
@@ -145,10 +149,11 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 
         @fclose($fp_source);
 
-        $this->logger->logInfo("[FilesystemStorage] (writeBlobFromFile) Wrote ".Numbers::filesizeDisplay($ret)." from $source_path to ".$this->resolvePath($blob->getPath()));
+        $this->logger->logInfo("[FilesystemStorage] (writeBlobFromFile) Wrote " . Numbers::filesizeDisplay($ret) . " from $source_path to " . $this->resolvePath($blob->getPath()));
 
         return $ret;
     }
+
 
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
@@ -161,7 +166,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
         $ret = $this->_copyStream($fp_source, $fp);
         @fclose($fp);
 
-        $this->logger->logInfo("[FilesystemStorage] (writeBlobFromStream) Wrote ".Numbers::filesizeDisplay($ret)." from stream to ".$this->resolvePath($blob->getPath()));
+        $this->logger->logInfo("[FilesystemStorage] (writeBlobFromStream) Wrote " . Numbers::filesizeDisplay($ret) . " from stream to " . $this->resolvePath($blob->getPath()));
 
         $path = $this->resolvePath($blob->getPath());
         if (file_exists($path)) {
@@ -170,6 +175,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 
         return $ret;
     }
+
 
     /**
      * Loads the entire blob into a string
@@ -188,10 +194,11 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
 
         @fclose($fp);
 
-        $this->logger->logInfo("[FilesystemStorage] (readBlobString) Read ".Numbers::filesizeDisplay(strlen($str))." from ".$this->resolvePath($blob->getPath()));
+        $this->logger->logInfo("[FilesystemStorage] (readBlobString) Read " . Numbers::filesizeDisplay(strlen($str)) . " from " . $this->resolvePath($blob->getPath()));
 
         return $str;
     }
+
 
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
@@ -215,10 +222,11 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
             throw $e;
         }
 
-        $this->logger->logInfo("[FilesystemStorage] (readBlobToFile) Read ".Numbers::filesizeDisplay($ret)." to $target_path from ".$this->resolvePath($blob->getPath()));
+        $this->logger->logInfo("[FilesystemStorage] (readBlobToFile) Read " . Numbers::filesizeDisplay($ret) . " to $target_path from " . $this->resolvePath($blob->getPath()));
 
         return $ret;
     }
+
 
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
@@ -231,10 +239,11 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
         $ret = $this->_copyStream($fp, $fp_target);
         fclose($fp);
 
-        $this->logger->logInfo("[FilesystemStorage] (readBlobToStream) Read ".Numbers::filesizeDisplay($ret)." to stream from ".$this->resolvePath($blob->getPath()));
+        $this->logger->logInfo("[FilesystemStorage] (readBlobToStream) Read " . Numbers::filesizeDisplay($ret) . " to stream from " . $this->resolvePath($blob->getPath()));
 
         return $ret;
     }
+
 
     /**
      * @return resource
@@ -259,6 +268,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
         return $fp;
     }
 
+
     /**
      * @return resource
      */
@@ -276,6 +286,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
         return $fp;
     }
 
+
     /**
      * Get the full path from a path string
      *
@@ -286,7 +297,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     {
         $path = trim($path, '/\\');
 
-        return $this->base_path.DIRECTORY_SEPARATOR.$path;
+        return $this->base_path . DIRECTORY_SEPARATOR . $path;
     }
 
     /**

@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+
 class TwitterStatus extends AbstractEntityRepository
 {
     public function getByTwitterStatusId($id)
@@ -170,7 +171,7 @@ class TwitterStatus extends AbstractEntityRepository
             ->setMaxResults($limit)
             ->setFirstResult($this->calculateOffset($limit, $page))
             ->execute(array(
-                'user_id' => $id,
+                'user_id' => $id
             ));
     }
 
@@ -208,7 +209,7 @@ class TwitterStatus extends AbstractEntityRepository
             ->setMaxResults($limit)
             ->setFirstResult($this->calculateOffset($limit, $page))
             ->execute(array(
-                'user_id' => $id,
+                'user_id' => $id
             ));
     }
 
@@ -234,7 +235,7 @@ class TwitterStatus extends AbstractEntityRepository
         ";
 
         $params = array(
-            'user_id' => $id,
+            'user_id' => $id
         );
 
         if ($from_user_ids) {
@@ -279,7 +280,7 @@ class TwitterStatus extends AbstractEntityRepository
         ";
 
         $params = array(
-            'user_id' => $id,
+            'user_id' => $id
         );
 
         if ($from_user_ids) {

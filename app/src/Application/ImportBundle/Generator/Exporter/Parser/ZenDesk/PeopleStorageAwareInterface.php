@@ -38,7 +38,7 @@ interface PeopleStorageAwareInterface
     /**
      * Attach a people storage
      *
-     * @param  PeopleStorageInterface $storage
+     * @param PeopleStorageInterface $storage
      * @return $this
      */
     public function setPeopleStorage(PeopleStorageInterface $storage);

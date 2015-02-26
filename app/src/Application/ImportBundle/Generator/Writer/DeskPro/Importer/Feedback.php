@@ -75,7 +75,6 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
             ->setViewsCount($entity->getViewCount());
 
         $this->records->add($feedback);
-
         return $this->records;
     }
 

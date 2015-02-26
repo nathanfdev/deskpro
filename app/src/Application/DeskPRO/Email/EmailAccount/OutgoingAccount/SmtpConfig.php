@@ -72,6 +72,7 @@ class SmtpConfig implements AccountConfigInterface
      */
     public $helo_string = '';
 
+
     /**
      * {@inheritDoc}
      */
@@ -83,9 +84,10 @@ class SmtpConfig implements AccountConfigInterface
             'user'        => $this->user,
             'password'    => $this->password,
             'secure_mode' => $this->secure_mode,
-            'helo_string' => $this->helo_string,
+            'helo_string' => $this->helo_string
         );
     }
+
 
     /**
      * {@inheritDoc}
@@ -100,6 +102,7 @@ class SmtpConfig implements AccountConfigInterface
         return $obj;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -107,6 +110,7 @@ class SmtpConfig implements AccountConfigInterface
     {
         return 'smtp';
     }
+
 
     ############################################################################
     # Validation Metadata
@@ -117,7 +121,7 @@ class SmtpConfig implements AccountConfigInterface
         $metadata->addPropertyConstraint('host', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('port', new Constraints\GreaterThan(array('value' => 1)));
         $metadata->addPropertyConstraint('secure_mode', new Constraints\Choice(array(
-            'choices' => array('none', 'ssl', 'tls'),
+            'choices' => array('none', 'ssl', 'tls')
         )));
     }
 }

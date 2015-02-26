@@ -60,6 +60,7 @@ class ViewLog
         $this->session = $session;
     }
 
+
     /**
      * Log a view on an object
      *
@@ -81,7 +82,7 @@ class ViewLog
         }
 
         if (!$type) {
-            throw new \InvalidArgumentException("Invalid object type. Got `".get_class($object)."`");
+            throw new \InvalidArgumentException("Invalid object type. Got `" . get_class($object) . "`");
         }
 
         $person_id = null;
@@ -94,7 +95,7 @@ class ViewLog
             'object_id'     => $object->getId(),
             'view_action'   => $action,
             'person_id'     => $person_id,
-            'date_created'  => date('Y-m-d H:i:s'),
+            'date_created'  => date('Y-m-d H:i:s')
         ));
 
         return $this->db->lastInsertId();

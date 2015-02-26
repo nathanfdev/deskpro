@@ -32,7 +32,6 @@
  */
 
 namespace Application\DeskPRO\AuditLog;
-
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\AuditLog;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -66,6 +65,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
      */
     protected $filter_fn;
 
+
     /**
      * @param AuditManager $audit_manager
      * @param array        $defs
@@ -86,6 +86,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
         $this->disabled = true;
     }
 
+
     /**
      * Enable the audit manager
      */
@@ -93,6 +94,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
     {
         $this->disabled = false;
     }
+
 
     /**
      * Check if the audit manager is enabled
@@ -102,6 +104,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
         return !$this->disabled;
     }
 
+
     /**
      * @param callable $filter_fn
      */
@@ -110,14 +113,13 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
         $this->filter_fn = $filter_fn;
     }
 
+
     /**
      * @param PreUpdateEventArgs $eventArgs
      */
     public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
-        if ($this->disabled) {
-            return;
-        }
+        if ($this->disabled) return;
 
         $entity = $eventArgs->getEntity();
         if (!($entity instanceof DomainObject)) {
@@ -132,12 +134,11 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
         }
 
         if ($this->filter_fn) {
-            if (!call_user_func($this->filter_fn, 'preUpdate', $table, $eventArgs)) {
-                return;
-            }
+            if (!call_user_func($this->filter_fn, 'preUpdate', $table, $eventArgs)) return;
         }
 
         foreach ($eventArgs->getEntityChangeSet() as $change_field => $change_data) {
+
             if (!isset($this->defs[$table]['fields']) || !in_array($change_field, $this->defs[$table]['fields'])) {
                 continue;
             }
@@ -148,6 +149,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
                     return;
                 }
             }
+
 
             $old = $change_data[0];
             $new = $change_data[1];
@@ -181,14 +183,13 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
         }
     }
 
+
     /**
      * @param LifecycleEventArgs $eventArgs
      */
     public function preRemove(LifecycleEventArgs $eventArgs)
     {
-        if ($this->disabled) {
-            return;
-        }
+        if ($this->disabled) return;
 
         $entity = $eventArgs->getEntity();
         if (!($entity instanceof DomainObject)) {
@@ -203,9 +204,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
         }
 
         if ($this->filter_fn) {
-            if (!call_user_func($this->filter_fn, 'preRemove', $table, $eventArgs)) {
-                return;
-            }
+            if (!call_user_func($this->filter_fn, 'preRemove', $table, $eventArgs)) return;
         }
 
         if (isset($this->defs[$table]['do_log_check'])) {
@@ -220,11 +219,13 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
         #------------------------------
 
         if (!isset($this->defs[$table]['save_as_change'])) {
+
             $this->audit_manager->recordDelete($entity);
 
         #------------------------------
         # Saved on a different object as a change
         #------------------------------
+
         } else {
             $save_as     = $this->defs[$table]['save_as_change'];
 
@@ -256,14 +257,13 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
         }
     }
 
+
     /**
      * @param LifecycleEventArgs $eventArgs
      */
     public function postPersist(LifecycleEventArgs $eventArgs)
     {
-        if ($this->disabled) {
-            return;
-        }
+        if ($this->disabled) return;
 
         $entity = $eventArgs->getEntity();
         if (!($entity instanceof DomainObject)) {
@@ -278,9 +278,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
         }
 
         if ($this->filter_fn) {
-            if (!call_user_func($this->filter_fn, 'postPersist', $table, $eventArgs)) {
-                return;
-            }
+            if (!call_user_func($this->filter_fn, 'postPersist', $table, $eventArgs)) return;
         }
 
         if (isset($this->defs[$table]['do_log_check'])) {
@@ -295,11 +293,13 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
         #------------------------------
 
         if (!isset($this->defs[$table]['save_as_change'])) {
+
             $this->audit_manager->recordCreated($entity);
 
         #------------------------------
         # Saved on a different object as a change
         #------------------------------
+
         } else {
             $save_as     = $this->defs[$table]['save_as_change'];
 
@@ -331,6 +331,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
         }
     }
 
+
     /**
      * Flush logs on commit
      */
@@ -338,6 +339,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
     {
         //$this->audit_manager->flushLogs();
     }
+
 
     /**
      * @param $value
@@ -350,13 +352,13 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
         } elseif ($value instanceof DomainObject) {
             $str = AuditLog::getObjectNameFromVar($value);
             if (method_exists($value, '__toString')) {
-                $str .= ' -- '.$value->__toString();
+                $str .= ' -- ' . $value->__toString();
             }
 
             return $str;
         } else {
             if (is_string($value) || is_scalar($value) || ctype_digit($value)) {
-                return (string) $value;
+                return (string)$value;
             } elseif (is_array($value)) {
                 return print_r($value, true);
             } elseif (is_null($value)) {
@@ -378,7 +380,7 @@ class AuditDoctrineListener implements \Doctrine\Common\EventSubscriber
             Events::preUpdate,
             Events::preRemove,
             Events::postPersist,
-            \Application\DeskPRO\DBAL\Connection::EVENT_POST_COMMIT,
+            \Application\DeskPRO\DBAL\Connection::EVENT_POST_COMMIT
         );
     }
 }

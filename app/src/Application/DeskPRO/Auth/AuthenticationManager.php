@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Auth;
 
+
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Settings\Settings;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
@@ -204,7 +205,7 @@ class AuthenticationManager
                 $adapter->setFormData(
                     array(
                         'username' => $identifier,
-                        'password' => $password,
+                        'password' => $password
                     )
                 );
 
@@ -311,23 +312,23 @@ class AuthenticationManager
         return $this->isDeskPROEnabled();
     }
 
-    public function isDeskPROEnabled($interface = null)
+	public function isDeskPROEnabled($interface = null)
     {
-        if (null === $interface) { // if we have a usersource that doesn't have an app (which always means the DeskPRO usersource)
+		if (null === $interface) { // if we have a usersource that doesn't have an app (which always means the DeskPRO usersource)
         foreach ($this->usersourcesForInterface as $usersource) {
             if ($usersource->app === null) {
                 return true;
             }
         }
 
-            return false;
-        }
-
-        // clone the auth manager except make it for the specific interface, not the default
-        $authManager = $this->cloneForInterface($interface);
-
-        return $authManager->isDeskPROEnabled();
+        return false;
     }
+
+		// clone the auth manager except make it for the specific interface, not the default
+		$authManager = $this->cloneForInterface($interface);
+
+		return $authManager->isDeskPROEnabled();
+	}
 
     /*********************************************
     #------------------------------
@@ -356,7 +357,7 @@ class AuthenticationManager
                         UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN,
                         UsersourceInfo::CAPABILITY_FORM_LOGIN,
                         UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN,
-                        UsersourceInfo::CAPABILITY_NEW_COMMENT_TAB,
+                        UsersourceInfo::CAPABILITY_NEW_COMMENT_TAB
                     )
 
                 )

@@ -50,6 +50,7 @@ class SetSlaCompleteAction extends AbstractAction
         $this->actions = array($sla_complete => array($sla_id));
     }
 
+
     /**
      * Apply the property to the ticket
      *
@@ -57,12 +58,12 @@ class SetSlaCompleteAction extends AbstractAction
      */
     public function apply(Ticket $ticket)
     {
-        foreach ($this->actions as $complete => $sla_ids) {
+        foreach ($this->actions AS $complete => $sla_ids) {
             if (in_array('0', $sla_ids)) {
                 // take action for all
                 $sla_ids = array('0');
             }
-            foreach ($sla_ids as $sla_id) {
+            foreach ($sla_ids AS $sla_id) {
                 if ($sla_id) {
                     $sla = App::getEntityRepository('DeskPRO:Sla')->find($sla_id);
                     if (!$sla) {
@@ -79,12 +80,13 @@ class SetSlaCompleteAction extends AbstractAction
                     $ticket_slas = $ticket->ticket_slas;
                 }
 
-                foreach ($ticket_slas as $ticket_sla) {
+                foreach ($ticket_slas AS $ticket_sla) {
                     $ticket_sla->setIsCompletedSet($complete);
                 }
             }
         }
     }
+
 
     /**
      * Get an array of actions that would be performed on the ticket
@@ -94,9 +96,10 @@ class SetSlaCompleteAction extends AbstractAction
     public function getApplyActions(Ticket $ticket)
     {
         return array(
-            array('action' => 'set_sla_complete', 'actions' => $this->actions),
+            array('action' => 'set_sla_complete', 'actions' => $this->actions)
         );
     }
+
 
     /**
      * @return array
@@ -106,6 +109,7 @@ class SetSlaCompleteAction extends AbstractAction
         return $this->actions;
     }
 
+
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
@@ -113,7 +117,7 @@ class SetSlaCompleteAction extends AbstractAction
     public function merge(ActionInterface $other_action)
     {
         $actions = $other_action->getSlaActions();
-        foreach ($actions as $complete => $sla_ids) {
+        foreach ($actions AS $complete => $sla_ids) {
             if (isset($this->actions[$complete])) {
                 $this->actions[$complete] = array_merge($this->actions[$complete], $sla_ids);
                 $this->actions[$complete] = array_unique($this->actions[$complete]);
@@ -125,13 +129,14 @@ class SetSlaCompleteAction extends AbstractAction
         return $this;
     }
 
+
     /**
      * @return string
      */
     public function getDescription($as_html = true)
     {
         $parts = array();
-        foreach ($this->actions as $complete => $sla_ids) {
+        foreach ($this->actions AS $complete => $sla_ids) {
             if (in_array('0', $sla_ids)) {
                 // take action for all
                 $titles = null;
@@ -151,13 +156,13 @@ class SetSlaCompleteAction extends AbstractAction
 
             if ($complete) {
                 if ($titles !== null) {
-                    $parts[] = 'Set SLA requirements to complete for SLA '.($titles ? implode($titles, ', ') : '[unknown]');
+                    $parts[] = 'Set SLA requirements to complete for SLA ' . ($titles ? implode($titles, ', ') : '[unknown]');
                 } else {
                     $parts[] = 'Set SLA requirements to complete';
                 }
             } else {
                 if ($titles !== null) {
-                    $parts[] = 'Set SLA requirements to incomplete for SLA '.($titles ? implode($titles, ', ') : '[unknown]');
+                    $parts[] = 'Set SLA requirements to incomplete for SLA ' . ($titles ? implode($titles, ', ') : '[unknown]');
                 } else {
                     $parts[] = 'Set SLA requirements to incomplete';
                 }

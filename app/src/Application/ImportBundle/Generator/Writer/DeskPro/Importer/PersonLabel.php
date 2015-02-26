@@ -80,7 +80,7 @@ final class PersonLabel extends AbstractImporter
     /**
      * Returns a new person label entity
      *
-     * @param  string                    $label
+     * @param string $label
      * @return DeskPROEntity\LabelPerson
      */
     private function createPersonLabel($label)
@@ -89,7 +89,6 @@ final class PersonLabel extends AbstractImporter
         $entity->setLabel($label);
 
         $this->records->add($entity);
-
         return $entity;
     }
 

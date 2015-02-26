@@ -70,10 +70,11 @@ class NativePackages
         $this->blob_storage = $blob_storage;
 
         if (!$root_path) {
-            $root_path = DP_ROOT.'/apps';
+            $root_path = DP_ROOT . '/apps';
         }
         $this->root_path = $root_path;
     }
+
 
     /**
      * @return string[]
@@ -88,7 +89,7 @@ class NativePackages
         $dir = dir($this->root_path);
 
         while (($f = $dir->read()) !== false) {
-            $manifest_path = $this->root_path.'/'.$f.'/manifest.json';
+            $manifest_path = $this->root_path . '/' . $f . '/manifest.json';
             if (file_exists($manifest_path)) {
                 $this->native_names[] = $f;
             }

@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+
 class UserRule extends AbstractEntityRepository
 {
     /**
@@ -64,6 +65,7 @@ class UserRule extends AbstractEntityRepository
         ')->execute();
 
         foreach ($user_rules as $user_rule) {
+
             $data['id']             = $user_rule->id;
             $data['email_patterns'] = implode(' ', $user_rule->email_patterns);
             $data['run_order']      = $user_rule->run_order;

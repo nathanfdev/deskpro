@@ -25,6 +25,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+
 /**
  * DeskPRO
  *
@@ -226,7 +227,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
         if ($size == 'normal') {
             return $this->profile_image_url;
         } else {
-            return str_replace('_normal.', ($size ? "_$size" : '').'.', $this->profile_image_url);
+            return str_replace('_normal.', ($size ? "_$size" : '') . '.', $this->profile_image_url);
         }
     }
 
@@ -246,10 +247,10 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
                     try {
                         $response = $api->get_statusesUser_timeline(array(
                             'user_id' => $this->id,
-                            'count' => 100,
+                            'count' => 100
                         ));
                         $twitter_service = new \Application\DeskPRO\Service\Twitter();
-                        foreach ($response as $status) {
+                        foreach ($response AS $status) {
                             $twitter_service->processStatus($api, $status, true, 1);
                         }
                     } catch (\EpiTwitterException $e) {
@@ -269,7 +270,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
     public function getMessages()
     {
         $from_user_ids = array();
-        foreach (App::getOrm()->getRepository('DeskPRO:TwitterAccount')->getAllForPerson() as $account) {
+        foreach (App::getOrm()->getRepository('DeskPRO:TwitterAccount')->getAllForPerson() AS $account) {
             $from_user_ids[] = $account->user->id;
         }
 
@@ -279,7 +280,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
     public function getMentions()
     {
         $from_user_ids = array();
-        foreach (App::getOrm()->getRepository('DeskPRO:TwitterAccount')->getAllForPerson() as $account) {
+        foreach (App::getOrm()->getRepository('DeskPRO:TwitterAccount')->getAllForPerson() AS $account) {
             $from_user_ids[] = $account->user->id;
         }
 
@@ -315,7 +316,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
                 AND tu.is_verified = true
             ORDER BY p.name
         ")->execute(array($this->screen_name));
-        foreach ($results as $result) {
+        foreach ($results AS $result) {
             $output[] = $result->person;
         }
 
@@ -333,7 +334,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
                 AND tu.is_verified = false
             ORDER BY p.name
         ")->execute(array($this->screen_name));
-        foreach ($results as $result) {
+        foreach ($results AS $result) {
             $output[] = $result->person;
         }
 
@@ -351,7 +352,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
                 AND tu.is_verified = false
             ORDER BY o.name
         ")->execute(array($this->screen_name));
-        foreach ($results as $result) {
+        foreach ($results AS $result) {
             $output[] = $result->organization;
         }
 
@@ -392,12 +393,12 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
                 $api = $account->getTwitterApi();
 
                 $id_sets = array_chunk(array_keys(self::$_stubs), 100);
-                foreach ($id_sets as $ids) {
+                foreach ($id_sets AS $ids) {
                     try {
                         $response = $api->post_usersLookup(array(
-                            'user_id' => implode(',', $ids),
+                            'user_id' => implode(',', $ids)
                         ));
-                        foreach ($response as $user) {
+                        foreach ($response AS $user) {
                             if (isset(self::$_stubs[$user->id_str])) {
                                 $entity = self::$_stubs[$user->id_str];
                                 $entity->ensureDefaultPropertyChangedListener();
@@ -406,7 +407,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
                                 unset(self::$_stubs[$user->id_str]);
                             }
                         }
-                        foreach ($ids as $id) {
+                        foreach ($ids AS $id) {
                             if (isset(self::$_stubs[$id])) {
                                 // can't get information for this user, so un-stub
                                 $entity = self::$_stubs[$id];
@@ -464,7 +465,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
         try {
             $response = $account->getTwitterApi()->get_friendsIds(array(
                 'user_id' => $this->id,
-                'stringify_ids' => true,
+                'stringify_ids' => true
             ));
             if (isset($response->ids)) {
                 $ids = array_slice($response->ids, 0, 100);
@@ -474,7 +475,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
                 );
                 $count = $this->friends_count;
 
-                foreach ($ids as $id) {
+                foreach ($ids AS $id) {
                     if (!isset($existing_users[$id])) {
                         $new_user = \Application\DeskPRO\Entity\TwitterUser::createStub($id);
                         if (!$register_stubs) {
@@ -507,7 +508,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
         try {
             $response = $account->getTwitterApi()->get_followersIds(array(
                 'user_id' => $this->id,
-                'stringify_ids' => true,
+                'stringify_ids' => true
             ));
             if (isset($response->ids)) {
                 $ids = array_slice($response->ids, 0, 100);
@@ -517,7 +518,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
                 );
                 $count = $this->followers_count;
 
-                foreach ($ids as $id) {
+                foreach ($ids AS $id) {
                     if (!isset($existing_users[$id])) {
                         $new_user = \Application\DeskPRO\Entity\TwitterUser::createStub($id);
                         if (!$register_stubs) {
@@ -558,9 +559,9 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
         $this['name']              = $user->name;
         $this['screen_name']       = $user->screen_name;
         $this['profile_image_url'] = $user->profile_image_url;
-        $this['url']               = (string) $user->url;
-        $this['language']          = (string) $user->lang;
-        $this['description']       = (string) $user->description;
+        $this['url']               = (string)$user->url;
+        $this['language']          = (string)$user->lang;
+        $this['description']       = (string)$user->description;
         $this['is_verified']       = $user->verified;
         $this['location']          = $user->location;
         $this['is_geo_enabled']    = $user->geo_enabled;
@@ -591,9 +592,9 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
         $entity['name']              = $user->name;
         $entity['screen_name']       = $user->screen_name;
         $entity['profile_image_url'] = $user->profile_image_url;
-        $entity['url']               = (string) $user->url;
-        $entity['language']          = (string) $user->lang;
-        $entity['description']       = (string) $user->description;
+        $entity['url']               = (string)$user->url;
+        $entity['language']          = (string)$user->lang;
+        $entity['description']       = (string)$user->description;
         $entity['is_protected']      = $user->protected;
         $entity['is_verified']       = $user->verified;
         $entity['location']          = $user->location;
@@ -639,6 +640,8 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -651,35 +654,35 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setPrimaryTable(array(
             'name' => 'twitter_users',
             'indexes' => array(
-                'last_follow_update_idx' => array('columns' => array('last_follow_update')),
+                'last_follow_update_idx' => array('columns' => array('last_follow_update'))
             ),
         ));
         $metadata->addLifecycleCallback('_checkStub', 'postLoad');
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
-        $metadata->mapField(array( 'fieldName' => 'screen_name', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'screen_name'));
-        $metadata->mapField(array( 'fieldName' => 'profile_image_url', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'profile_image_url'));
-        $metadata->mapField(array( 'fieldName' => 'language', 'type' => 'string', 'length' => 3, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'language'));
-        $metadata->mapField(array( 'fieldName' => 'url', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'url'));
-        $metadata->mapField(array( 'fieldName' => 'is_protected', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_protected'));
-        $metadata->mapField(array( 'fieldName' => 'is_verified', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_verified'));
-        $metadata->mapField(array( 'fieldName' => 'location', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'location'));
-        $metadata->mapField(array( 'fieldName' => 'description', 'type' => 'string', 'length' => 500, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'description'));
-        $metadata->mapField(array( 'fieldName' => 'is_geo_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_geo_enabled'));
-        $metadata->mapField(array( 'fieldName' => 'is_stub', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_stub'));
-        $metadata->mapField(array( 'fieldName' => 'last_timeline_update', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_timeline_update'));
-        $metadata->mapField(array( 'fieldName' => 'last_profile_update', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_profile_update'));
-        $metadata->mapField(array( 'fieldName' => 'last_follow_update', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_follow_update'));
-        $metadata->mapField(array( 'fieldName' => 'followers_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'followers_count'));
-        $metadata->mapField(array( 'fieldName' => 'friends_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'friends_count'));
-        $metadata->mapField(array( 'fieldName' => 'statuses_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'statuses_count'));
-        $metadata->mapOneToMany(array( 'fieldName' => 'statuses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'user'));
-        $metadata->mapOneToMany(array( 'fieldName' => 'replies', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'in_reply_to_user'));
-        $metadata->mapOneToMany(array( 'fieldName' => 'mentions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusMention', 'mappedBy' => 'user'));
-        $metadata->mapOneToMany(array( 'fieldName' => 'messages', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'recipient'));
-        $metadata->mapOneToMany(array( 'fieldName' => 'friends', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUserFriend', 'mappedBy' => 'user'));
-        $metadata->mapOneToMany(array( 'fieldName' => 'followers', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUserFollower', 'mappedBy' => 'user'));
-        $metadata->mapManyToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => 'user', 'inversedBy' => NULL, 'joinColumns' => array( )));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
+        $metadata->mapField(array( 'fieldName' => 'screen_name', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'screen_name', ));
+        $metadata->mapField(array( 'fieldName' => 'profile_image_url', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'profile_image_url', ));
+        $metadata->mapField(array( 'fieldName' => 'language', 'type' => 'string', 'length' => 3, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'language', ));
+        $metadata->mapField(array( 'fieldName' => 'url', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'url', ));
+        $metadata->mapField(array( 'fieldName' => 'is_protected', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_protected', ));
+        $metadata->mapField(array( 'fieldName' => 'is_verified', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_verified', ));
+        $metadata->mapField(array( 'fieldName' => 'location', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'location', ));
+        $metadata->mapField(array( 'fieldName' => 'description', 'type' => 'string', 'length' => 500, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'description', ));
+        $metadata->mapField(array( 'fieldName' => 'is_geo_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_geo_enabled', ));
+        $metadata->mapField(array( 'fieldName' => 'is_stub', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_stub', ));
+        $metadata->mapField(array( 'fieldName' => 'last_timeline_update', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_timeline_update', ));
+        $metadata->mapField(array( 'fieldName' => 'last_profile_update', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_profile_update', ));
+        $metadata->mapField(array( 'fieldName' => 'last_follow_update', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_follow_update', ));
+        $metadata->mapField(array( 'fieldName' => 'followers_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'followers_count', ));
+        $metadata->mapField(array( 'fieldName' => 'friends_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'friends_count', ));
+        $metadata->mapField(array( 'fieldName' => 'statuses_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'statuses_count', ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'statuses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'user',  ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'replies', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'in_reply_to_user',  ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'mentions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusMention', 'mappedBy' => 'user',  ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'messages', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'recipient',  ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'friends', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUserFriend', 'mappedBy' => 'user',  ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'followers', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUserFollower', 'mappedBy' => 'user',  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => 'user', 'inversedBy' => NULL, 'joinColumns' => array( ),  ));
     }
 }

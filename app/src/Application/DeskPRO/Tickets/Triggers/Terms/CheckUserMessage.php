@@ -57,6 +57,7 @@ class CheckUserMessage extends AbstractTriggerTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -82,11 +83,11 @@ class CheckUserMessage extends AbstractTriggerTerm
 
         foreach ($state->getNewUserReplies() as $reply) {
             $strings[] = $reply->message;
-            $strings[] = trim(preg_replace('#\s+#', ' ', strip_tags($reply->message)));
+            $strings[] = trim(preg_replace('#\s+#' , ' ', strip_tags($reply->message)));
 
             if (!$no_full && $reply->message_raw) {
                 $strings[] = $reply->message_raw;
-                $strings[] = trim(preg_replace('#\s+#', ' ', strip_tags($reply->message_raw)));
+                $strings[] = trim(preg_replace('#\s+#' , ' ', strip_tags($reply->message_raw)));
             }
         }
 

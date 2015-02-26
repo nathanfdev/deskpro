@@ -42,6 +42,7 @@ class NewChat extends ActionTypeAbstract
     /** @var \Application\DeskPRO\Entity\ChatConversation */
     protected $convo;
 
+
     /**
      * @param \Application\DeskPRO\Entity\Person           $person
      * @param \Application\DeskPRO\Entity\ChatConversation $convo
@@ -51,6 +52,7 @@ class NewChat extends ActionTypeAbstract
         $this->person = $person;
         $this->convo = $convo;
     }
+
 
     /**
      * Get a plain array of details that'll be stored in the databaes

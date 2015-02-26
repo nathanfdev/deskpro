@@ -36,4 +36,5 @@ namespace Application\DeskPRO\EntityRepository;
 
 class SmsAccount extends AbstractEntityRepository
 {
+
 }

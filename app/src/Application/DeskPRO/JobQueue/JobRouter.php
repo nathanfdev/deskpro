@@ -53,11 +53,13 @@ class JobRouter
      */
     private $processors;
 
+
     public function __construct(Connection $connection, array $processors = array())
     {
         $this->connection = $connection;
         $this->processors = $processors;
     }
+
 
     /**
      * @param array $job an array of a "jobs" row from dbal
@@ -72,6 +74,7 @@ class JobRouter
         }
     }
 
+
     /**
      * Add a processor to the router
      *
@@ -81,6 +84,7 @@ class JobRouter
     {
         $this->processors[] = $processor;
     }
+
 
     /**
      * Does the actual job array -> job processor mapping and returns an instantiated JobProcessorInterface
@@ -98,6 +102,7 @@ class JobRouter
 
         throw new JobQueueException(sprintf('No processor found for "%s"', $job['type']));
     }
+
 
     /**
      * We should not have to do this at this layer, but we will if needed.
@@ -127,7 +132,7 @@ class JobRouter
                     'error_status' => Job::STATUS_ERROR,
                     'date_now'     => new \DateTime(),
                     'job_id'       => $job['id'],
-                    'error_log'    => $e->getMessage()."\n\n\n".$e->getTraceAsString(),
+                    'error_log'    => $e->getMessage() . "\n\n\n" . $e->getTraceAsString(),
                     'log_summary'  => 'A system error occurred',
                 ),
                 array(

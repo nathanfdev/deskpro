@@ -77,6 +77,7 @@ class AbstractRequestContext
      */
     private $controller;
 
+
     /**
      * @param DeskproContainer   $container
      * @param Request            $request
@@ -92,7 +93,8 @@ class AbstractRequestContext
         Person $agent,
         AppPackage $package,
         $action
-    ) {
+    )
+    {
         $this->container  = $container;
         $this->request    = $request;
         $this->controller = $controller;
@@ -103,6 +105,7 @@ class AbstractRequestContext
         $this->native_config = $container->getAppManager()->getNativePackageConfig($package);
     }
 
+
     /**
      * @return string
      */
@@ -110,6 +113,7 @@ class AbstractRequestContext
     {
         return $this->action;
     }
+
 
     /**
      * @return \Application\DeskPRO\Entity\Person
@@ -119,6 +123,7 @@ class AbstractRequestContext
         return $this->agent;
     }
 
+
     /**
      * @return \Application\DeskPRO\App\Native\NativePackageConfig
      */
@@ -126,6 +131,7 @@ class AbstractRequestContext
     {
         return $this->native_config;
     }
+
 
     /**
      * @return \Application\DeskPRO\Entity\AppPackage
@@ -135,6 +141,7 @@ class AbstractRequestContext
         return $this->package;
     }
 
+
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
@@ -142,6 +149,7 @@ class AbstractRequestContext
     {
         return $this->container;
     }
+
 
     /**
      * @return \Symfony\Component\HttpFoundation\Request
@@ -151,6 +159,7 @@ class AbstractRequestContext
         return $this->request;
     }
 
+
     /**
      * @return \Application\DeskPRO\DBAL\Connection
      */
@@ -158,6 +167,7 @@ class AbstractRequestContext
     {
         return $this->container->getDb();
     }
+
 
     /**
      * @return \Application\DeskPRO\Input\Reader
@@ -167,6 +177,7 @@ class AbstractRequestContext
         return $this->container->getIn();
     }
 
+
     /**
      * @return \Doctrine\ORM\EntityManager
      */
@@ -174,6 +185,7 @@ class AbstractRequestContext
     {
         return $this->container->getEm();
     }
+
 
     /**
      * @param  string                                                        $message

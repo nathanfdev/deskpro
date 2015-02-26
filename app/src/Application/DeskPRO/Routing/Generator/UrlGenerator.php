@@ -103,7 +103,7 @@ class UrlGenerator extends BaseUrlGenerator
             $deskpro_url .= '/index.php';
         }
 
-        return $deskpro_url.$url;
+        return $deskpro_url . $url;
     }
 
     /**
@@ -128,13 +128,13 @@ class UrlGenerator extends BaseUrlGenerator
             $url = str_replace('/dp.php/', '/index.php/', $url);
         }
 
-        $url = preg_replace('#^'.preg_quote($this->context->getBaseUrl(), '#').'#', '', $url);
+        $url = preg_replace('#^' . preg_quote($this->context->getBaseUrl(), '#') . '#', '', $url);
 
         if ($with_file) {
-            $url = '/file.php'.$url;
+            $url = '/file.php' . $url;
             $url = str_replace('/file.php/index.php/', '/file.php/', $url);
         } elseif ($with_widget) {
-            $url = '/dp.php'.$url;
+            $url = '/dp.php' . $url;
             $url = str_replace('/dp.php/index.php/', '/dp.php/', $url);
         }
 
@@ -158,9 +158,7 @@ class UrlGenerator extends BaseUrlGenerator
 
     public function getObjectUrlGenerator()
     {
-        if ($this->object_url_generator !== null) {
-            return $this->object_url_generator;
-        }
+        if ($this->object_url_generator !== null) return $this->object_url_generator;
 
         $this->object_url_generator = new ObjectUrlGenerator($this);
 

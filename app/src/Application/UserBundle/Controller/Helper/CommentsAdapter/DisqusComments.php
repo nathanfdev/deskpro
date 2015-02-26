@@ -54,7 +54,7 @@ class DisqusComments extends AbstractComments
 
             'disqus_shortname' => App::getSetting('core.disqus_shortname'),
             'page_id'          => $this->page_id,
-            'page_permalink'   => $this->page_url,
+            'page_permalink'   => $this->page_url
         ));
 
         return $html;

@@ -92,6 +92,7 @@ class Manager
         $this->reset();
     }
 
+
     /**
      * @return int
      */
@@ -99,6 +100,7 @@ class Manager
     {
         return $this->db_version;
     }
+
 
     /**
      * When build info might've changed outside of this request, this rebuilds internal structures.
@@ -134,18 +136,14 @@ class Manager
         if ($build->shouldRerun()) {
             $current_run = $build->getStatus('runcount', 0);
             $next_run = $current_run+1;
-            if ($this->logger) {
-                $this->logger->debug(sprintf("runBuild(%d.%d)", $build_id, $next_run));
-            }
+            if ($this->logger) $this->logger->debug(sprintf("runBuild(%d.%d)", $build_id, $next_run));
             $build->saveStatus('runcount', $current_run+1);
         } else {
-            if ($this->logger) {
-                $this->logger->debug(sprintf("Set core.deskpro_build = %s", $build_id));
-            }
+            if ($this->logger) $this->logger->debug(sprintf("Set core.deskpro_build = %s", $build_id));
             $this->db_version = $build_id;
             $this->container->getDb()->update('settings', array('value' => $build_id), array('name' => 'core.deskpro_build'));
             $this->container->getDb()->executeUpdate("DELETE FROM import_datastore WHERE typename LIKE ?", array(
-                'up.'.$build->getBuildId().'.%',
+                'up.' . $build->getBuildId() . '.%'
             ));
         }
     }
@@ -155,9 +153,7 @@ class Manager
      */
     public function postUpgrade()
     {
-        if ($this->logger) {
-            $this->logger->debug("Post upgrade begin");
-        }
+        if ($this->logger) $this->logger->debug("Post upgrade begin");
 
         \Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
 
@@ -168,9 +164,7 @@ class Manager
         $langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
 
         foreach ($langpacks->getLangTitles(true) as $id => $title) {
-            if ($this->logger) {
-                $this->logger->debug(sprintf("lang(%s).title = %s", $title, $id));
-            }
+            if ($this->logger) $this->logger->debug(sprintf("lang(%s).title = %s", $title, $id));
             $this->container->getDb()->executeUpdate("UPDATE languages SET title = ? WHERE sys_name = ? AND title = ''", array($title, $id));
 
             $info = $langpacks->getLangInfo($id);
@@ -180,15 +174,11 @@ class Manager
         // Update flags if theyre blank
         $blank_flags = $this->container->getDb()->fetchAllCol("SELECT sys_name FROM languages WHERE flag_image = ''");
         foreach ($blank_flags as $sys_name) {
-            if (!$langpacks->hasLang($sys_name)) {
-                continue;
-            }
+            if (!$langpacks->hasLang($sys_name)) continue;
 
             $flag = $langpacks->getLangInfo($sys_name, 'flag_image');
             if ($flag) {
-                if ($this->logger) {
-                    $this->logger->debug(sprintf("lang(%s).flag = %s", $flag, $sys_name));
-                }
+                if ($this->logger) $this->logger->debug(sprintf("lang(%s).flag = %s", $flag, $sys_name));
                 $this->container->getDb()->executeUpdate("UPDATE languages SET flag_image = ? WHERE sys_name = ?", array($flag, $sys_name));
             }
         }
@@ -196,36 +186,28 @@ class Manager
         // Auto-install any new langs
         $auto_install = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.lang_auto_install'");
         if ($auto_install) {
-            if ($this->logger) {
-                $this->logger->debug("running lang auto-install");
-            }
+            if ($this->logger) $this->logger->debug("running lang auto-install");
             $this->container->getEm()->getRepository('DeskPRO:Language')->installAll($langpacks);
         }
 
-        if ($this->logger) {
-            $this->logger->debug("invalidate lang cache");
-        }
+        if ($this->logger) $this->logger->debug("invalidate lang cache");
         $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
         $cache->invalidateLanguageCache();
 
-        if ($this->logger) {
-            $this->logger->debug("invalidate lang js cache");
-        }
+        if ($this->logger) $this->logger->debug("invalidate lang js cache");
         $cache = new \Application\DeskPRO\CacheInvalidator\LanguageJsCache();
         $cache->invalidateAll();
 
         // need to restart the Twitter daemon (pid of 0 means to not run)
-        if (file_exists(dp_get_data_dir().'/twitter.pid')) {
-            $twitter_pid = intval(file_get_contents(dp_get_data_dir().'/twitter.pid'));
+        if (file_exists(dp_get_data_dir() . '/twitter.pid')) {
+            $twitter_pid = intval(file_get_contents(dp_get_data_dir() . '/twitter.pid'));
         } else {
             $twitter_pid = null;
         }
 
         if ($twitter_pid !== 0) {
-            if ($this->logger) {
-                $this->logger->debug("restart twitter pid $twitter_pid");
-            }
-            @unlink(dp_get_data_dir().'/twitter.pid');
+            if ($this->logger) $this->logger->debug("restart twitter pid $twitter_pid");
+            @unlink(dp_get_data_dir() . '/twitter.pid');
         }
 
         #------------------------------
@@ -251,14 +233,12 @@ class Manager
 
         // Dont fail the upgrade at this point
         // but log the error so we can know something went wrong with an app
-        $app_syncer->setExceptionHandler(function ($e) { KernelErrorHandler::logException($e); });
+        $app_syncer->setExceptionHandler(function($e) { KernelErrorHandler::logException($e); });
 
         $app_syncer->runUpdates();
         $app_syncer->runSync();
 
-        if ($this->logger) {
-            $this->logger->debug("Post upgrade done");
-        }
+        if ($this->logger) $this->logger->debug("Post upgrade done");
     }
 
     /**
@@ -270,7 +250,7 @@ class Manager
     {
         $next_id = $this->getNextBuildId();
 
-        return (bool) $next_id;
+        return (bool)$next_id;
     }
 
     /**
@@ -281,10 +261,10 @@ class Manager
      */
     public function getBuildClass($build_id)
     {
-        $class = 'Application\\InstallBundle\\Upgrade\\Build\\Build'.$build_id;
+        $class = 'Application\\InstallBundle\\Upgrade\\Build\\Build' . $build_id;
 
         if (!class_exists($class, false)) {
-            $file = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/'.date('Y/m', $build_id).'/Build'.$build_id.'.php';
+            $file = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/' . date('Y/m', $build_id) . '/Build' . $build_id . '.php';
             require_once $file;
         }
 
@@ -321,7 +301,7 @@ class Manager
             return $this->build_list;
         }
 
-        $manifest = require DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
+        $manifest = require(DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php');
         $this->build_list = array_keys($manifest);
 
         array_unique($this->build_list, \SORT_NUMERIC);

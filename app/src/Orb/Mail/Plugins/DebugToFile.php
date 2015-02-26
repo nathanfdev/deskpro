@@ -34,6 +34,7 @@
 
 namespace Orb\Mail\Plugins;
 
+
 /**
  * Completely turns off email sending
  */
@@ -54,6 +55,7 @@ class DebugToFile implements \Swift_Events_SendListener
 
     public function sendPerformed(\Swift_Events_SendEvent $evt)
     {
+
     }
 
     public function beforeSendPerformed(\Swift_Events_SendEvent $evt)
@@ -63,10 +65,10 @@ class DebugToFile implements \Swift_Events_SendListener
         }
 
         $message = $evt->getMessage();
-        $name = time().mt_rand(1000, 9999).'_'.preg_replace('#[^a-zA-Z0-9]#', '-', substr($message->getSubject(), 0, 50));
+        $name = time() . mt_rand(1000,9999) . '_' . preg_replace('#[^a-zA-Z0-9]#', '-', substr($message->getSubject(), 0, 50));
         $name = preg_replace('#-{,2}#', '-', $name);
 
-        $path = $this->filepath.DIRECTORY_SEPARATOR.$name.'.txt';
+        $path = $this->filepath . DIRECTORY_SEPARATOR . $name . '.txt';
 
         file_put_contents($path, $message->toString());
 
@@ -94,14 +96,14 @@ class DebugToFile implements \Swift_Events_SendListener
                 $domain = DPC_SITE_DOMAIN;
             }
 
-            file_put_contents($this->info_file_path.DIRECTORY_SEPARATOR.$name.'.json', json_encode(array(
+            file_put_contents($this->info_file_path . DIRECTORY_SEPARATOR . $name . '.json', json_encode(array(
                 'date'       => date('Y-m-d H:i:s'),
                 'tos'        => $tos,
                 'ccs'        => $ccs,
                 'from'       => $from,
                 'subject'    => $message->getSubject(),
                 'domain'     => $domain,
-                'store_path' => $path,
+                'store_path' => $path
             )));
         }
     }

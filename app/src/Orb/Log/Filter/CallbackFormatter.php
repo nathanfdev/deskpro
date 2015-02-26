@@ -49,9 +49,7 @@ class CallbackFormatter extends \Orb\Filter\AbstractFilter
 
     public function filter($log_item)
     {
-        if (!$log_item) {
-            return null;
-        }
+        if (!$log_item) return null;
 
         $log_item = call_user_func($this->callback, $log_item);
 

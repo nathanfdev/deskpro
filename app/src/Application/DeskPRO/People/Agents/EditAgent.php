@@ -94,6 +94,7 @@ class EditAgent
      */
     public $notification_settings;
 
+
     /**
      * @param Person $person
      */
@@ -137,6 +138,7 @@ class EditAgent
 
         $this->primary_team = $person->primary_team;
     }
+
 
     /**
      * Saves the agent.
@@ -203,7 +205,7 @@ class EditAgent
         # Groups
         #------------------------------
 
-        $group_coll_helper = new CollectionHelper($agent, 'usergroups', null, function ($item) {
+        $group_coll_helper = new CollectionHelper($agent, 'usergroups', null, function($item) {
             return !$item->is_agent_group;
         });
         if ($this->agent_groups instanceof ArrayCollection) {
@@ -267,6 +269,7 @@ class EditAgent
         $em->flush();
     }
 
+
     ############################################################################
     # Validation Metadata
     ############################################################################
@@ -280,20 +283,20 @@ class EditAgent
             'constraints' => array(
                 new Constraints\NotBlank(),
                 new Constraints\Email(),
-            ),
+            )
         )));
 
         $metadata->addPropertyConstraint('emails', new Constraints\Count(array('min' => 1, 'minMessage' => '[emails_count] At least one email address is required')));
 
         $metadata->addPropertyConstraint('teams', new Constraints\All(array(
             'constraints' => array(
-                new DeskproConstraints\AgentTeamConstraint(),
-            ),
+                new DeskproConstraints\AgentTeamConstraint()
+            )
         )));
         $metadata->addPropertyConstraint('agent_groups', new Constraints\All(array(
             'constraints' => array(
-                new DeskproConstraints\AgentGroupConstraint(),
-            ),
+                new DeskproConstraints\AgentGroupConstraint()
+            )
         )));
     }
 }

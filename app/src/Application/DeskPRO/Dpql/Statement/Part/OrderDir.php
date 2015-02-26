@@ -76,7 +76,8 @@ class OrderDir extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    ) {
+    )
+    {
         throw new Exception('Order direction prepare() cannot not be called');
     }
 
@@ -91,6 +92,6 @@ class OrderDir extends AbstractPart
      */
     public function toDpql(Display $statement, $section, array $stack)
     {
-        return $this->order->toDpql($statement, $section, $stack).' '.$this->orderDir;
+        return $this->order->toDpql($statement, $section, $stack) . ' ' . $this->orderDir;
     }
 }

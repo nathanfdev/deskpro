@@ -116,12 +116,8 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 
     public function startQuery($sql, array $params = null, array $types = null)
     {
-        if ($this->_is_logging) {
-            return;
-        }
-        if (!$this->_is_enabled) {
-            return;
-        }
+        if ($this->_is_logging) return;
+        if (!$this->_is_enabled) return;
 
         if ($this->ignore_triggers) {
             foreach ($this->ignore_triggers as $p) {
@@ -165,7 +161,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
             'query_typename' => $query_typename,
             'time_start'     => microtime(true),
             'time_end'       => 0,
-            'time_taken'     => 0,
+            'time_taken'     => 0
         );
     }
 
@@ -186,7 +182,7 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 
             return;
         }
-        if (!$this->_is_enabled or $this->_last_query == -1) {
+        if (!$this->_is_enabled OR $this->_last_query == -1) {
             return;
         }
 
@@ -205,13 +201,9 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
         $trace = false;
         $table = false;
         foreach ($this->_slowlog_rules as $rule) {
-            if (($queryinfo['query_type'] == self::TYPE_ALL || $queryinfo['query_type'] & $rule[0]) and $queryinfo['time_taken'] >= $rule[1]) {
+            if (($queryinfo['query_type'] == self::TYPE_ALL || $queryinfo['query_type'] & $rule[0]) AND $queryinfo['time_taken'] >= $rule[1]) {
                 if (!$trace && !$this->disable_trace) {
-                    try {
-                        throw new \Exception();
-                    } catch (\Exception $e) {
-                        $trace = str_replace(DP_ROOT, '', $e->getTraceAsString());
-                    }
+                    try { throw new \Exception(); } catch (\Exception $e) { $trace = str_replace(DP_ROOT, '', $e->getTraceAsString()); }
                 }
                 if (!$table) {
                     if (preg_match('#\s+(FROM|INSERT INTO|UPDATE|DELETE FROM)\s+(.*?)\s+#', $queryinfo['sql'], $m)) {
@@ -236,6 +228,8 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 
         $this->_is_logging = false;
     }
+
+
 
     /**
      * Get all query info we've logged

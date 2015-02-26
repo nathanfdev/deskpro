@@ -38,6 +38,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\EmailBundle\SourceMapper\DatabaseSourceMapper;
 use Application\EmailBundle\SourceMapper\SourceMapperInterface;
 use Psr\Log\LoggerInterface;
+use Monolog;
 
 class QueueRunner
 {
@@ -87,11 +88,11 @@ class QueueRunner
     private $done_ids = array();
 
     /**
-     * @param Connection            $db
-     * @param QueueProc             $queue_proc
+     * @param Connection $db
+     * @param QueueProc $queue_proc
      * @param SourceMapperInterface $source_mapper
-     * @param SourceSender          $source_sender
-     * @param LoggerInterface       $logger
+     * @param SourceSender $source_sender
+     * @param LoggerInterface $logger
      */
     public function __construct(Connection $db, QueueProc $queue_proc, SourceMapperInterface $source_mapper, SourceSender $source_sender, LoggerInterface $logger)
     {
@@ -103,8 +104,8 @@ class QueueRunner
     }
 
     /**
-     * @param int $proc_limit Max number of emails to send
-     * @param int $time_limit Max time to spend sending
+     * @param int $proc_limit  Max number of emails to send
+     * @param int $time_limit  Max time to spend sending
      */
     public function setLimits($proc_limit, $time_limit)
     {
@@ -239,10 +240,12 @@ class QueueRunner
                     $did = true;
                 }
             }
+
         } while ($did);
 
         return $count;
     }
+
 
     /**
      * Runs through the queue
@@ -306,7 +309,7 @@ class QueueRunner
     }
 
     /**
-     * @return array      Array of id=>status of records to process
+     * @return array Array of id=>status of records to process
      * @throws \Exception
      */
     private function reserveBatch()
@@ -330,7 +333,7 @@ class QueueRunner
         ", array(date('Y-m-d H:i:s'), $this->done_ids), array(\PDO::PARAM_STR, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY));
 
         if ($batch) {
-            $batch_ids = array_map(function ($r) { return $r['id']; }, $batch);
+            $batch_ids = array_map(function($r) { return $r['id']; }, $batch);
             $this->done_ids = array_merge($this->done_ids, $batch_ids);
             $this->db->executeUpdate("
                 UPDATE sendmail_sources
@@ -344,11 +347,12 @@ class QueueRunner
         return $batch;
     }
 
+
     /**
      * Given a batch of records that we didnt get to (e.g., timeout happened first), release them back
      * to their original status so they can be run next time.
      *
-     * @param  array      $batch
+     * @param array $batch
      * @throws \Exception
      */
     private function releaseRemaining(array $batch)

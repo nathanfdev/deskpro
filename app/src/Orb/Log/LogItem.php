@@ -57,7 +57,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
         self::MESSAGE,
         self::MESSAGE_LINE,
         self::DATETIME,
-        self::SESSION_NAME,
+        self::SESSION_NAME
     );
 
     /**
@@ -98,6 +98,7 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
      */
     protected function init()
     {
+
     }
 
     /**

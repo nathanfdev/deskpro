@@ -61,6 +61,7 @@ class SpecialTriggerEdit
      */
     private $event;
 
+
     /**
      * @param  Department         $department
      * @return SpecialTriggerEdit
@@ -70,6 +71,7 @@ class SpecialTriggerEdit
         return new self(self::TYPE_DEPARTMENT, $department, $event);
     }
 
+
     /**
      * @param  EmailAccount       $account
      * @return SpecialTriggerEdit
@@ -78,6 +80,7 @@ class SpecialTriggerEdit
     {
         return new self(self::TYPE_EMAIL_ACCOUNT, $account, TicketTrigger::EVENT_TYPE_NEWTICKET);
     }
+
 
     /**
      * @param string                  $type
@@ -89,6 +92,7 @@ class SpecialTriggerEdit
         $this->obj   = $obj;
         $this->event = $event;
     }
+
 
     /**
      * @param TicketTrigger $trigger
@@ -105,6 +109,7 @@ class SpecialTriggerEdit
                 break;
         }
     }
+
 
     /**
      * @param TicketTrigger $trigger
@@ -135,6 +140,7 @@ class SpecialTriggerEdit
         $terms->addTerm($terms_set);
         $trigger->terms = $terms;
     }
+
 
     /**
      * @param TicketTrigger $trigger

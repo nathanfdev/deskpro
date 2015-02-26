@@ -80,7 +80,7 @@ final class NewsLabel extends AbstractImporter
     /**
      * Returns a new news label entity
      *
-     * @param  string                  $label
+     * @param string $label
      * @return DeskPROEntity\LabelNews
      */
     private function createNewsLabel($label)
@@ -89,7 +89,6 @@ final class NewsLabel extends AbstractImporter
         $entity->setLabel($label);
 
         $this->records->add($entity);
-
         return $entity;
     }
 

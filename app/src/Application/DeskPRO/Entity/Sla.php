@@ -200,6 +200,7 @@ class Sla extends DomainObject
         $this->fail_actions = new TriggerActions();
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -207,6 +208,7 @@ class Sla extends DomainObject
     {
         $this->_calc = null;
     }
+
 
     /**
      * @param array $days
@@ -227,6 +229,7 @@ class Sla extends DomainObject
         $this->_onPropertyChanged('work_days', $old, $this->work_days);
     }
 
+
     /**
      * Resets holidays
      */
@@ -234,6 +237,7 @@ class Sla extends DomainObject
     {
         $this->setModelField('work_holidays', array());
     }
+
 
     /**
      * Removes a single holiday by index
@@ -246,6 +250,7 @@ class Sla extends DomainObject
         unset($this->work_holidays[$key]);
         $this->_onPropertyChanged('work_holidays', $old, $this->work_holidays);
     }
+
 
     /**
      * Adds a holiday
@@ -269,7 +274,7 @@ class Sla extends DomainObject
         if (!$this->work_holidays) {
             $this->work_holidays = array();
         }
-        foreach ($this->work_holidays as $k => $existing) {
+        foreach ($this->work_holidays AS $k => $existing) {
             if ($existing['day'] == $day && $existing['month'] == $month && $existing['year'] === $year) {
                 return $k;
             }
@@ -279,13 +284,14 @@ class Sla extends DomainObject
             'name' => $name,
             'day' => intval($day),
             'month' => intval($month),
-            'year' => $year,
+            'year' => $year
         );
 
         $this->_onPropertyChanged('work_holidays', $old, $this->work_holidays);
 
         return count($this->work_holidays) - 1;
     }
+
 
     /**
      * Gets an array of holidays, sorted by date
@@ -314,6 +320,7 @@ class Sla extends DomainObject
 
         return $holidays;
     }
+
 
     /**
      * @return \Orb\Util\WorkHoursSet
@@ -355,14 +362,13 @@ class Sla extends DomainObject
         }
     }
 
+
     /**
      * @return SlaCalculator
      */
     public function getCalculator()
     {
-        if ($this->_calc !== null) {
-            return $this->_calc;
-        }
+        if ($this->_calc !== null) return $this->_calc;
 
         $this->_calc = new SlaCalculator(
             $this->sla_type,
@@ -373,6 +379,7 @@ class Sla extends DomainObject
 
         return $this->_calc;
     }
+
 
     /**
      * {@inheritDoc}
@@ -399,7 +406,7 @@ class Sla extends DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Sla';
 
         $metadata->setPrimaryTable(array(
-            'name' => 'slas',
+            'name' => 'slas'
         ));
         $metadata->mapField(array(
             'columnName' => 'id',

@@ -36,6 +36,7 @@ namespace Application\AgentBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ResultCache;
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Orb\Util\Arrays;
@@ -80,6 +81,7 @@ class TicketResults
      */
     protected $grouping_summary;
 
+
     /**
      * @param $controller
      * @param  TicketFilter  $filter
@@ -97,7 +99,7 @@ class TicketResults
         }
 
         // Or if the user has their own
-        $group_by = $controller->getPerson()->getPref('agent.ui.ticket-filter-group-by.'.$filter['id']);
+        $group_by = $controller->getPerson()->getPref('agent.ui.ticket-filter-group-by.' . $filter['id']);
         if ($group_by) {
             $helper->setGroupField($group_by);
         }
@@ -132,10 +134,12 @@ class TicketResults
         return $helper;
     }
 
+
     public function __construct($controller)
     {
         $this->controller = $controller;
     }
+
 
     /**
      * Set ticket IDs for the search results
@@ -145,6 +149,7 @@ class TicketResults
     {
         $this->ticket_ids = $ticket_ids;
     }
+
 
     /**
      * Get ticket IDs
@@ -156,6 +161,7 @@ class TicketResults
         return $this->ticket_ids;
     }
 
+
     /**
      * Get total number of matches
      *
@@ -166,6 +172,7 @@ class TicketResults
         return count($this->getTicketIds());
     }
 
+
     /**
      * Get ticket IDs that match the current group
      *
@@ -173,12 +180,8 @@ class TicketResults
      */
     public function getGroupTicketIds($field_id)
     {
-        if ($this->grouped_ticket_ids !== null) {
-            return $this->grouped_ticket_ids;
-        }
-        if ($this->group_field === null) {
-            return array();
-        }
+        if ($this->grouped_ticket_ids !== null) return $this->grouped_ticket_ids;
+        if ($this->group_field === null) return array();
 
         $searcher = new TicketSearch();
         $searcher->setPerson($this->controller->getPerson());
@@ -198,6 +201,7 @@ class TicketResults
         return $this->grouped_ticket_ids;
     }
 
+
     /**
      * @param $page
      * @param  int   $per_page
@@ -208,6 +212,7 @@ class TicketResults
         return $this->_getPageFromTicketIds($this->getTicketIds(), $page, $per_page);
     }
 
+
     /**
      * @param $cursor_start
      * @param  int   $per_page
@@ -217,6 +222,7 @@ class TicketResults
     {
         return $this->_getCursorPageFromTicketIds($this->getTicketIds(), $cursor_start, $per_page);
     }
+
 
     /**
      * @param $field_id
@@ -229,6 +235,7 @@ class TicketResults
         return $this->_getPageFromTicketIds($this->getGroupTicketIds($field_id), $page, $per_page);
     }
 
+
     /**
      * @param $field_id
      * @param $page
@@ -239,6 +246,7 @@ class TicketResults
     {
         return $this->_getCursorPageFromTicketIds($this->getGroupTicketIds($field_id), $page, $per_page);
     }
+
 
     /**
      * @param  array $ticket_ids
@@ -288,6 +296,7 @@ class TicketResults
         return $tickets;
     }
 
+
     /**
      * Set the grouping field
      *
@@ -298,6 +307,7 @@ class TicketResults
         $this->group_field = $field;
     }
 
+
     /**
      * Get the grouping field
      *
@@ -307,6 +317,8 @@ class TicketResults
     {
         return $this->group_field;
     }
+
+
 
     /**
      * Set the order by that will be used for sub-grouping. Tickets area
@@ -319,6 +331,7 @@ class TicketResults
         $this->order_by = $order_by;
     }
 
+
     /**
      * Get counts and titles for the grouping options
      *
@@ -326,12 +339,8 @@ class TicketResults
      */
     public function getGroupDisplayInfo()
     {
-        if ($this->group_display_info !== null) {
-            return $this->group_display_info;
-        }
-        if ($this->group_field === null) {
-            return null;
-        }
+        if ($this->group_display_info !== null) return $this->group_display_info;
+        if ($this->group_field === null) return null;
 
         $grouper = new \Application\DeskPRO\Tickets\GroupingCounter();
         $grouper->setGrouping($this->group_field);
@@ -344,6 +353,7 @@ class TicketResults
 
         return $this->group_display_info;
     }
+
 
     /**
      * Get the grouping field phrase

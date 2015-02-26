@@ -50,6 +50,7 @@ class JsExporter
         $this->tr = $tr;
     }
 
+
     /**
      * @param array $phrase_ids
      */

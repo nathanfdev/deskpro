@@ -56,7 +56,7 @@ class FeedbackTypePropsType extends AbstractType
                      return $er->createQueryBuilder('u')->where(
                          'u.is_agent_group = false AND u.is_enabled = true'
                      );
-                 },
+                 }
             )
         );
     }

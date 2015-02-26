@@ -35,8 +35,10 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+
 
 class RateLimitLog extends DomainObject
 {
@@ -99,6 +101,7 @@ class RateLimitLog extends DomainObject
                 ),
             ),
         ));
+
 
         $metadata->mapField(array(
             'columnName' => 'id',

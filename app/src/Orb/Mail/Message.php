@@ -34,6 +34,7 @@
 
 namespace Orb\Mail;
 
+
 /**
  * Represents an email message to send
  */
@@ -76,6 +77,7 @@ class Message extends \Swift_Message
         }
     }
 
+
     /**
      * Prepares the message to be set. This is a hook that is called right before sending.
      */
@@ -90,9 +92,8 @@ class Message extends \Swift_Message
         $this->doPrepare();
     }
 
-    protected function doPrepare()
-    {
-    }
+    protected function doPrepare() { }
+
 
     /**
      * Called just before a send attempt
@@ -126,9 +127,7 @@ class Message extends \Swift_Message
         $this->has_presend = true;
     }
 
-    protected function doPreSend($is_retry = false)
-    {
-    }
+    protected function doPreSend($is_retry = false) { }
 
     /**
      * Set the suppress autoreplies headers
@@ -137,7 +136,7 @@ class Message extends \Swift_Message
      */
     public function setSuppressAutoreplies($on = true)
     {
-        $this->_suppress_autoreply = (bool) $on;
+        $this->_suppress_autoreply = (bool)$on;
     }
 
     /**

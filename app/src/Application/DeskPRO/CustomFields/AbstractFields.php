@@ -85,7 +85,7 @@ abstract class AbstractFields
 
             $f = $f_def->getHandler()->getFormField($value);
 
-            $name = 'field_'.$f_def['id'];
+            $name = 'field_' . $f_def['id'];
 
             if ($field_group) {
                 $field_group->add($f);
@@ -100,7 +100,7 @@ abstract class AbstractFields
             $custom_fields[$f_def['id']] = array(
                 'elId'            => Util::requestUniqueIdString(),
                 'id'              => $f_def['id'],
-                'name'            => 'field_'.$f_def['id'],
+                'name'            => 'field_' . $f_def['id'],
                 'handler'         => $f_def->getHandler(),
                 'field_def'       => $f_def,
                 'title'           => $f_def['title'],

@@ -52,6 +52,7 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
      */
     private $ticket_context;
 
+
     /**
      * @param  Layout        $layout
      * @param                $mode
@@ -81,6 +82,7 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
         return $obj;
     }
 
+
     /**
      * @param        $mode
      * @param Ticket $ticket_context
@@ -90,6 +92,7 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
         $this->mode = $mode;
         $this->ticket_context = $ticket_context;
     }
+
 
     /**
      * @param  LayoutField $field
@@ -108,15 +111,11 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
             default:
                 switch ($this->mode) {
                     case self::NEW_TICKET:
-                        if (!$field->isVisibleOnNew()) {
-                            return false;
-                        }
+                        if (!$field->isVisibleOnNew()) return false;
                         break;
 
                     case self::VIEW_TICKET:
-                        if (!$field->isVisibleOnView()) {
-                            return false;
-                        }
+                        if (!$field->isVisibleOnView()) return false;
                         if (!$field->isVisibleOnViewAlways() && $this->ticket_context) {
                             if (!self::checkTicketHasField($field, $this->ticket_context)) {
                                 return false;
@@ -125,9 +124,7 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
                         break;
 
                     case self::EDIT_TICKET:
-                        if (!$field->isVisibleOnEdit()) {
-                            return false;
-                        }
+                        if (!$field->isVisibleOnEdit()) return false;
                         break;
                 }
         }
@@ -136,6 +133,7 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
 
         return true;
     }
+
 
     /**
      * @param  LayoutField $field

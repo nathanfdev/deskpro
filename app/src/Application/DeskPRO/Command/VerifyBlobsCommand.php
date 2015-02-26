@@ -26,6 +26,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+
 /**
  * DeskPRO
  *
@@ -37,6 +38,7 @@ namespace Application\DeskPRO\Command;
 use Application\DeskPRO\App;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
 
 class VerifyBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
@@ -70,9 +72,7 @@ class VerifyBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
                     if ($md5 != $blob['blob_hash']) {
                         printf("Blob #%d is INVALID. Hash mismatch with file: %s\n\t$md5 != {$blob['blob_hash']}\n", $blob['id'], $file_path);
                     } else {
-                        if ($is_verbose) {
-                            printf("Blob #%d is OKAY. File: %s\n", $blob['id'], $file_path);
-                        }
+                        if ($is_verbose) printf("Blob #%d is OKAY. File: %s\n", $blob['id'], $file_path);
                     }
                 }
             }

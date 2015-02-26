@@ -38,7 +38,7 @@ interface CsvReaderInterface
     /**
      * Returns rows count of csv file
      *
-     * @param  CsvConfig $config
+     * @param CsvConfig $config
      * @return int
      */
     public function getRowsCount(CsvConfig $config);
@@ -46,7 +46,7 @@ interface CsvReaderInterface
     /**
      * Parse csv file into raw array
      *
-     * @param  CsvConfig $config
+     * @param CsvConfig $config
      * @return array
      */
     public function getData(CsvConfig $config);

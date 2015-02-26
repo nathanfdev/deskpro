@@ -152,7 +152,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
         $repo = $this->getContainer()->getEm()->getRepository('DeskPRO:Person');
         $agents = $repo->getPeopleResultsFromIds($agents);
         foreach ($agents as $agent) {
-            /** @var $agent Person */
+	        /** @var $agent Person */
             if ($pn = $agent->getPrimaryPhoneNumber()) {
                 $numbers[] = $pn['number'];
             }
@@ -241,7 +241,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
                 'app_title'     => $app->title,
                 'package_name'  => $app->package->name,
                 'package_title' => $app->package->title,
-                'message'       => $recordMsg,
+                'message'       => $recordMsg
             )
         );
     }

@@ -78,17 +78,12 @@ abstract class AbstractFetcher
         $this->init();
     }
 
-    protected function init()
-    {
-    }
+    protected function init() {}
 
     public function __destruct()
     {
         if ($this->storage) {
-            try {
-                $this->storage->close();
-            } catch (\Exception $e) {
-            }
+            try { $this->storage->close(); } catch (\Exception $e) {}
         }
     }
 
@@ -100,8 +95,7 @@ abstract class AbstractFetcher
         if ($this->storage) {
             try {
                 $this->storage->close();
-            } catch (\Exception $e) {
-            }
+            } catch (\Exception $e) {}
         }
     }
 
@@ -112,11 +106,10 @@ abstract class AbstractFetcher
      */
     public function setMaxSize($max_size)
     {
-        $this->max_size = (int) $max_size;
-        if ($this->max_size < 0) {
-            $this->max_size = 0;
-        }
+        $this->max_size = (int)$max_size;
+        if ($this->max_size < 0) $this->max_size = 0;
     }
+
 
     /**
      * Get the max size
@@ -127,6 +120,7 @@ abstract class AbstractFetcher
     {
         return $this->max_size;
     }
+
 
     /**
      * @param  bool  $reconnect
@@ -146,12 +140,15 @@ abstract class AbstractFetcher
         return $this->storage;
     }
 
+
     /**
      * Closes the fetcher.
      */
     public function close()
     {
+
     }
+
 
     /**
      * @param Logger $logger
@@ -202,10 +199,7 @@ abstract class AbstractFetcher
         } catch (\Exception $e) {
             $this->logger->log(sprintf("_readNext exception: %s", $e->getMessage()), 'debug');
             if ($this->storage) {
-                try {
-                    $this->storage->close();
-                } catch (\Exception $e) {
-                }
+                try { $this->storage->close(); } catch (\Exception $e) {}
             }
             throw $e;
         }
@@ -233,7 +227,7 @@ abstract class AbstractFetcher
             $source->fromArray(array(
                 'email_account' => $this->account,
                 'headers' => $raw_message->headers,
-                'status' => 'inserted',
+                'status' => 'inserted'
             ));
 
             // Rough matching, just for info purposes when browsing a list
@@ -266,7 +260,7 @@ abstract class AbstractFetcher
                 $source->error_code = EmailSource::ERR_MESSAGE_TOO_BIG;
                 $source->source_info = array(
                     'size' => $raw_message->size,
-                    'max_size' => $this->max_size,
+                    'max_size' => $this->max_size
                 );
             } else {
                 $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
@@ -290,14 +284,12 @@ abstract class AbstractFetcher
             #------------------------------
 
             $this->_doneRead($raw_message->id);
+
         } catch (\Exception $e) {
             $this->logger->log(sprintf("Save source error: %s", $e->getMessage()), 'debug');
             App::getOrm()->rollback();
             if ($this->storage) {
-                try {
-                    $this->storage->close();
-                } catch (\Exception $e) {
-                }
+                try { $this->storage->close(); } catch (\Exception $e) {}
             }
             throw $e;
         }

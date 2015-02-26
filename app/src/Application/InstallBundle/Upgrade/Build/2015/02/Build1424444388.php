@@ -58,10 +58,11 @@ class Build1424444388 extends AbstractBuild
         $remove = array();
 
         while ($rows = $em->getConnection()->fetchAll(sprintf($sq, $offset, $limit))) {
+
             foreach ($rows as $row) {
                 $phone = new PhoneNumber();
                 $form = $ff->create(new PhoneNumberType(), $phone);
-                $form->submit(array('number' => '+'.preg_replace('/[^0-9]/', '', $row['field_10'])));
+                $form->submit(array('number' => '+' . preg_replace('/[^0-9]/', '', $row['field_10'])));
 
                 if ($form->isValid()) {
                     $remove[] = $row['id'];

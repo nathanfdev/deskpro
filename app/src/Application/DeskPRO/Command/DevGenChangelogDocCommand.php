@@ -26,6 +26,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+
 /**
  * DeskPRO
  *
@@ -57,10 +58,10 @@ class DevGenChangelogDocCommand extends ContainerAwareCommand
             $output->writeln('<error>You must enter a target of either agent or admin</error>');
         }
 
-        $real_id = date('Ymd').'-'.$input->getArgument('id');
+        $real_id = date('Ymd') . '-' . $input->getArgument('id');
 
-        $path = DP_ROOT.'/docs/changelog/'.$real_id.'/log.html';
-        $dir  = DP_ROOT.'/docs/changelog/'.$real_id;
+        $path = DP_ROOT . '/docs/changelog/' . $real_id . '/log.html';
+        $dir  = DP_ROOT . '/docs/changelog/' . $real_id;
         $output->writeln("Path: <info>$path</info>");
 
         if (file_exists($path)) {
@@ -99,13 +100,13 @@ HTML;
         }
 
         $docs_path = DP_ROOT.'/docs/changelog/docs.php';
-        $docs = require $docs_path;
+        $docs = require($docs_path);
         $docs[$real_id] = array(
             'date' => date('Y-m-d H:i:s'),
-            'target' => $target,
+            'target' => $target
         );
 
-        file_put_contents($docs_path, '<?php return '.var_export($docs, true).';');
+        file_put_contents($docs_path, '<?php return ' . var_export($docs, true) . ';');
 
         return 0;
     }

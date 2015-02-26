@@ -36,4 +36,5 @@ namespace Application\DeskPRO\App\Native\RequestHandler;
 
 class AgentRequestContext extends AbstractNativeAppRequestContext
 {
+
 }

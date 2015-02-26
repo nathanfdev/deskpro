@@ -62,6 +62,7 @@ class TextSnippetsController extends AbstractController
 
             $filter_string = Strings::utf8_strtolower($filter_string);
 
+
             foreach ($snippets_all as $snippet) {
                 $match_lang   = false;
                 $match_filter = false;
@@ -311,7 +312,7 @@ class TextSnippetsController extends AbstractController
 
         return $this->createApiResponse(array(
             'success' => true,
-            'category_id' => $id,
+            'category_id' => $id
         ));
     }
 }

@@ -52,7 +52,7 @@ interface BlobAdapterInterface
     /**
      * Creates a blob object by an importer attachment entity
      *
-     * @param  Entity\Attachment  $attachment
+     * @param Entity\Attachment $attachment
      * @return DeskPROEntity\Blob
      */
     public function createByAttachment(Entity\Attachment $attachment);

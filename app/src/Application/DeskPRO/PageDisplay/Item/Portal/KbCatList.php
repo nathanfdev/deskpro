@@ -45,6 +45,7 @@ class KbCatList extends PortalItemAbstract implements CacheableItem
 
     public function init()
     {
+
     }
 
     public function checkPermission()

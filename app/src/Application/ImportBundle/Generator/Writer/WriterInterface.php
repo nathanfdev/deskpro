@@ -51,7 +51,7 @@ interface WriterInterface extends GeneratorConfigAwareInterface
     /**
      * Writes an entity to the storage
      *
-     * @param  EntityInterface $entity
+     * @param EntityInterface $entity
      * @return bool
      */
     public function writeData(EntityInterface $entity);

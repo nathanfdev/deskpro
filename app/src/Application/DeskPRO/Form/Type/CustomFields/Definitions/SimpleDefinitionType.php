@@ -45,7 +45,7 @@ class SimpleDefinitionType extends AbstractType implements EventSubscriberInterf
     {
         $builder
             ->add('id', 'hidden')
-            ->add('title', 'text', array('label' => false))
+            ->add('title', 'text', array('label' => false,))
             ->add('display_order', 'hidden')
         ;
         $builder->addEventSubscriber($this);

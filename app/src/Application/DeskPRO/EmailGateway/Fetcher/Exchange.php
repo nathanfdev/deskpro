@@ -97,6 +97,7 @@ class Exchange extends AbstractFetcher
      */
     protected $next_index = 0;
 
+
     /**
      * Initiates the connection
      *
@@ -125,7 +126,7 @@ class Exchange extends AbstractFetcher
                 break;
 
             default:
-                throw new \InvalidArgumentException("Unknown account type: ".$this->account->incoming_account->getType());
+                throw new \InvalidArgumentException("Unknown account type: " . $this->account->incoming_account->getType());
         }
 
         $this->mode = $options['mode'];
@@ -165,6 +166,7 @@ class Exchange extends AbstractFetcher
         return $this->storage;
     }
 
+
     /**
      * Gets the message storage
      *
@@ -174,6 +176,7 @@ class Exchange extends AbstractFetcher
     {
         return $this->storage;
     }
+
 
     /**
      * Gets the next message
@@ -185,6 +188,7 @@ class Exchange extends AbstractFetcher
     {
         return $this->storage->getEmailParts($this->messages[$this->next_index]);
     }
+
 
     /**
      * {@inheritdoc}
@@ -236,14 +240,14 @@ class Exchange extends AbstractFetcher
 
         // Reads and formats the Message header
         // To be compatible with the RawMessage
-        if (strpos($raw_message->content, $EOL.$EOL)) {
-            list($headers,) = explode($EOL.$EOL, $raw_message->content, 2);
+        if (strpos($raw_message->content, $EOL . $EOL)) {
+            list($headers, ) = explode($EOL . $EOL, $raw_message->content, 2);
         } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers,) = explode("\r\n\r\n", $raw_message->content, 2);
+            list($headers, ) = explode("\r\n\r\n", $raw_message->content, 2);
         } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers,) = explode("\n\n", $raw_message->content, 2);
+            list($headers, ) = explode("\n\n", $raw_message->content, 2);
         } else {
-            @list($headers,) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers, ) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
         }
 
         $raw_message->headers = $headers;

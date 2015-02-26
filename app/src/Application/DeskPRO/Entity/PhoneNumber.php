@@ -136,7 +136,7 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PhoneNumber';
 
         $metadata->setPrimaryTable(array( 'name'    => 'phone_numbers',
-                                          'indexes' => array( 'phone_number_idx' => array( 'columns' => array( 'number' ) )), ));
+                                          'indexes' => array( 'phone_number_idx' => array( 'columns' => array( 'number' ) ), ), ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 
         $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0,
@@ -162,6 +162,6 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
                                                                             'referencedColumnName' => 'id',
                                                                             'nullable'             => true,
                                                                             'onDelete'             => 'cascade',
-                                                                            'columnDefinition'     => null, )), ));
+                                                                            'columnDefinition'     => null, ), ), ));
     }
 }

@@ -59,6 +59,7 @@ class SetFlag extends AbstractContainerAwareAction implements ActionInterface, M
         return $options;
     }
 
+
     /**
      * @param Connection $db
      * @param Ticket     $ticket
@@ -91,6 +92,7 @@ class SetFlag extends AbstractContainerAwareAction implements ActionInterface, M
         }
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -98,6 +100,7 @@ class SetFlag extends AbstractContainerAwareAction implements ActionInterface, M
     {
         return false;
     }
+
 
     /**
      * {@inheritDoc}

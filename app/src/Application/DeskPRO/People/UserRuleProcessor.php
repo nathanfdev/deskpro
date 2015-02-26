@@ -52,6 +52,7 @@ class UserRuleProcessor
         $this->em = $em;
     }
 
+
     /**
      * @param Person $person
      */
@@ -64,6 +65,7 @@ class UserRuleProcessor
         }
     }
 
+
     /**
      * @param Person $person
      */
@@ -75,6 +77,7 @@ class UserRuleProcessor
             $this->newEmail($person, $email);
         }
     }
+
 
     /**
      * @param \Application\DeskPRO\Entity\Person      $person

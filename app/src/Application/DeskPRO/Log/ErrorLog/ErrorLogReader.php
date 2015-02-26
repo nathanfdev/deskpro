@@ -81,6 +81,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         $this->path = $path;
     }
 
+
     /**
      * @param \DateTimeZone $tz
      */
@@ -88,6 +89,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
     {
         $this->timezone = $tz;
     }
+
 
     /**
      * Filter the items to read
@@ -103,6 +105,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
     {
         $this->filter = $filter;
     }
+
 
     /**
      * This sets a filter so reading only finds a specific log entry
@@ -120,6 +123,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         return $filter;
     }
 
+
     /**
      * Saves the raw log in the data array so it can be displayed
      */
@@ -127,6 +131,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
     {
         $this->store_raw = true;
     }
+
 
     /**
      * Only keeps track of a count, no data is parsed
@@ -186,6 +191,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         fclose($fp);
     }
 
+
     /**
      * Handles lines of a single log entry and parses data out of it
      *
@@ -230,6 +236,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         $this->items[$id] = $item;
     }
 
+
     /**
      * @return array
      */
@@ -240,6 +247,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         return $this->items;
     }
 
+
     /**
      * @return array
      */
@@ -249,6 +257,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
 
         return array_keys($this->items);
     }
+
 
     /**#@+ ArrayAccess Interface **/
     public function offsetExists($offset)
@@ -275,6 +284,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         throw new \BadMethodCallException();
     }
     /**#@-*/
+
 
     /**
      * This will not parse the entire file, but just open it up and try to quickly

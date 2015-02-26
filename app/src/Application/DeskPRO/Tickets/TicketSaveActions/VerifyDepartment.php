@@ -45,6 +45,7 @@ class VerifyDepartment implements TicketSaveActionInterface
      */
     private $ticket_deps;
 
+
     /**
      * @param TicketDepartments $ticket_deps
      */
@@ -52,6 +53,7 @@ class VerifyDepartment implements TicketSaveActionInterface
     {
         $this->ticket_deps = $ticket_deps;
     }
+
 
     /**
      * @param  Ticket                   $ticket
@@ -77,4 +79,5 @@ class VerifyDepartment implements TicketSaveActionInterface
             $ticket->department = $dep;
         }
     }
+
 }

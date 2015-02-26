@@ -58,6 +58,7 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
         $this->person = $person;
     }
 
+
     /**
      * Get the person
      *
@@ -68,6 +69,8 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
         return $this->person;
     }
 
+
+
     /**
      * Was the person new (just created?)
      *
@@ -77,6 +80,8 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
     {
         return $this->person->isNewPerson();
     }
+
+
 
     public function propertyChanged($sender, $prop, $old_val, $new_val)
     {
@@ -104,11 +109,12 @@ class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
      */
     public function done()
     {
+
     }
 
-    public function clear()
-    {
-        $this->person = null;
-        $this->entity = null;
-    }
+	public function clear()
+	{
+		$this->person = null;
+		$this->entity = null;
+	}
 }

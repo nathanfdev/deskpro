@@ -33,7 +33,6 @@
  */
 
 namespace Application\DeskPRO\Translate\Loader;
-
 use Application\DeskPRO\App;
 
 /**
@@ -90,9 +89,7 @@ class DbLoader implements LoaderInterface
 
         foreach ($langs as $lid) {
             foreach ($groups as $g) {
-                if (empty($this->loaded[$lid][$g])) {
-                    continue;
-                }
+                if (empty($this->loaded[$lid][$g])) continue;
 
                 // obj_ translations only apply for specific language
                 // being reuqested (e.g., no english fallthrough)

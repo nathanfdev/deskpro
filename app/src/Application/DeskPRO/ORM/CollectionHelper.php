@@ -56,6 +56,7 @@ class CollectionHelper
      */
     protected $fn_keep_filter;
 
+
     /**
      * $fn_filter is useful if you only want to modify parts of a set.
      * For example, if you were modifying usergroups on a Person and only
@@ -64,7 +65,7 @@ class CollectionHelper
      *
      * @param string        $entity
      * @param string        $prop
-     * @param Callback|null $fn_filter      Callback to filter valid items of the set. Return true to allow the item.
+     * @param Callback|null $fn_filter Callback to filter valid items of the set. Return true to allow the item.
      * @param Callback|null $fn_keep_filter Existing items are passed through this filter to determine if they should be kept.
      *                                      E.g., use this to keep records that might otherwise be deleted because they dont match the 'set'.
      */
@@ -75,6 +76,7 @@ class CollectionHelper
         $this->fn_filter = $fn_filter;
         $this->fn_keep_filter = $fn_keep_filter;
     }
+
 
     /**
      * Given an array of records we want the entity to contain ("only $set"),
@@ -123,6 +125,7 @@ class CollectionHelper
             'del' => $del_ids,
         );
     }
+
 
     /**
      * Add or remove from the collection so it matcehs $set.

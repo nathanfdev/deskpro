@@ -59,7 +59,7 @@ class Skype extends AbstractContactData
         return array(
             'comment' => $contact_record->comment,
             'username' => $contact_record->field_1,
-            'call_link' => 'skype:' + urlencode($contact_record->field_1),
+            'call_link' => 'skype:' + urlencode($contact_record->field_1)
         );
     }
 

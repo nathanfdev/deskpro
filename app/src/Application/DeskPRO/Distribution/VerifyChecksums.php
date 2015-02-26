@@ -82,7 +82,7 @@ class VerifyChecksums
             'added' => array(),
             'removed' => array(),
             'changed' => array(),
-            'okay' => array(),
+            'okay' => array()
         );
 
         foreach ($chunk_hashes as $path => $checksum) {

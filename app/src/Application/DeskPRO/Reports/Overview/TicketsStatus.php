@@ -43,6 +43,7 @@ class TicketsStatus extends AbstractTableOverviewStat
      */
     protected $values = null;
 
+
     /**
      * @return string[]
      */
@@ -53,17 +54,18 @@ class TicketsStatus extends AbstractTableOverviewStat
             'awaiting_user'  => 'Awaiting User',
             'resolved'       => 'Resolved',
             'archived'       => 'Archived',
-            'hidden'         => 'Hidden',
+            'hidden'         => 'Hidden'
         );
 
         $return = array();
         foreach ($s as $k => $v) {
             $return[$k] = $v;
-            $return[$k.'_hold'] = $v.' (On Hold)';
+            $return[$k . '_hold'] = $v . ' (On Hold)';
         }
 
         return $return;
     }
+
 
     /**
      * @return int[]

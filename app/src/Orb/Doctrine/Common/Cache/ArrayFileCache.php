@@ -34,6 +34,7 @@
 
 namespace Orb\Doctrine\Common\Cache;
 
+
 /**
  * The array file cache is a cache that writes k=>v to a file on the filesystem.
  * This is very ineffecient for writes, but can work well if writes are very rare (ie part of a build system).
@@ -124,6 +125,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         $this->filter = $fn;
     }
 
+
     /**
      * Maximum number of entries to add
      *
@@ -134,12 +136,13 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         $this->limit = $limit;
     }
 
+
     /**
      * Dont load anything new and dont commit
      */
     public function disable()
     {
-        $this->disabled     = true;
+        $this->disabled	 = true;
     }
 
     /**
@@ -147,7 +150,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
      */
     public function enable()
     {
-        $this->disabled     = false;
+        $this->disabled	 = false;
     }
 
     /**
@@ -166,6 +169,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 
         register_shutdown_function(array($this, 'commitIfDirty'), true);
     }
+
 
     /**
      * Reload all data
@@ -221,14 +225,13 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         }
     }
 
+
     /**
      * {@inheritdoc}
      */
     protected function doFetch($id)
     {
-        if ($this->data === null) {
-            $this->reloadData();
-        }
+        if ($this->data === null) $this->reloadData();
 
         if (isset($this->data[$id]) && !isset($this->data[$id]['deleted']) && (!$this->data[$id]['die'] || $this->data[$id]['die'] < time())) {
             if (isset($this->data[$id]['serialized'])) {
@@ -252,9 +255,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
      */
     protected function doContains($id)
     {
-        if ($this->data === null) {
-            $this->reloadData();
-        }
+        if ($this->data === null) $this->reloadData();
 
         if (isset($this->data[$id]) && !isset($this->data[$id]['deleted']) && (!$this->data['die'] || $this->data['die'] < time())) {
             return true;
@@ -273,9 +274,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
                 return true;
             }
         }
-        if ($this->data === null) {
-            $this->reloadData();
-        }
+        if ($this->data === null) $this->reloadData();
 
         if ($this->limit && count($this->data) >= $this->limit) {
             return true;
@@ -286,7 +285,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
                 'time' => time(),
                 'die' => ($lifeTime ? time() + $lifeTime : 0),
                 'data' => $data,
-                'updated' => true,
+                'updated' => true
             );
         } else {
             $this->data[$id] = array(
@@ -295,7 +294,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
                 'data' => serialize($data),
                 'data_u' => $data,
                 'serialized' => true,
-                'updated' => true,
+                'updated' => true
             );
         }
 
@@ -313,15 +312,13 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
      */
     protected function doDelete($id)
     {
-        if ($this->data === null) {
-            $this->reloadData();
-        }
+        if ($this->data === null) $this->reloadData();
 
         $this->data[$id] = array(
             'time' => time(),
             'die' => 0,
             'data' => 0,
-            'deleted' => true,
+            'deleted' => true
         );
 
         $this->dirty = true;
@@ -374,6 +371,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         }
 
         if (file_put_contents($this->cache_file, $contents, \LOCK_EX) != $size) {
+
             if ($changed_umask !== null) {
                 umask($changed_umask);
             }
@@ -392,6 +390,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         $this->releaseSlam();
     }
 
+
     /**
      * Commit if there have been changes to the cache
      */
@@ -407,6 +406,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
             }
         }
     }
+
 
     /**
      * {@inheritdoc}
@@ -429,17 +429,19 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         return null;
     }
 
+
     /**
      * @return bool
      */
     public function hasSlam()
     {
-        if (file_exists($this->cache_file.'.slam') && (@filemtime($this->cache_file.'.slam') ?: 0) < time() - $this->slam_timeout) {
+        if (file_exists($this->cache_file . '.slam') && (@filemtime($this->cache_file . '.slam') ?: 0) < time() - $this->slam_timeout) {
             return true;
         }
 
         return false;
     }
+
 
     /**
      * @return resource
@@ -454,7 +456,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
             return $this->slam_fp;
         }
 
-        $this->slam_fp = @fopen($this->cache_file.'.slam', 'w');
+        $this->slam_fp = @fopen($this->cache_file . '.slam', 'w');
         if (!$this->slam_fp) {
             $this->slam_fp = null;
 
@@ -472,6 +474,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         return $this->slam_fp;
     }
 
+
     /**
      * @return void
      */
@@ -480,7 +483,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         if ($this->slam_fp) {
             @flock($this->slam_fp, \LOCK_UN);
             @fclose($this->slam_fp);
-            @unlink($this->cache_file.'.slam');
+            @unlink($this->cache_file . '.slam');
             $this->slam_fp = null;
         }
     }

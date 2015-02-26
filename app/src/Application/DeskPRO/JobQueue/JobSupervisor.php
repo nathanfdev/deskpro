@@ -61,6 +61,7 @@ class JobSupervisor
      */
     private $connection;
 
+
     /**
      * @param Connection $connection
      * @param array      $rules
@@ -71,6 +72,7 @@ class JobSupervisor
         $this->rules = $rules;
     }
 
+
     /**
      * Runs the supervisor instance, checking all of the registered rules, and reporting any violations that
      * cannot be fixed.
@@ -79,20 +81,25 @@ class JobSupervisor
     {
         foreach ($this->rules as $rule) {
             try {
+
                 $rule->check();
+
             } catch (JobSupervisorException $e) {
+
                 if (!$rule->attemptToFix()) {
                     $this->reportViolation($e);
                 } else {
                     // fixed, silently log the violation and that it was resolved by the rule
                     KernelErrorHandler::logException($e);
                 }
+
             } catch (\Exception $e) {
                 // something terribly wrong happened because we shouldn't be here, we should probably do something now
                 // because this is a problem with the job supervising system! Probably DB query issues.
                 KernelErrorHandler::logException($e);
             }
         }
+
     }
 
     public function reportViolation(JobSupervisorException $e)

@@ -57,6 +57,7 @@ class LanguageInstaller
         $this->em = $em;
     }
 
+
     /**
      * This will insert the lang pack into an existing language,
      * upgrading it instead of installing a brand new one.
@@ -67,6 +68,7 @@ class LanguageInstaller
     {
         $this->upgrade_language = $language;
     }
+
 
     /**
      * Install a language pack from a pack file located at $pack_path.
@@ -80,6 +82,7 @@ class LanguageInstaller
         return $this->installPack($pack_file->getPack());
     }
 
+
     /**
      * Install a language pack from a pack file loaded into a string.
      *
@@ -92,6 +95,7 @@ class LanguageInstaller
         return $this->installPack($pack_file->getPack());
     }
 
+
     /**
      * Install a language pack from an already loaded LanguagePackFile.
      *
@@ -101,6 +105,7 @@ class LanguageInstaller
     {
         return $this->installPack($pack_file->getPack());
     }
+
 
     /**
      * Install a new language pack
@@ -113,7 +118,9 @@ class LanguageInstaller
     {
         $this->em->getConnection()->beginTransaction();
         try {
+
             if ($this->upgrade_language) {
+
                 $lang = $this->upgrade_language;
                 $lang->sys_name = $pack->sys_name;
                 $lang->lang_code = $pack->lang_code;
@@ -139,11 +146,13 @@ class LanguageInstaller
                 }
 
                 if ($delete_ids) {
+
                     $this->em->getConnection()->executeUpdate('
                         DELETE FROM phrases
                         WHERE language_id = ? AND name IN (?)
                     ', array($lang->getId(), $delete_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
                 }
+
             } else {
                 $lang = new Language();
                 $lang->title     = $pack->title;
@@ -160,6 +169,7 @@ class LanguageInstaller
 
             $insert_phrases = array();
             foreach ($pack->phrases as $id => $phrase) {
+
                 $groupname = \Orb\Util\Strings::rexplode('.', $id);
                 $groupname = array_shift($groupname);
 

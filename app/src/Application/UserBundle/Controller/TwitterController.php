@@ -36,6 +36,7 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 
+
 class TwitterController extends AbstractController
 {
     public function viewLongAction($long_id)
@@ -89,7 +90,7 @@ class TwitterController extends AbstractController
 
         $response = $this->render('UserBundle:Twitter:view-long.html.twig', array(
             'long' => $long,
-            'can_view' => $can_view,
+            'can_view' => $can_view
         ));
 
         if (!$long->is_public) {

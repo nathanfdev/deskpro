@@ -64,18 +64,18 @@ class CsvExport extends AbstractJob
 
     public function run($max_time)
     {
-        $em = App::getOrm();
-        $em->getConnection()->getConfiguration()->setSQLLogger(null);
+	    $em = App::getOrm();
+	    $em->getConnection()->getConfiguration()->setSQLLogger(null);
         $start_time = microtime(true);
         $file = $this->_data['file'];
         $delimeter = ';';
         $enclosure = '"';
 
         if (!$file) {
-            if (!is_dir(dp_get_tmp_dir().'/export')) {
-                mkdir(dp_get_tmp_dir().'/export');
+            if (!is_dir(dp_get_tmp_dir() . '/export')) {
+                mkdir(dp_get_tmp_dir() . '/export');
             }
-            $file = dp_get_tmp_dir().'/export/DP-export-'.date('Ymd-His').'.csv';
+            $file = dp_get_tmp_dir() . '/export/DP-export-' . date('Ymd-His') . '.csv';
         }
 
         $this->getContactDataHeaders();
@@ -83,6 +83,7 @@ class CsvExport extends AbstractJob
         $fp = fopen($file, 'a');
 
         if (!$this->_data['file']) {
+
             //select max(cnt) from (select count(person_id) as cnt from people_contact_data group by person_id) as counts
             /**
              *  ID
@@ -109,17 +110,17 @@ class CsvExport extends AbstractJob
         $rep = $em->getRepository('DeskPRO:Person');
 
         while (microtime(true) - $start_time < $max_time) {
+
             if (!$batch = $rep->findBy(array(), array(), $this->_data['limit'], $this->_data['offset'])) {
                 break;
             }
 
             foreach ($batch as $person) {
-                if (microtime(true) >= $max_time + $start_time) {
-                    break;
-                }
 
-                /** @var $person Person */
-                $row = array(
+	            if (microtime(true) >= $max_time + $start_time) break;
+
+	            /** @var $person Person */
+	            $row = array(
                     $person['id'],
                     implode(',', array($person['name'], $person['first_name'], $person['last_name'])),
                     $person['title_prefix'],
@@ -140,9 +141,9 @@ class CsvExport extends AbstractJob
                 fputcsv($fp, $row, $delimeter, $enclosure);
 
                 $this->_data['offset']++;
-                $em->detach($person);
-                $person->clear();
-                unset($person);
+	            $em->detach($person);
+	            $person->clear();
+	            unset($person);
             }
         }
 
@@ -154,10 +155,11 @@ class CsvExport extends AbstractJob
 
         $task = $this->getTask();
 
-        $task['run_status'] = 'Processed '.$this->_data['offset'];
+        $task['run_status'] = 'Processed ' . $this->_data['offset'];
         $task['task_data'] = array_merge($task['task_data'], $this->_data);
 
         if (!$batch) {
+
             $data = TmpData::create(
                 'csv_export.file',
                 array('file' => $file, 'count' => $this->_data['offset']),
@@ -189,9 +191,7 @@ class CsvExport extends AbstractJob
         foreach ($ch as $type) {
             $q = 'select max(cnt) from (select count(person_id) as cnt from people_contact_data where contact_type = :type group by person_id) as counts';
             $res = App::getOrm()->getConnection()->executeQuery($q, array('type' => $type))->fetchColumn();
-            if (!$res) {
-                continue;
-            }
+            if (!$res) continue;
 
             for ($i = 1; $i <= (int) $res; $i++) {
                 $this->_data['contact_headers'][] = $type;
@@ -229,8 +229,8 @@ class CsvExport extends AbstractJob
         foreach ($person->getContactData() as $cd) {
             /** @var $cd PersonContactData */
             $data = ('phone' === $cd['contact_type'] || 'mobile' === $cd['contact_type'])
-                ? $cd['field_1'].$cd['field_2']
-                : $cd->getSearchString();
+                ? $cd['field_1'] . $cd['field_2']
+                :$cd->getSearchString();
 
             $types[$cd['contact_type']][] = $data;
         }

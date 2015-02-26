@@ -46,6 +46,7 @@ class SaveTicketLogs implements TicketSaveActionInterface
      */
     private $em;
 
+
     /**
      * @param EntityManager $em
      */
@@ -53,6 +54,7 @@ class SaveTicketLogs implements TicketSaveActionInterface
     {
         $this->em = $em;
     }
+
 
     /**
      * @param  Ticket                   $ticket
@@ -70,4 +72,5 @@ class SaveTicketLogs implements TicketSaveActionInterface
 
         $context->getVars()->set('ticket_logs', $logs);
     }
+
 }

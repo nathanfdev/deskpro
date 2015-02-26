@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+
 class TwitterUserFriend extends AbstractEntityRepository
 {
     public function getByUserAndFriends($user_id, array $friend_ids)
@@ -50,9 +51,9 @@ class TwitterUserFriend extends AbstractEntityRepository
             WHERE  f.user = :user AND f.friend_user IN (:friend)
         ")->setParameters(array(
             'user' => $user_id,
-            'friend' => $friend_ids,
+            'friend' => $friend_ids
         ))->execute();
-        foreach ($results as $result) {
+        foreach ($results AS $result) {
             $output[$result->friend_user->getId()] = $result;
         }
 

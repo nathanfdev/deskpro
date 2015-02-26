@@ -66,6 +66,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
      */
     private $options;
 
+
     /**
      * @param string $op
      * @param array  $options
@@ -87,6 +88,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
         $this->options->ensureRequired();
     }
 
+
     /**
      * @return array
      */
@@ -95,6 +97,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
         return array();
     }
 
+
     /**
      * @return CheckedOptionsArray
      */
@@ -102,6 +105,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
     {
         return new CheckedOptionsArray();
     }
+
 
     /**
      * Gets the type name of the criteria
@@ -113,6 +117,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
         return Util::getBaseClassname($this);
     }
 
+
     /**
      * Gets criteria operator (is, is not, etc).
      *
@@ -122,6 +127,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
     {
         return $this->op;
     }
+
 
     /**
      * Get's an array of options
@@ -175,7 +181,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
                 throw new \InvalidArgumentException("Invalid operator: $op");
         }
 
-        $check_ids = array_filter($check_ids, function ($x) { return (int) $x; });
+        $check_ids = array_filter($check_ids, function ($x) { return (int)$x; });
         $check_ids = array_unique($check_ids);
 
         $has_null = in_array(0, $check_ids, true);
@@ -185,22 +191,16 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
 
         if ($has_null || $check_ids) {
             if ($has_null) {
-                if ($op == 'is') {
-                    $query->orWhere("$field_name IS NULL");
-                } else {
-                    $query->orWhere("$field_name IS NOT NULL");
-                }
+                if ($op == 'is') $query->orWhere("$field_name IS NULL");
+                else $query->orWhere("$field_name IS NOT NULL");
             }
 
             if ($check_ids) {
                 $query->orWhereIn($field_name, $check_ids, $op == 'not');
             }
         } else {
-            if ($op == 'is') {
-                $query->andWhere('0');
-            } else {
-                $query->andWhere('1');
-            }
+            if ($op == 'is') $query->andWhere('0');
+            else $query->andWhere('1');
         }
 
         return $query;
@@ -215,7 +215,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
     protected function getIntMatchQuery($field_name, $int)
     {
         $query = new FilterQuery();
-        $query->setParameter('int', (int) $int);
+        $query->setParameter('int', (int)$int);
 
         switch ($this->getTermOperator()) {
             case self::OP_IS:
@@ -237,7 +237,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
                 $query->andWhere("$field_name >= {param.int}");
                 break;
             default:
-                throw new \InvalidArgumentException("Invalid operator: ".$this->getTermOperator());
+                throw new \InvalidArgumentException("Invalid operator: " . $this->getTermOperator());
         }
 
         return $query;
@@ -252,8 +252,8 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
      */
     protected function getIntRangeMatch($field_name, $int1, $int2)
     {
-        $int1 = (int) $int1;
-        $int2 = (int) $int2;
+        $int1 = (int)$int1;
+        $int2 = (int)$int2;
 
         if ($int1 > $int2) {
             $x = $int1;
@@ -274,7 +274,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
                 $query->andWhere("$field_name NOT BETWEEN {param.int1} AND {param.int2}");
                 break;
             default:
-                throw new \InvalidArgumentException("Invalid operator: ".$this->getTermOperator());
+                throw new \InvalidArgumentException("Invalid operator: " . $this->getTermOperator());
         }
 
         return $query;
@@ -314,7 +314,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
                 $query->andWhere("$field_name >= {param.date}");
                 break;
             default:
-                throw new \InvalidArgumentException("Invalid operator: ".$this->getTermOperator());
+                throw new \InvalidArgumentException("Invalid operator: " . $this->getTermOperator());
         }
 
         return $query;
@@ -353,7 +353,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
                 $query->andWhere("$field_name NOT BETWEEN {param.date1} AND {param.date2}");
                 break;
             default:
-                throw new \InvalidArgumentException("Invalid operator: ".$this->getTermOperator());
+                throw new \InvalidArgumentException("Invalid operator: " . $this->getTermOperator());
         }
 
         return $query;
@@ -379,7 +379,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
                 case self::OP_NOT:
                     $use_op = $this->getTermOptions() == self::OP_NOT ? '!=' : '=';
                     $query->orWhere("$field_name $use_op {param.str$k}");
-                    $query->setParameter('str'.$k, $str);
+                    $query->setParameter('str' . $k, $str);
                     break;
                 case self::OP_NOT:
                 case self::OP_CONTAINS:
@@ -389,7 +389,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
                     $like_value = $str;
                     $like_value = str_replace('%', '%%', $like_value);
                     $like_value = str_replace('_', '__', $like_value);
-                    $like_value = '%'.$like_value.'%';
+                    $like_value = '%' . $like_value . '%';
                     $query->setParameter('str.$k', $like_value);
                     break;
                 default:

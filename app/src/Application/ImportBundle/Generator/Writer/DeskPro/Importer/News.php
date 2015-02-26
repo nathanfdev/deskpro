@@ -74,7 +74,6 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
             ->setViewsCount($entity->getViewCount());
 
         $this->records->add($news);
-
         return $this->records;
     }
 

@@ -37,6 +37,7 @@ namespace Application\DeskPRO\People\PermissionLoader;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity;
 
 /**
  * Loads general usergroup permissions likes flags and the like.
@@ -68,6 +69,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
      */
     protected $with_overrides = false;
 
+
     /**
      * @param Person $person
      */
@@ -80,7 +82,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
     public function getSubkey()
     {
         if ($this->person && $this->person->is_agent) {
-            return 'person-'.$this->person->id;
+            return 'person-' . $this->person->id;
         }
     }
 
@@ -129,6 +131,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 
         return $val;
     }
+
 
     /**
      * Get an array of all effective permissions
@@ -187,6 +190,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 
         return $this->perms;
     }
+
 
     /**
      * Get an array of data we'll serialize

@@ -44,15 +44,13 @@ class CommentAbstract extends AbstractEntityRepository
 
     public function getByIds(array $ids, $keep_order = false)
     {
-        if (!$ids) {
-            return array();
-        }
+        if (!$ids) return array();
 
         $ids = implode(',', $ids);
 
         return $this->getEntityManager()->createQuery("
             SELECT c
-            FROM ".$this->_entityName." c INDEX BY c.id
+            FROM " . $this->_entityName ." c INDEX BY c.id
             WHERE c.id IN ($ids)
         ")->execute();
     }
@@ -62,15 +60,15 @@ class CommentAbstract extends AbstractEntityRepository
         if ($show_validating) {
             return $this->getEntityManager()->createQuery("
                 SELECT c
-                FROM ".$this->_entityName." c
-                WHERE c.status != ?1 AND c.".static::FIELD." = ?2
+                FROM " . $this->_entityName ." c
+                WHERE c.status != ?1 AND c." . static::FIELD . " = ?2
                 ORDER BY c.id DESC
             ")->setParameter(1, 'deleted')->setParameter(2, $object)->execute();
         } else {
             return $this->getEntityManager()->createQuery("
                 SELECT c
-                FROM ".$this->_entityName." c
-                WHERE c.status = ?1 AND c.".static::FIELD." = ?2
+                FROM " . $this->_entityName ." c
+                WHERE c.status = ?1 AND c." . static::FIELD . " = ?2
                 ORDER BY c.id DESC
             ")->setParameter(1, 'visible')->setParameter(2, $object)->execute();
         }
@@ -108,7 +106,7 @@ class CommentAbstract extends AbstractEntityRepository
     {
         return $this->getEntityManager()->createQuery("
             SELECT c
-            FROM ".$this->_entityName." c
+            FROM " . $this->_entityName ." c
             LEFT JOIN c.person p
             WHERE c.status = ?1 OR c.is_reviewed = ?2
             ORDER BY c.id DESC

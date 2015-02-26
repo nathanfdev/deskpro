@@ -74,7 +74,7 @@ class FormExtension extends \Symfony\Bridge\Twig\Extension\FormExtension
             $types = $view->get('types');
             $types[] = $custom;
             $typeIndex = count($types) - 1;
-            $this->varStack[$rendering] = array(
+            $this->varStack[$rendering] = array (
                 'variables' => array_replace_recursive($view->all(), $variables),
                 'types'     => $types,
             );
@@ -84,6 +84,7 @@ class FormExtension extends \Symfony\Bridge\Twig\Extension\FormExtension
             $types[$typeIndex] .= '_'.$section;
 
             if (isset($blocks[$types[$typeIndex]])) {
+
                 $this->varStack[$rendering]['typeIndex'] = $typeIndex;
 
                 // we do not call renderBlock here to avoid too many nested level calls (XDebug limits the level to 100 by default)

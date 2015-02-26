@@ -1,9 +1,7 @@
-<?php if (!defined('DP_ROOT')) {
-    exit('No access');
-}
+<?php if (!defined('DP_ROOT')) exit('No access');
 
-require_once DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php';
-require_once DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php';
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php');
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php');
 
 use Application\DeskPRO\Routing\RouteCollection;
 
@@ -396,14 +394,14 @@ $collection->create('user_downloads_newcomment', array(
 $collection->create('user_news_home', array(
     'path'          => '/news.{_format}',
     'controller'    => 'UserBundle:News:browse',
-    'defaults'      => array('slug' => '', 'page' => 1,        '_format' => 'html'),
+    'defaults'      => array('slug' => '', 'page' => 1, 		'_format' => 'html'),
     'requirements'  => array('_format' => '(html|rss)'),
 ));
 
 $collection->create('user_news', array(
     'path'          => '/news/{slug}.{_format}',
     'controller'    => 'UserBundle:News:browse',
-    'defaults'      => array('slug' => '', 'page' => 1,        '_format' => 'html'),
+    'defaults'      => array('slug' => '', 'page' => 1, 		'_format' => 'html'),
     'requirements'  => array(
         'slug'     => '(\\d+(\\-.*?)?)?',
         'page'     => '\\d+',

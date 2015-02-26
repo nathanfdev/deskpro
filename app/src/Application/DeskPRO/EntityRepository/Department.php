@@ -90,32 +90,39 @@ class Department extends AbstractCategoryRepository
         $data = array(
             'usergroups'  => array(),
             'agentgroups' => array(),
-            'agents'      => array(),
+            'agents'      => array()
         );
 
         foreach ($perms as $perm) {
+
             if ($perm['usergroup_id']) {
+
                 if (App::getContainer()->getDataService('Usergroup')->get($perm['usergroup_id'])->is_agent_group) {
+
                     $data['agentgroups'][] = array(
-                        'usergroup_id' => (int) $perm['usergroup_id'],
+                        'usergroup_id' => (int)$perm['usergroup_id'],
                         'perm_name'    => $perm['name'],
                     );
+
                 } else {
+
                     $data['usergroups'][] = array(
-                        'usergroup_id' => (int) $perm['usergroup_id'],
+                        'usergroup_id' => (int)$perm['usergroup_id'],
                         'perm_name'    => $perm['name'],
                     );
                 }
             } elseif ($perm['person_id']) {
+
                 $data['agents'][] = array(
-                    'agent_id'  => (int) $perm['person_id'],
-                    'perm_name' => $perm['name'],
+                    'agent_id'  => (int)$perm['person_id'],
+                    'perm_name' => $perm['name']
                 );
             }
         }
 
         return $data;
     }
+
 
     /**
      * Get the default ticket department for a given context (ticket, chat)

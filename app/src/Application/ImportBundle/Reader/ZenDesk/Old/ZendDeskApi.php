@@ -39,7 +39,7 @@ use Orb\Service\Zendesk\ApiException;
 use Orb\Service\Zendesk\Zendesk;
 use Orb\Util\Arrays;
 
-class ZendDeskApi extends Zendesk
+class ZendeskApi extends Zendesk
 {
     /**
      * @var \Application\DeskPRO\Import\Importer\ZendeskImporter
@@ -82,6 +82,7 @@ class ZendDeskApi extends Zendesk
      */
     protected $logger;
 
+
     /**
      * @param \Orb\Log\Logger $logger
      */
@@ -90,14 +91,15 @@ class ZendDeskApi extends Zendesk
         $this->logger = $logger;
     }
 
+
     /**
      * Adds some handling of rate limiting
      *
-     * @param  string                                            $id
-     * @param  string                                            $action
-     * @param  array                                             $call_data
-     * @param  array                                             $query_data
-     * @param  bool                                              $no_exec
+     * @param string $id
+     * @param string $action
+     * @param array $call_data
+     * @param array $query_data
+     * @param bool $no_exec
      * @return null|\Orb\Service\Zendesk\ApiResponse
      * @throws \Exception|null|\Orb\Service\Zendesk\ApiException
      * @throws \Orb\Service\Zendesk\ApiException
@@ -191,8 +193,9 @@ class ZendDeskApi extends Zendesk
         return null;
     }
 
+
     /**
-     * @param  array      $requests
+     * @param array $requests
      * @return array|void
      */
     public function sendGetMulti(array $requests)
@@ -224,7 +227,7 @@ class ZendDeskApi extends Zendesk
                 $modifier = count($batch);
                 if ($modifier > 115) {
                     $modifier = 60;
-                } elseif ($modifier > 60) {
+                } else if ($modifier > 60) {
                     $modifier = 30;
                 }
 
@@ -235,9 +238,10 @@ class ZendDeskApi extends Zendesk
         return $results;
     }
 
+
     /**
-     * @param  int                                         $page
-     * @param  bool                                        $reload
+     * @param int $page
+     * @param bool $reload
      * @return mixed|null|\Orb\Service\Zendesk\ApiResponse
      */
     public function getTicketListPageResponse($page = 1, $reload = false)
@@ -264,12 +268,13 @@ class ZendDeskApi extends Zendesk
 
             $this->importer->db->replace('import_datastore', array(
                 'typename' => "zd_tickets_cache.p{$page}",
-                'data'     => serialize($res),
+                'data'     => serialize($res)
             ));
         }
 
         return $res;
     }
+
 
     /**
      * Caches many ticket audits
@@ -295,7 +300,7 @@ class ZendDeskApi extends Zendesk
         foreach ($ticket_ids as $ticket_id) {
             $reqs[$ticket_id] = array(
                 "tickets/$ticket_id/audits",
-                array('per_page' => 100),
+                array('per_page' => 100)
             );
         }
 
@@ -315,7 +320,7 @@ class ZendDeskApi extends Zendesk
                 } else {
                     $this->importer->db->replace('import_datastore', array(
                         'typename' => 'zd_tickets_audits_cache.t'.$ticket_id,
-                        'data' => serialize($r->get('audits', array())),
+                        'data' => serialize($r->get('audits', array()))
                     ));
                 }
             }
@@ -332,9 +337,9 @@ class ZendDeskApi extends Zendesk
             $pages = range(1, $num_pages);
 
             foreach ($pages as $p) {
-                $reqs[$ticket_id.'-'.$p] = array(
+                $reqs[$ticket_id. '-' . $p] = array(
                     "tickets/$ticket_id/audits",
-                    array('per_page' => 100, 'page' => $p),
+                    array('per_page' => 100, 'page' => $p)
                 );
             }
         }
@@ -360,15 +365,16 @@ class ZendDeskApi extends Zendesk
             foreach ($big_audits as $ticket_id => $audits) {
                 $this->importer->db->replace('import_datastore', array(
                     'typename' => 'zd_tickets_audits_cache.t'.$ticket_id,
-                    'data' => serialize($audits),
+                    'data' => serialize($audits)
                 ));
             }
         }
     }
 
+
     /**
-     * @param  int   $ticket_id
-     * @param  bool  $reload
+     * @param int $ticket_id
+     * @param bool $reload
      * @return array
      */
     public function getTicketAudits($ticket_id, $reload = false)
@@ -408,7 +414,7 @@ class ZendDeskApi extends Zendesk
                 foreach ($pages as $p) {
                     $reqs[$p] = array(
                         "tickets/$ticket_id/audits",
-                        array('per_page' => 100, 'page' => $p),
+                        array('per_page' => 100, 'page' => $p)
                     );
                 }
 
@@ -427,7 +433,7 @@ class ZendDeskApi extends Zendesk
 
             $this->importer->db->replace('import_datastore', array(
                 'typename' => "zd_tickets_audits_cache.t{$ticket_id}",
-                'data'     => serialize($audits),
+                'data'     => serialize($audits)
             ));
         }
 

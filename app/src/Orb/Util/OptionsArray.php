@@ -202,45 +202,15 @@ class OptionsArray implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**#@+ Interface implementation */
-    public function __get($name)
-    {
-        return $this->get($name);
-    }
-    public function __set($name, $value)
-    {
-        $this->set($name, $value);
-    }
-    public function __isset($name)
-    {
-        return $this->has($name);
-    }
-    public function __unset($name)
-    {
-        return $this->remove($name);
-    }
-    public function offsetGet($k)
-    {
-        return $this->get($k);
-    }
-    public function offsetSet($k, $v)
-    {
-        $this->set($k, $v);
-    }
-    public function offsetExists($k)
-    {
-        return $this->has($k);
-    }
-    public function offsetUnset($k)
-    {
-        $this->remove($k);
-    }
-    public function count()
-    {
-        return count($this->options);
-    }
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->options);
-    }
+    public function __get($name) { return $this->get($name); }
+    public function __set($name, $value) { $this->set($name, $value); }
+    public function __isset($name) { return $this->has($name); }
+    public function __unset($name) { return $this->remove($name); }
+    public function offsetGet($k) { return $this->get($k); }
+    public function offsetSet($k, $v) { $this->set($k, $v); }
+    public function offsetExists($k) { return $this->has($k); }
+    public function offsetUnset($k) { $this->remove($k); }
+    public function count() { return count($this->options); }
+    public function getIterator() { return new \ArrayIterator($this->options); }
     /**#@-*/
 }

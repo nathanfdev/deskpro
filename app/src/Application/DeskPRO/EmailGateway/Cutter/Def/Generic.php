@@ -105,9 +105,7 @@ class Generic implements ForwardDef, QuoteDef
                         $start_line = $ln;
                     }
                     $found++;
-                    if ($found >= 2) {
-                        break;
-                    }
+                    if ($found >= 2) break;
                 } else {
                     $found = 0;
                     $start_line = null;
@@ -137,6 +135,7 @@ class Generic implements ForwardDef, QuoteDef
 
         return $parts;
     }
+
 
     /**
      * Get an array of info from the forwarded block
@@ -246,13 +245,13 @@ class Generic implements ForwardDef, QuoteDef
         $m = null;
 
         if (preg_match('#mailto:(.*?)@([a-zA-Z0-9\.\-_]+)#', $from_str.' ', $m)) {
-            $forward_data['fwd_from_email'] = $m[1].'@'.$m[2];
+            $forward_data['fwd_from_email'] = $m[1] . '@' . $m[2];
         } elseif (preg_match('#(<|\[|\()(.*?)@([a-zA-Z0-9\.\-_]+)(>|\]|\))#i', $from_str, $m)) {
-            $forward_data['fwd_from_email'] = $m[2].'@'.$m[3];
+            $forward_data['fwd_from_email'] = $m[2] . '@' . $m[3];
         } elseif (preg_match('#[\w]+:\s*?(.*?)@([a-zA-Z0-9\.\-_]+)#i', $from_str, $m)) {
-            $forward_data['fwd_from_email'] = $m[1].'@'.$m[2];
+            $forward_data['fwd_from_email'] = $m[1] . '@' . $m[2];
         } elseif (preg_match('#\s(.*?)@([a-zA-Z0-9\.\-]+)\s#i', $from_str, $m)) {
-            $forward_data['fwd_from_email'] = $m[1].'@'.$m[2];
+            $forward_data['fwd_from_email'] = $m[1] . '@' . $m[2];
         }
 
         if ($forward_data['fwd_from_email']) {
@@ -385,7 +384,7 @@ class Generic implements ForwardDef, QuoteDef
         }
 
         if ($body_btm && (!$is_html || strip_tags($body_btm))) {
-            $body_btm = "\n\n".$body_btm;
+            $body_btm = "\n\n" . $body_btm;
         } else {
             $body_btm = '';
         }

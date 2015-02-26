@@ -37,17 +37,17 @@
     array(
         'typeId'         => 'agent',
         'groupId'        => 'tickets',
-        'name'           => 'DeskPRO:emails_agent:ticket-new.html.twig',
+        'name'           => 'DeskPRO:emails_agent:ticket-new.html.twig'
     ),
     array(
         'typeId'         => 'agent',
         'groupId'        => 'tickets',
-        'name'           => 'DeskPRO:emails_agent:ticket-update.html.twig',
+        'name'           => 'DeskPRO:emails_agent:ticket-update.html.twig'
     ),
     array(
         'typeId'         => 'agent',
         'groupId'        => 'tickets',
-        'name'           => 'DeskPRO:emails_agent:ticket-reply.html.twig',
+        'name'           => 'DeskPRO:emails_agent:ticket-reply.html.twig'
     ),
     array(
         'typeId'         => 'agent',
@@ -78,34 +78,34 @@
     array(
         'typeId'         => 'agent',
         'groupId'        => 'general',
-        'name'           => 'DeskPRO:emails_agent:new-feedback.html.twig',
+        'name'           => 'DeskPRO:emails_agent:new-feedback.html.twig'
     ),
     array(
         'typeId'         => 'agent',
         'groupId'        => 'general',
-        'name'           => 'DeskPRO:emails_agent:new-registration.html.twig',
+        'name'           => 'DeskPRO:emails_agent:new-registration.html.twig'
     ),
     array(
         'typeId'         => 'agent',
         'groupId'        => 'general',
-        'name'           => 'DeskPRO:emails_agent:agent-welcome.html.twig',
+        'name'           => 'DeskPRO:emails_agent:agent-welcome.html.twig'
     ),
 
     // Tasks
     array(
         'typeId'         => 'agent',
         'groupId'        => 'tasks',
-        'name'           => 'DeskPRO:emails_agent:task-assigned.html.twig',
+        'name'           => 'DeskPRO:emails_agent:task-assigned.html.twig'
     ),
     array(
         'typeId'         => 'agent',
         'groupId'        => 'tasks',
-        'name'           => 'DeskPRO:emails_agent:task-completed.html.twig',
+        'name'           => 'DeskPRO:emails_agent:task-completed.html.twig'
     ),
     array(
         'typeId'         => 'agent',
         'groupId'        => 'tasks',
-        'name'           => 'DeskPRO:emails_agent:task-due-reminder.html.twig',
+        'name'           => 'DeskPRO:emails_agent:task-due-reminder.html.twig'
     ),
 
     //--------------------
@@ -114,27 +114,27 @@
     array(
         'typeId'         => 'agent',
         'groupId'        => 'alerts',
-        'name'           => 'DeskPRO:emails_agent:login-alert.html.twig',
+        'name'           => 'DeskPRO:emails_agent:login-alert.html.twig'
     ),
     array(
         'typeId'         => 'agent',
         'groupId'        => 'alerts',
-        'name'           => 'DeskPRO:emails_agent:error-invalid-forward.html.twig',
+        'name'           => 'DeskPRO:emails_agent:error-invalid-forward.html.twig'
     ),
     array(
         'typeId'         => 'agent',
         'groupId'        => 'alerts',
-        'name'           => 'DeskPRO:emails_agent:error-marker-missing.html.twig',
+        'name'           => 'DeskPRO:emails_agent:error-marker-missing.html.twig'
     ),
     array(
         'typeId'         => 'agent',
         'groupId'        => 'alerts',
-        'name'           => 'DeskPRO:emails_agent:error-unknown-from.html.twig',
+        'name'           => 'DeskPRO:emails_agent:error-unknown-from.html.twig'
     ),
     array(
         'typeId'         => 'agent',
         'groupId'        => 'alerts',
-        'name'           => 'DeskPRO:emails_agent:password-reset-alert.html.twig',
+        'name'           => 'DeskPRO:emails_agent:password-reset-alert.html.twig'
     ),
 
     ####################################################################################################################
@@ -147,47 +147,47 @@
     array(
         'typeId'         => 'user',
         'groupId'        => 'tickets',
-        'name'           => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
+        'name'           => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'tickets',
-        'name'           => 'DeskPRO:emails_user:ticket-new-byagent.html.twig',
+        'name'           => 'DeskPRO:emails_user:ticket-new-byagent.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'tickets',
-        'name'           => 'DeskPRO:emails_user:ticket-new-validate-email.html.twig',
+        'name'           => 'DeskPRO:emails_user:ticket-new-validate-email.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'tickets',
-        'name'           => 'DeskPRO:emails_user:new-ticket-reg-closed.html.twig',
+        'name'           => 'DeskPRO:emails_user:new-ticket-reg-closed.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'tickets',
-        'name'           => 'DeskPRO:emails_user:ticket-reply-byagent.html.twig',
+        'name'           => 'DeskPRO:emails_user:ticket-reply-byagent.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'tickets',
-        'name'           => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
+        'name'           => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'tickets',
-        'name'           => 'DeskPRO:emails_user:new-reply-reject-resolved.html.twig',
+        'name'           => 'DeskPRO:emails_user:new-reply-reject-resolved.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'tickets',
-        'name'           => 'DeskPRO:emails_user:ticket-autoclose-warn.html.twig',
+        'name'           => 'DeskPRO:emails_user:ticket-autoclose-warn.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'tickets',
-        'name'           => 'DeskPRO:emails_user:ticket-rate.html.twig',
+        'name'           => 'DeskPRO:emails_user:ticket-rate.html.twig'
     ),
     array(
         'typeId'         => 'user',
@@ -202,32 +202,32 @@
     array(
         'typeId'         => 'user',
         'groupId'        => 'account',
-        'name'           => 'DeskPRO:emails_user:register-welcome.html.twig',
+        'name'           => 'DeskPRO:emails_user:register-welcome.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'account',
-        'name'           => 'DeskPRO:emails_user:register-welcome-byagent.html.twig',
+        'name'           => 'DeskPRO:emails_user:register-welcome-byagent.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'account',
-        'name'           => 'DeskPRO:emails_user:register-validate.html.twig',
+        'name'           => 'DeskPRO:emails_user:register-validate.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'account',
-        'name'           => 'DeskPRO:emails_user:reset-password.html.twig',
+        'name'           => 'DeskPRO:emails_user:reset-password.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'account',
-        'name'           => 'DeskPRO:emails_user:agent-changed-password.html.twig',
+        'name'           => 'DeskPRO:emails_user:agent-changed-password.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'account',
-        'name'           => 'DeskPRO:emails_user:account-disabled.html.twig',
+        'name'           => 'DeskPRO:emails_user:account-disabled.html.twig'
     ),
 
     //--------------------
@@ -236,7 +236,7 @@
     array(
         'typeId'         => 'user',
         'groupId'        => 'chat',
-        'name'           => 'DeskPRO:emails_user:chat-transcript.html.twig',
+        'name'           => 'DeskPRO:emails_user:chat-transcript.html.twig'
     ),
 
     //--------------------
@@ -245,22 +245,22 @@
     array(
         'typeId'         => 'user',
         'groupId'        => 'publish',
-        'name'           => 'DeskPRO:emails_user:comment-approved.html.twig',
+        'name'           => 'DeskPRO:emails_user:comment-approved.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'publish',
-        'name'           => 'DeskPRO:emails_user:comment-deleted.html.twig',
+        'name'           => 'DeskPRO:emails_user:comment-deleted.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'publish',
-        'name'           => 'DeskPRO:emails_user:comment-new.html.twig',
+        'name'           => 'DeskPRO:emails_user:comment-new.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'publish',
-        'name'           => 'DeskPRO:emails_user:kb-subscription.html.twig',
+        'name'           => 'DeskPRO:emails_user:kb-subscription.html.twig'
     ),
 
     //--------------------
@@ -269,27 +269,27 @@
     array(
         'typeId'         => 'user',
         'groupId'        => 'feedback',
-        'name'           => 'DeskPRO:emails_user:feedback-approved.html.twig',
+        'name'           => 'DeskPRO:emails_user:feedback-approved.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'feedback',
-        'name'           => 'DeskPRO:emails_user:feedback-disapproved.html.twig',
+        'name'           => 'DeskPRO:emails_user:feedback-disapproved.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'feedback',
-        'name'           => 'DeskPRO:emails_user:feedback-new.html.twig',
+        'name'           => 'DeskPRO:emails_user:feedback-new.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'feedback',
-        'name'           => 'DeskPRO:emails_user:feedback-new-comment.html.twig',
+        'name'           => 'DeskPRO:emails_user:feedback-new-comment.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'feedback',
-        'name'           => 'DeskPRO:emails_user:feedback-updated.html.twig',
+        'name'           => 'DeskPRO:emails_user:feedback-updated.html.twig'
     ),
 
     //--------------------
@@ -298,11 +298,11 @@
     array(
         'typeId'         => 'user',
         'groupId'        => 'alerts',
-        'name'           => 'DeskPRO:emails_user:gateway-autoresponse-warn.html.twig',
+        'name'           => 'DeskPRO:emails_user:gateway-autoresponse-warn.html.twig'
     ),
     array(
         'typeId'         => 'user',
         'groupId'        => 'alerts',
-        'name'           => 'DeskPRO:emails_user:email-too-big.html.twig',
+        'name'           => 'DeskPRO:emails_user:email-too-big.html.twig'
     ),
 );

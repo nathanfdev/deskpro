@@ -27,6 +27,7 @@
 
 namespace Application\DeskPRO\JIRA;
 
+
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Service\JIRA;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -42,7 +43,7 @@ class WebhookHandler
     }
 
     /**
-     * @param  array $data
+     * @param array $data
      * @return bool
      */
     public function handle(array $data)
@@ -55,14 +56,13 @@ class WebhookHandler
             return false;
         }
 
-        $method = 'on'.DeskproContainer::camelize(str_replace('jira:', '', $data['webhookEvent']));
+        $method = 'on' . DeskproContainer::camelize(str_replace('jira:', '', $data['webhookEvent']));
         if (!method_exists($this, $method)) {
             return false;
         }
 
         try {
             $this->{$method}($data);
-
             return true;
         } catch (\Exception $e) {
             // todo logs
@@ -71,13 +71,13 @@ class WebhookHandler
     }
 
     /**
-     * @param  array      $data
+     * @param array $data
      * @throws \Exception
      */
     public function onIssueUpdated(array $data)
     {
         if (!$app = $this->container->getAppManager()->getPackageApp('deskpro_jira')) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
 
         $manager = $this->container->getTicketManager();
@@ -98,9 +98,7 @@ class WebhookHandler
             if (isset($data['changelog'])) {
                 foreach ($data['changelog']['items'] as $change) {
                     // skip comments as handled above
-                    if ('comment' === $change['field']) {
-                        continue;
-                    }
+                    if ('comment' === $change['field']) continue;
 
                     // store new status if exists
                     if ('status' === $change['field'] && $issue['status_id'] != $change['to']) {
@@ -108,7 +106,7 @@ class WebhookHandler
                         $em->flush($issue);
                     }
 
-                    $state->recordData('jira.'.$change['field'], $change);
+                    $state->recordData('jira.' . $change['field'], $change);
                 }
             }
 
@@ -120,13 +118,13 @@ class WebhookHandler
     }
 
     /**
-     * @param  array      $data
+     * @param array $data
      * @throws \Exception
      */
     public function onIssueDeleted(array $data)
     {
         if (!$app = $this->container->getAppManager()->getPackageApp('deskpro_jira')) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
 
         $manager = $this->container->getTicketManager();
@@ -144,4 +142,4 @@ class WebhookHandler
             $manager->saveTicket($ticket, $context);
         }
     }
-}
+} 

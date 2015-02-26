@@ -47,6 +47,7 @@ class VerifyRef implements TicketSaveActionInterface
      */
     private $ref_generator;
 
+
     /**
      * @param RefGeneratorInterface $ref_generator
      */
@@ -54,6 +55,7 @@ class VerifyRef implements TicketSaveActionInterface
     {
         $this->ref_generator = $ref_generator;
     }
+
 
     /**
      * @param  Ticket                   $ticket
@@ -73,9 +75,10 @@ class VerifyRef implements TicketSaveActionInterface
             } catch (\Exception $e) {
                 KernelErrorHandler::logException($e);
 
-                $ref = Strings::random(4, Strings::CHARS_ALPHA_IU).'-'.Strings::random(4, Strings::CHARS_NUM).'-'.Strings::random(4, Strings::CHARS_ALPHA_IU).'-'.date('ymd');
+                $ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
                 $ticket->ref = $ref;
             }
         }
     }
+
 }

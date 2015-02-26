@@ -103,6 +103,7 @@ class HtmlPurifier implements CleanerPlugin
         #------------------------------
 
         if ($type == 'html_email_preclean') {
+
             // This bit normalises the HTML document. Some clients quote an original
             // HTML email message, but add their own HTML document as well. So you end up
             // with two <html>..</html> documents in one message. This screws up the cleaner.
@@ -129,12 +130,12 @@ class HtmlPurifier implements CleanerPlugin
             }
 
             // Set a HTML 4.01 transitional doctype
-            $value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">'."\n".$value;
+            $value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n" . $value;
 
             $m = null;
             if (preg_match('#<head[^>]*>(.*?)</head>#is', $value, $m)) {
                 $value = str_replace($m[0], '', $value);
-                $value = str_replace('<html>', '<html>'.$m[0], $value);
+                $value = str_replace('<html>', '<html>' . $m[0], $value);
             } else {
                 $value = str_replace('<html>', '<html><head></head>', $value);
             }
@@ -163,7 +164,7 @@ class HtmlPurifier implements CleanerPlugin
             // but we need a full document like this so that DOMDocument "cleans" bad HTML properly.
             // E.g., a malformed meta tag could result in a whole paragraph erroneously being moved
             // under a <head> tag if we dont explicitly put them all under body
-            $value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">'."\n<html><head></head><body>".$value.'</body></html>';
+            $value = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n<html><head></head><body>" . $value . '</body></html>';
 
             // Replace Wingdings characters with UTF-8 characters
             $map = array(

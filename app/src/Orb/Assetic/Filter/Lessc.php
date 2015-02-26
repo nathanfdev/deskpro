@@ -50,6 +50,7 @@ class Lessc implements FilterInterface
 
     public function filterDump(AssetInterface $asset)
     {
+
     }
 
     public function filterLoad(AssetInterface $asset)
@@ -59,13 +60,13 @@ class Lessc implements FilterInterface
 
         $source_files = array();
         if ($asset instanceof \Assetic\Asset\FileAsset) {
-            $source_files[] = $asset->getSourceRoot().'/'.$asset->getSourcePath();
+            $source_files[] = $asset->getSourceRoot() . '/' . $asset->getSourcePath();
         } elseif ($asset instanceof \Assetic\Asset\AssetCollection) {
             foreach ($asset->getIterator() as $sub_asset) {
-                $source_files[] = $asset->getSourceRoot().'/'.$sub_asset->getSourcePath();
+                $source_files[] = $asset->getSourceRoot() . '/' . $sub_asset->getSourcePath();
             }
         } else {
-            throw new \RunTimeException("Cannot handle asset type `".get_class($asset)."`");
+            throw new \RunTimeException("Cannot handle asset type `" . get_class($asset) . "`");
         }
 
         foreach ($source_files as $source_file) {
@@ -90,7 +91,7 @@ class Lessc implements FilterInterface
                     }
                 }
 
-                throw new \RuntimeException("[Lessc] ".$pb->getProcess()->getCommandLine()." ".$proc->getOutput()."\n\n".$proc->getErrorOutput());
+                throw new \RuntimeException("[Lessc] " . $pb->getProcess()->getCommandLine() . " " . $proc->getOutput() . "\n\n" . $proc->getErrorOutput());
             } elseif (!file_exists($output)) {
                 throw new \RuntimeException('Error creating output file.');
             }

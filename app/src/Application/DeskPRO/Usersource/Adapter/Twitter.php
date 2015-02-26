@@ -49,20 +49,23 @@ class Twitter extends AbstractAdapter
                 'screen_name' => $info['identity_friendly'],
                 'user_id' => $info['identity'],
                 'oauth_token' => $info['access_token'],
-                'oauth_token_secret' => $info['access_token_secret'],
-            ),
+                'oauth_token_secret' => $info['access_token_secret']
+            )
         );
     }
 
+
     public function getDisplayName(array $info)
     {
-        return '@'.$info['identity_friendly'];
+        return '@' . $info['identity_friendly'];
     }
+
 
     public function getDisplayLink(array $info)
     {
-        return 'htpt://twitter.com/'.$info['identity_friendly'];
+        return 'htpt://twitter.com/' . $info['identity_friendly'];
     }
+
 
     /**
      * @return \Orb\Auth\Adapter\Twitter
@@ -83,7 +86,7 @@ class Twitter extends AbstractAdapter
         return array(
             UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN,
             UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN,
-            UsersourceInfo::CAPABILITY_NEW_COMMENT_TAB,
+            UsersourceInfo::CAPABILITY_NEW_COMMENT_TAB
         );
     }
 

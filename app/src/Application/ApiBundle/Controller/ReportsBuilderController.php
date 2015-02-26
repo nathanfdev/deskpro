@@ -52,9 +52,10 @@ class ReportsBuilderController extends AbstractController
         $reports_builder = $this->container->getSystemService('reports_builder');
 
         return $this->createApiResponse(array(
-            'reports' => $reports_builder->getAll(),
+            'reports' => $reports_builder->getAll()
         ));
     }
+
 
     ####################################################################################################################
     # list custom reports
@@ -68,9 +69,10 @@ class ReportsBuilderController extends AbstractController
         $reports_builder = $this->container->getSystemService('reports_builder');
 
         return $this->createApiResponse(array(
-             'reports' => $reports_builder->getCustomReports(),
+             'reports' => $reports_builder->getCustomReports()
         ));
     }
+
 
     ####################################################################################################################
     # list built-in reports
@@ -84,9 +86,10 @@ class ReportsBuilderController extends AbstractController
         $reports_builder = $this->container->getSystemService('reports_builder');
 
         return $this->createApiResponse(array(
-            'reports' => $reports_builder->getBuiltInReports(),
+            'reports' => $reports_builder->getBuiltInReports()
         ));
     }
+
 
     ####################################################################################################################
     # get group params
@@ -101,6 +104,7 @@ class ReportsBuilderController extends AbstractController
 
         return $this->createApiResponse($reports_builder->getGroupParams());
     }
+
 
     ####################################################################################################################
     # get report
@@ -129,6 +133,7 @@ class ReportsBuilderController extends AbstractController
         ));
     }
 
+
     ####################################################################################################################
     # save report
     ####################################################################################################################
@@ -156,6 +161,7 @@ class ReportsBuilderController extends AbstractController
         if ($error = $reports_builder->getErrors($id, 'from_request')) {
             return $this->createApiResponse(array('error' => $error));
         } else {
+
             $postData = $this->in->getAll('req');
             $report_edit = new ReportEdit($report);
 
@@ -180,6 +186,7 @@ class ReportsBuilderController extends AbstractController
             ));
         }
     }
+
 
     ####################################################################################################################
     # clone report
@@ -216,16 +223,17 @@ class ReportsBuilderController extends AbstractController
             $this->em->persist($new_report);
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (\Exception $e) {
+        } catch(\Exception $e) {
             $this->em->getConnection()->rollback();
             throw $e;
         }
 
         return $this->createApiResponse(array(
             'success' => true,
-            'id'      => $new_report->id,
+            'id'      => $new_report->id
         ));
     }
+
 
     ####################################################################################################################
     # delete report
@@ -252,6 +260,7 @@ class ReportsBuilderController extends AbstractController
         return $this->createSuccessResponse(array('id' => $id));
     }
 
+
     ####################################################################################################################
     # test report
     ####################################################################################################################
@@ -274,6 +283,7 @@ class ReportsBuilderController extends AbstractController
         }
     }
 
+
     ####################################################################################################################
     # parse
     ####################################################################################################################
@@ -287,6 +297,7 @@ class ReportsBuilderController extends AbstractController
 
         return $this->createApiResponse($reports_builder->parseInput());
     }
+
 
     ####################################################################################################################
     # download

@@ -58,7 +58,7 @@ class ApiKeyType extends AbstractType
                      return $er->createQueryBuilder('p')->where(
                          'p.is_agent = true AND p.is_deleted = false'
                      );
-                 },
+                 }
             )
         );
         $builder->add('flags', 'choice', array(

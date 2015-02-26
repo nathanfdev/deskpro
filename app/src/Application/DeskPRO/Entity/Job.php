@@ -241,6 +241,7 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
+
         $builder = new ClassMetadataBuilder($metadata);
         $builder
             ->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\WorkerJob')

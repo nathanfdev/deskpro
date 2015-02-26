@@ -54,14 +54,12 @@ abstract class AbstractComments
     {
         $this->page_url = $entity->getPermalink();
         $this->entity = $entity;
-        $this->page_id  = 'dp_'.App::getSetting('core.site_id').'_'.md5(get_class($entity)).'_'.$entity->getId();
+        $this->page_id  = 'dp_' . App::getSetting('core.site_id') . '_' . md5(get_class($entity)) . '_' . $entity->getId();
 
         $this->init();
     }
 
-    protected function init()
-    {
-    }
+    protected function init() {}
 
     /**
      * Get the HTML block for disqus templates

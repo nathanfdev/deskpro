@@ -73,6 +73,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         }
     }
 
+
     /**
      * @param ReplySnippetActionItem $item
      */
@@ -81,6 +82,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         $this->snippet_items[] = $item;
     }
 
+
     /**
      * @return ReplySnippetActionItem[]
      */
@@ -88,6 +90,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
     {
         return $this->snippet_items;
     }
+
 
     /**
      * @return string[]
@@ -105,6 +108,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         return $titles;
     }
 
+
     /**
      * @return int[]
      */
@@ -121,6 +125,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         return $ids;
     }
 
+
     /**
      * @param  \Application\DeskPRO\Entity\Person $person
      * @return void
@@ -129,6 +134,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
     {
         $this->person_context = $person;
     }
+
 
     public function checkPermission(Ticket $ticket, Person $person)
     {
@@ -183,7 +189,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
                 'snippet',
                 array(
                     $ticket->language,
-                    $this->person_context->getRealLanguage(),
+                    $this->person_context->getRealLanguage()
                 )
             );
             $text = trim($text);
@@ -215,6 +221,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         $ticket->addMessage($message);
     }
 
+
     /**
      * Get an array of actions that would be performed on the ticket
      *
@@ -227,9 +234,10 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         }
 
         return array(
-            array('action' => 'reply_snippet'),
+            array('action' => 'reply_snippet')
         );
     }
+
 
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
@@ -265,11 +273,11 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
                     $reply_pos = $item->reply_pos;
                 }
                 if ($item->reply_pos == 'overwrite') {
-                    $ret[] = "Reply with snippet: ".$item->snippet->title;
+                    $ret[] = "Reply with snippet: " . $item->snippet->title;
                 } elseif ($item->reply_pos == 'append') {
-                    $ret[] = "Append snippet to reply: ".$item->snippet->title;
+                    $ret[] = "Append snippet to reply: " . $item->snippet->title;
                 } else {
-                    $ret[] = "Prepend snippet to reply: ".$item->snippet->title;
+                    $ret[] ="Prepend snippet to reply: " . $item->snippet->title;
                 }
             }
 
@@ -277,13 +285,14 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
 
             $html = '';
             if (!empty($GLOBALS['DP_ACTIVE_TICKET'])) {
+
                 $snippet_text = array();
                 foreach ($this->snippet_items as $item) {
                     $text = App::getTranslator()->objectChoosePhraseText(
                         $item->snippet,
                         'snippet',
                         array(
-                            $GLOBALS['DP_ACTIVE_TICKET']->language,
+                            $GLOBALS['DP_ACTIVE_TICKET']->language
                         )
                     );
                     $text = trim($text);
@@ -310,12 +319,12 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
                 $html = $formatter->formatText($snippet_text, $GLOBALS['DP_ACTIVE_TICKET']);
             }
 
-            $ret = '<span class="with-reply" data-reply-pos="'.$reply_pos.'">'.$ret.'<script type="text/x-deskpro-plain" class="reply-text">'.$html.'</script></span>';
+            $ret = '<span class="with-reply" data-reply-pos="' . $reply_pos . '">' . $ret . '<script type="text/x-deskpro-plain" class="reply-text">' . $html . '</script></span>';
 
             return $ret;
         }
 
-        return "Reply with snippet: ".implode(', ', $this->getSnippetTitles());
+        return "Reply with snippet: " . implode(', ', $this->getSnippetTitles());
     }
 }
 

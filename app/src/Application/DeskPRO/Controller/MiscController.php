@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\Controller;
 
+
 class MiscController extends AbstractController
 {
     public function emptyAction()
@@ -47,6 +48,6 @@ class MiscController extends AbstractController
 
     public function goToBillingAction()
     {
-        return $this->redirect($this->generateUrl('admin').'#/license');
+        return $this->redirect($this->generateUrl('admin') . '#/license');
     }
 }

@@ -75,6 +75,7 @@ class UsersourceAuthAdapterFactory
      */
     private $request;
 
+
     public function __construct(DeskproContainer $container, RouterInterface $router, Request $request, Session $session, $interface)
     {
         $this->container = $container;
@@ -83,6 +84,7 @@ class UsersourceAuthAdapterFactory
         $this->interface = $interface;
         $this->request = $request;
     }
+
 
     /**
      * Logic around preparing an auth adapter for use
@@ -115,22 +117,22 @@ class UsersourceAuthAdapterFactory
 
             if ($adapter instanceof SamlAdapterInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
                 $url = $this->router->generate(
-                    $route_type.'_login_authenticate', array('usersource_id' => $usersource['id'], 'context' => SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND),
+                    $route_type . '_login_authenticate', array('usersource_id' => $usersource['id'], 'context' => SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND),
                     RouterInterface::ABSOLUTE_URL
                 );
             } elseif ($adapter instanceof SamlAdapterInterface && $displayContext == SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND) {
                 $url = $this->router->generate(
-                    $route_type.'_login_usersource_sso', array('usersource_id' => $usersource['id']),
+                    $route_type . '_login_usersource_sso', array('usersource_id' => $usersource['id']),
                     RouterInterface::ABSOLUTE_URL
                 );
             } elseif ($adapter instanceof SsoCapableInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
                 $url = $this->router->generate(
-                    $route_type.'_login_usersource_sso', array('usersource_id' => $usersource['id']),
+                    $route_type . '_login_usersource_sso', array('usersource_id' => $usersource['id']),
                     RouterInterface::ABSOLUTE_URL
                 );
             } else {
                 $url = $this->router->generate(
-                    $route_type.'_login_callback', array('usersource_id' => $usersource['id']),
+                    $route_type . '_login_callback', array('usersource_id' => $usersource['id']),
                     RouterInterface::ABSOLUTE_URL
                 );
             }
@@ -172,17 +174,19 @@ class UsersourceAuthAdapterFactory
         return $adapter;
     }
 
+
     protected function _getAdapterLogger()
     {
         static $logger = null;
 
         if ($logger === null) {
             $logger = new \Orb\Log\Logger();
-            $logger->addWriter(new \Orb\Log\Writer\Stream($this->container->getLogDir().'/usersource_log.log'));
+            $logger->addWriter(new \Orb\Log\Writer\Stream($this->container->getLogDir() . '/usersource_log.log'));
         }
 
         return $logger;
     }
+
 
     private function isAgentInterface($useInterface = null)
     {

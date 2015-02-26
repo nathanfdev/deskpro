@@ -65,7 +65,7 @@ class ContentSubscription extends AbstractEntityRepository
         } elseif ($content_object instanceof FeedbackEntity) {
             $qb->andWhere("s.feedback = ?2");
         } else {
-            throw new \InvalidArgumentException("\$content_object must be Article, Download, News or Feedback. Got `".get_class($content_object)."`");
+            throw new \InvalidArgumentException("\$content_object must be Article, Download, News or Feedback. Got `" . get_class($content_object) . "`");
         }
 
         $qb->setParameters(array(1 => $person, 2 => $content_object));

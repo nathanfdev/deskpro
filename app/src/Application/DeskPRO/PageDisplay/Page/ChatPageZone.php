@@ -104,7 +104,7 @@ class ChatPageZone extends BasicPage implements PersonContextInterface
         }
 
         if ($this->zone != $page_display['zone']) {
-            throw new \InvalidArgumentException('Invalid zone context. Must be: '.$this->zone);
+            throw new \InvalidArgumentException('Invalid zone context. Must be: ' . $this->zone);
         }
 
         // Filter out agent_only items
@@ -163,7 +163,7 @@ class ChatPageZone extends BasicPage implements PersonContextInterface
             $page_part = $this->compileChatPage($ticket_page, $function_tokens);
 
             if ($page_part) {
-                $part = array_merge($part, $page_part);
+                $part = array_merge($part,$page_part);
             }
         }
 

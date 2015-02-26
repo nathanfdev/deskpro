@@ -33,7 +33,6 @@
  */
 
 namespace Orb\Log\Writer;
-
 use \Orb\Log\LogItem;
 
 /**
@@ -78,7 +77,7 @@ class ArrayWriter extends AbstractWriter
 
         $this->messages[] = $msg;
 
-        while (count($this->messages) > $this->max_size) {
+        while(count($this->messages) > $this->max_size) {
             array_shift($this->messages);
         }
     }

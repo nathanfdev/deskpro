@@ -181,7 +181,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
      */
     public function setWithUserinfo($yes_or_no)
     {
-        $this->with_userinfo = (int) ((bool) $yes_or_no);
+        $this->with_userinfo = (int)((bool)$yes_or_no);
     }
 
     /**
@@ -194,7 +194,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
         $state = $this->getStateHandler();
 
         // If we dont have tokens yet, we must initiate the request
-        if (!isset($this->got_data['orba_access_token']) or !isset($this->got_data['orba_verify']) or !isset($state['orba_user_key'])) {
+        if (!isset($this->got_data['orba_access_token']) OR !isset($this->got_data['orba_verify']) OR !isset($state['orba_user_key'])) {
             return $this->_initiate();
         }
 
@@ -202,7 +202,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
         # Verify the callback
         #------------------------------
 
-        $check_verify = sha1($this->got_data['orba_access_token'].$state['orba_user_key']);
+        $check_verify = sha1($this->got_data['orba_access_token'] . $state['orba_user_key']);
 
         if ($check_verify != $this->got_data['orba_verify']) {
             return new Result(Result::FAILURE, null, array('error_code' => self::ERR_INVALID_TOKEN, 'error_message' => 'Invalid verify token'));
@@ -217,7 +217,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
 
         $http->setUri($this->verify_url);
         $http->setParameterPost('orba_access_token', $this->got_data['orba_access_token']);
-        $http->setParameterPost('orba_verify', sha1($this->got_data['orba_access_token'].$state['orba_user_key']));
+        $http->setParameterPost('orba_verify', sha1($this->got_data['orba_access_token'] . $state['orba_user_key']));
         if ($this->with_userinfo) {
             $http->setParameterPost('orba_with_userinfo', 1);
         }
@@ -278,9 +278,9 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
         } else {
             $redirect_url .= '&';
         }
-        $redirect_url .= 'orba_token='.urlencode($service_data['orba_token']);
-        $redirect_url .= '&orba_verify='.sha1($service_data['orba_token'].$user_key);
-        $redirect_url .= '&redirect_url='.urlencode($this->redirect_url);
+        $redirect_url .= 'orba_token=' . urlencode($service_data['orba_token']);
+        $redirect_url .= '&orba_verify=' . sha1($service_data['orba_token'] . $user_key);
+        $redirect_url .= '&redirect_url=' . urlencode($this->redirect_url);
 
         $result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
 
@@ -304,9 +304,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
      */
     public function getHttpClient()
     {
-        if ($this->http !== null) {
-            return $this->http;
-        }
+        if ($this->http !== null) return $this->http;
 
         $this->http = new \Zend\Http\Client();
 

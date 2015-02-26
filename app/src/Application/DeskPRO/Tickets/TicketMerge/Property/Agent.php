@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Tickets\TicketMerge\Property;
 
+
+
 /**
  * The agent does a standard right/left merge for agent and team, but offers the option of adding
  * the other agent as a follower.
@@ -43,6 +45,7 @@ class Agent extends PropertyAbstract
     public function merge()
     {
         if ($this->strategy == self::STRATEGY_RIGHT) {
+
             $old_agent = $this->ticket->agent;
 
             $this->ticket->agent = $this->other_ticket->agent;

@@ -38,7 +38,7 @@ use Psr\Log\LoggerInterface;
  */
 abstract class AbstractCustomDefValueImporter extends AbstractValueImporter
 {
-    //    /** @var string */
+//    /** @var string */
 //    protected $data_table;
 //    /** @var string */
 //    protected $mapped_column;
@@ -64,7 +64,7 @@ abstract class AbstractCustomDefValueImporter extends AbstractValueImporter
      * @param DeskproContainer     $container
      * @param LoggerInterface      $logger
      * @param RecordMapperRegistry $mappers
-     * @param mixed                $mapped_value Mapped entity id (person, ticket)
+     * @param mixed                $mapped_value   Mapped entity id (person, ticket)
      */
 //    public function __construct($mode, DeskproContainer $container, LoggerInterface $logger, RecordMapperRegistry $mappers, $mapped_value)
 //    {

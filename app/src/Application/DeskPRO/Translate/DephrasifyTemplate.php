@@ -49,6 +49,7 @@ class DephrasifyTemplate
         $this->translate = $translate;
     }
 
+
     /**
      * @param  string $string The raw twig template
      * @return string
@@ -60,6 +61,7 @@ class DephrasifyTemplate
 
         return $string;
     }
+
 
     /**
      * Expands sub-phrases that are sometimes found in other phrases:
@@ -135,7 +137,7 @@ class DephrasifyTemplate
         foreach ($matches as $match) {
             $line = $match[0];
             $phrase = $match[2];
-            $hash_string = "{ ".$match[4]." }";
+            $hash_string = "{ " . $match[4] . " }";
             $phrase_text = $this->translate->phrase($phrase);
             $phrase_text = $this->expandSubphrases($phrase_text);
 
@@ -144,7 +146,7 @@ class DephrasifyTemplate
 
             // Empty phrase (ie doesnt exist) or phrase isnt using any vars
             // we can just continue out now
-            if (!$phrase_text or !$var_places) {
+            if (!$phrase_text OR !$var_places) {
                 $string = str_replace($match[0], $phrase_text, $string);
                 continue;
             }
@@ -204,7 +206,7 @@ class DephrasifyTemplate
         if (isset($value_expr['quoted'])) {
             return $value_expr['quoted'];
         } else {
-            return "{{ ".$value_expr['expr']." }}";
+            return "{{ " . $value_expr['expr'] . " }}";
         }
     }
 }

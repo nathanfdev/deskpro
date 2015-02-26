@@ -49,7 +49,7 @@ class IpBanType extends AbstractType
         $resolver->setDefaults(
             array(
                  'data_class'         => 'Application\\DeskPRO\\Banning\\IpBanEdit',
-                 'cascade_validation' => true,
+                 'cascade_validation' => true
             )
         );
     }
@@ -58,4 +58,5 @@ class IpBanType extends AbstractType
     {
         return 'ip_ban_edit';
     }
+
 }

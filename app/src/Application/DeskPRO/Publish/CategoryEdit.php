@@ -61,13 +61,13 @@ class CategoryEdit
     {
         switch ($type) {
             case self::ARTICLES:
-                $obj = new ArticleCategory();
+                $obj = new ArticleCategory;
                 break;
             case self::DOWNLOADS:
-                $obj = new DownloadCategory();
+                $obj = new DownloadCategory;
                 break;
             case self::NEWS:
-                $obj = new NewsCategory();
+                $obj = new NewsCategory;
                 break;
             default:
                 throw new \InvalidArgumentException("Unknown type `$type`");
@@ -84,13 +84,14 @@ class CategoryEdit
         $perm_table = App::getOrm()->getRepository(get_class($obj))->getPermissionTableName();
         App::getDb()->insert($perm_table, array(
             'category_id'  => $obj->getId(),
-            'usergroup_id' => '1',
+            'usergroup_id' => '1'
         ));
 
         App::getContainer()->getSystemService('publish_structure_cache')->flush();
 
         return $obj;
     }
+
 
     /**
      * Update titles for categoryes. $titles is id=>title
@@ -113,7 +114,7 @@ class CategoryEdit
         $cats = App::getOrm()->createQuery("
             SELECT c
             FROM $entity c INDEX BY c.id
-            WHERE c.id IN (".implode(',', $ids).")
+            WHERE c.id IN (" . implode(',', $ids) . ")
         ")->execute();
 
         App::getOrm()->beginTransaction();
@@ -160,7 +161,7 @@ class CategoryEdit
                 foreach ($usergroup_ids as $uid) {
                     App::getDb()->insert($perm_table, array(
                         'category_id' => $cat->id,
-                        'usergroup_id' => $uid,
+                        'usergroup_id' => $uid
                     ));
                 }
             }
@@ -171,11 +172,13 @@ class CategoryEdit
 
             App::getContainer()->getSystemService('publish_structure_cache')->flush();
             App::getDb()->query("DELETE FROM permissions_cache");
+
         } catch (\Exception $e) {
             App::getOrm()->rollback();
             throw $e;
         }
     }
+
 
     /**
      * Update orders. $orders is an array of ID's in the order you want them.
@@ -199,7 +202,7 @@ class CategoryEdit
         $cats = App::getOrm()->createQuery("
             SELECT c
             FROM $entity c INDEX BY c.id
-            WHERE c.id IN (".implode(',', $ids).")
+            WHERE c.id IN (" . implode(',', $ids) . ")
         ")->execute();
 
         App::getDb()->beginTransaction();
@@ -248,7 +251,7 @@ class CategoryEdit
         if ($check_map) {
             $conn = App::getDb();
             $table = App::getOrm()->getRepository($entity)->getTableName();
-            $current_tree = $conn->fetchAllKeyValue("SELECT id, parent_id FROM ".$conn->quoteIdentifier($table));
+            $current_tree = $conn->fetchAllKeyValue("SELECT id, parent_id FROM " . $conn->quoteIdentifier($table));
 
             $accurate = true;
             foreach ($check_map as $id => $parent_id) {

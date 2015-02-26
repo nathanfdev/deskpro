@@ -64,10 +64,11 @@ class ArchiveTickets extends AbstractJob
 
         $details_arr = serialize(array(
             'old_status' => 'resolved',
-            'new_status' => 'archived',
+            'new_status' => 'archived'
         ));
 
         foreach ($ticket_ids as $ids) {
+
             // Re-fetch IDs from tickets table in case
             // search table is corrupt
             $ids = App::getDb()->fetchAllCol("
@@ -87,7 +88,7 @@ class ArchiveTickets extends AbstractJob
                     'id_before'    => 200,
                     'id_after'     => 210,
                     'details'      => $details_arr,
-                    'date_created' => $now,
+                    'date_created' => $now
                 );
             }
 

@@ -25,7 +25,7 @@ class IssueType extends Entity
             return false;
         }
 
-        $this->_id    = $params['id'];
+        $this->_id	= $params['id'];
 
         $this->setName($params['name']);
 

@@ -59,7 +59,8 @@ class Hour extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    ) {
+    )
+    {
         if (count($this->_arguments) != 1) {
             throw new Exception('HOUR() can only accept 1 argument.');
         }
@@ -67,8 +68,8 @@ class Hour extends AbstractFunc
         $expression = reset($this->_arguments);
         $prepped = $expression->prepare($statement, $section, $stack, $select, $result);
 
-        $sql = 'HOUR('.$prepped->sql().')';
-        $res = new Prepared($sql, 'HOUR('.$prepped->name().')', false, 'numberraw');
+        $sql = 'HOUR(' . $prepped->sql() . ')';
+        $res = new Prepared($sql, 'HOUR(' . $prepped->name() . ')', false, 'numberraw');
 
         $res->setGroupFill(function ($min, $max) {
             if ($min == $max) {

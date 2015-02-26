@@ -75,11 +75,12 @@ class InterfaceController extends AbstractController
         $rendered = $this->renderTemplateView($tpl_name);
 
         if ($load_data) {
-            $rendered = "<script type=\"application/json\" class=\"DP_LOAD_DATA\">".$load_data."</script>$rendered";
+            $rendered = "<script type=\"application/json\" class=\"DP_LOAD_DATA\">" . $load_data . "</script>$rendered";
         }
 
         return $this->createResponse($rendered);
     }
+
 
     ####################################################################################################################
     # multi-load-view
@@ -99,12 +100,13 @@ class InterfaceController extends AbstractController
             $views[] = array(
                 'id'       => $id,
                 'template' => $tpl_name,
-                'source'   => $rendered,
+                'source'   => $rendered
             );
         }
 
         return $this->createJsonResponse($views);
     }
+
 
     ####################################################################################################################
     # load-lang
@@ -114,7 +116,7 @@ class InterfaceController extends AbstractController
     {
         $js_exporter = new JsExporter($this->container->getTranslator());
 
-        $get_phrases = include DP_ROOT.'/languages/expose-js.php';
+        $get_phrases = include(DP_ROOT.'/languages/expose-js.php');
         $get_phrases = $get_phrases['admin'];
 
         if ($_format == 'js') {
@@ -157,7 +159,7 @@ class InterfaceController extends AbstractController
                 if ($package->native_name) {
                     $native_package = $app_manager->getNativePackageConfig($package);
 
-                    $real_path = @realpath($native_package->getNativeDir().'/Resources/views/'.$tpl_name);
+                    $real_path = @realpath($native_package->getNativeDir() . '/Resources/views/' . $tpl_name);
                     if ($real_path && strpos($real_path, $native_package->getNativeDir()) === 0 && file_exists($real_path)) {
                         return file_get_contents($real_path);
                     }
@@ -181,7 +183,7 @@ class InterfaceController extends AbstractController
         }
 
         if (defined('DPC_IS_CLOUD')) {
-            if ($this->tpl->exists('Cloud'.$tpl_name)) {
+            if ($this->tpl->exists('Cloud'.$tpl_name)){
                 $tpl_name = 'Cloud'.$tpl_name;
             }
         }
@@ -194,12 +196,13 @@ class InterfaceController extends AbstractController
         switch ($tpl_name) {
             case 'AdminInterfaceBundle:PortalEditor:frame.html.twig':
                 return array(
-                    'default_portal_style' => $this->settings->getDefaultGroup('user_style', false),
+                    'default_portal_style' => $this->settings->getDefaultGroup('user_style', false)
                 );
             default:
                 return array();
         }
     }
+
 
     /**
      * @param $code
@@ -208,13 +211,13 @@ class InterfaceController extends AbstractController
     public function downloadExportFileAction($code)
     {
         if (!$data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code)) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
 
         $file = $data->getData('file');
 
         if (!file_exists($file)) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
 
         $response = new BinaryFileResponse($file);

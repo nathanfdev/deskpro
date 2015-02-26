@@ -27,6 +27,7 @@
 
 namespace Application\DeskPRO\Log\Handler;
 
+
 use Application\DeskPRO\Entity\LogEvent;
 
 class LogEventHandler extends DBHandler

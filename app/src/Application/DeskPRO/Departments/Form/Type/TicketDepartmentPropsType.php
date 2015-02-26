@@ -38,6 +38,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+
 class TicketDepartmentPropsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -53,11 +54,11 @@ class TicketDepartmentPropsType extends AbstractType
             'required'      => false,
             'query_builder' => function (EntityRepository $er) {
                 return $er->createQueryBuilder('d')->where('d.is_tickets_enabled = true AND d.parent IS NULL')->orderBy('d.display_order', 'ASC');
-            },
+            }
         ));
         $builder->add('avatar', 'text', array(
             'required' => false,
-            'mapped'   => false,
+            'mapped'   => false
         ));
     }
 
@@ -72,4 +73,5 @@ class TicketDepartmentPropsType extends AbstractType
     {
         return 'department';
     }
+
 }

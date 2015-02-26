@@ -38,7 +38,7 @@ interface LoggerAwareInterface
     /**
      * Set output logger
      *
-     * @param  LoggerInterface $logger
+     * @param LoggerInterface $logger
      * @return $this
      */
     public function setLogger(LoggerInterface $logger);

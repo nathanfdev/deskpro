@@ -56,6 +56,7 @@ class CheckTicketSatisfaction extends AbstractTriggerTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

@@ -65,6 +65,7 @@ class AllPhrases
         $this->dir = $dir;
     }
 
+
     /**
      * Set a callback function to be called for each phrase.
      *
@@ -76,6 +77,7 @@ class AllPhrases
     {
         $this->callback = $callback;
     }
+
 
     /**
      * @return string[]
@@ -94,7 +96,7 @@ class AllPhrases
             /** @var $file \SplFileInfo */
             $path = $file->getRealPath();
 
-            $phrase_group = include $path;
+            $phrase_group = include($path);
             if ($phrase_group && is_array($phrase_group)) {
                 foreach ($phrase_group as $id => $phrase) {
                     if ($this->callback) {

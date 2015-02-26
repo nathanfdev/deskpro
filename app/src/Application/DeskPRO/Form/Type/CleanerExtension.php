@@ -94,7 +94,7 @@ class CleanerExtension extends AbstractTypeExtension
                     } elseif (is_string($data)) {
                         $cleaned = $this->cleaner->clean($data, 'string');
                     } else {
-                        $cleaned = $data;
+	                    $cleaned = $data;
                     }
 
                     $clean_data[$form_name] = $cleaned;
@@ -117,11 +117,11 @@ class CleanerExtension extends AbstractTypeExtension
 
         $resolver->setDefaults(
             array(
-                'filter_clean' => true,
+                'filter_clean' => true
             )
         )->setAllowedTypes(
             array(
-                'filter_clean' => 'bool',
+                'filter_clean' => 'bool'
             )
         );
     }

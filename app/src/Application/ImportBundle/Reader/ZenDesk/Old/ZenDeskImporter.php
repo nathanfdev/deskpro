@@ -34,11 +34,12 @@
 
 namespace Application\DeskPRO\Import\Importer;
 
+use Doctrine\ORM\Query;
 use Orb\Log\Logger;
 use Application\DeskPRO\DBAL\Logging\QueryLogger;
 use Orb\Service\Zendesk\Zendesk;
 
-class ZenDeskImporter extends AbstractImporter
+class ZendeskImporter extends AbstractImporter
 {
     /**
      * @var \Application\DeskPRO\DBAL\Connection
@@ -97,9 +98,9 @@ class ZenDeskImporter extends AbstractImporter
     public function validateOptions()
     {
         $errors = array();
-
         return $errors;
     }
+
 
     public function setupImport($mode = 'run')
     {
@@ -115,18 +116,22 @@ class ZenDeskImporter extends AbstractImporter
         $this->zd->importer = $this;
     }
 
+
     public function cleanupImport()
     {
+
     }
+
 
     public function countSteps()
     {
         return count($this->steps);
     }
 
+
     public function getStep($step)
     {
-        $class = 'Application\\DeskPRO\\Import\\Importer\\Step\\Zendesk\\'.$this->steps[$step-1].'Step';
+        $class = 'Application\\DeskPRO\\Import\\Importer\\Step\\Zendesk\\' . $this->steps[$step-1] . 'Step';
         $step = new $class($this);
 
         return $step;
@@ -172,6 +177,7 @@ class ZenDeskImporter extends AbstractImporter
         $this->time_begin = microtime(true);
     }
 
+
     /**
      * Called after a step is run
      *
@@ -200,6 +206,7 @@ class ZenDeskImporter extends AbstractImporter
         $this->logMessage(sprintf("Time: %0.2f   PHP: %0.2f   ZD: %.02f   DB: %0.2f   ZD Calls: %d   Queries: %d,  Peak Mem: %s", $time_total, $time_php_total, $time_zd, $time_db, $total_apicalls, $total_queries, $mem));
     }
 
+
     /**
      * Remove indexes on a table for bulk inserting
      *
@@ -218,9 +225,7 @@ class ZenDeskImporter extends AbstractImporter
         $restore_parts = array();
 
         foreach ($indexes as $x) {
-            if ($x->isPrimary()) {
-                continue;
-            }
+            if ($x->isPrimary()) continue;
 
             $cols = $x->getColumns();
             $skip = false;
@@ -231,6 +236,7 @@ class ZenDeskImporter extends AbstractImporter
                 if (count($cols) == $count) {
                     foreach ($cols as $idx_col) {
                         if (in_array($idx_col, $keep)) {
+
                             $found_count++;
                         }
                     }
@@ -257,6 +263,7 @@ class ZenDeskImporter extends AbstractImporter
             $restore_parts[] = $p;
         }
         foreach ($fkeys as $x) {
+
             $cols = $x->getColumns();
             $skip = false;
 
@@ -266,6 +273,7 @@ class ZenDeskImporter extends AbstractImporter
                 if (count($cols) == $count) {
                     foreach ($cols as $idx_col) {
                         if (in_array($idx_col, $keep)) {
+
                             $found_count++;
                         }
                     }
@@ -300,16 +308,17 @@ class ZenDeskImporter extends AbstractImporter
             return;
         }
 
-        $drop_sql      = "ALTER TABLE `$table` ".implode(', ', $drop_parts);
-        $restore_sql   = "ALTER TABLE `$table` ".implode(', ', $restore_parts);
+        $drop_sql      = "ALTER TABLE `$table` " . implode(', ', $drop_parts);
+        $restore_sql   = "ALTER TABLE `$table` " . implode(', ', $restore_parts);
 
         $this->getDb()->replace('import_datastore', array(
-            'typename' => 'tableindexes.'.$table,
-            'data' => serialize(array('sql' => $restore_sql)),
+            'typename' => 'tableindexes.' . $table,
+            'data' => serialize(array('sql' => $restore_sql))
         ));
 
         $this->getDb()->exec($drop_sql);
     }
+
 
     /**
      * Restores indexes that were previously deleted
@@ -318,7 +327,7 @@ class ZenDeskImporter extends AbstractImporter
      */
     public function restoreTableIndexes($table)
     {
-        $data = $this->getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('tableindexes.'.$table));
+        $data = $this->getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('tableindexes.' . $table));
         $data = @unserialize($data);
 
         if (!$data || empty($data['sql'])) {
@@ -335,6 +344,7 @@ class ZenDeskImporter extends AbstractImporter
             $this->getDb()->exec("SET FOREIGN_KEY_CHECKS = 1");
         }
     }
+
 
     /**
      * @param $table
@@ -356,10 +366,10 @@ class ZenDeskImporter extends AbstractImporter
         return $this->table_exists[$table];
     }
 
+
     public function getStepTitle($step)
     {
-        $class = 'Application\\DeskPRO\\Import\\Importer\\Step\\Zendesk\\'.$this->steps[$step-1].'Step';
-
+        $class = 'Application\\DeskPRO\\Import\\Importer\\Step\\Zendesk\\' . $this->steps[$step-1] . 'Step';
         return $class::getTitle();
     }
 

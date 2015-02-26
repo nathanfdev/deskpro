@@ -59,6 +59,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
         return $multi;
     }
 
+
     ####################################################################################################################
     # list sms accounts
     ####################################################################################################################
@@ -71,6 +72,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 
         return $this->createApiResponse(array('sms_accounts' => $data));
     }
+
 
     ####################################################################################################################
     # get sms account
@@ -89,6 +91,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
         return $this->createApiResponse($data);
     }
 
+
     ####################################################################################################################
     # save sms account
     ####################################################################################################################
@@ -104,6 +107,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
         } else {
             $account = new SmsAccount();
         }
+
 
         /**
          * If anything needs to be done with the data here in the future, a Form should be made
@@ -127,16 +131,17 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
         if ($id) {
             return $this->createApiSuccessResponse(
                 array(
-                    'account' => $serializedAccount,
+                    'account' => $serializedAccount
                 ));
         } else {
             return $this->createApiCreateResponse(
                 array(
-                    'account' => $serializedAccount,
+                    'account' => $serializedAccount
                 ), $this->generateUrl('api_channel_sms_account_get', array('id' => $account->id))
             );
         }
     }
+
 
     ####################################################################################################################
     # connect to a provider and return provider specific info
@@ -159,6 +164,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
         } catch (\InvalidArgumentException $e) {
             return $this->createApiErrorResponse('sms.connection_error', 'Invalid SMS account type');
         }
+
 
         try {
             $data = $provider->getIncomingNumbers();
@@ -185,7 +191,9 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
                 'sms.connection_error', 'Could not connect. Please check your credentials'
             );
         }
+
     }
+
 
     public function setupAndTestTwilioAction()
     {
@@ -221,6 +229,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
         return $this->createApiSuccessResponse();
     }
 
+
     ####################################################################################################################
     # delete sms accounts
     ####################################################################################################################
@@ -239,6 +248,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 
         return $this->createApiSuccessResponse();
     }
+
 
     /**
      * @return \Doctrine\ORM\EntityRepository

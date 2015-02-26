@@ -80,7 +80,7 @@ final class DownloadLabel extends AbstractImporter
     /**
      * Returns a new download label entity
      *
-     * @param  string                      $label
+     * @param string $label
      * @return DeskPROEntity\LabelDownload
      */
     private function createDownloadLabel($label)
@@ -89,7 +89,6 @@ final class DownloadLabel extends AbstractImporter
         $entity->setLabel($label);
 
         $this->records->add($entity);
-
         return $entity;
     }
 

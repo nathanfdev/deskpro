@@ -55,6 +55,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
      */
     protected $stream_timeout = 15;
 
+
     /**
      * @param string $host
      * @param null   $port
@@ -71,6 +72,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
         parent::__construct($host, $port, $ssl = $ssl ? strtoupper($ssl) : $ssl);
     }
 
+
     /**
      * @param  string                                         $host
      * @param  null                                           $port
@@ -83,7 +85,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
         $ssl = $ssl ? strtoupper($ssl) : $ssl;
 
         if ($ssl == 'SSL') {
-            $host = 'ssl://'.$host;
+            $host = 'ssl://' . $host;
         }
 
         if ($port === null) {
@@ -94,7 +96,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
         $errstr = '';
         $this->socket = @fsockopen($host, $port, $errno, $errstr, $this->connect_timeout);
         if (!$this->socket) {
-            throw new Exception\RuntimeException('cannot connect to host; error = '.$errstr.' (errno = '.$errno.' )');
+            throw new Exception\RuntimeException('cannot connect to host; error = ' . $errstr . ' (errno = ' . $errno . ' )');
         }
         stream_set_timeout($this->socket, $this->stream_timeout);
 
@@ -105,7 +107,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
         if (!strpos($this->timestamp, '@')) {
             $this->timestamp = null;
         } else {
-            $this->timestamp = '<'.$this->timestamp.'>';
+            $this->timestamp = '<' . $this->timestamp . '>';
         }
 
         if ($ssl === 'TLS') {
@@ -119,6 +121,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
         return $welcome;
     }
 
+
     /**
      * @param Logger $logger
      */
@@ -127,6 +130,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
         $this->logger = $logger;
     }
 
+
     /**
      * @return Logger
      */
@@ -134,6 +138,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
     {
         return $this->logger;
     }
+
 
     /**
      * Make a RETR call for retrieving a full message with headers and body
@@ -147,6 +152,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
 
         return $result;
     }
+
 
     /**
      * Send request and get resposne
@@ -164,6 +170,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
         return $this->readResponseToStream($stream);
     }
 
+
     /**
      * @param  string $request
      * @return null
@@ -174,12 +181,13 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
             if (strpos($request, 'PASS ') === 0) {
                 $this->logger->logDebug("==> PASS xxxxxx");
             } else {
-                $this->logger->logDebug("==> ".$request);
+                $this->logger->logDebug("==> " . $request);
             }
         }
 
         return parent::sendRequest($request);
     }
+
 
     /**
      * @param  bool                                           $multiline
@@ -190,9 +198,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
     {
         $result = @fgets($this->socket);
         if (!is_string($result)) {
-            if ($this->logger) {
-                $this->logger->logDebug("<== read failed - connection closed?");
-            }
+            if ($this->logger) $this->logger->logDebug("<== read failed - connection closed?");
             throw new Exception\RuntimeException('read failed - connection closed?');
         }
 
@@ -205,9 +211,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
         }
 
         if ($status != '+OK') {
-            if ($this->logger) {
-                $this->logger->logDebug("<== $status");
-            }
+            if ($this->logger) $this->logger->logDebug("<== $status");
             throw new Exception\RuntimeException('last request failed');
         }
 
@@ -225,13 +229,12 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
                     $log_msg .= $line;
                 }
             }
-            if ($this->logger) {
-                $this->logger->logDebug("<== $status $log_msg");
-            }
+            if ($this->logger) $this->logger->logDebug("<== $status $log_msg");
         }
 
         return $message;
     }
+
 
     /**
      * This reads a multi-line response to a stream and returns the number of bytes read.
@@ -244,23 +247,19 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
     {
         $result = @fgets($this->socket);
         if (!is_string($result)) {
-            if ($this->logger) {
-                $this->logger->logDebug("<== read failed - connection closed?");
-            }
+            if ($this->logger) $this->logger->logDebug("<== read failed - connection closed?");
             throw new Exception\RuntimeException('read failed - connection closed?');
         }
 
         $result = trim($result);
         if (strpos($result, ' ')) {
-            list($status,) = explode(' ', $result, 2);
+            list($status, ) = explode(' ', $result, 2);
         } else {
             $status = $result;
         }
 
         if ($status != '+OK') {
-            if ($this->logger) {
-                $this->logger->logDebug("<== $status");
-            }
+            if ($this->logger) $this->logger->logDebug("<== $status");
             throw new Exception\RuntimeException('last request failed');
         }
 
@@ -277,10 +276,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
                 $log_msg .= $line;
             }
         }
-        if ($this->logger) {
-            $this->logger->logDebug("<== $status $log_msg");
-        }
-
+        if ($this->logger) $this->logger->logDebug("<== $status $log_msg");
         return $bytes;
     }
 }

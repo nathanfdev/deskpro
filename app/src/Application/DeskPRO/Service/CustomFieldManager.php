@@ -276,7 +276,7 @@ class CustomFieldManager
         foreach ($definitions as $def) {
             /** @var $def CustomFieldDefinition */
 
-            $builder->add('definition_'.$def['id'], new ContextualChoiceDefinitionType(), array(
+            $builder->add('definition_' . $def['id'], new ContextualChoiceDefinitionType(), array(
                 'context' => $context,
                 'data' => $def,
                 'children_collection' => $children,

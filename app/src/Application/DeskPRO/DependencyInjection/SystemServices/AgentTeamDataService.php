@@ -89,6 +89,7 @@ class AgentTeamDataService
         }
     }
 
+
     /**
      * @return \Application\DeskPRO\Entity\AgentTeam[]
      */
@@ -98,6 +99,7 @@ class AgentTeamDataService
 
         return $this->agent_teams;
     }
+
 
     /**
      * @param array $for_ids
@@ -115,6 +117,7 @@ class AgentTeamDataService
         return $ret;
     }
 
+
     /**
      * @return int[]
      */
@@ -124,6 +127,7 @@ class AgentTeamDataService
 
         return $this->ids;
     }
+
 
     /**
      * @return \Application\DeskPRO\Entity\Person
@@ -138,6 +142,7 @@ class AgentTeamDataService
 
         return null;
     }
+
 
     public function __call($name, $args)
     {

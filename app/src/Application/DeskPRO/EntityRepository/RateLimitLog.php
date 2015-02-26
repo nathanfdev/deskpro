@@ -34,31 +34,32 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 
 class RateLimitLog extends AbstractEntityRepository
 {
-    public function save($action, PersonEntity $person, $ip = null)
-    {
-        $ip = $ip ? ip2long($ip) : 0;
-        $this->getEntityManager()->getConnection()->executeQuery(sprintf(
-            'insert into %s (action, ip, person_id, date_created) values (:action, %d, %d, NOW())',
-            $this->getTableName(), $ip, $person['id']
-        ), array('action' => $action));
-    }
+	public function save($action, PersonEntity $person, $ip = null)
+	{
+		$ip = $ip ? ip2long($ip) : 0;
+		$this->getEntityManager()->getConnection()->executeQuery(sprintf(
+			'insert into %s (action, ip, person_id, date_created) values (:action, %d, %d, NOW())',
+			$this->getTableName(), $ip, $person['id']
+		), array('action' => $action));
+	}
 
-    public function count($action, $time, PersonEntity $person, $ip = null)
-    {
-        $q = sprintf(
-            'select count(*) from %s where action = :action and date_created >= :date and (ip = %d or person_id = %d)',
-            $this->getTableName(), $ip ? ip2long($ip) : 0, $person['id']
-        );
+	public function count($action, $time, PersonEntity $person, $ip = null)
+	{
+		$q = sprintf(
+			'select count(*) from %s where action = :action and date_created >= :date and (ip = %d or person_id = %d)',
+			$this->getTableName(), $ip ? ip2long($ip) : 0, $person['id']
+		);
 
-        $params = array(
-            'action' => $action,
-            'date' => date('Y-m-d H:i:s', time() - (int) $time),
-        );
+		$params = array(
+			'action' => $action,
+			'date' => date('Y-m-d H:i:s', time() - (int) $time),
+		);
 
-        return (int) $this->getEntityManager()->getConnection()->executeQuery($q, $params)->fetchColumn();
-    }
+		return (int) $this->getEntityManager()->getConnection()->executeQuery($q, $params)->fetchColumn();
+	}
 }

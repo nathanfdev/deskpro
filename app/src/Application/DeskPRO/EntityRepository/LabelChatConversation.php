@@ -37,4 +37,5 @@ namespace Application\DeskPRO\EntityRepository;
 
 class LabelChatConversation extends AbstractEntityRepository
 {
+
 }

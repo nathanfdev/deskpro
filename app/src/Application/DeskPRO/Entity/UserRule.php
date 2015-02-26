@@ -124,6 +124,7 @@ class UserRule extends DomainObject
         $this->setModelField('email_patterns', $items);
     }
 
+
     /**
      * Get the patterns string
      *
@@ -134,6 +135,7 @@ class UserRule extends DomainObject
     {
         return implode("\n", $this->email_patterns);
     }
+
 
     /**
      * Check if an email address to see if it matches any of the patterns in this rule.
@@ -148,7 +150,8 @@ class UserRule extends DomainObject
 
         $patterns = $this->email_patterns;
 
-        if (!is_array($patterns)) {
+        if(!is_array($patterns)) {
+
             $patterns = explode("\n", $this->email_patterns);
         }
 
@@ -169,7 +172,7 @@ class UserRule extends DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\UserRule';
-        $metadata->setPrimaryTable(array('name' => 'user_rules'));
+        $metadata->setPrimaryTable(array('name' => 'user_rules',));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
@@ -207,7 +210,7 @@ class UserRule extends DomainObject
             array(
                  'fieldName'    => 'add_organization',
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
-                 'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                 'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge',),
                  'mappedBy'     => null,
                  'inversedBy'   => null,
                  'joinColumns'  => array(

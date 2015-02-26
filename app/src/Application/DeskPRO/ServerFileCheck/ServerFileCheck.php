@@ -64,7 +64,7 @@ class ServerFileCheck
     public function getCount()
     {
         return array(
-            'count' => $this->verify->countChunks(),
+            'count' => $this->verify->countChunks()
         );
     }
 

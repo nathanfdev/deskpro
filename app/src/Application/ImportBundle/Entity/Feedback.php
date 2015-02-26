@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
@@ -75,13 +76,12 @@ final class Feedback extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
-     * @param  string $category
+     * @param string $category
      * @return $this
      */
     public function setCategory($category)
     {
         $this->category = $category;
-
         return $this;
     }
 
@@ -99,7 +99,6 @@ final class Feedback extends AbstractContentEntity implements PersonAwareInterfa
     public function setPersonEmail($person_email)
     {
         $this->person_email = $person_email;
-
         return $this;
     }
 
@@ -112,13 +111,12 @@ final class Feedback extends AbstractContentEntity implements PersonAwareInterfa
     }
 
     /**
-     * @param  int   $popularity
+     * @param int $popularity
      * @return $this
      */
     public function setPopularity($popularity)
     {
         $this->popularity = $popularity;
-
         return $this;
     }
 
@@ -136,7 +134,6 @@ final class Feedback extends AbstractContentEntity implements PersonAwareInterfa
     public function addLabel($label)
     {
         $this->labels[] = $label;
-
         return $this;
     }
 
@@ -145,7 +142,7 @@ final class Feedback extends AbstractContentEntity implements PersonAwareInterfa
      */
     public function toArray()
     {
-        if (! $this->date_created) {
+        if ( ! $this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 

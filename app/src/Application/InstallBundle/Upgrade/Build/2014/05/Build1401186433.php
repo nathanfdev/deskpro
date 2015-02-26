@@ -81,9 +81,7 @@ class Build1401186433 extends AbstractBuild
     private function _convertFilter(array $filter)
     {
         $terms = json_decode($filter['terms'], true);
-        if (!$terms) {
-            return;
-        }
+        if (!$terms) return;
 
         $new_terms = array();
         $fail = false;
@@ -96,7 +94,7 @@ class Build1401186433 extends AbstractBuild
                         $new_t = array(
                             'type' => 'email_account',
                             'op' => $t['op'],
-                            'options' => array('email_account_ids' => array($this->address_map[$address_id])),
+                            'options' => array('email_account_ids' => array($this->address_map[$address_id]))
                         );
                         $new_terms[] = $new_t;
                     } else {
@@ -110,7 +108,7 @@ class Build1401186433 extends AbstractBuild
                         $new_t = array(
                             'type' => 'email_account',
                             'op' => $t['op'],
-                            'options' => array('email_account_ids' => array($acc_id)),
+                            'options' => array('email_account_ids' => array($acc_id))
                         );
                         $new_terms[] = $new_t;
                     } else {
@@ -128,7 +126,7 @@ class Build1401186433 extends AbstractBuild
             $this->container->getDb()->delete('ticket_filters', array('id' => $filter['id']));
         } else {
             $this->container->getDb()->update('ticket_filters', array(
-                'terms' => json_encode($new_terms),
+                'terms' => json_encode($new_terms)
             ), array('id' => $filter['id']));
         }
     }

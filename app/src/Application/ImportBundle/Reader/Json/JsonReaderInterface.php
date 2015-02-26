@@ -39,7 +39,7 @@ interface JsonReaderInterface
      * Returns count of json files in the dir
      * One record per file
      *
-     * @param  JsonConfig $config
+     * @param JsonConfig $config
      * @return int
      */
     public function getDirectoryFilesCount(JsonConfig $config);
@@ -48,7 +48,7 @@ interface JsonReaderInterface
      * Returns directory files data
      * Reads all directory json files, decode and returns  array
      *
-     * @param  JsonConfig $config
+     * @param JsonConfig $config
      * @return array
      */
     public function getData(JsonConfig $config);

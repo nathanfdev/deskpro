@@ -34,6 +34,7 @@
 
 namespace Application\UserBundle\Controller;
 
+
 class TestController extends AbstractController
 {
     public function indexAction()

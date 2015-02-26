@@ -75,6 +75,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         $this->action_factory = new ActionFactory();
     }
 
+
     /**
      * @param  ActionInterface           $action
      * @throws \InvalidArgumentException
@@ -88,6 +89,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         $this->actions->add($action);
     }
 
+
     /**
      * @param  array                     $action_info
      * @throws \InvalidArgumentException
@@ -98,6 +100,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         $this->addAction($action);
     }
 
+
     /**
      * @param DeskproContainer $container
      */
@@ -105,6 +108,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
     {
         $this->container = $container;
     }
+
 
     /**
      * Gets the set container.
@@ -121,6 +125,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         return $this->container;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -133,6 +138,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         $this->actions->applyAction($ticket, $context);
     }
 
+
     /**
      * @return int
      */
@@ -140,6 +146,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
     {
         return count($this->actions);
     }
+
 
     /**
      * @return array
@@ -158,19 +165,20 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
             if (strpos(get_class($actions), 'Application\\DeskPRO\\Tickets\\Actions\\') === 0) {
                 $data['actions'][] = array(
                     'type'    => $actions->getActionType(),
-                    'options' => $actions->getActionOptions()->all(),
+                    'options' => $actions->getActionOptions()->all()
                 );
             } else {
                 $data['actions'][] = array(
                     'type'       => $actions->getActionType(),
                     'type_class' => get_class($actions),
-                    'options'    => $actions->getActionOptions()->all(),
+                    'options'    => $actions->getActionOptions()->all()
                 );
             }
         }
 
         return $data;
     }
+
 
     /**
      * @return \Application\DeskPRO\Tickets\Actions\ActionInterface[]
@@ -180,6 +188,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         return $this->actions->getAll();
     }
 
+
     /**
      * @return ActionComposite
      */
@@ -188,6 +197,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         return $this->actions;
     }
 
+
     /**
      * @return string
      */
@@ -195,6 +205,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
     {
         return json_encode($this->exportToArray());
     }
+
 
     /**
      * @param array $data
@@ -206,6 +217,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         }
     }
 
+
     /**
      * @return array
      */
@@ -213,6 +225,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
     {
         return $this->exportToArray();
     }
+
 
     /**
      * @param  array          $data
@@ -226,13 +239,14 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
                 $obj->addActionFromArray($action_info);
             } catch (\Exception $e) {
                 if (!empty($action_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('action_'.$action_info['type']));
+                    KernelErrorHandler::logException($e, false, md5('action_' . $action_info['type']));
                 }
             }
         }
 
         return $obj;
     }
+
 
     /**
      * @return string
@@ -241,6 +255,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
     {
         return $this->exportToJson();
     }
+
 
     /**
      * @param string $data
@@ -256,7 +271,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
                 $this->addActionFromArray($action_info);
             } catch (\Exception $e) {
                 if (!empty($action_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('action_'.$action_info['type']));
+                    KernelErrorHandler::logException($e, false, md5('action_' . $action_info['type']));
                 }
             }
         }

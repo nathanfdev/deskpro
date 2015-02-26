@@ -51,7 +51,7 @@ class Build1366194317 extends AbstractBuild
 
         $this->container->getDb()->replace('settings', array(
             'name'  => 'core_tickets.new_default_send_user_notify',
-            'value' => $is_enabled ? 1 : 0,
+            'value' => $is_enabled ? 1 : 0
         ));
     }
 }

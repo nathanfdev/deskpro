@@ -69,6 +69,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
         $this->term_factory = new TermFactory();
     }
 
+
     /**
      * @param  TriggerTermInterface      $term
      * @throws \InvalidArgumentException
@@ -81,6 +82,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
         }
         $this->criteria->add($term);
     }
+
 
     /**
      * @param  array                     $term_info
@@ -102,6 +104,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
         }
     }
 
+
     /**
      * @param  array                     $term_info
      * @throws \InvalidArgumentException
@@ -110,6 +113,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
     {
         return $this->term_factory->createFromArray($term_info);
     }
+
 
     /**
      * @param  Ticket                   $ticket
@@ -121,6 +125,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
         return $this->criteria->isTriggerMatch($ticket, $context);
     }
 
+
     /**
      * @return int
      */
@@ -128,6 +133,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
     {
         return count($this->criteria);
     }
+
 
     /**
      * @return array
@@ -149,13 +155,13 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
                     $set_terms[] = array(
                         'type'    => $set_criteria->getTermType(),
                         'op'      => $set_criteria->getTermOperator(),
-                        'options' => $set_criteria->getTermOptions()->all(),
+                        'options' => $set_criteria->getTermOptions()->all()
                     );
                 }
 
                 if ($set_terms) {
                     $data['terms'][] = array(
-                        'set_terms' => $set_terms,
+                        'set_terms' => $set_terms
                     );
                 }
             } else {
@@ -166,13 +172,14 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
                 $data['terms'][] = array(
                     'type'    => $criteria->getTermType(),
                     'op'      => $criteria->getTermOperator(),
-                    'options' => $criteria->getTermOptions()->all(),
+                    'options' => $criteria->getTermOptions()->all()
                 );
             }
         }
 
         return $data;
     }
+
 
     /**
      * @param array $data
@@ -184,6 +191,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
         }
     }
 
+
     /**
      * @return string
      */
@@ -191,6 +199,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
     {
         return json_encode($this->exportToArray());
     }
+
 
     /**
      * @return string
@@ -200,6 +209,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
         return $this->exportToJson();
     }
 
+
     /**
      * @return array
      */
@@ -207,6 +217,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
     {
         return $this->exportToArray();
     }
+
 
     /**
      * @param  array        $data
@@ -220,13 +231,14 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
                 $obj->addTermFromArray($term_info);
             } catch (\Exception $e) {
                 if (!empty($term_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('triggerterm_'.$term_info['type']));
+                    KernelErrorHandler::logException($e, false, md5('triggerterm_' . $term_info['type']));
                 }
             }
         }
 
         return $obj;
     }
+
 
     /**
      * @param string $data
@@ -241,7 +253,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
                 $this->addTermFromArray($term_info);
             } catch (\Exception $e) {
                 if (!empty($term_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('triggerterm_'.$term_info['type']));
+                    KernelErrorHandler::logException($e, false, md5('triggerterm_' . $term_info['type']));
                 }
             }
         }

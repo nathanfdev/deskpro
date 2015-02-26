@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Style;
 
+
 class UserStyle
 {
     /** @var string */
@@ -43,6 +44,7 @@ class UserStyle
     {
         $this->raw = $raw_css;
     }
+
 
     /**
      * Read CSS to get embedded vars and their default values as k=>v
@@ -58,9 +60,8 @@ class UserStyle
         $vars = array();
 
         foreach ($matches as $m) {
-            if ($m[1] == 'HEX_TO_RGB') {
-                continue;
-            }
+
+            if ($m[1] == 'HEX_TO_RGB') continue;
 
             // Set value (may overwrite existing if it appeared later in the file
             if (isset($m[3]) && $m[3]) {
@@ -79,12 +80,14 @@ class UserStyle
         return $vars;
     }
 
+
     /**
      * @param array $vars
      */
     public function compileCss(array $vars = array())
     {
         $vars = array_merge($this->getVars(), $vars);
+
 
         $css = str_replace('@HEX_TO_RGB(', '__DP_HEX_TO_RGB(', $this->raw);
 
@@ -142,15 +145,15 @@ class UserStyle
     public function lightenHex($orig_color, $fraction_denom = 2)
     {
         $highest_val = hexdec('FF');
-        $r = hexdec(substr($orig_color, 0, 2));
+        $r = hexdec(substr($orig_color,0,2));
         $r = ($highest_val-$r)/$fraction_denom + $r;
 
-        $g = hexdec(substr($orig_color, 2, 2));
+        $g = hexdec(substr($orig_color,2,2));
         $g = ($highest_val-$g)/$fraction_denom + $g;
 
-        $b = hexdec(substr($orig_color, 4, 2));
+        $b = hexdec(substr($orig_color,4,2));
         $b = ($highest_val-$b)/$fraction_denom + $b;
 
-        return dechex($r).dechex($g).dechex($b);
+        return dechex($r) . dechex($g) . dechex($b);
     }
 }

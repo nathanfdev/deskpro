@@ -50,6 +50,7 @@ class GroupDbPersister
      */
     private $db;
 
+
     /**
      * @param EntityManager $em
      */
@@ -58,6 +59,7 @@ class GroupDbPersister
         $this->em        = $em;
         $this->db        = $em->getConnection();
     }
+
 
     /**
      * @param  Usergroup        $group
@@ -74,7 +76,7 @@ class GroupDbPersister
             $obj = $perms->$coll_name;
             foreach ($obj->getNames() as $prop) {
                 if ($obj->$prop) {
-                    $set_perms[] = $real_name.'.'.$prop;
+                    $set_perms[] = $real_name . '.' . $prop;
                 }
             }
         }
@@ -87,6 +89,7 @@ class GroupDbPersister
             foreach ($new_perms as $p) {
                 $ins[] = array('usergroup_id' => $group->id, 'name' => $p, 'value' => 1);
             }
+
         }
 
         $this->db->beginTransaction();
@@ -106,6 +109,7 @@ class GroupDbPersister
 
         return true;
     }
+
 
     /**
      * @param  Person           $person
@@ -145,7 +149,7 @@ class GroupDbPersister
             $obj = $perms->$coll_name;
             foreach ($obj->getNames() as $prop) {
                 if ($obj->$prop) {
-                    $n = $real_name.'.'.$prop;
+                    $n = $real_name . '.' . $prop;
 
                     if (!isset($via_groups[$n])) {
                         $set_perms[] = $n;
@@ -162,6 +166,7 @@ class GroupDbPersister
             foreach ($new_perms as $p) {
                 $ins[] = array('person_id' => $person->id, 'name' => $p, 'value' => 1);
             }
+
         }
 
         $this->db->beginTransaction();

@@ -29,7 +29,7 @@ class Service
      *
      * @var array errors
      */
-    protected $_errors    = array();
+    protected $_errors	= array();
 
     /**
      * Switches the debug mode<br/>
@@ -39,7 +39,7 @@ class Service
      *
      * @var bool Debug Mode
      */
-    protected $_debug    = false;
+    protected $_debug	= false;
 
     /** @var EntityManager */
     protected $_em;
@@ -149,6 +149,7 @@ class Service
 
                 return $response;
             }
+
         } catch (\Exception $e) {
             if ($e instanceof BadResponseException) {
                 $this->addError($e->getMessage(), $e->getResponse()->getStatusCode());
@@ -171,7 +172,7 @@ class Service
     {
         $defaultParams = array(
             'timeout'         => 20,
-            'connect_timeout' => 1.5,
+            'connect_timeout' => 1.5
         );
 
         $params = array_merge($defaultParams, $params);
@@ -235,7 +236,7 @@ class Service
     public function postJson($uri, $body)
     {
         $header = array(
-            'Content-Type'    => 'application/json',
+            'Content-Type'	=> 'application/json'
         );
 
         $contentType = 'application/json';
@@ -259,7 +260,7 @@ class Service
     public function putJson($uri, $body)
     {
         $header = array(
-            'Content-Type'    => 'application/json',
+            'Content-Type'	=> 'application/json'
         );
 
         $contentType = 'application/json';
@@ -271,6 +272,7 @@ class Service
         }
 
         return $this->put($uri, $header, $encodedBody, $contentType);
+
     }
 
     /**
@@ -295,9 +297,9 @@ class Service
      */
     public function find($entity, $id)
     {
-        $repositoryClass    = $this->getRepositoryClass($entity);
+        $repositoryClass	= $this->getRepositoryClass($entity);
 
-        $repository            = $this->getRepository($repositoryClass);
+        $repository			= $this->getRepository($repositoryClass);
 
         if (method_exists($repository, 'find')) {
             return $repository->find($id);
@@ -321,7 +323,7 @@ class Service
         if ($doMagic) {
             $entity = substr($name, strlen('find'));
 
-            return $this->find('JIRA\Entity\\'.$entity, $arguments[0]);
+            return $this->find('JIRA\Entity\\' . $entity, $arguments[0]);
         }
     }
 
@@ -345,12 +347,12 @@ class Service
             $entityClassName = $entityClassNameParts[count($entityClassNameParts) - 1];
         }
 
-        $repositoryClassName = __NAMESPACE__.'\\Entity\\Repository\\'.$entityClassName.'Repository';
+        $repositoryClassName = __NAMESPACE__ . '\\Entity\\Repository\\' . $entityClassName . 'Repository';
 
         if (class_exists($repositoryClassName)) {
             return $repositoryClassName;
         } else {
-            $this->addError('class '.$repositoryClassName.' could not be found');
+            $this->addError('class ' . $repositoryClassName . ' could not be found');
         }
 
         return false;
@@ -374,7 +376,7 @@ class Service
             return new $entityClass($this);
         }
 
-        $this->addError('Invalid Class: '.$entityClass);
+        $this->addError('Invalid Class: ' . $entityClass);
     }
 
     /**
@@ -416,24 +418,24 @@ class Service
         // todo this may cause "Operation timed out after 1xxx milliseconds" without any handling
         return $this->get('rest/api/latest/issue/createmeta', array(), array(
             'timeout'         => 5,
-            'connect_timeout' => 4,
+            'connect_timeout' => 4
         ));
     }
 
     public function lookupAssignees($projectKey)
     {
-        $request = $this->_client->get('rest/api/latest/user/assignable/search?project='.$projectKey);
+        $request = $this->_client->get('rest/api/latest/user/assignable/search?project=' . $projectKey);
 
         return $this->_send($request);
     }
 
     public function lookupIssueType($projectKey)
     {
-        $request = $this->_client->get('rest/api/latest/issue/createmeta?projectKeys='.$projectKey);
+        $request = $this->_client->get('rest/api/latest/issue/createmeta?projectKeys=' . $projectKey);
 
         $response = $this->_send($request);
 
-        foreach ($response[$response['expand']][0]['issuetypes'] as $index => $issuetype) {
+        foreach($response[$response['expand']][0]['issuetypes'] as $index => $issuetype) {
             if ($issuetype['subtask']) {
                 unset($response[$response['expand']][0]['issuetypes'][$index]);
             }
@@ -444,7 +446,7 @@ class Service
 
     public function lookupPriorities($projectKey)
     {
-        $request = $this->_client->get('rest/api/latest/priority?project='.$projectKey);
+        $request = $this->_client->get('rest/api/latest/priority?project=' . $projectKey);
 
         return $this->_send($request);
     }
@@ -479,7 +481,7 @@ class Service
         $jiraIssueRepository = $this->_em->getRepository('Application\DeskPRO\Entity\JiraIssue');
 
         $jiraIssues = $jiraIssueRepository->findBy(
-            array('issue' => $issue_id,
+            array('issue' => $issue_id
         ));
 
         if (!$jiraIssues) {
@@ -488,7 +490,7 @@ class Service
 
         try {
             //Reaching this point means there are DeskPRO tickets associated to this issue_id
-            $issue    = $this->findIssue($issue_id);
+            $issue	= $this->findIssue($issue_id);
         } catch (\Exception $e) {
             if (404 === $e->getCode()) {
                 foreach ($jiraIssues as $issue) {
@@ -503,7 +505,7 @@ class Service
             return;
         }
 
-        $jiraRepository    = $this->getRepository('\Orb\Jira\Entity\Repository\IssueRepository');
+        $jiraRepository	= $this->getRepository('\Orb\Jira\Entity\Repository\IssueRepository');
 
         $comments = $jiraRepository->getComments($issue);
 
@@ -522,15 +524,15 @@ class Service
                     }
                 }
 
-                $ticketNote                        = new \Application\DeskPRO\Entity\TicketMessage();
+                $ticketNote						= new \Application\DeskPRO\Entity\TicketMessage();
 
-                $ticketNote['ticket']            = $ticket;
+                $ticketNote['ticket']			= $ticket;
 
-                $ticketNote['ip_address']        = '10.20.30.40';
+                $ticketNote['ip_address']		= '10.20.30.40';
 
-                $ticketNote['creation_system']    = 'app.jira';
+                $ticketNote['creation_system']	= 'app.jira';
 
-                $jiraUserEmail                    = $comment['author']['emailAddress'];
+                $jiraUserEmail					= $comment['author']['emailAddress'];
 
                 /**
                  * Comment author mapping
@@ -538,12 +540,13 @@ class Service
                  * If none found we set it to current user
                  */
                 $matchedEmail = $this->_em->getRepository('Application\DeskPRO\Entity\PersonEmail')->findOneBy(array(
-                    'email'    => $jiraUserEmail,
+                    'email'	=> $jiraUserEmail
                 ));
 
                 if ($matchedEmail) {
                     $commentAuthor = $matchedEmail->person;
                 } else {
+
                     if (!$this->_regEnabled) {
                         // todo?
                         continue;
@@ -560,16 +563,16 @@ class Service
                     }
                 }
 
-                $ticketNote['person']            = $commentAuthor;
+                $ticketNote['person']			= $commentAuthor;
 
-                $ticketNote->message            = $comment['body'].'<br/><br/>'.
-                        ' by <a target="_blank" href="'.$this->getBaseUrl().'secure/ViewProfile.jspa?name='.$comment['author']['name'].'">'.$comment['author']['displayName'].'</a><br/>'.
-                        ' in <a target="_blank" href="'.$this->getBaseUrl().'browse/'.$issue->getKey().'">'.$issue->getKey().'</a><br/>'.
+                $ticketNote->message			= $comment['body'] . '<br/><br/>' .
+                        ' by <a target="_blank" href="' . $this->getBaseUrl() . 'secure/ViewProfile.jspa?name=' . $comment['author']['name'] . '">' . $comment['author']['displayName'] . '</a><br/>' .
+                        ' in <a target="_blank" href="' . $this->getBaseUrl() . 'browse/' . $issue->getKey() . '">' . $issue->getKey() . '</a><br/>' .
                         ' - JIRA';
 
-                $ticketNote['is_agent_note']    = true;
+                $ticketNote['is_agent_note']	= true;
 
-                $ticketNote['date_created']        = new \DateTime($comment['updated']);
+                $ticketNote['date_created']		= new \DateTime($comment['updated']);
 
                 $ticket->addMessage($ticketNote);
 
@@ -578,8 +581,8 @@ class Service
 
                 $jiraIssueComment = new \Application\DeskPRO\Entity\JiraIssueComment();
 
-                $jiraIssueComment->jiraId            = $comment['id'];
-                $jiraIssueComment->ticketMessage    = $ticketNote;
+                $jiraIssueComment->jiraId			= $comment['id'];
+                $jiraIssueComment->ticketMessage	= $ticketNote;
 
                 $jiraIssue->addComment($jiraIssueComment);
 

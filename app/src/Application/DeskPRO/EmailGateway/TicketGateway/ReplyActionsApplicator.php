@@ -55,6 +55,7 @@ class ReplyActionsApplicator implements Loggable
      */
     private $container;
 
+
     /**
      * @param array            $actions
      * @param DeskproContainer $container
@@ -65,6 +66,7 @@ class ReplyActionsApplicator implements Loggable
         $this->container = $container;
     }
 
+
     /**
      * @param ReplyActionsContext $context
      */
@@ -74,6 +76,7 @@ class ReplyActionsApplicator implements Loggable
             $this->applyAction($context, $id, $param);
         }
     }
+
 
     /**
      * @param ReplyActionsContext $context
@@ -142,7 +145,7 @@ class ReplyActionsApplicator implements Loggable
                 $fm = $this->container->getTicketFieldManager();
                 $custom_field_data = array();
                 foreach ($param as $field_id => $field_value) {
-                    $custom_field_data["field_".$field_id] = $field_value;
+                    $custom_field_data["field_" . $field_id] = $field_value;
                 }
 
                 if ($custom_field_data) {
@@ -152,7 +155,7 @@ class ReplyActionsApplicator implements Loggable
 
             default:
                 $e = new \InvalidArgumentException("Unknown reply action {$id}");
-                KernelErrorHandler::logException($e, true, 'reply_action_'.$id);
+                KernelErrorHandler::logException($e, true, 'reply_action_' . $id);
         }
     }
 

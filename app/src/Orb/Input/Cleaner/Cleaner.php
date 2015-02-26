@@ -60,6 +60,7 @@ class Cleaner
         $this->addCleaner($basic);
     }
 
+
     /**
      * Add a cleaner
      *
@@ -74,6 +75,7 @@ class Cleaner
         }
     }
 
+
     /**
      * Get a  cleaner
      *
@@ -84,6 +86,7 @@ class Cleaner
     {
         return $this->cleaners[$id];
     }
+
 
     /**
      * Check if a cleaner has been added
@@ -96,6 +99,7 @@ class Cleaner
         return isset($this->cleaners[$id]);
     }
 
+
     /**
      * See if we support a type of cleaner
      *
@@ -106,6 +110,7 @@ class Cleaner
     {
         return isset($this->cleaner_type_map[$type]);
     }
+
 
     /**
      * Get the cleaner for a particular input request type
@@ -124,6 +129,7 @@ class Cleaner
         return $this->getCleaner($id);
     }
 
+
     /**
      * Clean a value.
      *
@@ -134,9 +140,7 @@ class Cleaner
      */
     public function clean($value, $type = 'raw', $options = null)
     {
-        if (!$options) {
-            $options = array();
-        }
+        if (!$options) $options = array();
 
         if (!isset($this->cleaner_type_map[$type])) {
             throw new \InvalidArgumentException("Invalid cleaner type `$type`");
@@ -144,6 +148,8 @@ class Cleaner
 
         return $this->getCleanerForType($type)->cleanValue($value, $type, $options, $this);
     }
+
+
 
     /**
      * Clean an array of values. $type_key can be TYPE_DISCARD if you dont want to keep the keys. In such cases,
@@ -159,7 +165,7 @@ class Cleaner
     public function cleanArray($array, $type_val = 'raw', $type_key = 'raw', $options_val = null, $options_key = null)
     {
         if (!is_array($array)) {
-            $array = (array) $array;
+            $array = (array)$array;
         }
 
         $ret_array = array();

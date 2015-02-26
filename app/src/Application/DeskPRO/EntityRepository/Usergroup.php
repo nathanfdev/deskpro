@@ -45,6 +45,7 @@ class Usergroup extends AbstractEntityRepository
     /** @var array|null */
     protected $_agent_usergroup_names = null;
 
+
     /**
      * @return \Application\DeskPRO\Entity\Usergroup[]
      */
@@ -58,6 +59,7 @@ class Usergroup extends AbstractEntityRepository
         ")->execute();
     }
 
+
     /**
      * @return \Application\DeskPRO\Entity\Usergroup[]
      */
@@ -70,6 +72,7 @@ class Usergroup extends AbstractEntityRepository
             ORDER BY ug.title ASC
         ")->execute();
     }
+
 
     /**
      * Get an array of id=>name for usergroups.
@@ -108,6 +111,8 @@ class Usergroup extends AbstractEntityRepository
         return $ret;
     }
 
+
+
     /**
      * Get an array of id=>name for agent usergroups.
      *
@@ -115,9 +120,7 @@ class Usergroup extends AbstractEntityRepository
      */
     public function getAgentUsergroupNames()
     {
-        if ($this->_agent_usergroup_names !== null) {
-            return $this->_agent_usergroup_names;
-        }
+        if ($this->_agent_usergroup_names !== null) return $this->_agent_usergroup_names;
         $db = $this->getEntityManager()->getConnection();
         $this->_agent_usergroup_names = $db->fetchAllKeyValue("
             SELECT id, title
@@ -131,10 +134,7 @@ class Usergroup extends AbstractEntityRepository
 
     public function getByIds(array $ids, $keep_order = false)
     {
-        if (!$ids) {
-            return array();
-        }
-
+        if (!$ids) return array();
         return $this->getEntityManager()->createQuery("
             SELECT u
             FROM DeskPRO:Usergroup u INDEX BY u.id
@@ -142,6 +142,7 @@ class Usergroup extends AbstractEntityRepository
             ORDER BY u.id DESC
         ")->execute(array($ids));
     }
+
 
     /**
      * get the counts for all usergroups
@@ -163,7 +164,7 @@ class Usergroup extends AbstractEntityRepository
             SELECT o2u.usergroup_id, (SELECT COUNT(*) FROM people WHERE people.organization_id = o2u.organization_id) AS total
             FROM organization2usergroups AS o2u
         ");
-        foreach ($results as $result) {
+        foreach ($results AS $result) {
             if (!$result['total']) {
                 continue;
             }
@@ -177,6 +178,7 @@ class Usergroup extends AbstractEntityRepository
         return $output;
     }
 
+
     /**
      * Count the number of members in usergroups ($ids)
      *
@@ -185,9 +187,7 @@ class Usergroup extends AbstractEntityRepository
      */
     public function getCountsFor(array $ids)
     {
-        if (!$ids) {
-            return array();
-        }
+        if (!$ids) return array();
 
         /** @var Connection $conn */
         $conn = $this->getEntityManager()->getConnection();
@@ -211,7 +211,7 @@ class Usergroup extends AbstractEntityRepository
         ', array($ids), array(Connection::PARAM_INT_ARRAY));
 
         if ($results) {
-            foreach ($results as $result) {
+            foreach ($results AS $result) {
                 if (!$result['total']) {
                     continue;
                 }
@@ -227,6 +227,7 @@ class Usergroup extends AbstractEntityRepository
         return $output;
     }
 
+
     /**
      * Count the number of organization members in usergroups ($ids)
      *
@@ -235,9 +236,7 @@ class Usergroup extends AbstractEntityRepository
      */
     public function getOrganizationCountsFor(array $ids)
     {
-        if (!$ids) {
-            return array();
-        }
+        if (!$ids) return array();
 
         /** @var Connection $conn */
         $conn = $this->getEntityManager()->getConnection();
@@ -249,6 +248,7 @@ class Usergroup extends AbstractEntityRepository
             GROUP BY usergroup_id
         ', array($ids), array(Connection::PARAM_INT_ARRAY));
     }
+
 
     /**
      * Get all agents of all teams, and sort them into an array keyed

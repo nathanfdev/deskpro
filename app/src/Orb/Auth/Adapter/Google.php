@@ -54,6 +54,7 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
      */
     protected $apps_domain = null;
 
+
     /**
      * @param null|string $apps_domain Optionally limit to a specific google apps domain
      */
@@ -74,6 +75,7 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
         $this->apps_domain = $apps_domain;
     }
 
+
     /**
      * Sets the display context: page or popup
      *
@@ -90,6 +92,7 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
         $this->display = $context;
     }
 
+
     /**
      * @return LightOpenID
      */
@@ -98,9 +101,9 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
         $return_url = $this->getCallbackUrl();
         $url_parts = parse_url($return_url);
 
-        $realm = $url_parts['scheme'].'://'.$url_parts['host'];
+        $realm = $url_parts['scheme'] . '://' . $url_parts['host'];
         if (!empty($url_parts['port'])) {
-            $realm .= ':'.$url_parts['port'];
+            $realm .= ':' . $url_parts['port'];
         }
 
         $openid = new LightOpenID($url_parts['host']);
@@ -111,6 +114,7 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
 
         return $openid;
     }
+
 
     /**
      * Initialize the auth process by setting state, and returning a redirect result.
@@ -130,13 +134,15 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
             $params['hd'] = $this->apps_domain;
         }
         if ($params) {
-            $redirect_url .= '&'.http_build_query($params);
+            $redirect_url .= '&' . http_build_query($params);
         }
 
         $result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
 
         return $result;
     }
+
+
 
     /**
      * Process the callback and return a final result.
@@ -172,7 +178,7 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
                 $raw['last_name'] = $attrs['namePerson/last'];
             }
             foreach ($attrs as $k => $v) {
-                $k = 'openid_'.$k;
+                $k = 'openid_' . $k;
                 $raw[$k] = $v;
             }
 

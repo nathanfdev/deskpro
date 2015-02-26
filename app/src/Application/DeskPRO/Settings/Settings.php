@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Settings;
 
 use Application\DeskPRO\DBAL\Connection;
 
+
 /**
  * This class fethces settings
  */
@@ -80,6 +81,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     private $virtual_settings = array();
 
+
     /**
      * @param string     $default_settings_file
      * @param Connection $db
@@ -98,6 +100,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         };
     }
 
+
     /**
      * Loads settings
      *
@@ -110,7 +113,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         $this->default_settings = array();
 
         if ($this->default_settings_file) {
-            $this->default_settings = require $this->default_settings_file;
+            $this->default_settings = require($this->default_settings_file);
         }
 
         $this->settings = $this->default_settings;
@@ -127,6 +130,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         }
     }
 
+
     /**
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
@@ -135,6 +139,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
     {
         $this->_loadSettings();
     }
+
 
     /**
      * Get the value of a setting
@@ -145,9 +150,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function get($name, $default = null)
     {
-        if (!$name) {
-            return $default;
-        }
+        if (!$name) return $default;
 
         if ($this->settings === null) {
             $this->_loadSettings();
@@ -160,6 +163,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         return isset($this->settings[$name]) ? $this->settings[$name] : $default;
     }
 
+
     /**
      * This loads the default for a value as defined in the setting file
      *
@@ -170,9 +174,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function getDefault($name)
     {
-        if (!$name) {
-            return null;
-        }
+        if (!$name) return null;
 
         if ($this->settings === null) {
             $this->_loadSettings();
@@ -180,6 +182,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 
         return isset($this->default_settings[$name]) ? $this->default_settings[$name] : null;
     }
+
 
     /**
      * Get the default values for an entire group
@@ -214,6 +217,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         return $ret;
     }
 
+
     /**
      * Get all settings in a group
      *
@@ -242,6 +246,8 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         return $ret;
     }
 
+
+
     /**
      * Manually set the value for one or more settings. Note that these values are
      * temporary, they are NOT persisted. This is mainly useful for code overrides
@@ -260,6 +266,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         $this->settings = array_merge($this->settings, $settings);
     }
 
+
     /**
      * Persist a new value for a setting, and update this as well
      *
@@ -276,12 +283,10 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 
         $this->db->beginTransaction();
         try {
+
             if ($value !== null) {
-                if ($value === true) {
-                    $value = '1';
-                } elseif ($value === false) {
-                    $value = '0';
-                }
+                if ($value === true) $value = '1';
+                else if ($value === false) $value = '0';
 
                 $this->db->executeUpdate("
                     INSERT INTO settings
@@ -304,6 +309,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         $this->settings[$setting] = $value;
     }
 
+
     /**
      * @return \DateTimeZone
      */
@@ -321,6 +327,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 
         return $this->default_timezone;
     }
+
 
     public function offsetExists($offset)
     {

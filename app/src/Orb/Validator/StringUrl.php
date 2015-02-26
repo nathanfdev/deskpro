@@ -50,6 +50,7 @@ class StringUrl extends AbstractValidator implements StaticValidator
         return $validator->isValid($value);
     }
 
+
     /**
      * Check $value to see if its valid.
      *

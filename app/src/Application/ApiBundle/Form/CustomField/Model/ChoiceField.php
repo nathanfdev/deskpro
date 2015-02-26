@@ -223,9 +223,7 @@ class ChoiceField extends CustomFieldAbstract
             }
         } while ($changed);
 
-        foreach ($removed_ids as $rid) {
-            unset($choices[$rid]);
-        }
+        foreach ($removed_ids as $rid) unset($choices[$rid]);
 
         // Now add new ones
         foreach ($choices_structure as $cinfo) {
@@ -260,7 +258,7 @@ class ChoiceField extends CustomFieldAbstract
                 $ch->title = $cinfo['title'];
             }
 
-            $ch->display_order = (int) $cinfo['display_order'];
+            $ch->display_order = (int)$cinfo['display_order'];
             $this->_em->persist($ch);
         }
 

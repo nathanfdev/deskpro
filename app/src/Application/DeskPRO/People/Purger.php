@@ -67,6 +67,7 @@ class Purger implements PersonContextInterface
         $this->db     = $em->getConnection();
     }
 
+
     /**
      * @return void
      */
@@ -84,6 +85,7 @@ class Purger implements PersonContextInterface
         }
     }
 
+
     /**
      * Purge all the tickets belonging to a user
      *
@@ -99,7 +101,7 @@ class Purger implements PersonContextInterface
         // when the original account is deleted but the ticket remains
         // (e.g., the ticket would stay if it was reset to a new user)
 
-        $orig_author_line = "Originally written by: ".htmlspecialchars($this->person->getDisplayContact())."<br/><br/><br/>\n\n\n";
+        $orig_author_line = "Originally written by: " . htmlspecialchars($this->person->getDisplayContact()) . "<br/><br/><br/>\n\n\n";
 
         $this->db->executeUpdate("
             UPDATE tickets_messages

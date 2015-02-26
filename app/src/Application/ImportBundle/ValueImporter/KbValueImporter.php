@@ -43,7 +43,7 @@ class KbValueImporter extends AbstractValueImporter
      */
     public function importValue($kbval)
     {
-        //        if (!($kbval instanceof KbValue)) {
+//        if (!($kbval instanceof KbValue)) {
 //            throw new \InvalidArgumentException("This importer can only import KbValue");
 //        }
 //

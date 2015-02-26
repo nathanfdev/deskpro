@@ -53,6 +53,7 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
         return $multi;
     }
 
+
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -114,14 +115,14 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
         if ($id) {
             return $this->createSuccessResponse(
                 array(
-                     'field_id' => $field->id,
+                     'field_id' => $field->id
                 )
             );
         } else {
             return $this->createSuccessResponse(
                 array(
                      'field_id' => $field->id,
-                     $this->generateUrl('api_org_fields_get', array('id' => $field->id)),
+                     $this->generateUrl('api_org_fields_get', array('id' => $field->id))
                 )
             );
         }

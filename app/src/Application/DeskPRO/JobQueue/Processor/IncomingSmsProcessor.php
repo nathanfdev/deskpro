@@ -89,7 +89,8 @@ class IncomingSmsProcessor extends AbstractJobProcessor
         PersonDetector $person_detector,
         TicketDetector $ticket_detector,
         TicketManager $ticket_manager
-    ) {
+    )
+    {
         parent::__construct($connection);
         $this->sms_account_detector = $sms_account_detector;
         $this->person_detector = $person_detector;
@@ -104,13 +105,13 @@ class IncomingSmsProcessor extends AbstractJobProcessor
     {
         $resolver->setRequired(array(
                 'message',
-                'from_number',
+                'from_number'
             )
         );
 
         $resolver->setDefaults(array(
                 'sms_account_id' => null,
-                'to_number' => null,
+                'to_number' => null
             )
         );
     }

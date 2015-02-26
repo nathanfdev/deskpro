@@ -78,7 +78,8 @@ class Alias extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    ) {
+    )
+    {
         throw new Exception('Alias prepare() cannot not be called');
     }
 
@@ -94,6 +95,6 @@ class Alias extends AbstractPart
     public function toDpql(Display $statement, $section, array $stack)
     {
         return $this->value->toDpql($statement, $section, $stack)
-            .' AS '.$statement->quoteDpqlString($this->alias);
+            . ' AS ' . $statement->quoteDpqlString($this->alias);
     }
 }

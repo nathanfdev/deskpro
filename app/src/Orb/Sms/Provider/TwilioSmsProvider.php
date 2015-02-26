@@ -65,6 +65,7 @@ class TwilioSmsProvider implements SmsProviderInterface
         $this->twilio = new Twilio($sid, $auth_token);
     }
 
+
     /**
      * @return string a friendly name for the account
      */
@@ -93,7 +94,7 @@ class TwilioSmsProvider implements SmsProviderInterface
                     'status'        => $e->getCode(),
                     'message'       => $e->getMessage(),
                     'twilio_status' => $e->getStatus(),
-                    'twilio_info'   => $e->getInfo(),
+                    'twilio_info'   => $e->getInfo()
                 )
             );
             $result->setProviderMessage($e->getStatus().' - '.$e->getMessage().' ('.$e->getCode().')');
@@ -103,7 +104,7 @@ class TwilioSmsProvider implements SmsProviderInterface
             $result = new SmsResult(
                 SmsResult::SMS_FAIL, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this->getName(), array(
                     'status'  => $e->getCode(),
-                    'message' => $e->getMessage(),
+                    'message' => $e->getMessage()
                 )
             );
             $result->setProviderMessage($e->getCode().' - '.$e->getMessage());
@@ -116,12 +117,13 @@ class TwilioSmsProvider implements SmsProviderInterface
             SmsResult::SMS_SENT, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this->getName(), array(
                 'sid'             => $message->sid, // this can later be used to find the status of the sms
                 'num_segments'    => $message->num_segments,
-                'provider_status' => $message->status,
+                'provider_status' => $message->status
             )
         );
 
         return $result;
     }
+
 
     /**
      * @throws \Orb\Sms\SmsException
@@ -167,7 +169,7 @@ class TwilioSmsProvider implements SmsProviderInterface
     {
         return array(
             'sid' => $this->sid,
-            'auth_token' => $this->auth_token,
+            'auth_token' => $this->auth_token
         );
     }
 }

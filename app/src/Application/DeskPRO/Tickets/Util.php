@@ -41,9 +41,7 @@ use Orb\Util\Arrays;
 
 class Util
 {
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Resolves a standard "agent codes" array into a set of agent IDs.
@@ -65,6 +63,7 @@ class Util
                 if ($ticket && $ticket->getAgentId()) {
                     $agent_ids[] = $ticket->getAgentId();
                 }
+
             } elseif ($send_to == 'assigned_agent_team') {
                 if ($ticket && $ticket->getAgentTeamId()) {
                     $agent_ids = array_merge(
@@ -72,7 +71,9 @@ class Util
                         App::getEntityRepository('DeskPRO:AgentTeam')->getMemberIds($ticket->getAgentTeamId())
                     );
                 }
+
             } elseif ($send_to == 'all_agents') {
+
                 $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
                 foreach ($agents as $a) {
                     $agent_ids[] = $a->getId();
@@ -80,15 +81,17 @@ class Util
 
                 // Cant possibly add any more, so no need to continue looping
                 break;
+
             } elseif (strpos($send_to, 'agent.') === 0) {
-                list(, $agent_id) = explode('.', $send_to, 2);
+                list (, $agent_id) = explode('.', $send_to, 2);
 
                 $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
                 if (isset($agents[$agent_id])) {
                     $agent_ids[] = $agent_id;
                 }
+
             } elseif (strpos($send_to, 'agent_team.') === 0) {
-                list(, $agent_team_id) = explode('.', $send_to, 2);
+                list (, $agent_team_id) = explode('.', $send_to, 2);
                 $agent_ids = array_merge(
                     $agent_ids,
                     App::getEntityRepository('DeskPRO:AgentTeam')->getMemberIds($agent_team_id)
@@ -101,6 +104,7 @@ class Util
 
         return $agent_ids;
     }
+
 
     /**
      * Get a TAC for a person on a ticket. If an existing TAC doesn't exist,
@@ -121,6 +125,7 @@ class Util
 
             return $tac;
         } catch (\Exception $e) {
+
             $tac = new TicketAccessCode();
             $tac['ticket'] = $ticket;
             $tac['person'] = $person;

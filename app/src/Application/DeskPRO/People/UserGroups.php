@@ -45,6 +45,7 @@ class UserGroups extends GroupsRepos
         return $this->getSysGroup('everyone');
     }
 
+
     /**
      * @return \Application\DeskPRO\Entity\Usergroup
      */

@@ -72,6 +72,7 @@ class ArrayAccessWrapper implements StateHandlerInterface
         $this->_state_obj = $state_obj;
     }
 
+
     /**
      * Set the key prefix
      *
@@ -82,6 +83,7 @@ class ArrayAccessWrapper implements StateHandlerInterface
     {
         $this->_prefix = $prefix;
     }
+
 
     /**
      * If the object has it's own clear method, then you can set it's method name
@@ -106,6 +108,7 @@ class ArrayAccessWrapper implements StateHandlerInterface
 
         $this->_clear_state_method = $method;
     }
+
 
     /**
      * Clears all state data, or resets back into its initial state.
@@ -139,21 +142,21 @@ class ArrayAccessWrapper implements StateHandlerInterface
 
     public function offsetUnset($offset)
     {
-        unset($this->_state_obj[$this->_prefix.$offset]);
+        unset($this->_state_obj[$this->_prefix . $offset]);
     }
 
     public function offsetSet($offset, $value)
     {
-        $this->_state_obj[$this->_prefix.$offset] = $value;
+        $this->_state_obj[$this->_prefix . $offset] = $value;
     }
 
     public function offsetGet($offset)
     {
-        return $this->_state_obj[$this->_prefix.$offset];
+        return $this->_state_obj[$this->_prefix . $offset];
     }
 
     public function offsetExists($offset)
     {
-        return isset($this->_state_obj[$this->_prefix.$offset]);
+        return isset($this->_state_obj[$this->_prefix . $offset]);
     }
 }

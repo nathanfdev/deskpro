@@ -59,7 +59,9 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
 
     protected function init()
     {
+
     }
+
 
     /**
      * Find a user identity just by an email address.
@@ -72,6 +74,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
         return null;
     }
 
+
     /**
      * Given an identity returned from an auth adapter, get the mapped fields that we can apply
      * to a Person record. For example, email addresses or names.
@@ -83,6 +86,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
     {
         return array();
     }
+
 
     /**
      * @param  array  $info
@@ -99,6 +103,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
 
         return '';
     }
+
 
     /**
      * @param  array  $info
@@ -127,6 +132,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
 
     public function applyResultToUser()
     {
+
     }
 
     /**
@@ -136,6 +142,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
      */
     public function getAgentLogoutRedirectUrl()
     {
+
     }
 
     /**
@@ -145,6 +152,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
      */
     public function getUserLogoutRedirectUrl()
     {
+
     }
 
     /**

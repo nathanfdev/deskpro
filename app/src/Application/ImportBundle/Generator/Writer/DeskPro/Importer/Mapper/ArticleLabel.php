@@ -68,7 +68,7 @@ final class ArticleLabel implements MapperInterface
     {
         /** @var Entity\LabelArticle $record */
         $record = $this->repository->findOneBy($criteria);
-        if (! $record && $throw_exception) {
+        if ( ! $record && $throw_exception) {
             throw new MapperException('Article label not found', $criteria);
         }
 

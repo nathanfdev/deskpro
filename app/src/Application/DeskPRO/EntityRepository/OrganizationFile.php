@@ -45,6 +45,6 @@ class OrganizationFile extends AbstractEntityRepository
             FROM DeskPRO:OrganizationFile f
             WHERE f.organization = ?1
             ORDER BY f.id DESC
-        ")->execute(array(1 => $org));
+        ")->execute(array(1=> $org));
     }
 }

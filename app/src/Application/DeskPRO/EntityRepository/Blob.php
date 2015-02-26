@@ -74,7 +74,7 @@ class Blob extends AbstractEntityRepository
 
     public function getByAuthCodes($auth_codes)
     {
-        $auth_codes = (array) $auth_codes;
+        $auth_codes = (array)$auth_codes;
         if (!$auth_codes) {
             return array();
         }

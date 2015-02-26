@@ -49,7 +49,7 @@ class FeedbackTypeType extends AbstractType
         $resolver->setDefaults(
             array(
                  'data_class'         => 'Application\\DeskPRO\\FeedbackTypes\\FeedbackTypeEdit',
-                 'cascade_validation' => true,
+                 'cascade_validation' => true
             )
         );
     }
@@ -58,4 +58,5 @@ class FeedbackTypeType extends AbstractType
     {
         return 'feedback_type_edit';
     }
+
 }

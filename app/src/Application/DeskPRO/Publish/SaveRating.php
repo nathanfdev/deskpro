@@ -63,7 +63,7 @@ class SaveRating implements PersonContextInterface
 
     public function save($object_type, $object_id, $rating)
     {
-        $entity_name = 'DeskPRO:'.ucfirst($object_type);
+        $entity_name = 'DeskPRO:' . ucfirst($object_type);
         $content_object = $this->em->find($entity_name, $object_id);
 
         if (!$content_object) {

@@ -55,6 +55,7 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
         return $multi;
     }
 
+
     ####################################################################################################################
     # list-teams
     ####################################################################################################################
@@ -69,6 +70,7 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 
         return $this->createApiResponse($data);
     }
+
 
     ####################################################################################################################
     # get-team
@@ -92,6 +94,7 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
         return $this->createApiResponse(array('team' => $data));
     }
 
+
     ####################################################################################################################
     # delete-team
     ####################################################################################################################
@@ -109,9 +112,10 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
         $this->em->flush();
 
         return $this->createApiDeleteResponse(array(
-            'old_team_id' => $old_id,
+            'old_team_id' => $old_id
         ));
     }
+
 
     ####################################################################################################################
     # save-team
@@ -141,7 +145,7 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
             } else {
                 $team->avatar = null;
             }
-        } elseif ($team->avatar) {
+        } elseif($team->avatar) {
             $team->avatar && $this->em->remove($team->avatar);
             $team->avatar = null;
         }

@@ -228,10 +228,11 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+
     public function setFilename($filename)
     {
         if ($filename[0] == '.') {
-            $filename = '_'.substr($filename, 1);
+            $filename = '_' . substr($filename, 1);
         }
 
         $old = $this->filename;
@@ -247,6 +248,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+
     /**
      * Get the file extension
      *
@@ -255,12 +257,10 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     public function getExtension()
     {
         $pos = strrpos($this->filename, '.');
-        if ($pos === false) {
-            return '';
-        }
-
+        if ($pos === false) return '';
         return substr($this->filename, $pos+1);
     }
+
 
     /**
      * Is the file an image?
@@ -282,6 +282,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         return false;
     }
 
+
     /**
      * Get the type of image this is, or null if its not an image.
      *
@@ -302,6 +303,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         return null;
     }
 
+
     /**
      * Get the filesize with B, KB, GB etc suffix.
      */
@@ -309,6 +311,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     {
         return Numbers::filesizeDisplay($this->filesize);
     }
+
 
     /**
      * Get the id-auth combo typically used in urls.
@@ -352,11 +355,12 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     public function getEmbedCode($for_ticket = false, $type = 'image')
     {
         if ($for_ticket) {
-            return '[attach:'.$type.':'.$this->getAuthId().':'.$this->filename.']';
+            return '[attach:' . $type . ':' . $this->getAuthId() . ':' . $this->filename . ']';
         } else {
-            return '[attach:'.$this->getAuthId().':'.$this->filename.']';
+            return '[attach:' . $this->getAuthId() . ':' . $this->filename . ']';
         }
     }
+
 
     /**
      * Get a thumbnail for this blob (if its an image)
@@ -392,6 +396,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         return $filename_safe;
     }
 
+
     /**
      * The name hash is 6 chars long that represents the original filename
      *
@@ -399,11 +404,12 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getNameHash()
     {
-        $namehash = strtoupper(substr(sha1($this->getFilenameSafe().$this->id), 0, 3));
-        $namehash .= strtoupper(substr(md5($this->getFilenameSafe().$this->id), 0, 3));
+        $namehash = strtoupper(substr(sha1($this->getFilenameSafe() . $this->id), 0, 3));
+        $namehash .= strtoupper(substr(md5($this->getFilenameSafe() . $this->id), 0, 3));
 
         return $namehash;
     }
+
 
     /**
      * @return string
@@ -424,6 +430,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         $this->_onPropertyChanged('labels', $this->labels, $this->labels);
     }
 
+
     /**
      * @param string $storage_loc
      */
@@ -436,6 +443,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+
     /**
      * @param string $storage_loc
      */
@@ -447,6 +455,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             $this->setModelField('storage_loc_specific', $storage_loc);
         }
     }
+
 
     /**
      * @return \Application\DeskPRO\Labels\LabelManager
@@ -489,6 +498,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         );
     }
 
+
     /**
      * @return array
      */
@@ -529,41 +539,35 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             'indexes' => array(
                 'authcode_idx' => array('columns' => array('authcode')),
                 'storage_loc_idx' => array('columns' => array('storage_loc', 'storage_loc_pref')),
-                'date_created_idx' => array('columns' => array('date_created', 'is_temp')),
-            ),
+                'date_created_idx' => array('columns' => array('date_created', 'is_temp'))
+            )
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array( 'fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'sys_name'));
-        $metadata->mapField(array( 'fieldName' => 'storage_loc', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc'));
-        $metadata->mapField(array( 'fieldName' => 'storage_loc_pref', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc_pref'));
-        $metadata->mapField(array( 'fieldName' => 'storage_loc_specific', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc_specific'));
-        $metadata->mapField(array( 'fieldName' => 'save_path', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'save_path'));
-        $metadata->mapField(array( 'fieldName' => 'file_url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'file_url'));
-        $metadata->mapField(array( 'fieldName' => 'filename', 'type' => 'string', 'length' => 120, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'filename'));
-        $metadata->mapField(array( 'fieldName' => 'filesize', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'filesize'));
-        $metadata->mapField(array( 'fieldName' => 'content_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content_type'));
-        $metadata->mapField(array( 'fieldName' => 'authcode', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'authcode'));
-        $metadata->mapField(array( 'fieldName' => 'blob_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'blob_hash'));
-        $metadata->mapField(array( 'fieldName' => 'is_media_upload', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_media_upload'));
-        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
-        $metadata->mapField(array( 'fieldName' => 'dim_w', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'dim_w'));
-        $metadata->mapField(array( 'fieldName' => 'dim_h', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'dim_h'));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
-        $metadata->mapField(array( 'fieldName' => 'is_temp', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_temp'));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'sys_name', ));
+        $metadata->mapField(array( 'fieldName' => 'storage_loc', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc', ));
+        $metadata->mapField(array( 'fieldName' => 'storage_loc_pref', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc_pref', ));
+        $metadata->mapField(array( 'fieldName' => 'storage_loc_specific', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc_specific', ));
+        $metadata->mapField(array( 'fieldName' => 'save_path', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'save_path', ));
+        $metadata->mapField(array( 'fieldName' => 'file_url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'file_url', ));
+        $metadata->mapField(array( 'fieldName' => 'filename', 'type' => 'string', 'length' => 120, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'filename', ));
+        $metadata->mapField(array( 'fieldName' => 'filesize', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'filesize', ));
+        $metadata->mapField(array( 'fieldName' => 'content_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content_type', ));
+        $metadata->mapField(array( 'fieldName' => 'authcode', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'authcode', ));
+        $metadata->mapField(array( 'fieldName' => 'blob_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'blob_hash', ));
+        $metadata->mapField(array( 'fieldName' => 'is_media_upload', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_media_upload', ));
+        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
+        $metadata->mapField(array( 'fieldName' => 'dim_w', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'dim_w', ));
+        $metadata->mapField(array( 'fieldName' => 'dim_h', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'dim_h', ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+        $metadata->mapField(array( 'fieldName' => 'is_temp', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_temp', ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'original_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'original_blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
-        $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelBlob', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'blob', 'orphanRemoval' => true));
+        $metadata->mapManyToOne(array( 'fieldName' => 'original_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'original_blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelBlob', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'blob', 'orphanRemoval' => true, ));
     }
 
-    public function __getPropValue__($k)
-    {
-        return $this->$k;
-    }
-    public function __setPropValue__($k, $v)
-    {
-        $this->$k = $v;
-    }
+    public function __getPropValue__($k) { return $this->$k; }
+    public function __setPropValue__($k, $v) { $this->$k = $v; }
 
     public function __clone()
     {

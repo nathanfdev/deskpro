@@ -68,6 +68,7 @@ class TemplateSet
         $this->style = $style;
     }
 
+
     /**
      * @param  string                      $name
      * @return TemplateCustom|TemplateFile
@@ -83,6 +84,7 @@ class TemplateSet
 
         return $template;
     }
+
 
     /**
      * Returns a custom template.
@@ -224,7 +226,7 @@ class TemplateSet
             $data['base_name'] = $template->getOriginalName();
             $data['original']  = array(
                 'name'          => $template->getOriginalName(),
-                'template_code' => array(),
+                'template_code' => array()
             );
 
             $data['original']['template_code']['code'] = $template->getTemplateCode()->getCode();
@@ -243,8 +245,8 @@ class TemplateSet
                 $data['display_title']       = $info['title'];
                 $data['display_description'] = $info['desc'];
             } else {
-                $name = Strings::extractRegexMatch('#^DeskPRO:.*?:(.*?).html.twig$#', $data['name'], 1).'.html';
-                $key = 'admin.emailtpl_desc.'.strtolower(str_replace(array(':', '.'), '_', $data['base_name']));
+                $name = Strings::extractRegexMatch('#^DeskPRO:.*?:(.*?).html.twig$#', $data['name'], 1) . '.html';
+                $key = 'admin.emailtpl_desc.' . strtolower(str_replace(array(':', '.'), '_', $data['base_name']));
                 $data['display_title']       = $tr->hasPhrase($key.'_title') ? $tr->phrase($key.'_title') : $name;
                 $data['display_description'] = $tr->hasPhrase($key.'_desc') ? $tr->phrase($key.'_desc')   : null;
             }

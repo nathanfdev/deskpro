@@ -62,6 +62,6 @@ class FilterDateArchived extends AbstractFilterTerm
      */
     public function getFilterQuery(ExecutorContextInterface $context = null)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException;
     }
 }

@@ -36,9 +36,9 @@ use Application\ImportBundle\Value\CustomDefValue;
 use Application\ImportBundle\Exception\BadDataException;
 use Application\ImportBundle\Exception\DuplicateValueException;
 
-class CustomDefPersontValueImporter extends AbstractCustomDefValueImporter
+class CustomDefPersonValueImporter extends AbstractCustomDefValueImporter
 {
-    //    /** @var string */
+//    /** @var string */
 //    protected $mapped_column = 'person_id';
 //    /** @var string */
 //    protected $mapper_class = 'custom_def_person';
@@ -68,4 +68,5 @@ class CustomDefPersontValueImporter extends AbstractCustomDefValueImporter
 //
 //        return $this->processCustomField($custom_value);
 //    }
+
 }

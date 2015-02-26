@@ -45,63 +45,64 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckJIRAIssueStatus extends AbstractTriggerTerm
 {
-    /**
-     * {@inheritDoc}
-     */
-    protected function getOptionsDef()
-    {
-        $options = new CheckedOptionsArray();
-        $options->addRequiredNames('status', 'all');
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('status', 'all');
+		return $options;
+	}
 
-        return $options;
-    }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-    {
-        $options = $this->getTermOptions();
-        $op = $this->getTermOperator();
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+	{
+		$options = $this->getTermOptions();
+		$op = $this->getTermOperator();
 
-        $all = (bool) $options->get('all');
-        $status = $options->get('status');
+		$all = (bool) $options->get('all');
+		$status = $options->get('status');
 
-        $changeData = array();
-        if ($change = $ticket->getStateChangeRecorder()->getCombinedChangeForField('jira.status')) {
-            $changeData = $change->getData();
-        }
+		$changeData = array();
+		if ($change = $ticket->getStateChangeRecorder()->getCombinedChangeForField('jira.status')) {
+			$changeData = $change->getData();
+		}
 
-        $match = false;
-        foreach ($ticket->jira_issues as $issue) {
-            switch ($op) {
-                case 'changed':
-                    $match = (bool) $changeData;
-                    break;
-                case 'changed_to':
-                    $match = isset($changeData['to']) && $changeData['to'] == $status;
-                    break;
-                case 'changed_from':
-                    $match = isset($changeData['from']) && $changeData['from'] == $status;
-                    break;
-                case 'is':
-                    $match = $issue['status_id'] == $status;
-                    break;
-                case 'not':
-                    $match = $issue['status_id'] != $status;
-                    break;
-            }
+		$match = false;
+		foreach ($ticket->jira_issues as $issue) {
 
-            // break on first false if all
-            if ($all && !$match) {
-                break;
-            }
-            // break on first true if any
-            if (!$all && $match) {
-                break;
-            }
-        }
+			switch ($op) {
+				case 'changed':
+					$match = (bool) $changeData;
+					break;
+				case 'changed_to':
+					$match = isset($changeData['to']) && $changeData['to'] == $status;
+					break;
+				case 'changed_from':
+					$match = isset($changeData['from']) && $changeData['from'] == $status;
+					break;
+				case 'is':
+					$match = $issue['status_id'] == $status;
+					break;
+				case 'not':
+					$match = $issue['status_id'] != $status;
+					break;
+			}
 
-        return $match;
-    }
+			// break on first false if all
+			if ($all && !$match) {
+				break;
+			}
+			// break on first true if any
+			if (!$all && $match) {
+				break;
+			}
+		}
+
+		return $match;
+	}
 }

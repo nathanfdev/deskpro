@@ -74,9 +74,7 @@ class GlossaryHandler
 
     protected function _initWords()
     {
-        if ($this->_words !== null) {
-            return;
-        }
+        if ($this->_words !== null) return;
 
         $this->_words = $this->db->fetchAllCol("
             SELECT word
@@ -97,6 +95,7 @@ class GlossaryHandler
 
         $load = array_diff($words, array_keys($this->_defs));
         if ($load) {
+
             $words = $this->db->fetchAllKeyValue("
                 SELECT word, glossary_word_definitions.definition
                 FROM glossary_words
@@ -125,7 +124,7 @@ class GlossaryHandler
 
         $load = array();
         foreach ($this->_words as $word) {
-            if (preg_match('#\b'.preg_quote($word, '#').'\b#i', $text)) {
+            if (preg_match('#\b' . preg_quote($word, '#') . '\b#i', $text)) {
                 $load[] = $word;
             }
         }
@@ -143,7 +142,7 @@ class GlossaryHandler
 
         $load = array();
         foreach ($this->_words as $word) {
-            if (preg_match('#\b'.preg_quote($word, '#').'\b#i', $text)) {
+            if (preg_match('#\b' . preg_quote($word, '#') . '\b#i', $text)) {
                 $load[] = $word;
             }
         }
@@ -155,15 +154,15 @@ class GlossaryHandler
             $word_u = urlencode($word);
 
             $text = preg_replace_callback(
-                '#(\b)('.preg_quote($word, '#').')(\b)#i',
+                '#(\b)(' . preg_quote($word, '#') . ')(\b)#i',
                 function ($m) use ($word_h, $word_u, $url_base) {
                     $url = str_replace('__DP_WORD__', $word_u, $url_base);
 
                     return $m[1]
-                        .'<span class="embedded-glossary-word tipped" data-glossary-word="'.$word_h.'" data-tipped="'.$url.'" data-tipped-options="ajax:true">'
-                        .$m[2]
-                        .'</span>'
-                        .$m[3];
+                        . '<span class="embedded-glossary-word tipped" data-glossary-word="'.$word_h.'" data-tipped="'.$url.'" data-tipped-options="ajax:true">'
+                        . $m[2]
+                        . '</span>'
+                        . $m[3];
                 },
                 $text,
                 1

@@ -71,7 +71,7 @@ class CleanupAlways extends AbstractJob
         $datetime2 = date('Y-m-d H:i:s', time() - 1209600);
 
         $long_lived_channels = array(
-            'agent_chat.new-message',
+            'agent_chat.new-message'
         );
 
         $ids = App::getDb()->fetchAllCol("

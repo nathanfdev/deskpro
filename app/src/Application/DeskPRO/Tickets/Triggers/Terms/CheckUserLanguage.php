@@ -59,6 +59,7 @@ class CheckUserLanguage extends AbstractTriggerTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

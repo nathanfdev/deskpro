@@ -125,7 +125,7 @@ class TicketDepartment
                         'groupname'   => $group,
                         'phrase'      => $new_phrase,
                         'created_at'  => $d,
-                        'updated_at'  => $d,
+                        'updated_at'  => $d
                     );
 
                     $ids[] = $phrase_id;

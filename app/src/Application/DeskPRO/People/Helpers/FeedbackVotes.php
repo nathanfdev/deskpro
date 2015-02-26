@@ -105,9 +105,7 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
      */
     public function getVotesUsed()
     {
-        if ($this->num_votes !== null) {
-            return $this->num_votes;
-        }
+        if ($this->num_votes !== null) return $this->num_votes;
 
         if ($this->person['id']) {
             $num_votes = App::getDb()->fetchColumn("
@@ -140,14 +138,12 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
     public function getVotesOnFeedback($feedback)
     {
         $feedback_id = $feedback;
-        if (is_object($feedback_id) or is_array($feedback_id)) {
+        if (is_object($feedback_id) OR is_array($feedback_id)) {
             $feedback_id = $feedback_id['id'];
         }
 
         // Already know it
-        if (isset($this->feedback_votes[$feedback_id])) {
-            return $this->feedback_votes[$feedback_id];
-        }
+        if (isset($this->feedback_votes[$feedback_id])) return $this->feedback_votes[$feedback_id];
 
         if ($this->person['id']) {
             $num_votes_this = App::getDb()->fetchColumn("
@@ -184,7 +180,7 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
             if ($i instanceof \Application\DeskPRO\Entity\Feedback) {
                 $ids[] = $i->getId();
             } else {
-                $ids[] = (int) $i;
+                $ids[] = (int)$i;
             }
         }
 
@@ -228,8 +224,5 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
         );
     }
 
-    public function _getthis()
-    {
-        return $this;
-    }
+    public function _getthis() { return $this; }
 }

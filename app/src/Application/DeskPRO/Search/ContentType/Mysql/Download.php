@@ -58,7 +58,7 @@ class Download extends AbstractContentType
         $data = array();
         $data['id'] = $download['id'];
         $data['content_type'] = 'download';
-        $data['content'] = $download['title']."\n".$download['content']."\n";
+        $data['content'] = $download['title'] . "\n" . $download['content'] . "\n";
 
         foreach ($download->getLabelManager()->getLabelsArray() as $label) {
             $label = MysqlAdapter::encodeLabel($label);

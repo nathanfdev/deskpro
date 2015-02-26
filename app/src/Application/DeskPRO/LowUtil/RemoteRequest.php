@@ -126,6 +126,7 @@ class DeskPRO_LowUtil_RemoteRequester implements DeskPRO_LowUtil_Requester
         return $this->requester;
     }
 
+
     /**
      * {@inheritdoc}
      */
@@ -133,6 +134,7 @@ class DeskPRO_LowUtil_RemoteRequester implements DeskPRO_LowUtil_Requester
     {
         return $this->requester->download($url, $save_path, $timeout);
     }
+
 
     /**
      * {@inheritdoc}
@@ -153,6 +155,7 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
             throw new DeskPRO_LowUtil_Fetch_Exception("curl is not supported on your server", DeskPRO_LowUtil_Fetch_Exception::FETCHER_UNSUPPORTED);
         }
     }
+
 
     /**
      * {@inheritdoc}
@@ -188,6 +191,7 @@ class DeskPRO_LowUtil_RequestCurl implements DeskPRO_LowUtil_Requester
 
         return filesize($save_path);
     }
+
 
     /**
      * {@inheritdoc}
@@ -248,19 +252,20 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
         }
     }
 
+
     /**
      * {@inheritdoc}
      */
     public function download($url, $save_path, $timeout = 15)
     {
         $context = stream_context_create(array(
-            'http' => array('timeout' => $timeout),
+            'http' => array('timeout' => $timeout)
         ));
         $res = @copy($url, $save_path, $context);
 
         if (!$res) {
             $e = error_get_last();
-            throw new DeskPRO_LowUtil_Fetch_Exception("Failed downloading remote file: ".@$e['message'], DeskPRO_LowUtil_Fetch_Exception::WRITE_FAILED);
+            throw new DeskPRO_LowUtil_Fetch_Exception("Failed downloading remote file: " . @$e['message'], DeskPRO_LowUtil_Fetch_Exception::WRITE_FAILED);
         }
 
         if (!$this->isSuccessResponse($http_response_header)) {
@@ -270,11 +275,13 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
         return filesize($save_path);
     }
 
+
     /**
      * {@inheritdoc}
      */
     public function request($url, array $data = array(), $method = 'GET', $timeout = 15)
     {
+
         $method = strtoupper($method);
         if ($method == 'GET') {
             if ($data) {
@@ -290,7 +297,7 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
             $context = stream_context_create(array(
                 'http' => array(
                     'timeout'  => $timeout,
-                ),
+                )
             ));
         } else {
             $context = stream_context_create(array(
@@ -298,8 +305,8 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
                     'timeout'  => $timeout,
                     'method'   => 'POST',
                     'header'   => 'Content-type: application/x-www-form-urlencoded',
-                    'content'  => http_build_query($data, null, '&'),
-                ),
+                    'content'  => http_build_query($data, null, '&')
+                )
             ));
         }
 

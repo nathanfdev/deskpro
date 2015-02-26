@@ -108,7 +108,7 @@ class CsvReader implements CsvReaderInterface
      */
     private function getIterator(CsvConfig $config)
     {
-        if (! stream_is_local($config->getResource())) {
+        if ( ! stream_is_local($config->getResource())) {
             throw new InvalidResourceException(sprintf('This is not a local file "%s".', $config->getResource()));
         }
 

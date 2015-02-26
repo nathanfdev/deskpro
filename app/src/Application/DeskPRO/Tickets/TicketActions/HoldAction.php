@@ -55,7 +55,7 @@ class HoldAction extends AbstractAction implements PermissionableAction
 
     public function __construct($is_hold, TicketChangeTracker $tracker = null)
     {
-        $this->is_hold = (bool) $is_hold;
+        $this->is_hold = (bool)$is_hold;
         $this->tracker = $tracker;
     }
 
@@ -88,6 +88,7 @@ class HoldAction extends AbstractAction implements PermissionableAction
         $ticket->is_hold = $this->is_hold;
     }
 
+
     /**
      * Get an array of actions that would be performed on the ticket
      *
@@ -100,7 +101,7 @@ class HoldAction extends AbstractAction implements PermissionableAction
         }
 
         return array(
-            array('action' => 'hold', 'is_hold' => $this->is_hold),
+            array('action' => 'hold', 'is_hold' => $this->is_hold)
         );
     }
 

@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+
 class TaskQueue extends AbstractEntityRepository
 {
     public function getAllTasks($newest_first = true)
@@ -41,7 +42,7 @@ class TaskQueue extends AbstractEntityRepository
         return $this->getEntityManager()->createQuery("
             SELECT tq
             FROM DeskPRO:TaskQueue tq
-            ORDER BY tq.date_runnable ".($newest_first ? 'DESC' : 'ASC')."
+            ORDER BY tq.date_runnable " . ($newest_first ? 'DESC' : 'ASC') . "
         ")->execute();
     }
 
@@ -98,7 +99,7 @@ class TaskQueue extends AbstractEntityRepository
             SELECT tq
             FROM DeskPRO:TaskQueue tq
             WHERE tq.task_group = ?0
-                ".(!$include_ended ? "AND tq.status NOT IN ('completed', 'errored')" : '')."
+                " . (!$include_ended ? "AND tq.status NOT IN ('completed', 'errored')" : '') . "
             ORDER BY tq.date_runnable
         ")->execute(array($group));
     }

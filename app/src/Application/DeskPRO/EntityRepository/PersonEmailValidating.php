@@ -44,7 +44,7 @@ class PersonEmailValidating extends AbstractEntityRepository
             WHERE e.person = ?1
             GROUP BY e.email
             ORDER BY e.id DESC
-        ")->setParameters(array(1 => $person))->execute();
+        ")->setParameters(array(1=> $person))->execute();
     }
 
     public function getEmail($email_address)
@@ -53,6 +53,6 @@ class PersonEmailValidating extends AbstractEntityRepository
             SELECT e
             FROM DeskPRO:PersonEmailValidating e
             WHERE e.email = ?1
-        ")->setParameters(array(1 => $email_address))->setMaxResults(1)->getOneOrNullResult();
+        ")->setParameters(array(1=> $email_address))->setMaxResults(1)->getOneOrNullResult();
     }
 }

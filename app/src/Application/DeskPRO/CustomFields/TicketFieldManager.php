@@ -62,6 +62,7 @@ class TicketFieldManager extends FieldManager
             $all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
 
             foreach ($all_fields as $f) {
+
                 $this->all_fields[$f->getId()] = $f;
 
                 if (!$f->getParentId()) {
@@ -92,6 +93,7 @@ class TicketFieldManager extends FieldManager
 
         return $this->fields;
     }
+
 
     /**
      * Get an array of all defined fields (by doing a query).
@@ -145,69 +147,78 @@ class TicketFieldManager extends FieldManager
         return $new_value;
     }
 
+
     /**
      * @return bool
      */
     public function isProductEnabled()
     {
-        return (bool) $this->settings->get('core.use_product');
+        return (bool)$this->settings->get('core.use_product');
     }
+
 
     /**
      * @return bool
      */
     public function isPriorityEnabled()
     {
-        return (bool) $this->settings->get('core.use_ticket_priority');
+        return (bool)$this->settings->get('core.use_ticket_priority');
     }
+
 
     /**
      * @return bool
      */
     public function isWorkflowEnabled()
     {
-        return (bool) $this->settings->get('core.use_ticket_workflow');
+        return (bool)$this->settings->get('core.use_ticket_workflow');
     }
+
 
     /**
      * @return bool
      */
     public function isCategoryEnabled()
     {
-        return (bool) $this->settings->get('core.use_ticket_category');
+        return (bool)$this->settings->get('core.use_ticket_category');
     }
+
 
     /**
      * @param $enabled bool
      */
     public function setIsProductEnabled($enabled = true)
     {
-        $this->settings->setSetting('core.use_product', intval((bool) $enabled));
+        $this->settings->setSetting('core.use_product', intval((bool)$enabled));
     }
+
 
     /**
      * @param $enabled bool
      */
     public function setIsPriorityEnabled($enabled = true)
     {
-        $this->settings->setSetting('core.use_ticket_priority', intval((bool) $enabled));
+        $this->settings->setSetting('core.use_ticket_priority', intval((bool)$enabled));
     }
+
 
     /**
      * @param $enabled bool
      */
     public function setIsWorkflowEnabled($enabled = true)
     {
-        $this->settings->setSetting('core.use_ticket_workflow', intval((bool) $enabled));
+        $this->settings->setSetting('core.use_ticket_workflow', intval((bool)$enabled));
     }
+
 
     /**
      * @param $enabled bool
      */
     public function setIsCategoryEnabled($enabled = true)
     {
-        $this->settings->setSetting('core.use_ticket_category', intval((bool) $enabled));
+        $this->settings->setSetting('core.use_ticket_category', intval((bool)$enabled));
     }
+
 
     /**
      * @param  string                                          $id
@@ -221,6 +232,7 @@ class TicketFieldManager extends FieldManager
             $field->is_enabled = $enabled;
             $this->em->persist($field);
             $this->em->flush($field);
+
         } else {
             switch ($id) {
                 case 'product':  $this->setIsProductEnabled($enabled); break;

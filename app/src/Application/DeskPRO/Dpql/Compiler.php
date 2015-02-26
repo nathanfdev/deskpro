@@ -55,12 +55,8 @@ class Compiler
      */
     public function __construct(Lexer $lexer = null, Parser $parser = null)
     {
-        if (!$lexer) {
-            $lexer = new Lexer();
-        }
-        if (!$parser) {
-            $parser = new Parser();
-        }
+        if (!$lexer) $lexer = new Lexer();
+        if (!$parser) $parser = new Parser();
 
         $this->_lexer = $lexer;
         $this->_parser = $parser;

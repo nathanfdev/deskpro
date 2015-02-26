@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\CacheInvalidator;
 
+
 class LanguageJsCache
 {
     /** @var string */
@@ -54,14 +55,14 @@ class LanguageJsCache
         if (is_dir($cache_dir)) {
             $res = @glob("$cache_dir/agent-lang-*.cache");
             if ($res) {
-                foreach ($res as $file) {
+                foreach ($res AS $file) {
                     @unlink($file);
                 }
             }
 
             $res = @glob("$cache_dir/user-lang-*.cache");
             if ($res) {
-                foreach ($res as $file) {
+                foreach ($res AS $file) {
                     @unlink($file);
                 }
             }

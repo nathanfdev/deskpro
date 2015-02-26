@@ -35,4 +35,5 @@ namespace Application\ImportBundle\Generator\Writer;
  */
 class WriterException extends \Exception
 {
+
 }

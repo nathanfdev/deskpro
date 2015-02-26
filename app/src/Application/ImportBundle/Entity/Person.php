@@ -168,13 +168,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param  boolean $is_agent
+     * @param boolean $is_agent
      * @return $this
      */
     public function setAsAgent($is_agent)
     {
-        $this->is_agent = (bool) $is_agent;
-
+        $this->is_agent = (bool)$is_agent;
         return $this;
     }
 
@@ -187,13 +186,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param  boolean $is_user
+     * @param boolean $is_user
      * @return $this
      */
     public function setAsUser($is_user)
     {
-        $this->is_user = (bool) $is_user;
-
+        $this->is_user = (bool)$is_user;
         return $this;
     }
 
@@ -206,13 +204,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param  boolean $is_admin
+     * @param boolean $is_admin
      * @return $this
      */
     public function setAsAdmin($is_admin)
     {
-        $this->is_admin = (bool) $is_admin;
-
+        $this->is_admin = (bool)$is_admin;
         return $this;
     }
 
@@ -236,13 +233,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param  string $first_name
+     * @param string $first_name
      * @return $this
      */
     public function setFirstName($first_name)
     {
         $this->first_name = $first_name;
-
         return $this;
     }
 
@@ -266,13 +262,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param  string $last_name
+     * @param string $last_name
      * @return $this
      */
     public function setLastName($last_name)
     {
         $this->last_name = $last_name;
-
         return $this;
     }
 
@@ -295,13 +290,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param  string $name
+     * @param string $name
      * @return $this
      */
     public function setName($name)
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -314,13 +308,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param  string $override_display_name
+     * @param string $override_display_name
      * @return $this
      */
     public function setOverrideDisplayName($override_display_name)
     {
         $this->override_display_name = $override_display_name;
-
         return $this;
     }
 
@@ -333,13 +326,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param  string $password
+     * @param string $password
      * @return $this
      */
     public function setPassword($password)
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -362,13 +354,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param  string $password_scheme
+     * @param string $password_scheme
      * @return $this
      */
     public function setPasswordScheme($password_scheme)
     {
         $this->password_scheme = $password_scheme;
-
         return $this;
     }
 
@@ -381,13 +372,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param  DateTimeZone $timezone
+     * @param DateTimeZone $timezone
      * @return $this
      */
     public function setTimezone(DateTimeZone $timezone)
     {
         $this->timezone = $timezone;
-
         return $this;
     }
 
@@ -400,13 +390,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param  DateTime $date_created
+     * @param DateTime $date_created
      * @return $this
      */
     public function setDateCreated(DateTime $date_created)
     {
         $this->date_created = $date_created;
-
         return $this;
     }
 
@@ -419,13 +408,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param  string $language
+     * @param string $language
      * @return $this
      */
     public function setLanguage($language)
     {
         $this->language = $language;
-
         return $this;
     }
 
@@ -438,13 +426,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param  string $organization
+     * @param string $organization
      * @return $this
      */
     public function setOrganization($organization)
     {
         $this->organization = $organization;
-
         return $this;
     }
 
@@ -457,13 +444,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param  string $organization_position
+     * @param string $organization_position
      * @return $this
      */
     public function setOrganizationPosition($organization_position)
     {
         $this->organization_position = $organization_position;
-
         return $this;
     }
 
@@ -486,13 +472,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param  string $email
+     * @param string $email
      * @return $this
      */
     public function addEmail($email)
     {
         $this->emails[] = $email;
-
         return $this;
     }
 
@@ -510,7 +495,6 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     public function addLabel($label)
     {
         $this->labels[] = $label;
-
         return $this;
     }
 
@@ -525,13 +509,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param  string $user_group
+     * @param string $user_group
      * @return $this
      */
     public function addUserGroup($user_group)
     {
         $this->user_groups[] = $user_group;
-
         return $this;
     }
 
@@ -544,13 +527,12 @@ final class Person extends AbstractEntity implements LabelAwareInterface
     }
 
     /**
-     * @param  CustomField $custom_field
+     * @param CustomField $custom_field
      * @return $this
      */
     public function addCustomField(CustomField $custom_field)
     {
         $this->custom_fields->attach($custom_field);
-
         return $this;
     }
 

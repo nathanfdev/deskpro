@@ -57,6 +57,7 @@ class FilterUserEmailAddress extends AbstractFilterTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

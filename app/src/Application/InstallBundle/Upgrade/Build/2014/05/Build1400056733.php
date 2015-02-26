@@ -212,7 +212,7 @@ class Build1400056733 extends AbstractBuild
 
         $gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: array();
         $mappings = array(
-            'gateway_address_to_email_account' => $gateway_addr_map,
+            'gateway_address_to_email_account' => $gateway_addr_map
         );
 
         $this->term_converter   = new TriggerTermConverter($mappings);
@@ -241,7 +241,9 @@ class Build1400056733 extends AbstractBuild
                 $this->out("-- Skipped");
             }
         }
+
     }
+
 
     /**
      * @param  array              $old_trigger
@@ -446,12 +448,12 @@ class Build1400056733 extends AbstractBuild
         # Create trigger object
         #------------------------------
 
-        $trigger->title      = $old_trigger['title'] ?: 'Trigger '.$old_trigger['id'];
+        $trigger->title      = $old_trigger['title'] ?: 'Trigger ' . $old_trigger['id'];
         if ($is_incomplete) {
             $trigger->title .= ' (REQUIRES REVIEW)';
         }
-        $trigger->is_enabled = (bool) $old_trigger['is_enabled'] && !$is_incomplete;
-        $trigger->run_order  = (int) $old_trigger['run_order'];
+        $trigger->is_enabled = (bool)$old_trigger['is_enabled'] && !$is_incomplete;
+        $trigger->run_order  = (int)$old_trigger['run_order'];
         $trigger->terms      = $term_sets;
         $trigger->actions    = $actions_set;
 

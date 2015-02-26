@@ -37,4 +37,5 @@ namespace Application\DeskPRO\EntityRepository;
 
 class LabelPerson extends AbstractEntityRepository
 {
+
 }

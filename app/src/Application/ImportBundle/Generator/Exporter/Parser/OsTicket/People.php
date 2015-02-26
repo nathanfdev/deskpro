@@ -72,7 +72,7 @@ final class People extends AbstractParser
         foreach ($collection as $num => $person) {
             /** @var Entity\Person $person */
             $person
-                ->setDestination('person_'.$num)
+                ->setDestination('person_' . $num)
                 ->setOid($num);
         }
 
@@ -100,9 +100,9 @@ final class People extends AbstractParser
                 } else {
                     $entity = new Entity\Person();
                     $entity
-                        ->setDestination('person_'.($num + $offset))
+                        ->setDestination('person_' . ($num + $offset))
                         ->setAsAgent(true)
-                        ->setName($person['firstname'].$person['lastname'])
+                        ->setName($person['firstname'] . $person['lastname'])
                         ->setFirstName($person['firstname'])
                         ->setLastName($person['lastname'])
                         ->setTimezone($this->reader->findTimezoneById($person['timezone_id']))
@@ -139,7 +139,7 @@ final class People extends AbstractParser
                 } else {
                     $entity = new Entity\Person();
                     $entity
-                        ->setDestination('person_'.($num + $offset))
+                        ->setDestination('person_' . ($num + $offset))
                         ->setAsUser(true)
                         ->setName($person['name'])
                         ->setDateCreated(new DateTime($person['created']))
@@ -157,7 +157,7 @@ final class People extends AbstractParser
     /**
      * Check if staff person has all required columns
      *
-     * @param  array $person
+     * @param array $person
      * @return bool
      */
     private function hasRequiredStaffColumns(array $person)
@@ -168,7 +168,7 @@ final class People extends AbstractParser
     /**
      * Check if user has all required columns
      *
-     * @param  array $person
+     * @param array $person
      * @return bool
      */
     private function hasRequiredUserColumns(array $person)

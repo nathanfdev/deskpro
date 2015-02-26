@@ -136,7 +136,7 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
             }
 
             if ($this->ticket->remove_ccs) {
-                foreach ($this->ticket->remove_ccs as $remove_person_id) {
+                foreach ($this->ticket->remove_ccs AS $remove_person_id) {
                     $this->ticket_object->removeParticipantPerson($remove_person_id);
                 }
             }
@@ -224,26 +224,8 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
         return $cc_person;
     }
 
-    public function offsetExists($offset)
-    {
-        return (isset(self::$prop_names[$offset]) && isset($this->$offset));
-    }
-    public function offsetGet($offset)
-    {
-        if (isset(self::$prop_names[$offset])) {
-            return $this->$offset;
-        }
-    }
-    public function offsetSet($offset, $value)
-    {
-        if (isset(self::$prop_names[$offset])) {
-            $this->$offset = $value;
-        }
-    }
-    public function offsetUnset($offset)
-    {
-        if (isset(self::$prop_names[$offset])) {
-            $this->$offset = null;
-        }
-    }
+    public function offsetExists($offset) { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
+    public function offsetGet($offset) { if (isset(self::$prop_names[$offset])) return $this->$offset; }
+    public function offsetSet($offset, $value) { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
+    public function offsetUnset($offset) { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
 }

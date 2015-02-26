@@ -55,7 +55,7 @@ class ValidatorChain extends AbstractValidator
     {
         $this->validators[] = array(
             $validator,
-            (bool) $break_on_invalid,
+            (bool)$break_on_invalid
         );
     }
 
@@ -85,6 +85,7 @@ class ValidatorChain extends AbstractValidator
             $break_on_invalid = $x[1];
 
             if (!$validator->isValid($value)) {
+
                 $this->errors      = array_merge($this->errors, $validator->getErrors());
                 $this->errors_info = array_merge($this->errors_info, $validator->getErrorsInfo());
 

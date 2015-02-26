@@ -140,6 +140,7 @@ class LabelDef extends AbstractEntityRepository
         return null;
     }
 
+
     /**
      * @param  string      $label_type
      * @return string|null
@@ -372,6 +373,9 @@ class LabelDef extends AbstractEntityRepository
         return $res ? $res[0]['color'] : '#d4d4d4';
     }
 
+
+
+
     /***************** these are moved from LabelDefManager ****************/
     /** todo cleanup! */
 
@@ -390,7 +394,7 @@ class LabelDef extends AbstractEntityRepository
             if ($k > 0) {
                 $query .= "\n UNION ";
             }
-            $query .= 'SELECT "'.$t.'" as label_type, COUNT(*) AS count, label as label FROM '.$info['table'].' GROUP BY label';
+            $query .= 'SELECT "'.$t.'" as label_type, COUNT(*) AS count, label as label FROM ' . $info['table'] . ' GROUP BY label';
         }
 
         $count_res = $this->getEntityManager()->getConnection()->fetchAll($query);
@@ -429,7 +433,7 @@ class LabelDef extends AbstractEntityRepository
             $parts[] = "SELECT DISTINCT(label) AS label, '$t' AS label_type FROM labels_$t";
         }
 
-        $q = '('.implode(') UNION (', $parts).')';
+        $q = '(' . implode(') UNION (', $parts) . ')';
         foreach ($this->getEntityManager()->getConnection()->fetchAll($q) as $x) {
             if (!isset($x['label'])) {
                 $ret[$x['label']] = array();
@@ -440,6 +444,7 @@ class LabelDef extends AbstractEntityRepository
 
         return $ret;
     }
+
 
     /**
      * @param  string                                                        $old_label
@@ -452,10 +457,10 @@ class LabelDef extends AbstractEntityRepository
     public function renameLabelDef($old_label, $new_label, $color, $type)
     {
         if (!self::valid($type)) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
 
-        $types = (array) $type;
+        $types = (array)$type;
 
         $this->getEntityManager()->getConnection()->beginTransaction();
 
@@ -467,7 +472,7 @@ class LabelDef extends AbstractEntityRepository
                 $def_old = $this->getDefinition($t, $old_label);
 
                 $this->getEntityManager()->getConnection()->executeUpdate(
-                    'UPDATE IGNORE '.$table.' SET label = ? WHERE label = ?',
+                    'UPDATE IGNORE ' . $table . ' SET label = ? WHERE label = ?',
                     array($new_label, $old_label)
                 );
 
@@ -476,7 +481,7 @@ class LabelDef extends AbstractEntityRepository
                     $def_new->label = $new_label;
                 } else {
                     $this->getEntityManager()->getConnection()->executeUpdate(
-                        'DELETE FROM '.$table.' WHERE label = ?',
+                        'DELETE FROM ' . $table . ' WHERE label = ?',
                         array($old_label)
                     );
                 }

@@ -59,6 +59,7 @@ class CheckUserUsergroups extends AbstractTriggerTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

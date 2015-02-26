@@ -57,6 +57,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
         return $multi;
     }
 
+
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -95,6 +96,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
         return $this->createApiResponse($data);
     }
 
+
     ###################################################################################################################
     # get
     ####################################################################################################################
@@ -127,6 +129,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 
         return $this->createApiResponse(array('group' => $data));
     }
+
 
     ####################################################################################################################
     # save-group
@@ -216,9 +219,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 
             $set_perms = array();
             foreach ($this->in->getArrayValue('dep_perms.tickets') as $did => $p) {
-                if (!$ticket_deps->getById($did)) {
-                    continue;
-                }
+                if (!$ticket_deps->getById($did)) continue;
                 if ($p['full']) {
                     $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1);
                 } elseif ($p['assign']) {
@@ -226,9 +227,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
                 }
             }
             foreach ($this->in->getArrayValue('dep_perms.chat') as $did => $p) {
-                if (!$chat_deps->getById($did)) {
-                    continue;
-                }
+                if (!$chat_deps->getById($did)) continue;
                 if ($p['full']) {
                     $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'chat', 'name' => 'full', 'value' => 1);
                 }
@@ -257,10 +256,11 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
             );
         } else {
             return $this->createApiSuccessResponse(array(
-                'group_id' => $group->id,
+                'group_id' => $group->id
             ));
         }
     }
+
 
     ####################################################################################################################
     # delete-group
@@ -280,6 +280,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 
         return $this->createApiDeleteResponse(array('old_group_id' => $old_id));
     }
+
 
     ####################################################################################################################
     # get-all-perms
@@ -329,6 +330,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
         }
     }
 
+
     ####################################################################################################################
     # toggle-group
     ####################################################################################################################
@@ -341,7 +343,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
             throw $this->createNotFoundException();
         }
 
-        $group->is_enabled = (bool) $is_enabled;
+        $group->is_enabled = (bool)$is_enabled;
         $this->em->persist($group);
         $this->em->flush();
 

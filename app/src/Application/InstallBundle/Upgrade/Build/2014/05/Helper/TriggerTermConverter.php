@@ -59,7 +59,7 @@ class TriggerTermConverter
         $func = "upgradeTerm_{$t}";
 
         if (!method_exists($this, $func)) {
-            $e = new \Exception("Unknown trigger term: ".$info['type']);
+            $e = new \Exception("Unknown trigger term: " . $info['type']);
             KernelErrorHandler::logException($e);
 
             return null;
@@ -67,6 +67,7 @@ class TriggerTermConverter
 
         return $this->$func($info['type'], $info['op'], new OptionsArray($info['options']), $event_trigger);
     }
+
 
     /**
      * @param  OptionsArray $options
@@ -135,12 +136,9 @@ class TriggerTermConverter
     {
         // before: date('w') (0=sun), new: iso8601 (1=mon, 7=sun)
         $opt = array_map(function ($d) {
-            $d = (int) $d;
-            if ($d == 0) {
-                return 7;
-            } else {
-                return $d;
-            }
+            $d = (int)$d;
+            if ($d == 0) return 7;
+            else return $d;
         }, $this->getSingleArrayValue($options, 'days'));
 
         return new Terms\CheckDayOfWeek($op, array('days' => $opt, 'tz' => 'UTC', 'var' => 'now'));
@@ -150,12 +148,9 @@ class TriggerTermConverter
     {
         // before: date('w') (0=sun), new: iso8601 (1=mon, 7=sun)
         $opt = array_map(function ($d) {
-            $d = (int) $d;
-            if ($d == 0) {
-                return 7;
-            } else {
-                return $d;
-            }
+            $d = (int)$d;
+            if ($d == 0) return 7;
+            else return $d;
         }, $this->getSingleArrayValue($options, 'days'));
 
         return new Terms\CheckDayOfWeek($op, array('days' => $opt, 'tz' => 'UTC', 'var' => 'date_created'));
@@ -278,12 +273,8 @@ class TriggerTermConverter
             return null;
         }
 
-        if ($op == 'is') {
-            $op = 'contains';
-        } elseif ($op == 'not') {
-            $op = 'notcontains';
-        }
-
+        if ($op == 'is') $op = 'contains';
+        else if ($op == 'not') $op = 'notcontains';
         return new Terms\CheckLabel($op, array('labels' => $labels));
     }
 
@@ -344,7 +335,7 @@ class TriggerTermConverter
     private function upgradeTerm_person_email_domain($type, $op, OptionsArray $options)
     {
         $domain = $options->get('email_domain', 'NO DOMAIN');
-        $regex = '/^(.*?)@'.preg_quote($domain, '/').'$/';
+        $regex = '/^(.*?)@' . preg_quote($domain, '/') . '$/';
 
         switch ($op) {
             case 'is': $op = 'is_regex'; break;
@@ -357,29 +348,27 @@ class TriggerTermConverter
     private function upgradeTerm_person_field($type, $op, OptionsArray $options)
     {
         $field_id = Strings::extractRegexMatch('#\[(\d+)\]$#', $type);
-        if (!$field_id) {
-            return null;
-        }
+        if (!$field_id) return null;
 
-        $value = Arrays::getValue($options->all(), 'custom_fields.field_'.$field_id);
+        $value = Arrays::getValue($options->all(), 'custom_fields.field_'. $field_id);
 
         return new Terms\CheckUserField($op, array(
             'field_id' => $field_id,
-            'value'    => $value,
+            'value'    => $value
         ));
     }
 
     private function upgradeTerm_agent_performer($type, $op, OptionsArray $options)
     {
         return new Terms\CheckPerformer($op, array(
-            'person_ids' => $this->getSingleArrayValue($options, 'agent_ids'),
+            'person_ids' => $this->getSingleArrayValue($options, 'agent_ids')
         ));
     }
 
     private function upgradeTerm_person_name($type, $op, OptionsArray $options)
     {
         return new Terms\CheckUserName($op, array(
-            'name' => $options->get('name', 'NO NAME'),
+            'name' => $options->get('name', 'NO NAME')
         ));
     }
 
@@ -430,7 +419,7 @@ class TriggerTermConverter
 
         return new Terms\CheckSlaStatus($op, array(
             'sla_ids'    => $this->getSingleArrayValue($options, 'sla_id'),
-            'sla_status' => $status,
+            'sla_status' => $status
         ));
     }
 
@@ -447,24 +436,22 @@ class TriggerTermConverter
     private function upgradeTerm_ticket_field($type, $op, OptionsArray $options)
     {
         $field_id = Strings::extractRegexMatch('#\[(\d+)\]$#', $type);
-        if (!$field_id) {
-            return null;
-        }
+        if (!$field_id) return null;
 
-        $value = Arrays::getValue($options->all(), 'custom_fields.field_'.$field_id);
+        $value = Arrays::getValue($options->all(), 'custom_fields.field_'. $field_id);
 
         return new Terms\CheckTicketField($op, array(
             'field_id' => $field_id,
-            'value'    => $value,
+            'value'    => $value
         ));
     }
 
     private function upgradeTerm_time_created($type, $op, OptionsArray $options)
     {
         return new Terms\CheckTimeOfDay($op, array(
-            'time1' => $options->get('hour1', '00').':'.$options->get('minute1', '00'),
+            'time1' => $options->get('hour1', '00') . ':' . $options->get('minute1', '00'),
             'tz'    => 'UTC',
-            'var'   => 'date_created',
+            'var'   => 'date_created'
         ));
     }
 

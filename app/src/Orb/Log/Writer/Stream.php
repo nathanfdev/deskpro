@@ -33,15 +33,15 @@
  */
 
 namespace Orb\Log\Writer;
-
 use \Orb\Log\LogItem;
+
 
 /**
  * This writer writes to any stream
  */
 class Stream extends AbstractWriter
 {
-    /**
+ /**
      * Holds the PHP stream to log to.
      * @var null|stream
      */
@@ -146,7 +146,7 @@ class Stream extends AbstractWriter
 
     public function closeStream()
     {
-        if ($this->_did_open_stream and is_resource($this->_stream)) {
+        if ($this->_did_open_stream AND is_resource($this->_stream)) {
             fclose($this->_stream);
             $this->_stream = null;
             $this->_did_open_stream = false;
@@ -165,7 +165,7 @@ class Stream extends AbstractWriter
     {
         $stream = $this->getStream();
 
-        if (false === @fwrite($stream, $log_item[LogItem::MESSAGE_LINE]."\n")) {
+        if (false === @fwrite($stream, $log_item[LogItem::MESSAGE_LINE] . "\n")) {
             throw new \RuntimeException("Unable to write to stream");
         }
 

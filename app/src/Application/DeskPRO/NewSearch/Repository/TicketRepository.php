@@ -23,7 +23,7 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
      */
     protected $highlightFields = array(
         'subject'  => array('fragment_size' => 100),
-        'messages' => array('fragment_size' => 100, 'number_of_fragments' => 1),
+        'messages' => array('fragment_size' => 100, 'number_of_fragments' => 1)
     );
 
     /**
@@ -60,6 +60,7 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
         if (!$this->person->getAllowedDepartments() || (!$this->person->hasPerm('agent_tickets.view_unassigned') && !$this->person->hasPerm('agent_tickets.view_others'))) {
             // cant see anything else
         } else {
+
             $sub_filter = new Filter\BoolAnd();
             $any = false;
 
@@ -82,6 +83,7 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
                 $sub_filter->addFilter(new Filter\BoolNot(new Filter\Term(array('agent_team' => 0))));
                 $any = true;
             }
+
 
             // If user has all perms, then no filters are applied
             // and the BoolAnd filter will be empty

@@ -61,7 +61,7 @@ abstract class BasicTreeCategoryPermission extends BasicCategoryPermission
     protected function _computeTree($tree, $default = null)
     {
         foreach ($tree as $node) {
-            if ($default or in_array($node['id'], $this->specific_cats)) {
+            if ($default OR in_array($node['id'], $this->specific_cats)) {
                 $this->allowed_cats[] = $node['id'];
 
                 if ($node['children']) {
@@ -70,6 +70,7 @@ abstract class BasicTreeCategoryPermission extends BasicCategoryPermission
             }
         }
     }
+
 
     /**
      * Get an array of specific categories allowed as defined by the db.
@@ -81,6 +82,7 @@ abstract class BasicTreeCategoryPermission extends BasicCategoryPermission
     {
         return $this->specific_cats;
     }
+
 
     /**
      * Get an array of data we'll serialize

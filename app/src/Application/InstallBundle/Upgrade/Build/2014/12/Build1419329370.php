@@ -38,6 +38,6 @@ class Build1419329370 extends AbstractBuild
 {
     public function run()
     {
-        $this->execMutateSql("CREATE INDEX was_agent_idx ON people (was_agent)");
+		$this->execMutateSql("CREATE INDEX was_agent_idx ON people (was_agent)");
     }
 }

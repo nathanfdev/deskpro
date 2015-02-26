@@ -53,6 +53,7 @@ class AbstractDriver implements \Doctrine\DBAL\Driver
         );
     }
 
+
     /**
      * Constructs the ODBC PDO DSN.
      *
@@ -61,10 +62,11 @@ class AbstractDriver implements \Doctrine\DBAL\Driver
      */
     private function _constructPdoDsn(array $params)
     {
-        $dsn = 'odbc:'.$params['dsn'];
+        $dsn = 'odbc:' . $params['dsn'];
 
         return $dsn;
     }
+
 
     /**
      * @return \Doctrine\DBAL\Platforms\AbstractPlatform
@@ -73,7 +75,7 @@ class AbstractDriver implements \Doctrine\DBAL\Driver
     public function getDatabasePlatform()
     {
         $classname = $this->platform;
-        $default_classname = 'Doctrine\\DBAL\\Platforms\\'.$this->platform;
+        $default_classname = 'Doctrine\\DBAL\\Platforms\\' . $this->platform;
 
         if (class_exists($default_classname)) {
             return new $default_classname();
@@ -84,6 +86,7 @@ class AbstractDriver implements \Doctrine\DBAL\Driver
         }
     }
 
+
     /**
      * @param  \Doctrine\DBAL\Connection                                                                $conn
      * @return \Doctrine\DBAL\Schema\AbstractSchemaManager|\Doctrine\DBAL\Schema\SQLServerSchemaManager
@@ -93,6 +96,7 @@ class AbstractDriver implements \Doctrine\DBAL\Driver
         return new \Doctrine\DBAL\Schema\SQLServerSchemaManager($conn);
     }
 
+
     /**
      * @return string
      */
@@ -100,6 +104,7 @@ class AbstractDriver implements \Doctrine\DBAL\Driver
     {
         return 'pdo_odbc';
     }
+
 
     /**
      * @param  \Doctrine\DBAL\Connection $conn

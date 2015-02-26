@@ -57,6 +57,7 @@ class MysqlAdapter extends AbstractAdapter
         $this->addContentTypeMap('Application\\DeskPRO\\Entity\\News', 'news');
     }
 
+
     /**
      * Delete the specified docs from the index
      *
@@ -68,14 +69,15 @@ class MysqlAdapter extends AbstractAdapter
         foreach ($documents as $doc) {
             App::getDb()->delete('content_search', array(
                 'object_type' => $doc->getContentTypeName(),
-                'object_id'   => $doc->getId(),
+                'object_id'   => $doc->getId()
             ));
             App::getDb()->delete('content_search_attribute', array(
                 'object_type' => $doc->getContentTypeName(),
-                'object_id'   => $doc->getId(),
+                'object_id'   => $doc->getId()
             ));
         }
     }
+
 
     /**
      * Update the search index with the specified docs
@@ -86,6 +88,7 @@ class MysqlAdapter extends AbstractAdapter
     public function updateDocumentsInIndex(array $documents)
     {
         foreach ($documents as $doc) {
+
             if ($doc->isMarkedRemove()) {
                 $this->deleteDocumentsFromIndex(array($doc));
                 continue;
@@ -112,6 +115,7 @@ class MysqlAdapter extends AbstractAdapter
         }
     }
 
+
     /**
      * Create a new instance of a contenttype object.
      *
@@ -128,11 +132,12 @@ class MysqlAdapter extends AbstractAdapter
         $type_name = str_replace('_', '-', $type_name);
         $type_name = ucfirst(Strings::dashToCamelCase($type_name));
 
-        $classname = 'Application\\DeskPRO\\Search\\ContentType\\Mysql\\'.$type_name;
+        $classname = 'Application\\DeskPRO\\Search\\ContentType\\Mysql\\' . $type_name;
         $obj = new $classname();
 
         return $obj;
     }
+
 
     /**
      * Get a content searcher.
@@ -149,6 +154,7 @@ class MysqlAdapter extends AbstractAdapter
         return $searcher;
     }
 
+
     /**
      * Get the combined agent searcher.
      *
@@ -164,6 +170,7 @@ class MysqlAdapter extends AbstractAdapter
         return $searcher;
     }
 
+
     /**
      * Delete all objects from the index of a particular content type.
      *
@@ -175,6 +182,7 @@ class MysqlAdapter extends AbstractAdapter
             DELETE FROM content_search WHERE object_type = ?
         ", array($type_name));
     }
+
 
     /**
      * Labels are added to the fulltext index and then fetched with a fulltext match
@@ -190,7 +198,7 @@ class MysqlAdapter extends AbstractAdapter
      */
     public static function encodeLabel($label)
     {
-        $label = "lbl".md5(strtolower(trim($label)));
+        $label = "lbl" . md5(strtolower(trim($label)));
 
         return $label;
     }
@@ -201,7 +209,7 @@ class MysqlAdapter extends AbstractAdapter
      */
     public static function encodeProperty($k, $v)
     {
-        $label = md5(strtolower($k.$v));
+        $label = md5(strtolower($k . $v));
 
         return $label;
     }

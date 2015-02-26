@@ -46,7 +46,7 @@ class PersonActivity extends AbstractEntityRepository
             FROM DeskPRO:PersonActivity a
             WHERE a.person = ?1
             ORDER BY a.id DESC
-        ")->setMaxResults($max)->setFirstResult($offset)->execute(array(1 => $person['id']));
+        ")->setMaxResults($max)->setFirstResult($offset)->execute(array(1=>$person['id']));
     }
 
     public function countForPerson(PersonEntity $person)
@@ -66,7 +66,7 @@ class PersonActivity extends AbstractEntityRepository
             LEFT JOIN a.person p
             WHERE p.organization = ?1
             ORDER BY a.id DESC
-        ")->setMaxResults($max)->setFirstResult($offset)->execute(array(1 => $org['id']));
+        ")->setMaxResults($max)->setFirstResult($offset)->execute(array(1=>$org['id']));
     }
 
     public function countForOrganization(OrganizationEntity $org)

@@ -85,6 +85,8 @@ class Reader
      */
     protected $array_name_sep = null;
 
+
+
     /**
      * Create the reader.
      *
@@ -99,6 +101,7 @@ class Reader
         $this->cleaner = $cleaner;
     }
 
+
     /**
      * Resets all sources
      */
@@ -110,6 +113,7 @@ class Reader
             }
         }
     }
+
 
     /**
      * @param $source_name
@@ -126,6 +130,8 @@ class Reader
         }
     }
 
+
+
     /**
      * Get the raw value from a source.
      *
@@ -137,12 +143,14 @@ class Reader
     {
         $source = $this->getSource($source_name);
 
-        if ($this->array_name_sep !== null and is_string($name) and Strings::isIn($this->array_name_sep, $name)) {
+        if ($this->array_name_sep !== null AND is_string($name) AND Strings::isIn($this->array_name_sep, $name)) {
             $name = explode($this->array_name_sep, $name);
         }
 
         return $source->getValue($name);
     }
+
+
 
     /**
      * Get an array value. This is just a shortcut to get a raw value, and then
@@ -157,7 +165,7 @@ class Reader
         $value = $this->getValue($name, $source_name);
 
         if (!is_array($value)) {
-            $value = (array) $value;
+            $value = (array)$value;
         }
 
         return $value;
@@ -208,7 +216,7 @@ class Reader
     {
         $source = $this->getSource($source_name);
 
-        if ($this->array_name_sep !== null and is_string($name) and Strings::isIn($this->array_name_sep, $name)) {
+        if ($this->array_name_sep !== null AND is_string($name) AND Strings::isIn($this->array_name_sep, $name)) {
             $name = explode($this->array_name_sep, $name);
         }
 
@@ -269,6 +277,8 @@ class Reader
         $this->default_source_name = $name;
     }
 
+
+
     /**
      * Get the currently set default source.
      *
@@ -279,6 +289,8 @@ class Reader
         return $this->default_source_name;
     }
 
+
+
     /**
      * Get a source object from the name.
      *
@@ -287,16 +299,16 @@ class Reader
      */
     public function getSource($name = null)
     {
-        if ($name === null) {
-            $name = $this->default_source_name;
-        }
+        if ($name === null) $name = $this->default_source_name;
 
         if (!isset($this->source_aliases[$name])) {
-            throw new \Exception('Unknown source: '.$name);
+            throw new \Exception('Unknown source: ' . $name);
         }
 
         return $this->source_aliases[$name];
     }
+
+
 
     /**
      * Dynamic method calls for easy fetching of data types from a source. There are two styleS:
@@ -356,12 +368,15 @@ class Reader
         #----------------------------------------
         # First time calling this method
         #----------------------------------------
+
         } else {
+
             #----------------------------------------
             # getTypeFromSource(name, options);
             #----------------------------------------
 
             if (preg_match('#^get(.*?)From(.*?)$#', $method_name, $match)) {
+
                 $name = $method_args[0];
 
                 $type = $match[1];
@@ -377,13 +392,16 @@ class Reader
                 $this->call_cache[$method_name] = array(
                     'call_type' => 'getTypeFromSource',
                     'type' => $type,
-                    'from' => $from,
+                    'from' => $from
                 );
+
 
             #----------------------------------------
             # getType(name, source, options);
             #----------------------------------------
+
             } elseif (preg_match('#^get(.*?)$#', $method_name, $match)) {
+
                 $name = $method_args[0];
 
                 $type = $match[1];
@@ -400,12 +418,13 @@ class Reader
 
                 $this->call_cache[$method_name] = array(
                     'call_type' => 'getType',
-                    'type' => $type,
+                    'type' => $type
                 );
 
             #----------------------------------------
             # Invalid
             #----------------------------------------
+
             } else {
                 throw new \BadMethodCallException("Unknown method $method_name");
             }
@@ -413,6 +432,8 @@ class Reader
 
         return $this->getCleanValue($name, $type, $from, $options);
     }
+
+
 
     /**
      * Get the cleaner object.
@@ -423,6 +444,8 @@ class Reader
     {
         return $this->cleaner;
     }
+
+
 
     /**
      * Setting an array string separator will allow you to provide $name's that represent

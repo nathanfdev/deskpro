@@ -41,6 +41,7 @@ class Connection extends \Doctrine\DBAL\Driver\PDOConnection implements \Doctrin
     /** @var bool|null  */
     protected $_pdoLastInsertIdSupport = null;
 
+
     /**
      * @override
      */
@@ -51,24 +52,14 @@ class Connection extends \Doctrine\DBAL\Driver\PDOConnection implements \Doctrin
         // Some PDO drivers dont implement quote(), so we need to do ourselves
         // This is a rther dumb 'escape' where we just remove bad chars and then quote
         if (!$val && $value) {
-            if (is_numeric($value)) {
+            if(is_numeric($value)) {
                 $val = $value;
             } else {
-                if ($value === null) {
-                    return 'NULL';
-                }
-                if ($value === "") {
-                    return '';
-                }
-                if ($value === true) {
-                    return 1;
-                }
-                if ($value === false) {
-                    return 0;
-                }
-                if (is_numeric($value)) {
-                    return $value;
-                }
+                if ($value === null) return 'NULL';
+                if ($value === "") return '';
+                if ($value === true) return 1;
+                if ($value === false) return 0;
+                if (is_numeric($value)) return $value;
 
                 $non_displayables = array(
                     '/%0[0-8bcef]/',            // url encoded 00-08, 11, 12, 14, 15
@@ -76,15 +67,15 @@ class Connection extends \Doctrine\DBAL\Driver\PDOConnection implements \Doctrin
                     '/[\x00-\x08]/',            // 00-08
                     '/\x0b/',                   // 11
                     '/\x0c/',                   // 12
-                    '/[\x0e-\x1f]/',             // 14-31
+                    '/[\x0e-\x1f]/'             // 14-31
                 );
                 foreach ($non_displayables as $regex) {
                     $value = preg_replace($regex, '', $value);
                 }
 
-                $value = str_replace("'", "''", $value);
+                $value = str_replace("'", "''", $value );
 
-                return "'".$value."'";
+                return "'" . $value . "'";
             }
         }
 

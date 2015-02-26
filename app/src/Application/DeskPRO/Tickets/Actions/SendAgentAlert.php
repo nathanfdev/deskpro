@@ -154,12 +154,13 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
         return $agents;
     }
 
+
     /**
      * {@inheritDoc}
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $context->getLogger()->debug("[SendAgentAlert] Begin :: agent_ids = ".implode(', ', $this->getActionOption('agent_ids')));
+        $context->getLogger()->debug("[SendAgentAlert] Begin :: agent_ids = " . implode(', ', $this->getActionOption('agent_ids')));
         $start_time = microtime(true);
 
         $agents = $this->resolveAgents($ticket, $this->getActionOption('agent_ids'), $context);
@@ -230,7 +231,7 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
         $em->flush();
 
         if ($alert_records) {
-            foreach ($alert_records    as $rec) {
+            foreach ($alert_records	as $rec) {
                 $cm = $alert_sender->createClientMessage($rec[0], 'tickets', $rec[1], $rec[2]);
                 if ($cm) {
                     $em->persist($cm);

@@ -46,11 +46,12 @@ class JsonObjectSerializer
         $obj_data   = $object->serializeJsonArray();
         $data = array(
             '@CLASS'   => $class_name,
-            '@DATA'    => $obj_data,
+            '@DATA'    => $obj_data
         );
 
         return json_encode($data);
     }
+
 
     /**
      * @param  string                    $json_object

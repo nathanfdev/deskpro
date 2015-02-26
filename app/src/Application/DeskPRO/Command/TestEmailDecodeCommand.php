@@ -26,6 +26,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+
 /**
  * DeskPRO
  *
@@ -83,6 +84,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
         $this->file = $input->getArgument('file');
 
         if ($input->getOption('source')) {
+
             $source_obj = App::getOrm()->find('DeskPRO:EmailSource', $this->file);
             if (!$source_obj || !$source_obj->blob) {
                 $output->writeln("<error>Invalid source ID</error>");
@@ -91,10 +93,11 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
             }
 
             $source = App::getSystemService('BlobStorage')->copyBlobRecordToString($source_obj->blob);
+
         } else {
             if ($this->file && !is_file($this->file)) {
-                if (is_file(getcwd().'/'.$this->file)) {
-                    $this->file = getcwd().'/'.$this->file;
+                if (is_file(getcwd() . '/' . $this->file)) {
+                    $this->file = getcwd() . '/' . $this->file;
                 }
             }
             if (!$this->file || !is_file($this->file)) {
@@ -130,45 +133,45 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 
         $r = $this->reader;
 
-        echo "Subject: ".$r->getSubject()->getSubjectUtf8();
+        echo "Subject: " . $r->getSubject()->getSubjectUtf8();
         echo "\n";
 
         if ($r->getFromAddress()->getName()) {
-            echo "From: ".$r->getFromAddress()->getName()." <".$r->getFromAddress()->getEmail().">";
+            echo "From: " . $r->getFromAddress()->getName() . " <" . $r->getFromAddress()->getEmail() . ">";
         } else {
-            echo "From: ".$r->getFromAddress()->getEmail();
+            echo "From: " . $r->getFromAddress()->getEmail();
         }
         echo "\n";
 
         foreach ($r->getToAddresses() as $email) {
             if ($email->getNameUtf8()) {
-                echo "To: ".$email->getNameUtf8()." <".$email->getEmail().">";
+                echo "To: " . $email->getNameUtf8() . " <" . $email->getEmail() . ">";
             } else {
-                echo "To: <".$email->getEmail().">";
+                echo "To: <" . $email->getEmail() . ">";
             }
             echo "\n";
         }
 
         foreach ($r->getCcAddresses() as $email) {
             if ($email->getNameUtf8()) {
-                echo "CC: ".$email->getNameUtf8()." <".$email->getEmail().">";
+                echo "CC: " . $email->getNameUtf8() . " <" . $email->getEmail() . ">";
             } else {
-                echo "CC: <".$email->getEmail().">";
+                echo "CC: <" . $email->getEmail() . ">";
             }
             echo "\n";
         }
 
         if ($date = $r->getDate()) {
-            echo "Date: ".$date->format('Y-m-d H:i:s');
+            echo "Date: " . $date->format('Y-m-d H:i:s');
             echo "\n";
         }
 
         if ($attaches = $r->getAttachments()) {
             foreach ($attaches as $k => $attach) {
                 if ($save_attach) {
-                    file_put_contents(dirname($this->file).'/'.$k.'-'.$attach->getFileName(), $attach->getFileContents());
+                    file_put_contents(dirname($this->file) . '/' . $k . '-' . $attach->getFileName(), $attach->getFileContents());
                 }
-                echo "Attachment[$k]: ".$attach->getFileName();
+                echo "Attachment[$k]: " . $attach->getFileName();
                 echo "\n";
             }
         }
@@ -189,7 +192,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
             $cutter = \Application\DeskPRO\EmailGateway\Cutter\CutterDefFactory::getDef($r);
             $fwd_cutter = new \Application\DeskPRO\EmailGateway\Cutter\ForwardCutter($email_info['body'], $email_info['body_is_html'], $cutter);
 
-            echo "IS VALID FORWARD: ".($fwd_cutter->isValid() ? "TRUE" : "FALSE");
+            echo "IS VALID FORWARD: " . ($fwd_cutter->isValid() ? "TRUE" : "FALSE");
             echo "\n\n\n\n\n";
 
             $data = $fwd_cutter->getData();
@@ -198,7 +201,9 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
             $data['fwd_message_body'] = $this->cleanBodyText($data['fwd_message_body']);
 
             print_r($fwd_cutter->getData());
+
         } elseif ($input->getOption('reply-codes')) {
+
             $logger = new \Orb\Log\Logger();
             $ar_w = new \Orb\Log\Writer\ArrayWriter();
             $logger->addWriter($ar_w);
@@ -206,7 +211,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
             if ($r->getBodyHtml()->getBodyUtf8() && !$input->getOption('force-text')) {
                 $body = $r->getBodyHtml()->getBodyUtf8();
                 echo "HTML BODY\n";
-                echo str_repeat('-', 72)."\n";
+                echo str_repeat('-', 72) . "\n";
                 echo $body;
                 $rc = new AgentReplyCodes($body, true);
                 $rc->setCleaner(App::$container->getInputCleaner());
@@ -214,27 +219,29 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
                 $reply_actions = $rc->getProperties();
 
                 echo "\n\n\nCLEANED HTML BODY\n";
-                echo str_repeat('-', 72)."\n";
+                echo str_repeat('-', 72) . "\n";
                 echo $rc->getOrigBody();
             } else {
                 $body = $r->getBodyText()->getBodyUtf8();
                 echo "TEXT BODY\n";
-                echo str_repeat('-', 72)."\n";
+                echo str_repeat('-', 72) . "\n";
                 echo $body;
                 $rc = new AgentReplyCodes($body, false);
                 $reply_actions = $rc->getProperties();
             }
 
             echo "\n\n\nREPLY CODES LOG\n";
-            echo str_repeat('-', 72)."\n";
+            echo str_repeat('-', 72) . "\n";
             echo $ar_w->getMessagesAsString();
 
             if ($reply_actions) {
                 echo "\n\n\nNEW BODY\n";
-                echo str_repeat('#', 72)."\n";
+                echo str_repeat('#', 72) . "\n";
                 echo $rc->getNewBody();
             }
+
         } else {
+
             $logger = new \Orb\Log\Logger();
             $ar_w = new \Orb\Log\Writer\ArrayWriter();
             $logger->addWriter($ar_w);

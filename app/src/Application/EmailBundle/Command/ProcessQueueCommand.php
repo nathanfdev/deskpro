@@ -26,6 +26,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+
 /**
  * DeskPRO
  *
@@ -43,8 +44,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Monolog;
 
 class ProcessQueueCommand extends ContainerAwareCommand
-{
-    /**
+{/**
      * {@inheritDoc}
      */
     protected function configure()
@@ -75,7 +75,7 @@ class ProcessQueueCommand extends ContainerAwareCommand
              'dp.email.out.queue',
              'dp.email.out.transport',
              'dp.email.out.mailer',
-             'dp.email.out.raw_transport',
+             'dp.email.out.raw_transport'
          ) as $n) {
             $console_handler = new ConsoleHandler($output);
             $console_handler->setFormatter(new ConsoleFormatter("%start_tag%[%datetime%] %channel%.%level_name%: %message%%end_tag%\n"));

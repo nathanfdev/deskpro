@@ -73,6 +73,7 @@ class PersonDbLoader
         'agent_tasks'   => 'tasks',
     );
 
+
     /**
      * @param Person        $person
      * @param EntityManager $em
@@ -83,6 +84,7 @@ class PersonDbLoader
         $this->em     = $em;
         $this->db     = $em->getConnection();
     }
+
 
     /**
      * @return array
@@ -137,7 +139,7 @@ class PersonDbLoader
                 $perm_recs[] = array(
                     'name'         => $n,
                     'usergroup_id' => $add_ugid,
-                    'person_id'    => null,
+                    'person_id'    => null
                 );
             }
         }
@@ -160,6 +162,7 @@ class PersonDbLoader
 
         return $this->perms;
     }
+
 
     /**
      * Get effective permissions (group and overrides combined)
@@ -185,6 +188,7 @@ class PersonDbLoader
         return $this->createAgentPermissions($perms['person']);
     }
 
+
     /**
      * Get just group permissions (no overrides)
      *
@@ -197,6 +201,7 @@ class PersonDbLoader
         return $this->createAgentPermissions($perms['group']);
     }
 
+
     /**
      * @param  array            $perm_array
      * @return AgentPermissions
@@ -206,23 +211,15 @@ class PersonDbLoader
         $agent_perms = new AgentPermissions();
 
         foreach ($perm_array as $k => $v) {
-            if (!$v) {
-                continue;
-            } // disabled
-            if (strpos($k, '.') === false) {
-                continue;
-            } // invalid
+            if (!$v) continue; // disabled
+            if (strpos($k, '.') === false) continue; // invalid
 
-            list($type, $name) = explode('.', $k, 2);
-            if (!isset(self::$prefix_map[$type])) {
-                continue;
-            } // unknown type
+            list ($type, $name) = explode('.', $k, 2);
+            if (!isset(self::$prefix_map[$type])) continue; // unknown type
 
             $obj_name = self::$prefix_map[$type];
             $obj = $agent_perms->$obj_name;
-            if (!isset($obj->$name)) {
-                continue;
-            } // invalid;
+            if (!isset($obj->$name)) continue; // invalid;
 
             $obj->$name = true;
         }

@@ -46,10 +46,7 @@ class NoValue
      */
     public static function get()
     {
-        if (self::$inst === null) {
-            self::$inst = new self();
-        }
-
+        if (self::$inst === null) self::$inst = new self();
         return self::$inst;
     }
 
@@ -61,14 +58,9 @@ class NoValue
      */
     public static function is($v)
     {
-        if (self::$inst === null) {
-            return false;
-        }
-
+        if (self::$inst === null) return false;
         return self::$inst === $v;
     }
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 }

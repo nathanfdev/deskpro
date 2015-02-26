@@ -65,6 +65,7 @@ class LayoutCollection implements \Countable, \IteratorAggregate
         $this->layouts[$key] = $layout;
     }
 
+
     /**
      * @param  string $key
      * @return bool
@@ -74,6 +75,7 @@ class LayoutCollection implements \Countable, \IteratorAggregate
         return isset($this->layouts[$key]);
     }
 
+
     /**
      * @return bool
      */
@@ -81,6 +83,7 @@ class LayoutCollection implements \Countable, \IteratorAggregate
     {
         return isset($this->layouts[0]);
     }
+
 
     /**
      * @param  string                    $key
@@ -98,6 +101,7 @@ class LayoutCollection implements \Countable, \IteratorAggregate
         throw new \InvalidArgumentException("No layout exists");
     }
 
+
     /**
      * @return Layout
      * @throws \InvalidArgumentException
@@ -110,6 +114,7 @@ class LayoutCollection implements \Countable, \IteratorAggregate
 
         return $this->layouts[0];
     }
+
 
     /**
      * @return string
@@ -124,11 +129,11 @@ class LayoutCollection implements \Countable, \IteratorAggregate
             $k_str = "'$k'";
 
             $code = trim(Strings::modifyLines($layout->compileJsObj(), "\t\t\t"));
-            $bit_js = "\t\t{$k_str}: {$code}";
+            $bit_js ="\t\t{$k_str}: {$code}";
             $layout_codes[] = $bit_js;
         }
 
-        $js .= implode(",\n", $layout_codes)."\n";
+        $js .= implode(",\n", $layout_codes) . "\n";
         $js .= "\t};\n";
 
         $js .= "\treturn {\n";

@@ -13,6 +13,6 @@ class FeedbackRepository extends AbstractRepository
      * @var array
      */
     protected $highlightFields = array(
-        'title' => array('fragment_size' => 100),
+        'title' => array('fragment_size' => 100)
     );
 }

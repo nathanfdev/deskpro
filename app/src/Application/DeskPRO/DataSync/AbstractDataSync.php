@@ -117,7 +117,7 @@ abstract class AbstractDataSync
         $this->_defaultFields = $this->getDefaultInsertValues();
 
         $fileName = basename(str_replace('\\', DIRECTORY_SEPARATOR, get_class($this)));
-        $this->_baseFile = $baseFile ?: DP_ROOT.'/src/Application/InstallBundle/Data/Sync/'.$fileName.'.json';
+        $this->_baseFile = $baseFile ?: DP_ROOT . '/src/Application/InstallBundle/Data/Sync/' . $fileName . '.json';
 
         $this->_db = \Application\DeskPRO\App::getDb();
     }
@@ -152,14 +152,14 @@ abstract class AbstractDataSync
         $this->_db->beginTransaction();
 
         try {
-            foreach ($live as $key => $row) {
+            foreach ($live AS $key => $row) {
                 if (!isset($base[$key])) {
                     $this->delete($key, $row);
                     $delete++;
                 }
             }
 
-            foreach ($base as $key => $data) {
+            foreach ($base AS $key => $data) {
                 if (!isset($live[$key])) {
                     $this->insert($key, $data);
                     $insert++;
@@ -178,7 +178,7 @@ abstract class AbstractDataSync
         return array(
             'insert' => $insert,
             'update' => $update,
-            'delete' => $delete,
+            'delete' => $delete
         );
     }
 
@@ -194,7 +194,7 @@ abstract class AbstractDataSync
         $this->_db->beginTransaction();
 
         try {
-            foreach ($live as $key => $row) {
+            foreach ($live AS $key => $row) {
                 $this->delete($key, $row);
                 $delete++;
             }
@@ -234,13 +234,13 @@ abstract class AbstractDataSync
     protected function _encodeBaseData(array $data)
     {
         $output = array();
-        foreach ($data as $uniqueKey => $row) {
-            $output[] = "\"$uniqueKey\":".json_encode($row);
+        foreach ($data AS $uniqueKey => $row) {
+            $output[] = "\"$uniqueKey\":" . json_encode($row);
         }
 
         $eol = PHP_EOL;
 
-        return '{'.$eol.implode(",$eol", $output).$eol.'}';
+        return '{' . $eol . implode(",$eol", $output) . $eol . '}';
     }
 
     /**
@@ -308,7 +308,7 @@ abstract class AbstractDataSync
     public function filterSyncableData(array $data)
     {
         $output = array();
-        foreach ($data as $key => $row) {
+        foreach ($data AS $key => $row) {
             $output[$key] = $this->filterSyncableRow($row);
         }
 
@@ -325,7 +325,7 @@ abstract class AbstractDataSync
     public function filterSyncableRow(array $row)
     {
         $output = array();
-        foreach ($this->_syncFields as $field) {
+        foreach ($this->_syncFields AS $field) {
             if (array_key_exists($field, $row)) {
                 $output[$field] = $row[$field];
             } else {
@@ -385,11 +385,11 @@ abstract class AbstractDataSync
         $classes = array();
         $baseFile = basename(__FILE__);
 
-        foreach (glob(__DIR__.'/*.php') as $file) {
+        foreach (glob(__DIR__ . '/*.php') AS $file) {
             $file = basename($file);
             if ($file != $baseFile) {
                 $class = substr($file, 0, -4);
-                $classes[$class] = '\\'.__NAMESPACE__.'\\'.$class;
+                $classes[$class] = '\\' . __NAMESPACE__ . '\\' . $class;
             }
         }
 
@@ -405,7 +405,7 @@ abstract class AbstractDataSync
     public static function syncAllBaseToLive()
     {
         $output = array();
-        foreach (static::getAvailableSyncClasses() as $key => $class) {
+        foreach (static::getAvailableSyncClasses() AS $key => $class) {
             /* @var $sync \Application\DeskPRO\DataSync\AbstractDataSync */
             $sync = new $class();
             $output[$key] = $sync->syncBaseToLive();

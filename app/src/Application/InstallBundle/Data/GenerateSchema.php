@@ -81,6 +81,7 @@ class GenerateSchema
         $this->em = $em;
     }
 
+
     /**
      * @return array
      */
@@ -90,6 +91,7 @@ class GenerateSchema
 
         return $this->creates;
     }
+
 
     /**
      * @return array
@@ -101,6 +103,7 @@ class GenerateSchema
         return $this->alters;
     }
 
+
     /**
      * @return array
      */
@@ -111,6 +114,7 @@ class GenerateSchema
         return $this->triggers;
     }
 
+
     /**
      * @return string
      */
@@ -120,6 +124,7 @@ class GenerateSchema
 
         return $this->php_file;
     }
+
 
     /**
      * Loads the schema
@@ -170,11 +175,14 @@ SQL;
         $php_alters   = array();
         $php_triggers = array();
 
+
+
         foreach ($all_sql as $s) {
             $s = trim($s);
 
             // Trigger
             if (preg_match('#^CREATE TRIGGER#', $s)) {
+
                 $s_ex = var_export($s, true);
 
                 $this->triggers[] = $s;
@@ -188,6 +196,7 @@ SQL;
 
             // Create
             } else {
+
                 $s = str_replace(array("\r\n", "\n"), ' ', $s);
                 $s .= ' DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
 
@@ -243,13 +252,13 @@ SQL;
                 $sql = $sm->getDatabasePlatform()->getCreateIndexSQL($idx, $t);
                 $this->indexes[$t][$idx->getName()] = $sql;
 
-                $php_indexes[] = "\t'{$idx->getName()}' => '".addslashes($sql)."',";
+                $php_indexes[] = "\t'{$idx->getName()}' => '" . addslashes($sql) . "',";
             }
             foreach ($fkeys as $fk) {
                 $sql = $sm->getDatabasePlatform()->getCreateForeignKeySQL($fk, $t);
                 $this->fks[$t][$fk->getName()] = $sql;
 
-                $php_fks[] = "\t'{$fk->getName()}' => '".addslashes($sql)."',";
+                $php_fks[] = "\t'{$fk->getName()}' => '" . addslashes($sql) . "',";
             }
 
             if (count($indexes) > 0) {
@@ -259,6 +268,7 @@ SQL;
                 $php_fks[] = ");";
             }
         }
+
 
         #------------------------------
         # Create the PHP file
@@ -288,6 +298,7 @@ SQL;
 
         $this->php_file = $php;
     }
+
 
     /**
      * Takes an array of ALTER queries and combines any alters that alter the same table.
@@ -320,7 +331,7 @@ SQL;
 
         $return = array();
         foreach ($segments as $table => $segs) {
-            $return[] = "ALTER TABLE ".$table." ".implode(', ', $segs);
+            $return[] = "ALTER TABLE " . $table . " " . implode(', ', $segs);
         }
 
         return $return;

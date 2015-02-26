@@ -150,11 +150,11 @@ class EmailValidator
             if ($this->person->primary_email && $this->person->primary_email->getId() == $email->getId()) {
                 $this->db->update('people', array(
                     'is_confirmed' => 1,
-                    'primary_email_id' => $email->getId(),
+                    'primary_email_id' => $email->getId()
                 ), array('id' => $this->person->getId()));
             } else {
                 $this->db->update('people', array(
-                    'is_confirmed' => 1,
+                    'is_confirmed' => 1
                 ), array('id' => $this->person->getId()));
             }
 
@@ -262,6 +262,7 @@ class EmailValidator
             $this->em->getConnection()->commit();
 
             return $email;
+
         } catch (\Exception $e) {
             $this->em->getConnection()->rollback();
             throw $e;

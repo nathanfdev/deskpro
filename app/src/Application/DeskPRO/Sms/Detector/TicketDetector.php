@@ -44,10 +44,12 @@ class TicketDetector
      */
     private $em;
 
+
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
     }
+
 
     /**
      * find a ticket based on who sent the sms

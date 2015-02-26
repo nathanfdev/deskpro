@@ -88,6 +88,7 @@ class TicketMerge implements PersonContextInterface
      */
     private $data_lost = array();
 
+
     /**
      * @param  Person                    $person_performer
      * @param  Ticket                    $ticket
@@ -111,6 +112,7 @@ class TicketMerge implements PersonContextInterface
         }
     }
 
+
     /**
      * @param Person $person
      */
@@ -119,6 +121,7 @@ class TicketMerge implements PersonContextInterface
         $this->person = $person;
     }
 
+
     /**
      * @return mixed
      */
@@ -126,6 +129,7 @@ class TicketMerge implements PersonContextInterface
     {
         return $this->person->PermissionsManager->TicketChecker->canMerge($this->ticket, $this->other_ticket);
     }
+
 
     /**
      * Merge the tickets
@@ -143,6 +147,7 @@ class TicketMerge implements PersonContextInterface
             throw $e;
         }
     }
+
 
     /**
      * @throws \Exception
@@ -177,7 +182,7 @@ class TicketMerge implements PersonContextInterface
         $lost_log = array(
             'subject' => null,
         );
-        foreach ($lost_log as $prop_name => $title_field) {
+        foreach ($lost_log AS $prop_name => $title_field) {
             if ($title_field) {
                 $this->data_lost[$prop_name] = $this->other_ticket[$prop_name]->$title_field;
             } else {
@@ -247,7 +252,7 @@ class TicketMerge implements PersonContextInterface
 
         $ticket_del->new_ticket_id = $this->ticket['id'];
         $ticket_del->by_person = $this->person;
-        $ticket_del->reason = "Merge into ".$this->ticket['id'];
+        $ticket_del->reason = "Merge into " . $this->ticket['id'];
         $this->em->persist($ticket_del);
 
         $context = $this->ticket_manager->createAgentExecutorContext($this->person, 'update', 'web');
@@ -263,6 +268,7 @@ class TicketMerge implements PersonContextInterface
         $this->db->delete('tickets_search_active', array('id' => $old_id));
     }
 
+
     /**
      * Merges messages
      */
@@ -273,6 +279,7 @@ class TicketMerge implements PersonContextInterface
             $this->ticket->addMessage($message);
         }
     }
+
 
     /**
      * Merges ticket logs
@@ -286,6 +293,7 @@ class TicketMerge implements PersonContextInterface
         ", array($this->ticket['id'], $this->other_ticket['id']));
     }
 
+
     /**
      * Merges attachments
      */
@@ -297,6 +305,7 @@ class TicketMerge implements PersonContextInterface
         }
     }
 
+
     /**
      * Merges parts
      */
@@ -306,6 +315,7 @@ class TicketMerge implements PersonContextInterface
             $this->ticket->addParticipantPerson($part->person);
         }
     }
+
 
     /**
      * Merges the rest

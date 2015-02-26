@@ -58,6 +58,7 @@ class TicketsAwaitingAgent extends AbstractTableOverviewStat
         $this->grouping_field = $grouping_field;
     }
 
+
     /**
      * @return string[]
      */
@@ -65,6 +66,7 @@ class TicketsAwaitingAgent extends AbstractTableOverviewStat
     {
         return $this->grouping_field->getTitles($this->getValues());
     }
+
 
     /**
      * @return int[]

@@ -97,12 +97,12 @@ class NewsController extends AbstractController
             'category_id' => NewsSearch::TERM_CATEGORY,
             'category_id_specific' => NewsSearch::TERM_CATEGORY_SPECIFIC,
             'label' => NewsSearch::TERM_LABEL,
-            'status' => NewsSearch::TERM_STATUS,
+            'status' => NewsSearch::TERM_STATUS
         );
 
         $terms = array();
 
-        foreach ($search_map as $input => $search_key) {
+        foreach ($search_map AS $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ($value) {
                 $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
@@ -114,11 +114,11 @@ class NewsController extends AbstractController
         if ($date_created_end) {
             $terms[] = array('type' => NewsSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
                 'date1' => $date_created_start,
-                'date2' => $date_created_end,
+                'date2' => $date_created_end
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => NewsSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start,
+                'date1' => $date_created_start
             ));
         }
 
@@ -135,9 +135,7 @@ class NewsController extends AbstractController
         $result_cache = $this->getApiSearchResult('news', $terms, $extra, $this->in->getUint('cache_id'), new NewsSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) {
-            $page = 1;
-        }
+        if (!$page) $page = 1;
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
@@ -151,7 +149,7 @@ class NewsController extends AbstractController
             'per_page' => $per_page,
             'total' => count($ids),
             'cache_id' => $result_cache->id,
-            'news' => $this->getApiData($news),
+            'news' => $this->getApiData($news)
         ));
     }
 
@@ -201,9 +199,9 @@ class NewsController extends AbstractController
 
         $date = $this->in->getUint('date');
         if ($date) {
-            $news->date_created = new \DateTime('@'.$date);
+            $news->date_created = new \DateTime('@' . $date);
             if ($status == 'published') {
-                $news->date_published = new \DateTime('@'.$date);
+                $news->date_published = new \DateTime('@' . $date);
             }
         }
 
@@ -341,7 +339,7 @@ class NewsController extends AbstractController
 
         $date = $this->in->getUint('date_published');
         if ($date && $news->status == 'published') {
-            $news->date_published = new \DateTime('@'.$date);
+            $news->date_published = new \DateTime('@' . $date);
         }
 
         $content = $this->in->getString('content');
@@ -362,7 +360,7 @@ class NewsController extends AbstractController
             }
         }
 
-        foreach ($revs as $rev) {
+        foreach ($revs AS $rev) {
             $this->em->persist($rev);
         }
         $this->em->persist($news);
@@ -828,7 +826,7 @@ class NewsController extends AbstractController
         $comments = $this->em->getRepository('DeskPRO:NewsComment')->getValidatingComments();
         $entity_key = 'news';
         $output = array();
-        foreach ($comments as $key => $value) {
+        foreach ($comments AS $key => $value) {
             $output[$key] = $value->toApiData(false, true);
             if ($value->$entity_key) {
                 $output[$key][$entity_key] = $value->$entity_key->toApiData(false, false);
@@ -903,13 +901,13 @@ class NewsController extends AbstractController
             $this->em->persist($category);
             $this->em->flush();
 
-            foreach ($usergroup_ids as $usergroup_id) {
+            foreach ($usergroup_ids AS $usergroup_id) {
                 if (!$usergroup_id) {
                     continue;
                 }
                 App::getDb()->insert('news_category2usergroup', array(
                     'category_id'  => $category->getId(),
-                    'usergroup_id' => $usergroup_id,
+                    'usergroup_id' => $usergroup_id
                 ));
             }
 
@@ -1008,6 +1006,7 @@ class NewsController extends AbstractController
             $category->title = $title;
         }
 
+
         if ($this->in->checkIsset('parent_id')) {
             $parent_id = $this->in->getUint('parent_id');
             if ($parent_id) {
@@ -1085,7 +1084,7 @@ class NewsController extends AbstractController
         $category = $this->_getCategoryOr404($category_id);
 
         $terms = array(
-            array('type' => NewsSearch::TERM_CATEGORY_SPECIFIC, 'op' => 'contains', 'options' => array($category->id)),
+            array('type' => NewsSearch::TERM_CATEGORY_SPECIFIC, 'op' => 'contains', 'options' => array($category->id))
         );
 
         $order_by = $this->in->getString('order');
@@ -1101,9 +1100,7 @@ class NewsController extends AbstractController
         $result_cache = $this->getApiSearchResult('news', $terms, $extra, $this->in->getUint('cache_id'), new NewsSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) {
-            $page = 1;
-        }
+        if (!$page) $page = 1;
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
@@ -1117,7 +1114,7 @@ class NewsController extends AbstractController
             'per_page' => $per_page,
             'total' => count($ids),
             'cache_id' => $result_cache->id,
-            'news' => $this->getApiData($news),
+            'news' => $this->getApiData($news)
         ));
     }
 
@@ -1185,7 +1182,7 @@ class NewsController extends AbstractController
         }
 
         $exists = false;
-        foreach ($category->usergroups as $group) {
+        foreach ($category->usergroups AS $group) {
             if ($group->id == $group_id) {
                 $exists = true;
                 break;
@@ -1195,7 +1192,7 @@ class NewsController extends AbstractController
         if (!$exists) {
             $this->db->insert('news_category2usergroup', array(
                 'category_id' => $category->id,
-                'usergroup_id' => $group_id,
+                'usergroup_id' => $group_id
             ));
         }
 
@@ -1236,7 +1233,7 @@ class NewsController extends AbstractController
         $category = $this->_getCategoryOr404($category_id);
 
         $exists = false;
-        foreach ($category->usergroups as $group) {
+        foreach ($category->usergroups AS $group) {
             if ($group->id == $group_id) {
                 $exists = true;
                 break;
@@ -1276,7 +1273,7 @@ class NewsController extends AbstractController
     {
         $category = $this->_getCategoryOr404($category_id);
 
-        foreach ($category->usergroups as $key => $group) {
+        foreach ($category->usergroups AS $key => $group) {
             if ($group->id == $group_id) {
                 $category->usergroups->remove($key);
                 $this->em->persist($category);

@@ -104,6 +104,7 @@ class ExecutorContext implements ExecutorContextInterface
         $this->logger = $logger;
     }
 
+
     /**
      * @return Logger
      */
@@ -111,6 +112,7 @@ class ExecutorContext implements ExecutorContextInterface
     {
         return $this->logger;
     }
+
 
     /**
      * @param Person $person
@@ -129,6 +131,7 @@ class ExecutorContext implements ExecutorContextInterface
         }
     }
 
+
     /**
      * @return Person
      */
@@ -136,6 +139,7 @@ class ExecutorContext implements ExecutorContextInterface
     {
         return $this->person_context;
     }
+
 
     /**
      * @return OptionsArray
@@ -145,6 +149,7 @@ class ExecutorContext implements ExecutorContextInterface
         return $this->vars;
     }
 
+
     /**
      * @return OptionsArray
      */
@@ -152,6 +157,7 @@ class ExecutorContext implements ExecutorContextInterface
     {
         return $this->user_vars;
     }
+
 
     /**
      * @return bool
@@ -161,6 +167,7 @@ class ExecutorContext implements ExecutorContextInterface
         return $this->vars->has('email_reader');
     }
 
+
     /**
      * @param AbstractReader $reader
      */
@@ -168,6 +175,7 @@ class ExecutorContext implements ExecutorContextInterface
     {
         $this->vars->set('email_reader', $reader);
     }
+
 
     /**
      * @return AbstractReader

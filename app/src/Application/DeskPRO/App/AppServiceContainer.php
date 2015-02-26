@@ -61,6 +61,7 @@ class AppServiceContainer
      */
     private $app_services = array();
 
+
     /**
      * @param DeskproContainer $container
      */
@@ -68,6 +69,7 @@ class AppServiceContainer
     {
         $this->container = $container;
     }
+
 
     /**
      * @param NativeApp $native_app
@@ -86,10 +88,9 @@ class AppServiceContainer
         // Set up services
         $app_services = $native_app->getConfig()->getServices();
         if ($app_services) {
-            $app_services = Arrays::keyFromData($app_services, 'id');
-            $app_services = array_map(function ($x) use ($app) { $x['app'] = $app;
 
-return $x; }, $app_services);
+            $app_services = Arrays::keyFromData($app_services, 'id');
+            $app_services = array_map(function ($x) use ($app) { $x['app'] = $app; return $x; }, $app_services);
             $this->package_service_names[$package->name] = $app_services;
 
             if ($package->is_single) {
@@ -101,6 +102,7 @@ return $x; }, $app_services);
             }
         }
     }
+
 
     /**
      * @param  string                    $name The name of the service

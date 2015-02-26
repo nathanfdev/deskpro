@@ -38,6 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
 
+
 /**
  * Filters based on status
  *
@@ -55,6 +56,7 @@ class FilterStatus extends AbstractFilterTerm
 
         return $options;
     }
+
 
     /**
      * {@inheritDoc}
@@ -85,16 +87,16 @@ class FilterStatus extends AbstractFilterTerm
             if (strpos($s, '.') === false) {
                 $statuses[] = $s;
             } else {
-                list(, $hs) = explode('.', $s, 2);
+                list (, $hs) = explode('.', $s, 2);
                 $hidden_statuses[] = $hs;
             }
         }
 
         if ($statuses) {
-            $query->orWhere("status IN ('".implode("','", $statuses).")");
+            $query->orWhere("status IN ('" . implode("','", $statuses) . ")");
         }
         if ($hidden_statuses) {
-            $query->orWhere("(status = 'hidden' AND hidden_status IN ('".implode("','", $hidden_statuses)."))");
+            $query->orWhere("(status = 'hidden' AND hidden_status IN ('" . implode("','", $hidden_statuses) . "))");
         }
 
         return $query;

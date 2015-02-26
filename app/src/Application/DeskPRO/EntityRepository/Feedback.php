@@ -59,6 +59,7 @@ class Feedback extends AbstractEntityRepository
         ");
     }
 
+
     /**
      * Count the number of feedback that are 'active', grouped by status category as key.
      * The key 0 will be used as the total.
@@ -91,6 +92,7 @@ class Feedback extends AbstractEntityRepository
         ");
     }
 
+
     /**
      * Count the number of hidden feedback, groupbed by hidden_status as key.
      * The key 'hidden' will be used as the total.
@@ -108,6 +110,7 @@ class Feedback extends AbstractEntityRepository
             GROUP BY hidden_status WITH ROLLUP
         ", array('hidden', 'validating', 'temp'));
     }
+
 
     /**
      * Count the number of feedback that are new
@@ -198,10 +201,7 @@ class Feedback extends AbstractEntityRepository
     public function getBySlug($slug)
     {
         $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
-        if (!$id) {
-            return null;
-        }
-
+        if (!$id) return null;
         return $this->find($id);
     }
 
@@ -213,9 +213,7 @@ class Feedback extends AbstractEntityRepository
      */
     public function getByIdsWithContext(array $ids, PersonEntity $person_context = null)
     {
-        if (!$ids) {
-            return array();
-        }
+        if (!$ids) return array();
 
         if ($person_context) {
             $feedback = $this->getEntityManager()->createQuery("
@@ -238,9 +236,7 @@ class Feedback extends AbstractEntityRepository
 
     public function getByResultIds(array $ids)
     {
-        if (!$ids) {
-            return array();
-        }
+        if (!$ids) return array();
 
         $unsorted_feedback = $this->getEntityManager()->createQuery("
             SELECT i
@@ -262,12 +258,8 @@ class Feedback extends AbstractEntityRepository
 
     public function getFeedback($status, $node = false, $sort = 'id', $num = 10)
     {
-        if ($sort == 'date') {
-            $sort = 'id';
-        }
-        if (!in_array($sort, array('id', 'num_ratings'))) {
-            $sort = 'id';
-        }
+        if ($sort == 'date') $sort = 'id';
+        if (!in_array($sort, array('id', 'num_ratings'))) $sort = 'id';
 
         if ($node) {
             $node_ids = $node->getTreeIds(true);
@@ -347,12 +339,12 @@ class Feedback extends AbstractEntityRepository
         return array(
             'views' => array(
                 'conditions' => '%1$s.object_type = 4 AND %1$s.object_id = %2$s.id',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog'
             ),
             'ratings' => array(
                 'conditions' => '%1$s.object_type = \'feedback\' AND %1$s.object_id = %2$s.id',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Rating',
-            ),
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Rating'
+            )
         );
     }
 }

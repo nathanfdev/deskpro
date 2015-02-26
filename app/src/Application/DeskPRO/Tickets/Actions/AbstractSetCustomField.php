@@ -52,6 +52,7 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
         return $options;
     }
 
+
     /**
      * @param  Ticket                                         $ticket
      * @param  ExecutorContextInterface                       $context
@@ -59,12 +60,14 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
      */
     abstract public function getFieldManager(Ticket $ticket, ExecutorContextInterface $context);
 
+
     /**
      * @param  Ticket                   $ticket
      * @param  ExecutorContextInterface $context
      * @return mixed
      */
     abstract public function getApplicableObject(Ticket $ticket, ExecutorContextInterface $context);
+
 
     /**
      * {@inheritDoc}
@@ -85,6 +88,7 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
         $fm->saveFormToObject($form_array, $obj, true);
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -97,6 +101,7 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
         return array();
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -105,11 +110,12 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
         $this->applyAction($ticket, $context);
     }
 
+
     /**
      * @return string
      */
     public function getActionType()
     {
-        return Util::getBaseClassname($this).$this->getActionOption('field_id');
+        return Util::getBaseClassname($this) . $this->getActionOption('field_id');
     }
 }

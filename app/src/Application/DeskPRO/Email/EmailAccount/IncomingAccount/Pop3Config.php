@@ -67,6 +67,7 @@ class Pop3Config implements AccountConfigInterface
      */
     public $secure_mode = null;
 
+
     /**
      * {@inheritDoc}
      */
@@ -77,9 +78,10 @@ class Pop3Config implements AccountConfigInterface
             'port'        => $this->port,
             'user'        => $this->user,
             'password'    => $this->password,
-            'secure_mode' => $this->secure_mode,
+            'secure_mode' => $this->secure_mode
         );
     }
+
 
     /**
      * {@inheritDoc}
@@ -94,6 +96,7 @@ class Pop3Config implements AccountConfigInterface
         return $obj;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -101,6 +104,7 @@ class Pop3Config implements AccountConfigInterface
     {
         return 'pop3';
     }
+
 
     ############################################################################
     # Validation Metadata
@@ -111,7 +115,7 @@ class Pop3Config implements AccountConfigInterface
         $metadata->addPropertyConstraint('host', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('port', new Constraints\GreaterThan(array('value' => 1)));
         $metadata->addPropertyConstraint('secure_mode', new Constraints\Choice(array(
-            'choices' => array('none', 'ssl', 'tls'),
+            'choices' => array('none', 'ssl', 'tls')
         )));
     }
 }

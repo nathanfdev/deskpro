@@ -33,8 +33,8 @@
  */
 
 namespace Orb\Log\Writer;
-
 use \Orb\Log\LogItem;
+
 
 /**
  * This writer just echos out the messages
@@ -62,7 +62,7 @@ class Output extends AbstractWriter
     {
         $msg = $log_item[LogItem::MESSAGE_LINE];
         if ($this->html) {
-            $msg = '<pre style="margin:0;padding:0;">'.htmlspecialchars(trim($msg)).'</pre>';
+            $msg = '<pre style="margin:0;padding:0;">' . htmlspecialchars(trim($msg)) . '</pre>';
         } else {
             $msg .= "\n";
         }

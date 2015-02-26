@@ -48,6 +48,7 @@ class WorkHoursSetAll implements WorkHoursInterface
         return new \DateTime("@$date");
     }
 
+
     /**
      * @param  \DateTime $date
      * @param  int|null  $time_remaining
@@ -57,6 +58,7 @@ class WorkHoursSetAll implements WorkHoursInterface
     {
         return true;
     }
+
 
     /**
      * @param  \DateTime $date

@@ -158,7 +158,8 @@ class SmsSender
      */
     protected function doSend(
         $to_number, SmsMessage $message, $from_number = null, SmsProviderInterface $provider = null
-    ) {
+    )
+    {
         if (!$provider = $this->getProvider($provider)) {
             throw new SmsException('cannot send SMS without an SmsProvider');
         }

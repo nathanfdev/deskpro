@@ -64,6 +64,7 @@ class Build1340805438 extends AbstractBuild
         }
 
         if ($dp3_reg_ug) {
+
             $this->execMutateSql("UPDATE usergroups SET id = 2 WHERE id = $dp3_reg_ug");
             $this->execMutateSql("UPDATE article_category2usergroup SET usergroup_id = 2 WHERE usergroup_id = $dp3_reg_ug");
             $this->execMutateSql("UPDATE download_category2usergroup SET usergroup_id = 2 WHERE usergroup_id = $dp3_reg_ug");

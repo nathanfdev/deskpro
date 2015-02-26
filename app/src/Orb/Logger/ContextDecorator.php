@@ -58,8 +58,8 @@ class ContextDecorator implements LoggerInterface
 
     /**
      * @param LoggerInterface $logger
-     * @param array           $context
-     * @param null            $context_fn
+     * @param array $context
+     * @param null $context_fn
      */
     public function __construct(LoggerInterface $logger, array $context = null, $context_fn = null)
     {
@@ -69,7 +69,7 @@ class ContextDecorator implements LoggerInterface
     }
 
     /**
-     * @param  array $context
+     * @param array $context
      * @return array
      */
     private function getContext(array $context)

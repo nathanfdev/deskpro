@@ -58,6 +58,7 @@ abstract class Template
         $this->name = $name;
     }
 
+
     /**
      * @return string
      */
@@ -71,30 +72,36 @@ abstract class Template
      */
     abstract public function exists();
 
+
     /**
      * @return string
      */
     abstract public function isCustom();
+
 
     /**
      * @return string
      */
     abstract public function getContent();
 
+
     /**
      * @return string
      */
     abstract public function getOriginalContent();
+
 
     /**
      * @return mixed
      */
     abstract public function getOriginalName();
 
+
     /**
      * @return string
      */
     abstract public function getType();
+
 
     /**
      * @return EmailTemplateCode|TemplateCode
@@ -113,6 +120,7 @@ abstract class Template
 
         return $this->template_code;
     }
+
 
     /**
      * @return EmailTemplateCode|TemplateCode

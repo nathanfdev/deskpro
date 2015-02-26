@@ -33,7 +33,6 @@
  */
 
 namespace Application\DeskPRO\Search\Indexer;
-
 use Orb\Util\Strings;
 
 /**

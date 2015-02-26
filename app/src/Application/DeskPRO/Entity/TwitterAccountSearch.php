@@ -25,6 +25,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+
 /**
  * DeskPRO
  *
@@ -122,7 +123,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
                 'result_type' => 'recent',
                 'count' => self::SEARCH_RESULTS,
                 'since_id' => $since_id,
-                'include_entities' => true,
+                'include_entities' => true
             ));
         } catch (\EpiTwitterException $e) {
             return array();
@@ -133,7 +134,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
         if (!empty($results->statuses)) {
             $twitter = new \Application\DeskPRO\Service\Twitter();
             $lookups = array();
-            foreach ($results->statuses as $status) {
+            foreach ($results->statuses AS $status) {
                 $lookups[$status->id_str] = $twitter->processStatus($api, $status, $do_write, 1);
                 if ($do_write) {
                     $em->persist($lookups[$status->id_str]);
@@ -144,7 +145,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
                 array_keys($lookups), $this->account
             );
 
-            foreach ($lookups as $tweet_id => $status) {
+            foreach ($lookups AS $tweet_id => $status) {
                 if (isset($account_statuses[$tweet_id])) {
                     $account_status = $account_statuses[$tweet_id];
                 } else {
@@ -224,10 +225,10 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
             LEFT JOIN t.long long
             LEFT JOIN t.in_reply_to_status in_reply
             WHERE s.search = ?0
-                ".($includeArchived ? '' : "AND a.is_archived = false")."
+                " . ($includeArchived ? '' : "AND a.is_archived = false") . "
             ORDER BY s.date_created DESC
         ")->setParameters(array($this))->setMaxResults($per_page)->setFirstResult($offset)->execute();
-        foreach ($results as $result) {
+        foreach ($results AS $result) {
             $output[] = $result->account_status;
         }
 
@@ -247,9 +248,11 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
             FROM twitter_accounts_searches_statuses AS ss
             INNER JOIN twitter_accounts_statuses AS a ON (ss.account_status_id = a.id)
             WHERE ss.search_id = ?
-                ".($includeArchived ? '' : "AND a.is_archived = 0")."
+                " . ($includeArchived ? '' : "AND a.is_archived = 0") . "
         ", array($this->id));
     }
+
+
 
     ############################################################################
     # Doctrine Metadata
@@ -260,15 +263,15 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccountSearch';
-        $metadata->setPrimaryTable(array( 'name' => 'twitter_accounts_searches'));
+        $metadata->setPrimaryTable(array( 'name' => 'twitter_accounts_searches', ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array( 'fieldName' => 'term', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'term'));
-        $metadata->mapField(array( 'fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_updated'));
-        $metadata->mapField(array( 'fieldName' => 'max_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'max_id'));
-        $metadata->mapField(array( 'fieldName' => 'min_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'min_id'));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'term', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'term', ));
+        $metadata->mapField(array( 'fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_updated', ));
+        $metadata->mapField(array( 'fieldName' => 'max_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'max_id', ));
+        $metadata->mapField(array( 'fieldName' => 'min_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'min_id', ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => NULL, 'inversedBy' => 'searches', 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
-        $metadata->mapOneToMany(array( 'fieldName' => 'search_statuses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountSearchStatus', 'mappedBy' => 'search'));
+        $metadata->mapManyToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => NULL, 'inversedBy' => 'searches', 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'search_statuses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountSearchStatus', 'mappedBy' => 'search',  ));
     }
 }

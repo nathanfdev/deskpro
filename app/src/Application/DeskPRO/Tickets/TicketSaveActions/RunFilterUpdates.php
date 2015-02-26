@@ -51,6 +51,7 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
      */
     private $db;
 
+
     /**
      * @param Connection           $db
      * @param FilterChangeDetector $filter_change_detector
@@ -60,6 +61,7 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
         $this->db = $db;
         $this->filter_change_detector = $filter_change_detector;
     }
+
 
     /**
      * @param Ticket                   $ticket

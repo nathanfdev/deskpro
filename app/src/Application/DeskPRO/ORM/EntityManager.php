@@ -76,7 +76,7 @@ class EntityManager extends UnprivateEntityManager
 
             if ($logger === null) {
                 $logger = new \Orb\Log\Logger();
-                $wr = new \Orb\Log\Writer\Stream(dp_get_log_dir().'/em-persist.log', 'a');
+                $wr = new \Orb\Log\Writer\Stream(dp_get_log_dir() . '/em-persist.log', 'a');
                 $logger->addWriter($wr);
             }
 
@@ -88,7 +88,7 @@ class EntityManager extends UnprivateEntityManager
 
         if ($entity instanceof DomainObject) {
             if ($entity->_isNoPersist()) {
-                $e = new \InvalidArgumentException("Entity marked as no persist: ".get_class($entity)." (id: ".$entity->getId());
+                $e = new \InvalidArgumentException("Entity marked as no persist: " . get_class($entity) . " (id: " . $entity->getId());
                 \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo(\DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e));
 
                 return;
@@ -152,13 +152,13 @@ class EntityManager extends UnprivateEntityManager
     public function flush($entity = null /* note: arg is ignored, see phpdoc comment */)
     {
         if ($this->_delayedInsert) {
-            foreach ($this->_delayedInsert as $persist) {
+            foreach ($this->_delayedInsert AS $persist) {
                 $this->persist($persist);
             }
             $this->_delayedInsert = array();
         }
         if ($this->_delayedUpdate) {
-            foreach ($this->_delayedUpdate as $closure) {
+            foreach ($this->_delayedUpdate AS $closure) {
                 $closure($this);
             }
             $this->_delayedUpdate = array();
@@ -169,7 +169,7 @@ class EntityManager extends UnprivateEntityManager
         $flush_again = false;
 
         if ($this->_delayedInsert) {
-            foreach ($this->_delayedInsert as $persist) {
+            foreach ($this->_delayedInsert AS $persist) {
                 $this->persist($persist);
             }
             $this->_delayedInsert = array();
@@ -177,7 +177,7 @@ class EntityManager extends UnprivateEntityManager
         }
 
         if ($this->_delayedUpdate) {
-            foreach ($this->_delayedUpdate as $closure) {
+            foreach ($this->_delayedUpdate AS $closure) {
                 $closure($this);
             }
             $this->_delayedUpdate = array();
@@ -205,7 +205,7 @@ class EntityManager extends UnprivateEntityManager
             $skip = $class_name;
         }
 
-        foreach ($this->unitOfWork->getIdentityMap() as $class => $entity_name) {
+        foreach ($this->unitOfWork->getIdentityMap() AS $class => $entity_name) {
             if (!in_array($class, $skip)) {
                 $this->unitOfWork->clear($class);
             }

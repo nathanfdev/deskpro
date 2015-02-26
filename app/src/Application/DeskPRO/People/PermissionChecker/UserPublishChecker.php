@@ -77,6 +77,7 @@ class UserPublishChecker extends AbstractChecker
         return false;
     }
 
+
     /**
      * @param  \Application\DeskPRO\Entity\News $news
      * @return bool
@@ -98,6 +99,7 @@ class UserPublishChecker extends AbstractChecker
 
         return false;
     }
+
 
     /**
      * @param  \Application\DeskPRO\Entity\Download $download
@@ -121,6 +123,7 @@ class UserPublishChecker extends AbstractChecker
         return false;
     }
 
+
     /**
      * @param  \Application\DeskPRO\Entity\Feedback $feedback
      * @return bool
@@ -133,6 +136,7 @@ class UserPublishChecker extends AbstractChecker
 
         // Only agents can view non-published
         if ($feedback->status == 'hidden' && !$this->person->is_agent) {
+
             // But still show the user their own submitted feedback
             if ($feedback->person && $feedback->person->getId() == $this->person->getId()) {
                 return true;

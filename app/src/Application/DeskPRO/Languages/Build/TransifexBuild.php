@@ -69,10 +69,11 @@ class TransifexBuild extends AbstractBuild
      */
     public function __construct($url, $username, $password)
     {
-        $this->url      = rtrim($url, '/').'/api/2';
+        $this->url      = rtrim($url, '/') . '/api/2';
         $this->username = $username;
         $this->password = $password;
     }
+
 
     /**
      * @return \Zend\Http\Client
@@ -87,6 +88,7 @@ class TransifexBuild extends AbstractBuild
         return $http;
     }
 
+
     /**
      * @param  string            $path
      * @return array
@@ -95,7 +97,7 @@ class TransifexBuild extends AbstractBuild
     public function restGet($path, $silent = false)
     {
         $http = $this->getHttpClient();
-        $http->setUri($this->url.'/'.ltrim($path, '/'));
+        $http->setUri($this->url . '/' . ltrim($path, '/'));
 
         $req = new HttpRequest();
         $req->setMethod(HttpRequest::METHOD_GET);
@@ -116,6 +118,7 @@ class TransifexBuild extends AbstractBuild
         return $data;
     }
 
+
     /**
      * @param  string            $path
      * @param  array             $data
@@ -125,7 +128,7 @@ class TransifexBuild extends AbstractBuild
     public function restPostJson($path, array $data)
     {
         $http = $this->getHttpClient();
-        $http->setUri($this->url.'/'.ltrim($path, '/'));
+        $http->setUri($this->url . '/' . ltrim($path, '/'));
 
         $req = new HttpRequest();
         $req->setMethod(HttpRequest::METHOD_POST);
@@ -145,6 +148,7 @@ class TransifexBuild extends AbstractBuild
         return $data;
     }
 
+
     /**
      * @param  string            $path
      * @param  array             $data
@@ -154,7 +158,7 @@ class TransifexBuild extends AbstractBuild
     public function restPutJson($path, array $data)
     {
         $http = $this->getHttpClient();
-        $http->setUri($this->url.'/'.ltrim($path, '/'));
+        $http->setUri($this->url . '/' . ltrim($path, '/'));
 
         $req = new HttpRequest();
         $req->setMethod(HttpRequest::METHOD_PUT);
@@ -173,6 +177,7 @@ class TransifexBuild extends AbstractBuild
 
         return $data;
     }
+
 
     /**
      * @param  string $id
@@ -222,6 +227,7 @@ class TransifexBuild extends AbstractBuild
         return $words;
     }
 
+
     /**
      * Update a source phrase with the PO file from $source_file
      *
@@ -237,12 +243,12 @@ class TransifexBuild extends AbstractBuild
         $project_url  = $this->getProjectName($section);
 
         if (!$source_file) {
-            $source_file = $this->getLangPackInfo()->getLangDir().'/default/'.$section.'/export/'.$category.'.po';
+            $source_file = $this->getLangPackInfo()->getLangDir() . '/default/' . $section . '/export/' . $category . '.po';
         }
 
         if (!file_exists($source_file)) {
-            $this->getLogger()->logDebug("$section.$category invalid source file: ".$source_file);
-            throw new \InvalidArgumentException("PO file does not exist: ".$source_file);
+            $this->getLogger()->logDebug("$section.$category invalid source file: " . $source_file);
+            throw new \InvalidArgumentException("PO file does not exist: " . $source_file);
         }
 
         $this->getLogger()->logDebug("$section.$category source file: $source_file");
@@ -263,7 +269,7 @@ class TransifexBuild extends AbstractBuild
                 'name'                 => ucfirst($category),
                 'accept_translations'  => true,
                 'content'              => file_get_contents($source_file),
-                'i18n_type'            => 'PO',
+                'i18n_type'            => 'PO'
             ));
         }
 
@@ -277,6 +283,7 @@ class TransifexBuild extends AbstractBuild
             'content' => file_get_contents($source_file),
         ));
     }
+
 
     /**
      * Gets the project name used in transifex

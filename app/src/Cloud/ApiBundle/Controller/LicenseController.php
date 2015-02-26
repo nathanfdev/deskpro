@@ -81,7 +81,7 @@ class LicenseController extends BaseLicenseController
             'limits' => array(
                 'max_agents'    => $max_agents,
                 'count_agents'  => $current_agents,
-                'remain_agents' => 1, // override for cloud because we handle it automatically
+                'remain_agents' => 1 // override for cloud because we handle it automatically
             ),
         ));
     }
@@ -116,7 +116,7 @@ class LicenseController extends BaseLicenseController
 
         return $this->createJsonResponse(array(
             'code'   => $tmpdata->getCode(),
-            'ma_url' => DP_MA_SERVER.'/cloud/start/'.DPC_SITE_ID.'/'.$tmpdata->getCode(),
+            'ma_url' => DP_MA_SERVER . '/cloud/start/'.DPC_SITE_ID.'/'. $tmpdata->getCode()
         ));
     }
 }

@@ -47,9 +47,9 @@ class ChannelIncomingController extends AbstractController
     public function facebookAction()
     {
         file_put_contents(
-            '/var/www/html/file.txt', "Time: ".date('j M, Y - h:m:s')."\n----------------------\n".print_r(
+            '/var/www/html/file.txt', "Time: " . date('j M, Y - h:m:s') . "\n----------------------\n" . print_r(
                 $_REQUEST, true
-            )."\n".print_r($_SERVER, true)."\n\n--------------------------------------\n\n", FILE_APPEND
+            ) . "\n" . print_r($_SERVER, true) . "\n\n--------------------------------------\n\n", FILE_APPEND
         );
 
         // responds to challenge - used in setup process
@@ -62,11 +62,11 @@ class ChannelIncomingController extends AbstractController
         $json        = json_decode($json_string, true);
 
         file_put_contents(
-            '/var/www/html/file.txt', "Time: ".date('j M, Y - h:m:s')."\n----------------------\n".print_r(
+            '/var/www/html/file.txt', "Time: " . date('j M, Y - h:m:s') . "\n----------------------\n" . print_r(
                 $_REQUEST, true
-            )."\n".print_r($_SERVER, true)."\n".print_r(
+            ) . "\n" . print_r($_SERVER, true) . "\n" . print_r(
                 $json, true
-            )."\n\n--------------------------------------\n\n", FILE_APPEND
+            ) . "\n\n--------------------------------------\n\n", FILE_APPEND
         );
 
         return new Response();

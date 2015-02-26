@@ -57,6 +57,7 @@ class OrganizationFieldManager extends FieldManager
     public function setFieldEnabledById($id, $enabled = true)
     {
         if ($custom_field_id = Strings::extractRegexMatch('#^field_(\d+)$#', $id)) {
+
             $field             = $this->em->find('DeskPRO:CustomDefOrganization', $custom_field_id);
             $field->is_enabled = $enabled;
 

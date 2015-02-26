@@ -39,9 +39,7 @@ use Application\DeskPRO\Entity\Person;
 
 class Util
 {
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     public static function findOrCreate($content, $edit_field, Person $person)
     {
@@ -62,11 +60,11 @@ class Util
             FROM $entity r
             WHERE r.$field = ?1
             ORDER BY r.id DESC
-        ")->setMaxResults(1)->setParameters(array(1 => $content))->getOneOrNullResult();
+        ")->setMaxResults(1)->setParameters(array(1=> $content))->getOneOrNullResult();
 
         $has_field = false;
         if ($rev) {
-            foreach ((array) $edit_field as $f) {
+            foreach ((array)$edit_field as $f) {
                 if ($rev[$f]) {
                     $has_field = true;
                 } else {
@@ -76,9 +74,10 @@ class Util
             }
         }
 
-        if (!$rev or $has_field or $rev->person['id'] != $person['id'] or $rev['date_created'] < $timesnip) {
+        if (!$rev OR $has_field OR $rev->person['id'] != $person['id'] OR $rev['date_created'] < $timesnip) {
+
             $rev_class = self::getRevisionClass($content);
-            $rev = new $rev_class();
+            $rev = new $rev_class;
             $rev->person = $person;
             $rev->$field = $content;
         }
@@ -108,6 +107,7 @@ class Util
 
         $rendered_content_diff = null;
         if ($new_data['content']) {
+
             // We need to go back to find the last change for old
             if (!$old_data['content']) {
                 $r = App::getOrm()->createQuery("
@@ -115,7 +115,7 @@ class Util
                     FROM $entity r
                     WHERE r.$field = ?1 AND r.id < ?2 AND r.content != ''
                     ORDER BY r.id DESC
-                ")->setMaxResults(1)->setParameters(array(1 => $rev_new[$field], 2 => $rev_old_id))->getOneOrNullResult();
+                ")->setMaxResults(1)->setParameters(array(1=> $rev_new[$field], 2=> $rev_old_id))->getOneOrNullResult();
                 if ($r['content']) {
                     $old_data['content'] = $r['content'];
                 } else {
@@ -136,13 +136,14 @@ class Util
 
         $rendered_title_diff = null;
         if ($new_data['title']) {
+
             if (!$old_data['title']) {
                 $r = App::getOrm()->createQuery("
                     SELECT r
                     FROM $entity r
                     WHERE r.$field = ?1 AND r.id < ?2 AND r.title != ''
                     ORDER BY r.id DESC
-                ")->setMaxResults(1)->setParameters(array(1 => $rev_new[$field], 2 => $rev_old_id))->getOneOrNullResult();
+                ")->setMaxResults(1)->setParameters(array(1=> $rev_new[$field], 2=> $rev_old_id))->getOneOrNullResult();
                 if ($r['title']) {
                     $old_data['title'] = $r['title'];
                 } else {
@@ -156,6 +157,7 @@ class Util
                 \FineDiff::$characterGranularity
             );
             $rendered_title_diff = $diff->renderDiffToHTML();
+
         }
 
         $use_blob = false;
@@ -170,7 +172,7 @@ class Util
                     FROM $entity r
                     WHERE r.$field = ?1 AND r.id < ?2 AND r.blob IS NOT NULL
                     ORDER BY r.id DESC
-                ")->setMaxResults(1)->setParameters(array(1 => $rev_new[$field], 2 => $rev_old_id))->getOneOrNullResult();
+                ")->setMaxResults(1)->setParameters(array(1=> $rev_new[$field], 2=> $rev_old_id))->getOneOrNullResult();
             }
 
             if ($r['blob']) {

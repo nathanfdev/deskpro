@@ -33,4 +33,5 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
  */
 final class ImporterException extends \Exception
 {
+
 }

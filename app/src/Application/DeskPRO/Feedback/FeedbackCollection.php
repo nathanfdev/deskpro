@@ -75,6 +75,7 @@ class FeedbackCollection
         $this->feedback_fm = $feedback_fm;
     }
 
+
     /**
      * Get the full array of feedback
      *
@@ -84,6 +85,7 @@ class FeedbackCollection
     {
         return $this->feedbacks;
     }
+
 
     /**
      * Get an array of display data which includes feedback and all associated data with it.
@@ -101,6 +103,7 @@ class FeedbackCollection
         return $data;
     }
 
+
     /**
      * Get a display array for a feedback
      *
@@ -115,11 +118,12 @@ class FeedbackCollection
         $data = array(
             'feedback'      => $feedback,
             'custom_data'   => $custom_data,
-            'user_category' => $user_category,
+            'user_category' => $user_category
         );
 
         return $data;
     }
+
 
     /**
      * Get an array of all custom data on feedback
@@ -156,6 +160,7 @@ class FeedbackCollection
         return $this->feedback_data;
     }
 
+
     /**
      * Get data for a specific feedback
      *
@@ -168,6 +173,7 @@ class FeedbackCollection
 
         return isset($all_data[$feedback->getId()]) ? $all_data[$feedback->getId()] : array();
     }
+
 
     /**
      * Get the user category title

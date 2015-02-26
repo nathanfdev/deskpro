@@ -80,6 +80,7 @@ class Build1355915880 extends AbstractBuild
         unset($trans_info['id']);
 
         foreach ($missing_gateway_ids as $gid) {
+
             if ($trans_info['match_type'] == 'all') {
                 $trans_info['match_type'] = 'exact';
                 $trans_info['match_pattern'] = $this->container->getDb()->fetchColumn("SELECT match_pattern FROM email_gateway_addresses WHERE email_gateway_id = ?", array($gid));
@@ -89,7 +90,7 @@ class Build1355915880 extends AbstractBuild
             $new_id = $this->container->getDb()->lastInsertId();
 
             $this->container->getDb()->update('email_gateways', array(
-                'linked_transport_id' => $new_id,
+                'linked_transport_id' => $new_id
             ), array('id' => $gid));
         }
     }

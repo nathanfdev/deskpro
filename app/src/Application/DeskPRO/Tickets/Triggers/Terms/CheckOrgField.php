@@ -57,6 +57,7 @@ class CheckOrgField extends AbstractCheckCustomField
         return $options;
     }
 
+
     /**
      * @param  Ticket                   $ticket
      * @param  ExecutorContextInterface $context
@@ -71,11 +72,12 @@ class CheckOrgField extends AbstractCheckCustomField
         }
     }
 
+
     /**
      * @return string
      */
     public function getTermType()
     {
-        return 'CheckOrgField'.$this->getTermOptions()->get('field_id');
+		return 'CheckOrgField' . $this->getTermOptions()->get('field_id');
     }
 }

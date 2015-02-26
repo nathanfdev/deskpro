@@ -55,7 +55,5 @@ abstract class AbstractChecker
         $this->init();
     }
 
-    protected function init()
-    {
-    }
+    protected function init() {}
 }

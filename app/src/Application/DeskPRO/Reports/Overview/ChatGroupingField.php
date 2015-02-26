@@ -52,7 +52,7 @@ class ChatGroupingField extends GroupingField
                 return array('select'   => 'COALESCE(chat_conversations.department_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
-                             'where'    => '',
+                             'where'    => ''
                 );
                 break;
 
@@ -60,7 +60,7 @@ class ChatGroupingField extends GroupingField
                 return array('select'   => 'COALESCE(chat_conversations.agent_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
-                             'where'    => '',
+                             'where'    => ''
                 );
                 break;
 
@@ -69,7 +69,7 @@ class ChatGroupingField extends GroupingField
                     'select'   => 'COALESCE(organizations.id, 0) AS org_id',
                     'group_by' => 'org_id',
                     'join'     => 'LEFT JOIN people ON (chat_conversations.person_id = people.id) LEFT JOIN organizations ON (organizations.id = people.organization_id)',
-                    'where'    => '',
+                    'where'    => ''
                 );
                 break;
 
@@ -78,7 +78,7 @@ class ChatGroupingField extends GroupingField
                     'select'   => 'COALESCE(person2usergroups.usergroup_id, 0) AS usergroup_id',
                     'group_by' => 'usergroup_id',
                     'join'     => 'LEFT JOIN person2usergroups ON (person2usergroups.person_id = chat_conversations.person_id)',
-                    'where'    => '',
+                    'where'    => ''
                 );
                 break;
 
@@ -86,7 +86,7 @@ class ChatGroupingField extends GroupingField
                 return array('select'   => 'COALESCE(chat_conversations.person_id, 0) AS person_id',
                              'group_by' => 'person_id',
                              'join'     => '',
-                             'where'    => '',
+                             'where'    => ''
                 );
                 break;
 
@@ -100,7 +100,7 @@ class ChatGroupingField extends GroupingField
                             'select'   => '0 as group_field',
                             'group_by' => 'group_field',
                             'join'     => '',
-                            'where'    => '',
+                            'where'    => ''
                         );
                     }
 
@@ -109,15 +109,15 @@ class ChatGroupingField extends GroupingField
                     return array(
                         'select'   => 'COALESCE(custom_data_person.id, 0) AS group_field',
                         'group_by' => 'group_field',
-                        'join'     => 'LEFT JOIN custom_data_person ON (custom_data_person.person_id = chat_conversations.person_id AND custom_data_person.field_id IN('.$ids.'))',
-                        'where'    => '',
+                        'join'     => 'LEFT JOIN custom_data_person ON (custom_data_person.person_id = chat_conversations.person_id AND custom_data_person.field_id IN(' . $ids . '))',
+                        'where'    => ''
                     );
                 } else {
                     return array(
                         'select'   => 'COALESCE(custom_data_person.input, 0) AS group_field',
                         'group_by' => 'group_field',
-                        'join'     => 'LEFT JOIN custom_data_person ON (custom_data_person.person_id = chat_conversations.person_id AND custom_data_person.field_id = '.$this->field_id.')',
-                        'where'    => '',
+                        'join'     => 'LEFT JOIN custom_data_person ON (custom_data_person.person_id = chat_conversations.person_id AND custom_data_person.field_id = ' . $this->field_id . ')',
+                        'where'    => ''
                     );
                 }
                 break;

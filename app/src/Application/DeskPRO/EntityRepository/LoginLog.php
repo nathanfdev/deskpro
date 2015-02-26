@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Settings\Settings;
 
 class LoginLog extends AbstractEntityRepository
 {
@@ -59,7 +60,7 @@ class LoginLog extends AbstractEntityRepository
     }
 
     /**
-     * @param  PersonEntity                 $person
+     * @param PersonEntity $person
      * @param $maxAttempts
      * @param $time
      * @param $maxLockTime
@@ -107,9 +108,8 @@ class LoginLog extends AbstractEntityRepository
             $attempts++;
         }
 
-        if ($attempts === (int) $maxAttempts) {
+        if ($attempts === (int)$maxAttempts) {
             $lockTime = time() - $maxRowTime;
-
             return max(0, $maxLockTime - $lockTime);
         }
 

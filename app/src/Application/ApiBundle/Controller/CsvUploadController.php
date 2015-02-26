@@ -61,7 +61,7 @@ class CsvUploadController extends AbstractController implements ProtectedControl
         $options = $this->in->getArrayValue('options');
 
         $result = $csv_upload->upload($file, $options);
-        $result['custom_fields'] = $this->getApiData($result['custom_fields']);
+	    $result['custom_fields'] = $this->getApiData($result['custom_fields']);
 
         return $this->createApiResponse($result);
     }
@@ -75,7 +75,7 @@ class CsvUploadController extends AbstractController implements ProtectedControl
         $field_maps    = $this->in->getCleanValueArray('field_maps', 'raw', 'uint');
         $user_filename = $this->in->getString('user_filename');
         $skip_first    = $this->in->getBool('skip_first');
-        $update_if_exists = $this->in->getBool('update_if_exists');
+	    $update_if_exists = $this->in->getBool('update_if_exists');
         $welcome_email = $this->in->getBool('welcome_email');
         $filename      = $this->in->getUint('filename');
         $options       = $this->in->getArrayValue('options');

@@ -84,7 +84,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
                     ) ENGINE=InnoDB DEFAULT CHARSET=latin1
                 ");
             } catch (\Exception $e) {
-                $this->getLogger()->log('Failed to craete install_data: '.$e->getCode().' '.$e->getMessage(), 'err');
+                $this->getLogger()->log('Failed to craete install_data: ' . $e->getCode() . ' ' . $e->getMessage(), 'err');
 
                 return;
             }
@@ -234,7 +234,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         App::getDb()->replace('install_data', array(
             'build' => 'default',
             'name' => 'install_build',
-            'data' => DP_BUILD_TIME,
+            'data' => DP_BUILD_TIME
         ));
 
         App::getDb()->replace('settings', array(
@@ -275,6 +275,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         } catch (\Exception $e) {
             if ($e instanceof DBALException || $e instanceof \PDOException) {
                 if ($e->getCode() == '1049') {
+
                     // Attempt to create an empty database
                     try {
                         global $DP_CONFIG;
@@ -298,6 +299,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             if ($installed) {
                 return false;
             }
+
         } catch (\Exception $e) {
             return true;
         }

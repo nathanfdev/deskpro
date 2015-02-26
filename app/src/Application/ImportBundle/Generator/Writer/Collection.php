@@ -39,13 +39,12 @@ class Collection extends AbstractCollection
     /**
      * Add a writer
      *
-     * @param  WriterInterface $writer
+     * @param WriterInterface $writer
      * @return $this
      */
     public function attach(WriterInterface $writer)
     {
         $this->collection[$writer->getType()] = $writer;
-
         return $this;
     }
 

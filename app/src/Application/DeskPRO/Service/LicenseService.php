@@ -33,7 +33,6 @@
  */
 
 namespace Application\DeskPRO\Service;
-
 use Guzzle\Http\Client as HttpClient;
 
 class LicenseService
@@ -51,6 +50,7 @@ class LicenseService
 
         return $latest;
     }
+
 
     /**
      * Compares current build to the latest build available.
@@ -78,6 +78,7 @@ class LicenseService
         return $data;
     }
 
+
     /**
      * Get version notice info
      *
@@ -103,6 +104,7 @@ class LicenseService
         return $data;
     }
 
+
     /**
      * Gets news from RSS feed
      *
@@ -114,7 +116,7 @@ class LicenseService
 
         try {
             $client = new HttpClient(\DeskPRO\Kernel\License::getSupportUrl(), array(
-                'ssl.certificate_authority' => false,
+                'ssl.certificate_authority' => false
             ));
             $request = $client->get('/news/2-product.rss');
             $response = $request->send();
@@ -129,8 +131,8 @@ class LicenseService
             $x = 0;
             foreach ($rss->channel->item as $item) {
                 $news[] = array(
-                    'title' => (string) $item->title,
-                    'link'  => (string) $item->link,
+                    'title' => (string)$item->title,
+                    'link'  => (string)$item->link
                 );
                 if ($x++ > 5) {
                     break;
@@ -143,6 +145,7 @@ class LicenseService
         return $news;
     }
 
+
     /**
      * @param  string $endpoint
      * @param  array  $post_data
@@ -150,12 +153,12 @@ class LicenseService
      */
     public static function fetchServiceResult($endpoint, array $post_data = array())
     {
-        $url = \DeskPRO\Kernel\License::getLicServer().'/api/'.ltrim($endpoint, '/');
+        $url = \DeskPRO\Kernel\License::getLicServer() . '/api/' . ltrim($endpoint, '/');
 
         try {
             $client = new \Zend\Http\Client(null, array('timeout' => 8, 'strictredirects' => true));
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
-            $client->setUri(\DeskPRO\Kernel\License::getLicServer().'/api/'.ltrim($endpoint, '/'));
+            $client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/' . ltrim($endpoint, '/'));
             $client->getRequest()->getPost()->fromArray($post_data);
             $r = $client->send();
             $result = $r->getBody();

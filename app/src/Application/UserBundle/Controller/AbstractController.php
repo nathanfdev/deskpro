@@ -56,7 +56,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         $tpl_globals = $this->container->get('templating.globals');
         if (!$tpl_globals->getVariable('usersources')) {
-            $tpl_globals->setVariable('usersources', $this->em->getRepository('DeskPRO:Usersource')->getAllUsersources());
+             $tpl_globals->setVariable('usersources', $this->em->getRepository('DeskPRO:Usersource')->getAllUsersources());
         }
 
         if ($this->in->getString('q')) {
@@ -91,7 +91,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
             return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
-                'ip' => dp_get_user_ip_address(),
+                'ip' => dp_get_user_ip_address()
             ));
         }
 
@@ -126,7 +126,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         if ($this->in->getBool('admin_portal_controls')) {
             if ($this->person->id && !$this->person->can_admin) {
-                $this->person = new \Application\DeskPRO\People\PersonGuest();
+                $this->person = new \Application\DeskPRO\People\PersonGuest();;
             }
 
             $cas = new CarryAdminSession($this);
@@ -137,11 +137,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         }
 
         $this->person->loadHelper('FeedbackVotes', array(
-            'visitor' => $this->session->getVisitor(),
+            'visitor' => $this->session->getVisitor()
         ));
         $this->person->loadHelper('HelpdeskUser', array(
             'session' => $this->session,
-            'visitor' => $this->session->getVisitor(),
+            'visitor' => $this->session->getVisitor()
         ));
 
         if ($this instanceof RequireUserInterface) {
@@ -182,11 +182,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         if (
             !($this instanceof LoginController || $this instanceof MainController || $this instanceof ProfileController || $this instanceof PortalController)
-            and !($this instanceof TicketsController && preg_match('#^feedback#', $action))
-            and !$this->person->HelpdeskUser->canDoAnything()
-            and !$tpl_globals->getVariable('admin_portal_controls')
-            and $this->request_type == HttpKernelInterface::MASTER_REQUEST
+            AND !($this instanceof TicketsController && preg_match('#^feedback#', $action))
+            AND !$this->person->HelpdeskUser->canDoAnything()
+            AND !$tpl_globals->getVariable('admin_portal_controls')
+            AND $this->request_type == HttpKernelInterface::MASTER_REQUEST
         ) {
+
             if ($this instanceof PortalController) {
                 return $this->redirectRoute('user_profile');
             }
@@ -219,7 +220,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
                 'news',
                 'feedback',
                 'downloads',
-                'newticket',
+                'newticket'
             ));
 
             $val = array_unique($val);
@@ -277,7 +278,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             if ($this->request->isXmlHttpRequest()) {
                 $data = array(
                     'error' => 'invalid_request_token',
-                    'redirect_login' => $this->generateUrl('agent_login'),
+                    'redirect_login' => $this->generateUrl('agent_login')
                 );
 
                 return $this->createJsonResponse($data, 403);
@@ -286,6 +287,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             }
         }
     }
+
 
     /**
      * Method called after getting session. Meant to be used in controllers as a top-level check to see if they
@@ -297,6 +299,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     {
         return true;
     }
+
 
     /**
      * Renders the login form if the user isn't logged in, or a standard permission error if they are already logged in.
@@ -326,11 +329,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      */
     public function renderStandardError($error_message = '', $error_title = '', $code = 200, array $vars = array())
     {
-        if ($error_message and $error_message[0] == '@') {
+        if ($error_message AND $error_message[0] == '@') {
             $error_message = App::getTranslator()->getPhraseText(substr($error_message, 1));
         }
 
-        if ($error_title and $error_title[0] == '@') {
+        if ($error_title AND $error_title[0] == '@') {
             $error_title = App::getTranslator()->getPhraseText(substr($error_title, 1));
         }
 
@@ -356,7 +359,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         $vars = array_merge($vars, array(
             'error_message' => $error_message,
-            'error_title'   => $error_title,
+            'error_title'   => $error_title
         ));
 
         $res = $this->render($tpl, $vars);

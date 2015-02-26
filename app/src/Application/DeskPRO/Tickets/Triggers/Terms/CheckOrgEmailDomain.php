@@ -56,6 +56,7 @@ class CheckOrgEmailDomain extends AbstractTriggerTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

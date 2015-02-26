@@ -33,7 +33,6 @@
  */
 
 namespace Application\DeskPRO\EntityRepository;
-
 use Application\DeskPRO\App;
 
 class ApiToken extends AbstractEntityRepository
@@ -47,20 +46,13 @@ class ApiToken extends AbstractEntityRepository
      */
     public function findByTokenString($token_string)
     {
-        if (strpos($token_string, ':') === false) {
-            return null;
-        }
+        if (strpos($token_string, ':') === false) return null;
 
-        list($id, $token) = explode(':', $token_string, 2);
+        list ($id, $token) = explode(':', $token_string, 2);
 
         $token_obj = $this->find($id);
-        if (!$token_obj) {
-            return null;
-        }
-        if ($token_obj->token != $token) {
-            return null;
-        }
-
+        if (!$token_obj) return null;
+        if ($token_obj->token != $token) return null;
         return $token_obj;
     }
 
@@ -83,7 +75,7 @@ class ApiToken extends AbstractEntityRepository
 
         if ($rate_limit && $rate_limit['reset_stamp'] <= time()) {
             App::getDb()->delete('api_token_rate_limit', array(
-                'api_token_id' => $api_token->id,
+                'api_token_id' => $api_token->id
             ));
         }
 
@@ -93,7 +85,7 @@ class ApiToken extends AbstractEntityRepository
                 'api_token_id' => $api_token->id,
                 'hits' => 0,
                 'created_stamp' => time(),
-                'reset_stamp' => time() + $interval,
+                'reset_stamp' => time() + $interval
             );
         }
 

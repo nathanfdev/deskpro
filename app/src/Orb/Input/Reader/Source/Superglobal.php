@@ -33,7 +33,6 @@
  */
 
 namespace Orb\Input\Reader\Source;
-
 use Orb\Util\OptionsArray;
 use Orb\Util\Web;
 
@@ -71,6 +70,7 @@ class Superglobal implements SourceInterface, ResetSourceInterface
         $this->options = new OptionsArray($options ?: array());
     }
 
+
     /**
      * @return void
      */
@@ -78,6 +78,7 @@ class Superglobal implements SourceInterface, ResetSourceInterface
     {
         $this->array = null;
     }
+
 
     /**
      * Get all data
@@ -90,6 +91,7 @@ class Superglobal implements SourceInterface, ResetSourceInterface
 
         return $this->array;
     }
+
 
     /**
      * Get the value of some variable
@@ -116,7 +118,8 @@ class Superglobal implements SourceInterface, ResetSourceInterface
 
         if ($parts) {
             foreach ($parts as $part) {
-                if (!is_array($value) or !isset($value[$part])) {
+
+                if (!is_array($value) OR !isset($value[$part])) {
                     $value = null;
                     break;
                 }
@@ -130,9 +133,7 @@ class Superglobal implements SourceInterface, ResetSourceInterface
 
     protected function _initArray()
     {
-        if ($this->array !== null) {
-            return;
-        } // already done
+        if ($this->array !== null) return; // already done
 
         // We'll enforce our own request array
         if ($this->superglobal == '_REQUEST') {
@@ -144,9 +145,7 @@ class Superglobal implements SourceInterface, ResetSourceInterface
                 $this->array = $GLOBALS[$this->superglobal];
             }
         }
-        if (!$this->array) {
-            $this->array = array();
-        }
+        if (!$this->array) $this->array = array();
     }
 
     private function _getPostArray()

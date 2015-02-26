@@ -36,6 +36,7 @@ namespace Application\DeskPRO\RefGenerator;
 
 interface RefGeneratorInterface
 {
+
     /**
      * Generates a new reference number for the supplied object type.
      * Reference numbers must be at MOST 25 characters, and must be unique.

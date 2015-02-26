@@ -46,6 +46,7 @@ class NullConfig implements AccountConfigInterface
         return array();
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -55,6 +56,7 @@ class NullConfig implements AccountConfigInterface
 
         return $obj;
     }
+
 
     /**
      * {@inheritDoc}

@@ -66,6 +66,7 @@ class ApiResponse implements \ArrayAccess
         }
     }
 
+
     /**
      * @return string
      */
@@ -73,6 +74,7 @@ class ApiResponse implements \ArrayAccess
     {
         return $this->raw;
     }
+
 
     /**
      * @return int
@@ -82,6 +84,7 @@ class ApiResponse implements \ArrayAccess
         return $this->http_code;
     }
 
+
     /**
      * @return bool
      */
@@ -90,18 +93,20 @@ class ApiResponse implements \ArrayAccess
         return !$this->isError();
     }
 
+
     /**
      * @return bool
      */
     public function isError()
     {
-        $str = (string) $this->http_code;
+        $str = (string)$this->http_code;
         if ($str[0] != '2' && $str[0] != '3') {
             return true;
         }
 
         return false;
     }
+
 
     /**
      * @return string
@@ -111,6 +116,7 @@ class ApiResponse implements \ArrayAccess
         return $this->get('error', null);
     }
 
+
     /**
      * @return string
      */
@@ -119,6 +125,7 @@ class ApiResponse implements \ArrayAccess
         return $this->get('description', null);
     }
 
+
     /**
      * @return array
      */
@@ -126,6 +133,7 @@ class ApiResponse implements \ArrayAccess
     {
         return $this->data;
     }
+
 
     /**
      * @param  string $id
@@ -172,4 +180,5 @@ class ApiResponse implements \ArrayAccess
     {
         throw new \BadMethodCallException();
     }
+
 }

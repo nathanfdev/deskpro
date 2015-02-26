@@ -66,6 +66,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
         $this->person_id  = $person_id;
     }
 
+
     /**
      * @param  \Application\DeskPRO\Entity\Person $person
      * @return void
@@ -74,6 +75,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     {
         $this->person_context = $person;
     }
+
 
     public function checkPermission(Ticket $ticket, Person $person)
     {
@@ -156,6 +158,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
         }
     }
 
+
     /**
      * Get an array of actions that would be performed on the ticket
      *
@@ -164,9 +167,10 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     public function getApplyActions(Ticket $ticket)
     {
         return array(
-            array('action' => 'reply', 'reply_text' => $this->reply_text, 'attach_ids' => $this->attach_ids, 'is_html' => $this->is_html, 'person_id' => $this->person_id),
+            array('action' => 'reply', 'reply_text' => $this->reply_text, 'attach_ids' => $this->attach_ids, 'is_html' => $this->is_html, 'person_id' => $this->person_id)
         );
     }
+
 
     /**
      * Get reply text
@@ -178,6 +182,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
         return $this->reply_text;
     }
 
+
     /**
      * Get attach ids
      *
@@ -188,6 +193,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
         return $this->attach_ids;
     }
 
+
     /**
      * @return string
      */
@@ -195,6 +201,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     {
         return $this->reply_pos;
     }
+
 
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
@@ -214,9 +221,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 
         if ($as_html) {
             $flat = str_replace(array("\r\n", "\n"), ' ', $this->reply_text);
-            if (strlen($flat) > 80) {
-                $flat = substr($flat, 0, 80).'...';
-            }
+            if (strlen($flat) > 80) $flat = substr($flat, 0, 80) . '...';
 
             $desc = '<span class="highlight-description">'.htmlspecialchars($flat).'</span>';
 
@@ -232,10 +237,10 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
                 if ($this->is_html) {
                     $html = $this->reply_text;
                 } else {
-                    $html = '<p>'.nl2br(htmlspecialchars(trim($this->reply_text), \ENT_QUOTES)).'</p>';
+                    $html = '<p>' . nl2br(htmlspecialchars(trim($this->reply_text), \ENT_QUOTES)) . '</p>';
                 }
 
-                $ret = '<span class="with-reply" data-reply-pos="'.$this->reply_pos.'">'.$ret.'<script type="text/x-deskpro-plain" class="reply-text">'.$html.'</script></span>';
+                $ret = '<span class="with-reply" data-reply-pos="' . $this->reply_pos . '">' . $ret . '<script type="text/x-deskpro-plain" class="reply-text">' . $html . '</script></span>';
 
                 return $ret;
             }

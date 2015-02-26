@@ -55,6 +55,7 @@ class FilterLanguage extends AbstractFilterTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

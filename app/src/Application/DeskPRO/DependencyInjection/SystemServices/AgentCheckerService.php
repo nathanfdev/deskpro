@@ -46,6 +46,7 @@ class AgentCheckerService
 
     public function __construct()
     {
+
     }
 
     public function addAgentSeat(Person $person)

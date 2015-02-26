@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\ClientMessage\MessageHandler;
 
+
 /**
  * A new chat message
  */

@@ -34,6 +34,7 @@
 
 namespace Orb\Util;
 
+
 /**
  * A special object representing no value.
  * Used in situations where 'null' might be an acceptable value. E.g., default return value in Arrays::keyAsPath().
@@ -42,9 +43,7 @@ namespace Orb\Util;
  */
 class NullValue
 {
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * @return NullValue

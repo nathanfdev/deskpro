@@ -39,6 +39,7 @@ use Application\DeskPRO\Auth\AuthInterfaceSettings;
 use Application\DeskPRO\Auth\AuthSettings;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
+
 class AuthSettingsService
 {
     public static function create(DeskproContainer $container, array $options = array())

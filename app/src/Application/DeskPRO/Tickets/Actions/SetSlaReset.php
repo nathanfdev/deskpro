@@ -62,6 +62,7 @@ class SetSlaReset extends AbstractContainerAwareAction implements ActionInterfac
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -100,6 +101,7 @@ class SetSlaReset extends AbstractContainerAwareAction implements ActionInterfac
             $this->getContainer()->getEm()->flush($ticket_sla);
         }
     }
+
 
     /**
      * {@inheritDoc}

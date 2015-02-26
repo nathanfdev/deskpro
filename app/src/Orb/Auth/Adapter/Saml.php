@@ -68,11 +68,13 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
      */
     protected $backupLogoutUrl;
 
+
     public function __construct(array $options)
     {
         $this->initOptions();
         $this->options->setArray($options);
     }
+
 
     protected function initOptions()
     {
@@ -81,10 +83,11 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
                 'sso_url' => '',
                 'slo_url' => '',
                 'cert_fingerprint' => '',
-                'login_custom_text' => '',
+                'login_custom_text' => ''
             )
         );
     }
+
 
     /**
      * @return array
@@ -113,9 +116,10 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
                 ),
                 'x509cert'            => $this->options['cert'] ?: null,
                 'certFingerprint'     => $this->options['cert_fingerprint'] ?: null,
-            ),
+            )
         );
     }
+
 
     /**
      * {@inheritdoc}
@@ -127,7 +131,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
                 "Attempting SAML Callback", Logger::DEBUG
             );
             $this->logger->log(
-                "Using SAML settings: \n".trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
+                "Using SAML settings: \n" . trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
                 Logger::DEBUG
             );
         }
@@ -141,6 +145,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         }
     }
 
+
     /**
      * {@inheritdoc}
      */
@@ -151,7 +156,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
                 "Attampting SAML SSO Result", Logger::DEBUG
             );
             $this->logger->log(
-                "Using SAML settings: \n".trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
+                "Using SAML settings: \n" . trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
                 Logger::DEBUG
             );
         }
@@ -165,6 +170,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         }
     }
 
+
     /**
      * {@inheritdoc}
      */
@@ -177,7 +183,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
                     "Initializing SAML Authentication", Logger::DEBUG
                 );
                 $this->logger->log(
-                    "Using SAML settings: \n".trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
+                    "Using SAML settings: \n" . trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
                     Logger::DEBUG
                 );
             }
@@ -189,6 +195,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
             );
         }
     }
+
 
     /**
      * This is executed when the SAML IdP POSTS back to us after we requested authentication
@@ -202,7 +209,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         if ($this->logger) {
             $this->logger->log("START Saml::processAcs", Logger::DEBUG);
             $this->logger->log(
-                "SAML Settings: \n".trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
+                "SAML Settings: \n" . trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
                 Logger::DEBUG
             );
         }
@@ -222,7 +229,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         if (!(empty($errors) && $saml->isAuthenticated())) {
             if ($this->logger) {
                 $this->logger->log(
-                    "SAML Errors: \n".trim(Arrays::implodeTemplate($errors, "{KEY}: {VAL}\n")),
+                    "SAML Errors: \n" . trim(Arrays::implodeTemplate($errors, "{KEY}: {VAL}\n")),
                     Logger::DEBUG
                 );
             }
@@ -234,7 +241,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 
         if ($this->logger) {
             $this->logger->log(
-                "SAML Returned Attributes: \n".trim(Arrays::implodeTemplate($attrs, "{KEY}: {VAL}\n")),
+                "SAML Returned Attributes: \n" . trim(Arrays::implodeTemplate($attrs, "{KEY}: {VAL}\n")),
                 Logger::DEBUG
             );
         }
@@ -252,10 +259,11 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
             $user_info_extra = $user_info;
             $user_info_extra['identity'] = $id->getIdentity();
             $this->logger->log(
-                "SAML Success: \n".trim(Arrays::implodeTemplate($user_info_extra, "{KEY}: {VAL}\n")),
+                "SAML Success: \n" . trim(Arrays::implodeTemplate($user_info_extra, "{KEY}: {VAL}\n")),
                 Logger::DEBUG
             );
         }
+
 
         if ($this->logger) {
             $this->logger->log(
@@ -265,6 +273,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 
         return new Result(Result::SUCCESS, $id);
     }
+
 
     /**
      * URL we send the deskpro user to after they log out of our system
@@ -289,6 +298,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         return trim($url) ?: $this->backupLogoutUrl;
     }
 
+
     /**
      * Allow external processes to determine and set the logout URL if needed. Should override any internal logic for
      * logout URL.
@@ -298,6 +308,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         $this->backupLogoutUrl = $url;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -305,7 +316,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     {
         return array(
             'iframe_url' => $this->getCallbackUrl(),
-            'render'     => true,
+            'render'     => true
         );
     }
 
@@ -317,15 +328,18 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         return true;
     }
 
+
     public function setMetadataXmlUrl($url)
     {
         $this->metadata_xml_url = $url;
     }
 
+
     public function getMetadataXmlUrl()
     {
         return $this->metadata_xml_url;
     }
+
 
     /**
      * Return a response OR do the redirect yourself inside the method
@@ -338,10 +352,12 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         $saml->logout();
     }
 
+
     public function setSingleLogoutServiceUrl($url)
     {
         $this->sls_url = $url;
     }
+
 
     public function getSingleLogoutServiceUrl()
     {
@@ -363,6 +379,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         return $saml;
     }
 
+
     /**
      * Return a response to send to browser
      *
@@ -378,6 +395,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         return $response;
     }
 
+
     public function getMetadataXml()
     {
         $saml = $this->createSamlProcessor();
@@ -385,6 +403,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 
         return \OneLogin_Saml2_Metadata::builder($sp);
     }
+
 
     /**
      * @return array

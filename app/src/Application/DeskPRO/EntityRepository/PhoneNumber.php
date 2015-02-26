@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+
 class PhoneNumber extends AbstractEntityRepository
 {
     public function findByNumber($number)

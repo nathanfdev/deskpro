@@ -77,6 +77,7 @@ class FilterAccessResolver
 
         $this->team_members = $this->em->getRepository('DeskPRO:AgentTeam')->getSortedMemberIds();
 
+
         #------------------------------
         # Fetch data about who has hidden filters
         #------------------------------
@@ -100,6 +101,7 @@ class FilterAccessResolver
 
         $this->hidden_prefs = $hidden_prefs;
     }
+
 
     /**
      * Can a person use a particular filter/
@@ -129,6 +131,7 @@ class FilterAccessResolver
         return false;
     }
 
+
     /**
      * Does a person ignore a filter?
      *
@@ -140,6 +143,7 @@ class FilterAccessResolver
     {
         return isset($this->hidden_prefs[$filter->id][$person->id]);
     }
+
 
     /**
      * Get all users who use a filter
@@ -163,6 +167,7 @@ class FilterAccessResolver
 
         return $agents;
     }
+
 
     /**
      * Get all users who use ignore filter

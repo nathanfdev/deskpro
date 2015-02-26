@@ -104,9 +104,7 @@ abstract class CustomFieldAbstract
         $this->init();
     }
 
-    protected function init()
-    {
-    }
+    protected function init() {}
 
     public function isNewField()
     {
@@ -151,10 +149,6 @@ abstract class CustomFieldAbstract
         }
     }
 
-    protected function setFieldProperties()
-    {
-    }
-    protected function saveAdditional()
-    {
-    }
+    protected function setFieldProperties() {}
+    protected function saveAdditional() {}
 }

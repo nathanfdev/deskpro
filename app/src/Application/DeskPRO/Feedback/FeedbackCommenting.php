@@ -75,6 +75,7 @@ class FeedbackCommenting implements PersonContextInterface
         $this->setPersonContext($person);
     }
 
+
     /**
      * @param \Application\DeskPRO\Entity\Person $person
      */
@@ -82,6 +83,7 @@ class FeedbackCommenting implements PersonContextInterface
     {
         $this->person_context = $person;
     }
+
 
     /**
      * @param Feedback                                      $feedback
@@ -118,6 +120,7 @@ class FeedbackCommenting implements PersonContextInterface
             $this->newCommentNotify($comment);
         }
     }
+
 
     /**
      * Send notifications to everyone involved in feedback about a new comment
@@ -171,7 +174,7 @@ class FeedbackCommenting implements PersonContextInterface
                 $message->setTemplate('DeskPRO:emails_user:feedback-new-comment.html.twig', array(
                     'feedback' => $feedback,
                     'comment'  => $comment,
-                    'person'   => $person,
+                    'person'   => $person
                 ));
 
                 $message->setToPerson($person);

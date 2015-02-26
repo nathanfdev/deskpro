@@ -52,6 +52,7 @@ class PermissionsLoader
      */
     private $agent_override_perms;
 
+
     /**
      * @param Connection $db
      */
@@ -59,6 +60,7 @@ class PermissionsLoader
     {
         $this->db = $db;
     }
+
 
     /**
      * @return array
@@ -78,6 +80,7 @@ class PermissionsLoader
         return $this->ug_perms;
     }
 
+
     /**
      * @param  array $ug_ids
      * @return array
@@ -95,6 +98,7 @@ class PermissionsLoader
 
         return $ret;
     }
+
 
     /**
      * @return array

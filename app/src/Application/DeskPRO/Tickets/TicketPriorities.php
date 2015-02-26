@@ -43,6 +43,7 @@ class TicketPriorities extends LazyCollection
      */
     private $default_id;
 
+
     /**
      * @return array
      */
@@ -53,6 +54,7 @@ class TicketPriorities extends LazyCollection
 
         return $recs;
     }
+
 
     /**
      * This sets the 'default' preference.

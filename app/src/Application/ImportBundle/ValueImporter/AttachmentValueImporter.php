@@ -47,7 +47,7 @@ class AttachmentValueImporter extends AbstractValueImporter
      */
     public function importValue($aval)
     {
-        //        if (!($aval instanceof AttachmentValue)) {
+//        if (!($aval instanceof AttachmentValue)) {
 //            throw new \InvalidArgumentException("This importer can only import Attachments");
 //        }
 //

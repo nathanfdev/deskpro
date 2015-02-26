@@ -103,6 +103,7 @@ class AbstractDefaultData
      */
     public function runInstall()
     {
+
     }
 
     /**
@@ -120,6 +121,7 @@ class AbstractDefaultData
      */
     public function runSync()
     {
+
     }
 
     /**

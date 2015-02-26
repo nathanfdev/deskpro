@@ -52,7 +52,7 @@ class MessageFactory implements MessageFactoryInterface
     }
 
     /**
-     * @param  string         $type
+     * @param string $type
      * @return \Swift_Message
      */
     public function createMessage($type)

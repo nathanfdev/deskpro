@@ -57,6 +57,7 @@ class SetAgent extends AbstractContainerAwareAction implements ActionInterface, 
         return $options;
     }
 
+
     /**
      * @param $set_agent_id
      * @param  ExecutorContextInterface  $context
@@ -82,6 +83,7 @@ class SetAgent extends AbstractContainerAwareAction implements ActionInterface, 
         return $agent;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -97,6 +99,7 @@ class SetAgent extends AbstractContainerAwareAction implements ActionInterface, 
 
         $ticket->agent = $agent;
     }
+
 
     /**
      * {@inheritDoc}
@@ -120,6 +123,7 @@ class SetAgent extends AbstractContainerAwareAction implements ActionInterface, 
 
         return false;
     }
+
 
     /**
      * {@inheritDoc}

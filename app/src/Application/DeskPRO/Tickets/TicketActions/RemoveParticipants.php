@@ -50,6 +50,7 @@ class RemoveParticipants extends AbstractAction
         $this->remove_people_ids = $remove_participants;
     }
 
+
     /**
      * Apply the property to the ticket
      *
@@ -63,6 +64,7 @@ class RemoveParticipants extends AbstractAction
         }
     }
 
+
     /**
      * Get an array of actions that would be performed on the ticket
      *
@@ -75,12 +77,13 @@ class RemoveParticipants extends AbstractAction
         foreach ($this->remove_people_ids as $pid) {
             $actions[] = array(
                 'action' => 'remove_participant',
-                'person_id' => $pid,
+                'person_id' => $pid
             );
         }
 
         return $actions;
     }
+
 
     /**
      * Get the agent id
@@ -91,6 +94,7 @@ class RemoveParticipants extends AbstractAction
     {
         return $this->remove_people_ids;
     }
+
 
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
@@ -105,6 +109,7 @@ class RemoveParticipants extends AbstractAction
         return new self($ids);
     }
 
+
     /**
      * @return string
      */
@@ -112,9 +117,7 @@ class RemoveParticipants extends AbstractAction
     {
         $tr = App::getTranslator();
         $people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->remove_people_ids);
-        if (!$people) {
-            return '';
-        }
+        if (!$people) return '';
 
         $names = array();
         foreach ($people as $p) {

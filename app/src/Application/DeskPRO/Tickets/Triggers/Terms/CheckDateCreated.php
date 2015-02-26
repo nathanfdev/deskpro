@@ -60,6 +60,7 @@ class CheckDateCreated extends AbstractTriggerTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -72,9 +73,9 @@ class CheckDateCreated extends AbstractTriggerTerm
 
         try {
             if ($opts['date1']) {
-                $date1 = new \DateTime('@'.$opts['date1']);
+                $date1 = new \DateTime('@' . $opts['date1']);
             } elseif ($opts['date1_relative']) {
-                $date1 = new \DateTime('@'.@strtotime('-'.$opts['date1_relative'].' '.$opts->get('date1_relative_type', 'days')));
+                $date1 = new \DateTime('@' . @strtotime('-' . $opts['date1_relative'] . ' ' . $opts->get('date1_relative_type', 'days')));
             } else {
                 $date1 = null;
             }
@@ -84,9 +85,9 @@ class CheckDateCreated extends AbstractTriggerTerm
 
         try {
             if ($opts['date2']) {
-                $date2 = new \DateTime('@'.$opts['date2']);
+                $date2 = new \DateTime('@' . $opts['date2']);
             } elseif ($opts['date2_relative']) {
-                $date2 = new \DateTime('@'.@strtotime('-'.$opts['date2_relative'].' '.$opts->get('date2_relative_type', 'days')));
+                $date2 = new \DateTime('@' . @strtotime('-' . $opts['date2_relative'] . ' ' . $opts->get('date2_relative_type', 'days')));
             } else {
                 $date2 = null;
             }

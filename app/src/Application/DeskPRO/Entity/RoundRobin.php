@@ -68,6 +68,7 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $title;
 
+
     public function __construct()
     {
         $this->agents = new ArrayCollection();
@@ -94,6 +95,8 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
         return $data;
     }
 
+
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -111,14 +114,14 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'  => 'id',
             'type'       => 'integer',
             'nullable'   => false,
-            'id'         => true,
+            'id'         => true
         ));
         $metadata->mapField(array(
             'fieldName'  => 'title',
             'columnName' => 'title',
             'type'       => 'string',
             'length'     => 255,
-            'nullable'  => false,
+            'nullable'  => false
         ));
 
         $metadata->mapManyToOne(array(

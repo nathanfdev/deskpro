@@ -51,6 +51,8 @@ class Tickets
             ->getTicketsFromIds($ids);
     }
 
+
+
     /**
      * @param  Ticket     $ticket
      * @return TicketEdit
@@ -61,6 +63,8 @@ class Tickets
 
         return $ticket_edit;
     }
+
+
 
     /**
      * Get an array of various options used on the new ticket page.

@@ -36,7 +36,7 @@ interface GeneratorConfigAwareInterface
     /**
      * Set service configuration
      *
-     * @param  GeneratorConfig $config
+     * @param GeneratorConfig $config
      * @return $this
      */
     public function setConfig(GeneratorConfig $config);

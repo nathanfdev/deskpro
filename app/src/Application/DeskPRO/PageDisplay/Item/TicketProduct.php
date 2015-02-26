@@ -44,7 +44,7 @@ class TicketProduct extends TicketItemAbstract
     public function compileJsCheck()
     {
         $js_ids = Arrays::castToType($this->data['products'], 'int');
-        $js_ids = "[".implode(',', $js_ids)."]";
+        $js_ids = "[" . implode(',', $js_ids) . "]";
 
         $js = "if ($js_ids.indexOf(reader.getProductId() !== -1) return true; else return false;";
 

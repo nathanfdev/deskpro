@@ -38,6 +38,6 @@ class Contact extends Template
 {
     protected function init()
     {
-        $this->setOption('tpl', 'UserBundle:Portal:contact-'.$this->section.'.html.twig');
+        $this->setOption('tpl', 'UserBundle:Portal:contact-' . $this->section . '.html.twig');
     }
 }

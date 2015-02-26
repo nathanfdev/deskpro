@@ -108,6 +108,7 @@ class TicketIncomingEmailMessage
      */
     private $mode;
 
+
     /**
      * @param                     $mode
      * @param Ticket              $ticket
@@ -124,7 +125,7 @@ class TicketIncomingEmailMessage
         }
 
         $this->mode = $mode;
-        $this->logMessage('[TicketIncomingEmailMessage] mode = '.$mode);
+        $this->logMessage('[TicketIncomingEmailMessage] mode = ' . $mode);
 
         $this->email_accounts = $email_accounts;
 
@@ -185,11 +186,11 @@ class TicketIncomingEmailMessage
             // Sent from a DeskPRO instance, we should get the specific message by looking for our delims
             // But dont do this cut if its an auto-reply, we want the real message in those cases. The actual notifs we sent
             // are silenced in those cases anyway so the auto-replies are handled like other robot replies
-            // !! - TODO this needs to check for delims that aren't preceded by any other reply.
-            //      Otherwise you could have a case of DeskPRO -> User -> Reply to other DeskPRO.
-            //      The users reply would reach other DeskPRO and we would throw it away because we see the DP_MESSAGE_BEGIN tags
-            //      but not the users reply above it.
-            /*
+			// !! - TODO this needs to check for delims that aren't preceded by any other reply.
+			//      Otherwise you could have a case of DeskPRO -> User -> Reply to other DeskPRO.
+			//      The users reply would reach other DeskPRO and we would throw it away because we see the DP_MESSAGE_BEGIN tags
+			//      but not the users reply above it.
+			/*
             if (
                 $reader->getHeader('X-DeskPRO-Build') && $reader->getHeader('X-DeskPRO-Build')->getHeader()
                 && !($reader->getHeader('X-DeskPRO-Auto') && $reader->getHeader('X-DeskPRO-Auto')->getHeader())
@@ -199,7 +200,7 @@ class TicketIncomingEmailMessage
                     $this->body = $body;
                 }
             }
-            */
+			*/
 
             $body_raw = $this->body;
 
@@ -302,14 +303,14 @@ class TicketIncomingEmailMessage
                     $pattern_config = new \Application\DeskPRO\Config\UserFileConfig('text-cut-patterns');
                     $cutter->addPatterns($pattern_config->all());
                     $cutter->setRequireFrom($cutters_require_from);
-                    $this->logMessage("Text cutter set require from: ".implode(', ', $cutters_require_from));
+                    $this->logMessage("Text cutter set require from: " . implode(', ', $cutters_require_from));
 
                     $this->body = $cutter->cutQuoteBlock($this->body, false);
 
                     if ($cutter->getMatchedPatterns()) {
                         $has_text_cut = true;
                         foreach ($cutter->getMatchedPatterns() as $p) {
-                            $this->logMessage("Text cutter matched pattern: ".$p->getPattern());
+                            $this->logMessage("Text cutter matched pattern: " . $p->getPattern());
                         }
                     } else {
                         $this->logMessage("Text cutter did not match any pattern");
@@ -357,7 +358,7 @@ class TicketIncomingEmailMessage
                     $generic_cut = $this->body;
                 }
 
-                if ($this->body != $generic_cut && trim(Strings::stripTags($generic_cut))) {
+				if ($this->body != $generic_cut && trim(Strings::stripTags($generic_cut))) {
                     $this->body = $generic_cut;
                     $this->generic_cut = $generic_cut;
                     $this->found_top_marker = true;
@@ -380,7 +381,7 @@ class TicketIncomingEmailMessage
                     // We didnt cut, so the cutline is missing so we need to guess based on our email address
                     } else {
                         $cutter->setRequireFrom($cutters_require_from);
-                        $this->logMessage("HTML cutter set require from: ".implode(', ', $cutters_require_from));
+                        $this->logMessage("HTML cutter set require from: " . implode(', ', $cutters_require_from));
                     }
 
                     $this->body = $cutter->cutQuoteBlock($this->body, true);
@@ -388,7 +389,7 @@ class TicketIncomingEmailMessage
                     if ($cutter->getMatchedPatterns()) {
                         $has_cut = true;
                         foreach ($cutter->getMatchedPatterns() as $p) {
-                            $this->logMessage("Cutter matched pattern: ".$p->getPattern());
+                            $this->logMessage("Cutter matched pattern: " . $p->getPattern());
                         }
                     } else {
                         $this->logMessage("Cutter did not match any pattern");
@@ -466,8 +467,8 @@ class TicketIncomingEmailMessage
         // (Check on ticket since this can still be called from newticket if the users original ticket was closed)
         if ($ticket) {
             foreach ($ticket->access_codes as $code) {
-                $this->body      = str_replace('(#'.$code->getAccessCode().')', '', $this->body);
-                $this->body_full = str_replace('(#'.$code->getAccessCode().')', '', $this->body_full);
+                $this->body      = str_replace('(#' . $code->getAccessCode() . ')', '', $this->body);
+                $this->body_full = str_replace('(#' . $code->getAccessCode() . ')', '', $this->body_full);
             }
         }
 

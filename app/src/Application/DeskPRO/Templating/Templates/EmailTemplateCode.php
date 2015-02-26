@@ -58,6 +58,7 @@ class EmailTemplateCode extends TemplateCode
      */
     private $body;
 
+
     /**
      * @param string $code
      */
@@ -71,6 +72,7 @@ class EmailTemplateCode extends TemplateCode
         }
     }
 
+
     /**
      * @param $subject
      */
@@ -78,6 +80,7 @@ class EmailTemplateCode extends TemplateCode
     {
         $this->subject = trim($subject);
     }
+
 
     /**
      * @param $subject
@@ -95,6 +98,7 @@ class EmailTemplateCode extends TemplateCode
         return $this->subject;
     }
 
+
     /**
      * @return string
      */
@@ -103,6 +107,7 @@ class EmailTemplateCode extends TemplateCode
         return $this->body;
     }
 
+
     /**
      * @return string
      */
@@ -110,14 +115,15 @@ class EmailTemplateCode extends TemplateCode
     {
         $code =
             self::SUBJ_TOKEN_START
-            .$this->subject
-            .self::SUBJ_TOKEN_END
-            ."\n"
-            .$this->body
+            . $this->subject
+            . self::SUBJ_TOKEN_END
+            . "\n"
+            . $this->body
         ;
 
         return $code;
     }
+
 
     /**
      * @param  string                    $code
@@ -143,6 +149,7 @@ class EmailTemplateCode extends TemplateCode
 
         // Has a subject
         if ($subj_start !== false && $subj_end !== false) {
+
             if ($subj_start > $subj_end) {
                 throw new \InvalidArgumentException("Invalid subject tags: Start tag after end tag");
             }
@@ -157,8 +164,8 @@ class EmailTemplateCode extends TemplateCode
             // Subject wrapped somewhere weirdly
             } else {
                 $this->body = trim(substr($code, 0, $subj_start))
-                    ."\n"
-                    .trim(substr($code, $subj_end+$subj_end_len));
+                    . "\n"
+                    . trim(substr($code, $subj_end+$subj_end_len));
             }
 
         // No Subject

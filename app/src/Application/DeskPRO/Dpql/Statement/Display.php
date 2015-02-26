@@ -315,14 +315,14 @@ class Display
                 $this->_splitSql->setConditions($this->_sql->getConditions());
 
                 $splitResults = $db->executeQuery($this->_splitSql->toSql())->fetchAll(\PDO::FETCH_NUM);
-                foreach ($splitResults as $splitResult) {
+                foreach ($splitResults AS $splitResult) {
                     $sql = clone $this->_sql;
-                    foreach ($this->_splitColumnMap as $splitCondition => $splitColumn) {
+                    foreach ($this->_splitColumnMap AS $splitCondition => $splitColumn) {
                         $splitValue = $splitResult[$splitColumn - 1];
                         if ($splitValue === null) {
                             $sql->addCondition("$splitCondition IS NULL");
                         } else {
-                            $sql->addCondition("$splitCondition = ".$db->quote($splitValue));
+                            $sql->addCondition("$splitCondition = " . $db->quote($splitValue));
                         }
                     }
 
@@ -354,11 +354,11 @@ class Display
         $last = end($results);
 
         $base = array();
-        foreach ($this->_sql->getSelectFields() as $key => $sel) {
+        foreach ($this->_sql->getSelectFields() AS $key => $sel) {
             $base[$key] = null;
         }
 
-        foreach ($this->_groupFills as $fill) {
+        foreach ($this->_groupFills AS $fill) {
             $closure = $fill['fill'];
             $print = $fill['print'] - 1;
             $sql = $fill['sql'] - 1;
@@ -372,7 +372,7 @@ class Display
             $startRow = 0;
             $rowSets = array();
 
-            foreach ($results as $rowKey => $row) {
+            foreach ($results AS $rowKey => $row) {
                 if ($previousValue !== null) {
                     if (($ascending && ($row[$order] + 0) < $previousValue) ||
                         (!$ascending && ($row[$order] + 0) > $previousValue)
@@ -382,7 +382,7 @@ class Display
                                 'start' => $startRow,
                                 'end' => $rowKey - 1,
                                 'startValue' => $startRowValue,
-                                'endValue' => $previousValue,
+                                'endValue' => $previousValue
                             );
                         }
                         $previousValue = null;
@@ -403,13 +403,13 @@ class Display
                     'start' => $startRow,
                     'end' => $rowKey,
                     'startValue' => $startRowValue,
-                    'endValue' => $previousValue,
+                    'endValue' => $previousValue
                 );
             }
 
             $newResults = array();
             $seenRow = 0;
-            foreach ($rowSets as $set) {
+            foreach ($rowSets AS $set) {
                 if ($set['start'] > $seenRow) {
                     $newResults = array_merge($newResults, array_slice($results, $seenRow, $set['start'] - $seenRow));
                 }
@@ -437,7 +437,7 @@ class Display
                     if ($fills) {
                         $fillRow = array_shift($fills);
 
-                        foreach ($rows as $row) {
+                        foreach ($rows AS $row) {
                             while ($fillRow && (
                                 ($ascending && $fillRow[2] < $row[$print]) || (!$ascending && $fillRow[2] > $row[$print])
                             )) {
@@ -521,22 +521,22 @@ class Display
     public function getDpqlParts()
     {
         $selectFields = array();
-        foreach ($this->_select as $field) {
+        foreach ($this->_select AS $field) {
             $selectFields[] = $field->toDpql($this, 'select', array());
         }
 
         $splitFields = array();
-        foreach ($this->_splitBy as $field) {
+        foreach ($this->_splitBy AS $field) {
             $splitFields[] = $field->toDpql($this, 'split', array());
         }
 
         $groupFields = array();
-        foreach ($this->_groupBy as $field) {
+        foreach ($this->_groupBy AS $field) {
             $groupFields[] = $field->toDpql($this, 'group', array());
         }
 
         $orderFields = array();
-        foreach ($this->_orderBy as $field) {
+        foreach ($this->_orderBy AS $field) {
             $orderFields[] = $field->toDpql($this, 'order', array());
         }
 
@@ -551,7 +551,7 @@ class Display
             'GROUP' => implode(', ', $groupFields),
             'ORDER' => implode(', ', $orderFields),
             'LIMIT' => $this->_limitAmount,
-            'OFFSET' => $this->_limitOffset,
+            'OFFSET' => $this->_limitOffset
         );
     }
 
@@ -562,9 +562,7 @@ class Display
      */
     public function prepare()
     {
-        if ($this->_prepared) {
-            return;
-        }
+        if ($this->_prepared) return;
         $this->_prepared = true;
 
         $repository = $this->getFromEntityRepository();
@@ -607,7 +605,7 @@ class Display
     {
         $sql = $this->_sql;
 
-        foreach ($this->_select as $field) {
+        foreach ($this->_select AS $field) {
             if ($field instanceof Part\Alias) {
                 $alias = $field->alias;
                 $field = $field->value;
@@ -659,7 +657,7 @@ class Display
         $splitSql = new Dpql\SqlSelect();
         $this->_splitSql = $splitSql;
 
-        foreach ($this->_splitBy as $group) {
+        foreach ($this->_splitBy AS $group) {
             $groupBy = $group->prepare($this, 'split', array(), $this->_sql, $this->_resultHandler);
             if ($groupBy->hasValue()) {
                 $splitSql->addGroupBy($groupBy->sql());
@@ -691,7 +689,7 @@ class Display
     {
         $sql = $this->_sql;
 
-        foreach ($this->_groupBy as $group) {
+        foreach ($this->_groupBy AS $group) {
             if ($group instanceof Part\Alias) {
                 $alias = $group->alias;
                 $group = $group->value;
@@ -752,9 +750,9 @@ class Display
     {
         $sql = $this->_sql;
 
-        foreach ($this->_orderBy as $order) {
+        foreach ($this->_orderBy AS $order) {
             if ($order instanceof Part\OrderDir) {
-                $direction = ' '.$order->orderDir;
+                $direction = ' ' . $order->orderDir;
                 $order = $order->order;
             } else {
                 $direction = false;
@@ -762,7 +760,7 @@ class Display
 
             $orderSql = $order->prepare($this, 'order', array(), $sql, $this->_resultHandler);
             if ($orderSql->hasValue()) {
-                $sql->addOrderBy($orderSql->ordered().$direction);
+                $sql->addOrderBy($orderSql->ordered() . $direction);
             }
         }
     }
@@ -786,7 +784,7 @@ class Display
             'fill' => $fill,
             'print' => $printId,
             'sql' => $sqlId,
-            'order' => $orderId,
+            'order' => $orderId
         );
 
         return true;
@@ -872,7 +870,7 @@ class Display
      */
     public function stackForcedUtc(array $stack)
     {
-        foreach ($stack as $element) {
+        foreach ($stack AS $element) {
             if ($element instanceof \Application\DeskPRO\Dpql\Statement\Part\FunctionCall
                 && strtoupper($element->name) == 'UTC'
             ) {
@@ -1127,7 +1125,7 @@ class Display
                     $parts['display'] = array_unique($parts['display']);
                     $display          = $parts['display'][0];
                     if (!empty($parts['display'][1])) {
-                        $display .= ', '.$parts['display'][1];
+                        $display .= ', ' . $parts['display'][1];
                     }
                 } else {
                     $display = $parts['display'];
@@ -1135,13 +1133,13 @@ class Display
             }
 
             return "DISPLAY $display"
-                ."\nSELECT $parts[select]"
-                ."\nFROM $parts[from]"
-                .(!empty($parts['where'])   ? "\nWHERE $parts[where]"        : '')
-                .(!empty($parts['splitBy']) ? "\nSPLIT BY $parts[splitBy]"   : '')
-                .(!empty($parts['groupBy']) ? "\nGROUP BY $parts[groupBy]"   : '')
-                .(!empty($parts['orderBy']) ? "\nORDER BY $parts[orderBy]"   : '')
-                .(!empty($parts['limit'])   ? "\nLIMIT $parts[limit]$offset" : '');
+                . "\nSELECT $parts[select]"
+                . "\nFROM $parts[from]"
+                . (!empty($parts['where'])   ? "\nWHERE $parts[where]"        : '')
+                . (!empty($parts['splitBy']) ? "\nSPLIT BY $parts[splitBy]"   : '')
+                . (!empty($parts['groupBy']) ? "\nGROUP BY $parts[groupBy]"   : '')
+                . (!empty($parts['orderBy']) ? "\nORDER BY $parts[orderBy]"   : '')
+                . (!empty($parts['limit'])   ? "\nLIMIT $parts[limit]$offset" : '');
         }
     }
 

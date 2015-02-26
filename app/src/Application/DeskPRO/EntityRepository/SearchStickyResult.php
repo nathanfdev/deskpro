@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+
 class SearchStickyResult extends AbstractEntityRepository
 {
     public function getWordsForObject($object)

@@ -37,6 +37,7 @@ namespace Application\DeskPRO\HttpKernel\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\ContainerAware;
 use Symfony\Bundle\FrameworkBundle\Controller\ContainerAwareInterface;
 
+
 /**
  * This controller resolver changes instantiation of controllers to pass in the container
  * to the constructor.
@@ -48,9 +49,9 @@ class ControllerResolver extends \Symfony\Bundle\FrameworkBundle\Controller\Cont
         if (false === strpos($controller, '::')) {
             $count = substr_count($controller, ':');
             if (2 == $count) {
-                $controller = $this->parser->parse($controller);
+                                $controller = $this->parser->parse($controller);
             } elseif (1 == $count) {
-                list($service, $method) = explode(':', $controller);
+                                list($service, $method) = explode(':', $controller);
 
                 return array($this->container->get($service), $method);
             } else {
@@ -69,7 +70,7 @@ class ControllerResolver extends \Symfony\Bundle\FrameworkBundle\Controller\Cont
         } else {
             $controller = new $class();
             if (is_subclass_of($class, 'Symfony\\Component\\DependencyInjection\\ContainerAwareInterface')) {
-                //if ($controller instanceof ContainerAwareInterface OR $controller instanceof ContainerAware) {
+            //if ($controller instanceof ContainerAwareInterface OR $controller instanceof ContainerAware) {
                 $controller->setContainer($this->container);
             } else {
                 die($class);

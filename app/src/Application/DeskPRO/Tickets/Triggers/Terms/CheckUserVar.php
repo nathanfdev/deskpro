@@ -58,6 +58,7 @@ class CheckUserVar extends AbstractTriggerTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

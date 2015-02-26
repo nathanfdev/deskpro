@@ -52,6 +52,7 @@ class Facebook extends AbstractAdapter
         );
     }
 
+
     /**
      * @return \Orb\Auth\Adapter\Facebook
      */

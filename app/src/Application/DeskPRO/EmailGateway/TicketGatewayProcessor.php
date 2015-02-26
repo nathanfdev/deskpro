@@ -84,6 +84,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
      */
     protected $created_object_info = null;
 
+
     /**
      * @return \Application\DeskPRO\Entity\Ticket|\Application\DeskPRO\Entity\TicketMessage|null
      * @throws \Exception
@@ -109,7 +110,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             $is_bounce = true;
 
             $this->logMessage("Is bounced");
-            $ticket    = $bounce_detector->getGuessedTicket();
+            $ticket	= $bounce_detector->getGuessedTicket();
             $can_add_new_person = true;
         }
 
@@ -120,14 +121,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             }
 
             $ticket = $ticket_detect->findExistingTicket($this->reader);
-            $this->logMessage("[TicketGatewayProcessor] Ticket Detector -- Ticket: ".($ticket ? $ticket->id : 'none'));
+            $this->logMessage("[TicketGatewayProcessor] Ticket Detector -- Ticket: " . ($ticket ? $ticket->id : 'none'));
 
             $tac_person = $ticket_detect->findTacPerson($this->reader);
-            $this->logMessage("[TicketGatewayProcessor] Ticket Detector -- TAC Person: ".($tac_person ? $tac_person->id.' '.$tac_person->getDisplayContact() : 'none'));
+            $this->logMessage("[TicketGatewayProcessor] Ticket Detector -- TAC Person: " . ($tac_person ? $tac_person->id . ' ' . $tac_person->getDisplayContact() : 'none'));
 
             if ($ticket) {
                 $person = $ticket_detect->findExistingPerson($ticket, $this->reader);
-                $this->logMessage("[TicketGatewayProcessor] Ticket Detector -- Person: ".($person ? $person->id.' '.$person->getDisplayContact() : 'none'));
+                $this->logMessage("[TicketGatewayProcessor] Ticket Detector -- Person: " . ($person ? $person->id . ' ' . $person->getDisplayContact() : 'none'));
 
                 $can_add_new_person = $ticket_detect->canAddUnknownPerson($ticket, $this->reader);
 
@@ -202,7 +203,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                     'num_messagess' => $rate_limit,
                     'time_limit'    => Dates::secsToReadable($rate_time),
                     'time_lock'     => Dates::secsToReadable($rate_locktime),
-                    'date_lock_end' => date($this->container->getSetting('core.date_time'), time() + $rate_locktime),
+                    'date_lock_end' => date($this->container->getSetting('core.date_time'), time() + $rate_locktime)
                 ));
                 $message->setTo($this->reader->getFromAddress()->getEmail());
 
@@ -222,7 +223,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 $this->logMessage('Rate limited, message is rejected');
                 $this->error      = 'rate_limit';
                 $this->error_type = 'rejected';
-
                 return null;
             }
         }
@@ -231,7 +231,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         # Check if we should create a new user on the ticket
         #-------------------------
 
-        if ($ticket and !$person and $can_add_new_person) {
+        if ($ticket AND !$person AND $can_add_new_person) {
             $this->logMessage(sprintf('[TicketGatewayProcessor] Could not find user on ticket, adding user with email %s', $this->reader->getFromAddress()->getEmail()));
 
             $person_processor = new PersonFromEmailProcessor();
@@ -243,7 +243,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             if (!$person) {
                 $this->logMessage('[TicketGatewayProcessor] No existing person found, will try and create it');
                 $person = $person_processor->createPerson($this->reader->getFromAddress());
-                $this->logMessage('[TicketGatewayProcessor] Person ID is '.$person->id);
+                $this->logMessage('[TicketGatewayProcessor] Person ID is ' . $person->id);
             }
 
             if ($person && !$person->is_agent) {
@@ -306,13 +306,15 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         $reply_as_new = false;
 
-        if ($ticket and $person and !$person->is_agent and $ticket->status == 'resolved' and !$person->hasPerm('tickets.reopen_resolved')) {
+        if ($ticket AND $person AND !$person->is_agent AND $ticket->status == 'resolved' AND !$person->hasPerm('tickets.reopen_resolved')) {
+
             $this->logMessage('[TicketGatewayProcessor] Ticket is resolved');
 
             if ($person->hasPerm('tickets.reopen_resolved_createnew')) {
                 $this->logMessage('[TicketGatewayProcessor] Has perm reopen_resolved_createnew so creating a new ticket');
                 $ticket = null;
                 $reply_as_new = true;
+
             } else {
                 $this->logMessage('[TicketGatewayProcessor] Message is being rejected because ticket is resolved');
 
@@ -332,7 +334,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                         'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
                         'ticket' => $ticket,
                         'person' => $person,
-                        'email_to' => $email_to,
+                        'email_to' => $email_to
                     ));
                     $message->setTo($this->reader->getFromAddress()->getEmail());
                     $message->setFrom($from_address);
@@ -399,7 +401,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         # Unset ticket if its an agent fwd
         #-------------------------
 
-        if ($ticket and App::getSetting('core_tickets.process_agent_fwd') and $person['is_agent'] and ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
+        if ($ticket AND App::getSetting('core_tickets.process_agent_fwd') AND $person['is_agent'] AND ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
             $this->logMessage(sprintf("Found a ticket match #%d but this is an agent fwd so unsetting", $ticket->getId()));
             $ticket = null;
         }
@@ -520,7 +522,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             $this->created_object_id   = $obj->id;
             $this->created_object_info = array(
                 'ticket_id'         => $obj->ticket->id,
-                'ticket_message_id' => $obj->id,
+                'ticket_message_id' => $obj->id
             );
         }
 
@@ -540,12 +542,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         $person = $person_processor->findPerson($this->reader->getFromAddress());
 
         if ($person) {
-            $this->logMessage('[TicketGatewayProcessor] Found existing person: '.$person['id']);
+            $this->logMessage('[TicketGatewayProcessor] Found existing person: ' . $person['id']);
             $person_processor->passPerson($this->reader->getFromAddress(), $person);
         } else {
             if ($this->container->getSetting('core.reg_enabled')) {
                 $person = $person_processor->createPerson($this->reader->getFromAddress());
-                $this->logMessage('[TicketGatewayProcessor] Created new contact: '.$person['id']);
+                $this->logMessage('[TicketGatewayProcessor] Created new contact: ' . $person['id']);
             }
         }
 
@@ -572,10 +574,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         }
 
         if ($person) {
-            $this->logMessage('[TicketGatewayProcessor] Found existing person: '.$person['id']);
+            $this->logMessage('[TicketGatewayProcessor] Found existing person: ' . $person['id']);
             $person_processor->passPerson($this->reader->getFromAddress(), $person);
         } else {
             $this->logMessage('[TicketGatewayProcessor] Creating new contact');
+
         }
 
         if ($person && $person->is_agent && $ticket_email->is_bounce) {
@@ -608,7 +611,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         App::setCurrentPerson($person);
 
-        if ($this->container->getSetting('core_tickets.process_agent_fwd') and $person->is_agent and ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
+        if ($this->container->getSetting('core_tickets.process_agent_fwd') AND $person->is_agent AND ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
             $this->logMessage('[TicketGatewayProcessor] runNewForwardedTicket');
 
             $fwd_proc = new ProcessAgentFwd($this->account, $person, $ticket_email);
@@ -627,7 +630,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             $this->created_object_id   = $created['ticket']->id;
             $this->created_object_info = array(
                 'ticket_id'         => $created['ticket']->id,
-                'ticket_message_id' => $created['ticket_message']->id,
+                'ticket_message_id' => $created['ticket_message']->id
             );
 
             return $created['ticket'];
@@ -654,7 +657,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             $this->created_object_id   = $created['ticket']->id;
             $this->created_object_info = array(
                 'ticket_id'         => $created['ticket']->id,
-                'ticket_message_id' => $created['ticket_message']->id,
+                'ticket_message_id' => $created['ticket_message']->id
             );
 
             return $created['ticket'];
@@ -736,6 +739,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
     {
         return $this->created_object_type;
     }
+
 
     /**
      * @return array|null

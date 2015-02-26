@@ -57,14 +57,13 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
         );
     }
 
+
     /**
      * @return \Doctrine\DBAL\Connection
      */
     public function getDb()
     {
-        if ($this->db) {
-            return $this->db;
-        }
+        if ($this->db) return $this->db;
 
         if ($this->usersource->getOption('connection_options')) {
             $options = $this->usersource->getOption('connection_options');
@@ -119,9 +118,7 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
                 $userinfo = $adapter->getUserInfoForUsername($id_input);
             }
         } catch (\Exception $e) {
-            if ($adapter->getLogger()) {
-                $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");
-            }
+            if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");
             throw $e;
         }
 
@@ -150,7 +147,7 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
         return array(
             UsersourceInfo::CAPABILITY_FORM_LOGIN,
             UsersourceInfo::CAPABILITY_GET_USER_INFO,
-            UsersourceInfo::CAPABILITY_FIND_IDENTITY,
+            UsersourceInfo::CAPABILITY_FIND_IDENTITY
         );
     }
 

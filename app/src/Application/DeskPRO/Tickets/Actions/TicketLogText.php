@@ -46,31 +46,31 @@ use Orb\Util\CheckedOptionsArray;
  */
 class TicketLogText extends AbstractAction implements ActionInterface
 {
-    /**
-     * {@inheritDoc}
-     */
-    protected function getOptionsDef()
-    {
-        $options = new CheckedOptionsArray();
-        $options->addRequiredNames('message');
-        $options->addValidNames('is_html');
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('message');
+		$options->addValidNames('is_html');
+		return $options;
+	}
 
-        return $options;
-    }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-    {
-        $value = $this->getActionOption('message', '');
+	/**
+	 * {@inheritDoc}
+	 */
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+	{
+		$value = $this->getActionOption('message', '');
 
-        if ($this->getActionOption('is_html')) {
-            $data = array('message_html' => $value);
-        } else {
-            $data = array('message' => $value);
-        }
+		if ($this->getActionOption('is_html')) {
+			$data = array('message_html' => $value);
+		} else {
+			$data = array('message' => $value);
+		}
 
-        $ticket->getStateChangeRecorder()->recordData('free', $data);
-    }
+		$ticket->getStateChangeRecorder()->recordData('free', $data);
+	}
 }

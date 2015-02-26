@@ -72,7 +72,7 @@ class BinaryLogical extends AbstractPart
      */
     protected static $_operatorMap = array(
         Parser::T_OP_AND => 'AND',
-        Parser::T_OP_OR => 'OR',
+        Parser::T_OP_OR => 'OR'
     );
 
     /**
@@ -108,7 +108,8 @@ class BinaryLogical extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    ) {
+    )
+    {
         $childStack = $this->getChildStack($stack);
 
         $lhs = $this->lhs->prepare($statement, $section, $childStack, $select, $result);
@@ -132,7 +133,7 @@ class BinaryLogical extends AbstractPart
     public function toDpql(Display $statement, $section, array $stack)
     {
         return $this->lhs->toDpql($statement, $section, $stack)
-            .' '.self::$_operatorMap[$this->operator].' '
-            .$this->rhs->toDpql($statement, $section, $stack);
+            . ' ' . self::$_operatorMap[$this->operator] . ' '
+            . $this->rhs->toDpql($statement, $section, $stack);
     }
 }

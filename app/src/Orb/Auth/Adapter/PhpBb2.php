@@ -42,7 +42,7 @@ class PhpBb2 extends DbTable
     {
         parent::initOptions();
 
-        $this->options[self::OPT_TABLE]           = $this->options->get(self::OPT_TABLE_PREFIX, '').'users';
+        $this->options[self::OPT_TABLE]           = $this->options->get(self::OPT_TABLE_PREFIX, '') . 'users';
         $this->options[self::OPT_FIELD_ID]        = 'user_id';
         $this->options[self::OPT_FIELD_USERNAME]  = 'username';
         $this->options[self::OPT_FIELD_PASSWORD]  = 'user_password';

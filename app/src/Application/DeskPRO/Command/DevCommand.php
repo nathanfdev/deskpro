@@ -58,6 +58,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         $this->addOption('preview', null, InputOption::VALUE_NONE, 'Preview');
     }
 
+
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
@@ -65,6 +66,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
     {
         return parent::getContainer();
     }
+
 
     /**
      * @param  InputInterface  $input
@@ -91,6 +93,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
             return 1;
         }
     }
+
 
     private function testdbSafeAction(InputInterface $input, OutputInterface $output)
     {
@@ -171,6 +174,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         $output->writeln("-> OK");
     }
 
+
     /**
      * @param  InputInterface  $input
      * @param  OutputInterface $output
@@ -203,6 +207,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         return 0;
     }
 
+
     /**
      * @param  InputInterface  $input
      * @param  OutputInterface $output
@@ -233,6 +238,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         }
     }
 
+
     /**
      * @param  InputInterface  $input
      * @param  OutputInterface $output
@@ -248,6 +254,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 
         return 0;
     }
+
 
     /**
      * @param  InputInterface  $input
@@ -291,6 +298,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         return 0;
     }
 
+
     /**
      * @param  InputInterface  $input
      * @param  OutputInterface $output
@@ -306,7 +314,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
             $y = @date('Y', $v);
             $m = @date('m', $v);
 
-            return $builds_root."/$y/$m/Build$v.php";
+            return $builds_root . "/$y/$m/Build$v.php";
         };
 
         foreach ($build_ids_raw as $bid) {

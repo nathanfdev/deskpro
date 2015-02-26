@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+
 class FeedbackStatusCategory extends AbstractEntityRepository
 {
     /** @var array|null */
@@ -60,19 +61,13 @@ class FeedbackStatusCategory extends AbstractEntityRepository
 
     public function getActiveCategories()
     {
-        if ($this->active_cats === null) {
-            $this->reload();
-        }
-
+        if ($this->active_cats === null) $this->reload();
         return $this->active_cats;
     }
 
     public function getClosedCategories()
     {
-        if ($this->closed_cats === null) {
-            $this->reload();
-        }
-
+        if ($this->closed_cats === null) $this->reload();
         return $this->closed_cats;
     }
 

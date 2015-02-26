@@ -120,7 +120,7 @@ class LogEvent extends DomainObject implements Loggable
             'name' => 'log_event',
             'indexes' => array(
                 'subject' => array('columns' => array('subject', 'subject_id')),
-            ),
+            )
         ));
         $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'id' => true, 'options' => array('unsigned' => true)));
         $metadata->mapField(array( 'fieldName' => 'timestamp', 'type' => 'integer', 'nullable' => false, 'options' => array('unsigned' => true)));
@@ -136,7 +136,7 @@ class LogEvent extends DomainObject implements Loggable
             'joinColumns' => array(0 => array(
                 'nullable' => true,
                 'onDelete' => 'cascade',
-            )),
+            ),),
         ));
 
         $metadata->mapOneToMany(array(
@@ -151,7 +151,7 @@ class LogEvent extends DomainObject implements Loggable
             'joinColumns' => array(0 => array(
                 'nullable' => true,
                 'onDelete' => 'cascade',
-            )),
+            ),),
         ));
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

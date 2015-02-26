@@ -38,6 +38,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+
 class ChatDepartmentPropsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -69,7 +70,7 @@ class ChatDepartmentPropsType extends AbstractType
                          'd.display_order',
                          'ASC'
                      );
-                 },
+                 }
             )
         );
         $builder->add('avatar', 'entity', array(
@@ -91,4 +92,5 @@ class ChatDepartmentPropsType extends AbstractType
     {
         return 'department';
     }
+
 }

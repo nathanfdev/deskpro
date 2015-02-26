@@ -160,6 +160,6 @@ class Cookie extends BaseCookie
 
     public function send()
     {
-        header('Set-Cookie: '.$this->__toString(), false);
+        header('Set-Cookie: ' . $this->__toString(), false);
     }
 }

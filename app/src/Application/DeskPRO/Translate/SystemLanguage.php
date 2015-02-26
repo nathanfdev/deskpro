@@ -43,9 +43,7 @@ class SystemLanguage extends \Application\DeskPRO\Entity\Language
     protected static $instance = null;
     public static function getInstance()
     {
-        if (self::$instance !== null) {
-            return self::$instance;
-        }
+        if (self::$instance !== null) return self::$instance;
 
         self::$instance = new self();
 

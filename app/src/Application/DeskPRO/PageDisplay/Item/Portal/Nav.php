@@ -38,6 +38,6 @@ class Nav extends Template
 {
     protected function init()
     {
-        $this->setOption('tpl', 'UserBundle:Portal:nav-'.$this->section.'.html.twig');
+        $this->setOption('tpl', 'UserBundle:Portal:nav-' . $this->section . '.html.twig');
     }
 }

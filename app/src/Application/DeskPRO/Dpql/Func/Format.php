@@ -62,7 +62,8 @@ class Format extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    ) {
+    )
+    {
         if (count($this->_arguments) < 2) {
             throw new Exception('FORMAT() requires at least 2 arguments.');
         }
@@ -74,7 +75,7 @@ class Format extends AbstractFunc
 
         $argNames = array();
         $argLiterals = array();
-        foreach ($arguments as $argument) {
+        foreach ($arguments AS $argument) {
             $prepped = $argument->prepare($statement, $section, $stack, $select, $result);
             $argNames[] = $prepped->name();
             $argLiterals[] = $this->_toLiteral($argument);
@@ -84,12 +85,12 @@ class Format extends AbstractFunc
         $preppedType = $type->prepare($statement, $section, $stack, $select, $result);
 
         if ($argNames) {
-            $argNameOutput = ', '.implode(', ', $argNames);
+            $argNameOutput = ', ' . implode(', ', $argNames);
         } else {
             $argNameOutput = '';
         }
 
-        $name = 'FORMAT('.$preppedValue->name().', '.$preppedType->name().$argNameOutput.')';
+        $name = 'FORMAT(' . $preppedValue->name() . ', ' . $preppedType->name() . $argNameOutput . ')';
 
         $renderer = function (AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($typeLiteral, $argLiterals) {
             if ($value === null) {
@@ -119,7 +120,7 @@ class Format extends AbstractFunc
                 case 'percent':
                     $decimals = isset($argLiterals[0]) ? $argLiterals[0] : 2;
 
-                    return $valueRenderer->escapeValue(number_format($value * 100, $decimals).'%');
+                    return $valueRenderer->escapeValue(number_format($value * 100, $decimals) . '%');
             }
 
             return $valueRenderer->renderValue($value, $typeLiteral);

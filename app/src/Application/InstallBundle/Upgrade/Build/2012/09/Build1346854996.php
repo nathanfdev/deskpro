@@ -44,6 +44,7 @@ class Build1346854996 extends AbstractBuild
             $this->execMutateSql("ALTER TABLE `news_categories` DROP FOREIGN KEY `FK_D68C9111727ACA70`");
             $this->execMutateSql("ALTER TABLE news_categories ADD CONSTRAINT FK_D68C9111727ACA70 FOREIGN KEY (parent_id) REFERENCES news_categories (id) ON DELETE SET NULL");
         } catch (\Exception $e) {
+
         }
     }
 }

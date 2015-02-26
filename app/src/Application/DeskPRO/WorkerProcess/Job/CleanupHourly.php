@@ -183,8 +183,7 @@ class CleanupHourly extends AbstractJob
                 if ($blob) {
                     App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
                 }
-            } catch (\Exception $e) {
-            }
+            } catch (\Exception $e) {}
             $num++;
         }
 
@@ -395,7 +394,7 @@ class CleanupHourly extends AbstractJob
     ####################################################################################################################
 
     /**
-     * @param  array $blob_ids
+     * @param array $blob_ids
      * @return int
      */
     private function _deleteBlobsBatch(array $blob_ids)
@@ -420,8 +419,7 @@ class CleanupHourly extends AbstractJob
             try {
                 $bs->deleteBlobRow($b);
                 ++$count;
-            } catch (\Exception $e) {
-            }
+            } catch (\Exception $e) {}
         }
 
         return $count;

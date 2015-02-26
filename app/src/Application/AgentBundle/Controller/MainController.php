@@ -40,6 +40,7 @@ use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\People\PrefNoticeSet;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Strings;
+use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -113,7 +114,7 @@ class MainController extends AbstractController
         $people_options['custom_people_fields'] = $ticket_options['custom_people_fields'];
 
         $org_options = array(
-            'custom_org_fields' => $this->container->getSystemService('org_fields_manager')->getDisplayArray(),
+            'custom_org_fields' => $this->container->getSystemService('org_fields_manager')->getDisplayArray()
         );
 
         $cutoff = date('Y-m-d H:i:s', time() - $this->container->getSetting('core_chat.agent_timeout'));
@@ -167,7 +168,7 @@ class MainController extends AbstractController
         /** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
         $password_validator = App::$container->getSystemService('password_policy_validator');
 
-        $dp_news = require_once DP_ROOT.'/sys/config/config.news.php';
+        $dp_news = require_once(DP_ROOT.'/sys/config/config.news.php');
         $read_news = $this->person->getPref('agent.ui.dp_news', array());
         $unread_dp_news = array();
         $person_time = $this->person->date_created->getTimestamp();
@@ -211,17 +212,17 @@ class MainController extends AbstractController
     public function loadVersionNoticeAction($id)
     {
         $id = preg_replace('#[^a-zA-Z0-9_\-]#', 'x', $id);
-        $target_dir = DP_ROOT.'/docs/changelog/'.$id;
+        $target_dir = DP_ROOT.'/docs/changelog/' . $id;
         if (!is_dir($target_dir)) {
             throw $this->createNotFoundException();
         }
 
-        $html = file_get_contents($target_dir.'/log.html');
+        $html = file_get_contents($target_dir . '/log.html');
         $html = Strings::extractRegexMatch('#<body>(.*?)</body>#s', $html, 1);
 
         if (preg_match_all('#<[^>]+src=(\'|")(.*?)(\'|")[^>]+>#', $html, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $m) {
-                $attach_path = $target_dir.'/'.$m[2];
+                $attach_path = $target_dir . '/' . $m[2];
                 if (file_exists($attach_path)) {
                     if (Strings::getExtension($attach_path) == 'png') {
                         $type = 'image/png;';
@@ -230,7 +231,7 @@ class MainController extends AbstractController
                     } else {
                         $type = '';
                     }
-                    $url = "data:{$type}base64,".base64_encode(file_get_contents($attach_path));
+                    $url = "data:{$type}base64," . base64_encode(file_get_contents($attach_path));
 
                     $str = $m[0];
                     $str = str_replace($m[2], $url, $str);
@@ -352,7 +353,7 @@ class MainController extends AbstractController
             'person_related'       => array(),
             'organization'         => array(),
             'organization_related' => array(),
-            'chat'                 => array(),
+            'chat'                 => array()
         );
 
         $result_meta = array();
@@ -400,8 +401,8 @@ class MainController extends AbstractController
 
                 $return_results[] = array(
                     'type'    => $type,
-                    'title'   => $this->container->getTranslator()->phrase('agent.search.type_'.$type),
-                    'results' => $rows,
+                    'title'   => $this->container->getTranslator()->phrase('agent.search.type_' . $type),
+                    'results' => $rows
                 );
             }
         }
@@ -445,8 +446,8 @@ class MainController extends AbstractController
 
                 $return_results[] = array(
                     'type'    => $type,
-                    'title'   => $this->container->getTranslator()->phrase('agent.search.type_'.$type),
-                    'results' => $rows,
+                    'title'   => $this->container->getTranslator()->phrase('agent.search.type_' . $type),
+                    'results' => $rows
                 );
             }
         }
@@ -456,7 +457,7 @@ class MainController extends AbstractController
         }
 
         return $this->createJsonResponse(array(
-            'grouped_results' => $return_results,
+            'grouped_results' => $return_results
         ));
     }
 
@@ -485,8 +486,8 @@ class MainController extends AbstractController
 
             if ($person->primary_email) {
                 $data['primary_email'] = array(
-                    'id'    => (int) $person->primary_email->id,
-                    'email' => $person->primary_email->email,
+                    'id'    => (int)$person->primary_email->id,
+                    'email' => $person->primary_email->email
                 );
             } else {
                 $data['primary_email'] = null;
@@ -511,7 +512,7 @@ class MainController extends AbstractController
                         'status'  => $r->status,
                         'urgency' => $r->urgency,
                         'person'  => null,
-                        'agent'   => null,
+                        'agent'   => null
                     );
 
                     $agent = $ticket_display->getAgent($r);
@@ -541,7 +542,7 @@ class MainController extends AbstractController
                         'id'      => $r->id,
                         'subject' => $r->subject,
                         'person'  => null,
-                        'agent'   => null,
+                        'agent'   => null
                     );
 
                     $agent = $r->agent;
@@ -562,7 +563,7 @@ class MainController extends AbstractController
                 foreach ($results as $r) {
                     $rows[] = array(
                         'id'   => $r->id,
-                        'name' => $r->name,
+                        'name' => $r->name
                     );
                 }
                 break;
@@ -574,7 +575,7 @@ class MainController extends AbstractController
                 foreach ($results as $r) {
                     $rows[] = array(
                         'id'    => $r->id,
-                        'title' => $r->title,
+                        'title' => $r->title
                     );
                 }
             break;
@@ -586,7 +587,7 @@ class MainController extends AbstractController
     public function getPersonTicketsAction(Request $request)
     {
         if (!$person = $this->em->find('DeskPRO:Person', $request->get('person_id'))) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
 
         $sort = 'date_created';

@@ -70,7 +70,7 @@ class GeoIpExtension extends AbstractGeoIp
 
         $this->last = array(
             $host,
-            $rec,
+            $rec
         );
 
         if ($what === null) {

@@ -70,7 +70,7 @@ class Urls
 
         $email        = trim($email);
         $email_array  = explode('@', $email);
-        $email_domain = array_pop($email_array);
+        $email_domain = array_pop($email_array);;
 
         return $email_domain === $domain;
     }

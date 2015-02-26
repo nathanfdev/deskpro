@@ -103,6 +103,7 @@ class FeedbackMerge implements PersonContextInterface
         $this->em->beginTransaction();
 
         try {
+
             $this->mergeProps();
             $this->mergeVotes();
             $this->mergeComments();
@@ -114,6 +115,7 @@ class FeedbackMerge implements PersonContextInterface
             $this->em->flush();
 
             $this->em->commit();
+
         } catch (\Exception $e) {
             $this->em->rollback();
 

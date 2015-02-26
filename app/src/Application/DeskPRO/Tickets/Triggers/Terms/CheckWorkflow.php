@@ -56,6 +56,7 @@ class CheckWorkflow extends AbstractTriggerTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

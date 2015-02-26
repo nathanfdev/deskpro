@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
+
 /**
  * Handles the text field
  */
@@ -41,11 +42,9 @@ class TextEmail extends Text
 {
     public function renderHtml($data = null, array $template_vars = array())
     {
-        if ($data === null) {
-            return '';
-        }
+        if ($data === null) return '';
 
-        $html = '<a href="mailto:'.htmlspecialchars($data['value']).'">'.htmlspecialchars($data['value']).'</a>';
+        $html = '<a href="mailto:' . htmlspecialchars($data['value']) . '">' . htmlspecialchars($data['value']) . '</a>';
 
         return $html;
     }

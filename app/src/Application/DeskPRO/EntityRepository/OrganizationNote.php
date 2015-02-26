@@ -45,6 +45,6 @@ class OrganizationNote extends AbstractEntityRepository
             FROM DeskPRO:OrganizationNote n
             WHERE n.organization = ?1
             ORDER BY n.id DESC
-        ")->execute(array(1 => $org));
+        ")->execute(array(1=> $org));
     }
 }

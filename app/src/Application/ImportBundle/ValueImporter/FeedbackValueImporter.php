@@ -48,7 +48,7 @@ class FeedbackValueImporter extends AbstractValueImporter
      */
     public function importValue($fval)
     {
-        //        if (!($fval instanceof FeedbackValue)) {
+//        if (!($fval instanceof FeedbackValue)) {
 //            throw new \InvalidArgumentException("This importer can only import Feedback Items");
 //        }
 

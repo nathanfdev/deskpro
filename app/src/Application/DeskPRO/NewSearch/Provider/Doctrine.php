@@ -40,6 +40,7 @@ class Doctrine extends Provider
         }
 
         for (; $offset < $cutoff; $offset += $batchSize) {
+
             if ($loggerClosure) {
                 $stepStartTime = microtime(true);
             }
@@ -51,9 +52,9 @@ class Doctrine extends Provider
             } else {
                 try {
                     $this->objectPersister->insertMany($objects);
-                } catch (BulkResponseException $e) {
+                } catch(BulkResponseException $e) {
                     if ($loggerClosure) {
-                        $loggerClosure(sprintf('<error>%s</error>', $e->getMessage()));
+                        $loggerClosure(sprintf('<error>%s</error>',$e->getMessage()));
                     }
                 }
             }
@@ -68,6 +69,7 @@ class Doctrine extends Provider
             }
 
             if ($this->options['clear_object_manager']) {
+
                 $this->managerRegistry->getManagerForClass($this->objectClass)->clear();
                 $this->managerRegistry->getManagerForClass($this->objectClass)->clearRepositoryCache();
 
@@ -82,6 +84,7 @@ class Doctrine extends Provider
             }
 
             usleep($sleep);
+
         }
     }
 

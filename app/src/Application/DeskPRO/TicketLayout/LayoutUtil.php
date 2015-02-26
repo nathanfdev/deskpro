@@ -36,9 +36,7 @@ namespace Application\DeskPRO\TicketLayout;
 
 class LayoutUtil
 {
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * @param Layout $layout

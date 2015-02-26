@@ -50,7 +50,7 @@ class NewFeedbackType extends AbstractType
 
         $builder->add('category_id', 'choice', array(
             'choices' => App::getEntityRepository('DeskPRO:FeedbackCategory')->getFullNames(' > ', false),
-            'required' => false, // needed for empty_value to appear
+            'required' => false // needed for empty_value to appear
         ));
 
         $builder->add('person_name', 'text', array('required' => false));

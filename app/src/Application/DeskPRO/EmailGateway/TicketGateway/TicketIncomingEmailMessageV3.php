@@ -82,6 +82,7 @@ class TicketIncomingEmailMessageV3 extends TicketIncomingEmailMessage
      */
     public $charset_error;
 
+
     /**
      * @param Ticket              $ticket
      * @param TicketIncomingEmail $ticket_email
@@ -148,6 +149,7 @@ class TicketIncomingEmailMessageV3 extends TicketIncomingEmailMessage
         #------------------------------
         # User email
         #------------------------------
+
         } else {
             $this->logMessage('[TicketIncomingEmailMessageV3] no agent markers, must be a user email');
 

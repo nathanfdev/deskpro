@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Dpql\Renderer;
 
+
 /**
  * Renders DPQL results to CSV.
  */
@@ -118,27 +119,27 @@ class Csv extends AbstractRenderer
         $output = array();
 
         $columns = array();
-        foreach ($groupXColumns as $column) {
+        foreach ($groupXColumns AS $column) {
             $columns[] = $this->wrapCell($column['title']);
         }
-        foreach ($groupYColumns as $column) {
+        foreach ($groupYColumns AS $column) {
             $columns[] = $this->wrapCell($column['title']);
         }
-        foreach ($selectColumns as $column) {
+        foreach ($selectColumns AS $column) {
             $columns[] = $this->wrapCell($column['title']);
         }
 
         $output[] = implode(',', $columns);
 
-        foreach ($rows as $row) {
+        foreach ($rows AS $row) {
             $columns = array();
-            foreach ($groupXColumns as $column) {
+            foreach ($groupXColumns AS $column) {
                 $columns[] = $this->wrapCell($this->_renderCellValue($row, $column));
             }
-            foreach ($groupYColumns as $column) {
+            foreach ($groupYColumns AS $column) {
                 $columns[] = $this->wrapCell($this->_renderCellValue($row, $column));
             }
-            foreach ($selectColumns as $column) {
+            foreach ($selectColumns AS $column) {
                 $columns[] = $this->wrapCell($this->_renderCellValue($row, $column));
             }
 
@@ -152,7 +153,7 @@ class Csv extends AbstractRenderer
             $cells = array();
 
             if ($groupYColumns) {
-                foreach ($groupYColumns as $column) {
+                foreach ($groupYColumns AS $column) {
                     $cells[] = $this->wrapCell('');
                 }
                 array_pop($cells);
@@ -160,8 +161,8 @@ class Csv extends AbstractRenderer
             }
 
             $columnTotals = array();
-            foreach ($rows as $row) {
-                foreach ($totalColumns as $id) {
+            foreach ($rows AS $row) {
+                foreach ($totalColumns AS $id) {
                     if ($this->getColumnValue($row, $id) === null) {
                         continue;
                     }
@@ -175,11 +176,11 @@ class Csv extends AbstractRenderer
 
             $firstRow = reset($rows);
             $fakeRow = array_fill_keys(array_keys($firstRow), null);
-            foreach ($columnTotals as $id => $value) {
+            foreach ($columnTotals AS $id => $value) {
                 $fakeRow[$id - 1] = $value;
             }
 
-            foreach ($selectColumns as $column) {
+            foreach ($selectColumns AS $column) {
                 if (isset($columnTotals[$column['resultId']])) {
                     $cells[] = $this->wrapCell($this->_renderCellValue($fakeRow, $column));
                 } else {
@@ -218,15 +219,15 @@ class Csv extends AbstractRenderer
         }
 
         $headerRow = array();
-        foreach ($this->_handler->getGroupYColumns() as $column) {
+        foreach ($this->_handler->getGroupYColumns() AS $column) {
             $headerRow[] = $this->wrapCell('');
         }
         $parts = array();
-        foreach ($this->_handler->getGroupXColumns() as $column) {
+        foreach ($this->_handler->getGroupXColumns() AS $column) {
             $parts[] = $column['title'];
         }
         $headerRow[] = $this->wrapCell(implode(' / ', $parts));
-        foreach ($headerCols as $headerCol) {
+        foreach ($headerCols AS $headerCol) {
             $headerRow[] = $this->wrapCell('');
         }
         array_pop($headerRow);
@@ -237,10 +238,10 @@ class Csv extends AbstractRenderer
         $rows[] = implode(',', $headerRow);
 
         $headerRow = array();
-        foreach ($this->_handler->getGroupYColumns() as $column) {
+        foreach ($this->_handler->getGroupYColumns() AS $column) {
             $headerRow[] = $this->wrapCell($column['title']);
         }
-        foreach ($headerCols as $headerCol) {
+        foreach ($headerCols AS $headerCol) {
             $headerRow[] = $this->wrapCell(implode(' / ', $headerCol));
         }
 
@@ -257,15 +258,15 @@ class Csv extends AbstractRenderer
 
         $columnTotals = array();
 
-        foreach ($rowGroups as $yPath => $printable) {
+        foreach ($rowGroups AS $yPath => $printable) {
             $columns = array();
             $rowTotal = 0;
 
-            foreach ($printable as $print) {
+            foreach ($printable AS $print) {
                 $columns[] = $this->wrapCell($print);
             }
 
-            foreach ($headerCols as $xPath => $null) {
+            foreach ($headerCols AS $xPath => $null) {
                 if (isset($lookup[$yPath][$xPath])) {
                     $value = $lookup[$yPath][$xPath];
                 } else {
@@ -291,12 +292,12 @@ class Csv extends AbstractRenderer
 
         if ($totalType && $this->_handler->getGroupYColumns()) {
             $columns = array();
-            foreach ($this->_handler->getGroupYColumns() as $rowGroupSkip) {
+            foreach ($this->_handler->getGroupYColumns() AS $rowGroupSkip) {
                 $columns[] = $this->wrapCell('');
             }
             array_pop($columns);
             $columns[] = $this->wrapCell('Total');
-            foreach ($columnTotals as $value) {
+            foreach ($columnTotals AS $value) {
                 $columns[] = $this->wrapCell($this->_valueRenderer->renderValue($value, $totalType));
             }
             $columns[] = $this->wrapCell($this->_valueRenderer->renderValue(array_sum($columnTotals), $totalType));

@@ -26,6 +26,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+
 /**
  * DeskPRO
  *
@@ -42,6 +43,7 @@ use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+
 
 class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
@@ -99,7 +101,7 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                 $r[] = isset($counts2[$aid]) ? $counts2[$aid] : 0;
 
                 if (in_array($aid, $bs->getAdapterIds())) {
-                    $r[] = 'Yes'.($aid == $bs->getPreferredAdapterId() ? ' *' : '');
+                    $r[] = 'Yes' . ($aid == $bs->getPreferredAdapterId() ? ' *' : '');
                 } else {
                     $r[] = 'No';
                 }
@@ -131,7 +133,7 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
         $count = $mover->getCount();
 
-        $output->writeln("Enabled adapters: ".implode(', ', $bs->getAdapterIds()));
+        $output->writeln("Enabled adapters: " . implode(', ', $bs->getAdapterIds()));
         $output->writeln("<info>Blobs waiting to be moved: $count</info>");
         if (!$count) {
             $output->writeln("Nothing to do.");

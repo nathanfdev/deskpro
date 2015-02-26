@@ -84,6 +84,7 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
         \DpShutdown::add(array($this, 'flushUpdatesQuiet'));
     }
 
+
     /**
      * Flushes updates and eats errors
      */
@@ -91,18 +92,16 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
     {
         try {
             $this->flushUpdates();
-        } catch (\Exception $e) {
-        }
+        } catch (\Exception $e) {}
     }
+
 
     /**
      * Flushes all updates
      */
     public function flushUpdates()
     {
-        if ($this->is_running) {
-            return;
-        }
+        if ($this->is_running) return;
         $this->is_running = true;
 
         $updates = array_map(function ($v) { return $v['ent']; }, $this->updates['updates']);
@@ -119,14 +118,13 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
         $this->is_running = false;
     }
 
+
     /**
      * @param OnFlushEventArgs $eventArgs
      */
     public function onFlush(OnFlushEventArgs $eventArgs)
     {
-        if ($this->is_running) {
-            return;
-        }
+        if ($this->is_running) return;
         $this->is_running = true;
 
         $update = array();
@@ -201,7 +199,7 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
     public function getSubscribedEvents()
     {
         return array(
-            \Doctrine\ORM\Events::onFlush,
+            \Doctrine\ORM\Events::onFlush
         );
     }
 

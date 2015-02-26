@@ -41,7 +41,7 @@ abstract class TicketItemAbstract extends ItemAbstract
         $js = array();
         $js[] = "function (t) {";
 
-        if ($this->conds_all or $this->conds_any) {
+        if ($this->conds_all OR $this->conds_any) {
             if ($this->conds_all) {
                 $ticket_terms = new \Application\DeskPRO\Tickets\TicketTerms($this->conds_all);
                 $js[] = "var all_check = function (ticket) {";

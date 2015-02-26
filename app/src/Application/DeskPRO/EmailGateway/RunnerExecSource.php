@@ -70,6 +70,7 @@ class RunnerExecSource
      */
     private $from_headers = array('from');
 
+
     /**
      * @param EmailSource         $source
      * @param AbstractReader      $reader
@@ -84,6 +85,7 @@ class RunnerExecSource
         $this->logger  = $logger ?: new Logger();
         $this->account_manager = $account_manager;
     }
+
 
     /**
      * @param array $from_headers
@@ -119,7 +121,7 @@ class RunnerExecSource
         try {
             $reader = $this->getReader();
         } catch (\Exception $e) {
-            $this->logger->logDebug("Exception while decoding: ".$e->getMessage());
+            $this->logger->logDebug("Exception while decoding: " . $e->getMessage());
 
             return array(
                 'status'     => 'rejected',
@@ -208,6 +210,7 @@ class RunnerExecSource
         return $result;
     }
 
+
     /**
      * @return array
      */
@@ -218,15 +221,16 @@ class RunnerExecSource
 
         if ($pre_processor->isValid()) {
             return array(
-                'status' => 'okay',
+                'status' => 'okay'
             );
         } else {
             return array(
                 'status' => $pre_processor->getErrorType() ?: 'error',
-                'error_code' => $pre_processor->getErrorCode(),
+                'error_code' => $pre_processor->getErrorCode()
             );
         }
     }
+
 
     /**
      * @return array
@@ -241,7 +245,7 @@ class RunnerExecSource
         if (!$proc) {
             return array(
                 'status' => 'rejected',
-                'error_code' => 'invalid_address',
+                'error_code' => 'invalid_address'
             );
         }
 
@@ -252,12 +256,12 @@ class RunnerExecSource
                 'status' => 'okay',
                 'created_object_type' => $proc->getCreatedObjectType(),
                 'created_object_id'   => $proc->getCreatedObjectId(),
-                'created_object_info' => $proc->getCreatedObjectInfo(),
+                'created_object_info' => $proc->getCreatedObjectInfo()
             );
         } else {
             return array(
                 'status' => $proc->getErrorType() ?: 'error',
-                'error_code' => $proc->getErrorCode(),
+                'error_code' => $proc->getErrorCode()
             );
         }
     }

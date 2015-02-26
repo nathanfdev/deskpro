@@ -228,6 +228,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+
     /**
      * Get the full raw source of the email
      *
@@ -236,14 +237,13 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getRawSource()
     {
-        if ($this->_raw !== null) {
-            return $this->_raw;
-        }
+        if ($this->_raw !== null) return $this->_raw;
 
         $this->_raw = App::getContainer()->getBlobStorage()->copyBlobRecordToString($this->blob);
 
         return $this->_raw;
     }
+
 
     /**
      * @return string
@@ -261,6 +261,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+
     /**
      * Clears local cache of raw source
      */
@@ -268,6 +269,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->_raw = null;
     }
+
 
     /**
      * @return string
@@ -309,6 +311,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         return $this->error_code;
     }
 
+
     /**
      * @param array $info
      */
@@ -321,6 +324,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+
     /**
      * @return array
      */
@@ -328,6 +332,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->object_info ? $this->object_info : array();
     }
+
 
     /**
      * @param string $status
@@ -337,6 +342,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('status', $status);
         $this->setModelField('date_status', new \DateTime());
     }
+
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
@@ -349,6 +355,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 
         return $data;
     }
+
 
     ############################################################################
     # Doctrine Metadata
@@ -365,30 +372,30 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
                 'object_idx'   => array('columns' => array('object_type', 'object_id')),
                 'status_idx'   => array('columns' => array('status')),
                 'from_idx'     => array('columns' => array('from_email')),
-            ),
+            )
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
         $metadata->mapField(array( 'fieldName' => 'uid', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'uid' ));
-        $metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type'));
-        $metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id'));
+        $metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', ));
+        $metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', ));
         $metadata->mapField(array(
             'columnName' => 'object_info',
             'fieldName'  => 'object_info',
             'type'       => 'json_array',
             'nullable'   => true,
         ));
-        $metadata->mapField(array( 'fieldName' => 'from_email', 'type' => 'string', 'length' => 500, 'columnName' => 'from_email'));
-        $metadata->mapField(array( 'fieldName' => 'headers', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'headers'));
-        $metadata->mapField(array( 'fieldName' => 'header_to', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_to'));
-        $metadata->mapField(array( 'fieldName' => 'header_from', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_from'));
-        $metadata->mapField(array( 'fieldName' => 'header_subject', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_subject'));
-        $metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status'));
+        $metadata->mapField(array( 'fieldName' => 'from_email', 'type' => 'string', 'length' => 500, 'columnName' => 'from_email', ));
+        $metadata->mapField(array( 'fieldName' => 'headers', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'headers', ));
+        $metadata->mapField(array( 'fieldName' => 'header_to', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_to', ));
+        $metadata->mapField(array( 'fieldName' => 'header_from', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_from', ));
+        $metadata->mapField(array( 'fieldName' => 'header_subject', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_subject', ));
+        $metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
         $metadata->mapField(array( 'fieldName' => 'exec_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'exec_count' ));
-        $metadata->mapField(array( 'fieldName' => 'error_code', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'error_code'));
-        $metadata->mapField(array( 'fieldName' => 'source_info', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'source_info'));
-        $metadata->mapField(array( 'fieldName' => 'date_status', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_status'));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        $metadata->mapField(array( 'fieldName' => 'error_code', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'error_code', ));
+        $metadata->mapField(array( 'fieldName' => 'source_info', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'source_info', ));
+        $metadata->mapField(array( 'fieldName' => 'date_status', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_status', ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(array(
             'fieldName'    => 'blob',
@@ -411,7 +418,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-            )),
+            ))
         ));
         $metadata->mapManyToOne(array(
             'fieldName'    => 'log_blob',
@@ -423,7 +430,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'set null',
-            )),
+            ))
         ));
     }
 }

@@ -46,7 +46,7 @@ class NewsValueImporter extends AbstractValueImporter
      */
     public function importValue($nval)
     {
-        //        if (!($nval instanceof NewsValue)) {
+//        if (!($nval instanceof NewsValue)) {
 //            throw new \InvalidArgumentException("This importer can only import News Items");
 //        }
 

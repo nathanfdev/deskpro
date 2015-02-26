@@ -122,7 +122,7 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
 
     public function getStatusCode()
     {
-        return $this->status_type.'.'.$this->id;
+        return $this->status_type . '.' . $this->id;
     }
 
     public function getRealTitle()
@@ -142,10 +142,11 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
             $property = 'title';
         }
         $name = strtolower(Util::getBaseClassname($this));
-        $phrase_name = 'obj_'.$name.'.'.$this->id.'_'.$property;
+        $phrase_name = 'obj_'.$name.'.' . $this->id . '_' . $property;
 
         return $phrase_name;
     }
+
 
     /**
      * Get the default value phrase for the object
@@ -158,15 +159,18 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
         return $this->title;
     }
 
+
     public function getSelectTitle()
     {
         return $this->title;
     }
 
+
     public function __toString()
     {
         return $this->title;
     }
+
 
     ############################################################################
     # Validation Metadata
@@ -194,12 +198,12 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackStatusCategory';
-        $metadata->setPrimaryTable(array( 'name' => 'feedback_status_categories'));
+        $metadata->setPrimaryTable(array( 'name' => 'feedback_status_categories', ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array( 'fieldName' => 'status_type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status_type'));
-        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
-        $metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order'));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'status_type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status_type', ));
+        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
+        $metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

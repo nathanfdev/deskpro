@@ -87,11 +87,13 @@ class ApiKey extends DomainObject
      */
     protected $logs;
 
+
     public function __construct()
     {
         $this->regenerateApiKey();
         $this->logs = new ArrayCollection();
     }
+
 
     /**
      * Regenerate the API key
@@ -101,6 +103,7 @@ class ApiKey extends DomainObject
         $this['code'] = Strings::random(25, Strings::CHARS_KEY);
     }
 
+
     /**
      * Get a "key string". This is a combined ID and code like id:code
      * that is used in auth lookup.
@@ -109,8 +112,9 @@ class ApiKey extends DomainObject
      */
     public function getKeyString()
     {
-        return $this->id.':'.$this->code;
+        return $this->id . ':' . $this->code;
     }
+
 
     /**
      * @param  string $flag
@@ -139,6 +143,7 @@ class ApiKey extends DomainObject
         return $data;
     }
 
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -151,7 +156,7 @@ class ApiKey extends DomainObject
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
         $metadata->setPrimaryTable(array(
-            'name' => 'api_keys',
+            'name' => 'api_keys'
         ));
 
         $metadata->mapField(array(

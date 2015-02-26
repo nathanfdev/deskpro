@@ -49,12 +49,13 @@ class LangPackInfo
     {
         $this->langs_dir = DP_ROOT.'/languages';
 
-        $this->manifest = include $this->langs_dir.'/manifest.php';
+        $this->manifest = include($this->langs_dir . '/manifest.php');
 
         if (dp_get_config('debug.lang_manifest')) {
             $this->manifest = array_merge($this->manifest, dp_get_config('debug.lang_manifest'));
         }
     }
+
 
     /**
      * @return string
@@ -64,6 +65,7 @@ class LangPackInfo
         return $this->langs_dir;
     }
 
+
     /**
      * @return array
      */
@@ -71,6 +73,7 @@ class LangPackInfo
     {
         return array_keys($this->manifest);
     }
+
 
     /**
      * @param  string $id
@@ -80,6 +83,7 @@ class LangPackInfo
     {
         return isset($this->manifest[$id]);
     }
+
 
     /**
      * Fetches info about a language.
@@ -118,6 +122,7 @@ class LangPackInfo
         return $info;
     }
 
+
     /**
      * Get lang titles as id=>title
      *
@@ -128,12 +133,12 @@ class LangPackInfo
         $ret = array();
 
         if ($local) {
-            foreach ($this->manifest as $id => $info) {
-                $lang_file = $this->langs_dir."/$id/user/lang.php";
+            foreach ($this->manifest as $id => $info){
+                $lang_file = $this->langs_dir . "/$id/user/lang.php";
 
                 $lang = array();
                 if (is_file($lang_file)) {
-                    $lang = require $lang_file;
+                    $lang = require($lang_file);
                 }
 
                 if (isset($lang['user.lang.lang_title'])) {
@@ -151,6 +156,7 @@ class LangPackInfo
         return $ret;
     }
 
+
     /**
      * @return array
      */
@@ -158,6 +164,7 @@ class LangPackInfo
     {
         return array('user', 'agent');
     }
+
 
     /**
      * @param  string                    $section
@@ -174,6 +181,7 @@ class LangPackInfo
 
         throw new \InvalidArgumentException("Invalid section $section");
     }
+
 
     /**
      * @param  string                               $id
@@ -195,12 +203,12 @@ class LangPackInfo
         $lang->has_user      = $this->getLangInfo($id, 'has_user');
         $lang->has_agent     = $this->getLangInfo($id, 'has_agent');
         $lang->has_admin     = $this->getLangInfo($id, 'has_admin');
-        $lang->base_filepath = '%DP_ROOT%/languages/'.$id;
+        $lang->base_filepath = '%DP_ROOT%/languages/' . $id;
 
         // Get the title from the lang itself
-        $title_file = DP_ROOT.'/languages/'.$id.'/user/lang.php';
+        $title_file = DP_ROOT . '/languages/' . $id . '/user/lang.php';
         if (file_exists($title_file)) {
-            $tmp = require $title_file;
+            $tmp = require($title_file);
             if (isset($tmp['user.lang.lang_title'])) {
                 $lang->title = $tmp['user.lang.lang_title'];
             }

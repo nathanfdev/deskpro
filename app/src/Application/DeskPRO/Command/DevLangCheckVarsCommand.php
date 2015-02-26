@@ -55,16 +55,14 @@ class DevLangCheckVarsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Co
         # Get default phrases and lang dirs
         #------------------------------
 
-        $default_phrases = $this->_readLang(DP_ROOT.'/languages/default');
+        $default_phrases = $this->_readLang(DP_ROOT . '/languages/default');
 
         $lang_dirs = array();
 
-        $dir = dir(DP_ROOT."/languages");
+        $dir = dir(DP_ROOT . "/languages");
         while (($f = $dir->read()) !== false) {
-            if ($f == '.' || $f == '..' || $f == 'default') {
-                continue;
-            }
-            $fpath = DP_ROOT."/languages/$f";
+            if ($f == '.' || $f == '..' || $f == 'default') continue;
+            $fpath = DP_ROOT . "/languages/$f";
 
             if (is_dir($fpath)) {
                 $lang_dirs[] = $f;
@@ -80,7 +78,7 @@ class DevLangCheckVarsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Co
 
         foreach ($lang_dirs as $dirname) {
             $done_one = false;
-            $lang_phrases = $this->_readLang(DP_ROOT."/languages/$dirname");
+            $lang_phrases = $this->_readLang(DP_ROOT . "/languages/$dirname");
 
             foreach ($lang_phrases as $phrase => $phrasetext) {
                 if (!isset($default_phrases[$phrase])) {
@@ -116,6 +114,7 @@ class DevLangCheckVarsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Co
                 }
 
                 if ($is_bad) {
+
                     if (!$done_one) {
                         $output->writeln("\n\n<info>####################\n# $dirname\n####################\n</info>");
                         $done_one = true;
@@ -127,6 +126,7 @@ class DevLangCheckVarsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Co
 
                     $bad_count++;
                 } elseif ($is_bad_html) {
+
                     if (!$done_one) {
                         $output->writeln("\n\n<info>####################\n# $dirname\n####################\n</info>");
                         $done_one = true;
@@ -137,9 +137,10 @@ class DevLangCheckVarsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Co
                     echo "\tLang: $phrasetext\n\n";
 
                     $bad_count++;
+
                 } elseif ($do_plural_check) {
-                    $default_is_plural = (bool) strpos($default_phrasetext, '|');
-                    $lang_is_plural = (bool) strpos($phrasetext, '|');
+                    $default_is_plural = (bool)strpos($default_phrasetext, '|');
+                    $lang_is_plural = (bool)strpos($phrasetext, '|');
 
                     if ($default_is_plural != $lang_is_plural) {
                         if (!$done_one) {
@@ -205,20 +206,18 @@ class DevLangCheckVarsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Co
         $phrases = array();
 
         foreach (array('admin', 'agent', 'user') as $dirname) {
-            $dirpath = $dir_path."/$dirname";
+            $dirpath = $dir_path . "/$dirname";
             if (!is_dir($dirpath)) {
                 continue;
             }
 
             $dir = dir($dirpath);
             while (($f = $dir->read()) !== false) {
-                if ($f == '.' || $f == '..' || !preg_match('#\.php$#', $f)) {
-                    continue;
-                }
-                $filepath = $dirpath."/$f";
+                if ($f == '.' || $f == '..' || !preg_match('#\.php$#', $f)) continue;
+                $filepath = $dirpath . "/$f";
 
                 if (is_file($filepath)) {
-                    $l = require $filepath;
+                    $l = require($filepath);
                     if ($l && is_array($l)) {
                         $phrases = array_merge($phrases, $l);
                     } else {

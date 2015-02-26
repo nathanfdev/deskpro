@@ -87,6 +87,8 @@ class FlashMessenger
         return $this->current_messages->getArrayCopy();
     }
 
+
+
     /**
      * Get messages for this request, as well as messages we just added.
      * @return array
@@ -96,6 +98,8 @@ class FlashMessenger
         return array_merge($this->messages, $this->current_messages->getArrayCopy());
     }
 
+
+
     /**
      * Remove the messages for this request
      */
@@ -103,6 +107,8 @@ class FlashMessenger
     {
         $this->messages = array();
     }
+
+
 
     /**
      * Remove the messages we added during this request
@@ -112,6 +118,8 @@ class FlashMessenger
         $this->current_messages->exchangeArray(array());
     }
 
+
+
     /**
      * Clear all messages, both from session and current.
      */
@@ -120,6 +128,8 @@ class FlashMessenger
         $this->clearMessages();
         $this->clearCurrentMessages();
     }
+
+
 
     /**
      * Add a message for the next request.

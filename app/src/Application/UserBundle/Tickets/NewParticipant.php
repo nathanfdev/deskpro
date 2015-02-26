@@ -77,10 +77,10 @@ class NewParticipant implements \ArrayAccess
             $part_person['last_name'] = $this->last_name;
         }
 
-        if (!$part_person['first_name'] and $this->first_name) {
+        if (!$part_person['first_name'] AND $this->first_name) {
             $part_person['first_name'] = $this->first_name;
         }
-        if (!$part_person['last_name'] and $this->last_name) {
+        if (!$part_person['last_name'] AND $this->last_name) {
             $part_person['last_name'] = $this->last_name;
         }
 
@@ -95,26 +95,8 @@ class NewParticipant implements \ArrayAccess
         });
     }
 
-    public function offsetExists($offset)
-    {
-        return (isset(self::$prop_names[$offset]) && isset($this->$offset));
-    }
-    public function offsetGet($offset)
-    {
-        if (isset(self::$prop_names[$offset])) {
-            return $this->$offset;
-        }
-    }
-    public function offsetSet($offset, $value)
-    {
-        if (isset(self::$prop_names[$offset])) {
-            $this->$offset = $value;
-        }
-    }
-    public function offsetUnset($offset)
-    {
-        if (isset(self::$prop_names[$offset])) {
-            $this->$offset = null;
-        }
-    }
+    public function offsetExists($offset) { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
+    public function offsetGet($offset) { if (isset(self::$prop_names[$offset])) return $this->$offset; }
+    public function offsetSet($offset, $value) { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
+    public function offsetUnset($offset) { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
 }

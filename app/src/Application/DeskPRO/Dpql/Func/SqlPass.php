@@ -206,7 +206,8 @@ class SqlPass extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    ) {
+    )
+    {
         $name = $this->_name;
         $lookupName = strtoupper($name);
 
@@ -233,14 +234,14 @@ class SqlPass extends AbstractFunc
 
         $valuesSql = array();
         $valuesNames = array();
-        foreach ($this->_arguments as $arg) {
+        foreach ($this->_arguments AS $arg) {
             $prepped = $arg->prepare($statement, $section, $stack, $select, $result);
             $valuesSql[] = $prepped->sql();
             $valuesNames[] = $prepped->name();
         }
 
-        $sql = strtoupper($this->_name).'('.implode(', ', $valuesSql).')';
+        $sql = strtoupper($this->_name) . '(' . implode(', ', $valuesSql) . ')';
 
-        return new Prepared($sql, "$this->_name(".implode(', ', $valuesNames).')', false, $info[0]);
+        return new Prepared($sql, "$this->_name(" . implode(', ', $valuesNames) . ')', false, $info[0]);
     }
 }

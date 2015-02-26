@@ -34,6 +34,7 @@
 
 namespace Application\AgentBundle\Controller;
 
+
 /**
  * Handles viewing of deleted items
  */
@@ -55,17 +56,18 @@ class RecycleBinController extends AbstractController
 
     public function listMoreAction($type, $page)
     {
-        $method = '_get'.ucfirst($type);
+        $method = '_get' . ucfirst($type);
         $res = $this->$method($page);
 
         $return_res = array(
             'html' => $res['html'],
             'count' => $res['count'],
-            'no_more_results' => $res['no_more_results'],
+            'no_more_results' => $res['no_more_results']
         );
 
         return $this->createJsonResponse($return_res);
     }
+
 
     ############################################################################
     # fetcher methods for different types
@@ -76,7 +78,7 @@ class RecycleBinController extends AbstractController
         $per_page = 10;
         $pageinfo = array(
             'limit'  => $per_page,
-            'offset' => ($page - 1) * $per_page,
+            'offset' => ($page - 1) * $per_page
         );
 
         $searcher = new \Application\DeskPRO\Searcher\TicketSearch();
@@ -96,12 +98,13 @@ class RecycleBinController extends AbstractController
         $deleted_tickets = array();
         $tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($results);
 
+
         $vars = array(
             'tickets' => $tickets,
             'count' => count($tickets),
             'deleted_tickets' => $deleted_tickets,
             'page' => $page,
-            'no_more_results' => $no_more,
+            'no_more_results' => $no_more
         );
 
         $vars['html'] = $this->renderView('AgentBundle:RecycleBin:list-tickets.html.twig', $vars);

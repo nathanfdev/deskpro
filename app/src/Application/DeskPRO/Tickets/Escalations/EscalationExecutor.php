@@ -72,6 +72,7 @@ class EscalationExecutor
         $this->action_applicator = $action_applicator;
     }
 
+
     /**
      * @param Logger $logger
      */
@@ -79,6 +80,7 @@ class EscalationExecutor
     {
         $this->logger = $logger;
     }
+
 
     /**
      * @param TicketEscalation $esc
@@ -88,6 +90,7 @@ class EscalationExecutor
     {
         $this->_doApplyEscalation($esc, $ticket);
     }
+
 
     /**
      * @param TicketEscalation $esc
@@ -101,7 +104,7 @@ class EscalationExecutor
             'ticket_id'     => $ticket->id,
             'escalation_id' => $esc->id,
             'date_ran'      => date('Y-m-d H:i:s'),
-            'date_criteria' => $d->format('Y-m-d H:i:s'),
+            'date_criteria' => $d->format('Y-m-d H:i:s')
         ));
 
         $this->ticket_manager->markAsManaged($ticket);

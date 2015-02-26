@@ -47,13 +47,13 @@ class NewOrganization extends AbstractType
             'type' => 'text',
             'required' => false,
             'allow_add' => true,
-            'allow_delete' => true,
+            'allow_delete' => true
         ));
         $builder->add('usergroup_ids', 'collection', array(
             'type' => 'text',
             'required' => false,
             'allow_add' => true,
-            'allow_delete' => true,
+            'allow_delete' => true
         ));
     }
 

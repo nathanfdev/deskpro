@@ -84,6 +84,7 @@ class MoveBlobsUtil implements Loggable
      */
     protected $aids_where = null;
 
+
     /**
      * @param EntityManager      $em
      * @param DeskproBlobStorage $bs
@@ -94,8 +95,9 @@ class MoveBlobsUtil implements Loggable
         $this->db = $em->getConnection();
         $this->bs = $bs;
 
-        $this->aids_where = "'".implode("','", $bs->getAdapterIds())."'";
+        $this->aids_where = "'" . implode("','", $bs->getAdapterIds()) . "'";
     }
+
 
     /**
      * @param Logger $logger
@@ -105,6 +107,7 @@ class MoveBlobsUtil implements Loggable
         $this->logger = $logger;
     }
 
+
     /**
      * @return Logger
      */
@@ -112,6 +115,7 @@ class MoveBlobsUtil implements Loggable
     {
         return $this->logger;
     }
+
 
     /**
      * @param $limit
@@ -121,6 +125,7 @@ class MoveBlobsUtil implements Loggable
         $this->limit = $limit;
     }
 
+
     /**
      * @param $limit_time
      */
@@ -129,13 +134,15 @@ class MoveBlobsUtil implements Loggable
         $this->limit_time = $limit_time;
     }
 
+
     /**
      * @param bool $on
      */
     public function setIgnoreErrors($on = true)
     {
-        $this->ignore_error = (bool) $on;
+        $this->ignore_error = (bool)$on;
     }
+
 
     /**
      * @return int
@@ -150,6 +157,7 @@ class MoveBlobsUtil implements Loggable
                 AND storage_loc_pref IN ({$this->aids_where})
         ");
     }
+
 
     /**
      * @return int
@@ -187,7 +195,7 @@ class MoveBlobsUtil implements Loggable
             try {
                 $this->bs->moveBlobRecordToAdapter($blob, $blob->storage_loc_pref);
             } catch (\Exception $e) {
-                $this->logger->logError("Error: ".$e->getMessage());
+                $this->logger->logError("Error: " . $e->getMessage());
                 if (!$this->ignore_error) {
                     $this->logger->logDebug('Aborting');
                     break;

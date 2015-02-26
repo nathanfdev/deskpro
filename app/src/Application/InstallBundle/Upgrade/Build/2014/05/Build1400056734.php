@@ -63,7 +63,7 @@ class Build1400056734 extends AbstractBuild
         $gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: array();
 
         $mappings = array(
-            'gateway_address_to_email_account' => $gateway_addr_map,
+            'gateway_address_to_email_account' => $gateway_addr_map
         );
 
         $this->action_converter = new TriggerActionConverter($mappings);
@@ -99,6 +99,7 @@ class Build1400056734 extends AbstractBuild
             $this->saveUpgradeData('201404', 'esc_id_map', $id_map);
         }
     }
+
 
     /**
      * @param  array              $old_esc
@@ -168,15 +169,14 @@ class Build1400056734 extends AbstractBuild
                 if ($d) {
                     $esc->date_created = $d;
                 }
-            } catch (\Exception $e) {
-            }
+            } catch (\Exception $e) {}
         }
 
-        $esc->title      = $old_esc['title'] ?: 'Trigger '.$old_esc['id'];
+        $esc->title      = $old_esc['title'] ?: 'Trigger ' . $old_esc['id'];
         if ($is_incomplete) {
             $esc->title .= ' (REQUIRES REVIEW)';
         }
-        $esc->is_enabled = (bool) $old_esc['is_enabled'] && !$is_incomplete;
+        $esc->is_enabled = (bool)$old_esc['is_enabled'] && !$is_incomplete;
         $esc->terms      = $old_esc['terms'];
         $esc->terms_any  = $old_esc['terms_any'];
         $esc->actions    = $actions_set;
@@ -184,13 +184,14 @@ class Build1400056734 extends AbstractBuild
         return $esc;
     }
 
+
     /**
      * @param $time_with_unit
      * @return int
      */
     private function getTimeSeconds($time_with_unit)
     {
-        list($time, $scale) = explode(' ', $time_with_unit);
+        list ($time, $scale) = explode(' ', $time_with_unit);
 
         switch ($scale) {
             case 'minutes':

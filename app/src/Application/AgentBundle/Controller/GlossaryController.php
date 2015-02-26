@@ -34,6 +34,7 @@
 
 namespace Application\AgentBundle\Controller;
 
+
 /**
  * Glossary listing and editing
  */
@@ -45,7 +46,7 @@ class GlossaryController extends AbstractController
 
         $definition = new \Application\DeskPRO\Entity\GlossaryWordDefinition();
         $definition->definition = $this->in->getString('definition');
-        foreach ($words as $word) {
+        foreach ($words AS $word) {
             $definition->addWord($word);
         }
 
@@ -59,7 +60,7 @@ class GlossaryController extends AbstractController
         return $this->createJsonResponse(array(
             'definition_id' => $definition['id'],
             'words' => $words,
-            'definition' => $definition['definition'],
+            'definition' => $definition['definition']
         ));
     }
 
@@ -90,7 +91,7 @@ class GlossaryController extends AbstractController
         return $this->createJsonResponse(array(
             'definition_id' => $definition['id'],
             'words' => $words,
-            'definition' => $definition['definition'],
+            'definition' => $definition['definition']
         ));
     }
 
@@ -104,7 +105,7 @@ class GlossaryController extends AbstractController
         $definition = $word->definition;
 
         $words = array();
-        foreach ($definition->words as $word) {
+        foreach ($definition->words AS $word) {
             $words[] = $word->word;
         }
 
@@ -114,7 +115,7 @@ class GlossaryController extends AbstractController
         return $this->createJsonResponse(array(
             'definition_id' => $definition['id'],
             'words' => $words,
-            'definition' => $definition['definition'],
+            'definition' => $definition['definition']
         ));
     }
 
@@ -128,7 +129,7 @@ class GlossaryController extends AbstractController
         $definition = $word->definition;
 
         $words = array();
-        foreach ($definition->words as $def_word) {
+        foreach ($definition->words AS $def_word) {
             $words[] = $def_word->word;
         }
 
@@ -136,7 +137,7 @@ class GlossaryController extends AbstractController
             'id' => $word['id'],
             'definition_id' => $definition['id'],
             'words' => $words,
-            'definition' => $definition['definition'],
+            'definition' => $definition['definition']
         ));
     }
 

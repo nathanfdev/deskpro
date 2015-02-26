@@ -71,6 +71,7 @@ class InstanceInstaller
         $this->em      = $em;
     }
 
+
     /**
      * @param  string           $title
      * @param  array            $settings
@@ -107,6 +108,7 @@ class InstanceInstaller
         return $app;
     }
 
+
     /**
      * @param  AppPackage       $package
      * @param  AppInstance      $app
@@ -135,6 +137,7 @@ class InstanceInstaller
         return new InstallerContext($container, null, $settings);
     }
 
+
     /**
      * Native apps have their own install handler (usually), but we always return the NoopInstallerHandler so we always have a handler
      *
@@ -153,6 +156,7 @@ class InstanceInstaller
 
         return new NoopInstallerHandler();
     }
+
 
     /**
      * @param  AppPackage $package

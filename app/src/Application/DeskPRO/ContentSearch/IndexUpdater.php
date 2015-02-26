@@ -60,7 +60,7 @@ class IndexUpdater
 
         App::getDb()->insert('content_search', array(
             'id' => $this->entity->getSearchId(),
-            'content' => $this->entity->getSearchContent(),
+            'content' => $this->entity->getSearchContent()
         ));
 
         $attr = $this->entity->getSearchAttributes();
@@ -69,7 +69,7 @@ class IndexUpdater
                 App::getDb()->insert('content_search', array(
                     'search_id' => $this->entity->getSearchId(),
                     'attribute_id' => $k,
-                    'content' => $v,
+                    'content' => $v
                 ));
             }
         }

@@ -186,22 +186,30 @@ class Usergroup extends DomainObject
         $usergroup_ids = array();
 
         foreach ($usergroups as $ug) {
+
             if (is_object($ug)) {
+
                 $usergroup_ids[] = $ug['id'];
+
             } else {
-                $usergroup_ids[] = (int) $ug;
+
+                $usergroup_ids[] = (int)$ug;
             }
         }
 
         if ($usergroup_ids) {
+
             $usergroup_ids = array_unique($usergroup_ids, \SORT_NUMERIC);
             sort($usergroup_ids, \SORT_NUMERIC);
+
         } else {
+
             $usergroup_ids = array(0);
         }
 
         return md5(implode(',', $usergroup_ids));
     }
+
 
     ############################################################################
     # Validation Metadata
@@ -212,6 +220,7 @@ class Usergroup extends DomainObject
         $metadata->addPropertyConstraint('title', new NotBlank());
     }
 
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -220,7 +229,7 @@ class Usergroup extends DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Usergroup';
-        $metadata->setPrimaryTable(array('name' => 'usergroups'));
+        $metadata->setPrimaryTable(array('name' => 'usergroups',));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(

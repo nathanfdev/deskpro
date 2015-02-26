@@ -69,6 +69,7 @@ class PhoneNumbers
     const SHORT_CODE = 29;
     const STANDARD_RATE = 30;
 
+
     /**
      * Takes an int type (one of the constants of this class) returned via self::getTypeCode(numberString)
      * and turns it into a simpler readable string.

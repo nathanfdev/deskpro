@@ -60,7 +60,7 @@ class NewDownload extends AbstractType
             'type' => 'hidden',
             'required' => false,
             'allow_add' => true,
-            'allow_delete' => true,
+            'allow_delete' => true
         ));
 
         $builder->add('attach', 'hidden');

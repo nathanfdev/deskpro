@@ -61,9 +61,7 @@ class OrganizationSearchController extends AbstractController
         #------------------------------
 
         $page = $this->in->getUint('page');
-        if (!$page) {
-            $page = 1;
-        }
+        if (!$page) $page = 1;
 
         $organizations = $results_helper->getOrgsForPage($page);
 
@@ -135,6 +133,7 @@ class OrganizationSearchController extends AbstractController
         ));
     }
 
+
     ############################################################################
     # search
     ############################################################################
@@ -156,8 +155,9 @@ class OrganizationSearchController extends AbstractController
         #------------------------------
 
         if (!$result_cache) {
+
             $term_rules = RuleBuilder::newTermsBuilder();
-            $terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw', 'discard'));
+            $terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
 
             $set_terms_map = array(
                 'org_name'              => array('op' => 'contains', 'options' => array()),
@@ -273,9 +273,7 @@ class OrganizationSearchController extends AbstractController
     public function performQuickNameSearchAction()
     {
         $limit = $this->in->getUint('limit');
-        if (!$limit) {
-            $limit = 20;
-        }
+        if (!$limit) $limit = 20;
 
         $q = $this->in->getString('q');
         if (!$q) {
@@ -313,7 +311,7 @@ class OrganizationSearchController extends AbstractController
                 'id' => $org['id'],
                 'name' => $org['name'],
                 'value' => $org['name'],
-                'label' => $org['name'],
+                'label' => $org['name']
             );
         }
 

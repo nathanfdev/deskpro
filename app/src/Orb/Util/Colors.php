@@ -36,9 +36,8 @@ namespace Orb\Util;
 
 class Colors
 {
-    private function __construct()
-    {
-    }
+    private function __construct() {}
+
 
     /**
      * Get colors (eg for a legend) for keys.
@@ -76,7 +75,7 @@ class Colors
      */
     public static function getColorFromValue($value)
     {
-        if ($value < 0) {
+        if($value < 0) {
             $value = 0;
         } elseif ($value > 1.0001) {
             $value = 1.0;
@@ -86,11 +85,11 @@ class Colors
         $a     = 0.18;
         $light = 100 * $value;
 
-        if ($value <= 0.25) {
+        if($value <= 0.25) {
             $i = array($light, $sat, round($sat*($value)/$a));
-        } elseif ($value <= 0.5) {
+        } elseif($value <= 0.5) {
             $i = array(round($sat-$sat*($value-0.25)/$a), $light, $sat);
-        } elseif ($value <= 0.75) {
+        } elseif($value <= 0.75) {
             $i = array($sat, round($sat*($value-0.5)/$a), $light);
         } else {
             $i = array($sat, round($sat-$sat*($value-0.75)/$a), $light);
@@ -113,17 +112,17 @@ class Colors
      */
     public static function rgbToHexcode(array $rgb)
     {
-        $r = (int) $rgb['red'];
-        $g = (int) $rgb['green'];
-        $b = (int) $rgb['blue'];
+        $r = (int)$rgb['red'];
+        $g = (int)$rgb['green'];
+        $b = (int)$rgb['blue'];
 
         $r = dechex($r < 0 ? 0 : ($r > 255 ? 255 : $r));
         $g = dechex($g < 0 ? 0 : ($g > 255 ? 255 : $g));
         $b = dechex($b < 0 ? 0 : ($b > 255 ? 255 : $b));
 
-        $color  = (strlen($r) < 2 ? '0' : '').$r;
-        $color .= (strlen($g) < 2 ? '0' : '').$g;
-        $color .= (strlen($b) < 2 ? '0' : '').$b;
+        $color  = (strlen($r) < 2?'0':'').$r;
+        $color .= (strlen($g) < 2?'0':'').$g;
+        $color .= (strlen($b) < 2?'0':'').$b;
 
         return $color;
     }

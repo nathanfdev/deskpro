@@ -100,13 +100,12 @@ class GeneratorConfig
     /**
      * Sets an exporter type (csv, json, osticket, zendesk)
      *
-     * @param  string $exporter_type
+     * @param string $exporter_type
      * @return $this
      */
     public function setExporterType($exporter_type)
     {
         $this->exporter_type = $exporter_type;
-
         return $this;
     }
 
@@ -119,13 +118,12 @@ class GeneratorConfig
     }
 
     /**
-     * @param  string $writer_type
+     * @param string $writer_type
      * @return $this
      */
     public function setWriterType($writer_type)
     {
         $this->writer_type = $writer_type;
-
         return $this;
     }
 
@@ -138,13 +136,12 @@ class GeneratorConfig
     }
 
     /**
-     * @param  string $record_type
+     * @param string $record_type
      * @return $this
      */
     public function addEntityType($record_type)
     {
         $this->entity_types[] = $record_type;
-
         return $this;
     }
 
@@ -165,7 +162,7 @@ class GeneratorConfig
      */
     public function needInputPath()
     {
-        if (! $this->exporter_type) {
+        if ( ! $this->exporter_type) {
             throw new Exception('Exporter type is not defined');
         }
 
@@ -178,13 +175,12 @@ class GeneratorConfig
     }
 
     /**
-     * @param  string $input_path
+     * @param string $input_path
      * @return $this
      */
     public function setInputPath($input_path)
     {
         $this->input_path = $input_path;
-
         return $this;
     }
 
@@ -197,13 +193,12 @@ class GeneratorConfig
     }
 
     /**
-     * @param  string $output_path
+     * @param string $output_path
      * @return $this
      */
     public function setOutputPath($output_path)
     {
         $this->output_path = $output_path;
-
         return $this;
     }
 
@@ -216,13 +211,12 @@ class GeneratorConfig
     }
 
     /**
-     * @param  string $log_path
+     * @param string $log_path
      * @return $this
      */
     public function setLogPath($log_path)
     {
         $this->log_path = $log_path;
-
         return $this;
     }
 
@@ -235,13 +229,12 @@ class GeneratorConfig
     }
 
     /**
-     * @param  boolean $mark_done
+     * @param boolean $mark_done
      * @return $this
      */
     public function setMarkDone($mark_done)
     {
-        $this->mark_done = (bool) $mark_done;
-
+        $this->mark_done = (bool)$mark_done;
         return $this;
     }
 
@@ -254,13 +247,12 @@ class GeneratorConfig
     }
 
     /**
-     * @param  int   $batch_size
+     * @param int $batch_size
      * @return $this
      */
     public function setBatchSize($batch_size)
     {
-        $this->batch_size = (int) $batch_size;
-
+        $this->batch_size = (int)$batch_size;
         return $this;
     }
 
@@ -273,13 +265,12 @@ class GeneratorConfig
     }
 
     /**
-     * @param  boolean $verbose
+     * @param boolean $verbose
      * @return $this
      */
     public function setVerbose($verbose)
     {
-        $this->verbose = (bool) $verbose;
-
+        $this->verbose = (bool)$verbose;
         return $this;
     }
 
@@ -296,13 +287,12 @@ class GeneratorConfig
     /**
      * A writer does not flush data
      *
-     * @param  boolean $dry_run
+     * @param boolean $dry_run
      * @return $this
      */
     public function setDryRun($dry_run)
     {
-        $this->dry_run = (bool) $dry_run;
-
+        $this->dry_run = (bool)$dry_run;
         return $this;
     }
 }

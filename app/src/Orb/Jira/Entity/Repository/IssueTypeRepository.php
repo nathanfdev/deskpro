@@ -25,12 +25,8 @@ class IssueTypeRepository extends Repository
     protected $_endPoint = 'issuetype';
 
     /** {@inheritdoc} */
-    protected function _create(\Orb\JIRA\Entity $entity, \Orb\Jira\Service $client)
-    {
-    }
+    protected function _create(\Orb\JIRA\Entity $entity, \Orb\Jira\Service $client) {}
 
     /** {@inheritdoc} */
-    protected function _update(\Orb\Jira\Entity $entity, \Orb\Jira\Service $client)
-    {
-    }
+    protected function _update(\Orb\Jira\Entity $entity, \Orb\Jira\Service $client) {}
 }

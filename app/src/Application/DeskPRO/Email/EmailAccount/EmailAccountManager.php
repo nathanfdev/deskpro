@@ -90,6 +90,7 @@ class EmailAccountManager
      */
     private $default_out_account = null;
 
+
     /**
      * @param EmailAccountRepository $repos
      * @param RawTransportFactory    $transport_factory
@@ -101,6 +102,7 @@ class EmailAccountManager
         $this->transport_factory       = $transport_factory;
         $this->fetcher_storage_factory = $fetcher_storage_factory;
     }
+
 
     ####################################################################################################################
     # Working with EmailAccounts
@@ -121,6 +123,7 @@ class EmailAccountManager
         return $acc;
     }
 
+
     /**
      * @param $id
      * @return \Application\DeskPRO\Entity\EmailAccount|null
@@ -136,6 +139,7 @@ class EmailAccountManager
         throw new \OutOfBoundsException();
     }
 
+
     /**
      * @param  int|string                                 $criteria Standard criteria filter
      * @return \Application\DeskPRO\Entity\EmailAccount[]
@@ -148,6 +152,7 @@ class EmailAccountManager
             return $this->repos->getAccounts();
         }
     }
+
 
     /**
      * @param  int|string                                 $criteria Standard criteria filter
@@ -162,6 +167,7 @@ class EmailAccountManager
         }
     }
 
+
     /**
      * @param  int  $id
      * @return bool
@@ -170,6 +176,7 @@ class EmailAccountManager
     {
         return $acc = $this->repos->getAccount($id) !== null;
     }
+
 
     /**
      * @param  string $id
@@ -185,6 +192,7 @@ class EmailAccountManager
 
         return $acc->is_enabled;
     }
+
 
     /**
      * Find an email account for a given email address
@@ -212,8 +220,9 @@ class EmailAccountManager
         return null;
     }
 
+
     /**
-     * @param  \Swift_Mime_Message                      $message
+     * @param \Swift_Mime_Message $message
      * @return \Application\DeskPRO\Entity\EmailAccount
      */
     public function findAccountForSwiftmailerMessage(\Swift_Mime_Message $message)
@@ -222,8 +231,7 @@ class EmailAccountManager
             if ($message->getMessageOptions()->has(MessageOptionsInterface::OPT_ACCOUNT_ID)) {
                 try {
                     $acc = $this->getAccount($message->getMessageOptions()->get(MessageOptionsInterface::OPT_ACCOUNT_ID));
-                } catch (\Exception $e) {
-                }
+                } catch (\Exception $e) {}
 
                 if ($acc && $acc->is_enabled && $acc->outgoing_account) {
                     return $acc;
@@ -242,6 +250,7 @@ class EmailAccountManager
         return $this->getDefaultOutAccountWithFallback();
     }
 
+
     /**
      * @param  array $accounts
      * @param  int   $criteria
@@ -258,6 +267,7 @@ class EmailAccountManager
         return array_filter($accounts, function ($a) use ($self, $criteria) { return $self->checkAccountCriteriaMatch($a, $criteria); });
     }
 
+
     /**
      * @param  EmailAccount $account
      * @param $criteria
@@ -270,7 +280,7 @@ class EmailAccountManager
             $criteria = 0;
             foreach ($parts as $p) {
                 $p = trim($p);
-                $p_name = 'Application\\DeskPRO\\Email\\EmailAccount\\EmailAccountManager::'.strtoupper($p);
+                $p_name = 'Application\\DeskPRO\\Email\\EmailAccount\\EmailAccountManager::' . strtoupper($p);
                 $p_val = constant($p_name);
                 if ($p_val) {
                     $criteria = $criteria | $p_val;
@@ -295,6 +305,7 @@ class EmailAccountManager
 
         return true;
     }
+
 
     /**
      * @return array
@@ -324,6 +335,7 @@ class EmailAccountManager
         return $map;
     }
 
+
     /**
      * "primary" just means the first account that has an outgoing.
      *
@@ -337,8 +349,9 @@ class EmailAccountManager
             }
         }
 
-        throw new MissingConfigurationException();
+        throw new MissingConfigurationException;
     }
+
 
     /**
      * Just like getPrimaryTicketAccount except will fallback on a non-ticket account.
@@ -354,8 +367,9 @@ class EmailAccountManager
         }
     }
 
+
     /**
-     * @param  Ticket       $ticket
+     * @param Ticket $ticket
      * @return EmailAccount
      */
     public function getAccountForTicket(Ticket $ticket)
@@ -367,6 +381,7 @@ class EmailAccountManager
         return $this->getPrimaryTicketAccountWithFallback();
     }
 
+
     /**
      * Count how many outgoing email accounts are defined
      *
@@ -376,6 +391,7 @@ class EmailAccountManager
     {
         return count($this->getAllActiveAccounts('with_transport'));
     }
+
 
     ####################################################################################################################
     # Working with Transports
@@ -395,6 +411,7 @@ class EmailAccountManager
         $this->default_out_account = $default;
     }
 
+
     /**
      * @return EmailAccount
      */
@@ -410,8 +427,9 @@ class EmailAccountManager
             }
         }
 
-        throw new MissingConfigurationException();
+        throw new MissingConfigurationException;
     }
+
 
     /**
      * Just like getDefaultOutAccount except will create an anonymous mail() mailer when none exists.
@@ -426,9 +444,9 @@ class EmailAccountManager
             $acc = new EmailAccount('outgoing');
 
             if (!empty($_SERVER['HOST_NAME'])) {
-                $acc->address = 'deskpro@'.$_SERVER['HOST_NAME'];
+                $acc->address = 'deskpro@' . $_SERVER['HOST_NAME'];
             } elseif (@php_uname('n')) {
-                $acc->address = 'deskpro@'.php_uname('n');
+                $acc->address = 'deskpro@' . php_uname('n');
             } else {
                 $acc->address = 'deskpro@localhost';
             }
@@ -440,6 +458,7 @@ class EmailAccountManager
         }
     }
 
+
     /**
      * @return RawTransportFactory
      */
@@ -447,6 +466,7 @@ class EmailAccountManager
     {
         return $this->transport_factory;
     }
+
 
     /**
      * @param  int|EmailAccount $acc
@@ -458,6 +478,7 @@ class EmailAccountManager
 
         return $acc->outgoing_account !== null;
     }
+
 
     /**
      * @param  int|EmailAccount      $acc
@@ -482,6 +503,7 @@ class EmailAccountManager
 
         return $tr;
     }
+
 
     /**
      * Stops/closes the transport.
@@ -508,6 +530,7 @@ class EmailAccountManager
         $tr->stop();
     }
 
+
     /**
      * Closes all loaded transports
      *
@@ -528,6 +551,7 @@ class EmailAccountManager
         $this->loaded_transports = array();
     }
 
+
     ####################################################################################################################
     # Working with Fetchers
     ####################################################################################################################
@@ -540,6 +564,7 @@ class EmailAccountManager
         return $this->fetcher_storage_factory;
     }
 
+
     /**
      * @param  int|EmailAccount $acc
      * @return bool
@@ -550,6 +575,7 @@ class EmailAccountManager
 
         return $acc->incoming_account !== null;
     }
+
 
     /**
      * @param  int|EmailAccount                                                         $acc
@@ -574,6 +600,7 @@ class EmailAccountManager
 
         return $fethcer;
     }
+
 
     /**
      * Stops/closes the fethcer.
@@ -600,6 +627,7 @@ class EmailAccountManager
         $fetcher->closeStorage();
     }
 
+
     /**
      * Closes all loaded fethcers
      *
@@ -619,6 +647,7 @@ class EmailAccountManager
 
         $this->loaded_fetcher_storages = array();
     }
+
 
     ####################################################################################################################
     # Working with processors

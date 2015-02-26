@@ -43,7 +43,7 @@ class Twitter extends PortalItemAbstract implements CacheableItem
     {
         return array(
             'lifetime' => 1800, // 30 minutes
-            'user_indifferent' => true,
+            'user_indifferent' => true
         );
     }
 
@@ -83,9 +83,9 @@ class Twitter extends PortalItemAbstract implements CacheableItem
             try {
                 $tweets = $twitter->get_statusesUser_timeline(array(
                     'screen_name' => $twitter_name,
-                    'count' => $max_items,
+                    'count' => $max_items
                 ));
-                foreach ($tweets as $tweet) {
+                foreach ($tweets AS $tweet) {
                     $date = new \DateTime($tweet->created_at);
 
                     $feed_items[] = array(
@@ -93,18 +93,17 @@ class Twitter extends PortalItemAbstract implements CacheableItem
                         'text' => $this->parseText($tweet->text),
                         'date' => $date,
                         'screen_name' => $tweet->user->screen_name,
-                        'name' => $tweet->user->name,
+                        'name' => $tweet->user->name
                     );
                 }
-            } catch (\Exception $e) {
-            }
+            } catch (\Exception $e) {}
         } else {
             $feed_items = array();
         }
 
         return $this->renderView('UserBundle:Portal:twitter-sidebar.html.twig', array(
             'twitter_name' => $twitter_name,
-            'feed_items' => $feed_items,
+            'feed_items' => $feed_items
         ));
     }
 

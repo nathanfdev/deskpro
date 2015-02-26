@@ -77,15 +77,15 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         $is_notif_disabled = $this->getContainer()->getSetting('agent.disable_notifications');
 
         foreach ($agent_ids as $aid) {
+
             if ('all_agents' === $aid) {
                 $agents = $this->getContainer()->getAgentData()->getAgents();
                 break;
             }
 
             if ($aid == 'notify_list') {
-                if ($is_notif_disabled) {
-                    continue;
-                }
+
+                if ($is_notif_disabled) continue;
 
                 $change_detect = $this->getContainer()->getTicketFilterChangeDetector();
                 $change_set    = $change_detect->getFilterChangeSet($ticket, $context);
@@ -125,6 +125,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                     $context->getLogger()->debug("[SendAgentEmail] Appending force list");
                     $agents = array_merge($agents, $force_list);
                 }
+
             } else {
                 $agent_data = $this->getContainer()->getAgentData();
                 $agents = array_merge($agents, $agent_data->selectAgents($aid, $person_context, $ticket));
@@ -145,12 +146,13 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         return $agents;
     }
 
+
     /**
      * {@inheritDoc}
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $context->getLogger()->debug("[SendAgentEmail] Begin :: agent_ids = ".implode(', ', $this->getActionOption('agent_ids')));
+        $context->getLogger()->debug("[SendAgentEmail] Begin :: agent_ids = " . implode(', ', $this->getActionOption('agent_ids')));
         $start_time = microtime(true);
 
         $agents = $this->resolveAgents($ticket, $this->getActionOption('agent_ids'), $context);
@@ -279,6 +281,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
         $context->getLogger()->info(sprintf("[SendAgentEmail] Send %d messages in %.3fs", $sent_count, microtime(true)-$start_time));
     }
+
 
     /**
      * {@inheritDoc}

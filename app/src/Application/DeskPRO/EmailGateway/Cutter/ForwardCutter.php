@@ -62,6 +62,7 @@ class ForwardCutter
      */
     protected $cutter;
 
+
     /**
      * @return string
      */
@@ -93,8 +94,9 @@ class ForwardCutter
     public static function subjectIsForward($subject)
     {
         // Prefixes for FW/FWD and in other langs too
-        return (bool) preg_match(self::getFwdSubjectRegex(), ltrim($subject));
+        return (bool)preg_match(self::getFwdSubjectRegex(), ltrim($subject));
     }
+
 
     /**
      * Cut out the FWD prefix from subject
@@ -106,6 +108,7 @@ class ForwardCutter
     {
         return trim(preg_replace(self::getFwdSubjectRegex(), '', trim($subject)));
     }
+
 
     public function __construct($body, $is_html, $cutter)
     {
@@ -129,6 +132,7 @@ class ForwardCutter
         }
     }
 
+
     /**
      * @return array
      */
@@ -136,6 +140,7 @@ class ForwardCutter
     {
         return $this->forward_info;
     }
+
 
     /**
      * Check if the forwarded message was read correctly and has all required information
@@ -147,6 +152,7 @@ class ForwardCutter
         return $this->error_code === null;
     }
 
+
     /**
      * @return string
      */
@@ -154,6 +160,7 @@ class ForwardCutter
     {
         return $this->error_code;
     }
+
 
     /**
      * Get the users message
@@ -165,6 +172,7 @@ class ForwardCutter
         return $this->forward_info['fwd_message_body'];
     }
 
+
     /**
      * Get the reply above the forwarded message
      *
@@ -174,6 +182,7 @@ class ForwardCutter
     {
         return $this->forward_info['message_body'];
     }
+
 
     /**
      * @return \Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress
@@ -187,6 +196,7 @@ class ForwardCutter
         return $item;
     }
 
+
     /**
      * Get the user email address from the forwarded message
      *
@@ -196,6 +206,7 @@ class ForwardCutter
     {
         return $this->forward_info['fwd_from_email'];
     }
+
 
     /**
      * Get the users name from the forwarded message (based on their name in From:)

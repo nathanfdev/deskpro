@@ -70,6 +70,7 @@ class EscalationsRunner implements \Countable, \IteratorAggregate
      */
     private $batch_size = 100;
 
+
     /**
      * @param \Application\DeskPRO\Entity\TicketEscalation[] $escalations
      * @param EscalationTicketMatcher                        $matcher
@@ -87,6 +88,7 @@ class EscalationsRunner implements \Countable, \IteratorAggregate
         $this->logger      = new NullLogger();
     }
 
+
     /**
      * @param Logger $logger
      */
@@ -94,6 +96,7 @@ class EscalationsRunner implements \Countable, \IteratorAggregate
     {
         $this->logger = $logger;
     }
+
 
     /**
      * Runs all escalations
@@ -113,7 +116,7 @@ class EscalationsRunner implements \Countable, \IteratorAggregate
             try {
                 $tickets = $this->matcher->getMatches($esc, $this->batch_size);
             } catch (\Exception $e) {
-                $this->logger->error("[EscalationsRunner] Error with escalation query: ".$e->getMessage());
+                $this->logger->error("[EscalationsRunner] Error with escalation query: " . $e->getMessage());
                 $this->logger->debug(KernelErrorHandler::formatBacktrace($e->getTrace()));
                 KernelErrorHandler::logException($e, true, 'escalation_query_'.$esc->id);
                 $tickets = array();
@@ -122,7 +125,7 @@ class EscalationsRunner implements \Countable, \IteratorAggregate
                 try {
                     $this->executor->applyEscalation($esc, $t);
                 } catch (\Exception $e) {
-                    $this->logger->error("[EscalationsRunner] Error applying escalation to ticket: ".$e->getMessage());
+                    $this->logger->error("[EscalationsRunner] Error applying escalation to ticket: " . $e->getMessage());
                     $this->logger->debug(KernelErrorHandler::formatBacktrace($e->getTrace()));
                     KernelErrorHandler::logException($e, true, 'escalation_apply_'.$esc->id);
                 }

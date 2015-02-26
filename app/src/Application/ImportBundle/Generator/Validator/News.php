@@ -52,5 +52,6 @@ final class News extends AbstractConstraintValidator
      */
     public function validate(Entity\EntityInterface $entity)
     {
+
     }
 }

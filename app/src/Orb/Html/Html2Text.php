@@ -33,11 +33,7 @@
 
 namespace Orb\Html;
 
-use DOMDocument;
-use DOMNode;
-use DOMText;
-use DOMDocumentType;
-use DOMElement;
+use DOMDocument, DOMNode, DOMText, DOMDocumentType, DOMElement;
 use Orb\Util\Strings;
 
 /**
@@ -62,6 +58,7 @@ class Html2Text
         return $h2t->convert($html);
     }
 
+
     /**
      * Convert an HTML string into plaintext
      *
@@ -77,7 +74,7 @@ class Html2Text
         $html = str_replace('&nbsp;', ' ', $html);
         $html = preg_replace('#\x{00a0}#u', ' ', $html);
 
-        $html = '<?xml version="1.0" encoding="UTF-8"?>'."\n".$html;
+        $html = '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . $html;
 
         $doc = new DOMDocument('1.0', 'UTF-8');
         if (!@$doc->loadHTML($html)) {
@@ -268,7 +265,7 @@ class Html2Text
         $nextNode = $node->previousSibling;
         while ($nextNode != null) {
             if ($nextNode instanceof DOMElement) {
-                break;
+                    break;
             }
             $nextNode = $nextNode->previousSibling;
         }

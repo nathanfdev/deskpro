@@ -43,10 +43,13 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  */
 class TaskAssociatedPerson extends TaskAssociation
 {
+
     /**
      * @var Application\DeskPRO\Entity\Person
      */
     protected $person;
+
+
 
     ############################################################################
     # Doctrine Metadata
@@ -55,6 +58,6 @@ class TaskAssociatedPerson extends TaskAssociation
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'task_associations', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'dpApi' => true ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'task_associations', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
     }
 }

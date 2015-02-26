@@ -74,28 +74,28 @@ class EditTicketType extends AbstractType
         if ($deps = App::getDataService('Department')->getPersonDepartments(App::getCurrentPerson(), 'tickets')) {
             $ticket_builder->add('department_id', 'choice', array(
                 'choices' => Arrays::selectArrayFromHierarchy($deps, 'id', 'title'),
-                'required' => false,
+                'required' => false
             ));
         }
 
         if (!empty($ticket_options['ticket_categories_hierarchy'])) {
             $ticket_builder->add('category_id', 'choice', array(
                 'choices' => Arrays::selectArrayFromHierarchy($ticket_options['ticket_categories_hierarchy'], 'id', 'title'),
-                'required' => false,
+                'required' => false
             ));
         }
 
         if (!empty($ticket_options['priorities'])) {
             $ticket_builder->add('priority_id', 'choice', array(
                 'choices' => Arrays::unshiftAssocReturn($ticket_options['priorities'], '', ''),
-                'required' => false,
+                'required' => false
             ));
         }
 
         if (!empty($ticket_options['products'])) {
             $ticket_builder->add('product_id', 'choice', array(
                 'choices' => Arrays::unshiftAssocReturn($ticket_options['products'], '', ''),
-                'required' => false,
+                'required' => false
             ));
         }
 
@@ -104,7 +104,7 @@ class EditTicketType extends AbstractType
             'type' => 'hidden',
             'required' => false,
             'allow_add' => true,
-            'allow_delete' => true,
+            'allow_delete' => true
         ));
 
         $builder->add($ticket_builder);

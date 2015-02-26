@@ -127,6 +127,7 @@ class SearchIndexer
         #------------------------------
         # Default
         #------------------------------
+
         } else {
             foreach ($updates as $object) {
                 switch (true) {

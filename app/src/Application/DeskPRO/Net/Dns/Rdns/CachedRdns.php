@@ -65,7 +65,7 @@ class CachedRdns implements RdnsInterface
     }
 
     /**
-     * @param  string            $ip
+     * @param string $ip
      * @return string|null
      * @throws \RuntimeException
      */
@@ -79,10 +79,7 @@ class CachedRdns implements RdnsInterface
         $key = $this->genCacheId($ip);
         $exist = $this->em->getRepository('DeskPRO:Cache')->load($key);
         if ($exist) {
-            if ($exist === 'fail') {
-                return null;
-            }
-
+            if ($exist === 'fail') return null;
             return $exist;
         }
 
@@ -107,11 +104,11 @@ class CachedRdns implements RdnsInterface
     }
 
     /**
-     * @param  string $ip
+     * @param string $ip
      * @return string
      */
     private function genCacheId($ip)
     {
-        return "ip2host--".$ip;
+        return "ip2host--" . $ip;
     }
 }

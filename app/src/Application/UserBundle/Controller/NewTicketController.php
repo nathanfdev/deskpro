@@ -125,7 +125,7 @@ class NewTicketController extends AbstractController
         }
 
         $layouts = $this->container->getTicketLayoutManager()->getUserLayouts();
-        $ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = ".$layouts->compileJsObj().";";
+        $ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $layouts->compileJsObj() . ";";
 
         if ($newticket->ticket->department_id) {
             $default_page = $layouts->getLayout($newticket->ticket->department_id);
@@ -217,6 +217,7 @@ class NewTicketController extends AbstractController
         }
 
         if ($request->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
+
             if (!$this->consumeRequest('newticket')) {
                 return $this->redirectRoute('user');
             }
@@ -254,6 +255,7 @@ class NewTicketController extends AbstractController
                     if ($new_custom_fields_form->isValid()) {
                         $manager->flush($new_custom_fields_form);
                     }
+
                 } catch (DuplicateTicketException $e) {
                     // Double submit detected, just continue on
                     $ticket = $this->em->find('DeskPRO:Ticket', $e->ticket_id);
@@ -291,6 +293,7 @@ class NewTicketController extends AbstractController
 
                 // Require login means we need to ask the user to log in now
                 if ($newticket->require_login) {
+
                     $this->session->setFlash('new_ticket_login', 1);
                     $this->session->save();
 
@@ -298,6 +301,7 @@ class NewTicketController extends AbstractController
 
                 // New users are always sent back to home with flash message.
                 } elseif ($person->isNewPerson() || !$person->is_user) {
+
                     $go = 'front';
 
                 // Existing users are redirected to the ticket if they're using a validated email address.
@@ -340,8 +344,7 @@ class NewTicketController extends AbstractController
                 foreach ($newticketData as $name => $value) {
                     try {
                         $form->get($name)->setData($value);
-                    } catch (OutOfBoundsException $e) {
-                    }
+                    } catch (OutOfBoundsException $e) {}
                 }
             }
         }
@@ -387,7 +390,7 @@ class NewTicketController extends AbstractController
     public function saveStatusAction()
     {
         return $this->createJsonResponse(array(
-            'preticket_status_id' => 0,
+            'preticket_status_id' => 0
         ));
     }
 
@@ -475,8 +478,7 @@ class NewTicketController extends AbstractController
         try {
             $save_rating = new \Application\DeskPRO\Publish\SaveRating($this->person);
             $save_rating->save($content_type, $content_id, 1);
-        } catch (\Exception $e) {
-        }
+        } catch (\Exception $e) {}
 
         $this->em->beginTransaction();
         $this->em->persist($preticket);
@@ -497,12 +499,12 @@ class NewTicketController extends AbstractController
         $ticket = $this->em->getRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
 
         // Must exist, and match the ref n the session (so theres no info leak)
-        if (!$ticket or $ticket['ref'] != $this->session->get('submitted_ticket')) {
+        if (!$ticket OR $ticket['ref'] != $this->session->get('submitted_ticket')) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
         return $this->render('UserBundle:NewTicket:thanks.html.twig', array(
-            'ticket' => $ticket,
+            'ticket' => $ticket
         ));
     }
 

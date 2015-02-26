@@ -56,6 +56,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         return $multi;
     }
 
+
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -70,7 +71,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
 
         return $this->createApiResponse(
             array(
-                 'types' => $this->getApiData(Arrays::flatten($feedback_types->getAll())),
+                 'types' => $this->getApiData(Arrays::flatten($feedback_types->getAll()))
             )
         );
     }
@@ -89,6 +90,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         $feedback_type  = $feedback_types->getById($id);
 
         if (!$feedback_type) {
+
             throw $this->createNotFoundException();
         }
 
@@ -97,7 +99,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
 
         return $this->createApiResponse(
             array(
-                 'feedback_type' => $returnedData,
+                 'feedback_type' => $returnedData
             )
         );
     }
@@ -115,12 +117,15 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         $feedback_types = $this->container->getSystemService('feedback_types');
 
         if ($id) {
+
             $feedback_type = $feedback_types->getById($id);
 
             if (!$feedback_type) {
+
                 throw $this->createNotFoundException();
             }
         } else {
+
             $feedback_type = $feedback_types->createNew();
         }
 
@@ -132,7 +137,9 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_type'), true);
 
         if ($form->isValid()) {
+
             $feedback_type_edit->save($this->em);
+
         } else {
             return $this->createApiValidationErrorResponse($this->container->getValidator()->validate($feedback_type));
         }
@@ -159,6 +166,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         $feedback_type   = $feedback_types->getById($id);
 
         if (!$feedback_type) {
+
             throw $this->createNotFoundException();
         }
 
@@ -166,6 +174,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         $move_to_feedback_type = $feedback_types->getById($move_to);
 
         if (!$move_to_feedback_type) {
+
             throw ValidationException::create(
                 "feedback_type.remove.move_feedback_types",
                 "You must select a feedback type to move existing feedback into"
@@ -173,6 +182,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         }
 
         if ($move_to_feedback_type->getId() == $feedback_type->getId()) {
+
             throw ValidationException::create(
                 "feedback_type.remove.move_feedback_types",
                 "You must choose a different feedback type"
@@ -184,6 +194,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         $this->db->beginTransaction();
 
         try {
+
             $this->db->executeUpdate(
                 "UPDATE feedback SET category_id = ? WHERE category_id = ?",
                 array($move_to, $old_id)
@@ -193,7 +204,9 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
             $this->em->flush();
 
             $this->db->commit();
-        } catch (\Exception $e) {
+
+        } catch(\Exception $e) {
+
             $this->db->rollback();
             throw $e;
         }

@@ -149,6 +149,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $this['date_created'] = new \DateTime();
     }
 
+
     /**
      * Get the email address for the person who made the comment, trying
      * the person record first if it exists.
@@ -165,6 +166,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
             return '';
         }
     }
+
 
     /**
      * Get the name for the person who made the comment, trying
@@ -189,6 +191,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+
     /**
      * @return string
      */
@@ -199,12 +202,13 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         } else {
             $display = $this->getUserName();
             if ($this->getUserEmail()) {
-                $display .= ' <'.$this->getUserEmail().'>';
+                $display .= ' <'. $this->getUserEmail() . '>';
             }
 
             return $display;
         }
     }
+
 
     /**
      * Set the visitor of the person who made this comment. If the name
@@ -216,19 +220,18 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->setModelField('visitor', $visitor);
 
-        if ($visitor === null) {
-            return;
-        }
+        if ($visitor === null) return;
 
         $this['ip_address'] = $visitor['ip_address'];
 
-        if (!$this->name and $visitor['name']) {
+        if (!$this->name AND $visitor['name']) {
             $this['name'] = $visitor['name'];
         }
-        if (!$this->email and $visitor['email']) {
+        if (!$this->email AND $visitor['email']) {
             $this['email'] = $visitor['email'];
         }
     }
+
 
     /**
      * Set the Status
@@ -240,7 +243,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         // any time after its created and the status is set
         // to visible means someone has reviewed its
         if ($this->id && $new_status == 'visible') {
-            $this->setModelField('is_reviewed', true);
+            $this->setModelField('is_reviewed' , true);
         }
 
         $this->setModelField('status', $new_status);
@@ -254,10 +257,12 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return Strings::linkify(nl2br(htmlspecialchars($this->content, \ENT_NOQUOTES, 'UTF-8')));
     }
 
+
     public function getContentReal()
     {
         return $this->content;
     }
+
 
     /**
      * @return string
@@ -266,6 +271,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         return nl2br(htmlspecialchars($this->content));
     }
+
 
     /**
      * Strip all HTML from the content and convert breaks and paragraphs to linebreaks.

@@ -73,6 +73,7 @@ class Build1413803749 extends AbstractBuild
         $this->setupDeskProUsersource($userType, $em);
     }
 
+
     private function setupDeskProUsersource($type, EntityManager $em)
     {
         $enabled = $this->container->getSetting('core.deskpro_source_enabled') ? 1 : 0;
@@ -93,6 +94,7 @@ class Build1413803749 extends AbstractBuild
         return $deskProUsers;
     }
 
+
     public function runNext()
     {
         $this->out("Creates needed agent app instances and usersources and changes associations where necessary");
@@ -104,6 +106,7 @@ class Build1413803749 extends AbstractBuild
 
         /** @var \Application\DeskPRO\Entity\Usersource $userUsersource */
         foreach ($userUsersources as $userUsersource) {
+
             $agentApp = null;
             if ($userUsersource->app) {
                 $agentApp = $this->copyAppInstance($userUsersource->app);

@@ -38,7 +38,7 @@ if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
 
 ini_set('display_errors', true);
 error_reporting(E_ALL | E_STRICT);
-define('DP_ROOT', realpath(__DIR__.'/../../../'));
+define('DP_ROOT', realpath(__DIR__ . '/../../../'));
 setlocale(LC_CTYPE, 'C');
 date_default_timezone_set('UTC');
 ini_set('default_charset', 'UTF-8');
@@ -47,7 +47,7 @@ set_time_limit(0);
 require_once DP_ROOT.'/sys/load_config.php';
 dp_load_config();
 
-$file = escapeshellarg(__DIR__.'\\twitter-cloud.php');
+$file = escapeshellarg(__DIR__ . '\\twitter-cloud.php');
 $php_path = dp_get_php_path(true);
 
 // this is needed as we need a fake window to hide the process

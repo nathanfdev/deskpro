@@ -51,6 +51,7 @@ class TicketFilterCollection
         $this->filters = array_values($filters);
     }
 
+
     /**
      * @return \Application\DeskPRO\Entity\TicketFilter[]
      */
@@ -58,6 +59,7 @@ class TicketFilterCollection
     {
         return $this->filters;
     }
+
 
     /**
      * @return \Application\DeskPRO\Entity\TicketFilter[]
@@ -75,6 +77,7 @@ class TicketFilterCollection
         return $this->cached['getSystemFilters'];
     }
 
+
     /**
      * @return \Application\DeskPRO\Entity\TicketFilter[]
      */
@@ -90,6 +93,7 @@ class TicketFilterCollection
 
         return $this->cached['getSystemHoldFilters'];
     }
+
 
     /**
      * @return \Application\DeskPRO\Entity\TicketFilter[]

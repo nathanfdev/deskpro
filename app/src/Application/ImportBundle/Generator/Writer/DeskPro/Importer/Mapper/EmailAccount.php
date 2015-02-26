@@ -70,7 +70,7 @@ final class EmailAccount implements MapperInterface
         }
 
         $record = $this->manager->findAccountForEmailAddress($criteria['email']);
-        if (! $record && $throw_exception) {
+        if ( ! $record && $throw_exception) {
             throw new MapperException('Email account not found', $criteria);
         }
 

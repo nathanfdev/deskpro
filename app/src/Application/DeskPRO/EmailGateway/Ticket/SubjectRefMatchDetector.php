@@ -52,6 +52,7 @@ class SubjectRefMatchDetector implements TicketDetectorInterface
      */
     protected $_time_cutoff = 0;
 
+
     /**
      * @param int $time_cutoff Max age of a ticket before the subject match wont work
      */
@@ -59,6 +60,7 @@ class SubjectRefMatchDetector implements TicketDetectorInterface
     {
         $this->_time_cutoff = date('Y-m-d H:i:s', time()-$time_cutoff);
     }
+
 
     /**
      * {@inheritDoc}
@@ -70,9 +72,7 @@ class SubjectRefMatchDetector implements TicketDetectorInterface
         $subject = trim($reader->getSubject()->subject);
 
         $ticket_refs = App::getSystemService('RefGenerator')->extractRefs($subject);
-        if (!$ticket_refs) {
-            return null;
-        }
+        if (!$ticket_refs) return null;
 
         foreach ($ticket_refs as $ref) {
             try {

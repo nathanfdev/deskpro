@@ -62,6 +62,7 @@ class SetUserOwner extends AbstractContainerAwareAction implements ActionInterfa
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -98,6 +99,7 @@ class SetUserOwner extends AbstractContainerAwareAction implements ActionInterfa
         }
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -113,6 +115,7 @@ class SetUserOwner extends AbstractContainerAwareAction implements ActionInterfa
 
         return false;
     }
+
 
     /**
      * {@inheritDoc}

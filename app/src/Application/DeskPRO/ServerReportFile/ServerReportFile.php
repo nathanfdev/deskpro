@@ -98,13 +98,14 @@ class ServerReportFile
     {
         $this->em = $em;
 
-        $this->tmpdir = dp_get_tmp_dir().DIRECTORY_SEPARATOR.uniqid('dpd', true);
+        $this->tmpdir = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . uniqid('dpd', true);
 
         if (!mkdir($this->tmpdir, 0777, true)) {
-            die("Could not create temp dir: ".$this->tmpdir);
+
+            die("Could not create temp dir: " . $this->tmpdir);
         }
 
-        $this->archive_file = $this->tmpdir.'/deskpro-report.zip';
+        $this->archive_file = $this->tmpdir . '/deskpro-report.zip';
     }
 
     /**
@@ -116,8 +117,11 @@ class ServerReportFile
     public function saveFileCheckResults($file_check_results)
     {
         try {
-            $this->_createFile(dp_get_tmp_dir().DIRECTORY_SEPARATOR.'file_check_results.txt', $file_check_results);
-        } catch (IOException $e) {
+
+            $this->_createFile(dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'file_check_results.txt', $file_check_results);
+
+        } catch(IOException $e) {
+
         }
     }
 
@@ -126,13 +130,14 @@ class ServerReportFile
      */
     public function outputArchive()
     {
-        header('Content-Type: application/zip; filename='.$this->file_name);
-        header('Content-Length: '.filesize($this->archive_file));
-        header('Content-Disposition: attachment; filename='.$this->file_name);
+        header('Content-Type: application/zip; filename=' . $this->file_name);
+        header('Content-Length: ' . filesize($this->archive_file));
+        header('Content-Disposition: attachment; filename=' . $this->file_name);
 
         $fp = fopen($this->archive_file, 'r');
 
         while (!feof($fp)) {
+
             echo fread($fp, 1024);
         }
 
@@ -153,7 +158,7 @@ class ServerReportFile
     {
         $this->_addFilesToArchive();
 
-        require_once DP_ROOT.'/vendor-src/pclzip/pclzip.lib.php';
+        require_once(DP_ROOT . '/vendor-src/pclzip/pclzip.lib.php');
 
         $archive = new \PclZip($this->archive_file);
 
@@ -163,7 +168,8 @@ class ServerReportFile
         );
 
         if ($list == 0) {
-            die("Error : ".$archive->errorInfo(true));
+
+            die("Error : " . $archive->errorInfo(true));
         }
     }
 
@@ -172,7 +178,8 @@ class ServerReportFile
      */
     protected function _addFilesToArchive()
     {
-        foreach ($this->files_added_to_archive as $file_name => $func) {
+        foreach($this->files_added_to_archive as $file_name => $func) {
+
             $this->$func($file_name);
         }
     }
@@ -190,8 +197,11 @@ class ServerReportFile
         $info    = $service->getPhpInfo(true);
 
         try {
-            $this->_createFile($this->tmpdir.'/'.$file_name, $info['web_php']['phpinfo']);
-        } catch (IOException $e) {
+
+            $this->_createFile($this->tmpdir . '/' . $file_name, $info['web_php']['phpinfo']);
+
+        } catch(IOException $e) {
+
             echo $e->getMessage();
         }
     }
@@ -209,8 +219,11 @@ class ServerReportFile
         $info    = $service->getPhpInfo(true);
 
         try {
-            $this->_createFile($this->tmpdir.'/'.$file_name, $info['cli_php']['phpinfo']);
-        } catch (IOException $e) {
+
+            $this->_createFile($this->tmpdir . '/' . $file_name, $info['cli_php']['phpinfo']);
+
+        } catch(IOException $e) {
+
             echo $e->getMessage();
         }
     }
@@ -220,17 +233,23 @@ class ServerReportFile
      */
     protected function _createDeskPROErrorLog($file_name)
     {
-        $file = str_repeat('#', 72)."\n# error.log\n".str_repeat('#', 72)."\n\n";
+        $file = str_repeat('#', 72) . "\n# error.log\n" . str_repeat('#', 72) . "\n\n";
 
         try {
-            $file .= $this->_readFile(dp_get_log_dir().'/error.log');
-        } catch (IOException $e) {
+
+            $file .= $this->_readFile(dp_get_log_dir() . '/error.log');
+
+        } catch(IOException $e) {
+
             $file = '';
         }
 
         try {
-            $this->_createFile($this->tmpdir.'/'.$file_name, $file);
-        } catch (IOException $e) {
+
+            $this->_createFile($this->tmpdir . '/' . $file_name, $file);
+
+        } catch(IOException $e) {
+
             echo $e->getMessage();
         }
     }
@@ -240,23 +259,30 @@ class ServerReportFile
      */
     protected function _createWebErrorLog($file_name)
     {
-        $file = str_repeat('#', 72)."#\n server-phperr-web.log\n".str_repeat('#', 72)."\n\n";
+        $file = str_repeat('#', 72) . "#\n server-phperr-web.log\n" . str_repeat('#', 72) . "\n\n";
 
         $log_file_path = @ini_get('error_log');
 
         if (!$log_file_path) {
-            $log_file_path = dp_get_log_dir().'/server-phperr-web.log';
+
+            $log_file_path = dp_get_log_dir() . '/server-phperr-web.log';
         }
 
         try {
+
             $file .= $this->_readFile($log_file_path);
-        } catch (IOException $e) {
+
+        } catch(IOException $e) {
+
             $file = '';
         }
 
         try {
-            $this->_createFile($this->tmpdir.'/'.$file_name, $file);
-        } catch (IOException $e) {
+
+            $this->_createFile($this->tmpdir . '/' . $file_name, $file);
+
+        } catch(IOException $e) {
+
             echo $e->getMessage();
         }
     }
@@ -266,36 +292,43 @@ class ServerReportFile
      */
     protected function _createCliErrorLog($file_name)
     {
-        $file = str_repeat('#', 72)."#\n cli-phperr.log\n".str_repeat('#', 72)."\n\n";
+        $file = str_repeat('#', 72) . "#\n cli-phperr.log\n" . str_repeat('#', 72) . "\n\n";
 
         try {
-            $file .= $this->_readFile(dp_get_log_dir().'/cli-phperr.log');
-        } catch (IOException $e) {
+
+            $file .= $this->_readFile(dp_get_log_dir() . '/cli-phperr.log');
+
+        } catch(IOException $e) {
+
             $file = '';
         }
 
         try {
-            $this->_createFile($this->tmpdir.'/'.$file_name, $file);
-        } catch (IOException $e) {
+
+            $this->_createFile($this->tmpdir . '/' . $file_name, $file);
+
+        } catch(IOException $e) {
+
             echo $e->getMessage();
         }
     }
+
 
     /**
      * @param $file_name
      */
     protected function _createUpgradeLog($file_name)
     {
-        $file = str_repeat('#', 72)."#\n upgrade.log\n".str_repeat('#', 72)."\n\n";
+        $file = str_repeat('#', 72) . "#\n upgrade.log\n" . str_repeat('#', 72) . "\n\n";
 
         try {
-            $file .= $this->_readFile(dp_get_log_dir().'/upgrade.log');
-        } catch (IOException $e) {
+            $file .= $this->_readFile(dp_get_log_dir() . '/upgrade.log');
+        } catch(IOException $e) {
             $file = '';
         }
         try {
-            $this->_createFile($this->tmpdir.'/'.$file_name, $file);
-        } catch (IOException $e) {
+            $this->_createFile($this->tmpdir . '/' . $file_name, $file);
+        } catch(IOException $e) {
             echo $e->getMessage();
         }
     }
@@ -307,13 +340,14 @@ class ServerReportFile
     {
         $sql = array();
 
-        $sql[] = '### '.App::getContainer()->getSetting('core.deskpro_url')."\n";
-        $sql[] = '### DeskPRO Build: '.DP_BUILD_TIME."\n";
-        $sql[] = '### Generated: '.date('Y-m-d H:i:s')."\n\n";
+        $sql[] = '### ' . App::getContainer()->getSetting('core.deskpro_url') . "\n";
+        $sql[] = '### DeskPRO Build: ' . DP_BUILD_TIME . "\n";
+        $sql[] = '### Generated: ' . date('Y-m-d H:i:s') . "\n\n";
 
         $tables = App::getDb()->fetchAllCol("SHOW TABLES");
 
         foreach ($tables as $table) {
+
             $sql[] = "### TABLE: $table\n";
             $sql[] = App::getDb()->fetchColumn("SHOW CREATE TABLE `$table`", array(), 1);
             $sql[] = "\n\n";
@@ -322,8 +356,11 @@ class ServerReportFile
         $sql = implode('', $sql);
 
         try {
-            $this->_createFile($this->tmpdir.'/'.$file_name, $sql);
-        } catch (IOException $e) {
+
+            $this->_createFile($this->tmpdir . '/' . $file_name, $sql);
+
+        } catch(IOException $e) {
+
             echo $e->getMessage();
         }
     }
@@ -338,24 +375,30 @@ class ServerReportFile
         try {
             $mysqlstatus              = App::getDb()->fetchAllKeyValue("SHOW STATUS", array(), array(), 0, 1);
             $sections['MySQL Status'] = Strings::keyValueAsciiTable($mysqlstatus);
-        } catch (\Exception $e) {
+
+        } catch(\Exception $e) {
+
         }
 
         $out = '';
 
         foreach ($sections as $title => $content) {
+
             $out .= "\n\n\n\n\n";
-            $out .= str_repeat('#', 80)."\n";
-            $out .= '# '.str_pad($title, 76).' #'."\n";
-            $out .= str_repeat('#', 80)."\n";
+            $out .= str_repeat('#', 80) . "\n";
+            $out .= '# ' . str_pad($title, 76) . ' #' . "\n";
+            $out .= str_repeat('#', 80) . "\n";
             $out .= $content;
         }
 
         $out = trim($out);
 
         try {
-            $this->_createFile($this->tmpdir.'/'.$file_name, $out);
-        } catch (IOException $e) {
+
+            $this->_createFile($this->tmpdir . '/' . $file_name, $out);
+
+        } catch(IOException $e) {
+
             echo $e->getMessage();
         }
     }
@@ -370,24 +413,30 @@ class ServerReportFile
         try {
             $mysqlinfo                   = App::getDb()->fetchAllKeyValue("SHOW VARIABLES", array(), array(), 0, 1);
             $sections['MySQL Variables'] = Strings::keyValueAsciiTable($mysqlinfo);
-        } catch (\Exception $e) {
+
+        } catch(\Exception $e) {
+
         }
 
         $out = '';
 
         foreach ($sections as $title => $content) {
+
             $out .= "\n\n\n\n\n";
-            $out .= str_repeat('#', 80)."\n";
-            $out .= '# '.str_pad($title, 76).' #'."\n";
-            $out .= str_repeat('#', 80)."\n";
+            $out .= str_repeat('#', 80) . "\n";
+            $out .= '# ' . str_pad($title, 76) . ' #' . "\n";
+            $out .= str_repeat('#', 80) . "\n";
             $out .= $content;
         }
 
         $out = trim($out);
 
         try {
-            $this->_createFile($this->tmpdir.'/'.$file_name, $out);
-        } catch (IOException $e) {
+
+            $this->_createFile($this->tmpdir . '/' . $file_name, $out);
+
+        } catch(IOException $e) {
+
             echo $e->getMessage();
         }
     }
@@ -410,13 +459,18 @@ class ServerReportFile
         $items['cli_ini_path']         = isset($vars['cli_php']['ini_path']) ? $vars['cli_php']['ini_path'] : '';
 
         if (isset($vars['cli_php']['php_config'])) {
+
             foreach ($vars['cli_php']['php_config'] as $k => $v) {
+
                 if (is_array($v)) {
+
                     foreach ($v as $subk => $subv) {
-                        $items['cli_'.$k.'.'.$subk] = $subv;
+
+                        $items['cli_' . $k . '.' . $subk] = $subv;
                     }
                 } else {
-                    $items['cli_'.$k] = $v;
+
+                    $items['cli_' . $k] = $v;
                 }
             }
         }
@@ -432,10 +486,11 @@ class ServerReportFile
         $out = '';
 
         foreach ($sections as $title => $content) {
+
             $out .= "\n\n\n\n\n";
-            $out .= str_repeat('#', 80)."\n";
-            $out .= '# '.str_pad($title, 76).' #'."\n";
-            $out .= str_repeat('#', 80)."\n";
+            $out .= str_repeat('#', 80) . "\n";
+            $out .= '# ' . str_pad($title, 76) . ' #' . "\n";
+            $out .= str_repeat('#', 80) . "\n";
             $out .= "\n\n";
             $out .= $content;
         }
@@ -443,8 +498,11 @@ class ServerReportFile
         $out = trim($out);
 
         try {
-            $this->_createFile($this->tmpdir.'/'.$file_name, $out);
-        } catch (IOException $e) {
+
+            $this->_createFile($this->tmpdir . '/' . $file_name, $out);
+
+        } catch(IOException $e) {
+
             echo $e->getMessage();
         }
     }
@@ -463,8 +521,8 @@ class ServerReportFile
         $out = trim(implode('', $out));
 
         try {
-            $this->_createFile($this->tmpdir.'/'.'templates.txt', $out);
-        } catch (IOException $e) {
+            $this->_createFile($this->tmpdir . '/' . 'templates.txt', $out);
+        } catch(IOException $e) {
             echo $e->getMessage();
         }
     }
@@ -475,18 +533,25 @@ class ServerReportFile
     protected function _createMysqlSchemaDiff($file_name)
     {
         try {
+
             $schemadiff = Util::getUpdateSchemaSql();
 
             if ($schemadiff) {
-                $schemadiff = implode(";\n", $schemadiff).";";
+
+                $schemadiff = implode(";\n", $schemadiff) . ";";
             }
-        } catch (\Exception $e) {
+
+        } catch(\Exception $e) {
+
             $schemadiff = null;
         }
 
         try {
-            $this->_createFile($this->tmpdir.'/'.$file_name, $schemadiff);
-        } catch (IOException $e) {
+
+            $this->_createFile($this->tmpdir . '/' . $file_name, $schemadiff);
+
+        } catch(IOException $e) {
+
             echo $e->getMessage();
         }
     }
@@ -502,33 +567,37 @@ class ServerReportFile
 
         $content = '';
 
-        $content .=  '### '.App::getContainer()->getSetting('core.deskpro_url')."\n";
-        $content .=  '### DeskPRO Build: '.DP_BUILD_TIME."\n";
-        $content .=  '### Generated: '.date('Y-m-d H:i:s')."\n\n";
+        $content .=  '### ' . App::getContainer()->getSetting('core.deskpro_url') . "\n";
+        $content .=  '### DeskPRO Build: ' . DP_BUILD_TIME . "\n";
+        $content .=  '### Generated: ' . date('Y-m-d H:i:s') . "\n\n";
 
-        $content .= 'Task    Interval   Last Run   Last Complete   Next Run'."\n\n";
+        $content .= 'Task    Interval   Last Run   Last Complete   Next Run' . "\n\n";
 
         $service = App::getSystemService('server_cron');
         $vars    = $service->getAllForApi();
 
-        foreach ($vars as $job) {
-            $content .= $job['title'].'       '.$job['interval_readable'].'       ';
+        foreach($vars as $job) {
+
+            $content .= $job['title'] . '       ' . $job['interval_readable'] . '       ';
 
             $last_start_date = date('D, jS M Y g:ia', $job['last_start_date_ts']) ?
                 date('D, jS M Y g:ia', $job['last_start_date_ts']) : 'N/A';
-            $content .= $last_start_date.'       ';
+            $content .= $last_start_date . '       ';
 
             $last_run_date = date('D, jS M Y g:ia', $job['last_run_date_ts']) ?
                             date('D, jS M Y g:ia', $job['last_run_date_ts']) : 'N/A';
-            $content .= $last_run_date.'       ';
+            $content .= $last_run_date . '       ';
 
             $content .= $job['next_run_time'];
             $content .= "\n";
         }
 
         try {
-            $this->_createFile($this->tmpdir.'/'.$file_name, $content);
-        } catch (IOException $e) {
+
+            $this->_createFile($this->tmpdir . '/' . $file_name, $content);
+
+        } catch(IOException $e) {
+
             echo $e->getMessage();
         }
     }
@@ -543,31 +612,36 @@ class ServerReportFile
         $licenseExpiresIn = function () use ($license) {
 
             if ($license->getExpireDays() == 0 && $license->getExpireTime('hours') == 0) {
-                return 'In '.$license->getExpireTime('mins').' minutes';
+                return 'In ' . $license->getExpireTime('mins') . ' minutes';
+
             } elseif ($license->getExpireDays() < 3) {
-                return 'In '.$license->getExpireTime('hours').' hours';
+                return 'In ' . $license->getExpireTime('hours') . ' hours';
+
             } else {
-                return 'In '.$license->getExpireDays().' days';
+                return 'In ' . $license->getExpireDays() . ' days';
             }
         };
 
         $content = '';
 
-        $content .= '### '.App::getContainer()->getSetting('core.deskpro_url')."\n";
-        $content .= '### DeskPRO Build: '.DP_BUILD_TIME."\n";
-        $content .= '### Generated: '.date('Y-m-d H:i:s')."\n\n";
+        $content .= '### ' . App::getContainer()->getSetting('core.deskpro_url') . "\n";
+        $content .= '### DeskPRO Build: ' . DP_BUILD_TIME . "\n";
+        $content .= '### Generated: ' . date('Y-m-d H:i:s') . "\n\n";
 
-        $content .= 'License ID: '.$license->getLicenseId()."\n";
-        $content .= 'Agents: '.$license->getMaxAgents()."\n";
-        $content .= 'Expires: '.$licenseExpiresIn()."\n\n\n";
+        $content .= 'License ID: ' . $license->getLicenseId() . "\n";
+        $content .= 'Agents: ' . $license->getMaxAgents() . "\n";
+        $content .= 'Expires: ' . $licenseExpiresIn() . "\n\n\n";
 
-        $content .= 'Core.license: '.App::getSetting('core.license')."\n\n\n";
-        $content .= 'Core.install_key: '.App::getSetting('core.install_key')."\n\n";
-        $content .= 'Core.licenseopt: '.App::getSetting('core.licenseopt')."\n\n";
+        $content .= 'Core.license: ' . App::getSetting('core.license') . "\n\n\n";
+        $content .= 'Core.install_key: ' . App::getSetting('core.install_key') . "\n\n";
+        $content .= 'Core.licenseopt: ' . App::getSetting('core.licenseopt') . "\n\n";
 
         try {
-            $this->_createFile($this->tmpdir.'/'.$file_name, $content);
-        } catch (IOException $e) {
+
+            $this->_createFile($this->tmpdir . '/' . $file_name, $content);
+
+        } catch(IOException $e) {
+
             echo $e->getMessage();
         }
     }
@@ -579,16 +653,20 @@ class ServerReportFile
     {
         $fs = new Filesystem();
 
-        if (file_exists(dp_get_tmp_dir().DIRECTORY_SEPARATOR.'file_check_results.txt')) {
+        if (file_exists(dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'file_check_results.txt')) {
+
             try {
+
                 $fs->copy(
-                    dp_get_tmp_dir().DIRECTORY_SEPARATOR.'file_check_results.txt',
-                    $this->tmpdir.'/'.$file_name
+                    dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'file_check_results.txt',
+                    $this->tmpdir . '/' . $file_name
                 );
-            } catch (IOException $e) {
+
+            } catch(IOException $e) {
+
                 die(
-                    "Could not create File Integrity file under this location - ".$this->tmpdir.'/'.$file_name.
-                        ". More info:".$e->getMessage()
+                    "Could not create File Integrity file under this location - " . $this->tmpdir . '/' . $file_name .
+                        ". More info:" . $e->getMessage()
                 );
             }
         }
@@ -606,7 +684,8 @@ class ServerReportFile
     protected function _createFile($file_name, $content)
     {
         if (@file_put_contents($file_name, $content) === false) {
-            throw new IOException('Could not create file under location - '.$file_name);
+
+            throw new IOException('Could not create file under location - ' . $file_name);
         }
     }
 

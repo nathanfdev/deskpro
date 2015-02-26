@@ -66,6 +66,7 @@ class NewCommentValidator extends AbstractValidator implements PersonContextInte
 
     public function init()
     {
+
     }
 
     /**

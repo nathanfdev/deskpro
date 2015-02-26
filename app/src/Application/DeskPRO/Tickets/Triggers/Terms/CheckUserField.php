@@ -57,6 +57,7 @@ class CheckUserField extends AbstractCheckCustomField
         return $options;
     }
 
+
     /**
      * @param  Ticket                   $ticket
      * @param  ExecutorContextInterface $context
@@ -71,11 +72,12 @@ class CheckUserField extends AbstractCheckCustomField
         }
     }
 
+
     /**
      * @return string
      */
     public function getTermType()
     {
-        return 'CheckUserField'.$this->getTermOptions()->get('field_id');
+        return 'CheckUserField' . $this->getTermOptions()->get('field_id');
     }
 }

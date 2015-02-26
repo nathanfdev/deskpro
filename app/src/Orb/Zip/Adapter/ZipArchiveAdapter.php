@@ -58,6 +58,7 @@ class ZipArchiveAdapter implements ZipAdapterInterface
         $z->close();
     }
 
+
     /**
      * Decompress a ZIP.
      *

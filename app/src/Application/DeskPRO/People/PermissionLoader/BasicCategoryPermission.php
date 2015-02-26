@@ -58,11 +58,12 @@ abstract class BasicCategoryPermission extends AbstractLoader
 
     protected function init()
     {
-        $this->allowed_cats = App::getEntityRepository($this->getCategoryEntity())->getCategoriesForUsergroups($this->getUsergroupIds());
+        $this->allowed_cats= App::getEntityRepository($this->getCategoryEntity())->getCategoriesForUsergroups($this->getUsergroupIds());
 
         $all_ids = array_keys(App::getEntityRepository($this->getCategoryEntity())->getCategoryOptions());
         $this->disallowed_cats = array_diff($all_ids, $this->allowed_cats);
     }
+
 
     /**
      * Are there access permissions at all applied to this user?
@@ -77,6 +78,7 @@ abstract class BasicCategoryPermission extends AbstractLoader
         return !empty($this->disallowed_cats);
     }
 
+
     /**
      * Is a cateogry allowed?
      *
@@ -86,6 +88,7 @@ abstract class BasicCategoryPermission extends AbstractLoader
     {
         return in_array($id, $this->allowed_cats);
     }
+
 
     /**
      * Get an array of all allowed categories.
@@ -97,6 +100,7 @@ abstract class BasicCategoryPermission extends AbstractLoader
         return $this->allowed_cats;
     }
 
+
     /**
      * Get an array of disallowed categories. (i.e., inverse of getDisallowedCategories)
      *
@@ -106,6 +110,7 @@ abstract class BasicCategoryPermission extends AbstractLoader
     {
         return $this->disallowed_cats;
     }
+
 
     /**
      * Returns the smallet set of ID's that can be used to apply permissions.
@@ -127,6 +132,7 @@ abstract class BasicCategoryPermission extends AbstractLoader
         }
     }
 
+
     /**
      * Get an array of data we'll serialize
      *
@@ -136,7 +142,7 @@ abstract class BasicCategoryPermission extends AbstractLoader
     {
         return array(
             'allowed_cats'    => $this->allowed_cats,
-            'disallowed_cats' => $this->disallowed_cats,
+            'disallowed_cats' => $this->disallowed_cats
         );
     }
 

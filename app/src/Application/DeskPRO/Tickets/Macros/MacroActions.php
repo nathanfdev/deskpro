@@ -61,6 +61,7 @@ class MacroActions implements \Serializable, MacroActionInterface
         $this->actions = new MacroActionComposite();
     }
 
+
     /**
      * @param  MacroActionInterface      $action
      * @throws \InvalidArgumentException
@@ -73,6 +74,7 @@ class MacroActions implements \Serializable, MacroActionInterface
         }
         $this->actions->add($action);
     }
+
 
     /**
      * @param  array                     $action_info
@@ -103,6 +105,7 @@ class MacroActions implements \Serializable, MacroActionInterface
         return $this->actions->getMacroPermissionErrors($person, $ticket, $context);
     }
 
+
     /**
      * @param  Person                   $person
      * @param  Ticket                   $ticket
@@ -113,6 +116,7 @@ class MacroActions implements \Serializable, MacroActionInterface
     {
         $this->actions->applyMacro($person, $ticket, $context);
     }
+
 
     /**
      * @return array
@@ -130,12 +134,13 @@ class MacroActions implements \Serializable, MacroActionInterface
 
             $data['actions'][] = array(
                 'type'    => $actions->getActionType(),
-                'options' => $actions->getActionOptions()->all(),
+                'options' => $actions->getActionOptions()->all()
             );
         }
 
         return $data;
     }
+
 
     /**
      * @return string
@@ -144,6 +149,7 @@ class MacroActions implements \Serializable, MacroActionInterface
     {
         return json_encode($this->exportToArray());
     }
+
 
     /**
      * @param array $data
@@ -155,6 +161,7 @@ class MacroActions implements \Serializable, MacroActionInterface
         }
     }
 
+
     /**
      * @return string
      */
@@ -162,6 +169,7 @@ class MacroActions implements \Serializable, MacroActionInterface
     {
         return $this->exportToJson();
     }
+
 
     /**
      * @param string $data
@@ -177,7 +185,7 @@ class MacroActions implements \Serializable, MacroActionInterface
                 $this->addActionFromArray($action_info);
             } catch (\Exception $e) {
                 if (!empty($action_info['type'])) {
-                    KernelErrorHandler::logException($e, false, md5('macro_'.$action_info['type']));
+                    KernelErrorHandler::logException($e, false, md5('macro_' . $action_info['type']));
                 }
             }
         }

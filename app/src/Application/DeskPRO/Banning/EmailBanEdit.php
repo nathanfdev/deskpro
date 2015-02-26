@@ -78,6 +78,7 @@ class EmailBanEdit
         $this->db->beginTransaction();
 
         try {
+
             $this->db->executeUpdate(
                 "DELETE FROM ban_emails WHERE banned_email = ?",
                 array($this->old_email)
@@ -95,7 +96,9 @@ class EmailBanEdit
             $em->flush();
 
             $this->db->commit();
-        } catch (\Exception $e) {
+
+        } catch(\Exception $e) {
+
             $this->db->rollback();
             throw $e;
         }

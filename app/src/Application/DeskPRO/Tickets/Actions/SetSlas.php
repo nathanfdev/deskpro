@@ -59,6 +59,7 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -97,6 +98,7 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
         #--------------------
 
         if ($remove_sla_ids = $this->getActionOption('remove_sla_ids')) {
+
             $removed_ids = $context->getVars()->get('removed_slas', array());
 
             foreach ($remove_sla_ids as $sla_id) {
@@ -124,6 +126,7 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
 
         $cm_sender->sendQueue();
     }
+
 
     /**
      * {@inheritDoc}

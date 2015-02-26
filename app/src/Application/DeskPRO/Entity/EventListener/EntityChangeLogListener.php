@@ -27,6 +27,7 @@
 
 namespace Application\DeskPRO\Entity\EventListener;
 
+
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\ApiBundle\Request\RequestAuth;
@@ -170,16 +171,16 @@ abstract class EntityChangeLogListener
      */
     protected function doFlush($oid, $type)
     {
-        if (!isset($this->{'queued_'.$type}[$oid])) {
+        if (!isset($this->{'queued_' . $type}[$oid])) {
             return;
         }
 
-        $entry = $this->{'queued_'.$type}[$oid];
+        $entry = $this->{'queued_' . $type}[$oid];
         $this->logger->info($entry);
         foreach ($entry->children as $child) {
             $this->logger->info($child);
         }
 
-        unset($this->{'queued_'.$type}[$oid]);
+        unset($this->{'queued_' . $type}[$oid]);
     }
 }

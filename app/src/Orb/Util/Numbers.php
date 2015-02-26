@@ -45,6 +45,8 @@ class Numbers
     const ROUND_MULTIPLE_UP   = 2;
     const ROUND_MULTIPLE_DOWN = 3;
 
+
+
     /**
      * Check if a value is an integer value. This is like is_int() but also passes
      * strings that are integer form.
@@ -57,16 +59,17 @@ class Numbers
      */
     public static function isInteger($value)
     {
-        if (!is_scalar($value) or is_array($value)) {
+        if (!is_scalar($value) OR is_array($value)) {
             return false;
         }
 
-        if (is_int($value) or ((string) ((int) $value)) == (string) $value) {
+        if (is_int($value) OR ((string)((int)$value)) == (string)$value) {
             return true;
         }
 
         return false;
     }
+
 
     /**
      * Take a number, and force it to be within the range of $min and $max.
@@ -80,15 +83,11 @@ class Numbers
      */
     public static function bound($num, $min, $max)
     {
-        if ($num < $min) {
-            $num = $min;
-        }
-        if ($num > $max) {
-            $num = $max;
-        }
-
+        if ($num < $min) $num = $min;
+        if ($num > $max) $num = $max;
         return $num;
     }
+
 
     /**
      * Check if something is somewhere within the range of two numbers.
@@ -100,12 +99,14 @@ class Numbers
      */
     public static function inRange($what, $min = 0, $max = 10)
     {
-        if ($what >= $min and $what <= $max) {
+        if ($what >= $min AND $what <= $max) {
             return true;
         }
 
         return false;
     }
+
+
 
     /**
      * Turn a number into roman numerals.
@@ -139,12 +140,14 @@ class Numbers
         $res = '';
 
         foreach ($map as $roman => $value) {
-            $res .= str_repeat($roman, (int) $num/$value);
+            $res .= str_repeat($roman, (int)$num/$value);
             $num %= $value;
         }
 
         return $res;
     }
+
+
 
     /**
      * Display a filesize in bytes in the smallest unit.
@@ -168,6 +171,8 @@ class Numbers
         return sprintf('%.2f %s', $parts['number'], $parts['symbol']);
     }
 
+
+
     /**
      * From a filesize in bytes return an array of the largest unit symbol
      * and its size. If you want a string, use filesizeDisplay().
@@ -177,7 +182,7 @@ class Numbers
      */
     public static function getFilesizeDisplayParts($bytes, $mode = 'si')
     {
-        if (!$bytes or $bytes < 1) {
+        if (!$bytes OR $bytes < 1) {
             return array('number' => 0, 'symbol' => 'B');
         }
 
@@ -194,9 +199,12 @@ class Numbers
 
         return array(
             'number' => $val,
-            'symbol' => $sym,
+            'symbol' => $sym
         );
+
     }
+
+
 
     /**
      * Round a number to the nearest multiple.
@@ -223,6 +231,8 @@ class Numbers
         }
     }
 
+
+
     /**
      * Get an array of pageinfo useful for building up paginination in templates.
      * You get an array with:
@@ -245,9 +255,7 @@ class Numbers
         $info = array();
 
         $num_pages = ceil($num_results / $per_page);
-        if (!$num_pages) {
-            $num_pages = 1;
-        }
+        if (!$num_pages) $num_pages = 1;
 
         $range_start = max(1, $page - floor(($pad-1) / 2));
         $range_end = max(min($num_pages, $page + floor(($pad-1) / 2)), $pad);
@@ -289,17 +297,17 @@ class Numbers
 
         // Already in bytes
         if (ctype_digit($last)) {
-            return (int) $val;
+            return (int)$val;
         }
 
-        $val = (int) $val;
+        $val = (int)$val;
 
         // Invalid values also means assume bytes
         if ($last != 'G' && $last != 'M' && $last != 'K') {
             return $val;
         }
 
-        switch ($last) {
+        switch($last) {
             case 'G':
                 $val *= 1024;
             case 'M':
@@ -333,7 +341,7 @@ class Numbers
         if ($number % 100 > 10 && $number % 100 < 14) {
             $suffix = 'th';
         } else {
-            switch (substr($number, -1, 1)) {
+            switch(substr($number, -1, 1)) {
                 case '1': $suffix = 'st'; break;
                 case '2': $suffix = 'nd'; break;
                 case '3': $suffix = 'rd'; break;

@@ -58,6 +58,7 @@ class CheckUrgency extends AbstractTriggerTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

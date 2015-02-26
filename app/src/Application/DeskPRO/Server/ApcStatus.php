@@ -70,6 +70,7 @@ class ApcStatus
         }
     }
 
+
     /**
      * @return int
      */
@@ -77,6 +78,7 @@ class ApcStatus
     {
         return !empty($this->cacheinfo['num_misses']) ? $this->cacheinfo['num_misses'] : 0;
     }
+
 
     /**
      * @return int
@@ -86,6 +88,7 @@ class ApcStatus
         return !empty($this->cacheinfo['num_hits']) ? $this->cacheinfo['num_hits'] : 0;
     }
 
+
     /**
      * @return int
      */
@@ -93,6 +96,7 @@ class ApcStatus
     {
         return $this->getNumMisses() + $this->getNumHits();
     }
+
 
     /**
      * @return float
@@ -109,6 +113,7 @@ class ApcStatus
         return ($miss / $total) * 100;
     }
 
+
     /**
      * @return float
      */
@@ -124,6 +129,7 @@ class ApcStatus
         return ($hit / $total) * 100;
     }
 
+
     /**
      * How much memory is currently available (free)
      *
@@ -133,6 +139,7 @@ class ApcStatus
     {
         return !empty($this->meminfo['avail_mem']) ? $this->meminfo['avail_mem'] : 0;
     }
+
 
     /**
      * How much memory is available for use
@@ -148,6 +155,7 @@ class ApcStatus
         return 0;
     }
 
+
     /**
      * Get how much moeor
      * @return int
@@ -156,6 +164,7 @@ class ApcStatus
     {
         return $this->getMemTotal() - $this->getMemFree();
     }
+
 
     /**
      * @return float
@@ -172,6 +181,7 @@ class ApcStatus
         return ($used / $total) * 100;
     }
 
+
     /**
      * @return float
      */
@@ -187,6 +197,7 @@ class ApcStatus
         return ($free / $total) * 100;
     }
 
+
     /**
      * Get the URL to the apc hitmiss chart
      *
@@ -196,10 +207,11 @@ class ApcStatus
     public function getHitMissChartUrl()
     {
         $config_hash = md5_file(DP_CONFIG_FILE);
-        $url = App::getSetting('core.deskpro_url').'?_sys=apc&_='.Util::generateStaticSecurityToken($config_hash.'apc', 86400).'&IMG=1&'.time();
+        $url = App::getSetting('core.deskpro_url') . '?_sys=apc&_=' . Util::generateStaticSecurityToken($config_hash.'apc', 86400) . '&IMG=1&' . time();
 
         return $url;
     }
+
 
     /**
      * Get the URL to the apc memory chart
@@ -210,10 +222,11 @@ class ApcStatus
     public function getMemChartUrl()
     {
         $config_hash = md5_file(DP_CONFIG_FILE);
-        $url = App::getSetting('core.deskpro_url').'?_sys=apc&_='.Util::generateStaticSecurityToken($config_hash.'apc', 86400).'&IMG=1&'.time();
+        $url = App::getSetting('core.deskpro_url') . '?_sys=apc&_=' . Util::generateStaticSecurityToken($config_hash.'apc', 86400) . '&IMG=1&' . time();
 
         return $url;
     }
+
 
     /**
      * @return bool
@@ -222,6 +235,7 @@ class ApcStatus
     {
         return $this->is_enabled;
     }
+
 
     /**
      * Guess if there is a problem based on the number of misses we've had.

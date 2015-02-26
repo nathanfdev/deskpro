@@ -77,6 +77,7 @@ class PersonSerializer implements SerializerInterface
         return $data;
     }
 
+
     /**
      * @param  mixed  $data   anything that the serializer can handle
      * @param  string $view   defaults to "default" but can be anything and the handlers understand what to do

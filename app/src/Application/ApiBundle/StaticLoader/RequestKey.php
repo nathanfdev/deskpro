@@ -55,7 +55,7 @@ class RequestKey
             $key_str = $request->headers->get('X-DeskPRO-API-Key', null, true);
         } elseif (!empty($_REQUEST['API-KEY'])) {
             $key_str = $_REQUEST['API-KEY'];
-        } elseif (!empty($headers['PHP_AUTH_USER']) and !empty($headers['PHP_AUTH_PW'])) {
+        } elseif (!empty($headers['PHP_AUTH_USER']) AND !empty($headers['PHP_AUTH_PW'])) {
             $key_str = $headers['PHP_AUTH_USER'].':'.$headers['PHP_AUTH_PW'];
         }
 
@@ -92,7 +92,7 @@ class RequestKey
             $token_str = $request->headers->get('X-DeskPRO-API-Token', null, true);
         } elseif (!empty($_REQUEST['API-TOKEN'])) {
             $token_str = $_REQUEST['API-TOKEN'];
-        } elseif (!empty($headers['PHP_AUTH_USER']) and !empty($headers['PHP_AUTH_PW'])) {
+        } elseif (!empty($headers['PHP_AUTH_USER']) AND !empty($headers['PHP_AUTH_PW'])) {
             $token_str = $headers['PHP_AUTH_USER'].':'.$headers['PHP_AUTH_PW'];
         }
 

@@ -38,6 +38,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
+
 /**
  * @property int       $id
  * @property string    $account_type
@@ -67,6 +68,7 @@ class EmailAccount extends DomainObject
      * This is an article gateway account
      */
     const TYPE_ARTICLES = 'artices';
+
 
     /**
      * @var int
@@ -124,6 +126,7 @@ class EmailAccount extends DomainObject
      */
     protected $date_last_incoming;
 
+
     /**
      * @param string $account_type
      */
@@ -134,6 +137,7 @@ class EmailAccount extends DomainObject
         $this->date_read_start = new \DateTime();
     }
 
+
     /**
      * @param  string                    $account_type
      * @throws \InvalidArgumentException
@@ -143,13 +147,14 @@ class EmailAccount extends DomainObject
         if (!in_array($account_type, array(
             self::TYPE_OUT,
             self::TYPE_TICKETS,
-            self::TYPE_ARTICLES,
+            self::TYPE_ARTICLES
         ))) {
             throw new \InvalidArgumentException();
         }
 
         $this->setModelField('account_type', $account_type);
     }
+
 
     /**
      * @return null|string
@@ -163,6 +168,7 @@ class EmailAccount extends DomainObject
         return $this->incoming_account->getType();
     }
 
+
     /**
      * @return null|string
      */
@@ -174,6 +180,7 @@ class EmailAccount extends DomainObject
 
         return $this->outgoing_account->getType();
     }
+
 
     /**
      * Get an array of all of the addresses for this account
@@ -187,6 +194,7 @@ class EmailAccount extends DomainObject
 
         return $addrs;
     }
+
 
     /**
      * @param  string $address
@@ -210,6 +218,7 @@ class EmailAccount extends DomainObject
 
         return false;
     }
+
 
     /**
      * Given an address, see if it matches in this account and return the matched address.
@@ -237,6 +246,7 @@ class EmailAccount extends DomainObject
         return null;
     }
 
+
     /**
      * Gets the real address to use for this account.
      * E.g., this account might have many addresses and aliases, this is the one to use
@@ -253,6 +263,7 @@ class EmailAccount extends DomainObject
         return $this->address;
     }
 
+
     /**
      * @param  string $name
      * @param  mixed  $default
@@ -266,6 +277,7 @@ class EmailAccount extends DomainObject
 
         return $this->options[$name];
     }
+
 
     /**
      * @param string $name
@@ -294,6 +306,7 @@ class EmailAccount extends DomainObject
         $this->setModelField('options', $new);
     }
 
+
     /**
      * @param string $options
      */
@@ -305,6 +318,7 @@ class EmailAccount extends DomainObject
 
         $this->setModelField('options', $options);
     }
+
 
     ############################################################################
     # Export
@@ -328,6 +342,7 @@ class EmailAccount extends DomainObject
         return sprintf("<EmailAccount:%d> %s", $this->id, implode(', ', $this->getAllAddresses()));
     }
 
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -340,7 +355,7 @@ class EmailAccount extends DomainObject
         $metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\EmailAccount';
 
         $metadata->setPrimaryTable(array(
-            'name' => 'email_accounts',
+            'name' => 'email_accounts'
         ));
 
         $metadata->mapField(array(
@@ -348,26 +363,26 @@ class EmailAccount extends DomainObject
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
-            'nullable'   => false,
+            'nullable'   => false
         ));
         $metadata->mapField(array(
             'columnName' => 'account_type',
             'fieldName'  => 'account_type',
             'type'       => 'string',
             'length'     => 255,
-            'nullable'   => false,
+            'nullable'   => false
         ));
         $metadata->mapField(array(
             'columnName' => 'incoming_account',
             'fieldName'  => 'incoming_account',
             'type'       => 'dp_json_obj',
-            'nullable'   => true,
+            'nullable'   => true
         ));
         $metadata->mapField(array(
             'columnName' => 'outgoing_account',
             'fieldName'  => 'outgoing_account',
             'type'       => 'dp_json_obj',
-            'nullable'   => true,
+            'nullable'   => true
         ));
         $metadata->mapField(array(
             'columnName' => 'is_enabled',
@@ -380,37 +395,37 @@ class EmailAccount extends DomainObject
             'fieldName'  => 'address',
             'type'       => 'string',
             'length'     => 255,
-            'nullable'   => false,
+            'nullable'   => false
         ));
         $metadata->mapField(array(
             'columnName' => 'other_addresses',
             'fieldName'  => 'other_addresses',
             'type'       => 'simple_array',
-            'nullable'   => true,
+            'nullable'   => true
         ));
         $metadata->mapField(array(
             'columnName' => 'options',
             'fieldName'  => 'options',
             'type'       => 'json_array',
-            'nullable'   => true,
+            'nullable'   => true
         ));
         $metadata->mapField(array(
             'columnName' => 'date_created',
             'fieldName'  => 'date_created',
             'type'       => 'datetime',
-            'nullable'   => false,
+            'nullable'   => false
         ));
         $metadata->mapField(array(
             'columnName' => 'date_read_start',
             'fieldName'  => 'date_read_start',
             'type'       => 'datetime',
-            'nullable'   => true,
+            'nullable'   => true
         ));
         $metadata->mapField(array(
             'columnName' => 'date_last_incoming',
             'fieldName'  => 'date_last_incoming',
             'type'       => 'datetime',
-            'nullable'   => true,
+            'nullable'   => true
         ));
     }
 }

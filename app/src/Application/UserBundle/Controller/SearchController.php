@@ -51,7 +51,7 @@ class SearchController extends AbstractController
             $gourl = $this->in->getString('gourl');
             $count = $this->in->getUint('c');
 
-            $validate = $this->checkRequestToken($gourl.$count, 't');
+            $validate = $this->checkRequestToken($gourl . $count, 't');
             if ($validate || 1) {
                 $searchlog = SearchLog::create($q, $count, true);
                 $this->em->persist($searchlog);
@@ -94,7 +94,7 @@ class SearchController extends AbstractController
                 $got_sticky = array();
                 foreach ($sticky_results as $sitem) {
                     $total++;
-                    $got_sticky[get_class($sitem['object']).$sitem['object']->getId()] = true;
+                    $got_sticky[get_class($sitem['object']) . $sitem['object']->getId()] = true;
                 }
                 $results = array_filter($results, function ($r) use ($got_sticky) {
                     return !isset($got_sticky[get_class($r['object']).$r['object']->getId()]);
@@ -134,7 +134,7 @@ class SearchController extends AbstractController
             }
 
             if ($label) {
-                if (!$type or !in_array($type, array('all', 'articles', 'feedback', 'downloads', 'news'))) {
+                if (!$type OR !in_array($type, array('all', 'articles', 'feedback', 'downloads', 'news'))) {
                     $type = 'all';
                 }
 
@@ -143,7 +143,7 @@ class SearchController extends AbstractController
             }
         }
 
-        if (!$type or !in_array($type, array('all', 'articles', 'feedback', 'downloads', 'news'))) {
+        if (!$type OR !in_array($type, array('all', 'articles', 'feedback', 'downloads', 'news'))) {
             $type = 'all';
         }
 
@@ -162,18 +162,10 @@ class SearchController extends AbstractController
         if ($type == 'all') {
             $search_types = array('article', 'feedback', 'download', 'news');
         } else {
-            if ($type == 'articles') {
-                $search_types = array('article');
-            }
-            if ($type == 'feedback') {
-                $search_types = array('feedback');
-            }
-            if ($type == 'downloads') {
-                $search_types = array('download');
-            }
-            if ($type == 'news') {
-                $search_types = array('news');
-            }
+            if ($type == 'articles')   $search_types = array('article');
+            if ($type == 'feedback')   $search_types = array('feedback');
+            if ($type == 'downloads')  $search_types = array('download');
+            if ($type == 'news')       $search_types = array('news');
         }
 
         $results = null;
@@ -200,7 +192,7 @@ class SearchController extends AbstractController
             'results'  => $results,
             'type'     => $type,
             'pageinfo' => $pageinfo,
-            'num_results' => $total,
+            'num_results' => $total
         ));
     }
 
@@ -220,7 +212,7 @@ class SearchController extends AbstractController
 
         $got_sticky = array();
         foreach ($sticky_results as $sitem) {
-            $got_sticky[get_class($sitem['object']).$sitem['object']->getId()] = true;
+            $got_sticky[get_class($sitem['object']) . $sitem['object']->getId()] = true;
             $results[] = $sitem;
         }
         foreach ($search_results->getTypedResults() as $item) {
@@ -236,7 +228,7 @@ class SearchController extends AbstractController
             foreach ($results as $item) {
                 $data['results'][] = array(
                     'url' => $item['object']->getLink(),
-                    'title' => $item['object']->getTitle(),
+                    'title' => $item['object']->getTitle()
                 );
             }
 
@@ -255,7 +247,7 @@ class SearchController extends AbstractController
 
     public function similarToAction($content_type)
     {
-        $content = isset($_REQUEST['content']) ? (string) $_REQUEST['content'] : '';
+        $content = isset($_REQUEST['content']) ? (string)$_REQUEST['content'] : '';
         $content = Strings::utf8_accents_to_ascii($content);
         $content = strtolower($content);
         $content = preg_replace('#[^a-zA-Z0-9]#', ' ', $content);

@@ -36,6 +36,7 @@ namespace Application\ImportBundle;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Application\ImportBundle\DependencyInjection;
 
 class ImportBundle extends Bundle
 {
@@ -66,7 +67,7 @@ class ImportBundle extends Bundle
         );
 
         foreach ($commands as $cmd) {
-            $application->add(new $cmd());
+            $application->add(new $cmd);
         }
     }
 

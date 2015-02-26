@@ -34,6 +34,7 @@
 
 namespace Orb\Util;
 
+
 /**
  * Utility functions that work with dates and times.
  *
@@ -75,16 +76,16 @@ class Dates
     public static function checkLeapYear($year)
     {
         if (strlen($year) == 2) {
-            if ($year == '00' or $year < 20) {
-                $year = '20'.$year;
+            if ($year == '00' OR $year < 20) {
+                $year = '20' . $year;
             } else {
-                $year = '19'.$year;
+                $year = '19' . $year;
             }
         }
 
-        $year = (int) $year;
+        $year = (int)$year;
 
-        if ($year % 400 == 0 or ($year % 100 != 0 && $year % 4 == 0)) {
+        if ( $year % 400 == 0 OR ($year % 100 != 0 && $year % 4 == 0)) {
             return true;
         }
 
@@ -118,14 +119,12 @@ class Dates
             12 => 31,
         );
 
-        $month = (int) $month;
-        $year  = (int) $year;
+        $month = (int)$month;
+        $year  = (int)$year;
 
         // Special case for leap years when Feb has 29 days
         if ($month == 2) {
-            if (!$year) {
-                $year = date('Y');
-            }
+            if (!$year) $year = date('Y');
 
             if (self::checkLeapYear($year)) {
                 return 29;
@@ -139,6 +138,7 @@ class Dates
         return $map[$month];
     }
 
+
     /**
      * Get a date object for the last day in a month. It will be the last second of the month,
      * useful for "end of month" boundries.
@@ -149,18 +149,15 @@ class Dates
      */
     public static function lastDayInMonth($month = null, $year = null)
     {
-        if ($month === null) {
-            $month = date('n');
-        }
-        if ($year === null) {
-            $year = date('Y');
-        }
+        if ($month === null) $month = date('n');
+        if ($year === null) $year = date('Y');
 
-        $month = (int) $month;
-        $year  = (int) $year;
+        $month = (int)$month;
+        $year  = (int)$year;
 
-        return new \DateTime('@'.mktime(23, 59, 59, $month+1, 0, $year));
+        return new \DateTime('@' . mktime(23, 59, 59, $month+1, 0, $year));
     }
+
 
     /**
      * Get a date object for the first day in a month. It will be the first second of the month,
@@ -172,18 +169,15 @@ class Dates
      */
     public static function firstDayInMonth($month = null, $year = null)
     {
-        if ($month === null) {
-            $month = date('n');
-        }
-        if ($year === null) {
-            $year = date('Y');
-        }
+        if ($month === null) $month = date('n');
+        if ($year === null) $year = date('Y');
 
-        $month = (int) $month;
-        $year  = (int) $year;
+        $month = (int)$month;
+        $year  = (int)$year;
 
-        return new \DateTime('@'.mktime(0, 0, 0, $month, 1, $year));
+        return new \DateTime('@' . mktime(0, 0, 0, $month, 1, $year));
     }
+
 
     /**
      * Add or remove months from a date. This differs from DateTime::modify(x) in that
@@ -198,9 +192,9 @@ class Dates
      */
     public static function modMonths(\DateTime $date, $mod_months)
     {
-        $month = (int) $date->format('n');
-        $year  = (int) $date->format('Y');
-        $day   = (int) $date->format('j');
+        $month = (int)$date->format('n');
+        $year  = (int)$date->format('Y');
+        $day   = (int)$date->format('j');
 
         $new_date = clone $date;
 
@@ -236,6 +230,7 @@ class Dates
         return $new_date;
     }
 
+
     /**
      * Adds or removes years from a date.
      *
@@ -245,9 +240,9 @@ class Dates
      */
     public static function modYears(\DateTime $date, $mod_years)
     {
-        $month = (int) $date->format('n');
-        $year  = (int) $date->format('Y');
-        $day   = (int) $date->format('j');
+        $month = (int)$date->format('n');
+        $year  = (int)$date->format('Y');
+        $day   = (int)$date->format('j');
 
         $new_date = clone $date;
 
@@ -257,6 +252,7 @@ class Dates
 
         return $new_date;
     }
+
 
     /**
      * Takes a number of seconds and returns an array of details
@@ -283,6 +279,7 @@ class Dates
         return array('years' => $years, 'days' => $days, 'hours' => $hours, 'minutes' => $minutes, 'seconds' => $seconds);
     }
 
+
     /**
      * Take some date show readable form of seconds/minutes/hours/days/years ago
      *
@@ -297,6 +294,7 @@ class Dates
 
         return self::secsToReadable(time() - $ts, $detail, $lang);
     }
+
 
     /**
      * Take some secondsand show readable form of seconds/minutes/hours/days/years.s
@@ -327,7 +325,7 @@ class Dates
             'sep' => ' ',
         );
 
-        if (!$lang or $lang == 'long') {
+        if (!$lang OR $lang == 'long') {
             $lang = $lang_en;
         } elseif ($lang == 'short') {
             $lang = $lang_en_short;
@@ -345,27 +343,21 @@ class Dates
         }
 
         if ($limit < $detail) {
-            if ($limit) {
-                ++$limit;
-            }
+            if ($limit) ++$limit;
             if ($parts['days']) {
                 $str_parts[] = sprintf($lang['days'], $parts['days']);
             }
         }
 
         if ($limit < $detail) {
-            if ($limit) {
-                ++$limit;
-            }
+            if ($limit) ++$limit;
             if ($parts['hours']) {
                 $str_parts[] = sprintf($lang['hours'], $parts['hours']);
             }
         }
 
         if ($limit < $detail) {
-            if ($limit) {
-                ++$limit;
-            }
+            if ($limit) ++$limit;
             if ($parts['minutes']) {
                 $str_parts[] = sprintf($lang['minutes'], $parts['minutes']);
             }
@@ -380,6 +372,7 @@ class Dates
         return implode($lang['sep'], $str_parts);
     }
 
+
     /**
      * Converts a timezone into a UTC timezone. This does actual time conversion between timezones.
      *
@@ -393,6 +386,7 @@ class Dates
 
         return self::makeUtcDateTime($datetime2);
     }
+
 
     /**
      * Creates a 'true' UTC time with an adjusted timestamp. This does NOT do any time conversions,
@@ -414,6 +408,7 @@ class Dates
 
         return $utc_datetime;
     }
+
 
     /**
      * @return \DateTimeZone
@@ -440,7 +435,7 @@ class Dates
         $offset *= 3600;
 
         if ($dst === null) {
-            $dst = (bool) ((int) date('I'));
+            $dst = (bool)((int)date('I'));
         }
 
         $timezone = timezone_name_from_abbr('', $offset, $dst);
@@ -450,7 +445,7 @@ class Dates
         }
         foreach (timezone_abbreviations_list() as $abbr) {
             foreach ($abbr as $city) {
-                if ((bool) $city['dst'] === $dst && $city['timezone_id'] && $city['offset'] == $offset) {
+                if ((bool)$city['dst'] === $dst && $city['timezone_id'] && $city['offset'] == $offset) {
                     return $city['timezone_id'];
                 }
             }
@@ -458,6 +453,7 @@ class Dates
 
         return false;
     }
+
 
     /**
      * Get offset in seconds
@@ -480,6 +476,7 @@ class Dates
         return $offset;
     }
 
+
     /**
      * Get offset as a string
      *
@@ -497,9 +494,9 @@ class Dates
         $hours = $offset / 60 / 60;
 
         if ($hours < 0) {
-            return "UTC".$hours;
+            return "UTC" . $hours;
         } else {
-            return "UTC+".$hours;
+            return "UTC+" . $hours;
         }
     }
 

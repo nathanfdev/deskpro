@@ -40,13 +40,12 @@ final class Collection extends AbstractCollection
     /**
      * Add an importer
      *
-     * @param  ImporterInterface $importer
+     * @param ImporterInterface $importer
      * @return $this
      */
     public function attach(ImporterInterface $importer)
     {
         $this->collection[] = $importer;
-
         return $this;
     }
 

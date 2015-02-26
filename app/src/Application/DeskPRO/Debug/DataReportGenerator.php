@@ -80,7 +80,7 @@ class DataReportGenerator
         return array(
             'data'        => $data,
             'data_encode' => $type,
-            'file_encode' => $encode,
+            'file_encode' => $encode
         );
     }
 }

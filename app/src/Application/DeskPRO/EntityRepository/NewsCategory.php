@@ -84,9 +84,7 @@ class NewsCategory extends AbstractCategoryRepository
      */
     public function getCategoryOptions()
     {
-        if (!$this->all_cats === null) {
-            return $this->all_cats;
-        }
+        if (!$this->all_cats === null) return $this->all_cats;
 
         $this->all_cats = App::getDb()->fetchAllKeyed("
             SELECT id, title
@@ -100,10 +98,7 @@ class NewsCategory extends AbstractCategoryRepository
     public function getBySlug($slug)
     {
         $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
-        if (!$id) {
-            return null;
-        }
-
+        if (!$id) return null;
         return $this->find($id);
     }
 
@@ -143,7 +138,7 @@ class NewsCategory extends AbstractCategoryRepository
             }
 
             if ($node) {
-                $counts[$node['id'].'_total'] = $total;
+                $counts[$node['id'] . '_total'] = $total;
             }
 
             return $total;

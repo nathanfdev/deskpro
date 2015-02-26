@@ -114,6 +114,7 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
                         $person = $email->person;
                         $person->name = $this->name;
                         $this->require_login = true;
+
                     } else {
                         $person = $email->person;
                         $person->name = $this->name;
@@ -134,6 +135,7 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
                         $email_validating->email = $this->email;
                         $email_validating->person = $person;
                         App::getOrm()->persist($email_validating);
+
                     } else {
                         $person = $email_validating->person;
                     }
@@ -245,6 +247,7 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
             }
 
             return $obj;
+
         } catch (\Exception $e) {
             App::getOrm()->rollback();
             throw $e;

@@ -67,9 +67,12 @@ class SearchLog extends AbstractEntityRepository
             }
 
             return $ret;
+
         } elseif ($structure == 'counted') {
+
             $ret = array('helpful' => array(), 'unhelpful' => array());
             foreach ($logs as $l) {
+
                 if ($search_ids_to_rating[$l['id']] >= 1) {
                     if (!isset($ret['helpful'][$l['query']])) {
                         $ret['helpful'][$l['query']] = 0;

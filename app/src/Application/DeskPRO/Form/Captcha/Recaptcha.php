@@ -54,7 +54,7 @@ class Recaptcha extends CaptchaAbstract
     public function init()
     {
         $this->setOptions(array(
-            'template' => 'DeskPRO:Common:recaptcha.html.twig',
+            'template' => 'DeskPRO:Common:recaptcha.html.twig'
         ));
 
         $this->public_key  = $this->getOptionOrSetting('public_key', 'core.recaptcha_public_key');
@@ -65,7 +65,7 @@ class Recaptcha extends CaptchaAbstract
     {
         $tpl = $this->getOption('template');
         $vars = array(
-            'public_key' => $this->public_key,
+            'public_key' => $this->public_key
         );
 
         return $this->getTemplating()->render($tpl, $vars);

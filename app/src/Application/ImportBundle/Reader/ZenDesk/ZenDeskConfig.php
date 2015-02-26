@@ -127,13 +127,12 @@ class ZenDeskConfig
     /**
      * Set the auth api token
      *
-     * @param  string $api_token
+     * @param string $api_token
      * @return $this
      */
     public function setApiToken($api_token)
     {
         $this->api_token = $api_token;
-
         return $this;
     }
 
@@ -150,13 +149,12 @@ class ZenDeskConfig
     /**
      * Set the auth password
      *
-     * @param  string $password
+     * @param string $password
      * @return $this
      */
     public function setPassword($password)
     {
         $this->password = $password;
-
         return $this;
     }
 

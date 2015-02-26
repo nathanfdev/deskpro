@@ -101,11 +101,12 @@ class ProcessEmailCommand extends ContainerAwareCommand
                 $account = $this->findEmailAccountFrom($reader);
             }
         } else {
+
             if ($input->getOption('file')) {
                 if (file_exists($input->getOption('file'))) {
                     $raw_source = file_get_contents($input->getOption('file'));
                 } else {
-                    $output->writeln("<error>File path does not exist: ".$input->getOption('file')."</error>");
+                    $output->writeln("<error>File path does not exist: " . $input->getOption('file') . "</error>");
 
                     return 1;
                 }
@@ -133,7 +134,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
                 $header_end = strpos($raw_source, "\n\n");
             }
 
-            $raw_headers = trim(substr($raw_source, 0, $header_end));
+            $raw_headers = trim(substr($raw_source,0, $header_end));
 
             $reader = new EzcReader();
             $reader->setRawSource($raw_source);
@@ -170,7 +171,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
             App::getOrm()->persist($source);
             App::getOrm()->flush();
 
-            $output->writeln(sprintf("<info>Saved email source #".$source->getId()." (took %.5s)</info>", microtime(true) - $t));
+            $output->writeln(sprintf("<info>Saved email source #" . $source->getId() . " (took %.5s)</info>", microtime(true) - $t));
         }
 
         #----------------------------------------
@@ -215,6 +216,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
                     return 1;
                 }
             }
+
 
             if ($input->getOption('account-force') && !$account->is_enabled) {
                 $output->writeln("<error>Account $account_id is disabled (use --account-force if you want to use it anyway)</error>");
@@ -272,6 +274,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
             }
         }
     }
+
 
     /**
      * @param  AbstractReader                                $reader

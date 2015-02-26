@@ -52,7 +52,7 @@ class Feedback extends PortalItemAbstract implements CacheableItem
     public function getCacheOptions()
     {
         $opt = array(
-            'tags' => array('feedback'),
+            'tags' => array('feedback')
         );
 
         if ($this->section == 'sidebar') {

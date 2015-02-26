@@ -64,7 +64,7 @@ class InstallQueryLogFormatter extends \Orb\Filter\AbstractFilter
 
             // Otherwise the tag is the type against the table
             } else {
-                $query_tag = md5($log_item['queryinfo']['query_typename'].$log_item['queryinfo']['table']);
+                $query_tag = md5($log_item['queryinfo']['query_typename'] . $log_item['queryinfo']['table']);
             }
         }
 
@@ -88,7 +88,7 @@ class InstallQueryLogFormatter extends \Orb\Filter\AbstractFilter
                 }
 
                 $len = strlen($v);
-                $params[$k] = 'string('.$len.')';
+                $params[$k] = 'string(' . $len . ')';
             }
         }
 

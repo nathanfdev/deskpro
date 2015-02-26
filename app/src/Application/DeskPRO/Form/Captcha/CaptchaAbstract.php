@@ -52,6 +52,7 @@ abstract class CaptchaAbstract
      */
     protected $options = array();
 
+
     /**
      * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
      * @param array                                                     $options
@@ -69,6 +70,7 @@ abstract class CaptchaAbstract
         // empty construct hook
     }
 
+
     /**
      * Get the captcha HTML to render into the form page
      *
@@ -83,6 +85,7 @@ abstract class CaptchaAbstract
      */
     abstract public function validate();
 
+
     /**
      * Get an option
      *
@@ -94,6 +97,7 @@ abstract class CaptchaAbstract
     {
         return isset($this->options[$name]) ? $this->options[$name] : null;
     }
+
 
     /**
      * Set an options
@@ -107,6 +111,7 @@ abstract class CaptchaAbstract
         $this->options[$name] = $value;
     }
 
+
     /**
      * Set many options at once
      *
@@ -117,6 +122,7 @@ abstract class CaptchaAbstract
     {
         $this->options = array_merge($this->options, $options);
     }
+
 
     /**
      * Check if an option is set
@@ -129,6 +135,7 @@ abstract class CaptchaAbstract
         return isset($this->options[$name]);
     }
 
+
     /**
      * @return \Symfony\Component\Templating\EngineInterface
      */
@@ -136,6 +143,7 @@ abstract class CaptchaAbstract
     {
         return $this->container->get('templating');
     }
+
 
     /**
      * @return \Symfony\Component\HttpFoundation\Request
@@ -145,6 +153,7 @@ abstract class CaptchaAbstract
         return $this->container->get('request');
     }
 
+
     /**
      * @return \Application\DeskPRO\HttpFoundation\Session
      */
@@ -152,6 +161,7 @@ abstract class CaptchaAbstract
     {
         return $this->container->get('session');
     }
+
 
     /**
      * @throws \RunTimeException

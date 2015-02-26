@@ -59,7 +59,8 @@ class Matrix extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    ) {
+    )
+    {
         if ($section != 'group') {
             throw new Exception('MATRIX() may only be used in GROUP BY.');
         }
@@ -77,7 +78,7 @@ class Matrix extends AbstractFunc
 
         $valid = array();
 
-        foreach ($this->_arguments as $arg) {
+        foreach ($this->_arguments AS $arg) {
             if ($arg instanceof \Application\DeskPRO\Dpql\Statement\Part\NullValue) {
                 continue;
             }
@@ -90,7 +91,7 @@ class Matrix extends AbstractFunc
 
         $isMatrix = count($valid) > 1;
 
-        foreach ($valid as $key => $groupBy) {
+        foreach ($valid AS $key => $groupBy) {
             $printId = $select->addSelectField($groupBy->printed());
             $select->addGroupBy($groupBy->sql());
             $defaultOrder = $statement->addDefaultOrder($groupBy->printed());

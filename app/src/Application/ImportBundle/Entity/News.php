@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
@@ -74,7 +75,6 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
     public function setPersonEmail($person_email)
     {
         $this->person_email = $person_email;
-
         return $this;
     }
 
@@ -87,13 +87,12 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
     }
 
     /**
-     * @param  string $category
+     * @param string $category
      * @return $this
      */
     public function setCategory($category)
     {
-        $this->category = (string) $category;
-
+        $this->category = (string)$category;
         return $this;
     }
 
@@ -110,8 +109,7 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
      */
     public function addLabel($label)
     {
-        $this->labels[] = (string) $label;
-
+        $this->labels[] = (string)$label;
         return $this;
     }
 
@@ -120,7 +118,7 @@ final class News extends AbstractContentEntity implements PersonAwareInterface, 
      */
     public function toArray()
     {
-        if (! $this->date_created) {
+        if ( ! $this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 

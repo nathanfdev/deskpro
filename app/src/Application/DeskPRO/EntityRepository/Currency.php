@@ -37,4 +37,5 @@ namespace Application\DeskPRO\EntityRepository;
 
 class Currency extends AbstractEntityRepository
 {
+
 }

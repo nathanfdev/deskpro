@@ -219,7 +219,7 @@ class Prepared
      */
     public function setTotal($total)
     {
-        $this->_total = (bool) $total;
+        $this->_total = (bool)$total;
     }
 
     /**

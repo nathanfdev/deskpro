@@ -57,9 +57,9 @@ class Chat
                 'author_id'         => $chat_message['author_id'],
                 'author_name'       => $chat_message['author_name'],
                 'message'           => $chat_message['content'],
-                'date_created'      => $chat_message['date_created']->getTimestamp(),
+                'date_created'      => $chat_message['date_created']->getTimestamp()
             ),
-            'created_by_client' => $by_client_id,
+            'created_by_client' => $by_client_id
         ));
 
         return array($new_chat_cm);
@@ -80,10 +80,10 @@ class Chat
                 'author_id'         => $chat_message['author_id'],
                 'author_name'       => $chat_message['author_name'],
                 'message'           => $chat_message['content'],
-                'date_created'      => $chat_message['date_created']->getTimestamp(),
+                'date_created'      => $chat_message['date_created']->getTimestamp()
             ),
             'created_by_client' => $by_client_id,
-            'for_person'        => $agent,
+            'for_person'        => $agent
         ));
 
         return array($new_chat_cm);
@@ -98,9 +98,9 @@ class Chat
             'channel' => $channel,
             'data' => array(
                 'conversation_id'   => $conversation['id'],
-                'date_created'      => time(),
+                'date_created'      => time()
             ),
-            'created_by_client' => $by_client_id,
+            'created_by_client' => $by_client_id
         ));
 
         return array($chat_cm);
@@ -124,10 +124,10 @@ class Chat
                     'author_id'         => $chat_message['author_id'],
                     'author_name'       => $chat_message['author_name'],
                     'message'           => $chat_message['content'],
-                    'date_created'      => $chat_message['date_created']->getTimestamp(),
+                    'date_created'      => $chat_message['date_created']->getTimestamp()
                 ),
                 'created_by_client' => $by_client_id,
-                'for_person' => $conversation['agent'],
+                'for_person' => $conversation['agent']
             ));
 
         // Dispatch a 'new chat' type popup for everyone
@@ -141,9 +141,9 @@ class Chat
                     'author_id'         => $chat_message['author_id'],
                     'author_name'       => $chat_message['author_name'],
                     'message'           => $chat_message['content'],
-                    'date_created'      => $chat_message['date_created']->getTimestamp(),
+                    'date_created'      => $chat_message['date_created']->getTimestamp()
                 ),
-                'created_by_client' => $by_client_id,
+                'created_by_client' => $by_client_id
             ));
         }
 
@@ -156,7 +156,7 @@ class Chat
             'channel' => 'chat_user_agent.chat-assigned',
             'data' => array(
                 'conversation_id'   => $conversation['id'],
-                'agent_id' => $conversation['agent'] ? $conversation['agent']['id'] : 0,
+                'agent_id' => $conversation['agent'] ? $conversation['agent']['id'] : 0
             ),
             'created_by_client' => $by_client_id,
         ));
@@ -164,16 +164,16 @@ class Chat
         $client_messages[] = $chat_cm;
 
         // User should be notiifed too
-        if (!$conversation['is_agent'] and $conversation->session) {
+        if (!$conversation['is_agent'] AND $conversation->session) {
             $chat_cm_user = new ClientMessage();
             $chat_cm_user->fromArray(array(
                 'channel' => 'chat_user.chat-assigned',
                 'data' => array(
                     'conversation_id'   => $conversation['id'],
-                    'agent_id' => $conversation['agent'] ? $conversation['agent']['id'] : 0,
+                    'agent_id' => $conversation['agent'] ? $conversation['agent']['id'] : 0
                 ),
                 'created_by_client' => $by_client_id,
-                'for_client' => $conversation->session['id'],
+                'for_client' => $conversation->session['id']
             ));
 
             $client_messages[] = $chat_cm_user;
@@ -187,7 +187,7 @@ class Chat
         $cm_data = array(
             'conversation_id' => $conversation->getId(),
             'agent_id' => $conversation['agent'] ? $conversation['agent']['id'] : 0,
-            'participant_ids' => array(),
+            'participant_ids' => array()
         );
 
         foreach ($conversation->participants as $part) {
@@ -205,7 +205,7 @@ class Chat
                 'channel' => $channel,
                 'data' => $cm_data,
                 'created_by_client' => $by_client_id,
-                'for_person' => $conversation->agent,
+                'for_person' => $conversation->agent
             ));
 
             $cms[] = $cm;
@@ -218,7 +218,7 @@ class Chat
                 'channel' => $channel,
                 'data' => $cm_data,
                 'created_by_client' => $by_client_id,
-                'for_person' => $part,
+                'for_person' => $part
             ));
 
             $cms[] = $cm;
@@ -238,10 +238,10 @@ class Chat
                 'author_id'         => $chat_message['author_id'],
                 'author_name'       => $chat_message['author_name'],
                 'message'           => $chat_message['content'],
-                'date_created'      => $chat_message['date_created']->getTimestamp(),
+                'date_created'      => $chat_message['date_created']->getTimestamp()
             ),
             'created_by_client' => $by_client_id,
-            'for_person' => $conversation['agent'],
+            'for_person' => $conversation['agent']
         ));
 
         return array($new_chat_cm);
@@ -260,7 +260,7 @@ class Chat
         $author_type = 'user';
         if ($chat_message['is_sys']) {
             $author_type = 'sys';
-        } elseif ($chat_message['author'] and $chat_message['author']['is_agent']) {
+        } elseif ($chat_message['author'] AND $chat_message['author']['is_agent']) {
             $author_type = 'agent';
         }
 
@@ -271,7 +271,7 @@ class Chat
             'author_name'       => $chat_message['author_name'],
             'author_type'       => $author_type,
             'message'           => $chat_message['content'],
-            'date_created'      => $chat_message['date_created']->getTimestamp(),
+            'date_created'      => $chat_message['date_created']->getTimestamp()
         );
         if ($chat_message['is_html']) {
             $cm_data['message_html'] = $chat_message['content'];
@@ -287,7 +287,7 @@ class Chat
                 'channel' => $channel,
                 'data' => $cm_data,
                 'created_by_client' => $by_client_id,
-                'for_person' => $conversation->agent,
+                'for_person' => $conversation->agent
             ));
 
             $cms[] = $cm;
@@ -300,14 +300,15 @@ class Chat
                 'channel' => $channel,
                 'data' => $cm_data,
                 'created_by_client' => $by_client_id,
-                'for_person' => $part,
+                'for_person' => $part
             ));
 
             $cms[] = $cm;
         }
 
         // And the user
-        if (!$conversation['is_agent'] and !$chat_message['is_user_hidden']) {
+        if (!$conversation['is_agent'] AND !$chat_message['is_user_hidden']) {
+
             $session = $conversation->session;
 
             $cm = new ClientMessage();
@@ -315,7 +316,7 @@ class Chat
                 'channel' => $channel,
                 'data' => $cm_data,
                 'created_by_client' => $by_client_id,
-                'for_client' => $session['id'],
+                'for_client' => $session['id']
             ));
 
             $cms[] = $cm;
@@ -328,7 +329,7 @@ class Chat
     {
         $cm_data = array(
             'conversation_id'   => $conversation['id'],
-            'partial_message' => $partial_message,
+            'partial_message' => $partial_message
         );
 
         $channel = 'chat.user-typing';
@@ -342,7 +343,7 @@ class Chat
                 'channel' => $channel,
                 'data' => $cm_data,
                 'created_by_client' => $by_client_id,
-                'for_person' => $conversation->agent,
+                'for_person' => $conversation->agent
             ));
 
             $cms[] = $cm;
@@ -355,7 +356,7 @@ class Chat
                 'channel' => $channel,
                 'data' => $cm_data,
                 'created_by_client' => $by_client_id,
-                'for_person' => $part,
+                'for_person' => $part
             ));
 
             $cms[] = $cm;

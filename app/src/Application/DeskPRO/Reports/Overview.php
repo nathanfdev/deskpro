@@ -74,19 +74,21 @@ class Overview
      */
     protected $logger;
 
+
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
         $logger = new Logger();
 
         if (dp_get_config('debug.enable_reports_overview_log') && !$this->no_data_mode) {
-            $wr = new Stream(dp_get_log_dir().'/reports-overview.log');
+            $wr = new Stream(dp_get_log_dir() . '/reports-overview.log');
             $wr->enableNewStreamPerWrite();
             $logger->addWriter($wr);
         }
 
         $this->logger = $logger;
     }
+
 
     /**
      * @param  string $type
@@ -98,6 +100,7 @@ class Overview
 
         return $this->getValues($type);
     }
+
 
     /**
      * @param  string                $type
@@ -233,6 +236,7 @@ class Overview
         }
     }
 
+
     /**
      * @param  Person $person
      * @return $this
@@ -243,6 +247,7 @@ class Overview
 
         return $this;
     }
+
 
     /**
      * @param                            $type
@@ -255,14 +260,14 @@ class Overview
         $options = new OptionsArray($options);
 
         if (!$options->get('grouping_field')) {
-            $pref = $this->person->getPref('reports.ui.overview.options.'.$type.'.grouping');
+            $pref = $this->person->getPref('reports.ui.overview.options.' . $type . '.grouping');
             if ($pref) {
                 $options->set('grouping_field', $pref);
             }
         }
 
         if (!$options->get('date_choice')) {
-            $pref = $this->person->getPref('reports.ui.overview.options.'.$type.'.date_choice');
+            $pref = $this->person->getPref('reports.ui.overview.options.' . $type . '.date_choice');
             if ($pref) {
                 $options->set('date_choice', $pref);
             }
@@ -297,7 +302,7 @@ class Overview
                         break;
                     case 'this_month':
                         $date = $this->person->getDateTime();
-                        $date->setDate((int) $date->format('Y'), (int) $date->format('n'), 1)->setTime(0, 0, 0);
+                        $date->setDate((int)$date->format('Y'), (int)$date->format('n'), 1)->setTime(0, 0, 0);
                         $date_group = 'day';
                         break;
                     case 'this_year':
@@ -318,7 +323,7 @@ class Overview
 
                 if ($this->no_data_mode) {
                     return array(
-                        'date_choice' => $options->get('date_choice'),
+                        'date_choice' => $options->get('date_choice')
                     );
                 }
 
@@ -345,7 +350,7 @@ class Overview
                         break;
                     case 'this_month':
                         $date = $this->person->getDateTime();
-                        $date->setDate($date->format('Y'), (int) $date->format('n'), 1)->setTime(0, 0, 0);
+                        $date->setDate($date->format('Y'), (int)$date->format('n'), 1)->setTime(0, 0, 0);
                         break;
                     case 'this_year':
                         $date = $this->person->getDateTime();
@@ -395,7 +400,7 @@ class Overview
                         break;
                     case 'this_month':
                         $date = $this->person->getDateTime();
-                        $date->setDate($date->format('Y'), (int) $date->format('n'), 1)->setTime(0, 0, 0);
+                        $date->setDate($date->format('Y'), (int)$date->format('n'), 1)->setTime(0, 0, 0);
                         break;
                     case 'this_year':
                         $date = $this->person->getDateTime();
@@ -498,7 +503,7 @@ class Overview
                         break;
                     case 'this_month':
                         $date = $this->person->getDateTime();
-                        $date->setDate($date->format('Y'), (int) $date->format('n'), 1)->setTime(0, 0, 0);
+                        $date->setDate($date->format('Y'), (int)$date->format('n'), 1)->setTime(0, 0, 0);
                         break;
                     case 'this_year':
                         $date = $this->person->getDateTime();
@@ -514,7 +519,7 @@ class Overview
                 $date2 = new \DateTime();
 
                 if (!$options->get('sla_id')) {
-                    $pref = $this->person->getPref('reports.ui.overview.options.'.$type.'.sla_id');
+                    $pref = $this->person->getPref('reports.ui.overview.options.' . $type . '.sla_id');
                     if ($pref) {
                         $options->set('sla_id', $pref);
                     }
@@ -558,7 +563,7 @@ class Overview
                         break;
                     case 'this_month':
                         $date = $this->person->getDateTime();
-                        $date->setDate($date->format('Y'), (int) $date->format('n'), 1)->setTime(0, 0, 0);
+                        $date->setDate($date->format('Y'), (int)$date->format('n'), 1)->setTime(0, 0, 0);
                         break;
                     case 'this_year':
                         $date = $this->person->getDateTime();
@@ -609,7 +614,7 @@ class Overview
                         break;
                     case 'this_month':
                         $date = $this->person->getDateTime();
-                        $date->setDate($date->format('Y'), (int) $date->format('n'), 1)->setTime(0, 0, 0);
+                        $date->setDate($date->format('Y'), (int)$date->format('n'), 1)->setTime(0, 0, 0);
                         break;
                     case 'this_year':
                         $date = $this->person->getDateTime();

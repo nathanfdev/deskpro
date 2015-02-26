@@ -66,9 +66,8 @@ class PreProcessor extends AbstractGatewayProcessor
         if ($id = $this->reader->getId()) {
             if ($old = $this->getEm()->getRepository('DeskPRO:TicketMessage')->getDupeByMessageID($id)) {
                 /** @var $old TicketMessage */
-                $this->source_info[] = 'Ticket ID: '.$old->message->ticket['id'];
-                $this->source_info[] = 'Email Message ID: '.$id;
-
+                $this->source_info[] = 'Ticket ID: '. $old->message->ticket['id'];
+                $this->source_info[] = 'Email Message ID: '. $id;
                 return $this->error = EmailSource::ERR_DUPE;
             }
         }
@@ -82,8 +81,8 @@ class PreProcessor extends AbstractGatewayProcessor
         if (!$validator->isValid($from)) {
             $this->error = EmailSource::ERR_FROM_INVALID;
             $this->source_info = array();
-            $this->source_info[] = "Read from address: ".$from;
-            $this->source_info[] = "Errors:\n\n".$validator->getErrorsDebug();
+            $this->source_info[] = "Read from address: " . $from;
+            $this->source_info[] = "Errors:\n\n" . $validator->getErrorsDebug();
 
             return;
         }
@@ -95,9 +94,9 @@ class PreProcessor extends AbstractGatewayProcessor
         $account_manager = App::$container->getEmailAccountManager();
         if ($found_account = $account_manager->findAccountForEmailAddress($from)) {
             $this->error = EmailSource::ERR_FROM_GATEWAY;
-            $this->source_info[] = "Read from address: ".$from;
-            $this->source_info[] = "Matched account: ".$found_account->id;
-            $this->source_info[] = "Account addresses: ".implode(', ', $found_account->getAllAddresses());
+            $this->source_info[] = "Read from address: " . $from;
+            $this->source_info[] = "Matched account: " . $found_account->id;
+            $this->source_info[] = "Account addresses: " . implode(', ', $found_account->getAllAddresses());
 
             return;
         }
@@ -109,8 +108,8 @@ class PreProcessor extends AbstractGatewayProcessor
         $match = null;
         if (App::getOrm()->getRepository('DeskPRO:BanEmail')->isEmailBanned($from, $match)) {
             $this->error = EmailSource::ERR_FROM_BANNED;
-            $this->source_info[] = "Read from address: ".$from;
-            $this->source_info[] = "Matched banned email: ".$match;
+            $this->source_info[] = "Read from address: " . $from;
+            $this->source_info[] = "Matched banned email: " . $match;
 
             return;
         }
@@ -138,8 +137,8 @@ class PreProcessor extends AbstractGatewayProcessor
         if ($this->account->date_read_start && $email_date = $this->reader->getDate() && App::getSetting('core_email.enable_date_limit_rejection')) {
             if ($email_date < $this->account->date_read_start) {
                 $this->error = EmailSource::ERR_DATE_LIMIT;
-                $this->source_info[] = "Gateway date limit: ".$this->account->date_read_start->format(\DateTime::RFC2822);
-                $this->source_info[] = "Message date: ".$email_date->format(\DateTime::RFC2822);
+                $this->source_info[] = "Gateway date limit: " . $this->account->date_read_start->format(\DateTime::RFC2822);
+                $this->source_info[] = "Message date: " . $email_date->format(\DateTime::RFC2822);
 
                 return;
             }

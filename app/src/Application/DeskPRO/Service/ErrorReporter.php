@@ -33,7 +33,6 @@
  */
 
 namespace Application\DeskPRO\Service;
-
 use Application\DeskPRO\App;
 use DeskPRO\Kernel\License;
 use Doctrine\DBAL\DBALException;
@@ -56,8 +55,7 @@ class ErrorReporter
                 if (App::getSetting('core.enable_reduced_lic_reports')) {
                     $reduced_lic_reports = true;
                 }
-            } catch (\Exception $e) {
-            }
+            } catch (\Exception $e) {}
         }
 
         if ($send_all_stats) {
@@ -113,15 +111,14 @@ class ErrorReporter
             if (class_exists('Application\\DeskPRO\\App')) {
                 try {
                     $url = App::getRequest()->getUri();
-                } catch (\Exception $e) {
-                }
+                } catch (\Exception $e) {}
             }
         } else {
             $url = '';
         }
 
         if (php_sapi_name() == 'cli') {
-            $url = 'Command: '.implode(' ', $_SERVER['argv']);
+            $url = 'Command: ' . implode(' ', $_SERVER['argv']);
         }
 
         $info['url'] = $url;
@@ -148,6 +145,7 @@ class ErrorReporter
         return $info;
     }
 
+
     /**
      * Checks a hash against the db to see if we should avoid sending the error report
      * too many times. The system sends at most one report a day.
@@ -168,7 +166,7 @@ class ErrorReporter
                 FROM tmp_data
                 WHERE name = ?
                 LIMIT 1
-            ", array('submitreport_'.$hash));
+            ", array('submitreport_' . $hash));
 
             if ($exist_date) {
                 $date = \DateTime::createFromFormat('Y-m-d H:i:s', $exist_date);
@@ -178,11 +176,11 @@ class ErrorReporter
                     return true;
                 }
             }
-        } catch (\Exception $e) {
-        };
+        } catch (\Exception $e) {};
 
         return false;
     }
+
 
     /**
      * Submits a PHP error. $errinfo is a standard error info array, see KernelErrorHandler::getExceptionInfo
@@ -204,6 +202,7 @@ class ErrorReporter
         $info = self::getBasicData();
 
         if ($errinfo['type'] == 'exception') {
+
             $ignore_types = array(
                 'Application\\DeskPRO\\Command\\Exception\\CronRunningException',
                 'Application\\DeskPRO\\FileStorage\\Exception\\PermissionException',
@@ -229,16 +228,16 @@ class ErrorReporter
             $copy_keys = array(
                 'type', 'session_name', 'exception_type', 'die', 'pri',
                 'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
-                'display', 'process_log',
+                'display', 'process_log'
             );
-            $info['local_hash'] = md5('php'.$errinfo['exception_type'].$errinfo['errfile'].$errinfo['errline']);
+            $info['local_hash'] = md5('php' . $errinfo['exception_type'] . $errinfo['errfile'] . $errinfo['errline']);
         } else {
             $copy_keys = array(
                 'type', 'session_name', 'die', 'pri',
                 'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
-                'display', 'process_log',
+                'display', 'process_log'
             );
-            $info['local_hash'] = md5('php'.$errinfo['errname'].$errinfo['errfile'].$errinfo['errline']);
+            $info['local_hash'] = md5('php' . $errinfo['errname'] . $errinfo['errfile'] . $errinfo['errline']);
         }
 
         $send_info = array();
@@ -251,7 +250,7 @@ class ErrorReporter
 
         // Attempt to attach trailing errors from server log files
         foreach (array('server-phperr-web.log', 'cli-phperr.log') as $logfile) {
-            $logpath = dp_get_log_dir().'/'.$logfile;
+            $logpath = dp_get_log_dir() . '/' . $logfile;
             if (!file_exists($logpath)) {
                 continue;
             }
@@ -265,6 +264,7 @@ class ErrorReporter
             self::sendReport('report-error', $info, 10);
         }
     }
+
 
     /**
      * Submits a JS error. $errinfo is a standard error info array from \Application\DeskPRO\Controller\DataController::logJsErrorAction
@@ -281,9 +281,9 @@ class ErrorReporter
         $info = array();
 
         if (isset($errinfo['script']) && isset($errinfo['line'])) {
-            $info['local_hash'] = md5('js'.$errinfo['script'].$errinfo['line']);
+            $info['local_hash'] = md5('js' . $errinfo['script'] . $errinfo['line']);
         } else {
-            $info['local_hash'] = md5('js'.$errinfo['message']);
+            $info['local_hash'] = md5('js' . $errinfo['message']);
         }
 
         $info['error_type'] = 'js';
@@ -294,11 +294,13 @@ class ErrorReporter
         }
     }
 
+
     public static function sendInstallReport($data)
     {
         $info = $data;
 
         if (isset($info['errinfo'])) {
+
             $errinfo = $info['errinfo'];
             unset($info['errinfo']);
 
@@ -306,16 +308,16 @@ class ErrorReporter
                 $copy_keys = array(
                     'type', 'session_name', 'exception_type', 'die', 'pri',
                     'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
-                    'display',
+                    'display'
                 );
-                $info['local_hash'] = md5('php'.$errinfo['exception_type'].$errinfo['errfile'].$errinfo['errline']);
+                $info['local_hash'] = md5('php' . $errinfo['exception_type'] . $errinfo['errfile'] . $errinfo['errline']);
             } else {
                 $copy_keys = array(
                     'type', 'session_name', 'die', 'pri',
                     'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
-                    'display',
+                    'display'
                 );
-                $info['local_hash'] = md5('php'.$errinfo['errname'].$errinfo['errfile'].$errinfo['errline']);
+                $info['local_hash'] = md5('php' . $errinfo['errname'] . $errinfo['errfile'] . $errinfo['errline']);
             }
 
             $send_info = array();
@@ -330,6 +332,7 @@ class ErrorReporter
         unset($info['local_hash']);
         self::sendReport('report-install', $info, 12);
     }
+
 
     /**
      * Sends a report to the logging server if local_hash exists in $data, it'll save the hash
@@ -351,8 +354,8 @@ class ErrorReporter
         if (isset($data['local_hash'])) {
             try {
                 App::getDb()->replace('tmp_data', array(
-                    'name'         => 'submitreport_'.$data['local_hash'],
-                    'auth'         => substr(md5(microtime()).mt_rand(1, 999), 0, 15),
+                    'name'         => 'submitreport_' . $data['local_hash'],
+                    'auth'         => substr(md5(microtime()) . mt_rand(1,999), 0, 15),
                     'data'         => serialize(array()),
                     'date_created' => date('Y-m-d H:i:s'),
                     'date_expire'  => date('Y-m-d H:i:s', strtotime('+24 hours')),
@@ -364,9 +367,7 @@ class ErrorReporter
 
         // Make sure payload isnt too big
         foreach ($data as &$d) {
-            if (!is_string($d)) {
-                continue;
-            }
+            if (!is_string($d)) continue;
             if (isset($d[512001])) {
                 $d = substr($d, 0, 512000);
                 $d .= ' (Truncated)';
@@ -378,17 +379,17 @@ class ErrorReporter
             $client = new \Zend\Http\Client(null, array('timeout' => $timeout, 'strictredirects' => true, 'sslverifypeer' => false));
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
 
-            $url = \DeskPRO\Kernel\License::getLicServer().'/api/data-submit/'.$service.'.json';
+            $url = \DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/' . $service . '.json';
             $client->setUri($url);
             $client->getRequest()->getPost()->fromArray($data);
             $r = $client->send();
 
             if (!$r->isSuccess()) {
-                error_log("URL retrned code ".$r->getStatusCode().": ".$url);
+                error_log("URL retrned code " . $r->getStatusCode() . ": " . $url);
             }
-        } catch (\Exception $e) {
-        }
+        } catch (\Exception $e) {}
     }
+
 
     /**
      * Sends a heartbeat
@@ -413,13 +414,13 @@ class ErrorReporter
 
         $data['setting_elastica_enabled'] = App::getSetting('elastica.enabled');
         $data['setting_core_deskpro_url'] = App::getSetting('core.deskpro_url');
-        $data['db_id_hash'] = md5(DP_DATABASE_HOST.DP_DATABASE_NAME.DP_DATABASE_USER);
+        $data['db_id_hash'] = md5(DP_DATABASE_HOST . DP_DATABASE_NAME . DP_DATABASE_USER);
         $data['license_code'] = App::getSetting('core.license');
 
         try {
             $client = new \Zend\Http\Client(null, array('timeout' => 20, 'strictredirects' => true, 'sslverifypeer' => false));
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
-            $client->setUri(\DeskPRO\Kernel\License::getLicServer().'/api/heartbeat.json');
+            $client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/heartbeat.json');
             $client->getRequest()->getPost()->fromArray($data);
             $r = $client->send();
 
@@ -431,6 +432,7 @@ class ErrorReporter
         }
     }
 
+
     /**
      * Sends a ping to the install log server about status of an installation.
      *
@@ -440,19 +442,20 @@ class ErrorReporter
     {
         $data = array(
             'install_token' => App::getSetting('core.install_token'),
-            'step' => $step,
+            'step' => $step
         );
 
         try {
             $client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true, 'sslverifypeer' => false));
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
-            $client->setUri(\DeskPRO\Kernel\License::getLicServer().'/api/data-submit/ping-install.json');
+            $client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/ping-install.json');
             $client->getRequest()->getPost()->fromArray($data);
             $client->send();
         } catch (\Exception $e) {
             error_log(sprintf("sendInstallStatusPing %s %s", $e->getCode(), $e->getMessage()));
         }
     }
+
 
     /**
      * @static
@@ -476,7 +479,7 @@ class ErrorReporter
         try {
             $client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
-            $client->setUri(\DeskPRO\Kernel\License::getLicServer().'/api/data-submit/submit-feedback.json');
+            $client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/submit-feedback.json');
             $client->getRequest()->getPost()->fromArray($data);
             $client->setEncType('application/x-www-form-urlencoded; charset=UTF-8');
             $r = $client->send();
@@ -486,6 +489,7 @@ class ErrorReporter
             return false;
         }
     }
+
 
     /**
      * @static
@@ -506,7 +510,7 @@ class ErrorReporter
         try {
             $client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true, 'sslverifypeer' => false));
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
-            $client->setUri(\DeskPRO\Kernel\License::getLicServer().'/api/data-submit/submit-feedback.json');
+            $client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/submit-feedback.json');
             $client->getRequest()->getPost()->fromArray($data);
             $client->setEncType('application/x-www-form-urlencoded; charset=UTF-8');
             $r = $client->send();

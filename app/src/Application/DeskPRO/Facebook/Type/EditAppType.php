@@ -52,6 +52,7 @@ class EditAppType extends AbstractType
         $builder->add('logo_url', 'text', array('required' => false));
     }
 
+
     /**
      * @param OptionsResolverInterface $resolver
      */
@@ -64,6 +65,7 @@ class EditAppType extends AbstractType
             )
         );
     }
+
 
     /**
      * @return string

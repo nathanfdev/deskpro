@@ -61,7 +61,7 @@ class TicketWorkflow extends AbstractPersonContextValidator
         parent::init();
 
         $this->allow_none = $this->getOption('allow_none', true);
-        $this->whitelist  = (array) $this->getOption('whitelist', array());
+        $this->whitelist  = (array)$this->getOption('whitelist', array());
     }
 
     /**
@@ -71,7 +71,7 @@ class TicketWorkflow extends AbstractPersonContextValidator
      */
     protected function checkIsValid($value)
     {
-        $value = (int) $value;
+        $value = (int)$value;
         if (!$value) {
             if ($this->allow_none) {
                 return true;

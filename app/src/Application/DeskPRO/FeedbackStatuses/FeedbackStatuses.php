@@ -74,6 +74,7 @@ class FeedbackStatuses
         $this->closed_statuses = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
     }
 
+
     /**
      * Resets this repository so the next time data is requested form it, it will
      * be queried again.
@@ -159,7 +160,9 @@ class FeedbackStatuses
         $feedback_statuses = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getByIds($newOrders);
 
         foreach ($newOrders as $id) {
+
             if (!isset($feedback_statuses[$id])) {
+
                 continue;
             }
 

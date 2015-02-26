@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Validator;
 use Exception;
 
 /**
@@ -138,7 +139,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
      */
     private function getExporter()
     {
-        if (! $this->config) {
+        if ( ! $this->config) {
             throw new Exception('Generator configuration is not set up');
         }
 
@@ -166,7 +167,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
      */
     private function getWriter()
     {
-        if (! $this->config) {
+        if ( ! $this->config) {
             throw new Exception('Generator configuration is not set up');
         }
 
@@ -204,6 +205,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
                 try {
                     /** @var Validator\ValidatorInterface $validator */
                     $validator->validate($entity);
+
                 } catch (Validator\ValidatorExceptionInterface $e) {
                     $exceptions->attach($e);
                 }

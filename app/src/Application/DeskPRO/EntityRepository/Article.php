@@ -43,12 +43,10 @@ class Article extends AbstractEntityRepository
     public function getBySlug($slug)
     {
         $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
-        if (!$id) {
-            return null;
-        }
-
+        if (!$id) return null;
         return $this->find($id);
     }
+
 
     /**
      * Get articles waiting for validating
@@ -66,6 +64,7 @@ class Article extends AbstractEntityRepository
 
         return $articles;
     }
+
 
     /**
      * Get drafts, optionally for a specific person
@@ -96,6 +95,7 @@ class Article extends AbstractEntityRepository
         return $articles;
     }
 
+
     /**
      * @param  \Application\DeskPRO\Entity\Person|null $person
      * @return int
@@ -117,6 +117,7 @@ class Article extends AbstractEntityRepository
         }
     }
 
+
     /**
      * Get a collection of articles by ID. If $person_context
      * is supplied, only articles that this person is able to view will be returned.
@@ -125,11 +126,10 @@ class Article extends AbstractEntityRepository
      */
     public function getByIdsWithContext(array $ids, PersonEntity $person_context = null)
     {
-        if (!$ids) {
-            return array();
-        }
+        if (!$ids) return array();
 
         if ($person_context) {
+
             $cat_ids = $person_context->getPermissionsManager()->ArticleCategories->getAllowedCategories();
             if (!$cat_ids) {
                 return array();
@@ -142,6 +142,7 @@ class Article extends AbstractEntityRepository
                 WHERE a.id IN (?0) AND cat.id IN (?1) AND a.status = 'published'
                 ORDER BY a.id DESC
             ")->execute(array($ids, $cat_ids));
+
         } else {
             $articles = $this->getEntityManager()->createQuery("
                 SELECT a
@@ -155,11 +156,10 @@ class Article extends AbstractEntityRepository
         return $articles;
     }
 
+
     public function getByResultIds(array $ids)
     {
-        if (!$ids) {
-            return array();
-        }
+        if (!$ids) return array();
 
         $unsorted_articles = $this->getEntityManager()->createQuery("
             SELECT a
@@ -179,6 +179,8 @@ class Article extends AbstractEntityRepository
 
         return $articles;
     }
+
+
 
     /**
      * Given an array of nodes (usually roots), get the top $num newest articles, and then
@@ -202,6 +204,7 @@ class Article extends AbstractEntityRepository
         $done_articles = array(0);
 
         foreach ($nodes as $node) {
+
             $cat_ids = $node->getTreeIds(true);
 
             $params = array();
@@ -237,6 +240,8 @@ class Article extends AbstractEntityRepository
         return $all_articles;
     }
 
+
+
     public function getNewest($num = 10, $node = false)
     {
         if ($node) {
@@ -259,6 +264,7 @@ class Article extends AbstractEntityRepository
 
         return $articles;
     }
+
 
     public function getTopRated($num = 10, $node = false)
     {
@@ -283,6 +289,8 @@ class Article extends AbstractEntityRepository
         return $articles;
     }
 
+
+
     public function getInNode($node)
     {
         return $this->getEntityManager()->createQuery("
@@ -293,6 +301,7 @@ class Article extends AbstractEntityRepository
             ORDER BY a.id DESC
         ")->setParameter(1, $node)->execute();
     }
+
 
     public function getSectionCounts(PersonEntity $person_context = null)
     {
@@ -322,12 +331,12 @@ class Article extends AbstractEntityRepository
         return array(
             'views' => array(
                 'conditions' => '%1$s.object_type = 1 AND %1$s.object_id = %2$s.id',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog'
             ),
             'ratings' => array(
                 'conditions' => '%1$s.object_type = \'article\' AND %1$s.object_id = %2$s.id',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Rating',
-            ),
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Rating'
+            )
         );
     }
 }

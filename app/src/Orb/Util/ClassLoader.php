@@ -54,6 +54,7 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
      */
     protected $namespace_callback = array();
 
+
     /**
      * Get the current class map.
      *
@@ -63,6 +64,7 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
     {
         return $this->class_map;
     }
+
 
     /**
      * Register a new namespace callback loader
@@ -76,6 +78,7 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
         $this->namespace_callback[$namespace] = $callback;
     }
 
+
     /**
      * Register a classname to a particular path.
      *
@@ -87,6 +90,8 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
         $this->class_map[$class_name] = $path;
     }
 
+
+
     /**
      * Register an array of classnames.
      *
@@ -96,6 +101,7 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
     {
         $this->class_map = array_merge($this->class_map, $class_names);
     }
+
 
     public function findFile($class_name)
     {

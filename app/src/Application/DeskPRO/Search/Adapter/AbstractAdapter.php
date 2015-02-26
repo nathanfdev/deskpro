@@ -82,6 +82,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
      */
     protected $person;
 
+
     /**
      * Check if this object is capable of a specific thing
      *
@@ -93,6 +94,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
         return in_array($capability, static::$capabilities);
     }
 
+
     /**
      * Returns an array of all capabilities
      *
@@ -103,6 +105,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
         return static::$capabilities;
     }
 
+
     /**
      * @param \Application\DeskPRO\Entity\Person $person
      */
@@ -110,6 +113,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     {
         $this->person = $person;
     }
+
 
     /**
      * Get person context
@@ -125,6 +129,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
         return $this->person;
     }
 
+
     /**
      * Get the map of classes to contenttypes
      *
@@ -134,6 +139,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     {
         return $this->class_to_contenttype;
     }
+
 
     /**
      * Adds a mapping that maps a class to a contenttype
@@ -145,6 +151,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     {
         $this->class_to_contenttype[$class] = $type_name;
     }
+
 
     /**
      * Get the contenttype name we have mapped to an object
@@ -164,8 +171,9 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
             }
         }
 
-        throw new \InvalidArgumentException("Unknown searchable object: `".$obj_class."`");
+        throw new \InvalidArgumentException("Unknown searchable object: `" . $obj_class . "`");
     }
+
 
     /**
      * Get the actual contenttype handler for the object
@@ -177,6 +185,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
         return $this->getContentType($this->getContentTypeNameForObject($object));
     }
 
+
     /**
      * Get a content searcher.
      *
@@ -185,6 +194,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
      * @return \Application\DeskPRO\Search\Searcher\ContentSearcherInterface
      */
     abstract public function getContentSearcher();
+
 
     /**
      * Get the contenttype handler for a specific type.
@@ -205,6 +215,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
         return $this->contenttypes[$type_name];
     }
 
+
     /**
      * Create a new instance of a contenttype object.
      *
@@ -214,6 +225,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
      * @return \Application\DeskPRO\Search\ContentType\ContentTypeInterface
      */
     abstract protected function createContentType($type_name);
+
 
     /**
      * Convert a result into its real object.
@@ -233,6 +245,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 
         return $object;
     }
+
 
     /**
      * Convert an entire result set into an array of real objects.
@@ -271,6 +284,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 
         $objects_typed = array();
         foreach ($result_set_typed as $type_name => $results) {
+
             $type = $this->getContentType($type_name);
             $objects = $type->resultsToObjects($results);
 
@@ -289,20 +303,16 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
             $type_name = $result->getContentTypeName();
             $obj_id = $result->getId();
 
-            if (!isset($objects_typed[$type_name])) {
-                continue;
-            }
-            if (!isset($objects_typed[$type_name][$obj_id])) {
-                continue;
-            }
+            if (!isset($objects_typed[$type_name])) continue;
+            if (!isset($objects_typed[$type_name][$obj_id])) continue;
 
-            $key = $type_name.'.'.$obj_id;
+            $key = $type_name . '.' . $obj_id;
 
             if ($full_info) {
                 $objects[$key] = array(
                     'object' => $objects_typed[$type_name][$obj_id],
                     'type'   => $type_name,
-                    'result' => $result,
+                    'result' => $result
                 );
             } else {
                 $objects[$key] = $objects_typed[$type_name][$obj_id];
@@ -331,9 +341,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
      */
     public function updateObjectsInIndex(array $objects)
     {
-        if (!$objects) {
-            return;
-        }
+        if (!$objects) return;
 
         $documents = array();
 
@@ -353,9 +361,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
      */
     public function deleteObjectsFromIndex(array $objects)
     {
-        if (!$objects) {
-            return;
-        }
+        if (!$objects) return;
 
         $documents = array();
 

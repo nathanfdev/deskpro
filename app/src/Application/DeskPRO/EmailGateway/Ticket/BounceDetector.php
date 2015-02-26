@@ -42,6 +42,7 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
      */
     protected $ptac_code;
 
+
     /**
      * @var \Application\DeskPRO\Entity\Ticket
      */
@@ -53,40 +54,30 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
     public function getPtacCode()
     {
         if ($this->ptac_code !== null) {
-            if ($this->ptac_code === false) {
-                return null;
-            }
-
+            if ($this->ptac_code === false) return null;
             return $this->ptac_code;
         }
 
         $m = null;
         if (preg_match('#PTAC\-([A-Z0-9]+)\.#', $this->reader->getRawHeaders(), $m)) {
             $this->ptac_code = $m[1];
-            if ($this->logger) {
-                $this->logger->logDebug('Found PTAC: '.$this->ptac_code);
-            }
+            if ($this->logger) $this->logger->logDebug('Found PTAC: ' . $this->ptac_code);
         } else {
             $this->ptac_code = false;
-            if ($this->logger) {
-                $this->logger->logDebug('No PTAC found');
-            }
+            if ($this->logger) $this->logger->logDebug('No PTAC found');
         }
 
         // There might be emails as attachments that we should check out
         if (!$this->ptac_code) {
             foreach ($this->reader->getAttachments() as $k => $attach) {
                 if ($attach->mime_type == 'message/rfc822') {
-                    if ($this->logger) {
-                        $this->logger->logDebug("Checking attach #$k {$attach->file_name} for PTAC");
-                    }
+
+                    if ($this->logger) $this->logger->logDebug("Checking attach #$k {$attach->file_name} for PTAC");
 
                     $headers = array();
 
                     $fp = @fopen($attach->tmp_file, 'r');
-                    if (!$fp) {
-                        continue;
-                    }
+                    if (!$fp) continue;
 
                     $limit = 200;
                     while ($limit-- > 0 && !feof($fp)) {
@@ -103,15 +94,11 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
 
                     if (preg_match('#PTAC\-([A-Z0-9]+)\.#', $headers, $m)) {
                         $this->ptac_code = $m[1];
-                        if ($this->logger) {
-                            $this->logger->logDebug('Found PTAC: '.$this->ptac_code);
-                        }
+                        if ($this->logger) $this->logger->logDebug('Found PTAC: ' . $this->ptac_code);
                         break; // break out of reading attaches
                     } else {
                         $this->ptac_code = false;
-                        if ($this->logger) {
-                            $this->logger->logDebug('No PTAC found');
-                        }
+                        if ($this->logger) $this->logger->logDebug('No PTAC found');
                     }
                 }
             }
@@ -119,6 +106,7 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
 
         return $this->ptac_code;
     }
+
 
     /**
      * Try to guess the ticket this bounce belongs to
@@ -128,10 +116,7 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
     public function getGuessedTicket()
     {
         if ($this->guessed_ticket !== null) {
-            if ($this->guessed_ticket === false) {
-                return null;
-            }
-
+            if ($this->guessed_ticket === false) return null;
             return $this->guessed_ticket;
         }
 
@@ -151,9 +136,7 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
         $body = $this->reader->getBodyText()->getBodyUtf8();
 
         foreach ($guessed_emails as $email) {
-            if ($this->logger) {
-                $this->logger->logDebug(sprintf("Finding last subjects by %s", $email));
-            }
+            if ($this->logger) $this->logger->logDebug(sprintf("Finding last subjects by %s", $email));
 
             $ticket_subjects = $this->em->getConnection()->fetchAllKeyValue("
                 SELECT tickets.id, tickets.subject
@@ -166,9 +149,7 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
 
             if ($this->original_subject) {
                 foreach ($ticket_subjects as $tid => $subj) {
-                    if ($this->logger) {
-                        $this->logger->logDebug(sprintf("Trying %d '%s' against original '%s'", $tid, $subj, $this->original_subject));
-                    }
+                    if ($this->logger) $this->logger->logDebug(sprintf("Trying %d '%s' against original '%s'", $tid, $subj, $this->original_subject));
                     if (strpos($this->original_subject, $subj) !== false) {
                         $found_ticket_id = $tid;
                         break 2;
@@ -179,18 +160,12 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
                 $try_subject = $this->reader->getSubject()->getSubjectUtf8();
                 if (($pos = strrpos($try_subject, ':')) !== false) {
                     $try_subject = substr($try_subject, $pos);
-                    if ($this->logger) {
-                        $this->logger->logDebug(sprintf("Tail subject match: %s", $try_subject));
-                    }
+                    if ($this->logger) $this->logger->logDebug(sprintf("Tail subject match: %s", $try_subject));
                     if (strlen($try_subject) < 10) {
-                        if ($this->logger) {
-                            $this->logger->logDebug("Tail subject match too short");
-                        }
+                        if ($this->logger) $this->logger->logDebug("Tail subject match too short");
                     } else {
                         foreach ($ticket_subjects as $tid => $subj) {
-                            if ($this->logger) {
-                                $this->logger->logDebug(sprintf("Trying %d '%s' against trail subject '%s'", $tid, $subj, $try_subject));
-                            }
+                            if ($this->logger) $this->logger->logDebug(sprintf("Trying %d '%s' against trail subject '%s'", $tid, $subj, $try_subject));
                             if (Strings::endsWith($try_subject, $subj)) {
                                 $found_ticket_id = $tid;
                                 break 2;
@@ -202,9 +177,7 @@ class BounceDetector extends \Application\DeskPRO\EmailGateway\BounceDetector
                 // Fall back on trying to find the subject in the body message
                 // Which can be common in "Undelivered" type messages
                 foreach ($ticket_subjects as $tid => $subj) {
-                    if ($this->logger) {
-                        $this->logger->logDebug(sprintf("Trying %d '%s' against body", $tid, $subj));
-                    }
+                    if ($this->logger) $this->logger->logDebug(sprintf("Trying %d '%s' against body", $tid, $subj));
                     if (strpos($body, $subj) !== false) {
                         $found_ticket_id = $tid;
                         break 2;

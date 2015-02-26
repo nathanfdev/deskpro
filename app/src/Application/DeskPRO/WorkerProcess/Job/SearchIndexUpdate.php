@@ -58,9 +58,11 @@ class SearchIndexUpdate extends AbstractJob
 
     public function run()
     {
+
     }
 
     public function processUpdates()
     {
+
     }
 }

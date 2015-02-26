@@ -102,7 +102,8 @@ class UnaryOperator extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    ) {
+    )
+    {
         $childStack = $this->getChildStack($stack);
 
         $value = $this->value->prepare($statement, $section, $childStack, $select, $result);
@@ -124,6 +125,6 @@ class UnaryOperator extends AbstractPart
     public function toDpql(Display $statement, $section, array $stack)
     {
         return self::$_operatorMap[$this->operator]
-            .$this->value->toDpql($statement, $section, $stack);
+            . $this->value->toDpql($statement, $section, $stack);
     }
 }

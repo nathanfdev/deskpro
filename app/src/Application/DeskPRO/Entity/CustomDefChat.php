@@ -57,6 +57,7 @@ class CustomDefChat extends CustomDefAbstract
 
     protected $children = null;
 
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -65,7 +66,7 @@ class CustomDefChat extends CustomDefAbstract
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDefChat';
-        $metadata->setPrimaryTable(array('name' => 'custom_def_chat'));
+        $metadata->setPrimaryTable(array('name' => 'custom_def_chat',));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
@@ -189,7 +190,7 @@ class CustomDefChat extends CustomDefAbstract
                  'precision'  => 0,
                  'scale'      => 0,
                  'nullable'   => true,
-                 'columnName' => 'default_value',
+                 'columnName' => 'default_value'
             )
         );
         $metadata->mapField(
@@ -224,9 +225,9 @@ class CustomDefChat extends CustomDefAbstract
             array(
                  'fieldName'    => 'children',
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefChat',
-                 'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                 'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge',),
                  'mappedBy'     => 'parent',
-                 'orderBy'      => array('display_order' => 'ASC'),
+                 'orderBy'      => array('display_order' => 'ASC',),
             )
         );
         $metadata->mapManyToOne(

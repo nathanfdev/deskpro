@@ -80,6 +80,7 @@ class Exchange
      */
     protected $folders;
 
+
     public function __construct($options = array())
     {
         if (!isset($options['host']) ||
@@ -90,11 +91,12 @@ class Exchange
         }
 
         $this->service = new \ExchangeWebServices(
-            $options['host'].(!empty($options['port']) && $options['port'] != 443 ? ":{$options['port']}" : ''),
+            $options['host'] . (!empty($options['port']) && $options['port'] != 443 ? ":{$options['port']}" : ''),
             $options['user'],
             $options['password']
         );
     }
+
 
     /**
      * Creates a folder if it doesnt exist
@@ -112,6 +114,7 @@ class Exchange
 
         return false;
     }
+
 
     /**
      * @param  int   $limit
@@ -180,7 +183,7 @@ class Exchange
             foreach ($response->ResponseMessages->FindItemResponseMessage->RootFolder->Items->Message as $m) {
                 if (isset($m->Id)) {
                     $ids[] = $m->Id;
-                } elseif (isset($m->ItemId->Id)) {
+                } elseif(isset ($m->ItemId->Id)) {
                     $ids[] = $m->ItemId->Id;
                 }
             }
@@ -191,6 +194,7 @@ class Exchange
 
         return array();
     }
+
 
     /**
      * @param  string $message_id
@@ -232,6 +236,7 @@ class Exchange
         return null;
     }
 
+
     /**
      * @param  string $message_id
      * @return string
@@ -241,11 +246,12 @@ class Exchange
         $rawHeader = '';
 
         foreach ($this->getEmailParts($message_id)->InternetMessageHeaders->InternetMessageHeader as $header) {
-            $rawHeader .= $header->HeaderName.':'.$header->_.PHP_EOL;
+            $rawHeader .= $header->HeaderName . ':' . $header->_ . PHP_EOL;
         }
 
         return $rawHeader;
     }
+
 
     /**
      * @param  string $name
@@ -270,6 +276,7 @@ class Exchange
         }
     }
 
+
     /**
      * @param  string $name
      * @param  bool   $force_reload
@@ -289,6 +296,7 @@ class Exchange
 
         return null;
     }
+
 
     /**
      * @return mixed
@@ -324,6 +332,7 @@ class Exchange
         }
     }
 
+
     /**
      * @param $message
      * @return bool
@@ -350,6 +359,7 @@ class Exchange
         return false;
     }
 
+
     /**
      * @param  string $message_id
      * @return bool
@@ -374,6 +384,7 @@ class Exchange
 
         return false;
     }
+
 
     /**
      * @param $message_id
@@ -413,6 +424,7 @@ class Exchange
 
         return false;
     }
+
 
     /**
      * Gets email properties

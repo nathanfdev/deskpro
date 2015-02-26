@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
+use Application\ImportBundle\Entity;
 
 /**
  * Exporter from OsTicket service

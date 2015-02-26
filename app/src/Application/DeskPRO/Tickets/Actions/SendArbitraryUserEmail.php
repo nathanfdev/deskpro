@@ -63,6 +63,7 @@ class SendArbitraryUserEmail extends AbstractEmailAction
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -162,9 +163,10 @@ class SendArbitraryUserEmail extends AbstractEmailAction
                 throw $e;
             }
 
-            $context->getLogger()->info(sprintf("[SendArbitraryUserEmail] Sent message in %.3fs", microtime(true) - $start_time));
+            $context->getLogger() ->info(sprintf("[SendArbitraryUserEmail] Sent message in %.3fs", microtime(true) - $start_time));
         }
     }
+
 
     /**
      * {@inheritDoc}

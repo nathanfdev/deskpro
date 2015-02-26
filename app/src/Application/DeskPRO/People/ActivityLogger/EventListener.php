@@ -27,6 +27,7 @@
 
 namespace Application\DeskPRO\People\ActivityLogger;
 
+
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\CommentAbstract;

@@ -95,6 +95,7 @@ class Register implements \ArrayAccess
         $this->em->getConnection()->beginTransaction();
 
         try {
+
             $email_validating = null;
             if (!$person->findEmailAddress($this->email)) {
                 if (!$this->no_validation && App::getSetting('core.email_validation')) {
@@ -137,14 +138,14 @@ class Register implements \ArrayAccess
                 $message = App::getMailer()->createMessage();
                 $message->setTo($email_validating->email, $this->name);
                 $message->setTemplate('DeskPRO:emails_user:register-validate.html.twig', array(
-                    'vemail' => $email_validating,
+                    'vemail' => $email_validating
                 ));
                 App::getMailer()->send($message);
             } else {
                 $message = App::getMailer()->createMessage();
                 $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
                 $message->setTemplate('DeskPRO:emails_user:register-welcome.html.twig', array(
-                    'person' => $person,
+                    'person' => $person
                 ));
                 App::getMailer()->send($message);
             }
@@ -167,26 +168,8 @@ class Register implements \ArrayAccess
         $this->_custom_fields = $custom_fields;
     }
 
-    public function offsetExists($offset)
-    {
-        return (isset(self::$prop_names[$offset]) && isset($this->$offset));
-    }
-    public function offsetGet($offset)
-    {
-        if (isset(self::$prop_names[$offset])) {
-            return $this->$offset;
-        }
-    }
-    public function offsetSet($offset, $value)
-    {
-        if (isset(self::$prop_names[$offset])) {
-            $this->$offset = $value;
-        }
-    }
-    public function offsetUnset($offset)
-    {
-        if (isset(self::$prop_names[$offset])) {
-            $this->$offset = null;
-        }
-    }
+    public function offsetExists($offset) { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
+    public function offsetGet($offset) { if (isset(self::$prop_names[$offset])) return $this->$offset; }
+    public function offsetSet($offset, $value) { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
+    public function offsetUnset($offset) { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
 }

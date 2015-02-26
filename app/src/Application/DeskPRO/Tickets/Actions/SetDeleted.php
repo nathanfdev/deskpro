@@ -49,8 +49,9 @@ class SetDeleted extends AbstractAction implements ActionInterface, MacroActionI
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
         $ticket->setStatus('hidden.deleted');
-        $context->getVars()->set('stop_triggers', true);
+		$context->getVars()->set('stop_triggers', true);
     }
+
 
     /**
      * {@inheritDoc}
@@ -63,6 +64,7 @@ class SetDeleted extends AbstractAction implements ActionInterface, MacroActionI
 
         return false;
     }
+
 
     /**
      * {@inheritDoc}

@@ -36,4 +36,5 @@ namespace Application\DeskPRO\EntityRepository;
 
 class CustomDefPerson extends CustomDefAbstract
 {
+
 }

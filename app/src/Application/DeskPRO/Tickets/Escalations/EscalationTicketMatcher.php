@@ -67,6 +67,7 @@ class EscalationTicketMatcher
         $this->logger = new NullLogger();
     }
 
+
     /**
      * @param Logger $logger
      */
@@ -74,6 +75,7 @@ class EscalationTicketMatcher
     {
         $this->logger = $logger;
     }
+
 
     /**
      * @param  TicketEscalation                     $esc
@@ -100,6 +102,7 @@ class EscalationTicketMatcher
 
         return $tickets;
     }
+
 
     /**
      * @param  TicketEscalation          $esc
@@ -155,13 +158,13 @@ class EscalationTicketMatcher
             $searcher->setOrganizationSearch($org_searcher);
         }
 
-        $searcher->addRawWhere("tickets.date_created >= '".$esc->date_created->format('Y-m-d H:i:s')."'");
+        $searcher->addRawWhere("tickets.date_created >= '" . $esc->date_created->format('Y-m-d H:i:s') . "'");
 
         $time_secs = $esc->event_trigger_time;
         switch ($esc->event_trigger) {
             case TicketEscalation::EVENT_TYPE_TIME_OPEN:
                 $searcher->addRawWhere('tickets.status IN (\'awaiting_user\', \'awaiting_agent\')');
-                $date_cut = new \DateTime('-'.$time_secs.' seconds');
+                $date_cut = new \DateTime('-' . $time_secs . ' seconds');
                 $searcher->addTerm('date_created', 'lte', array('date1' => $date_cut));
 
                 break;
@@ -170,7 +173,7 @@ class EscalationTicketMatcher
                 $searcher->addTerm('status', 'is', array('awaiting_agent'));
                 $searcher->addRawWhere('tickets.date_user_waiting IS NOT NULL');
 
-                $date_cut = new \DateTime('-'.$time_secs.' seconds');
+                $date_cut = new \DateTime('-' . $time_secs . ' seconds');
                 $searcher->addTerm('user_waiting', 'lte', array('date1' => $date_cut));
 
                 break;
@@ -185,7 +188,7 @@ class EscalationTicketMatcher
                 $searcher->addTerm('status', 'is', array('awaiting_user'));
                 $searcher->addRawWhere('tickets.date_agent_waiting IS NOT NULL');
 
-                $date_cut = new \DateTime('-'.$time_secs.' seconds');
+                $date_cut = new \DateTime('-' . $time_secs . ' seconds');
                 $searcher->addTerm('agent_waiting', 'lte', array('date1' => $date_cut));
 
                 break;
@@ -194,13 +197,13 @@ class EscalationTicketMatcher
                 $searcher->addTerm('status', 'is', array('resolved'));
                 $searcher->addRawWhere('tickets.date_resolved IS NOT NULL');
 
-                $date_cut = new \DateTime('-'.$time_secs.' seconds');
+                $date_cut = new \DateTime('-' . $time_secs . ' seconds');
                 $searcher->addTerm('date_resolved', 'lte', array('date1' => $date_cut));
 
                 break;
 
             default:
-                throw new \InvalidArgumentException("Invalid escalation event: ".$esc->event_trigger);
+                throw new \InvalidArgumentException("Invalid escalation event: " . $esc->event_trigger);
         }
 
         return $searcher;

@@ -41,6 +41,7 @@ class AuditWriterPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
+
         if (!$container->hasDefinition('deskpro.auditlog.manager')) {
             return;
         }

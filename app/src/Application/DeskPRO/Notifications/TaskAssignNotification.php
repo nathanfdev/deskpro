@@ -90,7 +90,7 @@ class TaskAssignNotification extends AbstractAgentNotification
         $this->sendBrowserNotifications('AgentBundle:Task:notify-row-assigned.html.twig', array(
             'task' => $this->task,
             'performer' => App::getCurrentPerson(),
-            'notify_data' => array('notify_type' => 'tasks'),
+            'notify_data' => array('notify_type' => 'tasks')
         ));
         $this->sendEmailNotifications('DeskPRO:emails_agent:task-assigned.html.twig', array(
             'task' => $this->task,

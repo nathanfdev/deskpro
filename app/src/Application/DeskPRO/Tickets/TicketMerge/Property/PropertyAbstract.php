@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\TicketMerge\Property;
 
+
 use Application\DeskPRO\Entity\Ticket;
 
 /**

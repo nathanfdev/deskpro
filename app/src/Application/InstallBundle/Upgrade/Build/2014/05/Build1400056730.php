@@ -95,7 +95,7 @@ class Build1400056730 extends AbstractBuild
                 'widget_ticket'     => true,
                 'widget_profile'    => true,
                 'enable_usersource' => false, // will be imported next step when importing usersources
-                'enable_sso'        => false,
+                'enable_sso'        => false
             );
 
             $package = $manager->getPackage('deskpro_magento');
@@ -157,10 +157,10 @@ class Build1400056730 extends AbstractBuild
             $app->package = $package;
             $app->title = $package->title;
             $app->setSettings(array(
-                'show_share_facebook' => (bool) $this->container->getSetting('core.show_share_facebook'),
-                'show_share_twitter'  => (bool) $this->container->getSetting('core.show_share_twitter'),
-                'show_share_gplus'    => (bool) $this->container->getSetting('core.show_share_gplus'),
-                'show_share_linkedin' => (bool) $this->container->getSetting('core.show_share_linkedin'),
+                'show_share_facebook' => (bool)$this->container->getSetting('core.show_share_facebook'),
+                'show_share_twitter'  => (bool)$this->container->getSetting('core.show_share_twitter'),
+                'show_share_gplus'    => (bool)$this->container->getSetting('core.show_share_gplus'),
+                'show_share_linkedin' => (bool)$this->container->getSetting('core.show_share_linkedin'),
             ));
             $em->persist($app);
             $em->flush();

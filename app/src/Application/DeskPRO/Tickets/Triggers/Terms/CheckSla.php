@@ -56,6 +56,7 @@ class CheckSla extends AbstractTriggerTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

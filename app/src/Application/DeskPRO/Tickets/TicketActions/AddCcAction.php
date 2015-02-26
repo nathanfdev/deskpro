@@ -75,6 +75,7 @@ class AddCcAction extends AbstractAction
         $this->add_emails = $valid;
     }
 
+
     /**
      * @return \Application\DeskPRO\Entity\Person[]
      */
@@ -109,6 +110,7 @@ class AddCcAction extends AbstractAction
         return $this->add_people;
     }
 
+
     /**
      * Apply the property to the ticket
      *
@@ -122,6 +124,7 @@ class AddCcAction extends AbstractAction
         }
     }
 
+
     /**
      * Get an array of actions that would be performed on the ticket
      *
@@ -134,12 +137,13 @@ class AddCcAction extends AbstractAction
         foreach ($this->getPeople() as $pid => $person) {
             $actions[] = array(
                 'action' => 'add_participant',
-                'person_id' => $pid,
+                'person_id' => $pid
             );
         }
 
         return $actions;
     }
+
 
     /**
      * @return string[]
@@ -148,6 +152,7 @@ class AddCcAction extends AbstractAction
     {
         return $this->add_emails;
     }
+
 
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
@@ -164,6 +169,7 @@ class AddCcAction extends AbstractAction
         return $new;
     }
 
+
     /**
      * @return string
      */
@@ -173,6 +179,6 @@ class AddCcAction extends AbstractAction
             return '';
         }
 
-        return "CC users: ".implode(', ', $this->add_emails);
+        return "CC users: " . implode(', ', $this->add_emails);
     }
 }

@@ -81,12 +81,13 @@ class WorkHoursSet implements WorkHoursInterface
      */
     protected $work_holidays = array();
 
+
     /**
-     * @param int   $work_start    Seconds into the day when work day starts
-     * @param int   $work_end      Seconds into the day when work day ends
-     * @param array $work_days     Array of days of week=>true/false. E.g., array(0 => true, ...). 0 is sunday, 6 is saturday.
-     * @param int   $work_timezone Timezone string for the hours
-     * @param array $work_holidays Array of holidays
+     * @param int   $work_start         Seconds into the day when work day starts
+     * @param int   $work_end           Seconds into the day when work day ends
+     * @param array $work_days          Array of days of week=>true/false. E.g., array(0 => true, ...). 0 is sunday, 6 is saturday.
+     * @param int   $work_timezone      Timezone string for the hours
+     * @param array $work_holidays      Array of holidays
      */
     public function __construct($work_start, $work_end, array $work_days, $work_timezone, array $work_holidays = array())
     {
@@ -138,6 +139,7 @@ class WorkHoursSet implements WorkHoursInterface
         }
     }
 
+
     /**
      * @param  \DateTime $date_start
      * @param  int       $delay
@@ -154,7 +156,7 @@ class WorkHoursSet implements WorkHoursInterface
             return $this->_calculateWorkHoursDelayPast($date_start, $delay);
         }
 
-        $date_end = new \DateTime('@'.$date_start->getTimestamp());
+        $date_end = new \DateTime('@' . $date_start->getTimestamp());
         if ($this->work_timezone) {
             $date_end->setTimezone(new \DateTimeZone($this->work_timezone));
         }
@@ -162,10 +164,10 @@ class WorkHoursSet implements WorkHoursInterface
         $time_remaining = null;
         if ($this->isInWorkDay($date_end, $time_remaining)) {
             if ($delay > $time_remaining) {
-                $date_end->modify('+'.($time_remaining + 1).' seconds');
+                $date_end->modify('+' . ($time_remaining + 1) . ' seconds');
                 $delay -= $time_remaining;
             } else {
-                $date_end->modify('+'.$delay.' seconds');
+                $date_end->modify('+' . $delay . ' seconds');
                 $delay = 0;
             }
         }
@@ -173,10 +175,10 @@ class WorkHoursSet implements WorkHoursInterface
         while ($delay > 0) {
             $date_end = $this->getNextWorkDayStart($date_end);
             if ($delay > $work_day_length) {
-                $date_end->modify('+'.($work_day_length + 1).' seconds');
+                $date_end->modify('+' . ($work_day_length + 1) . ' seconds');
                 $delay -= $work_day_length;
             } else {
-                $date_end->modify('+'.$delay.' seconds');
+                $date_end->modify('+' . $delay . ' seconds');
                 $delay = 0;
             }
         }
@@ -187,8 +189,9 @@ class WorkHoursSet implements WorkHoursInterface
             return null;
         }
 
-        return new \DateTime('@'.$date_end->getTimestamp());
+        return new \DateTime('@' . $date_end->getTimestamp());
     }
+
 
     /**
      * @param  \DateTime      $date_start
@@ -202,7 +205,7 @@ class WorkHoursSet implements WorkHoursInterface
             return null;
         }
 
-        $date_end = new \DateTime('@'.$date_start->getTimestamp());
+        $date_end = new \DateTime('@' . $date_start->getTimestamp());
         if ($this->work_timezone) {
             $date_end->setTimezone(new \DateTimeZone($this->work_timezone));
         }
@@ -210,7 +213,7 @@ class WorkHoursSet implements WorkHoursInterface
         $time_remaining = null;
         if ($this->isInWorkDay($date_end, $time_remaining)) {
             $time_past = $work_day_length - $time_remaining;
-            $date_end->modify('-'.($time_past + 1).' seconds');
+            $date_end->modify('-' . ($time_past + 1) . ' seconds');
             $delay += $time_past;
         }
 
@@ -221,6 +224,7 @@ class WorkHoursSet implements WorkHoursInterface
 
         return $this->calculateWorkHoursDelay($date_end, $delay);
     }
+
 
     /**
      * @param  \DateTime $date
@@ -249,7 +253,7 @@ class WorkHoursSet implements WorkHoursInterface
             return false;
         }
 
-        foreach ($this->work_holidays as $holiday) {
+        foreach ($this->work_holidays AS $holiday) {
             if ($holiday['year'] && $year != $holiday['year']) {
                 continue;
             }
@@ -263,6 +267,7 @@ class WorkHoursSet implements WorkHoursInterface
 
         return true;
     }
+
 
     /**
      * @param  \DateTime $date
@@ -293,7 +298,7 @@ class WorkHoursSet implements WorkHoursInterface
                 continue;
             }
 
-            foreach ($this->work_holidays as $holiday) {
+            foreach ($this->work_holidays AS $holiday) {
                 // is today a holiday?
                 if ($holiday['year'] && $year != $holiday['year']) {
                     continue;
@@ -356,10 +361,9 @@ class WorkHoursSet implements WorkHoursInterface
                 return $wait_time;
             } else {
                 $wait_time += $time_remaining;
-                $date->modify('+'.($time_remaining + 1).' seconds');
+                $date->modify('+' . ($time_remaining + 1) . ' seconds');
             }
-        }
-        while ($date->getTimestamp() < $end) {
+        } while ($date->getTimestamp() < $end) {
             $date = $this->getNextWorkDayStart($date);
             if ($date->getTimestamp() >= $end) {
                 break;
@@ -373,7 +377,7 @@ class WorkHoursSet implements WorkHoursInterface
             } else {
                 // work day ended, still waiting from beginning
                 $wait_time += $work_day_length;
-                $date->modify('+'.($work_day_length + 1).' seconds');
+                $date->modify('+' . ($work_day_length + 1) . ' seconds');
             }
         }
 

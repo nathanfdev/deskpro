@@ -37,4 +37,5 @@ use Application\DeskPRO\Groups\GroupsRepos;
 
 class AgentGroups extends GroupsRepos
 {
+
 }

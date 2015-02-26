@@ -64,16 +64,17 @@ class ServerErrorLogs
 
     public function getAll()
     {
-        $log_reader = new ErrorLogReader(dp_get_log_dir().'/error.log');
+        $log_reader = new ErrorLogReader(dp_get_log_dir() . '/error.log');
         $log_reader->setDateTimezone(App::getSession()->getPerson()->getDateTimezone());
 
         return array(
             'logs'                  => array_values($log_reader->getAll()),
             'deskpro_error_log_url' => $this->_generateUrl('_sys=errorlog'),
             'web_error_log_url'     => $this->_generateUrl('_sys=errorlog&web'),
-            'cli_error_log_url'     => $this->_generateUrl('_sys=errorlog&cli'),
+            'cli_error_log_url'     => $this->_generateUrl('_sys=errorlog&cli')
         );
     }
+
 
     /**
      * @param int $id
@@ -83,7 +84,7 @@ class ServerErrorLogs
 
     public function getById($id)
     {
-        $log_reader = new ErrorLogReader(dp_get_log_dir().'/error.log');
+        $log_reader = new ErrorLogReader(dp_get_log_dir() . '/error.log');
         $log_reader->setDateTimezone(App::getSession()->getPerson()->getDateTimezone());
         $log_reader->enableRawLog();
         $log_reader->setIdFilter($id);
@@ -99,11 +100,11 @@ class ServerErrorLogs
 
     public function clearAllErrors()
     {
-        if (!is_writable(dp_get_log_dir().'/error.log')) {
+        if (!is_writable(dp_get_log_dir() . '/error.log')) {
             return false;
         }
 
-        @file_put_contents(dp_get_log_dir().'/error.log', '');
+        @file_put_contents(dp_get_log_dir() . '/error.log', '');
 
         return true;
     }
@@ -116,8 +117,8 @@ class ServerErrorLogs
 
     protected function _generateUrl($url)
     {
-        $result = App::getSetting('core.deskpro_url').'?'.$url;
-        $result .= '&_='.Util::generateStaticSecurityToken($this->config_hash.'errorlog', 86400);
+        $result = App::getSetting('core.deskpro_url') . '?' . $url;
+        $result .= '&_=' . Util::generateStaticSecurityToken($this->config_hash . 'errorlog', 86400);
 
         return $result;
     }

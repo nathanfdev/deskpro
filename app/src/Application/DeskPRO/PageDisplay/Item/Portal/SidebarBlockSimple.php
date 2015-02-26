@@ -47,7 +47,7 @@ class SidebarBlockSimple extends PortalItemAbstract
             'section' => $this->section,
             'options' => $this->options,
             'title'   => $this->getOption('title'),
-            'content' => $this->getOption('content'),
+            'content' => $this->getOption('content')
         ));
 
         $html = $this->renderView('UserBundle:Portal:simple-block-sidebar.html.twig', $vars);

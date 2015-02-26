@@ -316,7 +316,7 @@ class TicketController extends AbstractController implements ProtectedController
         $sla_ids = $this->in->getCleanValueArray('sla_ids', 'uint');
         if ($sla_ids) {
             $slas = $this->em->getRepository('DeskPRO:Sla')->getByIds($sla_ids);
-            foreach ($slas as $sla) {
+            foreach ($slas AS $sla) {
                 if ($sla->apply_type == 'manual') {
                     $ticket->addSla($sla);
                 }
@@ -348,6 +348,7 @@ class TicketController extends AbstractController implements ProtectedController
                 $person_processor->creation_system = 'web.api';
                 $person = $person_processor->findPersonByEmailAddress($email, $this->in->getString('person_name'));
                 if (!$person) {
+
                     $person = $person_processor->createPersonByEmailAddress($email, $this->in->getString('person_name'));
 
                     if ($this->in->checkIsset('person_organization')) {
@@ -506,12 +507,13 @@ class TicketController extends AbstractController implements ProtectedController
         $data = array('ticket' => $data);
 
         if ($this->in->getBool('with_messages')) {
+
             $ticket_display = new TicketDisplay($ticket, $this->person);
 
             $messages = $this->em->getRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket, array(
                 'with_notes' => true,
                 'limit'      => 10,
-                'order'      => 'DESC',
+                'order'      => 'DESC'
             ));
 
             $data['messages'] = array();
@@ -711,9 +713,9 @@ class TicketController extends AbstractController implements ProtectedController
 
         $errors = array();
 
-        foreach ($fields as $field => $cleanType) {
+        foreach ($fields AS $field => $cleanType) {
             if ($this->in->checkIsset($field)) {
-                $value = $this->in->{'get'.$cleanType}($field);
+                $value = $this->in->{'get' . $cleanType}($field);
                 try {
                     $editor->applyActions(array($field => $value));
                 } catch (\InvalidArgumentException $e) {
@@ -810,7 +812,7 @@ class TicketController extends AbstractController implements ProtectedController
             'by_person_id' => $this->person->id,
             'new_ticket_id' => 0,
             'reason' => $this->in->getString('reason'),
-            'date_created' => date('Y-m-d H:i:s'),
+            'date_created' => date('Y-m-d H:i:s')
         ));
 
         if ($this->in->getBool('ban')) {
@@ -818,7 +820,7 @@ class TicketController extends AbstractController implements ProtectedController
                 $email_addy = strtolower($email->email);
                 App::getDb()->replace('ban_emails', array(
                     'banned_email' => $email_addy,
-                    'is_pattern' => 0,
+                    'is_pattern' => 0
                 ));
             }
         }
@@ -887,7 +889,7 @@ class TicketController extends AbstractController implements ProtectedController
         $ticket = $this->_getTicketOr404($ticket_id);
 
         $ticket_logs = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForTicket($ticket);
-        foreach ($ticket_logs as $key => $log) {
+        foreach ($ticket_logs AS $key => $log) {
             if ($log->action_type == 'executed_triggers') {
                 unset($ticket_logs[$key]);
             } elseif ($log->action_type == 'executed_escalations') {
@@ -904,7 +906,7 @@ class TicketController extends AbstractController implements ProtectedController
 
         return $this->createApiResponse(array(
             'logs' => $this->getApiData($ticket_logs),
-            'tracker_logs' => $trackers,
+            'tracker_logs' => $trackers
         ));
     }
 
@@ -1005,7 +1007,7 @@ class TicketController extends AbstractController implements ProtectedController
 
         $email_log = '';
         if ($message->email_source && $message->email_source->source_info) {
-            $email_log .= $message->email_source->getSourceInfoAsString()."\n\n";
+            $email_log .= $message->email_source->getSourceInfoAsString() . "\n\n";;
         }
         if ($message->email_source && $message->email_source->log_blob) {
             $email_log .= $this->container->getBlobStorage()->copyBlobRecordToString($message->email_source->log_blob);
@@ -1017,7 +1019,7 @@ class TicketController extends AbstractController implements ProtectedController
         return $this->createApiResponse(array(
             'unformatted'  => $message->message_text,
             'email_source' => $message->email_source ? $message->email_source->raw_source : null,
-            'email_log'    => $email_log,
+            'email_log'    => $email_log
         ));
     }
 
@@ -1109,7 +1111,7 @@ class TicketController extends AbstractController implements ProtectedController
 
         if ($pid = $this->in->getUInt('person_id')) {
             if (!$person = $this->em->getRepository('DeskPRO:Person')->find($pid)) {
-                throw new NotFoundHttpException();
+                throw new NotFoundHttpException;
             }
             $message['person'] = $person;
         } else {
@@ -1131,7 +1133,7 @@ class TicketController extends AbstractController implements ProtectedController
             $message->message = $message_text;
 
             preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $this->in->getString('message'), $matches, PREG_SET_ORDER);
-            foreach ($matches as $match) {
+            foreach ($matches AS $match) {
                 $notify_agent_ids[] = $match[1];
             }
         } else {
@@ -1145,7 +1147,7 @@ class TicketController extends AbstractController implements ProtectedController
         if ($dupe_message = $this->em->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
             return $this->createApiResponse(array(
                 'dupe_message' => true,
-                'message_id' => $dupe_message['id'],
+                'message_id' => $dupe_message['id']
             ));
         }
 
@@ -1200,7 +1202,7 @@ class TicketController extends AbstractController implements ProtectedController
             }
 
             if ($notify_chat) {
-                $notify_text = $this->person->getDisplayName()." alerted you in a note in {{t-$ticket->id}}: $ticket->subject";
+                $notify_text = $this->person->getDisplayName() . " alerted you in a note in {{t-$ticket->id}}: $ticket->subject";
                 $agent_chat->sendAgentMessage($notify_text, array_keys($notify_chat));
             }
 
@@ -1225,7 +1227,7 @@ class TicketController extends AbstractController implements ProtectedController
 
         $blobs = array();
 
-        foreach ($attachments as $file) {
+        foreach ($attachments AS $file) {
             $error = $accept->getError($file, 'agent');
             if (!$error) {
                 $blob = $accept->accept($file);
@@ -1343,7 +1345,7 @@ class TicketController extends AbstractController implements ProtectedController
         return $this->createApiResponse(array(
             'success' => true,
             'ticket_id' => $new_ticket ? $new_ticket['id'] : null,
-            'old_ticket_deleted' => $split->wasOldTicketDeleted(),
+            'old_ticket_deleted' => $split->wasOldTicketDeleted()
         ));
     }
 
@@ -1431,7 +1433,7 @@ class TicketController extends AbstractController implements ProtectedController
                 $email_addy = strtolower($email->email);
                 App::getDb()->replace('ban_emails', array(
                     'banned_email' => $email_addy,
-                    'is_pattern' => 0,
+                    'is_pattern' => 0
                 ));
             }
         }
@@ -1645,7 +1647,7 @@ class TicketController extends AbstractController implements ProtectedController
         $time = 0;
         $charge_amount = 0;
 
-        foreach ($charges as $charge) {
+        foreach ($charges AS $charge) {
             $time += $charge->charge_time;
             $charge_amount += $charge->amount;
         }
@@ -1654,7 +1656,7 @@ class TicketController extends AbstractController implements ProtectedController
             'total_charge_time' => $time,
             'total_charge_amount' => $charge_amount,
             'total' => count($charges),
-            'charges' => $this->getApiData($charges),
+            'charges' => $this->getApiData($charges)
         ));
     }
 
@@ -1759,14 +1761,14 @@ class TicketController extends AbstractController implements ProtectedController
 
         $charge = false;
 
-        foreach ($ticket->charges as $ticket_charge) {
+        foreach ($ticket->charges AS $ticket_charge) {
             if ($ticket_charge->id == $charge_id) {
                 $charge = $ticket_charge;
                 break;
             }
         }
 
-        return $this->createApiResponse(array('exists' => (bool) $charge));
+        return $this->createApiResponse(array('exists' => (bool)$charge));
     }
 
     /**
@@ -1799,7 +1801,7 @@ class TicketController extends AbstractController implements ProtectedController
     {
         $ticket = $this->_getTicketOr404($ticket_id);
 
-        foreach ($ticket->charges as $key => $ticket_charge) {
+        foreach ($ticket->charges AS $key => $ticket_charge) {
             if ($ticket_charge->id == $charge_id) {
                 $ticket->charges->remove($key);
                 $this->em->persist($ticket);
@@ -1835,7 +1837,7 @@ class TicketController extends AbstractController implements ProtectedController
         $ticket = $this->_getTicketOr404($ticket_id);
 
         return $this->createApiResponse(array(
-            'ticket_slas' => $this->getApiData($ticket->ticket_slas),
+            'ticket_slas' => $this->getApiData($ticket->ticket_slas)
         ));
     }
 
@@ -1920,7 +1922,7 @@ class TicketController extends AbstractController implements ProtectedController
 
         $exists = false;
 
-        foreach ($ticket->ticket_slas as $ticket_sla) {
+        foreach ($ticket->ticket_slas AS $ticket_sla) {
             if ($ticket_sla->id == $ticket_sla_id) {
                 $exists = true;
                 break;
@@ -1960,10 +1962,10 @@ class TicketController extends AbstractController implements ProtectedController
     {
         $ticket = $this->_getTicketOr404($ticket_id, 'modify_slas');
 
-        foreach ($ticket->ticket_slas as $key => $ticket_sla) {
+        foreach ($ticket->ticket_slas AS $key => $ticket_sla) {
             if ($ticket_sla->id == $ticket_sla_id) {
                 if ($ticket_sla->sla->apply_type != 'manual') {
-                    return $this->createApiErrorResponse('invalid_argument', 'do not have permission to remove ticket SLA '.$ticket_sla_id);
+                    return $this->createApiErrorResponse('invalid_argument', 'do not have permission to remove ticket SLA ' . $ticket_sla_id);
                 }
 
                 $ticket->ticket_slas->remove($key);
@@ -2075,6 +2077,7 @@ class TicketController extends AbstractController implements ProtectedController
         $this->db->beginTransaction();
 
         try {
+
             if (!$person->id) {
                 $this->em->persist($person);
                 $this->em->flush();
@@ -2381,7 +2384,7 @@ class TicketController extends AbstractController implements ProtectedController
     {
         $department_list = $this->em->getRepository('DeskPRO:Department')->findAll();
         $departments = $this->em->getRepository('DeskPRO:Department')->getFlatHierarchy();
-        foreach ($department_list as $department) {
+        foreach ($department_list AS $department) {
             if (!$department->is_tickets_enabled) {
                 unset($departments[$department->id]);
             }

@@ -41,13 +41,12 @@ final class Collection extends AbstractCollection
     /**
      * Add a parser
      *
-     * @param  ParserInterface $parser
+     * @param ParserInterface $parser
      * @return $this
      */
     public function attach(ParserInterface $parser)
     {
         $this->collection[$parser->getEntityType()] = $parser;
-
         return $this;
     }
 

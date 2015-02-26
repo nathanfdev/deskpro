@@ -52,6 +52,7 @@ class ArrayHandler extends AbstractHandler
         $this->max_size = $max_size;
     }
 
+
     /**
      * {@inheritdoc}
      */

@@ -92,6 +92,7 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
         return $obj;
     }
 
+
     public function setUsergroupIds(array $ids)
     {
         sort($ids, SORT_NUMERIC);
@@ -113,9 +114,10 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
     public function appendKeyId($id)
     {
         if ($id) {
-            $this->setModelField('usergroup_key', $this->usergroup_key.'-'.$id);
+            $this->setModelField('usergroup_key', $this->usergroup_key . '-' . $id);
         }
     }
+
 
     /**
      * Generate a key for a set of usergroups. These same usergroups
@@ -130,6 +132,8 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
         return Usergroup::generateUsergroupSetKey($usergroup_ids);
     }
 
+
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -141,13 +145,13 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setPrimaryTable(array(
             'name' => 'permissions_cache',
             'indexes' => array(
-                'usergroup_key_idx' => array('columns' => array('usergroup_key')),
-            ),
+                'usergroup_key_idx' => array('columns' => array('usergroup_key'))
+            )
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true));
-        $metadata->mapField(array( 'fieldName' => 'usergroup_key', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'usergroup_key', 'id' => true));
-        $metadata->mapField(array( 'fieldName' => 'usergroup_ids', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'usergroup_ids'));
-        $metadata->mapField(array( 'fieldName' => 'perms', 'type' => 'object', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'perms'));
+        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'usergroup_key', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'usergroup_key', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'usergroup_ids', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'usergroup_ids', ));
+        $metadata->mapField(array( 'fieldName' => 'perms', 'type' => 'object', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'perms', ));
     }
 }

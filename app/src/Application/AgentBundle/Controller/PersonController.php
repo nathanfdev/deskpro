@@ -45,7 +45,9 @@ use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\Log\Event\UserMerged;
 use Application\DeskPRO\Mail\Mailer;
 use Orb\Util\Arrays;
+use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -62,7 +64,7 @@ class PersonController extends AbstractController
     {
         $person = $this->getPersonOr404($person_id);
 
-        if (!$person['first_name'] && !$person['last_name'] && $person['name']) {
+                if (!$person['first_name'] && !$person['last_name'] && $person['name']) {
             $parts = explode(' ', $person['name'], 2);
             $parts = Arrays::removeFalsey($parts);
 
@@ -110,9 +112,7 @@ class PersonController extends AbstractController
             if ($t->status == 'open') {
                 $person_tickets_initial[$t->id] = $t;
                 unset($person_tickets[$t->id]);
-                if (count($person_tickets_initial) >= $max) {
-                    break;
-                }
+                if (count($person_tickets_initial) >= $max) break;
             }
         }
         if (count($person_tickets_initial) < $max) {
@@ -120,18 +120,14 @@ class PersonController extends AbstractController
                 if ($t->status == 'pending') {
                     $person_tickets_initial[$t->id] = $t;
                     unset($person_tickets[$t->id]);
-                    if (count($person_tickets_initial) >= $max) {
-                        break;
-                    }
+                    if (count($person_tickets_initial) >= $max) break;
                 }
             }
             if (count($person_tickets_initial) < $max) {
                 foreach ($person_tickets as $t) {
                     $person_tickets_initial[$t->id] = $t;
                     unset($person_tickets[$t->id]);
-                    if (count($person_tickets_initial) >= $max) {
-                        break;
-                    }
+                    if (count($person_tickets_initial) >= $max) break;
                 }
             }
         }
@@ -149,14 +145,14 @@ class PersonController extends AbstractController
             $contact_data[$cd->contact_type][] = $cd->getTemplateVars();
         }
 
-        $contact_data['phone_numbers'] = $this->createForm('collection', $person->phone_numbers, array(
-            'type' => new PhoneNumberType(),
-            'allow_add' => true,
-            'allow_delete' => true,
-            'options' => array(
-                'label' => false,
-            ),
-        ))->createView();
+	    $contact_data['phone_numbers'] = $this->createForm('collection', $person->phone_numbers, array(
+		    'type' => new PhoneNumberType(),
+		    'allow_add' => true,
+		    'allow_delete' => true,
+		    'options' => array(
+			    'label' => false
+		    ),
+	    ))->createView();
 
         $session = $this->em->getRepository('DeskPRO:Session')->getSessionForPerson($person);
         if ($session) {
@@ -201,31 +197,31 @@ class PersonController extends AbstractController
             'reset_password'   => $is_editable && !$person->is_agent && $this->person->hasPerm('agent_people.reset_password'),
             'notes'            => $is_editable && $this->person->hasPerm('agent_people.notes'),
             'org_create'       => $is_editable && $this->person->hasPerm('agent_org.create'),
-            'login_as'         => !$person->is_agent && $this->person->hasPerm('agent_people.login_as'),
+            'login_as'         => !$person->is_agent && $this->person->hasPerm('agent_people.login_as')
         );
 
         $person_api = $person->getDataForWidget();
 
         $is_vcf = $this->in->getBool('vcf');
 
-        if ($is_vcf) {
+        if($is_vcf) {
             $response = new \Symfony\Component\HttpFoundation\Response();
             $response->headers->set('Content-Type', 'text/vcf');
 
-            if ($person->getName()) {
+            if($person->getName()) {
                 $filename = $person->getName();
             } else {
                 $filename = $person->getEmailAddress();
             }
 
             $filename = str_replace(' ', '_', $filename);
-            $filename = preg_replace('[^a-zA-Z0-9_.@-]', '', $filename);
+            $filename = preg_replace('[^a-zA-Z0-9_.@-]' , '', $filename);
 
-            if (strlen($filename) == 0) {
+            if(strlen($filename) == 0) {
                 $filename = 'Unknown_'.$person->id;
             }
 
-            if (strlen($filename) > 128) {
+            if(strlen($filename) > 128) {
                 $filename = substr($filename, 0, 128);
             }
 
@@ -237,31 +233,31 @@ class PersonController extends AbstractController
             //$vcard->setPhoto($person->gravatar_url);
 
 
-            if ($person->organization) {
+            if($person->organization) {
                 $vcard->addOrganization($person->organization->name);
             }
 
-            if (!empty($person['organization_position'])) {
+            if(!empty($person['organization_position'])) {
+
                 $vcard->setTitle($person['organization_position']);
             }
 
-            foreach ($person->emails as $email) {
+            foreach($person->emails as $email) {
                 $vcard->addEmail($email->email);
             }
 
-            foreach ($contact_data as $c_data) {
-                foreach ($c_data as $data) {
-                    switch ($data['contact_type']) {
+            foreach($contact_data as $c_data) {
+                foreach($c_data as $data) {
+                    switch($data['contact_type']) {
                         case 'phone':
-                            if (empty($data['number'])) {
+                            if(empty($data['number']))
                                 break;
-                            }
 
                             $tel = '';
 
-                            if (!empty($data['country_calling_code'])) {
+                            if(!empty($data['country_calling_code']))
                                 $tel .= '+'.$data['country_calling_code'].'-';
-                            }
+
 
                             $tel .= $data['number'];
 
@@ -360,7 +356,7 @@ class PersonController extends AbstractController
             'name' => $person->getDisplayName(),
             'email' => $person->getPrimaryEmailAddress(),
             'contact_name' => $person->getDisplayContact(),
-            'url' => $this->generateUrl('agent_people_view', array('person_id' => $person->id)),
+            'url' => $this->generateUrl('agent_people_view', array('person_id' => $person->id))
         ));
     }
 
@@ -427,7 +423,7 @@ class PersonController extends AbstractController
         $person = $this->getPersonOr404($person_id);
 
         $data = array(
-            'success' => true,
+            'success' => true
         );
 
         $action = $this->in->getString('action');
@@ -474,7 +470,7 @@ class PersonController extends AbstractController
             case 'disable_autoresponses':
                 $person->setDisableAutoresponses(
                     $this->in->getBool('disable_autoresponses'),
-                    'Disabled by '.$this->person->getDisplayContact()
+                    'Disabled by ' . $this->person->getDisplayContact()
                 );
 
                 $this->em->persist($person);
@@ -576,6 +572,7 @@ class PersonController extends AbstractController
                     $data['organization_id'] = $org->id;
                     $data['html'] = $html;
                 } else {
+
                     $person->setOrganization(null);
 
                     $data['organization_id'] = 0;
@@ -620,18 +617,14 @@ class PersonController extends AbstractController
                     : array();
 
                 foreach ($person->usergroups as $personGroup) {
-                    if ($personGroup->is_agent_group) {
-                        continue;
-                    } // dont touch agent groups
+                    if ($personGroup->is_agent_group) continue; // dont touch agent groups
                     if (false === in_array($personGroup, $usergroups, true)) {
                         $person->removeUsergroup($personGroup);
                     }
                 }
 
                 foreach ($usergroups as $personGroup) {
-                    if ($personGroup->is_agent_group) {
-                        continue;
-                    } // dont touch agent groups
+                    if ($personGroup->is_agent_group) continue; // dont touch agent groups
                     $person->addUsergroup($personGroup);
                 }
 
@@ -690,7 +683,7 @@ class PersonController extends AbstractController
                         $message = $this->container->getMailer()->createMessage();
                         $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
                         $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', array(
-                            'person' => $person,
+                            'person' => $person
                         ));
                         $this->container->getMailer()->send($message);
                     }
@@ -726,7 +719,7 @@ class PersonController extends AbstractController
             $person->getOrganizationId() ?: null,
             $person->organization_position ?: '',
             $person->organization_manager ?: 0,
-            $person->getId(),
+            $person->getId()
         ));
 
         return $this->createJsonResponse($data);
@@ -763,16 +756,17 @@ class PersonController extends AbstractController
         foreach ($field_manager->getFields() as $field) {
             $errors = $field->getHandler()->validateFormData($custom_fields);
             foreach ($errors as $code) {
-                $invalid_custom_fields['field_'.$field->getId()] = preg_replace('#^(.*?)\.#', '', $code);
+                $invalid_custom_fields['field_' . $field->getId()] = preg_replace('#^(.*?)\.#', '', $code);
                 $is_valid = false;
             }
         }
         if (!$is_valid) {
             return $this->createJsonResponse(array(
                 'error' => true,
-                'invalid_custom_fields' => $invalid_custom_fields,
+                'invalid_custom_fields' => $invalid_custom_fields
             ));
         }
+
 
         // specific user custom fields definitions
         $manager = $this->container->getCustomFieldManager();
@@ -786,8 +780,11 @@ class PersonController extends AbstractController
                 'error' => true,
                 'invalid_custom_fields' => $form->getErrors(true, true)->current(),
             ));
+
         }
         $manager->flush($form);
+
+
 
         if (!empty($custom_fields)) {
             $field_manager->saveFormToObject($custom_fields, $person);
@@ -810,7 +807,7 @@ class PersonController extends AbstractController
                 'person' => $person,
                 'custom_fields' => $custom_fields,
                 'custom_fields_definitions' => $form->createView(),
-            )),
+            ))
         ));
     }
 
@@ -819,7 +816,7 @@ class PersonController extends AbstractController
         $person = $this->getPersonOr404($person_id);
 
         return $this->render('AgentBundle:Person:change-person-picture.html.twig', array(
-            'person' => $person,
+            'person' => $person
         ));
     }
 
@@ -828,7 +825,7 @@ class PersonController extends AbstractController
         $person = $this->getPersonOr404($person_id);
 
         return $this->render('AgentBundle:Person:upload-vcard-overlay.html.twig', array(
-            'person' => $person,
+            'person' => $person
         ));
     }
 
@@ -856,7 +853,7 @@ class PersonController extends AbstractController
         }
 
         return $this->createJsonResponse(array(
-            'success' => true,
+            'success' => true
         ));
     }
 
@@ -887,16 +884,17 @@ class PersonController extends AbstractController
         }
         $added = array();
 
-        $phones_form = $this->createForm('collection', $person->phone_numbers, array(
-            'type' => new PhoneNumberType(),
-            'allow_add' => true,
-            'allow_delete' => true,
-            'options' => array(
-                'label' => false,
-            ),
-        ));
+	    $phones_form = $this->createForm('collection', $person->phone_numbers, array(
+		    'type' => new PhoneNumberType(),
+		    'allow_add' => true,
+		    'allow_delete' => true,
+		    'options' => array(
+			    'label' => false
+		    ),
+	    ));
 
         try {
+
             if ($this->person->hasPerm('agent_people.manage_emails')) {
                 // Editing emails
                 $email_comments = $this->in->getCleanValueArray('emails_comment', 'string', 'uint');
@@ -912,6 +910,7 @@ class PersonController extends AbstractController
                 // Adding emails
                 $email_comments = $this->in->getCleanValueArray('new_emails_comment', 'string', 'uint');
                 foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $k => $email) {
+
                     if (!\Orb\Validator\StringEmail::isValueValid($email)) {
                         $errors[] = "\"$email\" was not saved because it is an invalid email address";
                         continue;
@@ -942,6 +941,7 @@ class PersonController extends AbstractController
                 foreach ($this->in->getCleanValueArray('remove_emails', 'uint') as $email_id) {
                     $email_rec = $person->getEmailId($email_id);
                     if ($email_rec) {
+
                         if (count($person->emails) == 1) {
                             $errors[] = "You cannot remove the users only email address ({$email_rec->email})";
                             continue;
@@ -1006,26 +1006,24 @@ class PersonController extends AbstractController
             throw $e;
         }
 
-        $phones_form->handleRequest($request);
-        if ($phones_form->isValid()) {
-            foreach ($phones_form->getData() as $phone) {
-                if ($phone->person) {
-                    continue;
-                }
-                $phone->person = $person;
-                $this->em->persist($phone);
-            }
-            $this->em->flush();
-        } else {
-            foreach ($phones_form->getErrors(true, true) as $error) {
-                /** @var $error FormError */
-                $errors[] = $error->getMessage();
-            }
-        }
+	    $phones_form->handleRequest($request);
+	    if ($phones_form->isValid()) {
+		    foreach ($phones_form->getData() as $phone) {
+			    if ($phone->person) continue;
+			    $phone->person = $person;
+			    $this->em->persist($phone);
+		    }
+		    $this->em->flush();
+	    } else {
+		    foreach ($phones_form->getErrors(true, true) as $error) {
+			    /** @var $error FormError */
+			    $errors[] = $error->getMessage();
+		    }
+	    }
 
         // Reset display array
         $contact_data_array = array(
-            'phone_numbers' => $phones_form->createView(),
+	        'phone_numbers' => $phones_form->createView(),
         );
         foreach ($person->contact_data as $cd) {
             if (!isset($contact_data_array[$cd->contact_type])) {
@@ -1048,7 +1046,7 @@ class PersonController extends AbstractController
             'manage_emails'    => $is_editable && $this->person->hasPerm('agent_people.manage_emails'),
             'reset_password'   => $is_editable && $this->person->hasPerm('agent_people.reset_password'),
             'notes'            => $is_editable && $this->person->hasPerm('agent_people.notes'),
-            'org_create'       => $is_editable && $this->person->hasPerm('agent_org.create'),
+            'org_create'       => $is_editable && $this->person->hasPerm('agent_org.create')
         );
 
         $display_html = $this->renderView('AgentBundle:Person:view-contact-display.html.twig', array(
@@ -1068,9 +1066,10 @@ class PersonController extends AbstractController
             'editor_overlay_html' => $editor_overlay_html,
             'errors' => $errors ? $errors : false,
             'primary_email_address' => $person->getPrimaryEmailAddress(),
-            'changed_primary_email' => $changed_primary_email,
+            'changed_primary_email' => $changed_primary_email
         ));
     }
+
 
     ############################################################################
     # /agent/people/:person_id/ajax-save-organization        agent_people_ajaxsave_organization
@@ -1157,7 +1156,7 @@ class PersonController extends AbstractController
         return $this->createJsonResponse(array(
             'success' => true,
             'person_id' => $person['id'],
-            'note_li_html' => $this->renderView('AgentBundle:Person:note-li.html.twig', array('note' => $note)),
+            'note_li_html' => $this->renderView('AgentBundle:Person:note-li.html.twig', array('note' => $note))
         ));
     }
 
@@ -1173,7 +1172,7 @@ class PersonController extends AbstractController
 
         $person = $this->getPersonOr404($person_id);
 
-        $note_txt    = $this->in->getString('note');
+        $note_txt	= $this->in->getString('note');
 
         if ($this->in->getUint('file_id')) {
             $file = $this->em->find('DeskPRO:PersonFile', $this->in->getUint('file_id'));
@@ -1207,9 +1206,9 @@ class PersonController extends AbstractController
         $em->commit();
 
         return $this->createJsonResponse(array(
-            'success'    => true,
-            'person_id'    => $person['id'],
-            'html'        => $this->renderView('AgentBundle:Person:file-row.html.twig', array('file' => $file)),
+            'success'	=> true,
+            'person_id'	=> $person['id'],
+            'html'		=> $this->renderView('AgentBundle:Person:file-row.html.twig', array('file' => $file))
         ));
     }
 
@@ -1258,7 +1257,7 @@ class PersonController extends AbstractController
             'person' => $person,
             'person_custom_fields' => $person_custom_fields,
             'other_person' => $other_person,
-            'other_custom_fields' => $other_custom_fields,
+            'other_custom_fields' => $other_custom_fields
         ));
     }
 
@@ -1289,7 +1288,7 @@ class PersonController extends AbstractController
         return $this->createJsonResponse(array(
             'success' => true,
             'id' => $person['id'],
-            'old_id' => $old_person_id,
+            'old_id' => $old_person_id
         ));
     }
 
@@ -1309,21 +1308,21 @@ class PersonController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        $personDeleted = new Entity\PersonDeleted();
+                $personDeleted = new Entity\PersonDeleted();
 
-        $personDeleted['person_id'] = $person_id;
-        $personDeleted['by_person'] = $this->getPerson();
-        $personDeleted['reason']    = $this->in->getString('reason');
+                $personDeleted['person_id'] = $person_id;
+                $personDeleted['by_person'] = $this->getPerson();
+                $personDeleted['reason']    = $this->in->getString('reason');
 
-        $this->em->persist($personDeleted);
-        $this->em->flush();
+                $this->em->persist($personDeleted);
+                $this->em->flush();
 
         if ($this->in->getBool('ban')) {
             foreach ($person->emails as $email) {
                 $email_addy = strtolower($email->email);
                 App::getDb()->replace('ban_emails', array(
                     'banned_email' => $email_addy,
-                    'is_pattern' => 0,
+                    'is_pattern' => 0
                 ));
             }
         }
@@ -1362,7 +1361,7 @@ class PersonController extends AbstractController
 
         $tmp = Entity\TmpData::create('agent_user_login', array(
             'agent_id' => $this->person->getId(),
-            'person_id' => $person->id,
+            'person_id' => $person->id
         ), '+5 minutes');
         $this->em->persist($tmp);
         $this->em->flush();
@@ -1476,37 +1475,37 @@ class PersonController extends AbstractController
             }
         }
 
-        if ($isVCard) {
-            $newperson->save();
+                if ($isVCard) {
+                    $newperson->save();
 
-            $person = $newperson->getPerson();
+                    $person = $newperson->getPerson();
 
-            $vCardReader->applyToPerson($content, $person);
+                    $vCardReader->applyToPerson($content, $person);
 
-            $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);
+                    $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);
 
                     // Notify about new person
                     foreach (PeopleClientMessages::createNewPersonMessages($person) as $cm) {
-                        $this->em->persist($cm);
+                            $this->em->persist($cm);
                     }
-            $this->em->flush();
+                    $this->em->flush();
 
-            if ($this->in->getString('newperson.send_welcome_email')) {
-                /** @var Mailer $mailer */
+                    if ($this->in->getString('newperson.send_welcome_email')) {
+                        /** @var Mailer $mailer */
                         $mailer = $this->get('mailer');
-                $message = $mailer->createMessage();
-                $message->setToPerson($person);
-                $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
-                            'person' => $person,
+                        $message = $mailer->createMessage();
+                        $message->setToPerson($person);
+                        $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
+                            'person' => $person
                         ));
-                $mailer->send($message);
-            }
+                        $mailer->send($message);
+                    }
 
-            return $this->createJsonResponse(array(
+                    return $this->createJsonResponse(array(
                             'success' => true,
-                            'person_id' => $person['id'],
+                            'person_id' => $person['id']
                     ));
-        }
+                }
 
         $formType = new \Application\AgentBundle\Form\Type\NewPerson();
         $form = $this->get('form.factory')->create($formType, $newperson);
@@ -1544,7 +1543,7 @@ class PersonController extends AbstractController
                 $message = $mailer->createMessage();
                 $message->setToPerson($person);
                 $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
-                    'person' => $person,
+                    'person' => $person
                 ));
 
                 $mailer->send($message);
@@ -1552,7 +1551,7 @@ class PersonController extends AbstractController
 
             return $this->createJsonResponse(array(
                 'success' => true,
-                'person_id' => $person['id'],
+                'person_id' => $person['id']
             ));
         } else {
             return $this->createJsonResponse(array(
@@ -1570,7 +1569,7 @@ class PersonController extends AbstractController
         $person_tickets = $this->em->getRepository('DeskPRO:Ticket')->getPersonTickets($person, 250, $sort_by);
 
         return $this->render('AgentBundle:Person:view-tickets.html.twig', array(
-            'tickets'    => $person_tickets,
+            'tickets'	=> $person_tickets
         ));
     }
 

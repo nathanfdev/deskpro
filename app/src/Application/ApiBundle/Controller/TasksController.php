@@ -82,9 +82,7 @@ class TasksController extends AbstractController implements ProtectedControllerI
         foreach ($groups as &$group) {
             $group['perms'] = $loader->getGroupPermissions($group['id'])->toArray();
             if ($group['sys_name'] == 'agent_all_perms' || $group['sys_name'] == 'agent_all_safe_perms') {
-                if (!isset($group['perms']['tasks'])) {
-                    $group['perms']['tasks'] = array();
-                }
+                if (!isset($group['perms']['tasks'])) $group['perms']['tasks'] = array();
                 $group['perms']['tasks']['use'] = true;
             }
         }

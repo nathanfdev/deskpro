@@ -74,6 +74,7 @@ final class Feedback extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid feedback record `%d` found (Skipping)', $num));
                 }
+
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid feedback record `%d` found (Skipping): %s',
@@ -96,7 +97,7 @@ final class Feedback extends AbstractParser
         if ($this->isFeedbackValid($feedback)) {
             $entity = new Entity\Feedback();
             $entity
-                ->setDestination('feedback_'.$num)
+                ->setDestination('feedback_' . $num)
                 ->setOid($num)
                 ->setPersonEmail($feedback['person'])
                 ->setLanguage($feedback['language'])
@@ -124,7 +125,7 @@ final class Feedback extends AbstractParser
     /**
      * Check if feedback has all required columns
      *
-     * @param  array $feedback
+     * @param array $feedback
      * @return bool
      */
     private function isFeedbackValid(array $feedback)

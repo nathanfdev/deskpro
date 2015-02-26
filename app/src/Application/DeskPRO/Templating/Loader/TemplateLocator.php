@@ -84,7 +84,7 @@ class TemplateLocator extends BaseTemplateLocator
                 $native_name = $parts[0];
                 $file_name = $parts[1];
 
-                $path = DP_ROOT.'/apps/'.$native_name.'/native/Resources/views/'.ltrim($file_name, '/');
+                $path = DP_ROOT.'/apps/' . $native_name . '/native/Resources/views/' . ltrim($file_name, '/');
                 if (file_exists($path)) {
                     $this->cache[$key] = array('path' => $path);
 
@@ -95,7 +95,7 @@ class TemplateLocator extends BaseTemplateLocator
 
         try {
             $this->cache[$key] = array(
-                'path' => $this->locator->locate($template->getPath(), $currentPath),
+                'path' => $this->locator->locate($template->getPath(), $currentPath)
             );
             $this->logUsedTemplate($key, $this->cache[$key]['path']);
 
@@ -110,7 +110,7 @@ class TemplateLocator extends BaseTemplateLocator
         $this->loaded_list[] = array(
             'key'    => $key,
             'path'   => $path,
-            'origin' => null,
+            'origin' => null
         );
     }
 

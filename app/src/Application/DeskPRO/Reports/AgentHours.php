@@ -55,6 +55,7 @@ class AgentHours
         $this->person = App::getCurrentPerson();
     }
 
+
     /**
      * @param  string $date1
      * @param  string $date2
@@ -70,7 +71,7 @@ class AgentHours
 
         $dt = new \DateTime();
         $dt->setTimezone($this->person->getDateTimezone());
-        $dt->setDate((int) $year, (int) $month, (int) $day);
+        $dt->setDate((int)$year, (int)$month, (int)$day);
         $dt->setTime(0, 0, 0);
 
         $dt2 = null;
@@ -78,7 +79,7 @@ class AgentHours
             list($year, $month, $day) = explode('-', $date2);
             $dt2 = new \DateTime();
             $dt2->setTimezone($this->person->getDateTimezone());
-            $dt2->setDate((int) $year, (int) $month, (int) $day);
+            $dt2->setDate((int)$year, (int)$month, (int)$day);
             $dt2->setTime(0, 0, 0);
 
             if ($dt->format('Y-m-d H:i:s') == $dt2->format('Y-m-d H:i:s')) {
@@ -124,6 +125,7 @@ class AgentHours
 
         return $vars;
     }
+
 
     /**
      * @param  \DateTime      $date
@@ -222,6 +224,7 @@ class AgentHours
             'min_date'   => $min_date,
         );
     }
+
 
     /**
      * @param  string    $mysql_date

@@ -74,6 +74,7 @@ abstract class HandlerAbstract
 
     public function init()
     {
+
     }
 
     /**
@@ -108,10 +109,7 @@ abstract class HandlerAbstract
                 }
             };
 
-            if ($sa === $sb) {
-                return 0;
-            }
-
+            if ($sa === $sb) return 0;
             return $sa < $sb ? -1 : 1;
         });
 
@@ -119,6 +117,7 @@ abstract class HandlerAbstract
 
         return $this->field_children;
     }
+
 
     /**
      * Get the templating engine
@@ -134,6 +133,7 @@ abstract class HandlerAbstract
         return $this->tpl;
     }
 
+
     /**
      * Set the templating engine to use
      *
@@ -144,6 +144,7 @@ abstract class HandlerAbstract
         $this->tpl = $tpl;
     }
 
+
     /**
      * Get the standard name/ID for this element in an HTML form.
      *
@@ -151,8 +152,9 @@ abstract class HandlerAbstract
      */
     public function getFormFieldName()
     {
-        return 'field_'.$this->field_def['id'];
+        return 'field_' . $this->field_def['id'];
     }
+
 
     /**
      * @param  $context
@@ -163,7 +165,7 @@ abstract class HandlerAbstract
         $templating = $this->getTemplateEngine();
         $tpl = null;
         if ($this->field_def['has_display_template']) {
-            $tpl = 'DeskPRO:'.$this->field_def->getTableName().':rendered-field_'.$this->field_def['id'];
+            $tpl = 'DeskPRO:' . $this->field_def->getTableName() . ':rendered-field_' . $this->field_def['id'];
             if ($context == 'html') {
                 $tpl .= '.html.twig';
             } else {
@@ -191,7 +193,7 @@ abstract class HandlerAbstract
         $templating = $this->getTemplateEngine();
         $tpl = null;
         if ($this->field_def['has_form_template']) {
-            $tpl = 'DeskPRO:'.$this->field_def->getTableName().':form-field_'.$this->field_def['id'].'.html.twig';
+            $tpl = 'DeskPRO:' . $this->field_def->getTableName() . ':form-field_' . $this->field_def['id'] . '.html.twig';
             if (!$templating->exists($tpl)) {
                 $tpl = null;
             }
@@ -203,6 +205,7 @@ abstract class HandlerAbstract
 
         return $tpl;
     }
+
 
     /**
      * Get the default template name (minus suffix that defines format).
@@ -221,6 +224,8 @@ abstract class HandlerAbstract
         return $tpl;
     }
 
+
+
     /**
      * Get the default template name (minus suffix that defines format).
      *
@@ -230,6 +235,7 @@ abstract class HandlerAbstract
     {
         return 'DeskPRO:custom_fields:form-input.html.twig';
     }
+
 
     /**
      * Get additional template vars to set
@@ -241,14 +247,14 @@ abstract class HandlerAbstract
         return array();
     }
 
+
+
     /**
      * Render the field to HTML for use in a web page.
      */
     public function renderHtml($data = null, array $template_vars = array())
     {
-        if ($data === null) {
-            $data = array();
-        }
+        if ($data === null) $data = array();
 
         $templating = $this->getTemplateEngine();
 
@@ -257,20 +263,20 @@ abstract class HandlerAbstract
             'field_def'     => $this->field_def,
             'field_handler' => $this,
             'field_handler_name' => Util::getBaseClassname($this),
-            'field_type'    => $this->field_def->getTableName(),
+            'field_type'    => $this->field_def->getTableName()
         ));
 
         return $templating->render($this->getRenderTemplateName('html'), $vars);
     }
+
+
 
     /**
      * Render the field
      */
     public function renderText($data = null, array $template_vars = array())
     {
-        if ($data === null) {
-            $data = array();
-        }
+        if ($data === null) $data = array();
 
         $templating = $this->getTemplateEngine();
 
@@ -279,7 +285,7 @@ abstract class HandlerAbstract
             'field_def'     => $this->field_def,
             'field_handler' => $this,
             'field_handler_name' => Util::getBaseClassname($this),
-            'field_type'    => $this->field_def->getTableName(),
+            'field_type'    => $this->field_def->getTableName()
         ));
 
         return $templating->render($this->getRenderTemplateName('text'), $vars);
@@ -311,11 +317,13 @@ abstract class HandlerAbstract
             'field_def'     => $this->field_def,
             'field_handler' => $this,
             'field_handler_name' => Util::getBaseClassname($this),
-            'field_type'    => $this->field_def->getTableName(),
+            'field_type'    => $this->field_def->getTableName()
         ));
 
         return $templating->render($this->getFormTemplateName(), $vars);
     }
+
+
 
     /**
      * Render a field in a given context. This is just a strategy for calling other renderX
@@ -346,12 +354,16 @@ abstract class HandlerAbstract
         return $this->$method($data);
     }
 
+
+
     /**
      * Get the form field
      *
      * @return Symfony\Component\Form\Field
      */
     abstract public function getFormField($data = null);
+
+
 
     /**
      * Get data from a posted form that we'll store in the database.
@@ -384,7 +396,7 @@ abstract class HandlerAbstract
     public function makeErrorArray(array $codes)
     {
         foreach ($codes as &$c) {
-            $c = $this->getFormFieldName().'.'.$c;
+            $c = $this->getFormFieldName() . '.' . $c;
         }
 
         return $codes;

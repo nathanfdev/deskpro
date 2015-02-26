@@ -88,10 +88,10 @@ class FeedbackResults
         if (!$result_cache) {
             $term_rules = RuleBuilder::newTermsBuilder();
 
-            $form_terms = $controller->in->getCleanValueArray('terms', 'raw', 'string');
+            $form_terms = $controller->in->getCleanValueArray('terms', 'raw' , 'string');
             $form_terms = Arrays::removeFalsey($form_terms);
 
-            if (!$form_terms and !empty($options['default_terms'])) {
+            if (!$form_terms AND !empty($options['default_terms'])) {
                 $form_terms = $options['default_terms'];
             }
 
@@ -170,6 +170,7 @@ class FeedbackResults
         }
     }
 
+
     /**
      * @return \Application\DeskPRO\Entity\ResultCache
      */
@@ -177,6 +178,7 @@ class FeedbackResults
     {
         return $this->result_cache;
     }
+
 
     /**
      * Set ticket IDs for the search results
@@ -187,6 +189,7 @@ class FeedbackResults
         $this->feedback_ids = $feedback_ids;
     }
 
+
     /**
      * Get ticket IDs
      *
@@ -196,6 +199,7 @@ class FeedbackResults
     {
         return $this->feedback_ids;
     }
+
 
     /**
      * Get tickets for a particular page
@@ -211,6 +215,7 @@ class FeedbackResults
     {
         return $this->_getPageFromFeedbackIds($this->getFeedbackIds(), $page, $per_page);
     }
+
 
     protected function _getPageFromFeedbackIds(array $feedback_ids, $page, $per_page)
     {

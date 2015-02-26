@@ -5,6 +5,7 @@ namespace Application\DeskPRO\NewSearch\Manager;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+
 use Application\DeskPRO\App;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
@@ -44,7 +45,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
             'ticket'            => 'DeskPRO:Ticket',
             'person'            => 'DeskPRO:Person',
             'organization'      => 'DeskPRO:Organization',
-            'chat_conversation' => 'DeskPRO:ChatConversation',
+            'chat_conversation' => 'DeskPRO:ChatConversation'
         );
 
         $results = array(
@@ -55,7 +56,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
             'ticket'                 => array(),
             'person'                 => array(),
             'organization'           => array(),
-            'chat_conversation'      => array(),
+            'chat_conversation'      => array()
         );
 
         if (!$this->person->hasPerm('agent_people.use')) {
@@ -124,6 +125,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
         $after_id = $after_id - 10000;
 
         if ($words) {
+
             $db = $this->container->getDbRead();
 
             #------------------------------
@@ -132,7 +134,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
 
             $where = array();
             foreach ($words as $w) {
-                $where[] = "(subject LIKE ".$db->quote('%'.str_replace(array('%', '_'), array('\\%', '\\_'), $w).'%').")";
+                $where[] = "(subject LIKE " . $db->quote('%' . str_replace(array('%', '_'), array('\\%', '\\_'), $w) . '%') . ")";
             }
 
             $where[] = "(id > $after_id)";
@@ -162,7 +164,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
 
             $where = array();
             foreach ($words as $w) {
-                $where[] = "(title LIKE ".$db->quote('%'.str_replace(array('%', '_'), array('\\%', '\\_'), $w).'%').")";
+                $where[] = "(title LIKE " . $db->quote('%' . str_replace(array('%', '_'), array('\\%', '\\_'), $w) . '%') . ")";
             }
             $where[] = "(status != 'hidden')";
             $where = implode(' AND ', $where);
@@ -205,7 +207,9 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                     $results[$type][] = $obj;
                 }
             }
+
         } else {
+
             if ($this->person->hasPerm('agent_people.use')) {
                 if (!$is_label) {
                     #------------------------------
@@ -213,6 +217,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                     #------------------------------
 
                     if (preg_match('#^\S*@\S*$#', $q)) {
+
                         $people_top = true;
                         $people = array();
 
@@ -226,7 +231,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                         } else {
                             if (strpos($q, '@') === 0) {
                                 $email = substr($q, 1);
-                                $email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email).'%';
+                                $email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
 
                                 if ($this->settings->get('core_tablecounts.people') < 150000) {
                                     $people_ids = $this->container->getDbRead()->fetchAllCol("
@@ -251,7 +256,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                                     ", array($after_id, $email));
                                 }
                             } else {
-                                $email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q).'%';
+                                $email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
 
                                 if ($this->settings->get('core_tablecounts.people') < 150000) {
                                     $people_ids = $this->container->getDbRead()->fetchAllCol("
@@ -293,11 +298,12 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                         #------------------------------
                         # Search for string match in name or email
                         #------------------------------
+
                     } else {
                         $people = array();
 
                         $q = preg_replace('#\s+#', ' ', $q);
-                        $q_search = '%'.str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q).'%';
+                        $q_search = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
 
                         if ($this->settings->get('core_tablecounts.people') < 150000) {
                             $people_ids = $this->container->getDbRead()->fetchAllCol("

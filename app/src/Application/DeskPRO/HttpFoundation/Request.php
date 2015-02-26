@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\HttpFoundation;
 
+
 use Orb\Util\Strings;
 
 class Request extends \Symfony\Component\HttpFoundation\Request
@@ -63,14 +64,10 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 
         if ($this->query->has(self::PARTIAL_REQUEST_KEY)) {
             $val = $this->query->get(self::PARTIAL_REQUEST_KEY);
-            if (!$val) {
-                $val = 'partial';
-            }
+            if (!$val) $val = 'partial';
         } elseif ($this->request->has(self::PARTIAL_REQUEST_KEY)) {
             $val = $this->request->get(self::PARTIAL_REQUEST_KEY);
-            if (!$val) {
-                $val = 'partial';
-            }
+            if (!$val) $val = 'partial';
         }
 
         return $val;
@@ -102,9 +99,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
      */
     public function getUrlLocale()
     {
-        if ($this->url_locale !== null) {
-            return $this->url_locale;
-        }
+        if ($this->url_locale !== null) return $this->url_locale;
 
         $this->url_locale = false;
 
@@ -116,7 +111,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
             '/agent',
             '/admin',
             '/dev',
-            '/api',
+            '/api'
         );
 
         $check_for_locale = true;
@@ -223,7 +218,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     }
 
     /**
-     * @param  null      $correctHost
+     * @param null $correctHost
      * @return bool|null
      */
     public function isCorrectHost($correctHost = null)
@@ -233,14 +228,14 @@ class Request extends \Symfony\Component\HttpFoundation\Request
         }
 
         $host = $info['port']
-            ? $info['host'].':'.$info['port']
+            ? $info['host'] . ':' . $info['port']
             : $info['host'];
 
         return $this->getHttpHost() === $host;
     }
 
     /**
-     * @param  null      $correctHost
+     * @param null $correctHost
      * @return bool|null
      */
     public function isCorrectScheme($correctHost = null)
@@ -253,7 +248,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     }
 
     /**
-     * @param  null  $correctHost
+     * @param null $correctHost
      * @return array
      */
     public function getCorrectInfo($correctHost = null)

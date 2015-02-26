@@ -43,8 +43,8 @@ class Imap extends Server
      */
     public function __construct($options = array())
     {
-        $options['password'] = (string) @$options['password'];
-        $options['port'] = $options['port'] ?: 143;
+	    $options['password'] = (string) @$options['password'];
+	    $options['port'] = $options['port'] ?: 143;
 
         if (!isset($options['host']) ||
             !isset($options['user'])) {
@@ -70,6 +70,7 @@ class Imap extends Server
         $this->setAuthentication($options['user'], $options['password']);
     }
 
+
     /**
      * @return array an array of IDs
      */
@@ -83,6 +84,7 @@ class Imap extends Server
 
         return $result;
     }
+
 
     /**
      * Searches the server for matching emails and retrieves only the IDs
@@ -100,6 +102,7 @@ class Imap extends Server
         return $result;
     }
 
+
     /**
      * Gets a raw RFC2822 compatible message
      *
@@ -110,7 +113,7 @@ class Imap extends Server
     {
         $raw_body = imap_fetchbody($this->getImapStream(), $uid, '', FT_UID);
 
-        if ($raw_body === false) {
+        if($raw_body === false){
             throw new \Exception(sprintf('Failed to retrieve raw body for message'));
         }
 

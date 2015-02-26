@@ -25,6 +25,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+
 /**
  * DeskPRO
  *
@@ -48,12 +49,12 @@ class TwitterController extends AbstractController
         $data = array();
 
         $group_updates = $this->in->getCleanValueArray('group_updates');
-        foreach ($group_updates as $account_id => $groups) {
+        foreach ($group_updates AS $account_id => $groups) {
             if (!is_array($groups)) {
                 continue;
             }
 
-            foreach ($groups as $type => $group) {
+            foreach ($groups AS $type => $group) {
                 $this->person->setPreference("agent.ui.twitter-group.$account_id.$type", $group);
             }
 
@@ -66,10 +67,10 @@ class TwitterController extends AbstractController
 
         $grouping_prefs = $this->em->getRepository('DeskPRO:PersonPref')->getPrefgroupForPersonId('agent.ui.twitter-group.', $this->person->getId());
         $groupings = array();
-        foreach ($accounts as $account) {
+        foreach ($accounts AS $account) {
             $groupings[$account->id] = array();
-            foreach (array('mine', 'team', 'unassigned', 'all') as $group) {
-                $value = isset($grouping_prefs[$account->id.'.'.$group]) ? $grouping_prefs[$account->id.'.'.$group] : '';
+            foreach (array('mine', 'team', 'unassigned', 'all') AS $group) {
+                $value = isset($grouping_prefs[$account->id . '.' . $group]) ? $grouping_prefs[$account->id . '.' . $group] : '';
                 $data = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getGroupedSectionCount($account, $group, $value);
                 $groupings[$account->id][$group] = array('group' => $value, 'data' => $data);
             }
@@ -80,7 +81,7 @@ class TwitterController extends AbstractController
             'groupings' => $groupings,
             'accounts' => $accounts,
             'agents' => $this->em->getRepository('DeskPRO:Person')->getAgents(),
-            'teams' => $this->em->getRepository('DeskPRO:AgentTeam')->getTeams(),
+            'teams' => $this->em->getRepository('DeskPRO:AgentTeam')->getTeams()
         ));
 
         return $this->createJsonResponse($data);
@@ -118,8 +119,8 @@ class TwitterController extends AbstractController
                 'data' => $data,
                 'route' => $route,
                 'agents' => $this->em->getRepository('DeskPRO:Person')->getAgents(),
-                'teams' => $this->em->getRepository('DeskPRO:AgentTeam')->getTeams(),
-            )),
+                'teams' => $this->em->getRepository('DeskPRO:AgentTeam')->getTeams()
+            ))
         ));
     }
 
@@ -134,7 +135,7 @@ class TwitterController extends AbstractController
 
         return $this->render('AgentBundle:Twitter:new.html.twig', array(
             'accounts' => $accounts,
-            'account' => $account,
+            'account' => $account
         ));
     }
 
@@ -149,7 +150,7 @@ class TwitterController extends AbstractController
         $twitter_service = new \Application\DeskPRO\Service\Twitter();
 
         if (strlen($text)) {
-            foreach ($accounts as $account) {
+            foreach ($accounts AS $account) {
                 if (in_array($account->id, $account_ids)) {
                     $twitter_service->sendAccountMessage('public', $text, $split, $account);
                 }
@@ -171,9 +172,7 @@ class TwitterController extends AbstractController
         $this->person->setPreference('agent.ui.last_twitter_account', $account->id);
 
         $page = $this->in->getUint('page');
-        if (!$page) {
-            $page = 1;
-        }
+        if (!$page) $page = 1;
         $per_page = TwitterAccount::DEFAULT_LIMIT;
 
         if ($this->in->getBool('partial')) {
@@ -195,7 +194,7 @@ class TwitterController extends AbstractController
         $total_count = $search->countAccountStatuses($includeArchived);
 
         $max_id = 0;
-        foreach ($statuses as $status) {
+        foreach ($statuses AS $status) {
             if ($status->status->id > $max_id) {
                 $max_id = $status->status->id;
             }
@@ -210,7 +209,7 @@ class TwitterController extends AbstractController
             'page' => $page,
             'showing_to' => min($total_count, $page * $per_page),
             'max_id' => $max_id,
-            'added' => $added,
+            'added' => $added
         ));
     }
 
@@ -335,7 +334,7 @@ class TwitterController extends AbstractController
             'per_page' => $per_page,
             'page' => $page,
             'showing_to' => min($total_count, $page * $per_page),
-            'agents' => $this->em->getRepository('DeskPRO:Person')->getAgents(),
+            'agents' => $this->em->getRepository('DeskPRO:Person')->getAgents()
         );
 
         // check if is partial
@@ -346,4 +345,5 @@ class TwitterController extends AbstractController
         // render html response
         return $this->render($template, $parameters);
     }
+
 }

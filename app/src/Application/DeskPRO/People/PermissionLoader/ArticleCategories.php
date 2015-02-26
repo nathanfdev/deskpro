@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\People\PermissionLoader;
 
+
 /**
  * Loads general usergroup permissions likes flags and the like.
  */

@@ -25,12 +25,8 @@ class ProjectRepository extends Repository
     protected $_endPoint = 'project';
 
     /** {@inheritdoc} */
-    protected function _create(\Orb\Jira\Entity $entity, \Orb\Jira\Service $client)
-    {
-    }
+    protected function _create(\Orb\Jira\Entity $entity, \Orb\Jira\Service $client) {}
 
     /** {@inheritdoc} */
-    protected function _update(\Orb\Jira\Entity $entity, \Orb\Jira\Service $client)
-    {
-    }
+    protected function _update(\Orb\Jira\Entity $entity, \Orb\Jira\Service $client) {}
 }

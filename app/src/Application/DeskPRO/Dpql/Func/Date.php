@@ -59,7 +59,8 @@ class Date extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    ) {
+    )
+    {
         if (count($this->_arguments) != 1) {
             throw new Exception('DATE() can only accept 1 argument.');
         }
@@ -67,8 +68,8 @@ class Date extends AbstractFunc
         $expression = reset($this->_arguments);
         $prepped = $expression->prepare($statement, $section, $stack, $select, $result);
 
-        $sql = 'DATE('.$prepped->sql().')';
-        $res = new Prepared($sql, 'DATE('.$prepped->name().')', false, 'date');
+        $sql = 'DATE(' . $prepped->sql() . ')';
+        $res = new Prepared($sql, 'DATE(' . $prepped->name() . ')', false, 'date');
 
         $res->setGroupFill(function ($min, $max) {
             if (!$min && !$max) {

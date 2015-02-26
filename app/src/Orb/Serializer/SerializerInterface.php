@@ -51,6 +51,7 @@ interface SerializerInterface
      */
     public function serialize($data, $view = 'default', $format = 'array');
 
+
     /**
      * @param  mixed  $data   anything that the serializer can handle
      * @param  string $view   defaults to "default" but can be anything and the handlers understand what to do

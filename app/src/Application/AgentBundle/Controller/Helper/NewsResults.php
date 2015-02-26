@@ -105,7 +105,7 @@ class NewsResults
 
             // Otherwise its a user filter with custom terms
             } else {
-                $form_terms = $controller->in->getCleanValueArray('terms', 'raw', 'string');
+                $form_terms = $controller->in->getCleanValueArray('terms', 'raw' , 'string');
                 $form_terms = Arrays::removeFalsey($form_terms);
 
                 $terms = $term_rules->readForm($form_terms);
@@ -149,6 +149,7 @@ class NewsResults
         return $helper;
     }
 
+
     public function __construct($controller, ResultCache $result_cache = null)
     {
         $this->controller = $controller;
@@ -159,6 +160,7 @@ class NewsResults
         }
     }
 
+
     /**
      * @return \Application\DeskPRO\Entity\ResultCache
      */
@@ -166,6 +168,7 @@ class NewsResults
     {
         return $this->result_cache;
     }
+
 
     /**
      * @param array $news_ids
@@ -175,6 +178,7 @@ class NewsResults
         $this->news_ids = $news_ids;
     }
 
+
     /**
      * @return array
      */
@@ -182,6 +186,7 @@ class NewsResults
     {
         return $this->news_ids;
     }
+
 
     /**
      * @return array
@@ -195,6 +200,7 @@ class NewsResults
     {
         return $this->_getPageFromNewsIds($this->getNewsIds(), $page, $per_page);
     }
+
 
     protected function _getPageFromNewsIds(array $news_ids, $page, $per_page)
     {

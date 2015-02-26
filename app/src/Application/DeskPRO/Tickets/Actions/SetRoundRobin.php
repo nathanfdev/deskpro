@@ -87,6 +87,7 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
 
     protected function resolve()
     {
+
     }
 
     /**
@@ -113,6 +114,7 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
             $triggerId = (int) $context->getVars()->get('trigger_id', 0);
             $entry = new LogRoundRobin($rr['id'], $agent['id'], $ticket['id'], $triggerId);
             $context->getLogger()->info($entry);
+
         } catch (\RuntimeException $e) {
             // todo log error
         } catch (\InvalidArgumentException $e) {
@@ -121,6 +123,8 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
 
         $context->getLogger()->popHandler();
     }
+
+
 
     /**
      * {@inheritDoc}
@@ -141,6 +145,7 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
 
         return false;
     }
+
 
     /**
      * {@inheritDoc}

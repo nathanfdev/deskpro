@@ -45,7 +45,7 @@ interface LabelAwareInterface
     /**
      * Add a new label
      *
-     * @param  string $label
+     * @param string $label
      * @return $this
      */
     public function addLabel($label);

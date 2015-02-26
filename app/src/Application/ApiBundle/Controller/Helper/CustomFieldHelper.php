@@ -70,8 +70,8 @@ class CustomFieldHelper
     public function saveFormToField(CustomDefAbstract $field, array $form_data)
     {
         $basetype    = Util::getBaseClassname($field['handler_class']);
-        $model_class = 'Application\\ApiBundle\\Form\\CustomField\\Model\\'.$basetype.'Field';
-        $type_class  = 'Application\\ApiBundle\\Form\\CustomField\\Type\\'.$basetype.'FieldType';
+        $model_class = 'Application\\ApiBundle\\Form\\CustomField\\Model\\' . $basetype . 'Field';
+        $type_class  = 'Application\\ApiBundle\\Form\\CustomField\\Type\\' . $basetype . 'FieldType';
 
         $editfield = new $model_class($field);
         $formtype  = new $type_class();

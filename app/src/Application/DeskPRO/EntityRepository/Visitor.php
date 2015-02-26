@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+
 class Visitor extends AbstractEntityRepository
 {
     /**
@@ -45,15 +46,17 @@ class Visitor extends AbstractEntityRepository
             return null;
         }
 
-        list($visitor_id, $auth) = explode('-', $vis_code, 2);
+        list ($visitor_id, $auth) = explode('-', $vis_code, 2);
 
         $visitor = $this->find($visitor_id);
-        if (!$visitor or !$visitor->checkVisitorCode($vis_code)) {
+        if (!$visitor OR !$visitor->checkVisitorCode($vis_code)) {
             return null;
         }
 
         return $visitor;
     }
+
+
 
     /**
      * @return Visitor
@@ -70,12 +73,13 @@ class Visitor extends AbstractEntityRepository
           ->getOneOrNullResult();
     }
 
+
     /**
      * @param string $user_token
      */
     public function getVisitorFromUserToken($user_token)
     {
-        $datecut = new \DateTime('@'.(time() - 600));
+        $datecut = new \DateTime('@' . (time() - 600));
 
         return $this->getEntityManager()->createQuery("
             SELECT v
@@ -83,7 +87,7 @@ class Visitor extends AbstractEntityRepository
             WHERE v.date_last > ?0 AND v.user_token = ?1
         ")->setParameters(array(
             $datecut,
-            $user_token,
+            $user_token
         ))->setMaxResults(1)->getOneOrNullResult();
     }
 }

@@ -44,5 +44,6 @@ class Build1351006444 extends AbstractBuild
             INSERT INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`, `last_start_date`)
             VALUES ('run_queued_tasks', 'run_queued_tasks', 'Run Queued Tasks', 'Runs any general-purpose queued tasks', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\RunQueuedTasks', X'613A303A7B7D', '60', NULL, NULL)
         ");
+
     }
 }

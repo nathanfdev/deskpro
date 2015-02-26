@@ -1,6 +1,4 @@
-<?php if (!defined('DP_ROOT')) {
-    exit('No access');
-} ?>
+<?php if (!defined('DP_ROOT')) exit('No access'); ?>
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
 <?php $view['slots']->start('subtitle') ?>Step 5: Installing database tables<?php $view['slots']->stop() ?>
 <script type="text/javascript">

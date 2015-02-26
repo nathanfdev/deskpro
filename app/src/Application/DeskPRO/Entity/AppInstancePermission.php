@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -94,7 +95,7 @@ class AppInstancePermission extends \Application\DeskPRO\Domain\DomainObject
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->setPrimaryTable(array(
-            'name' => 'app_instance_permissions',
+            'name' => 'app_instance_permissions'
         ));
 
         $metadata->mapField(array(
@@ -112,8 +113,8 @@ class AppInstancePermission extends \Application\DeskPRO\Domain\DomainObject
                 'name'                 => 'app_instance_id',
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
-                'onDelete'             => 'CASCADE',
-            )),
+                'onDelete'             => 'CASCADE'
+            ))
         ));
 
         $metadata->mapManyToOne(array(
@@ -123,8 +124,8 @@ class AppInstancePermission extends \Application\DeskPRO\Domain\DomainObject
                 'name'                 => 'usergroup_id',
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
-                'onDelete'             => 'CASCADE',
-            )),
+                'onDelete'             => 'CASCADE'
+            ))
         ));
 
         $metadata->mapManyToOne(array(
@@ -134,8 +135,8 @@ class AppInstancePermission extends \Application\DeskPRO\Domain\DomainObject
                 'name'                 => 'person_id',
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
-                'onDelete'             => 'CASCADE',
-            )),
+                'onDelete'             => 'CASCADE'
+            ))
         ));
     }
 }

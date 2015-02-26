@@ -71,8 +71,8 @@ class RouteCollection extends \Symfony\Component\Routing\RouteCollection
     {
         $this->ops[] = array('rewriteController', array($find_controller, $replace_controller));
 
-        $find_controller    = trim($find_controller, ':').':';
-        $replace_controller = trim($replace_controller, ':').':';
+        $find_controller    = trim($find_controller, ':') . ':';
+        $replace_controller = trim($replace_controller, ':') . ':';
 
         foreach ($this as $route) {
             $ctrl = $route->getDefault('_controller');
@@ -83,6 +83,7 @@ class RouteCollection extends \Symfony\Component\Routing\RouteCollection
         }
     }
 
+
     /**
      * Remove all routes for a given controller
      *
@@ -92,7 +93,7 @@ class RouteCollection extends \Symfony\Component\Routing\RouteCollection
     {
         $this->ops[] = array('removeController', array($find_controller));
 
-        $find_controller = trim($find_controller, ':').':';
+        $find_controller = trim($find_controller, ':') . ':';
         foreach ($this as $name => $route) {
             $ctrl = $route->getDefault('_controller');
             if (strpos($ctrl, $find_controller) === 0) {
@@ -100,6 +101,7 @@ class RouteCollection extends \Symfony\Component\Routing\RouteCollection
             }
         }
     }
+
 
     /**
      * Removes an existing route $name.

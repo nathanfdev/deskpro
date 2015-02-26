@@ -55,6 +55,7 @@ class FilterCategory extends AbstractFilterTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

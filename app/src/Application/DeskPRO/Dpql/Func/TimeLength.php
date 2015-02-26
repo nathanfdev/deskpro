@@ -61,7 +61,8 @@ class TimeLength extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    ) {
+    )
+    {
         if (count($this->_arguments) != 1) {
             throw new Exception('TIME_LENGTH() can only accept 1 argument.');
         }
@@ -78,6 +79,6 @@ class TimeLength extends AbstractFunc
             return \Application\DeskPRO\Util::getPrintableTimeLength($value);
         };
 
-        return new Prepared($sql, 'TIME_LENGTH('.$prepped->name().')', false, $renderer);
+        return new Prepared($sql, 'TIME_LENGTH(' . $prepped->name() . ')', false, $renderer);
     }
 }

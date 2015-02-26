@@ -59,7 +59,7 @@ class EzcReader extends AbstractReader
         $opt = new \ezcMailParserOptions();
 
         $this->parser = new \ezcMailParser($opt);
-        \ezcMailParser::setTmpDir(dp_get_tmp_dir().DIRECTORY_SEPARATOR);
+        \ezcMailParser::setTmpDir(dp_get_tmp_dir() . DIRECTORY_SEPARATOR);
 
         // Dont have ezc try and convert charsets, we'll handle that ourselves tyvm
         static $has_set_convert = false;
@@ -97,7 +97,7 @@ class EzcReader extends AbstractReader
         $header = new Item\Header();
         $header->name = $name;
 
-        $parts = (array) $this->mail->getHeader($name, true);
+        $parts = (array)$this->mail->getHeader($name, true);
         if ($parts) {
             foreach ($parts as $p) {
                 $header->header_parts[] = \ezcMailTools::mimeDecode($p, 'utf-8');
@@ -113,9 +113,7 @@ class EzcReader extends AbstractReader
 
         foreach ($this->mail->cc as $cc) {
             $charset = $cc->charset;
-            if (!$charset) {
-                $charset = 'us-ascii';
-            }
+            if (!$charset) $charset = 'us-ascii';
 
             $email = new Item\EmailAddress();
             $email->name = $cc->name;
@@ -135,9 +133,7 @@ class EzcReader extends AbstractReader
 
         foreach ($this->mail->to as $to) {
             $charset = $to->charset;
-            if (!$charset) {
-                $charset = 'us-ascii';
-            }
+            if (!$charset) $charset = 'us-ascii';
 
             $email = new Item\EmailAddress();
             $email->name = $to->name;
@@ -163,9 +159,7 @@ class EzcReader extends AbstractReader
         }
 
         $charset = $this->mail->from->charset;
-        if (!$charset) {
-            $charset = 'us-ascii';
-        }
+        if (!$charset) $charset = 'us-ascii';
 
         $email = new Item\EmailAddress();
         $email->name = $this->mail->from->name;
@@ -231,9 +225,7 @@ class EzcReader extends AbstractReader
         }
 
         $charset = $this->mail->subjectCharset;
-        if (!$charset) {
-            $charset = 'us-ascii';
-        }
+        if (!$charset) $charset = 'us-ascii';
 
         $subject = new Item\Subject();
         $subject->subject = $this->mail->subject;
@@ -268,6 +260,7 @@ class EzcReader extends AbstractReader
                 || ($part instanceof \ezcMailText && $part->subType == 'calendar')
                 || ($part instanceof \ezcMailRfc822Digest)
             ) {
+
                 $attach = new Item\Attachment();
 
                 if ($part instanceof \ezcMailText) {
@@ -278,8 +271,7 @@ class EzcReader extends AbstractReader
                         try {
                             $attach->file_name = basename($part->contentDisposition->displayFileName);
                             $attach->mime_type = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->contentDisposition->displayFileName);
-                        } catch (\Exception $e) {
-                        }
+                        } catch (\Exception $e) {}
                     }
 
                     if (!$attach->file_name) {
@@ -295,7 +287,9 @@ class EzcReader extends AbstractReader
                     if (!$attach->mime_type) {
                         $attach->mime_type = 'application/octet-stream';
                     }
+
                 } elseif ($part instanceof \ezcMailRfc822Digest) {
+
                     // - We have hacked ezc to keep track of the raw mail source
                     // so we can just use that
                     if (!empty($part->dp_raw_source)) {
@@ -325,18 +319,19 @@ class EzcReader extends AbstractReader
                         $filename = preg_replace('#\-{2,}#', '-', $filename);
                         $filename = trim($filename);
                         $filename = trim($filename, '-');
-                        $attach->file_name = $filename.'.eml';
+                        $attach->file_name = $filename . '.eml';
                     }
                     if (!$attach->file_name) {
                         $attach->file_name = 'email.eml';
                     }
                     $attach->mime_type = 'message/rfc822';
-                } elseif ($part->mimeType == 'ms-tnef' || $part->mimeType == 'application/ms-tnef') {
+                } elseif($part->mimeType == 'ms-tnef' || $part->mimeType == 'application/ms-tnef') {
                     $attach = null;
                     $winmail_attach = $this->decodeTnef($part);
                     foreach ($winmail_attach as $a) {
                         $attachments[] = $a;
                     }
+
                 } else {
                     $attach->tmp_file   = $part->fileName;
 
@@ -344,14 +339,12 @@ class EzcReader extends AbstractReader
                         try {
                             $attach->file_name = basename($part->contentDisposition->displayFileName);
                             $attach->mime_type = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->contentDisposition->displayFileName);
-                        } catch (\Exception $e) {
-                        }
+                        } catch (\Exception $e) {}
                     } elseif (!empty($part->fileName)) {
                         try {
                             $attach->file_name = basename($part->fileName);
                             $attach->mime_type = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->fileName);
-                        } catch (\Exception $e) {
-                        }
+                        } catch (\Exception $e) {}
                     }
 
                     if (!$attach->file_name) {
@@ -397,9 +390,7 @@ class EzcReader extends AbstractReader
         foreach ($this->mail->fetchParts(array('ezcMailText')) as $part) {
             if ($part->subType == 'html') {
                 $originalCharset = $part->originalCharset;
-                if (!$originalCharset) {
-                    $originalCharset = 'us-ascii';
-                }
+                if (!$originalCharset) $originalCharset = 'us-ascii';
 
                 if ($this->hasProperty('override_from_charset')) {
                     $originalCharset = $this->getProperty('override_from_charset');
@@ -415,6 +406,7 @@ class EzcReader extends AbstractReader
         }
 
         if ($raw_parts) {
+
             $all_same = true;
             $charset = null;
 
@@ -422,6 +414,7 @@ class EzcReader extends AbstractReader
             $all_raw = '';
 
             foreach ($raw_parts as $p) {
+
                 $all_utf .= $p->body_utf8;
                 $all_raw .= $p->body;
 
@@ -453,6 +446,7 @@ class EzcReader extends AbstractReader
             $body->raw_parts = $raw_parts;
 
             return $body;
+
         } else {
             // Default to a blank body
             $body = new Item\BodyHtml();
@@ -472,9 +466,7 @@ class EzcReader extends AbstractReader
         foreach ($this->mail->fetchParts(array('ezcMailText')) as $part) {
             if ($part->subType == 'plain') {
                 $originalCharset = $part->originalCharset;
-                if (!$originalCharset) {
-                    $originalCharset = 'us-ascii';
-                }
+                if (!$originalCharset) $originalCharset = 'us-ascii';
 
                 if ($this->hasProperty('override_from_charset')) {
                     $originalCharset = $this->getProperty('override_from_charset');
@@ -490,6 +482,7 @@ class EzcReader extends AbstractReader
         }
 
         if ($raw_parts) {
+
             $all_same = true;
             $charset = null;
 
@@ -497,6 +490,7 @@ class EzcReader extends AbstractReader
             $all_raw = '';
 
             foreach ($raw_parts as $p) {
+
                 $all_utf .= $p->body_utf8;
                 $all_raw .= $p->body;
 
@@ -528,6 +522,7 @@ class EzcReader extends AbstractReader
             $body->raw_parts = $raw_parts;
 
             return $body;
+
         } else {
             // Default to a blank body
             $body = new Item\BodyText();
@@ -550,9 +545,9 @@ class EzcReader extends AbstractReader
     {
         $attachments = array();
 
-        $tnef = new \tnef();
+        $tnef = new \tnef;
 
-        $tnef_arr = $tnef->decompress(file_get_contents($part->fileName));
+        $tnef_arr = $tnef->decompress(file_get_contents( $part->fileName ));
         if (!$tnef_arr || !is_array($tnef_arr)) {
             return array();
         }
@@ -568,7 +563,7 @@ class EzcReader extends AbstractReader
             $attach->file_name       = trim($winatt['name']);
             $attach->ctype_primary   = trim(strtolower($winatt['type']));
             $attach->ctype_secondary = trim(strtolower($winatt['subtype']));
-            $attach->mime_type       = $attach->ctype_primary.'/'.$attach->ctype_secondary;
+            $attach->mime_type       = $attach->ctype_primary . '/' . $attach->ctype_secondary;
             $attach->file_contents   = $winatt['stream'];
             $attach->size            = strlen($attach->file_contents);
 

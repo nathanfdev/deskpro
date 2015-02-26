@@ -48,11 +48,13 @@ class Person extends AbstractResource
      */
     public function getPerson($person_id)
     {
-        $resource = '/people/'.$person_id.'.xml';
+        $resource = '/people/' . $person_id . '.xml';
         $response = $this->highrise->sendReadRequest($resource);
 
         return $this->highrise->xmlToArray($response->getBody());
     }
+
+
 
     /**
      * Get information about all people. To see if more pages exist, check $page+1
@@ -70,6 +72,8 @@ class Person extends AbstractResource
 
         return $this->highrise->xmlToArray($response->getBody());
     }
+
+
 
     /**
      * Get all people with a certain tag. Note that it's a tag_id.
@@ -122,6 +126,8 @@ class Person extends AbstractResource
         return $this->highrise->xmlToArray($response->getBody());
     }
 
+
+
     /**
      * Find all people whose match a certain criteria. Results are grouped in
      * batches of 25.
@@ -144,7 +150,7 @@ class Person extends AbstractResource
         $offset = ($page-1) * 25;
 
         $postfields = array('n' => $offset);
-        foreach ($criteria as $k => $v) {
+        foreach ($criteria as $k=>$v) {
             $postfields["criteria[$k]"] = $v;
         }
 
@@ -152,12 +158,14 @@ class Person extends AbstractResource
         $body = new \SimpleXMLElement($response->getBody());
 
         $people = array();
-        foreach ($body as $person) {
+        foreach ($body AS $person) {
             $people[] = $this->highrise->xmlToArray($person);
         }
 
         return $people;
     }
+
+
 
     /**
      * Get all people who were created or updated since a certain time.
@@ -173,7 +181,7 @@ class Person extends AbstractResource
 
         // If it doesn't start with 1, then its probably a timestamp
         // so we need to convert it
-        if (is_numeric($since) and $since[0] == '1') {
+        if (is_numeric($since) AND $since[0] == '1') {
             $since = date('YmdHis', $since);
         }
 

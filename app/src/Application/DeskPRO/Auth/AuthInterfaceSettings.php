@@ -54,15 +54,18 @@ class AuthInterfaceSettings
      */
     private $adapterFactory;
 
+
     public function __construct(
         UsersourceAuthAdapterFactory $adapterFactory
-    ) {
+    )
+    {
         $this->adapterFactory = $adapterFactory;
         $this->autoSso = false;
         $this->backgroundSso = false;
         $this->logoutRedirectUrl = null;
         $this->usersource = null;
     }
+
 
     /**
      * @return mixed
@@ -72,6 +75,7 @@ class AuthInterfaceSettings
         return $this->autoSso;
     }
 
+
     /**
      * @param mixed $autoSso
      */
@@ -79,6 +83,7 @@ class AuthInterfaceSettings
     {
         $this->autoSso = $autoSso;
     }
+
 
     /**
      * @return mixed
@@ -88,6 +93,7 @@ class AuthInterfaceSettings
         return $this->backgroundSso;
     }
 
+
     /**
      * @param mixed $backgroundSso
      */
@@ -95,6 +101,7 @@ class AuthInterfaceSettings
     {
         $this->backgroundSso = $backgroundSso;
     }
+
 
     /**
      * a URL or null, if null we use system wide default

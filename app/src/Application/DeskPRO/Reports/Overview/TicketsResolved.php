@@ -71,6 +71,7 @@ class TicketsResolved extends AbstractTableOverviewStat
         $this->date_end       = Dates::convertToUtcDateTime($date_end);
     }
 
+
     /**
      * @return string[]
      */
@@ -78,6 +79,7 @@ class TicketsResolved extends AbstractTableOverviewStat
     {
         return $this->grouping_field->getTitles($this->getValues());
     }
+
 
     /**
      * @return int[]

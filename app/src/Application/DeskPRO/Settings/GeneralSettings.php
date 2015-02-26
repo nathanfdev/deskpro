@@ -32,7 +32,6 @@
  */
 
 namespace Application\DeskPRO\Settings;
-
 use Orb\Util\Arrays;
 
 class GeneralSettings
@@ -103,6 +102,7 @@ class GeneralSettings
         $this->isCloud = defined('DPC_IS_CLOUD');
     }
 
+
     /**
      * Resets settings based on stored values.
      */
@@ -141,12 +141,8 @@ class GeneralSettings
             }
         }
 
-        if (!$this->attach_user_must_exts) {
-            $this->attach_user_must_exts = array();
-        }
-        if (!$this->attach_user_not_exts) {
-            $this->attach_user_not_exts = array();
-        }
+        if (!$this->attach_user_must_exts) $this->attach_user_must_exts = array();
+        if (!$this->attach_user_not_exts)  $this->attach_user_not_exts = array();
 
         $this->attach_agent_maxsize = $this->settings->get('core.attach_agent_maxsize');
         $this->attach_agent_must_exts = $this->settings->get('core.attach_agent_must_exts');
@@ -161,13 +157,10 @@ class GeneralSettings
             }
         }
 
-        if (!$this->attach_agent_must_exts) {
-            $this->attach_agent_must_exts = array();
-        }
-        if (!$this->attach_agent_not_exts) {
-            $this->attach_agent_not_exts = array();
-        }
+        if (!$this->attach_agent_must_exts) $this->attach_agent_must_exts = array();
+        if (!$this->attach_agent_not_exts)  $this->attach_agent_not_exts = array();
     }
+
 
     /**
      * @param  array $array
@@ -183,6 +176,7 @@ class GeneralSettings
 
         return $array;
     }
+
 
     /**
      * @return array
@@ -216,6 +210,7 @@ class GeneralSettings
         return $export_settings;
     }
 
+
     /**
      * @param array $set_settings
      */
@@ -228,13 +223,14 @@ class GeneralSettings
         }
     }
 
+
     /**
      * Persists settings
      */
     public function saveSettings()
     {
         if ($this->deskpro_url) {
-            $this->deskpro_url = rtrim($this->deskpro_url, '/').'/';
+            $this->deskpro_url = rtrim($this->deskpro_url, '/') . '/';
             $this->settings->setSetting('core.deskpro_url', $this->deskpro_url);
         }
 
@@ -243,7 +239,7 @@ class GeneralSettings
             $this->settings->setSetting('core.helpdesk_disabled_message', $this->helpdesk_disabled_message);
 
             // todo? legacy code
-            @file_put_contents(dp_get_data_dir().'/helpdesk-offline-message.txt', $this->helpdesk_disabled_message);
+            @file_put_contents(dp_get_data_dir() . '/helpdesk-offline-message.txt', $this->helpdesk_disabled_message);
         }
 
         $this->settings->setSetting('core.deskpro_name', $this->deskpro_name);
@@ -255,7 +251,7 @@ class GeneralSettings
         $this->settings->setSetting('core.task_reminder_time', $this->task_reminder_time ?: '09:30');
 
         foreach (array('fulltime', 'full', 'day', 'day_short', 'time') as $p) {
-            $p = 'date_'.$p;
+            $p = 'date_' . $p;
             $val = trim($this->$p) ?: null;
 
             $this->settings->setSetting("core.$p", $val);
@@ -268,7 +264,7 @@ class GeneralSettings
             $this->attach_user_must_exts = array();
             $this->attach_user_not_exts = $this->cleanExtsArray($this->attach_user_not_exts);
         }
-        $this->settings->setSetting('core.attach_user_maxsize', (int) $this->attach_user_maxsize);
+        $this->settings->setSetting('core.attach_user_maxsize', (int)$this->attach_user_maxsize);
         $this->settings->setSetting('core.attach_user_must_exts', $this->attach_user_must_exts ? implode(',', $this->attach_user_must_exts) : null);
         $this->settings->setSetting('core.attach_user_not_exts', $this->attach_user_not_exts ? implode(',', $this->attach_user_not_exts) : null);
 
@@ -279,7 +275,7 @@ class GeneralSettings
             $this->attach_agent_must_exts = array();
             $this->attach_agent_not_exts = $this->cleanExtsArray($this->attach_agent_not_exts);
         }
-        $this->settings->setSetting('core.attach_agent_maxsize', (int) $this->attach_agent_maxsize);
+        $this->settings->setSetting('core.attach_agent_maxsize', (int)$this->attach_agent_maxsize);
         $this->settings->setSetting('core.attach_agent_must_exts', $this->attach_agent_must_exts ? implode(',', $this->attach_agent_must_exts) : null);
         $this->settings->setSetting('core.attach_agent_not_exts', $this->attach_agent_not_exts ? implode(',', $this->attach_agent_not_exts) : null);
     }

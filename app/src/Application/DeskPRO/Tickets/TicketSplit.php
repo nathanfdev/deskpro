@@ -66,6 +66,7 @@ class TicketSplit implements PersonContextInterface
      */
     private $person_context;
 
+
     /**
      * @param Ticket $ticket
      */
@@ -76,6 +77,7 @@ class TicketSplit implements PersonContextInterface
         $this->ticket = $ticket;
     }
 
+
     /**
      * @param Person $person
      */
@@ -83,6 +85,7 @@ class TicketSplit implements PersonContextInterface
     {
         $this->person_context = $person;
     }
+
 
     /**
      * @param  string     $subject
@@ -109,6 +112,7 @@ class TicketSplit implements PersonContextInterface
             throw $e;
         }
     }
+
 
     /**
      * @param  string                    $subject
@@ -176,7 +180,7 @@ class TicketSplit implements PersonContextInterface
         }
 
         $has_owner = false;
-        foreach ($new_ticket->messages as $message) {
+        foreach ($new_ticket->messages AS $message) {
             if ($message->person->id == $new_ticket->person->id) {
                 $has_owner = true;
                 break;

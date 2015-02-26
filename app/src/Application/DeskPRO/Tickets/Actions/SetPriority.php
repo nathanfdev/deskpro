@@ -57,6 +57,7 @@ class SetPriority extends AbstractContainerAwareAction implements ActionInterfac
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -75,6 +76,7 @@ class SetPriority extends AbstractContainerAwareAction implements ActionInterfac
 
         $ticket->priority = $pri;
     }
+
 
     /**
      * {@inheritDoc}
@@ -97,6 +99,7 @@ class SetPriority extends AbstractContainerAwareAction implements ActionInterfac
 
         return false;
     }
+
 
     /**
      * {@inheritDoc}

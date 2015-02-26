@@ -92,7 +92,7 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             /** @var $conn \Application\DeskPRO\DBAL\Connection */
             $conn = \Doctrine\DBAL\DriverManager::getConnection(array(
                 'driver'       => 'pdo_sqlite',
-                'path'         => dp_get_data_dir().'/log-analytics.sqlite',
+                'path'         => dp_get_data_dir() . '/log-analytics.sqlite'
             ));
 
             if (!$conn->getSchemaManager()->tablesExist('pagelog')) {
@@ -147,9 +147,7 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             case 'queries': $group_field = 'query_count'; break;
             case 'memory': $group_field = 'peak_memory'; break;
             case 'count': $group_field = 'COUNT(*)'; break;
-            default: echo "Invalid var.";
-
-return 1;
+            default: echo "Invalid var."; return 1;
         }
 
         $query = "SELECT $url_field AS urlfield, $group_field AS groupfield FROM pagelog GROUP BY urlfield ORDER BY groupfield DESC LIMIT 2000";
@@ -219,7 +217,7 @@ return 1;
                 'time_db'                => $time_db,
                 'query_count'            => $query_count,
                 'peak_memory'            => $peak_memory,
-                'hit_at'                 => $date,
+                'hit_at'                 => $date
             ));
 
             if ($count % 1000 == 0) {

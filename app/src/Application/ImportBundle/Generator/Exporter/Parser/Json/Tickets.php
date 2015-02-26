@@ -76,11 +76,13 @@ final class Tickets extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid ticket record found (Skipping): %d', $num));
                 }
+
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid ticket record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
+
             } catch (NotArrayException $e) {
                 $this->logWarning(sprintf(
                     'Invalid ticket record `%d` found (Skipping): %s',
@@ -95,7 +97,7 @@ final class Tickets extends AbstractParser
     /**
      * Returns a ticket entity
      *
-     * @param  array              $ticket
+     * @param array $ticket
      * @return Entity\Ticket|null
      */
     private function exportTicket(array $ticket)
@@ -103,7 +105,7 @@ final class Tickets extends AbstractParser
         if ($this->isTicketValid($ticket)) {
             $entity = new Entity\Ticket();
             $entity
-                ->setDestination('ticket_'.$ticket['oid'])
+                ->setDestination('ticket_' . $ticket['oid'])
                 ->setOid($ticket['oid'])
                 ->setRef($ticket['ref'])
                 ->setDepartment($ticket['department'])
@@ -156,7 +158,7 @@ final class Tickets extends AbstractParser
     /**
      * Returns a collection of the ticket messages
      *
-     * @param  array             $messages
+     * @param array $messages
      * @return Entity\Collection
      */
     private function exportMessages(array $messages)
@@ -171,11 +173,13 @@ final class Tickets extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid ticket message record found (Skipping): %d', $num));
                 }
+
             } catch (NoColumnException $e) {
                 $this->logError(sprintf(
                     'Invalid ticket message record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
+
             } catch (NotArrayException $e) {
                 $this->logError(sprintf(
                     'Invalid ticket message record `%d` found (Skipping): %s',
@@ -190,7 +194,7 @@ final class Tickets extends AbstractParser
     /**
      * Returns a ticket message entity
      *
-     * @param  array                     $message
+     * @param array $message
      * @return Entity\TicketMessage|null
      */
     private function exportMessage(array $message)
@@ -198,7 +202,7 @@ final class Tickets extends AbstractParser
         if ($this->isMessageValid($message)) {
             $entity = new Entity\TicketMessage();
             $entity
-                ->setDestination('message_'.$message['oid'])
+                ->setDestination('message_' . $message['oid'])
                 ->setOid($message['oid'])
                 ->setPersonEmail($message['person'])
                 ->setMessageText($message['message_text'])
@@ -221,7 +225,7 @@ final class Tickets extends AbstractParser
     /**
      * Returns a collection of the ticket message attachments
      *
-     * @param  array             $attachments
+     * @param array $attachments
      * @return Entity\Collection
      */
     private function exportAttachments(array $attachments)
@@ -236,6 +240,7 @@ final class Tickets extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid ticket message attachment record found (Skipping): %d', $num));
                 }
+
             } catch (NoColumnException $e) {
                 $this->logError(sprintf(
                     'Invalid ticket message attachment record `%d` found (Skipping): %s',
@@ -250,7 +255,7 @@ final class Tickets extends AbstractParser
     /**
      * Returns an attachment entity
      *
-     * @param  array                  $attachment
+     * @param array $attachment
      * @return Entity\Attachment|null
      */
     private function exportAttachment(array $attachment)
@@ -258,7 +263,7 @@ final class Tickets extends AbstractParser
         if ($this->isAttachmentValid($attachment)) {
             $entity = new Entity\Attachment();
             $entity
-                ->setDestination('attachment_'.$attachment['oid'])
+                ->setDestination('attachment_' . $attachment['oid'])
                 ->setOid($attachment['oid'])
                 ->setPersonEmail($attachment['person'])
                 ->setBlobData($attachment['blob_data'])
@@ -287,7 +292,7 @@ final class Tickets extends AbstractParser
     /**
      * Check if ticket has all required columns
      *
-     * @param  array $ticket
+     * @param array $ticket
      * @return bool
      */
     private function isTicketValid(array $ticket)
@@ -328,7 +333,7 @@ final class Tickets extends AbstractParser
     /**
      * Check if ticket message has all required columns
      *
-     * @param  array $message
+     * @param array $message
      * @return bool
      */
     private function isMessageValid(array $message)

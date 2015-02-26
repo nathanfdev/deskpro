@@ -49,7 +49,7 @@ class TwitterAccountType extends AbstractType
         $resolver->setDefaults(
             array(
                  'data_class'         => 'Application\\DeskPRO\\TwitterAccounts\\TwitterAccountEdit',
-                 'cascade_validation' => true,
+                 'cascade_validation' => true
             )
         );
     }
@@ -58,4 +58,5 @@ class TwitterAccountType extends AbstractType
     {
         return 'twitter_account_edit';
     }
+
 }

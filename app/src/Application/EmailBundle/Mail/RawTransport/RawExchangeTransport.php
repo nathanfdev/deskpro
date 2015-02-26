@@ -25,7 +25,9 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+
 namespace Application\EmailBundle\Mail\RawTransport;
+
 
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\ExchangeConfig;
 use Application\EmailBundle\Mail\RawMessage\RawMessageDecoderInterface;
@@ -33,54 +35,54 @@ use Psr\Log\LoggerInterface;
 
 class RawExchangeTransport implements RawTransportInterface
 {
-    /**
-     * @var ExchangeConfig
-     */
-    protected $config;
+	/**
+	 * @var ExchangeConfig
+	 */
+	protected $config;
 
-    /**
-     * @var RawMessageDecoderInterface
-     */
-    protected $decoder;
+	/**
+	 * @var RawMessageDecoderInterface
+	 */
+	protected $decoder;
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
+	/**
+	 * @var LoggerInterface
+	 */
+	protected $logger;
 
-    /**
-     * @var \ExchangeWebServices
-     */
-    protected $ews;
+	/**
+	 * @var \ExchangeWebServices
+	 */
+	protected $ews;
 
-    public function __construct(ExchangeConfig $config, RawMessageDecoderInterface $decoder, LoggerInterface $logger)
-    {
-        $this->config = $config;
-        $this->decoder = $decoder;
-        $this->logger = $logger;
-    }
+	public function __construct(ExchangeConfig $config, RawMessageDecoderInterface $decoder, LoggerInterface $logger)
+	{
+		$this->config = $config;
+		$this->decoder = $decoder;
+		$this->logger = $logger;
+	}
 
-    /**
-     * @return \ExchangeWebServices
-     */
-    protected function ews()
-    {
-        return $this->ews
-                ? $this->ews
-                : $this->ews = new \ExchangeWebServices($this->config->host, $this->config->user, $this->config->password);
-    }
+	/**
+	 * @return \ExchangeWebServices
+	 */
+	protected function ews()
+	{
+		return $this->ews
+				? $this->ews
+				: $this->ews = new \ExchangeWebServices($this->config->host, $this->config->user, $this->config->password);
+	}
 
-    public function sendRawMessage($from, array $tos, $raw_fp, array &$failed = null)
-    {
-        $sent = 0;
+	public function sendRawMessage($from, array $tos, $raw_fp, array &$failed = null)
+	{
+		$sent = 0;
 
-        if (!$tos) {
-            return $sent;
-        }
+		if (!$tos) {
+			return $sent;
+		}
 
 //		$raw = $this->decoder->createRawMessage($raw_fp);
 
-        $msg = new \EWSType_MessageType();
+		$msg = new \EWSType_MessageType();
 
 //
 //
@@ -163,26 +165,26 @@ class RawExchangeTransport implements RawTransportInterface
 //		}
 //
 
-        $msg->MimeContent = new \EWSType_MimeContentType();
-        $msg->MimeContent->_ = base64_encode(stream_get_contents($raw_fp, -1, 0));
+		$msg->MimeContent = new \EWSType_MimeContentType();
+		$msg->MimeContent->_ = base64_encode(stream_get_contents($raw_fp, -1, 0));
 
-        $msgRequest = new \EWSType_CreateItemType();
-        $msgRequest->Items = new \EWSType_NonEmptyArrayOfAllItemsType();
-        $msgRequest->Items->Message = $msg;
-        $msgRequest->MessageDisposition = 'SendOnly';
+		$msgRequest = new \EWSType_CreateItemType();
+		$msgRequest->Items = new \EWSType_NonEmptyArrayOfAllItemsType();
+		$msgRequest->Items->Message = $msg;
+		$msgRequest->MessageDisposition = 'SendOnly';
 
-        $this->logger->info('[RawExchangeTransport] Sending raw mail');
-        $response = $this->ews()->CreateItem($msgRequest);
+		$this->logger->info('[RawExchangeTransport] Sending raw mail');
+		$response = $this->ews()->CreateItem($msgRequest);
 
-        if ($response && $response->ResponseMessages && ($response = $response->ResponseMessages->CreateItemResponseMessage)) {
-            if ('Error' === $response->ResponseClass) {
-                $this->logger->error(sprintf('[RawExchangeTransport] %s', $response->MessageText));
-            } elseif ('Success' === $response->ResponseClass) {
-                $this->logger->info('[RawExchangeTransport] success');
-                $sent++;
-            }
-        }
+		if ($response && $response->ResponseMessages && ($response = $response->ResponseMessages->CreateItemResponseMessage)) {
+			if ('Error' === $response->ResponseClass) {
+				$this->logger->error(sprintf('[RawExchangeTransport] %s', $response->MessageText));
+			} elseif ('Success' === $response->ResponseClass) {
+				$this->logger->info('[RawExchangeTransport] success');
+				$sent++;
+			}
+		}
 
-        return $sent;
-    }
+		return $sent;
+	}
 }

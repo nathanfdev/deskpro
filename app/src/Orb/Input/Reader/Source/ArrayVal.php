@@ -78,7 +78,8 @@ class ArrayVal implements SourceInterface
 
         if ($parts) {
             foreach ($parts as $part) {
-                if (!is_array($value) or !isset($value[$part])) {
+
+                if (!is_array($value) OR !isset($value[$part])) {
                     $value = null;
                     break;
                 }

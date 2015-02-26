@@ -110,7 +110,7 @@ class ResultHandler
         $this->_columns[] = array(
             'title' => $title,
             'resultId' => $resultId,
-            'renderer' => $renderer,
+            'renderer' => $renderer
         );
     }
 
@@ -140,7 +140,7 @@ class ResultHandler
             'title' => $title,
             'groupResultId' => $groupResultId,
             'resultId' => $resultId,
-            'renderer' => $renderer,
+            'renderer' => $renderer
         );
     }
 
@@ -169,7 +169,7 @@ class ResultHandler
             'title' => $title,
             'groupResultId' => $groupResultId,
             'resultId' => $resultId,
-            'renderer' => $renderer,
+            'renderer' => $renderer
         );
     }
 
@@ -187,7 +187,7 @@ class ResultHandler
     {
         $this->_groupStackColumns[] = array(
             'groupId' => $groupId,
-            'printId' => $printId,
+            'printId' => $printId
         );
     }
 
@@ -206,7 +206,7 @@ class ResultHandler
     {
         $this->_splitColumns[] = array(
             'resultId' => $resultId,
-            'renderer' => $renderer,
+            'renderer' => $renderer
         );
     }
 

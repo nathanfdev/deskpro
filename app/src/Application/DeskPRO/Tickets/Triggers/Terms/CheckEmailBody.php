@@ -62,6 +62,7 @@ class CheckEmailBody extends AbstractTriggerTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -80,11 +81,11 @@ class CheckEmailBody extends AbstractTriggerTerm
 
         if ($html = $reader->getBodyHtml()->getBodyUtf8()) {
             $strings[] = $html;
-            $strings[] = trim(preg_replace('#\s+#', ' ', strip_tags($html)));
+            $strings[] = trim(preg_replace('#\s+#' , ' ', strip_tags($html)));
         }
         if ($txt = $reader->getBodyText()->getBodyUtf8()) {
             $strings[] = $txt;
-            $strings[] = trim(preg_replace('#\s+#', ' ', $txt));
+            $strings[] = trim(preg_replace('#\s+#' , ' ', $txt));
         }
 
         $strings = array_unique($strings);

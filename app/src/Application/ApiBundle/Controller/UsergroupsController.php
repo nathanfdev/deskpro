@@ -60,6 +60,7 @@ class UsergroupsController extends AbstractController implements ProtectedContro
         return $multi;
     }
 
+
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -110,6 +111,7 @@ class UsergroupsController extends AbstractController implements ProtectedContro
         return $this->createApiResponse(array('group' => $data));
     }
 
+
     ###################################################################################################################
     # delete
     ####################################################################################################################
@@ -132,8 +134,9 @@ class UsergroupsController extends AbstractController implements ProtectedContro
 
         $this->db->executeUpdate("DELETE FROM permissions_cache");
 
-        return $this->createApiDeleteResponse(array('old_group_id' => (int) $id));
+        return $this->createApiDeleteResponse(array('old_group_id' => (int)$id));
     }
+
 
     ####################################################################################################################
     # save

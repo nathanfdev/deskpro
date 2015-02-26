@@ -36,4 +36,5 @@ namespace Application\DeskPRO\EntityRepository;
 
 class RoundRobinAgent extends AbstractEntityRepository
 {
+
 }

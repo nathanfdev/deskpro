@@ -81,9 +81,9 @@ class AffectedFiltersCheck
     private $has_run = false;
 
     /**
-     * @param Ticket                                     $ticket
+     * @param Ticket $ticket
      * @param \Application\DeskPRO\Entity\TicketFilter[] $filters
-     * @param Logger                                     $logger
+     * @param Logger $logger
      */
     public function __construct(Ticket $ticket, array $filters, Logger $logger)
     {
@@ -217,7 +217,6 @@ class AffectedFiltersCheck
     public function getFieldVersions()
     {
         $this->_run();
-
         return $this->field_versions;
     }
 
@@ -229,7 +228,6 @@ class AffectedFiltersCheck
     public function getAffectedFilters()
     {
         $this->_run();
-
         return $this->affected_filters;
     }
 
@@ -244,7 +242,6 @@ class AffectedFiltersCheck
     public function getAffectedFiltersWithNoChanges()
     {
         $this->_run();
-
         return $this->affected_filters_nochange;
     }
 
@@ -259,7 +256,7 @@ class AffectedFiltersCheck
         $this->_run();
         if (!$this->affected_filters) {
             return array();
-        } elseif (!$this->affected_filters_nochange) {
+        } else if (!$this->affected_filters_nochange) {
             return $this->affected_filters;
         }
 

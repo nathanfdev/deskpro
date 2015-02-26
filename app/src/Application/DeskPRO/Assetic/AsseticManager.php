@@ -109,7 +109,7 @@ class AsseticManager
 
         $this->static_path  = $static_path;
         $this->build_subdir = $build_subdir;
-        $this->write_path   = $static_path.'/'.$this->build_subdir;
+        $this->write_path   = $static_path . '/' . $this->build_subdir;
 
         $this->asset_manager = new \Assetic\AssetManager();
         $this->filter_manager = new \Assetic\FilterManager();
@@ -138,6 +138,7 @@ class AsseticManager
         }
     }
 
+
     /**
      * @param  string                           $name
      * @return \Assetic\Factory\AssetCollection
@@ -150,10 +151,11 @@ class AsseticManager
         $factory->setDebug($this->debug);
         $factory->setAssetManager($this->asset_manager);
 
-        $asset = $factory->createAsset(array('@'.$name));
+        $asset = $factory->createAsset(array('@' . $name));
 
         return $asset;
     }
+
 
     /**
      * Write the bundle file to the filesystem
@@ -166,7 +168,7 @@ class AsseticManager
         $info = $this->getBundleConfig($name);
         $asset = $this->getBuildAsset($name);
 
-        $file = $this->write_path.'/'.$info['out'];
+        $file = $this->write_path . '/' . $info['out'];
         $dir = dirname($file);
 
         if (!file_exists($dir)) {
@@ -182,15 +184,15 @@ class AsseticManager
         if (strpos($info['out'], '.css') !== false) {
             // Sprite refs are per file
             $sprite_id = preg_replace('#[^a-zA-Z0-9_\-]#', '', str_replace('.css', '', $info['out']));
-            $content = preg_replace('#sprite-ref: ([A-Za-z0-9_\-]+)#', 'sprite-ref: '.$sprite_id.'_$1', $content);
-            $content = preg_replace('#sprite: ([A-Za-z0-9_\-]+)#', 'sprite: '.$sprite_id.'_$1', $content);
-            $content = preg_replace('#sprite-image: url\(\'?(.*)/(.*?)\.png\'?\)#', 'sprite-image: url($1/'.$sprite_id.'_$2.png)', $content);
+            $content = preg_replace('#sprite-ref: ([A-Za-z0-9_\-]+)#', 'sprite-ref: '. $sprite_id .'_$1', $content);
+            $content = preg_replace('#sprite: ([A-Za-z0-9_\-]+)#', 'sprite: '. $sprite_id .'_$1', $content);
+            $content = preg_replace('#sprite-image: url\(\'?(.*)/(.*?)\.png\'?\)#', 'sprite-image: url($1/'. $sprite_id .'_$2.png)', $content);
         }
 
         if (isset($info['post_filters'])) {
             $ext = Strings::getExtension($file);
             $hash = substr(sha1(time().rand(11111, 99999)), 0, 7);
-            $new_file = dirname($file).'/'.$hash.'.'.$ext;
+            $new_file = dirname($file) . '/' . $hash . '.' . $ext;
 
             file_put_contents($new_file, $content);
 
@@ -259,7 +261,7 @@ class AsseticManager
 
         $info = $this->getBundleConfig($name);
 
-        return $this->asset_helper->getUrl($this->build_subdir.'/'.$info['out']);
+        return $this->asset_helper->getUrl($this->build_subdir . '/' . $info['out']);
     }
 
     /**
@@ -305,7 +307,7 @@ class AsseticManager
     public function isBuildStale($name)
     {
         $info = $this->getBundleConfig($name);
-        $build_file = $this->write_path.'/'.$info['out'];
+        $build_file = $this->write_path . '/' . $info['out'];
 
         if (!file_exists($build_file)) {
             return true;
@@ -328,7 +330,7 @@ class AsseticManager
     public function isBuildExist($name)
     {
         $info = $this->getBundleConfig($name);
-        $build_file = $this->write_path.'/'.$info['out'];
+        $build_file = $this->write_path . '/' . $info['out'];
 
         return file_exists($build_file);
     }
@@ -356,7 +358,7 @@ class AsseticManager
         $coll = new \Assetic\Asset\AssetCollection(array(), $filters);
         if (isset($info['files'])) {
             foreach ($info['files'] as $f) {
-                $path = $this->static_path.'/'.$f;
+                $path = $this->static_path . '/' . $f;
                 $coll->add(new \Assetic\Asset\FileAsset($path));
             }
         }
@@ -457,7 +459,7 @@ class AsseticManager
                     "ConvertLevel3AtKeyframes"      => false,
                     "ConvertLevel3Properties"       => false,
                     "Variables"                     => false,
-                    "RemoveLastDelarationSemiColon" => true,
+                    "RemoveLastDelarationSemiColon" => true
                 ));
                 $filter->setPlugins(array(
                     "Variables"                     => false,
@@ -467,7 +469,7 @@ class AsseticManager
                     "ConvertNamedColors"            => true,
                     "CompressColorValues"           => false,
                     "CompressUnitValues"            => true,
-                    "CompressExpressionValues"      => true,
+                    "CompressExpressionValues"      => true
                 ));
                 break;
             case 'css_path':

@@ -65,8 +65,8 @@ class QueueProc
 
     /**
      * @param SourceMapperInterface $source_mapper
-     * @param SourceSender          $source_sender
-     * @param LoggerInterface       $logger
+     * @param SourceSender $source_sender
+     * @param LoggerInterface $logger
      */
     public function __construct(SourceMapperInterface $source_mapper, SourceSender $source_sender, LoggerInterface $logger)
     {
@@ -98,12 +98,8 @@ class QueueProc
         $this->logger->info(sprintf("Processing %d -- %s", $r['id'], substr($r['header_subject'], 0, 85)));
         $this->logger->debug(sprintf("From: %s", $r['from_email'] ?: '<none>'));
         $this->logger->debug(sprintf("To: %s", $r['to_emails'] ?: '<none>'));
-        if ($r['cc_emails']) {
-            $this->logger->debug(sprintf("CC: %s", $r['cc_emails']));
-        }
-        if ($r['bcc_emails']) {
-            $this->logger->debug(sprintf("BCC: %s", $r['bcc_emails']));
-        }
+        if ($r['cc_emails']) $this->logger->debug(sprintf("CC: %s", $r['cc_emails']));
+        if ($r['bcc_emails']) $this->logger->debug(sprintf("BCC: %s", $r['bcc_emails']));
 
         // Inc exec count
         $r['exec_count']++;
@@ -138,8 +134,9 @@ class QueueProc
         }
     }
 
+
     /**
-     * @param  array          $sendmail
+     * @param array $sendmail
      * @return \DateTime|null
      */
     private function getNextRetry(array $sendmail)

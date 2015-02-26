@@ -91,7 +91,7 @@ class NewTicketType extends AbstractType
      */
     protected function buildPersonForm(FormBuilderInterface $builder)
     {
-        if ($this->person and $this->person['id']) {
+        if ($this->person AND $this->person['id']) {
             $this->mock_person = $this->person;
         } else {
             $this->person = null;
@@ -130,7 +130,7 @@ class NewTicketType extends AbstractType
         if ($deps = App::getDataService('Department')->getPersonDepartments(App::getCurrentPerson(), 'tickets')) {
             $ticket_builder->add('department_id', 'choice', array(
                 'choices' => Arrays::selectArrayFromHierarchy($deps, 'id', 'title'),
-                'required' => false,
+                'required' => false
             ));
         }
 

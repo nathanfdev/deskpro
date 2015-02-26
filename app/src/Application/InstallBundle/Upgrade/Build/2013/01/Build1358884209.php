@@ -42,7 +42,7 @@ class Build1358884209 extends AbstractBuild
 
         $types = array(
             'custom_data_ticket' => 'custom_def_ticket',
-            'custom_data_person' => 'custom_def_people',
+            'custom_data_person' => 'custom_def_people'
         );
 
         foreach ($types as $data_table => $def_table) {

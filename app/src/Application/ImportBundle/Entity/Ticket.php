@@ -176,13 +176,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  int   $ref
+     * @param int $ref
      * @return $this
      */
     public function setRef($ref)
     {
         $this->ref = $ref;
-
         return $this;
     }
 
@@ -195,13 +194,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  string $department
+     * @param string $department
      * @return $this
      */
     public function setDepartment($department)
     {
         $this->department = $department;
-
         return $this;
     }
 
@@ -218,8 +216,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
      */
     public function setPersonEmail($person_email)
     {
-        $this->person_email = (string) $person_email;
-
+        $this->person_email = (string)$person_email;
         return $this;
     }
 
@@ -232,13 +229,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  string $agent_email
+     * @param string $agent_email
      * @return $this
      */
     public function setAgentEmail($agent_email)
     {
-        $this->agent_email = (string) $agent_email;
-
+        $this->agent_email = (string)$agent_email;
         return $this;
     }
 
@@ -251,13 +247,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  int   $agent_team
+     * @param int $agent_team
      * @return $this
      */
     public function setAgentTeam($agent_team)
     {
         $this->agent_team = $agent_team;
-
         return $this;
     }
 
@@ -270,13 +265,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  string $status
+     * @param string $status
      * @return $this
      */
     public function setStatus($status)
     {
         $this->status = $status;
-
         return $this;
     }
 
@@ -307,13 +301,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  DateTime $date_created
+     * @param DateTime $date_created
      * @return $this
      */
     public function setDateCreated(DateTime $date_created)
     {
         $this->date_created = $date_created;
-
         return $this;
     }
 
@@ -326,13 +319,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  DateTime $date_archived
+     * @param DateTime $date_archived
      * @return $this
      */
     public function setDateArchived(DateTime $date_archived)
     {
         $this->date_archived = $date_archived;
-
         return $this;
     }
 
@@ -345,13 +337,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  DateTime $date_resolved
+     * @param DateTime $date_resolved
      * @return $this
      */
     public function setDateResolved(DateTime $date_resolved)
     {
         $this->date_resolved = $date_resolved;
-
         return $this;
     }
 
@@ -364,13 +355,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  string $subject
+     * @param string $subject
      * @return $this
      */
     public function setSubject($subject)
     {
         $this->subject = $subject;
-
         return $this;
     }
 
@@ -383,13 +373,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  string $priority
+     * @param string $priority
      * @return $this
      */
     public function setPriority($priority)
     {
         $this->priority = $priority;
-
         return $this;
     }
 
@@ -402,13 +391,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  string $language
+     * @param string $language
      * @return $this
      */
     public function setLanguage($language)
     {
         $this->language = $language;
-
         return $this;
     }
 
@@ -421,13 +409,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  string $category
+     * @param string $category
      * @return $this
      */
     public function setCategory($category)
     {
         $this->category = $category;
-
         return $this;
     }
 
@@ -440,13 +427,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  string $workflow
+     * @param string $workflow
      * @return $this
      */
     public function setWorkflow($workflow)
     {
         $this->workflow = $workflow;
-
         return $this;
     }
 
@@ -459,13 +445,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  string $product
+     * @param string $product
      * @return $this
      */
     public function setProduct($product)
     {
         $this->product = $product;
-
         return $this;
     }
 
@@ -478,13 +463,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  string $organization
+     * @param string $organization
      * @return $this
      */
     public function setOrganization($organization)
     {
         $this->organization = $organization;
-
         return $this;
     }
 
@@ -497,13 +481,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  boolean $is_hold
+     * @param boolean $is_hold
      * @return $this
      */
     public function setAsHold($is_hold)
     {
         $this->is_hold = $is_hold;
-
         return $this;
     }
 
@@ -516,13 +499,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  int   $urgency
+     * @param int $urgency
      * @return $this
      */
     public function setUrgency($urgency)
     {
         $this->urgency = $urgency;
-
         return $this;
     }
 
@@ -535,13 +517,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  string $participant
+     * @param string $participant
      * @return $this
      */
     public function addParticipant($participant)
     {
         $this->participants[] = $participant;
-
         return $this;
     }
 
@@ -559,7 +540,6 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     public function addLabel($label)
     {
         $this->labels[] = $label;
-
         return $this;
     }
 
@@ -574,13 +554,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     /**
      * Add a ticket message
      *
-     * @param  TicketMessage $message
+     * @param TicketMessage $message
      * @return $this
      */
     public function addMessage(TicketMessage $message)
     {
         $this->messages->attach($message);
-
         return $this;
     }
 
@@ -593,13 +572,12 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
     }
 
     /**
-     * @param  CustomField $custom_field
+     * @param CustomField $custom_field
      * @return $this
      */
     public function addCustomField(CustomField $custom_field)
     {
         $this->custom_fields->attach($custom_field);
-
         return $this;
     }
 
@@ -608,7 +586,7 @@ final class Ticket extends AbstractEntity implements PersonAwareInterface, Label
      */
     public function toArray()
     {
-        if (! $this->date_created) {
+        if ( ! $this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 

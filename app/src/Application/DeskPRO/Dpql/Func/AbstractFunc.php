@@ -77,7 +77,7 @@ abstract class AbstractFunc
         'UTC' => 'Utc',
         'X' => 'X',
         'Y' => 'Y',
-        'YEAR' => 'Year',
+        'YEAR' => 'Year'
     );
 
     /**
@@ -135,7 +135,7 @@ abstract class AbstractFunc
     {
         $name = strtoupper($name);
         if (isset(self::$_functionMap[$name])) {
-            $map = __NAMESPACE__.'\\'.self::$_functionMap[$name];
+            $map = __NAMESPACE__ . '\\' . self::$_functionMap[$name];
 
             return new $map($name, $arguments);
         } else {
@@ -159,7 +159,7 @@ abstract class AbstractFunc
         } elseif ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\Number) {
             return $part->number;
         } else {
-            throw new DpqlException('Only literal values may be used for '.$this->_name.'() parameters.');
+            throw new DpqlException('Only literal values may be used for ' . $this->_name . '() parameters.');
         }
     }
 }

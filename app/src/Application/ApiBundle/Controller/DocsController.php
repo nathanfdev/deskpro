@@ -119,7 +119,7 @@ class DocsController extends AbstractController
 
     private function getResourcePath($res)
     {
-        return DP_ROOT.'/src/Application/ApiBundle/Resources/views/SwaggerDocs/'.ltrim($res, '/').'.json';
+        return DP_ROOT.'/src/Application/ApiBundle/Resources/views/SwaggerDocs/' . ltrim($res, '/') . '.json';
     }
 
     private function serveResource($res)

@@ -70,7 +70,7 @@ class Cache extends AbstractEntityRepository
 
         App::getDb()->executeUpdate(
             "REPLACE INTO cache SET id = ?, data = ?, date_expire = ?", array(
-            $id, $data, $expire,
+            $id, $data, $expire
         ));
 
         return true;
@@ -78,7 +78,7 @@ class Cache extends AbstractEntityRepository
 
     public function delete($id)
     {
-        return App::getDb()->executeUpdate("DELETE FROM cache WHERE id LIKE ?", array($id.'%'));
+        return App::getDb()->executeUpdate("DELETE FROM cache WHERE id LIKE ?", array($id . '%'));
     }
 
     /**

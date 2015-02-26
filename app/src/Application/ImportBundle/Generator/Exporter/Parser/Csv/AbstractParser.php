@@ -70,7 +70,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * Get csv reader config
      *
-     * @param  string    $record_type
+     * @param string $record_type
      * @return CsvConfig
      */
     protected function getReaderConfig($record_type)
@@ -81,13 +81,14 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * Returns rows count of csv file
      *
-     * @param  CsvConfig $config
+     * @param CsvConfig $config
      * @return int
      */
     protected function getReaderCount(CsvConfig $config)
     {
         try {
             return $this->reader->getRowsCount($config);
+
         } catch (NotFoundResourceException $e) {
             $this->logWarning(sprintf('Resource `%s` not found (Skipping)', $config->getResource()));
         }
@@ -98,7 +99,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * Returns a collection of exporting data
      *
-     * @param  CsvConfig $config
+     * @param CsvConfig $config
      * @return array
      */
     protected function getReaderData(CsvConfig $config)
@@ -110,8 +111,10 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             }
 
             return $data;
+
         } catch (NotFoundResourceException $e) {
             $this->logWarning(sprintf('Resource `%s` not found (Skipping)', $config->getResource()));
+
         } catch (CsvReaderException $e) {
             $this->logWarning(sprintf(
                 'Csv reader throws an exception while reading `%s`. Reason: %s',
@@ -148,6 +151,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
                 } else {
                     $this->logWarning(sprintf('Invalid attachment record `%d` found (Skipping)', $num));
                 }
+
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid attachment record `%d` found (Skipping): %s',
@@ -173,7 +177,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
         if ($this->isAttachmentValid($attachment, $ref_column)) {
             $entity = new Entity\Attachment();
             $entity
-                ->setDestination($destination_prefix.$attachment[$ref_column])
+                ->setDestination($destination_prefix . $attachment[$ref_column])
                 ->setOid($attachment[$ref_column])
                 ->setPersonEmail($attachment['person'])
                 ->setBlobUrl($attachment['blob_url'])

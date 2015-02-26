@@ -48,6 +48,7 @@ class LanguageAction extends AbstractAction implements PermissionableAction
         $this->language_id = $language;
     }
 
+
     /**
      * Apply the property to the ticket
      *
@@ -57,6 +58,7 @@ class LanguageAction extends AbstractAction implements PermissionableAction
     {
         $ticket['language_id'] = $this->language_id;
     }
+
 
     /**
      * {@inheritDoc}
@@ -74,6 +76,7 @@ class LanguageAction extends AbstractAction implements PermissionableAction
         return true;
     }
 
+
     /**
      * Get an array of actions that would be performed on the ticket
      *
@@ -86,9 +89,10 @@ class LanguageAction extends AbstractAction implements PermissionableAction
         }
 
         return array(
-            array('action' => 'language', 'language_id' => $this->language_id),
+            array('action' => 'language', 'language_id' => $this->language_id)
         );
     }
+
 
     /**
      * Get the language id
@@ -100,6 +104,7 @@ class LanguageAction extends AbstractAction implements PermissionableAction
         return $this->language_id;
     }
 
+
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
@@ -108,6 +113,7 @@ class LanguageAction extends AbstractAction implements PermissionableAction
     {
         return $other_action;
     }
+
 
     /**
      * @return string

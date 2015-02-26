@@ -51,6 +51,7 @@ class FilterTermComposite implements FilterTermInterface
      */
     private $op = 'AND';
 
+
     /**
      * @param FilterTermInterface[] $terms
      * @param string                $op
@@ -60,6 +61,7 @@ class FilterTermComposite implements FilterTermInterface
         $this->setAll($terms);
         $this->setOperator($op);
     }
+
 
     /**
      * Change the logic operator between AND/OR ('all must match' versus 'any match')
@@ -71,6 +73,7 @@ class FilterTermComposite implements FilterTermInterface
         $this->op = (strtoupper($op) == self::OP_AND ? self::OP_AND : self::OP_OR);
     }
 
+
     /**
      * @return string
      */
@@ -79,6 +82,7 @@ class FilterTermComposite implements FilterTermInterface
         return $this->op;
     }
 
+
     /**
      * @param FilterTermInterface $term
      */
@@ -86,6 +90,7 @@ class FilterTermComposite implements FilterTermInterface
     {
         $this->terms[] = $term;
     }
+
 
     /**
      * @param FilterTermInterface[] $terms
@@ -98,6 +103,7 @@ class FilterTermComposite implements FilterTermInterface
         }
     }
 
+
     /**
      * @return FilterTermInterface[]
      */
@@ -105,6 +111,7 @@ class FilterTermComposite implements FilterTermInterface
     {
         return $this->terms;
     }
+
 
     /**
      * @param  ExecutorContextInterface $context

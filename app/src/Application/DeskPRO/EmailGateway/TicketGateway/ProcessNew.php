@@ -63,6 +63,7 @@ class ProcessNew extends ProcessAbstract
      */
     protected $cleaner;
 
+
     /**
      * @param EmailAccount        $account
      * @param Person              $person
@@ -70,7 +71,8 @@ class ProcessNew extends ProcessAbstract
      */
     public function __construct(EmailAccount $account, Person $person, TicketIncomingEmail $ticket_email,
         Translate $translator
-    ) {
+    )
+    {
         $this->account       = $account;
         $this->person        = $person;
         $this->ticket_email  = $ticket_email;
@@ -78,6 +80,7 @@ class ProcessNew extends ProcessAbstract
         $this->cleaner       = App::get('deskpro.core.input_cleaner');
         $this->translator    = $translator;
     }
+
 
     /**
      * @return Ticket|mixed
@@ -218,7 +221,7 @@ class ProcessNew extends ProcessAbstract
             $this->logMessage('[TicketGatewayProcessor] No existing person found, will try and create it');
             $person = Person::newContactPerson(array(
                 'email' => $this->reader->getFromAddress()->getEmail(),
-                'name'  => $this->reader->getFromAddress()->getNameUtf8() ?: '',
+                'name'  => $this->reader->getFromAddress()->getNameUtf8() ?: ''
             ));
 
             App::getDb()->beginTransaction();
@@ -317,7 +320,7 @@ class ProcessNew extends ProcessAbstract
         if ($this->person && !$this->person->isNewPerson()) {
             if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, null, 10800, $this->getLogger())) {
                 $this->setError(EmailSource::ERR_DUPE);
-                $this->logMessage('[TicketGatewayProcessor] Duplicate message '.$dupe_message->getId());
+                $this->logMessage('[TicketGatewayProcessor] Duplicate message ' . $dupe_message->getId());
 
                 return $dupe_message;
             }
@@ -342,6 +345,7 @@ class ProcessNew extends ProcessAbstract
         App::getDb()->beginTransaction();
 
         try {
+
             if ($this->reader->getCcAddresses() || count($this->reader->getToAddresses()) > 1) {
                 $this->logMessage('[TicketGatewayProcessor] Has CC');
                 $this->handleCc($ticket, $this->reader->getDeliveredAddresses());

@@ -67,7 +67,7 @@ class LogTrackerHandler extends AbstractProcessingHandler
     private $max_history;
 
     /**
-     * @param int $max_history How many messages to keep in memory before they are popped off the end
+     * @param int $max_history   How many messages to keep in memory before they are popped off the end
      */
     public function __construct($max_history = 5000)
     {
@@ -86,7 +86,7 @@ class LogTrackerHandler extends AbstractProcessingHandler
      * Start tracking channels.
      *
      * @param array $channels
-     * @param bool  $clear_messages
+     * @param bool $clear_messages
      */
     public function startTracking(array $channels, $clear_messages = true)
     {
@@ -108,7 +108,7 @@ class LogTrackerHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @param  array $record
+     * @param array $record
      * @return bool
      */
     public function isHandling(array $record)
@@ -143,12 +143,11 @@ class LogTrackerHandler extends AbstractProcessingHandler
         foreach ($this->messages as $x) {
             $ret[] = $x[1];
         }
-
         return implode("\n", $ret);
     }
 
     /**
-     * @param  array  $channels
+     * @param array $channels
      * @return string
      */
     public function getMessagesForChannels(array $channels)
@@ -161,7 +160,6 @@ class LogTrackerHandler extends AbstractProcessingHandler
                 $ret[] = $x[1];
             }
         }
-
         return implode("\n", $ret);
     }
 }

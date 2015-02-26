@@ -132,6 +132,7 @@ class CategoryHierarchy
         return $root_ids;
     }
 
+
     /**
      * Get all root nodes
      *
@@ -148,6 +149,7 @@ class CategoryHierarchy
         return $this->repos->getByIds($root_ids, true);
     }
 
+
     /**
      * Get all category IDs that exists
      *
@@ -160,6 +162,7 @@ class CategoryHierarchy
         return $this->_cat_ids;
     }
 
+
     /**
      * Get a plain hierarchy array
      *
@@ -167,9 +170,7 @@ class CategoryHierarchy
      */
     public function getInHierarchy($reset = false)
     {
-        if (!$reset && $this->_cat_hierarchy !== null) {
-            return $this->_cat_hierarchy;
-        }
+        if (!$reset && $this->_cat_hierarchy !== null) return $this->_cat_hierarchy;
 
         if (is_array($reset)) {
             $cats = $reset;
@@ -218,7 +219,7 @@ class CategoryHierarchy
 
         $this->_cat_ids = array();
         foreach ($cats as &$c) {
-            $c['url_slug'] = $c['id'].'-'.Strings::slugifyTitle($c['title']);
+            $c['url_slug'] = $c['id'] . '-' . Strings::slugifyTitle($c['title']);
 
             if (!isset($c['user_title']) || !$c['user_title']) {
                 $c['user_title'] = $c['title'];
@@ -242,6 +243,7 @@ class CategoryHierarchy
         return $this->_cat_hierarchy;
     }
 
+
     /**
      * Get an array of child=>parent for all categories.
      *
@@ -251,6 +253,7 @@ class CategoryHierarchy
     {
         return $this->_cat_parent_map;
     }
+
 
     /**
      * Gets the names for each cat, indexed by cat ID.
@@ -273,6 +276,8 @@ class CategoryHierarchy
 
         return $ret;
     }
+
+
 
     /**
      * Gets a flat array of cat names, indexed by cat ID. Children
@@ -297,7 +302,7 @@ class CategoryHierarchy
             $name = $basenames;
             $name[] = $cat['title'];
 
-            if (!$cat['children'] or $include_tops) {
+            if (!$cat['children'] OR $include_tops) {
                 $names[$k] = implode($sep, $name);
             }
             if ($cat['children']) {
@@ -307,6 +312,7 @@ class CategoryHierarchy
 
         return $names;
     }
+
 
     /**
      * Get a flat hierarchy, where children are in the main array but have an increasing 'depth'
@@ -319,6 +325,7 @@ class CategoryHierarchy
 
         return $this->_cat_hierarchy_flat;
     }
+
 
     /**
      * Get IDs of parents in order (left to right)
@@ -342,6 +349,7 @@ class CategoryHierarchy
         return $ids;
     }
 
+
     /**
      * Get category entities for all parents
      *
@@ -358,6 +366,7 @@ class CategoryHierarchy
 
         return $this->repos->getByIds($ids, true);
     }
+
 
     /**
      * Get children IDs of a category
@@ -408,6 +417,7 @@ class CategoryHierarchy
         return $child_ids;
     }
 
+
     /**
      * Get children IDs of a category
      *
@@ -433,6 +443,7 @@ class CategoryHierarchy
         return $this->getChildren($category, $direct);
     }
 
+
     /**
      * Get an array of all cat IDs in a tree including the parent itself (optionally disabled).
      *
@@ -452,6 +463,7 @@ class CategoryHierarchy
         return $ids;
     }
 
+
     /**
      * Get IDs of all categories that are leafs (dont have children)
      *
@@ -466,6 +478,10 @@ class CategoryHierarchy
             WHERE c2.id IS NULL
         ");
     }
+
+
+
+
 
     public function getTotalCounts(array $counts)
     {

@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\EmailGateway\Reader;
 
+
 class ValueReader extends AbstractReader
 {
     /** @var array  */
@@ -58,6 +59,7 @@ class ValueReader extends AbstractReader
 
     public function _kill()
     {
+
     }
 
     public function setRawSource($source)

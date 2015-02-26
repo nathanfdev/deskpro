@@ -46,6 +46,7 @@ class PersonDetector
      */
     private $em;
 
+
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
@@ -61,6 +62,7 @@ class PersonDetector
     {
         return $this->em->getRepository('DeskPRO:Person')->findOneByPhoneNumber($from_number);
     }
+
 
     /**
      * creates a person with the given phone number

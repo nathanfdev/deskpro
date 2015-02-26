@@ -85,7 +85,7 @@ class TicketsController extends AbstractController
         switch ($sort) {
             case 'department':
                 $dql_join = 'LEFT JOIN ticket.department d'
-                    ."\nLEFT JOIN d.parent d_parent";
+                    . "\nLEFT JOIN d.parent d_parent";
                 $sort_dql = 'd_parent.display_order, d.display_order, ticket.id DESC';
                 break;
 
@@ -110,6 +110,7 @@ class TicketsController extends AbstractController
             ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person));
         } else {
             if ($this->person->organization && $this->person->organization_manager) {
+
                 // Managers can always see their org tickets, so dont show them
                 // tickets if they are of their own org because those will be on the org page
                 $tickets = $this->em->createQuery("
@@ -121,6 +122,7 @@ class TicketsController extends AbstractController
                     ORDER BY $sort_dql
                 ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person, 'org' => $this->person->organization));
             } else {
+
                 $tickets = $this->em->createQuery("
                     SELECT ticket
                     FROM DeskPRO:Ticket ticket
@@ -143,7 +145,7 @@ class TicketsController extends AbstractController
         foreach ($tickets as $t) {
             $ticket_ids[] = $t['id'];
             $all_tickets[] = $t;
-            if ($t['status'] == 'awaiting_agent' or $t['status'] == 'awaiting_user') {
+            if ($t['status'] == 'awaiting_agent' OR $t['status'] == 'awaiting_user') {
                 $active_tickets[] = $t;
             } else {
                 $resolved_tickets[] = $t;
@@ -213,7 +215,7 @@ class TicketsController extends AbstractController
 
             case 'department':
                 $dql_join = 'LEFT JOIN ticket.department d'
-                    ."\nLEFT JOIN d.parent d_parent";
+                    . "\nLEFT JOIN d.parent d_parent";
                 $sort_dql = 'd_parent.display_order, d.display_order, ticket.id DESC';
                 break;
 
@@ -254,7 +256,7 @@ class TicketsController extends AbstractController
         foreach ($tickets as $t) {
             $ticket_ids[] = $t['id'];
             $all_tickets[] = $t;
-            if ($t['status'] == 'awaiting_agent' or $t['status'] == 'awaiting_user') {
+            if ($t['status'] == 'awaiting_agent' OR $t['status'] == 'awaiting_user') {
                 $active_tickets[] = $t;
             } else {
                 $resolved_tickets[] = $t;
@@ -304,6 +306,7 @@ class TicketsController extends AbstractController
         ));
     }
 
+
     ################################################################################
     # add-reply
     ################################################################################
@@ -348,8 +351,8 @@ class TicketsController extends AbstractController
                     'errors' => $errors,
                     'error_fields' => $error_fields,
                     'newreply' => $newreply,
-                    'newreply_form' => $form,
-                ),
+                    'newreply_form' => $form
+                )
             ));
         }
 
@@ -368,7 +371,7 @@ class TicketsController extends AbstractController
 
         return $this->render('UserBundle:Tickets:manage-participants.html.twig', array(
             'ticket' => $ticket,
-            'newpart_form' => $newpart_form->createView(),
+            'newpart_form' => $newpart_form->createView()
         ));
     }
 
@@ -440,7 +443,7 @@ class TicketsController extends AbstractController
         $person  = $this->person->getId() ? $this->person : $ticket->person;
 
         // Verify ticket and message
-        if ($auth != $ticket->auth or !$message or $message['ticket_id'] != $ticket['id'] or $message['is_agent_note'] or !$message['person']['is_agent']) {
+        if ($auth != $ticket->auth OR !$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent']) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
         }
 
@@ -503,7 +506,7 @@ class TicketsController extends AbstractController
         $person  = $this->person->getId() ? $this->person : $ticket->person;
 
         // Verify ticket and message
-        if ($auth != $ticket->auth or !$message or $message['ticket_id'] != $ticket['id'] or $message['is_agent_note'] or !$message['person']['is_agent']) {
+        if ($auth != $ticket->auth OR !$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent']) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
         }
 
@@ -549,7 +552,7 @@ class TicketsController extends AbstractController
         $person  = $this->person->getId() ? $this->person : $ticket->person;
 
         // Verify ticket and message
-        if (!$message or $message['ticket_id'] != $ticket['id'] or $message['is_agent_note'] or !$message['person']['is_agent']) {
+        if (!$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent']) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
         }
 
@@ -576,7 +579,7 @@ class TicketsController extends AbstractController
             'ticket' => $ticket,
             'message' => $message,
             'feedback' => $feedback,
-            'close_window' => $this->in->getBool('close_win'),
+            'close_window' => $this->in->getBool('close_win')
         ));
     }
 
@@ -634,6 +637,7 @@ class TicketsController extends AbstractController
         return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
     }
 
+
     /**
      * @return \Application\DeskPRO\Entity\Ticket
      */
@@ -662,7 +666,7 @@ class TicketsController extends AbstractController
             && $this->person->organization_manager
         );
 
-        if (!$is_participant and !$is_org_manager and !isset($this->session_allowed[$ticket['id']])) {
+        if (!$is_participant AND !$is_org_manager AND !isset($this->session_allowed[$ticket['id']])) {
             throw $this->createNotFoundException();
         }
 
@@ -670,7 +674,7 @@ class TicketsController extends AbstractController
             $person = $this->em->getRepository('DeskPRO:Person')->find($this->session_allowed[$ticket['id']]['person_id']);
 
             // Set the current person context
-            if ($person['is_user'] and $this->person != $person) {
+            if ($person['is_user'] AND $this->person != $person) {
                 $this->person = $person;
                 App::setCurrentPerson($person);
             } else {

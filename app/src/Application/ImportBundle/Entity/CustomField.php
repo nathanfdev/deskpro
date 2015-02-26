@@ -71,13 +71,12 @@ final class CustomField extends AbstractEntity
     }
 
     /**
-     * @param  string $key
+     * @param string $key
      * @return $this
      */
     public function setKey($key)
     {
-        $this->key = (string) $key;
-
+        $this->key = (string)$key;
         return $this;
     }
 
@@ -90,13 +89,12 @@ final class CustomField extends AbstractEntity
     }
 
     /**
-     * @param  mixed $value
+     * @param mixed $value
      * @return $this
      */
     public function setValue($value)
     {
         $this->value = $value;
-
         return $this;
     }
 

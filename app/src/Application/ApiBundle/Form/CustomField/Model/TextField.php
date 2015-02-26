@@ -101,7 +101,7 @@ class TextField extends CustomFieldAbstract
         } elseif ($this->regex) {
             // No delims
             if ($this->regex[0] != substr($this->regex, -1, 1)) {
-                $this->regex = '/'.$this->regex.'/';
+                $this->regex = '/' . $this->regex . '/';
             }
 
             $this->validation_type = 'regex';
@@ -128,7 +128,7 @@ class TextField extends CustomFieldAbstract
 
             // No delims
             if ($this->agent_regex[0] != substr($this->agent_regex, -1, 1)) {
-                $this->agent_regex = '/'.$this->agent_regex.'/';
+                $this->agent_regex = '/' . $this->agent_regex . '/';
             }
 
             $field->setOption('agent_required', null);

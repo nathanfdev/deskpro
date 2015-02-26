@@ -39,4 +39,5 @@ namespace Application\UserBundle\Controller;
  */
 interface RequireUserInterface
 {
+
 }

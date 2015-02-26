@@ -49,6 +49,7 @@ class StringEmail extends AbstractValidator implements StaticValidator
         return $validator->isValid($value);
     }
 
+
     /**
      * Check $value to see if its valid.
      *
@@ -92,7 +93,7 @@ class StringEmail extends AbstractValidator implements StaticValidator
             return false;
         }
 
-        if (!preg_match($regex_domain, $domain) and !preg_match($regex_ip, $domain)) {
+        if (!preg_match($regex_domain, $domain) AND !preg_match($regex_ip, $domain)) {
             $this->addError('bad_email_domain');
 
             return false;

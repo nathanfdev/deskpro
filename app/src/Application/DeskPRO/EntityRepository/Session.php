@@ -52,12 +52,13 @@ class Session extends AbstractEntityRepository
         $check = App::getDb()->fetchColumn("
             SELECT COUNT(*)
             FROM sessions
-            WHERE date_last >= ? AND active_status = ? AND is_person = 1 ".($for_chat ? " AND is_chat_available = 1 " : '')."
+            WHERE date_last >= ? AND active_status = ? AND is_person = 1 " . ($for_chat ? " AND is_chat_available = 1 " : '') . "
             LIMIT 1
         ", array($datecut, 'available'));
 
         return $check;
     }
+
 
     /**
      * Get an array of agent IDs
@@ -82,6 +83,7 @@ class Session extends AbstractEntityRepository
         return $ids;
     }
 
+
     /**
      * @return Session
      */
@@ -93,12 +95,13 @@ class Session extends AbstractEntityRepository
         }
 
         $session = $this->find($session_id);
-        if (!$session or !$session->checkSessionCode($sess_code)) {
+        if (!$session OR !$session->checkSessionCode($sess_code)) {
             return null;
         }
 
         return $session;
     }
+
 
     /**
      * Find an active session that is tied to a visitor.
@@ -121,6 +124,7 @@ class Session extends AbstractEntityRepository
 
         return $session[0];
     }
+
 
     /**
      * Get the latest active session for a particular user

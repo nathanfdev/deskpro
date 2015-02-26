@@ -39,6 +39,7 @@ class AgentBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
     public function registerCommands(Application $application)
     {
+
     }
 
     public function getNamespace()

@@ -76,6 +76,7 @@ class Detect
         $this->lang_data = $lang_data;
     }
 
+
     /**
      * @param  string $string
      * @return string
@@ -115,6 +116,7 @@ class Detect
         return $detected_code ? $detected_code : null;
     }
 
+
     /**
      * @param  string                               $string
      * @return \Application\DeskPRO\Entity\Language
@@ -130,6 +132,7 @@ class Detect
 
         return $lang;
     }
+
 
     /**
      * @return \Text_LanguageDetect
@@ -157,6 +160,7 @@ class Detect
         return $this->lang_detect;
     }
 
+
     /**
      * @return string[]
      */
@@ -171,6 +175,7 @@ class Detect
         return $this->detectable_langs;
     }
 
+
     /**
      * @return array
      */
@@ -180,7 +185,7 @@ class Detect
             return $this->jpn_data;
         }
 
-        $this->jpn_data = require __DIR__.'/data/japanese-common-words.php';
+        $this->jpn_data = require(__DIR__.'/data/japanese-common-words.php');
 
         return $this->jpn_data;
     }

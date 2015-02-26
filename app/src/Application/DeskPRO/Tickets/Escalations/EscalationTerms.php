@@ -51,6 +51,7 @@ class EscalationTerms implements \Serializable, FilterTermInterface
         $this->criteria->setOperator(FilterTermComposite::OP_OR);
     }
 
+
     /**
      * @param  FilterTermInterface       $term
      * @throws \InvalidArgumentException
@@ -63,6 +64,7 @@ class EscalationTerms implements \Serializable, FilterTermInterface
         }
         $this->criteria->add($term);
     }
+
 
     /**
      * @param  array                     $term_info
@@ -79,6 +81,7 @@ class EscalationTerms implements \Serializable, FilterTermInterface
         $this->addTerm($term);
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -86,6 +89,7 @@ class EscalationTerms implements \Serializable, FilterTermInterface
     {
         return $this->criteria->getFilterQuery();
     }
+
 
     /**
      * @return array
@@ -104,12 +108,13 @@ class EscalationTerms implements \Serializable, FilterTermInterface
             $data['terms'][] = array(
                 'type'    => $criteria->getTermType(),
                 'op'      => $criteria->getTermOperator(),
-                'options' => $criteria->getTermOptions(),
+                'options' => $criteria->getTermOptions()
             );
         }
 
         return $data;
     }
+
 
     /**
      * @param array $data

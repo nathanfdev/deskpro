@@ -44,7 +44,7 @@ class EditTicketProps implements \ArrayAccess
     /** @var array */
     protected static $prop_names = array(
         'subject' => 1, 'department_id' => 1, 'category_id' => 1,
-        'priority_id' => 1, 'product_id' => 1, 'cc_emails' => 1, 'remove_ccs' => 1,
+        'priority_id' => 1, 'product_id' => 1, 'cc_emails' => 1, 'remove_ccs' => 1
     );
 
     /** @var string */
@@ -72,26 +72,8 @@ class EditTicketProps implements \ArrayAccess
         $this->subject        = $ticket->subject;
     }
 
-    public function offsetExists($offset)
-    {
-        return (isset(self::$prop_names[$offset]) && isset($this->$offset));
-    }
-    public function offsetGet($offset)
-    {
-        if (isset(self::$prop_names[$offset])) {
-            return $this->$offset;
-        }
-    }
-    public function offsetSet($offset, $value)
-    {
-        if (isset(self::$prop_names[$offset])) {
-            $this->$offset = $value;
-        }
-    }
-    public function offsetUnset($offset)
-    {
-        if (isset(self::$prop_names[$offset])) {
-            $this->$offset = null;
-        }
-    }
+    public function offsetExists($offset) { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
+    public function offsetGet($offset) { if (isset(self::$prop_names[$offset])) return $this->$offset; }
+    public function offsetSet($offset, $value) { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
+    public function offsetUnset($offset) { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
 }

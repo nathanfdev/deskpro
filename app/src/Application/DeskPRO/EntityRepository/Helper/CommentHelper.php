@@ -91,7 +91,8 @@ class CommentHelper
         $comment_entity_name,
         $comment_table_name,
         $comment_join_field
-    ) {
+    )
+    {
         $this->repos       = $repos;
         $this->em          = $em;
         $this->class       = $class;
@@ -102,6 +103,7 @@ class CommentHelper
         $this->comment_table_name  = $comment_table_name;
         $this->comment_join_field  = $comment_join_field;
     }
+
 
     /**
      * Count the number of comments on a record
@@ -128,6 +130,7 @@ class CommentHelper
 
         return $this->em->getConnection()->fetchColumn($sql, array($record->getId()));
     }
+
 
     /**
      * Count the number of comments on a number of records

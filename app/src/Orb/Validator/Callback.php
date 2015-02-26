@@ -105,9 +105,7 @@ class Callback extends AbstractValidator
         $errors = call_user_func_array($this->callback_fn, $args);
 
         if ($errors) {
-            if (!is_array($errors)) {
-                $errors = array($errors);
-            }
+            if (!is_array($errors)) $errors = array($errors);
 
             foreach ($errors as $info) {
                 if (is_array($info)) {

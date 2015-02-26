@@ -57,6 +57,7 @@ class CheckTicketField extends AbstractCheckCustomField
         return $options;
     }
 
+
     /**
      * @param  Ticket                   $ticket
      * @param  ExecutorContextInterface $context
@@ -67,11 +68,12 @@ class CheckTicketField extends AbstractCheckCustomField
         return $ticket->custom_data ?: array();
     }
 
+
     /**
      * @return string
      */
     public function getTermType()
     {
-        return 'CheckTicketField'.$this->getTermOptions()->get('field_id');
+        return 'CheckTicketField' . $this->getTermOptions()->get('field_id');
     }
 }

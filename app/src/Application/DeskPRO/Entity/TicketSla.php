@@ -103,13 +103,14 @@ class TicketSla extends DomainObject
      */
     protected $sla;
 
+
     /**
      * @param bool           $value
      * @param \DateTime|null $date
      */
     public function setIsCompleted($value, \DateTime $date = null)
     {
-        $value = (bool) $value;
+        $value = (bool)$value;
 
         $this->setModelField('is_completed', $value);
         if ($this->is_completed) {
@@ -125,6 +126,7 @@ class TicketSla extends DomainObject
             $this->setModelField('completed_time_taken', null);
         }
     }
+
 
     /**
      * Same as setIsCompleted but the completed status is set forever (unless its overriden with a trigger etc).
@@ -142,6 +144,7 @@ class TicketSla extends DomainObject
             $this->setModelField('is_completed_set', false);
         }
     }
+
 
     /**
      * @return \DateTime|null
@@ -162,8 +165,9 @@ class TicketSla extends DomainObject
             return null;
         }
 
-        return new \DateTime('@'.min($times));
+        return new \DateTime('@' . min($times));
     }
+
 
     /**
      * {@inheritDoc}
@@ -174,6 +178,8 @@ class TicketSla extends DomainObject
 
         return $data;
     }
+
+
 
     ############################################################################
     # Doctrine Metadata
@@ -257,9 +263,9 @@ class TicketSla extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-                'columnDefinition'     => NULL,
+                'columnDefinition'     => NULL
             )),
-            'dpApi' => true,
+            'dpApi' => true
         ));
     }
 }

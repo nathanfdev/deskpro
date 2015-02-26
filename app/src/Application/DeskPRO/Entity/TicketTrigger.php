@@ -138,11 +138,11 @@ class TicketTrigger extends DomainObject
     protected $by_user_mode = array();
 
     /**
-     * @var array
-     */
-    protected $by_app_mode = array();
+	 * @var array
+	 */
+	protected $by_app_mode = array();
 
-    /**
+	/**
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerTerms
      */
     protected $terms;
@@ -167,6 +167,7 @@ class TicketTrigger extends DomainObject
         $this->actions = new TriggerActions();
     }
 
+
     /**
      * @return int
      */
@@ -174,6 +175,7 @@ class TicketTrigger extends DomainObject
     {
         return $this->id;
     }
+
 
     /**
      * @param array $modes
@@ -194,6 +196,7 @@ class TicketTrigger extends DomainObject
         }
     }
 
+
     /**
      * @param array $modes
      */
@@ -213,26 +216,28 @@ class TicketTrigger extends DomainObject
         }
     }
 
-    /**
-     * @param array $modes
-     */
-    public function setByAppMode($modes)
-    {
-        if (!$modes) {
-            $this->setModelField('by_app_mode', array());
-        } else {
-            if (!is_array($modes)) {
-                $modes = explode(',', $modes);
-            }
-
-            $modes = Arrays::func($modes, 'trim');
-            $modes = Arrays::func($modes, 'strtolower');
-            sort($modes, \SORT_STRING);
-            $this->setModelField('by_app_mode', $modes);
-        }
-    }
 
     /**
+	 * @param array $modes
+	 */
+	public function setByAppMode($modes)
+	{
+		if (!$modes) {
+			$this->setModelField('by_app_mode', array());
+		} else {
+			if (!is_array($modes)) {
+				$modes = explode(',', $modes);
+			}
+
+			$modes = Arrays::func($modes, 'trim');
+			$modes = Arrays::func($modes, 'strtolower');
+			sort($modes, \SORT_STRING);
+			$this->setModelField('by_app_mode', $modes);
+		}
+	}
+
+
+	/**
      * @param  string $flag
      * @return bool
      */
@@ -240,6 +245,7 @@ class TicketTrigger extends DomainObject
     {
         return in_array($flag, $this->event_flags);
     }
+
 
     /**
      * @param string $flag
@@ -252,6 +258,7 @@ class TicketTrigger extends DomainObject
             $this->setModelField('event_flags', $flags);
         }
     }
+
 
     /**
      * @param string $flag
@@ -267,13 +274,9 @@ class TicketTrigger extends DomainObject
 
     protected function processActions()
     {
-        if (!$this->actions) {
-            return;
-        }
+        if (!$this->actions) return;
 
-        if (null !== $this->_has_delete_ticket_action && null !== $this->_has_stop_trigger_action) {
-            return;
-        }
+        if (null !== $this->_has_delete_ticket_action && null !== $this->_has_stop_trigger_action) return;
 
         foreach ($this->actions as $a) {
             if ($a instanceof ModStopTriggers) {
@@ -283,14 +286,13 @@ class TicketTrigger extends DomainObject
                 $this->_has_delete_ticket_action = true;
             }
 
-            if (null !== $this->_has_delete_ticket_action && null !== $this->_has_stop_trigger_action) {
-                break;
-            }
+            if (null !== $this->_has_delete_ticket_action && null !== $this->_has_stop_trigger_action) break;
         }
 
         $this->_has_stop_trigger_action = (bool) $this->_has_stop_trigger_action;
         $this->_has_delete_ticket_action = (bool) $this->_has_delete_ticket_action;
     }
+
 
     /**
      * @return bool
@@ -298,16 +300,15 @@ class TicketTrigger extends DomainObject
     public function hasStopTriggersAction()
     {
         $this->processActions();
-
         return $this->_has_stop_trigger_action;
     }
 
     public function hasDeleteTicketAction()
     {
         $this->processActions();
-
         return $this->_has_delete_ticket_action;
     }
+
 
     /**
      * {@inheritDoc}
@@ -319,7 +320,7 @@ class TicketTrigger extends DomainObject
         $data['email_account'] = $this->email_account ? array('id' => $this->email_account->id, 'address' => $this->email_account->address) : null;
         $data['by_agent_mode'] = $this->by_agent_mode;
         $data['by_user_mode']  = $this->by_user_mode;
-        $data['by_app_mode']   = $this->by_app_mode;
+		$data['by_app_mode']   = $this->by_app_mode;
         $data['terms']         = $this->terms->exportToArray();
         $data['actions']       = $this->actions->exportToArray();
         $data['has_stop_triggers_action'] = $this->hasStopTriggersAction();
@@ -327,6 +328,7 @@ class TicketTrigger extends DomainObject
 
         return $data;
     }
+
 
     ############################################################################
     # Doctrine Metadata
@@ -340,7 +342,7 @@ class TicketTrigger extends DomainObject
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
         $metadata->setPrimaryTable(array(
-            'name' => 'ticket_triggers',
+            'name' => 'ticket_triggers'
         ));
 
         $metadata->mapField(array(
@@ -383,12 +385,12 @@ class TicketTrigger extends DomainObject
             'nullable'   => true,
         ));
         $metadata->mapField(array(
-            'columnName' => 'by_app_mode',
-            'fieldName'  => 'by_app_mode',
-            'type'       => 'simple_array',
-            'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+			'columnName' => 'by_app_mode',
+			'fieldName'  => 'by_app_mode',
+			'type'       => 'simple_array',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
             'columnName' => 'is_enabled',
             'fieldName'  => 'is_enabled',
             'type'       => 'boolean',
@@ -440,7 +442,7 @@ class TicketTrigger extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'CASCADE',
-            )),
+            ))
         ));
         $metadata->mapManyToOne(array(
             'fieldName'    => 'email_account',
@@ -450,7 +452,7 @@ class TicketTrigger extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'CASCADE',
-            )),
+            ))
         ));
     }
 }

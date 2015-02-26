@@ -92,7 +92,7 @@ class BinaryInterval extends AbstractPart
         'months' => 'MONTH',
         'month' => 'MONTH',
         'years' => 'YEAR',
-        'year' => 'YEAR',
+        'year' => 'YEAR'
     );
 
     /**
@@ -134,7 +134,8 @@ class BinaryInterval extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    ) {
+    )
+    {
         $placeholder = $this->_findPlaceholder();
         if ($placeholder) {
             return $placeholder[0]->prepareWithIntervals(
@@ -163,7 +164,7 @@ class BinaryInterval extends AbstractPart
     public function toDpql(Display $statement, $section, array $stack)
     {
         return $this->lhs->toDpql($statement, $section, $stack)
-            .' '.self::$_operatorMap[$this->operator]." INTERVAL $this->amount $this->unit";
+            . ' ' . self::$_operatorMap[$this->operator] . " INTERVAL $this->amount $this->unit";
     }
 
     /**
@@ -185,7 +186,8 @@ class BinaryInterval extends AbstractPart
     public function prepareComparison(
         AbstractPart $lhs, $comparison, Display $statement, $section, array $stack,
         Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    ) {
+    )
+    {
         $placeholder = $this->_findPlaceholder();
         if (!$placeholder) {
             return false;

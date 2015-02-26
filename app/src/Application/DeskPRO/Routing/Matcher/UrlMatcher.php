@@ -52,7 +52,7 @@ class UrlMatcher extends \Symfony\Component\Routing\Matcher\UrlMatcher
             '/agent',
             '/admin',
             '/dev',
-            '/api',
+            '/api'
         );
 
         $check_for_locale = true;

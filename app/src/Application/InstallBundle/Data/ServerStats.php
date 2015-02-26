@@ -146,8 +146,7 @@ class ServerStats
                 foreach ($this->db->fetchAllKeyValue("SHOW VARIABLES LIKE '%innodb%'") as $k => $v) {
                     $stats["mysql_$k"] = $v;
                 }
-            } catch (\Exception $e) {
-            }
+            } catch (\Exception $e) {}
         }
 
         #------------------------------
@@ -166,7 +165,7 @@ class ServerStats
             $stats['server_os'] = PHP_OS;
         }
 
-        $stats['server_uname'] = php_uname('s').' '.php_uname('r').' '.php_uname('v').' '.php_uname('m');
+        $stats['server_uname'] = php_uname('s') . ' ' . php_uname('r') . ' ' . php_uname('v') . ' ' . php_uname('m');
 
         #------------------------------
         # Web server

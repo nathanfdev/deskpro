@@ -45,9 +45,11 @@ class Null implements FilterInterface
 
     public function filterDump(AssetInterface $asset)
     {
+
     }
 
     public function filterLoad(AssetInterface $asset)
     {
+
     }
 }

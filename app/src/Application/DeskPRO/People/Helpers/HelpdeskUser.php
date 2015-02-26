@@ -75,9 +75,7 @@ class HelpdeskUser extends \Application\DeskPRO\Domain\DomainObject implements \
 
     public function getTicketCount()
     {
-        if ($this->ticket_count !== null) {
-            return $this->ticket_count;
-        }
+        if ($this->ticket_count !== null) return $this->ticket_count;
 
         $this->ticket_count = App::getEntityRepository('DeskPRO:Ticket')->countTicketsForPerson($this->person);
 

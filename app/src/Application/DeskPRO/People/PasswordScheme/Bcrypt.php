@@ -37,7 +37,7 @@ namespace Application\DeskPRO\People\PasswordScheme;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PasswordSchemeInterface;
 
-require DP_ROOT.'/vendor-src/phpass/PasswordHash.php';
+require DP_ROOT . '/vendor-src/phpass/PasswordHash.php';
 
 class Bcrypt implements PasswordSchemeInterface
 {

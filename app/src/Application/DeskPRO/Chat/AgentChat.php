@@ -110,10 +110,10 @@ class AgentChat
                     'author_id'         => $chat_message->author['id'],
                     'message'           => $chat_message['content'],
                     'date_created'      => $chat_message['date_created']->getTimestamp(),
-                    'time'              => $time,
+                    'time'              => $time
                 ),
                 'created_by_client' => $this->session['id'],
-                'for_person' => $part,
+                'for_person' => $part
             ));
 
             $client_messages[] = $cm;
@@ -137,7 +137,7 @@ class AgentChat
                 if (!$session && $part->getPref('agent_notif.chat_message.email')) {
                     $email_message = App::getMailer()->createMessage();
                     $email_message->setTemplate('DeskPRO:emails_agent:new-agent-chat-message.html.twig', array(
-                        'message' => $chat_message,
+                        'message' => $chat_message
                     ));
                     $email_message->setToPerson($part);
                     App::getMailer()->send($email_message);
@@ -147,7 +147,7 @@ class AgentChat
 
         return array(
             'conversation' => $conversation,
-            'new_message'  => $chat_message,
+            'new_message'  => $chat_message
         );
     }
 
@@ -160,7 +160,7 @@ class AgentChat
         $conversation = null;
         if ($convo_id) {
             $conversation = $em->find('DeskPRO:ChatConversation', $convo_id);
-            if ($conversation and !$conversation->hasParticipant($this->person)) {
+            if ($conversation AND !$conversation->hasParticipant($this->person)) {
                 // invalid convo if we're not part of it
                 // sneaky hobitses
                 $conversation = null;

@@ -25,6 +25,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+
 namespace Application\DeskPRO\Log\Handler;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -75,7 +76,7 @@ abstract class DBHandler extends AbstractProcessingHandler
             ',
             $meta['table'],
             implode(', ', array_keys($meta['fields'])),
-            ':'.implode(', :', array_values($meta['fields']))
+            ':' . implode(', :', array_values($meta['fields']))
         ));
     }
 
@@ -103,6 +104,7 @@ abstract class DBHandler extends AbstractProcessingHandler
                 foreach ($mapping['joinColumns'] as $joinColumn) {
                     $this->meta[$class]['fields'][$joinColumn['name']] = $property;
                 }
+
             }
         }
 

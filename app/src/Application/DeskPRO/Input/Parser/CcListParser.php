@@ -42,6 +42,7 @@ class CcListParser
      */
     private $validator;
 
+
     /**
      * @param EmailAddressValidator $validator
      */
@@ -49,6 +50,7 @@ class CcListParser
     {
         $this->validator = $validator;
     }
+
 
     /**
      * @param  string   $input
@@ -66,9 +68,7 @@ class CcListParser
 
         foreach ($matches[1] as $seg) {
             $seg = trim($seg);
-            if (!$seg) {
-                continue;
-            }
+            if (!$seg) continue;
 
             if ($this->validator->isValidUserEmail($seg)) {
                 $emails[] = $seg;

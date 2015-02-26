@@ -51,6 +51,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         return new AdminManagePermission();
     }
 
+
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -140,7 +141,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         $data = $this->getApiData($trigger);
 
         return $this->createApiResponse(array(
-            'trigger' => $data,
+            'trigger' => $data
         ));
     }
 
@@ -210,7 +211,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
             $trigger = new TicketTrigger();
         }
 
-        $is_new = !((bool) $trigger->id);
+        $is_new = !((bool)$trigger->id);
 
         $trigger->title         = $this->in->getString('title');
         $trigger->event_trigger = $this->in->getString('event_trigger');
@@ -225,7 +226,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 
         $trigger->setByAgentMode($this->in->getArrayOfStrings('by_agent_mode'));
         $trigger->setByUserMode($this->in->getArrayOfStrings('by_user_mode'));
-        $trigger->setByAppMode($this->in->getArrayOfStrings('by_app_mode'));
+		$trigger->setByAppMode($this->in->getArrayOfStrings('by_app_mode'));
 
         $error_criteria = array();
         $error_actions  = array();
@@ -320,9 +321,9 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         }
 
         if ($trigger->department) {
-            $trigger->is_enabled = (bool) $this->db->fetchColumn("SELECT id FROM ticket_triggers WHERE department_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?", array($trigger->event_trigger));
+            $trigger->is_enabled = (bool)$this->db->fetchColumn("SELECT id FROM ticket_triggers WHERE department_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?", array($trigger->event_trigger));
         } elseif ($trigger->email_account) {
-            $trigger->is_enabled = (bool) $this->db->fetchColumn("SELECT id FROM ticket_triggers WHERE email_account_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?", array($trigger->event_trigger));
+            $trigger->is_enabled = (bool)$this->db->fetchColumn("SELECT id FROM ticket_triggers WHERE email_account_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?", array($trigger->event_trigger));
         }
 
         $this->em->persist($trigger);
@@ -391,7 +392,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 
     public function toggleTriggerGroupAction($special_type, $is_enabled)
     {
-        $is_enabled = (int) $is_enabled;
+        $is_enabled = (int)$is_enabled;
 
         switch ($special_type) {
             case 'departments':
@@ -450,40 +451,40 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
         return $this->createJsonResponse(array('action_defs' => $actions));
     }
 
-    ####################################################################################################################
-    # get-app-events
-    ####################################################################################################################
+	####################################################################################################################
+	# get-app-events
+	####################################################################################################################
 
-    public function getAppEventsAction($type = 'update')
-    {
-        if ($type != 'update') {
-            throw $this->createNotFoundException();
-        }
+	public function getAppEventsAction($type = 'update')
+	{
+		if ($type != 'update') {
+			throw $this->createNotFoundException();
+		}
 
-        $events = array();
+		$events = array();
 
-        foreach ($this->container->getAppManager()->getAllApps() as $app) {
-            $app_events = $app->getTriggerEvents($type);
+		foreach ($this->container->getAppManager()->getAllApps() as $app) {
+			$app_events = $app->getTriggerEvents($type);
 
-            if ($app_events) {
-                $app_info = array(
-                    'id'    => $app->id,
-                    'title' => $app->title,
-                    'package' => array(
-                        'name'  => $app->package->name,
-                        'title' => $app->package->title,
-                    ),
-                );
+			if ($app_events) {
+				$app_info = array(
+					'id'    => $app->id,
+					'title' => $app->title,
+					'package' => array(
+						'name'  => $app->package->name,
+						'title' => $app->package->title
+					)
+				);
 
-                foreach ($app_events as $ev) {
-                    $events[] = array(
-                        'event' => $ev,
-                        'app'   => $app_info,
-                    );
-                }
-            }
-        }
+				foreach ($app_events as $ev) {
+					$events[] = array(
+						'event' => $ev,
+						'app'   => $app_info
+					);
+				}
+			}
+		}
 
-        return $this->createJsonResponse(array('app_events' => $events, 'event_type' => $type));
-    }
+		return $this->createJsonResponse(array('app_events' => $events, 'event_type' => $type));
+	}
 }

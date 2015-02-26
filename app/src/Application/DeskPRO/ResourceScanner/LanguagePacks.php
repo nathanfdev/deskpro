@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\ResourceScanner;
 
+
 class LanguagePacks
 {
     /**
@@ -64,9 +65,9 @@ class LanguagePacks
             $class = str_replace($pack_root, '', $class);
             $class = str_replace('/', '\\', $class);
             $class = str_replace('.php', '', $class);
-            $class = 'DeskproLanguages'.$class;
+            $class = 'DeskproLanguages' . $class;
 
-            require_once $file->getPathname();
+            require_once($file->getPathname());
             $name = $class::getTitle();
 
             $packs[$class] = $name;

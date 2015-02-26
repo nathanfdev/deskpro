@@ -56,6 +56,7 @@ class CheckEmailCcAddress extends AbstractTriggerTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

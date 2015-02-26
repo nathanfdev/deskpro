@@ -38,7 +38,7 @@ interface ProgressBarAwareInterface
     /**
      * Set progress bar helper
      *
-     * @param  ProgressBar $progress_bar
+     * @param ProgressBar $progress_bar
      * @return $this
      */
     public function setProgressBarHelper(ProgressBar $progress_bar);

@@ -52,6 +52,7 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
         $this->settingsDef = $settingsDef;
     }
 
+
     /**
      * This is run during every install and update
      *
@@ -61,6 +62,7 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
      * @return mixed
      */
     abstract protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em);
+
 
     /**
      * Called after another app has enabled SSO. The underlying usersource is already cleared of its SSO status, but
@@ -76,6 +78,7 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
         return null;
     }
 
+
     public function setupAutoAgent(Usersource $us, $auto_agent, $permission_group_id)
     {
         if ($context = $this->context) {
@@ -86,7 +89,7 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
                 if ($permission_group_id) {
                     $permission_group = $context->getEm()->getRepository('DeskPRO:Usergroup')->find($permission_group_id);
 
-                    if ($permission_group) {
+                    if  ($permission_group) {
                         $us->agent_permission_group = $permission_group;
                     }
                 }

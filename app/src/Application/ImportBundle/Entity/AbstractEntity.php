@@ -57,13 +57,12 @@ abstract class AbstractEntity implements EntityInterface
     }
 
     /**
-     * @param  int   $oid
+     * @param int $oid
      * @return $this
      */
     public function setOid($oid)
     {
-        $this->oid = (int) $oid;
-
+        $this->oid = (int)$oid;
         return $this;
     }
 
@@ -79,13 +78,12 @@ abstract class AbstractEntity implements EntityInterface
      * Set entity destination
      * It could be a file name or db name
      *
-     * @param  string $destination
+     * @param string $destination
      * @return $this
      */
     public function setDestination($destination)
     {
         $this->destination = $destination;
-
         return $this;
     }
 

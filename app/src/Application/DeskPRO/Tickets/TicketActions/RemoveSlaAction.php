@@ -52,9 +52,10 @@ class RemoveSlaAction extends AbstractAction
         if (!$sla_id) {
             $this->remove_all = true;
         } else {
-            $this->sla_ids = (array) $sla_id;
+            $this->sla_ids = (array)$sla_id;
         }
     }
+
 
     /**
      * Apply the property to the ticket
@@ -66,7 +67,7 @@ class RemoveSlaAction extends AbstractAction
         if ($this->remove_all) {
             $ticket->removeAllSlas();
         } else {
-            foreach ($this->sla_ids as $sla_id) {
+            foreach ($this->sla_ids AS $sla_id) {
                 $sla = App::getEntityRepository('DeskPRO:Sla')->find($sla_id);
                 if ($sla) {
                     $ticket->removeSla($sla);
@@ -74,6 +75,7 @@ class RemoveSlaAction extends AbstractAction
             }
         }
     }
+
 
     /**
      * Get an array of actions that would be performed on the ticket
@@ -83,9 +85,10 @@ class RemoveSlaAction extends AbstractAction
     public function getApplyActions(Ticket $ticket)
     {
         return array(
-            array('action' => 'remove_sla', 'sla_ids' => $this->sla_ids, 'remove_all' => $this->remove_all),
+            array('action' => 'remove_sla', 'sla_ids' => $this->sla_ids, 'remove_all' => $this->remove_all)
         );
     }
+
 
     /**
      * @return array
@@ -103,6 +106,7 @@ class RemoveSlaAction extends AbstractAction
         return $this->remove_all;
     }
 
+
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
@@ -119,6 +123,7 @@ class RemoveSlaAction extends AbstractAction
         return $this;
     }
 
+
     /**
      * @return string
      */
@@ -130,7 +135,7 @@ class RemoveSlaAction extends AbstractAction
         } else {
             $slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($this->sla_ids);
             $titles = array();
-            foreach ($slas as $sla) {
+            foreach ($slas AS $sla) {
                 $titles[$sla->id] = $as_html ? htmlspecialchars($sla->title) : $sla->title;
             }
 

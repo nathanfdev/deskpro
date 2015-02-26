@@ -32,9 +32,9 @@
      * @category Entities
      */
 
-namespace Application\DeskPRO\Entity;
+    namespace Application\DeskPRO\Entity;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
+    use Doctrine\ORM\Mapping\ClassMetadata;
     use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
     /**
@@ -49,6 +49,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
          */
         protected $chat;
 
+
         ############################################################################
         # Doctrine Metadata
         ############################################################################
@@ -61,8 +62,8 @@ use Doctrine\ORM\Mapping\ClassMetadata;
                 array(
                      'name'    => 'labels_chat_conversations',
                      'indexes' => array(
-                         'label_idx' => array('columns' => array('label')),
-                     ),
+                         'label_idx' => array('columns' => array('label'))
+                     )
                 )
             );
             $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);

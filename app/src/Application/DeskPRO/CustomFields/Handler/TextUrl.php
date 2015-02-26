@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
+
 /**
  * Handles the text field
  */
@@ -41,12 +42,10 @@ class TextUrl extends Text
 {
     public function renderHtml($data = null, array $template_vars = array())
     {
-        if ($data === null) {
-            return '';
-        }
+        if ($data === null) return '';
 
         $snipped = preg_replace('#^https?://#', '', $data['value']);
-        $html = '<a href="'.htmlspecialchars($data['value']).'" target="_blank">'.htmlspecialchars($snipped).'</a>';
+        $html = '<a href="' . htmlspecialchars($data['value']) . '" target="_blank">' . htmlspecialchars($snipped) . '</a>';
 
         return $html;
     }

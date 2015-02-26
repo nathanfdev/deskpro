@@ -167,6 +167,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      */
     public $field_manager = null;
 
+
     public function __construct()
     {
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
@@ -186,6 +187,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return 0;
     }
 
+
     /**
      * @return string
      */
@@ -193,6 +195,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     {
         return App::getTranslator()->getPhraseObject($this, 'title');
     }
+
 
     /**
      * @return string
@@ -202,6 +205,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $this->title;
     }
 
+
     /**
      * @return string
      */
@@ -210,6 +214,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return App::getTranslator()->getPhraseObject($this, 'description');
     }
 
+
     /**
      * @return string
      */
@@ -217,6 +222,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     {
         return $this->description;
     }
+
 
     /**
      * Add a child to this field
@@ -230,6 +236,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         $this->_onPropertyChanged('children', $this->children, $this->children);
     }
 
+
+
     /**
      * Remove a child field
      *
@@ -240,6 +248,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         $this->children->removeElement($def);
         $this->_onPropertyChanged('children', $this->children, $this->children);
     }
+
+
 
     /**
      * Remove a child based on the childs field id
@@ -258,6 +268,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         $this->_onPropertyChanged('children', $this->children, $this->children);
     }
 
+
     /**
      * @param  int               $def_id
      * @return CustomDefAbstract
@@ -273,6 +284,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return null;
     }
 
+
+
     /**
      * Get the DeskPRO form field object that knows how to render data etc.
      *
@@ -280,9 +293,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      */
     public function getHandler()
     {
-        if ($this->_handler_instance !== null) {
-            return $this->_handler_instance;
-        }
+        if ($this->_handler_instance !== null) return $this->_handler_instance;
 
         if ($this['handler_class'] == 'x') {
             $e = new \Exception();
@@ -300,6 +311,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $this->_handler_instance;
     }
 
+
     /**
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
@@ -307,6 +319,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     {
         return $this->children;
     }
+
+
 
     /**
      * Get an array of all IDs from this def and down.
@@ -323,6 +337,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $ids;
     }
 
+
     /**
      * @return array
      */
@@ -335,6 +350,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
         return $titles;
     }
+
+
 
     /**
      * Creates a new instance of the same type and sets its parent to this object.
@@ -349,6 +366,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
         return $obj;
     }
+
+
 
     /**
      * Get the value of an option, or a default value if none is set.
@@ -366,6 +385,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $this->options[$name];
     }
 
+
     /**
      * @return array
      */
@@ -373,6 +393,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     {
         return $this->options;
     }
+
 
     /**
      * @return string
@@ -382,6 +403,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return App::getTranslator()->getPhraseObject($this, 'html');
     }
 
+
     /**
      * @return string
      */
@@ -389,6 +411,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     {
         return $this->getOption('html', '');
     }
+
 
     /**
      * Set a value of an option
@@ -409,6 +432,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         $this->_onPropertyChanged('options', $old_opt, $this->options);
     }
 
+
     /**
      * Is the field required?
      *
@@ -418,6 +442,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     {
         return $this->getOption('required', false);
     }
+
 
     /**
      * Get the phrasename for the handler class. This is just
@@ -437,6 +462,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $phrase;
     }
 
+
     /**
      * The "short name" for the handler type.
      *
@@ -451,6 +477,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
         return $name;
     }
+
 
     /**
      * Fetch the search capabiltiies supported by the field.
@@ -472,6 +499,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $this->getHandler()->getFilterCapabilities();
     }
 
+
     /**
      * True if this field is an actual form field (aka not a display field without any input controls).
      *
@@ -481,6 +509,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     {
         return $this->handler_class != 'Application\DeskPRO\CustomFields\Handler\Display';
     }
+
 
     /**
      * @return bool
@@ -496,6 +525,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         }
     }
 
+
     /**
      * @param  string $property
      * @return string
@@ -508,10 +538,11 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
         $name = strtolower(\Orb\Util\Util::getBaseClassname($this));
 
-        $phrase_name = 'obj_'.$name.'.'.$this->id.'_'.$property;
+        $phrase_name = 'obj_'.$name.'.' . $this->id . '_' . $property;
 
         return $phrase_name;
     }
+
 
     /**
      * @param  string $property
@@ -528,6 +559,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $this->title;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -543,15 +575,13 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
                     'id'            => $c->id,
                     'title'         => $c->title,
                     'parent_id'     => $c->getOption('parent_id') ?: null,
-                    'display_order' => $c->display_order,
+                    'display_order' => $c->display_order
                 );
             }
 
             $defaults = array();
             foreach (explode(',', $data['default_value']) as $val) {
-                if (strlen($val)) {
-                    $defaults[] = (int) $val;
-                }
+                if (strlen($val)) $defaults[] = (int) $val;
             }
             $data['default_value'] = $defaults;
         }
@@ -560,7 +590,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
             // Cast "1" to 1 so values are properly encoded to json
             foreach ($data['options'] as &$opt) {
                 if (Numbers::isInteger($opt)) {
-                    $opt = (int) $opt;
+                    $opt = (int)$opt;
                 }
             }
             unset($opt);

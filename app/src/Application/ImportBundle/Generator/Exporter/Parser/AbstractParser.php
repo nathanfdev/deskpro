@@ -99,7 +99,7 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
     /**
      * Returns date time object from string or current date time if the format is empty
      *
-     * @param  string   $format
+     * @param string $format
      * @return DateTime
      */
     protected function getFromStringOrCurrentDateTime($format)
@@ -110,11 +110,11 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
     /**
      * Returns true if value is "true" or intval of value = 1
      *
-     * @param  int|string $value
+     * @param int|string $value
      * @return bool
      */
     protected function isBooleanTrue($value)
     {
-        return $value === 'true' || (int) $value === 1;
+        return $value === 'true' || (int)$value === 1;
     }
 }

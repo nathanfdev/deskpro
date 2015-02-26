@@ -62,7 +62,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         'date_locked'              => true,
         'has_attachments'          => true,
         'count_agent_replies'      => true,
-        'count_user_replies'       => true,
+        'count_user_replies'       => true
     );
 
     /**
@@ -100,6 +100,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         }
     }
 
+
     /**
      * @return bool
      */
@@ -120,6 +121,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return $this->is_trivial;
     }
 
+
     /**
      * @return bool
      */
@@ -135,6 +137,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return false;
     }
 
+
     /**
      * Check if there has been a new reply of type
      *
@@ -149,9 +152,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
 
         foreach (array_reverse($this->getChangesForField('message')) as $change) {
             $message = $change->getNew();
-            if (!$message) {
-                continue;
-            }
+            if (!$message) continue;
 
             switch ($type) {
                 case 'agent_reply':
@@ -175,6 +176,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return false;
     }
 
+
     /**
      * Get new messages of type
      *
@@ -191,9 +193,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
 
         foreach (array_reverse($this->getChangesForField('message')) as $change) {
             $message = $change->getNew();
-            if (!$message) {
-                continue;
-            }
+            if (!$message) continue;
 
             switch ($type) {
                 case 'any':
@@ -221,6 +221,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return $messages;
     }
 
+
     /**
      * Has there been a new agent reply?
      *
@@ -230,6 +231,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     {
         return $this->hasChangedField('message');
     }
+
 
     /**
      * Has there been a new agent reply?
@@ -241,6 +243,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return $this->hasNewMessageOfType('agent_reply');
     }
 
+
     /**
      * Has there been a new agent note?
      *
@@ -250,6 +253,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     {
         return $this->hasNewMessageOfType('agent_note');
     }
+
 
     /**
      * Has there been a new user reply?
@@ -261,6 +265,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return $this->hasNewMessageOfType('user_reply');
     }
 
+
     /**
      * Get an array of any new repies
      *
@@ -270,6 +275,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     {
         return $this->getNewMessagesOfType('any');
     }
+
 
     /**
      * Get an array of any new agent replies
@@ -281,6 +287,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         return $this->getNewMessagesOfType('agent_reply');
     }
 
+
     /**
      * Get an array of any new agent notes
      *
@@ -290,6 +297,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     {
         return $this->getNewMessagesOfType('agent_note');
     }
+
 
     /**
      * Get an array of any new user replies

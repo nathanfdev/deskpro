@@ -34,6 +34,7 @@
 
 namespace Application\UserBundle\Controller;
 
+
 class ChatLogController extends AbstractController implements RequireUserInterface
 {
     ############################################################################

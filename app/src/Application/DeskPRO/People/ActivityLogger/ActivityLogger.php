@@ -93,7 +93,6 @@ class ActivityLogger
         $action_type = Strings::camelCaseToUnderscore($action_type);
 
         $details = $action->getDetails();
-
         return $this->saveActionDetails($action->getPersonContext(), $action_type, $details);
 
         return null;

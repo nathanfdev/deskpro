@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
@@ -83,13 +84,12 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     /**
      * Set a download category
      *
-     * @param  string $category
+     * @param string $category
      * @return $this
      */
     public function setCategory($category)
     {
         $this->category = $category;
-
         return $this;
     }
 
@@ -106,13 +106,12 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     /**
      * Set a download attachment
      *
-     * @param  Attachment $attachment
+     * @param Attachment $attachment
      * @return $this
      */
     public function setAttachment(Attachment $attachment = null)
     {
         $this->attachment = $attachment;
-
         return $this;
     }
 
@@ -130,7 +129,6 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     public function setPersonEmail($person_email)
     {
         $this->person_email = $person_email;
-
         return $this;
     }
 
@@ -147,13 +145,12 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     /**
      * Set a number of downloads
      *
-     * @param  int   $num_downloads
+     * @param int $num_downloads
      * @return $this
      */
     public function setNumDownloads($num_downloads)
     {
         $this->num_downloads = $num_downloads;
-
         return $this;
     }
 
@@ -171,7 +168,6 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
     public function addLabel($label)
     {
         $this->labels[] = $label;
-
         return $this;
     }
 
@@ -180,7 +176,7 @@ final class Download extends AbstractContentEntity implements PersonAwareInterfa
      */
     public function toArray()
     {
-        if (! $this->date_created) {
+        if ( ! $this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 

@@ -142,7 +142,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $import_config = new OptionsArray(dp_get_config('import', array()));
         $config
             ->setOutputPath($import_config->get('output_path'))
-            ->setLogPath($import_config->get('log_path', dp_get_log_dir().'/export.log'))
+            ->setLogPath($import_config->get('log_path', dp_get_log_dir() . '/export.log'))
             ->setMarkDone($import_config->get('mark_done', true));
     }
 
@@ -163,7 +163,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         }
 
         if ($input->hasOption('output-path') && $input->getOption('output-path')) {
-            $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/")."/");
+            $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/") . "/");
         }
 
         if ($input->hasOption('input-path')) {

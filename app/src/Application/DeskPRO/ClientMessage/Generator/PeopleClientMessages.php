@@ -48,8 +48,8 @@ class PeopleClientMessages
             'data' => array(
                 'person_id'    => $person->id,
                 'person_name'  => $person->getDisplayName(),
-                'date_created' => $person->date_created->getTimestamp(),
-            ),
+                'date_created' => $person->date_created->getTimestamp()
+            )
         ));
 
         return array($cm);
@@ -63,8 +63,8 @@ class PeopleClientMessages
             'data' => array(
                 'organization_id'    => $org->id,
                 'organization_name'  => $org->name,
-                'date_created'       => $org->date_created->getTimestamp(),
-            ),
+                'date_created'       => $org->date_created->getTimestamp()
+            )
         ));
 
         return array($cm);

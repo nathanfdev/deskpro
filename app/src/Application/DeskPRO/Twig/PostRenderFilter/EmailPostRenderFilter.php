@@ -83,10 +83,10 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
         }
 
         if ($subj) {
-            $code = $subj.'___DP___SUBJECT___SEP___'.$code;
+            $code = $subj . '___DP___SUBJECT___SEP___' . $code;
         }
 
-        if (strpos($name, 'DeskPRO:emails_user:') === 0) {
+        if (strpos($name,'DeskPRO:emails_user:') === 0) {
             $code = str_replace('DP_TOP_MARK', 'DP_TOP_MARK DP_USER_EMAIL', $code);
         }
 

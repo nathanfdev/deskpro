@@ -52,7 +52,7 @@ class AppManagerService
         ")->execute();
 
         if (count($apps)) {
-            $names = array_map(function ($a) { return $a->package->name; }, $apps);
+            $names = array_map(function($a) { return $a->package->name; }, $apps);
 
             // This loads assets for installed apps
             // into the EM so we dont have a query-per-app
@@ -77,20 +77,14 @@ class AppManagerService
             LEFT JOIN usersource.app app
         ")->execute();
 
-        if ($apps instanceof ArrayCollection) {
-            $apps = $apps->toArray();
-        }
-        if ($packages instanceof ArrayCollection) {
-            $packages = $packages->toArray();
-        }
-        if ($usersources instanceof ArrayCollection) {
-            $usersources = $usersources->toArray();
-        }
+        if ($apps instanceof ArrayCollection) $apps = $apps->toArray();
+        if ($packages instanceof ArrayCollection) $packages = $packages->toArray();
+        if ($usersources instanceof ArrayCollection) $usersources = $usersources->toArray();
 
         $app_service_container = new AppServiceContainer($container);
 
         $app_paths = array(
-            'default' => DP_ROOT.'/apps',
+            'default' => DP_ROOT.'/apps'
         );
 
         if (dp_get_config('app_paths')) {

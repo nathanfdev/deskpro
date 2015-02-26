@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+
 class PermissionCache extends AbstractEntityRepository
 {
     /**
@@ -53,7 +54,7 @@ class PermissionCache extends AbstractEntityRepository
         }
 
         if ($person_id) {
-            $person_key = $usergroup_key.'-person-'.$person_id;
+            $person_key = $usergroup_key . '-person-' . $person_id;
         } else {
             $person_key = null;
         }

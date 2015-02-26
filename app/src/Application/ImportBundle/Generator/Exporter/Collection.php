@@ -41,13 +41,12 @@ class Collection extends AbstractCollection
     /**
      * Add a validator
      *
-     * @param  ExporterInterface $exporter
+     * @param ExporterInterface $exporter
      * @return $this
      */
     public function attach(ExporterInterface $exporter)
     {
         $this->collection[$exporter->getType()] = $exporter;
-
         return $this;
     }
 

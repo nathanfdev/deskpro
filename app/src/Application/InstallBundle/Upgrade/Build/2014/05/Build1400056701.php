@@ -107,6 +107,7 @@ class Build1400056701 extends AbstractBuild
         $this->out("Change data type of usersources.options");
         $this->execMutateSql("ALTER TABLE usersources CHANGE options options LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)'");
 
+
         #-------------------------
         # Mark a couple default datas as done
         # because we insert them manually
@@ -132,13 +133,13 @@ class Build1400056701 extends AbstractBuild
 
         if ($loaded_data_id) {
             $this->container->getDb()->update('datastore', array(
-                'data' => serialize($data),
+                'data' => serialize($data)
             ), array('id' => $loaded_data_id));
         } else {
             $this->container->getDb()->insert('datastore', array(
                 'name' => 'sys.install.default_data',
                 'auth' => Strings::random(15),
-                'data' => serialize($data),
+                'data' => serialize($data)
             ));
         }
     }

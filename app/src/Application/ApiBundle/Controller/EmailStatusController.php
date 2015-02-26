@@ -70,34 +70,34 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             ->add('statuses', 'choice', array(
                 'choices'  => array_combine($filter->getValidStatuses(), $filter->getValidStatuses()),
                 'required' => false,
-                'multiple' => true,
+                'multiple' => true
             ))
             ->add('date_start', 'date', array(
                 'view_timezone' => $this->person->getTimezone(),
                 'widget' => 'single_text',
                 'input' => 'datetime',
-                'required' => false,
+                'required' => false
             ))
             ->add('date_end', 'date', array(
                 'view_timezone' => $this->person->getTimezone(),
                 'widget' => 'single_text',
                 'input' => 'datetime',
-                'required' => false,
+                'required' => false
             ))
             ->add('subject', 'text', array(
-                'required' => false,
+                'required' => false
             ))
             ->add('account', 'text', array(
-                'required' => false,
+                'required' => false
             ))
             ->add('to', 'text', array(
-                'required' => false,
+                'required' => false
             ))
             ->add('from', 'text', array(
-                'required' => false,
+                'required' => false
             ))
             ->add('error_code', 'text', array(
-                'required' => false,
+                'required' => false
             ))
             ->getForm();
 
@@ -112,9 +112,10 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             'page'          => $filter->getPage(),
             'num_pages'     => $info['num_pages'],
             'count'         => $info['count'],
-            'email_sources' => $this->getApiData($results),
+            'email_sources' => $this->getApiData($results)
         ));
     }
+
 
     ####################################################################################################################
     # get-email-sources-stats
@@ -127,9 +128,10 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
         return $this->createJsonResponse(array(
             'by_status'  => $status_counts,
-            'by_account' => $account_counts,
+            'by_account' => $account_counts
         ));
     }
+
 
     ####################################################################################################################
     # list-sendmail
@@ -148,31 +150,31 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             ->add('statuses', 'choice', array(
                 'choices'  => array_combine($filter->getValidStatuses(), $filter->getValidStatuses()),
                 'required' => false,
-                'multiple' => true,
+                'multiple' => true
             ))
             ->add('date_start', 'date', array(
                 'view_timezone' => $this->person->getTimezone(),
                 'widget' => 'single_text',
                 'input' => 'datetime',
-                'required' => false,
+                'required' => false
             ))
             ->add('date_end', 'date', array(
                 'view_timezone' => $this->person->getTimezone(),
                 'widget' => 'single_text',
                 'input' => 'datetime',
-                'required' => false,
+                'required' => false
             ))
             ->add('subject', 'text', array(
-                'required' => false,
+                'required' => false
             ))
             ->add('to', 'text', array(
-                'required' => false,
+                'required' => false
             ))
             ->add('from', 'text', array(
-                'required' => false,
+                'required' => false
             ))
             ->add('error_code', 'text', array(
-                'required' => false,
+                'required' => false
             ))
             ->getForm();
 
@@ -192,7 +194,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             'page'           => $filter->getPage(),
             'num_pages'      => $info['num_pages'],
             'count'          => $info['count'],
-            'sendmail_queue' => $data,
+            'sendmail_queue' => $data
         ));
     }
 
@@ -281,7 +283,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             $info .= str_repeat("#", 72);
             $info .= "\n\n";
             $info .= $t;
-        } elseif ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
+        } else if ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
             $info .= str_repeat("#", 72);
             $info .= "\n# EMAIL TEXT BODY (generated based on html)\n";
             $info .= str_repeat("#", 72);
@@ -321,14 +323,14 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
         if ($reader->getBodyText() && ($t = trim($reader->getBodyText()->getBodyUtf8()))) {
             $text = $t;
-        } elseif ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
+        } else if ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
             $text = Strings::stripTags($t);
         }
         unset($t);
 
         return $this->createApiResponse(array(
             'text' => $text,
-            'html' => $html,
+            'html' => $html
         ));
     }
 
@@ -346,15 +348,13 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         if ($source->blob) {
             try {
                 $this->container->getBlobStorage()->deleteBlobRecord($source->blob);
-            } catch (\Exception $e) {
-            }
+            } catch (\Exception $e) {}
         }
 
         if ($source->log_blob) {
             try {
                 $this->container->getBlobStorage()->deleteBlobRecord($source->log_blob);
-            } catch (\Exception $e) {
-            }
+            } catch (\Exception $e) {}
         }
 
         $this->em->remove($source);
@@ -381,7 +381,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         $runner->executeSource($source);
 
         return $this->createApiResponse(array(
-            'status' => $source->status,
+            'status' => $source->status
         ));
     }
 
@@ -432,8 +432,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         if ($sendmail->blob) {
             try {
                 $this->container->getBlobStorage()->deleteBlobRecord($sendmail->blob);
-            } catch (\Exception $e) {
-            }
+            } catch (\Exception $e) {}
         }
 
         $this->em->remove($sendmail);
@@ -463,7 +462,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         $r = $source_mapper->markSourceRetry($sendmail, sprintf("[%s] Manually marked for retry by %s", date('Y-m-d H:i:s'), $this->person->getDisplayContact()));
 
         return $this->createApiResponse(array(
-            'date_next_attempt' => $r['date_next_attempt'],
+            'date_next_attempt' => $r['date_next_attempt']
         ));
     }
 
@@ -515,7 +514,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
                     SELECT sendmail_sources.id AS sendmail_sources_id, blobs.*
                     FROM sendmail_sources
                     LEFT JOIN blobs ON blobs.id = sendmail_sources.blob_id
-                    WHERE sendmail_sources.id IN (".implode(',', $ids).")
+                    WHERE sendmail_sources.id IN (" . implode(',', $ids) . ")
                 ");
 
                 foreach ($recs as $r) {
@@ -558,7 +557,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
                     SELECT email_sources.id AS email_sources_id, email_sources.log_blob_id AS email_sources_log_blob_id, blobs.*
                     FROM email_sources
                     LEFT JOIN blobs ON blobs.id = email_sources.blob_id
-                    WHERE email_sources.id IN (".implode(',', $ids).")
+                    WHERE email_sources.id IN (" . implode(',', $ids) . ")
                 ");
 
                 foreach ($recs as $r) {

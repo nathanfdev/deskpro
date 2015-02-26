@@ -13,7 +13,7 @@ class DepartmentFilter extends AbstractFilter
         $departmentIds = array();
 
         foreach ($departments as $department) {
-            $departmentIds[] = (int) $department;
+            $departmentIds[] = (int)$department;
         }
 
         $departmentIds = Arrays::removeFalsey($departmentIds);

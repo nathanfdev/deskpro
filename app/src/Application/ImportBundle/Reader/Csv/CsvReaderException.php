@@ -36,4 +36,5 @@ namespace Application\ImportBundle\Reader\Csv;
  */
 final class CsvReaderException extends \Exception
 {
+
 }

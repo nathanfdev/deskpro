@@ -87,9 +87,8 @@ class GroupingCounter
         $group2_has = array();
 
         foreach ($titles1 as $field1_id => $field1_title) {
-            if (!isset($counts[$field1_id])) {
-                continue;
-            }
+
+            if (!isset($counts[$field1_id])) continue;
 
             $countinfo = $counts[$field1_id];
 
@@ -101,11 +100,11 @@ class GroupingCounter
             $row['total'] = $countinfo['total'];
 
             if (!empty($countinfo['sub'])) {
+
                 $row['sub'] = array();
                 foreach ($titles2 as $field2_id => $field2_title) {
-                    if (!isset($countinfo['sub'][$field2_id])) {
-                        continue;
-                    }
+
+                    if (!isset($countinfo['sub'][$field2_id])) continue;
                     $countinfo2 = $countinfo['sub'][$field2_id];
 
                     $group2_has[] = $field2_id;
@@ -141,12 +140,12 @@ class GroupingCounter
             $closed_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
             foreach ($active_status_cats as $cat) {
-                $titles['active.'.$cat['id']] = array('title' => $cat['title']);
-                $titles['active']['children']['active.'.$cat['id']] = array('title' => $cat['title']);
+                $titles['active.' . $cat['id']] = array('title' => $cat['title']);
+                $titles['active']['children']['active.' . $cat['id']] = array('title' => $cat['title']);
             }
             foreach ($closed_status_cats as $cat) {
-                $titles['closed.'.$cat['id']] = array('title' => $cat['title']);
-                $titles['closed']['children']['closed.'.$cat['id']] = array('title' => $cat['title']);
+                $titles['closed.' . $cat['id']] = array('title' => $cat['title']);
+                $titles['closed']['children']['closed.' . $cat['id']] = array('title' => $cat['title']);
             }
         };
 
@@ -210,6 +209,9 @@ class GroupingCounter
         return ($a['total'] < $b['total']) ? -1 : 1;
     }
 
+
+
+
     /**
      * Get the raw counts
      *
@@ -226,13 +228,13 @@ class GroupingCounter
         if ($grouping1 == 'status') {
             $grouping1 = "IF(feedback.status_category_id, CONCAT(feedback.status, '.', feedback.status_category_id), feedback.status)";
         } else {
-            $grouping1 = $db->quoteIdentifier('feedback.'.$grouping1);
+            $grouping1 = $db->quoteIdentifier('feedback.' . $grouping1);
         }
 
         if ($grouping2 == 'status') {
             $grouping2 = "IF(feedback.status_category_id, CONCAT(feedback.status, '.', feedback.status_category_id), feedback.status)";
         } else {
-            $grouping2 = $db->quoteIdentifier('feedback.'.$grouping2);
+            $grouping2 = $db->quoteIdentifier('feedback.' . $grouping2);
         }
 
         $select_fields[] = "COALESCE($grouping1, 0) AS field1";
@@ -244,15 +246,15 @@ class GroupingCounter
 
         $where = "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status != 'validating')";
         if (is_array($this->ids)) {
-            if (empty($this->ids)) {
+            if(empty($this->ids)) {
                 return array();
             }
 
-            $where = "WHERE feedback.id IN(".implode(',', $this->ids).")";
+            $where = "WHERE feedback.id IN(" . implode(',', $this->ids) . ")";
         }
 
         $sql = "
-            SELECT ".implode(', ', $select_fields)."
+            SELECT " . implode(', ', $select_fields) . "
             FROM feedback
             $where
             $group_by WITH ROLLUP
@@ -262,6 +264,8 @@ class GroupingCounter
 
         return $counts;
     }
+
+
 
     /**
      * Get information about strucutred counts and titles.
@@ -286,12 +290,13 @@ class GroupingCounter
 
         $counts_structured = array();
         foreach ($counts as $count) {
+
             // Store ID's
             if ($count['field1'] !== null) {
                 $ids1[] = $count['field1'];
             }
 
-            if ($this->grouping2 and $count['field2'] !== null) {
+            if ($this->grouping2 AND $count['field2'] !== null) {
                 $ids2[] = $count['field2'];
             }
 
@@ -300,12 +305,8 @@ class GroupingCounter
             #------------------------------
 
             // Set ROLLUP's (totals) to -1
-            if ($count['field1'] === null) {
-                $count['field1'] = -1;
-            }
-            if ($this->grouping2 and $count['field2'] === null) {
-                $count['field2'] = -1;
-            }
+            if ($count['field1'] === null) $count['field1'] = -1;
+            if ($this->grouping2 AND $count['field2'] === null) $count['field2'] = -1;
 
             // Init array keys
             if (!isset($counts_structured[$count['field1']])) {
@@ -340,9 +341,11 @@ class GroupingCounter
         return array(
             'titles1' => $titles1,
             'titles2' => $titles2,
-            'counts'  => $counts_structured,
+            'counts'  => $counts_structured
         );
     }
+
+
 
     /**
      * Get a string of id=>title for a particular field, given IDs.
@@ -375,11 +378,11 @@ class GroupingCounter
                 $closed_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
                 foreach ($active_status_cats as $cat) {
-                    $titles['active.'.$cat['id']] = 'Active > '.$cat['title'];
+                    $titles['active.' . $cat['id']] = 'Active > ' . $cat['title'];
                 }
                     foreach ($closed_status_cats as $cat) {
-                        $titles['closed.'.$cat['id']] = 'Closed > '.$cat['title'];
-                    }
+                    $titles['closed.' . $cat['id']] = 'Closed > ' . $cat['title'];
+                }
 
                 return $titles;
 

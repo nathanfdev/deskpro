@@ -120,12 +120,8 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
         $this->_start_time = microtime(true);
         \DpShutdown::add(array($this, 'writeLogQuiet'));
 
-        if (!function_exists('dp_get_config')) {
-            return;
-        }
-        if (!dp_get_config('debug.page_log.enabled') || isset($GLOBALS['DP_NOSQL_LOG'])) {
-            return;
-        }
+        if (!function_exists('dp_get_config')) return;
+        if (!dp_get_config('debug.page_log.enabled') || isset($GLOBALS['DP_NOSQL_LOG'])) return;
 
         $this->_track_ids = dp_get_config('debug.page_log.track_query_ids', array());
         if ($this->_track_ids) {
@@ -163,8 +159,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
     {
         try {
             $this->writeLog();
-        } catch (\Exception $e) {
-        }
+        } catch (\Exception $e) {}
     }
 
     public function startQuery($sql, array $params = null, array $types = null)
@@ -174,10 +169,10 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
             $sql_string = preg_replace('# {2,}#', ' ', $sql_string);
             $sql_string = substr($sql_string, 0, 5000);
             echo "\n";
-            echo "Query:  ".$sql_string;
+            echo "Query:  " . $sql_string;
             if ($params) {
                 echo "\n";
-                echo "Params: ".\DeskPRO\Kernel\KernelErrorHandler::varToString($params);
+                echo "Params: " . \DeskPRO\Kernel\KernelErrorHandler::varToString($params);
             }
             echo "\n";
         }
@@ -216,9 +211,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
     private function _isSqlTracking($sql)
     {
-        if (!$this->_track_regex) {
-            return false;
-        }
+        if (!$this->_track_regex) return false;
         foreach ($this->_track_regex as $re) {
             if (preg_match($re, $sql)) {
                 return true;
@@ -232,9 +225,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
     {
         $queryinfo = $this->_last_query;
 
-        if (!$queryinfo) {
-            return;
-        }
+        if (!$queryinfo) return;
 
         $queryinfo['time_end']       = microtime(true);
         $queryinfo['time_taken']     = $queryinfo['time_end'] - $queryinfo['time_start'];
@@ -242,15 +233,9 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
         $this->_db_time += $queryinfo['time_taken'];
         $this->_last_query = null;
 
-        if (!$this->_enabled) {
-            return;
-        }
-        if (isset($GLOBALS['DP_NOSQL_LOG']) && $GLOBALS['DP_NOSQL_LOG']) {
-            return;
-        }
-        if ($this->_query_count > self::SAFE_MAX) {
-            return;
-        }
+        if (!$this->_enabled) return;
+        if (isset($GLOBALS['DP_NOSQL_LOG']) && $GLOBALS['DP_NOSQL_LOG']) return;
+        if ($this->_query_count > self::SAFE_MAX) return;
 
         $queryinfo['params_string']  = \DeskPRO\Kernel\KernelErrorHandler::varToString($queryinfo['params']);
         $queryinfo['sql']            = trim($queryinfo['sql']);
@@ -277,12 +262,8 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
         dp_pagelog_set('time_db', $db_time);
         dp_pagelog_set('time_end', $total_time);
 
-        if (!$this->_enabled) {
-            return;
-        }
-        if (isset($GLOBALS['DP_NOSQL_LOG']) && $GLOBALS['DP_NOSQL_LOG']) {
-            return;
-        }
+        if (!$this->_enabled) return;
+        if (isset($GLOBALS['DP_NOSQL_LOG']) && $GLOBALS['DP_NOSQL_LOG']) return;
 
         $do_slow_query = false;
         if ($opt_slow_query_time) {
@@ -318,7 +299,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
                     'total_time' => $queryinfo['time_taken'],
                     'min_time'   => $queryinfo['time_taken'],
                     'max_time'   => $queryinfo['time_taken'],
-                    'id'         => $queryinfo['id'],
+                    'id'         => $queryinfo['id']
                 );
             } else {
                 $repeated_queries[$query_name]['count']++;
@@ -347,11 +328,11 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
         $page_header = array();
         $page_header[] = "--- Page Log Begin ---";
         if (defined('DP_REQUEST_URL')) {
-            $page_header[] = "=> URL: ".DP_REQUEST_URL;
+            $page_header[] = "=> URL: " . DP_REQUEST_URL;
         } elseif (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
-            $page_header[] = "=> URL: (Command) ".implode(' ', $_SERVER['argv']);
+            $page_header[] = "=> URL: (Command) " . implode(' ', $_SERVER['argv']);
         } elseif (!empty($_SERVER["REQUEST_URI"])) {
-            $page_header[] = "=> URL: ".$_SERVER["REQUEST_URI"];
+            $page_header[] = "=> URL: " . $_SERVER["REQUEST_URI"];
         }
 
         $page_header[] = sprintf("=> Time: %.4f    PHP_Time: %.4f    DB_Time: %.4f    Query_Count: %d    Peak_Memory: %d", $total_time, $php_time, $db_time, $this->_query_count, memory_get_peak_usage());
@@ -379,9 +360,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
             $repeated_lines = $this->_formatRepeatedQueries($repeated_queries);
             foreach ($repeated_lines as $k => &$l) {
-                if ($k === 0) {
-                    continue;
-                }
+                if ($k === 0) continue;
                 $name = Strings::extractRegexMatch('/<(#[0-9]+)>/', $l);
                 if (!isset($slow_queries[$name])) {
                     $l = null;
@@ -398,7 +377,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
             $write = array_merge($page_header, $this->_formatAllQueryRows($slow_queries), $repeated_lines);
             $this->_writeLogFile(
-                dp_get_log_dir().DIRECTORY_SEPARATOR.'pagelog-slow-queries.log',
+                dp_get_log_dir() . DIRECTORY_SEPARATOR . 'pagelog-slow-queries.log',
                 $write
             );
         }
@@ -410,7 +389,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
         if ($do_max_query) {
             $write = array_merge($page_header, $this->_formatAllQueryRows($this->_queries), $this->_formatRepeatedQueries($repeated_queries));
             $this->_writeLogFile(
-                dp_get_log_dir().DIRECTORY_SEPARATOR.'pagelog-query-count.log',
+                dp_get_log_dir() . DIRECTORY_SEPARATOR . 'pagelog-query-count.log',
                 $write
             );
         }
@@ -422,7 +401,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
         if ($do_slow_db) {
             $write = array_merge($page_header, $this->_formatAllQueryRows($this->_queries), $this->_formatRepeatedQueries($repeated_queries));
             $this->_writeLogFile(
-                dp_get_log_dir().DIRECTORY_SEPARATOR.'pagelog-slow-db.log',
+                dp_get_log_dir() . DIRECTORY_SEPARATOR . 'pagelog-slow-db.log',
                 $write
             );
         }
@@ -433,7 +412,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
         if ($do_slow_php) {
             $this->_writeLogFile(
-                dp_get_log_dir().DIRECTORY_SEPARATOR.'pagelog-slow-php.log',
+                dp_get_log_dir() . DIRECTORY_SEPARATOR . 'pagelog-slow-php.log',
                 $page_header
             );
         }
@@ -444,7 +423,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
         if ($do_slow_page) {
             $this->_writeLogFile(
-                dp_get_log_dir().DIRECTORY_SEPARATOR.'pagelog-slow-page.log',
+                dp_get_log_dir() . DIRECTORY_SEPARATOR . 'pagelog-slow-page.log',
                 $page_header
             );
         }
@@ -456,11 +435,12 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
         if ($do_tracked_log) {
             $write = array_merge($page_header, $this->_formatAllQueryRows(array_filter($this->_queries, function ($q) { return $q['is_tracking']; })));
             $this->_writeLogFile(
-                dp_get_log_dir().DIRECTORY_SEPARATOR.'pagelog-tracked-queries.log',
+                dp_get_log_dir() . DIRECTORY_SEPARATOR . 'pagelog-tracked-queries.log',
                 $write
             );
         }
     }
+
 
     /**
      * @return void
@@ -509,8 +489,10 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
                 $this->_query_id_count[$query_id]++;
             }
+
         }
     }
+
 
     /**
      * @param  array  $queryinfo
@@ -523,7 +505,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
         $row = sprintf(
             "[%.4fs] <%s:%s> %s    <PARAMS> %s",
             $queryinfo['time_taken'],
-            $queryinfo['query_name'].($queryinfo['count_of_id'] ? sprintf(".%03d", $queryinfo['count_of_id']) : ''),
+            $queryinfo['query_name'] . ($queryinfo['count_of_id'] ? sprintf(".%03d", $queryinfo['count_of_id']) : ''),
             $queryinfo['query_table'],
             $queryinfo['sql_string'],
             $queryinfo['params_string']
@@ -536,6 +518,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
         return $row;
     }
+
 
     /**
      * @param  array    $all_queryinfo
@@ -551,6 +534,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
         return $write;
     }
+
 
     /**
      * @param  array    $repeated_queries
@@ -581,6 +565,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
         return $write;
     }
 
+
     /**
      * @param  string $path
      * @param  array  $lines
@@ -590,7 +575,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
     {
         $lines = implode("\n", $lines);
 
-        $prefix = '['.date('Y-m-d H:i:s').'] ';
+        $prefix = '[' . date('Y-m-d H:i:s') . '] ';
         $lines = Strings::modifyLines($lines, $prefix);
         $lines = trim($lines);
         $lines .= "\n";

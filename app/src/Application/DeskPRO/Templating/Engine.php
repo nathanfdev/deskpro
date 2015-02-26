@@ -97,6 +97,7 @@ class Engine extends BaseEngine
         return isset($this->_template_files_map[$name]);
     }
 
+
     /**
      * Check if a template is custom
      *
@@ -115,6 +116,7 @@ class Engine extends BaseEngine
         return $id ? true : false;
     }
 
+
     /**
      * Get the default source code for a template
      *
@@ -132,6 +134,7 @@ class Engine extends BaseEngine
 
         return file_get_contents($path);
     }
+
 
     /**
      * Get the source code for a template. This will return the custom source
@@ -156,6 +159,7 @@ class Engine extends BaseEngine
         return $source ?: '';
     }
 
+
     /**
      * @param  string $name
      * @return array
@@ -167,6 +171,7 @@ class Engine extends BaseEngine
         return $this->splitSource($source);
     }
 
+
     /**
      * @param  string $source
      * @return array
@@ -174,7 +179,7 @@ class Engine extends BaseEngine
     public function splitSource($source)
     {
         $parts = array(
-            'source' => $source,
+            'source' => $source
         );
 
         if (preg_match('#<dp:subject>(.*?)</dp:subject>#is', $source, $m)) {
@@ -185,6 +190,7 @@ class Engine extends BaseEngine
         return $parts;
     }
 
+
     /**
      * @return array
      */
@@ -192,6 +198,7 @@ class Engine extends BaseEngine
     {
         return self::$varied_templates;
     }
+
 
     /**
      * @param  mixed $name

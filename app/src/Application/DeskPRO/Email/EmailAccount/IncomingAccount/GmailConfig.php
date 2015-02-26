@@ -61,6 +61,7 @@ class GmailConfig implements AccountConfigInterface
         );
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -74,6 +75,7 @@ class GmailConfig implements AccountConfigInterface
         return $obj;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -81,6 +83,7 @@ class GmailConfig implements AccountConfigInterface
     {
         return 'gmail';
     }
+
 
     ############################################################################
     # Validation Metadata

@@ -74,23 +74,24 @@ class OutgoingSmsProcessor extends AbstractJobProcessor
             array(
                 'message',
                 'to_number',
-                'provider',
+                'provider'
             )
         );
 
         $resolver->setDefaults(
             array(
                 'from_number' => null,
-                'provider_params' => array(),
+                'provider_params' => array()
             )
         );
     }
+
 
     public function process(array $data, array $job)
     {
         try {
             $provider = SmsProviderFactory::create($data['provider'], $data['provider_params']);
-        } catch (\InvalidArgumentException $e) {
+        } catch(\InvalidArgumentException $e) {
             $this->markRejected($job, 'sms provider not found', '', Job::STATUS_CODE_INVALID_DATA);
 
             return false;
@@ -116,6 +117,7 @@ class OutgoingSmsProcessor extends AbstractJobProcessor
             $this->queue->retryByJobId($job['id'], new \DateTime('now + 2 minutes'));
         }
     }
+
 
     private function willRetry($job)
     {

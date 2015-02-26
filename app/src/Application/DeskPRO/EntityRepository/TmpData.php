@@ -35,27 +35,22 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\TmpData as TmpDataEntity;
+use Doctrine\ORM\Query;
 
 class TmpData extends AbstractEntityRepository
 {
     public function getByCode($code, $type = null)
     {
         $info = TmpDataEntity::getPartsFromCode($code);
-        if (!$info || empty($info['id']) || !$info['id']) {
-            return null;
-        }
+        if (!$info || empty($info['id']) || !$info['id']) return null;
 
         $tmpdata = $this->find($info['id']);
-        if ($tmpdata['auth'] != $info['auth']) {
-            return null;
-        }
+        if ($tmpdata['auth'] != $info['auth']) return null;
 
-        if ($type and $tmpdata->getType() != $type) {
-            return null;
-        }
-
+        if ($type AND $tmpdata->getType() != $type) return null;
         return $tmpdata;
     }
+
 
     /**
      * Get data by its unique name
@@ -82,7 +77,7 @@ class TmpData extends AbstractEntityRepository
     }
 
     /**
-     * @param  TmpDataEntity                $data
+     * @param TmpDataEntity $data
      * @throws \Doctrine\DBAL\DBALException
      */
     public function removeDupes(TmpDataEntity $data)
@@ -106,7 +101,6 @@ class TmpData extends AbstractEntityRepository
     public function getCountByName($name, $time)
     {
         $time = time() - (int) $time;
-
         return (int) $this->getEntityManager()->getConnection()->executeQuery(
             sprintf('select count(*) from %s where name = :name and date_created > :date', $this->getTableName()),
             array('name' => $name, 'date' => date('Y-m-d H:i:s', $time))

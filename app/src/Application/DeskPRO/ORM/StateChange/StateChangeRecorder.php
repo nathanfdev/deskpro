@@ -87,6 +87,7 @@ class StateChangeRecorder
         $this->state_version = self::$global_state_version;
     }
 
+
     /**
      * @return int
      */
@@ -94,6 +95,7 @@ class StateChangeRecorder
     {
         return self::$global_state_version;
     }
+
 
     /**
      * An incrementing counter that increases every time any change is made
@@ -109,11 +111,12 @@ class StateChangeRecorder
         return $this->state_version;
     }
 
+
     /**
      * Given a change, get the state version for that change. Will return 0 if no
      * such change is registered.
      *
-     * @param  ChangeInterface $change
+     * @param ChangeInterface $change
      * @return int
      */
     public function getStateVersionForChange(ChangeInterface $change)
@@ -122,6 +125,7 @@ class StateChangeRecorder
 
         return isset($this->changes_to_state_version[$id]) ? $this->changes_to_state_version[$id] : 0;
     }
+
 
     /**
      * @param ChangeInterface $change
@@ -151,6 +155,7 @@ class StateChangeRecorder
 
         $this->changes_to_state_version[spl_object_hash($change)] = $this->state_version;
     }
+
 
     /**
      * Record a new change
@@ -196,6 +201,7 @@ class StateChangeRecorder
         return $change;
     }
 
+
     /**
      * @param ChangeInterface $change
      */
@@ -203,6 +209,7 @@ class StateChangeRecorder
     {
         $this->addChange($change);
     }
+
 
     /**
      * @param  string     $field_id
@@ -216,6 +223,7 @@ class StateChangeRecorder
 
         return $change;
     }
+
 
     /**
      * @param  string                $field_id
@@ -245,6 +253,7 @@ class StateChangeRecorder
         return $change;
     }
 
+
     /**
      * @param  string $field_id
      * @return bool
@@ -254,6 +263,7 @@ class StateChangeRecorder
         return isset($this->changes_by_field[$field_id]);
     }
 
+
     /**
      * @return ChangeInterface[]
      */
@@ -261,6 +271,7 @@ class StateChangeRecorder
     {
         return $this->changes;
     }
+
 
     /**
      * @param  string $field_id
@@ -270,6 +281,7 @@ class StateChangeRecorder
     {
         return isset($this->changes_by_field[$field_id]) ? $this->changes_by_field[$field_id] : array();
     }
+
 
     /**
      * For fields that were changed multiple times, this returns
@@ -287,7 +299,7 @@ class StateChangeRecorder
 
         $changes = $this->changes_by_field[$field_id];
         $first = array_shift($changes);
-        $last  = $changes ? array_pop($changes) : null;
+		$last  = $changes ? array_pop($changes) : null;
 
         // Only the one change, so
         // can just return that

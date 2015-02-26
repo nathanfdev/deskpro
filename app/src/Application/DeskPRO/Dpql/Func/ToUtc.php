@@ -59,7 +59,8 @@ class ToUtc extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    ) {
+    )
+    {
         if (count($this->_arguments) != 1) {
             throw new Exception('TO_UTC() can only accept 1 argument');
         }

@@ -54,6 +54,7 @@ class CronStatus
         $this->db = $db;
     }
 
+
     /**
      * @return int
      */
@@ -76,6 +77,7 @@ class CronStatus
         return $this->last_run_ts;
     }
 
+
     /**
      * @return \DateTime|null
      */
@@ -90,6 +92,7 @@ class CronStatus
 
         return $date;
     }
+
 
     /**
      * Get how long it's been since the last cron
@@ -113,6 +116,7 @@ class CronStatus
     {
         return $this->getSecsSinceLastRun() > 300;
     }
+
 
     /**
      * @return array
@@ -152,7 +156,7 @@ class CronStatus
                 'is_zendserver' => $is_zendserver,
                 'web_ini_path'  => $web_ini_path,
                 'data_dir'      => dp_get_data_dir(),
-                'error_log'     => @file_get_contents(dp_get_log_dir().'/error.log')."\n\n\n".@file_get_contents(dp_get_log_dir().'/cli-phperr.log'),
+                'error_log'     => @file_get_contents(dp_get_log_dir() . '/error.log') . "\n\n\n" . @file_get_contents(dp_get_log_dir() . '/cli-phperr.log')
             );
         }
 

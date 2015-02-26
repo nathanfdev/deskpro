@@ -1,9 +1,5 @@
-<?php if (!defined('DP_ROOT')) {
-    exit('No access');
-} ?>
-<?php if (!isset($run_context)) {
-    $run_context = 'install';
-} ?>
+<?php if (!defined('DP_ROOT')) exit('No access'); ?>
+<?php if (!isset($run_context)) $run_context = 'install'; ?>
 <style type="text/css">
     .kb-read-more {
         font-size: 11px;
@@ -338,19 +334,19 @@
             The data directory <?php if (isset($data_dir)): ?>(<?php echo $data_dir ?>)<?php endif ?> and all sub-directories must be writable.
             <br/>
             <?php foreach (array('', 'backups', 'debug', 'files', 'logs', 'tmp') as $dir) {
-    $path = dp_get_data_dir().DIRECTORY_SEPARATOR.$dir;
+                $path = dp_get_data_dir() . DIRECTORY_SEPARATOR . $dir;
 
-    if (!is_dir($path)) {
-        @mkdir($path, 0777, true);
-        @chmod($path, 0777);
-    }
+                if (!is_dir($path)) {
+                    @mkdir($path, 0777, true);
+                    @chmod($path, 0777);
+                }
 
-    if (!is_dir($path)) {
-        echo "&bull; $path does not exist<br/>";
-    } elseif (!is_writable($path)) {
-        echo "&bull; $path is not writable<br/>";
-    }
-} ?>
+                if (!is_dir($path)) {
+                    echo "&bull; $path does not exist<br/>";
+                } elseif (!is_writable($path)) {
+                    echo "&bull; $path is not writable<br/>";
+                }
+            } ?>
         </div>
             <?php if (strpos(strtoupper(PHP_OS), 'WIN') === 0): ?>
             <?php else: ?>

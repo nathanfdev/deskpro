@@ -55,6 +55,7 @@ class InlineImageTokens
         $this->reader = $reader;
     }
 
+
     /**
      * Adds tokens to $body where inline tags
      *
@@ -130,6 +131,7 @@ class InlineImageTokens
         return $body;
     }
 
+
     /**
      * Check if a content ID has a corresponding token
      *
@@ -139,6 +141,7 @@ class InlineImageTokens
     {
         return isset($this->tokens[$cid]);
     }
+
 
     /**
      * Get the token for a content id
@@ -155,6 +158,7 @@ class InlineImageTokens
         }
     }
 
+
     /**
      * @return array
      */
@@ -162,6 +166,7 @@ class InlineImageTokens
     {
         return $this->tokens;
     }
+
 
     /**
      * Replace a content ID with something in body.
@@ -185,6 +190,7 @@ class InlineImageTokens
         return $body;
     }
 
+
     /**
      * Count how many tokens were read
      *
@@ -194,6 +200,7 @@ class InlineImageTokens
     {
         return count($this->tokens);
     }
+
 
     /**
      * Get the CID's we were able to read
@@ -210,6 +217,6 @@ class InlineImageTokens
      */
     public function generateToken()
     {
-        return '__dp_'.mt_rand(1000, 9999).'_a'.count($this->tokens).'_'.\Orb\Util\Util::requestUniqueId().'__';
+        return '__dp_' . mt_rand(1000,9999) . '_a' . count($this->tokens) . '_' . \Orb\Util\Util::requestUniqueId() . '__';
     }
 }

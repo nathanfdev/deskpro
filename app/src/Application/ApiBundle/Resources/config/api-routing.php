@@ -1,9 +1,7 @@
-<?php if (!defined('DP_ROOT')) {
-    exit('No access');
-}
+<?php if (!defined('DP_ROOT')) exit('No access');
 
-require_once DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php';
-require_once DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php';
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php');
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php');
 
 use Application\DeskPRO\Routing\RouteCollection;
 
@@ -3245,9 +3243,9 @@ $collection->create('api_auditlog_detail', array(
 ########################################################################################################################
 
 $collection->create('api_ticket_triggers_getappevents', array(
-    'path'        => '/ticket_triggers/app-events/{type}',
-    'controller'  => 'ApiBundle:TicketTriggers:getAppEvents',
-    'methods'     => array('GET'),
+	'path'        => '/ticket_triggers/app-events/{type}',
+	'controller'  => 'ApiBundle:TicketTriggers:getAppEvents',
+	'methods'     => array('GET'),
 ));
 
 $collection->create('api_ticket_triggers_getcustomactions', array(
@@ -3920,7 +3918,7 @@ $collection->create('api_chat_fields_setenabled', array(
 $collection->create('api_chat_fields_update_order', array(
     'path'        => '/chat_fields/display-order',
     'controller'  => 'ApiBundle:ChatFields:saveDisplayOrder',
-    'methods'     => array('POST'),
+    'methods'     => array('POST')
 ));
 
 ########################################################################################################################
@@ -4468,35 +4466,35 @@ $collection->create('api_langs_install', array(
     'path'         => '/langs/{id}/install',
     'controller'   => 'ApiBundle:Languages:installLang',
     'methods'      => array('POST'),
-    'requirements' => array('id' => '[a-z]+'),
+    'requirements' => array('id' => '[a-z]+')
 ));
 
 $collection->create('api_langs_delete', array(
     'path'         => '/langs/{id}/uninstall',
     'controller'   => 'ApiBundle:Languages:uninstallLang',
     'methods'      => array('POST'),
-    'requirements' => array('id' => '\d+|[a-z]+'),
+    'requirements' => array('id' => '\d+|[a-z]+')
 ));
 
 $collection->create('api_langs_getinfo', array(
     'path'         => '/langs/{id}',
     'controller'   => 'ApiBundle:Languages:getLang',
     'methods'      => array('GET'),
-    'requirements' => array('id' => '\d+|[a-z]+'),
+    'requirements' => array('id' => '\d+|[a-z]+')
 ));
 
 $collection->create('api_langs_saveinfo', array(
     'path'         => '/langs/{id}',
     'controller'   => 'ApiBundle:Languages:saveLang',
     'methods'      => array('POST'),
-    'requirements' => array('id' => '\d+|[a-z]+'),
+    'requirements' => array('id' => '\d+|[a-z]+')
 ));
 
 $collection->create('api_langs_savephrases', array(
     'path'         => '/langs/{id}/phrases',
     'controller'   => 'ApiBundle:Languages:savePhraseSet',
     'methods'      => array('POST'),
-    'requirements' => array('id' => '\d+|[a-z]+'),
+    'requirements' => array('id' => '\d+|[a-z]+')
 ));
 
 $collection->create('api_langs_getphrasegroups', array(
@@ -4531,7 +4529,7 @@ $collection->create('api_langs_getphrases', array(
     'path'         => '/langs/{id}/{group_id}',
     'controller'   => 'ApiBundle:Languages:getPhrases',
     'methods'      => array('GET'),
-    'requirements' => array('id' => '\d+|[a-z]+', 'group_id' => '[a-zA-Z0-9\-_\.]+'),
+    'requirements' => array('id' => '\d+|[a-z]+', 'group_id' => '[a-zA-Z0-9\-_\.]+')
 ));
 
 ########################################################################################################################
@@ -4821,42 +4819,42 @@ $collection->create('api_apps_custom_getassets', array(
     'path'         => '/apps/custom/{id}/assets',
     'controller'   => 'ApiBundle:Apps:getCustomAssets',
     'methods'      => array('GET'),
-    'requirements' => array('id' => '\d+'),
+    'requirements' => array('id' => '\d+')
 ));
 
 $collection->create('api_apps_package', array(
     'path'         => '/apps/packages/{name}',
     'controller'   => 'ApiBundle:Apps:getPackage',
     'methods'      => array('GET'),
-    'requirements' => array('name' => '[a-zA-Z0-9_\-\.]+'),
+    'requirements' => array('name' => '[a-zA-Z0-9_\-\.]+')
 ));
 
 $collection->create('api_apps_package_delete', array(
     'path'         => '/apps/packages/{name}',
     'controller'   => 'ApiBundle:Apps:deletePackage',
     'methods'      => array('DELETE'),
-    'requirements' => array('name' => '[a-zA-Z0-9_\-\.]+'),
+    'requirements' => array('name' => '[a-zA-Z0-9_\-\.]+')
 ));
 
 $collection->create('api_apps_instance', array(
     'path'         => '/apps/instances/{id}',
     'controller'   => 'ApiBundle:Apps:getInstance',
     'methods'      => array('GET'),
-    'requirements' => array('id' => '\d+'),
+    'requirements' => array('id' => '\d+')
 ));
 
 $collection->create('api_apps_instance_update', array(
     'path'         => '/apps/instances/{id}',
     'controller'   => 'ApiBundle:Apps:updateInstance',
     'methods'      => array('POST'),
-    'requirements' => array('id' => '\d+'),
+    'requirements' => array('id' => '\d+')
 ));
 
 $collection->create('api_apps_instance_uninstall', array(
     'path'         => '/apps/instances/{id}',
     'controller'   => 'ApiBundle:Apps:uninstallInstance',
     'methods'      => array('DELETE'),
-    'requirements' => array('id' => '\d+'),
+    'requirements' => array('id' => '\d+')
 ));
 
 $collection->create('api_apps_install', array(
@@ -4870,7 +4868,7 @@ $collection->create('api_apps_package_exec', array(
     'controller'   => 'ApiBundle:Apps:execPackage',
     'defaults'     => array('action' => 'default'),
     'methods'      => array('GET', 'POST', 'PUT', 'DELETE'),
-    'requirements' => array('name' => '[a-zA-Z0-9_\-\.]+'),
+    'requirements' => array('name' => '[a-zA-Z0-9_\-\.]+')
 ));
 
 $collection->create('api_apps_instance_exec', array(
@@ -4878,13 +4876,13 @@ $collection->create('api_apps_instance_exec', array(
     'controller'   => 'ApiBundle:Apps:execInstance',
     'defaults'     => array('action' => 'default'),
     'methods'      => array('GET', 'POST', 'PUT', 'DELETE'),
-    'requirements' => array('id' => '\d+'),
+    'requirements' => array('id' => '\d+')
 ));
 
 $collection->create('api_apps_jira', array(
-    'path'         => '/apps/jira',
-    'controller'   => 'ApiBundle:Apps:jiraSettings',
-    'methods'      => array('GET'),
+	'path'         => '/apps/jira',
+	'controller'   => 'ApiBundle:Apps:jiraSettings',
+	'methods'      => array('GET'),
 ));
 
 return $collection;

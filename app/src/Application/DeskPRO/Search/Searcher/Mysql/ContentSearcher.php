@@ -73,21 +73,13 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
     protected function permFilterTypes($types)
     {
-        $limit_types = array_combine($types, $types);
+        $limit_types = array_combine($types,$types);
 
         if ($this->person) {
-            if (!$this->person->hasPerm('articles.use')) {
-                unset($limit_types['article']);
-            }
-            if (!$this->person->hasPerm('feedback.use')) {
-                unset($limit_types['feedback']);
-            }
-            if (!$this->person->hasPerm('news.use')) {
-                unset($limit_types['news']);
-            }
-            if (!$this->person->hasPerm('downloads.use')) {
-                unset($limit_types['download']);
-            }
+            if (!$this->person->hasPerm('articles.use')) unset($limit_types['article']);
+            if (!$this->person->hasPerm('feedback.use')) unset($limit_types['feedback']);
+            if (!$this->person->hasPerm('news.use')) unset($limit_types['news']);
+            if (!$this->person->hasPerm('downloads.use')) unset($limit_types['download']);
         }
 
         return array_values($limit_types);
@@ -106,7 +98,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
             return new ResultSet(0, array());
         }
 
-        $limit_types = "'".implode('\',\'', $limit_types)."'";
+        $limit_types = "'" . implode('\',\'', $limit_types) . "'";
 
         $query_text_orig = $query_text;
 
@@ -117,13 +109,13 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
         // Specific labels
         if (preg_match_all('#\[(.*?)\]#', $query_text_orig, $m)) {
             foreach ($m[1] as $w) {
-                $query_text .= " ".MysqlAdapter::encodeLabel(strtolower($w));
+                $query_text .= " " . MysqlAdapter::encodeLabel(strtolower($w));
             }
         }
 
         $words = explode(' ', $query_text);
         foreach ($words as $w) {
-            $query_text .= " ".MysqlAdapter::encodeLabel(strtolower($w));
+            $query_text .= " " . MysqlAdapter::encodeLabel(strtolower($w));
         }
 
         $where = "
@@ -201,12 +193,12 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
             return new ResultSet(0, array());
         }
 
-        $limit_types = "'".implode('\',\'', $limit_types)."'";
+        $limit_types = "'" . implode('\',\'', $limit_types) . "'";
 
         $label_where = array();
 
         foreach ($labels as $label) {
-            $label_where[] = "+".MysqlAdapter::encodeLabel($label);
+            $label_where[] = "+" . MysqlAdapter::encodeLabel($label);
         }
 
         $label_where = implode(' ', $label_where);
@@ -232,7 +224,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
         ";
 
         $total        = App::getDbRead('search.searcher.content')->fetchColumn($count_query, array($label_where));
-        $results_raw  = App::getDbRead('search.searcher.content')->fetchAll($select_query, array($label_where, $label_where));
+        $results_raw  = App::getDbRead('search.searcher.content')->fetchAll($select_query, array($label_where,$label_where));
         $results      = array();
 
         foreach ($results_raw as $result_raw) {
@@ -261,10 +253,10 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
         throw new \Application\DeskPRO\Search\Searcher\UnsupportedOperation();
     }
 
+
     public function omnisearch($query_text, array $limit_types = null, $per_page = 25, $page = 1)
     {
-        $per_page = 25;
-        $page = 1;
+        $per_page = 25; $page = 1;
 
         // Fulltext matches
         $r = $this->query($query_text, $per_page, $page, $limit_types, true);
@@ -285,7 +277,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
         }
 
         $limit_type_names = $limit_types;
-        $limit_types = "'".implode('\',\'', $limit_types)."'";
+        $limit_types = "'" . implode('\',\'', $limit_types) . "'";
 
         $query_text = Strings::decodeHtmlEntities($query_text);
         $query_text = Strings::decodeUnicodeEntities($query_text);
@@ -304,12 +296,12 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
             }
 
             $likes[] = "content_search.content LIKE ?";
-            $params[] = '%'.str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w).'%';
+            $params[] = '%' . str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w) . '%';
         }
         if ($likes) {
             $where = "
                 content_search.object_type IN ($limit_types)
-                AND (".implode(' OR ', $likes).")
+                AND (" . implode(' OR ', $likes) . ")
             ";
 
             if (!$this->ignore_perms) {

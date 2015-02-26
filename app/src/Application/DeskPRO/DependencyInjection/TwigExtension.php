@@ -37,6 +37,7 @@ namespace Application\DeskPRO\DependencyInjection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
+
 /**
  * This extends the default twig extension so we can use our custom hyrbid loader.
  */

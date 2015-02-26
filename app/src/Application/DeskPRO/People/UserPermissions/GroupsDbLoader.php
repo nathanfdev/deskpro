@@ -71,6 +71,7 @@ class GroupsDbLoader
         'news'      => 'news',
     );
 
+
     /**
      * @param int[]         $groups Group IDs or Usergroup objects
      * @param EntityManager $em
@@ -83,13 +84,14 @@ class GroupsDbLoader
             if (is_object($g)) {
                 $this->group_ids[] = $g->id;
             } elseif (is_int($g) || ctype_digit($g)) {
-                $this->group_ids[] = (int) $g;
+                $this->group_ids[] = (int)$g;
             }
         }
 
         $this->em = $em;
         $this->db = $em->getConnection();
     }
+
 
     /**
      * @param  int   $group_id
@@ -127,6 +129,7 @@ class GroupsDbLoader
         return isset($this->group_perms[$group_id]) ? $this->group_perms[$group_id] : array();
     }
 
+
     /**
      * @param $group_id
      * @return UserPermissions
@@ -138,6 +141,7 @@ class GroupsDbLoader
         return $this->createUserPermissions($perms);
     }
 
+
     /**
      * @param  array           $perm_array
      * @return UserPermissions
@@ -147,23 +151,15 @@ class GroupsDbLoader
         $user_perms = new UserPermissions();
 
         foreach ($perm_array as $k => $v) {
-            if (!$v) {
-                continue;
-            } // disabled
-            if (strpos($k, '.') === false) {
-                continue;
-            } // invalid
+            if (!$v) continue; // disabled
+            if (strpos($k, '.') === false) continue; // invalid
 
-            list($type, $name) = explode('.', $k, 2);
-            if (!isset(self::$prefix_map[$type])) {
-                continue;
-            } // unknown type
+            list ($type, $name) = explode('.', $k, 2);
+            if (!isset(self::$prefix_map[$type])) continue; // unknown type
 
             $obj_name = self::$prefix_map[$type];
             $obj = $user_perms->$obj_name;
-            if (!isset($obj->$name)) {
-                continue;
-            } // invalid;
+            if (!isset($obj->$name)) continue; // invalid;
 
             $obj->$name = true;
         }

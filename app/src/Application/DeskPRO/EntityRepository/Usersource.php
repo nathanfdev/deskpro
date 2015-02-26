@@ -85,6 +85,7 @@ class Usersource extends AbstractEntityRepository
         ")->execute();
     }
 
+
     /**
      * Fetch all usersources that are capable of logging in using locally-accepted form input.
      * That is, they can handle a username/password combo and can process that in real-time.
@@ -170,6 +171,7 @@ class Usersource extends AbstractEntityRepository
         return $ret;
     }
 
+
     /**
      * Get a usersource of a specific type
      *
@@ -187,6 +189,8 @@ class Usersource extends AbstractEntityRepository
         }
     }
 
+
+
     /**
      * Get a usersource by its ID
      *
@@ -195,12 +199,10 @@ class Usersource extends AbstractEntityRepository
      */
     public function getUsersource($id)
     {
-        if ($this->usersources === null) {
-            $this->getAllUsersources();
-        }
-
+        if ($this->usersources === null) $this->getAllUsersources();
         return $this->usersources[$id];
     }
+
 
     /**
      * Get an array of all usersource IDs
@@ -209,12 +211,10 @@ class Usersource extends AbstractEntityRepository
      */
     public function getUsersourceIds()
     {
-        if ($this->usersources === null) {
-            $this->getAllUsersources();
-        }
-
+        if ($this->usersources === null) $this->getAllUsersources();
         return array_keys($this->usersources);
     }
+
 
     public function updateDisplayOrders(array $display_orders)
     {
@@ -233,7 +233,7 @@ class Usersource extends AbstractEntityRepository
     }
 
     /**
-     * @param  null|bool $enabled
+     * @param null|bool $enabled
      * @return int
      */
     public function count($type = null, $enabled = null)

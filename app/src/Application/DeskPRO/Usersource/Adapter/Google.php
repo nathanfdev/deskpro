@@ -49,6 +49,7 @@ class Google extends AbstractAdapter
         );
     }
 
+
     /**
      * @return \Orb\Auth\Adapter\Google
      */
@@ -66,7 +67,7 @@ class Google extends AbstractAdapter
     {
         return array(
             UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN,
-            UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN,
+            UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN
         );
     }
 

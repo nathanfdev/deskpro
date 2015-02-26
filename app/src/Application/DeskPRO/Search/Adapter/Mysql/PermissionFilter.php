@@ -72,6 +72,7 @@ class PermissionFilter
      */
     protected $has_gen = false;
 
+
     /**
      * @param SearchContextInterface $context
      */
@@ -105,7 +106,7 @@ class PermissionFilter
 
         if (in_array('article', $this->types)) {
             $x++;
-            $jn = '_cs'.$x;
+            $jn = '_cs' . $x;
             $dis_ids = $this->person_context->PermissionsManager->ArticleCategories->getDisallowedCategories();
             if ($dis_ids) {
                 $dis_ids = implode(',', $dis_ids);
@@ -116,7 +117,7 @@ class PermissionFilter
 
         if (in_array('news', $this->types)) {
             $x++;
-            $jn = '_cs'.$x;
+            $jn = '_cs' . $x;
             $dis_ids = $this->person_context->PermissionsManager->NewsCategories->getDisallowedCategories();
             if ($dis_ids) {
                 $dis_ids = implode(',', $dis_ids);
@@ -127,7 +128,7 @@ class PermissionFilter
 
         if (in_array('feedback', $this->types)) {
             $x++;
-            $jn = '_cs'.$x;
+            $jn = '_cs' . $x;
             $dis_ids = $this->person_context->PermissionsManager->NewsCategories->getDisallowedCategories();
             if ($dis_ids) {
                 $dis_ids = implode(',', $dis_ids);
@@ -138,7 +139,7 @@ class PermissionFilter
 
         if (in_array('download', $this->types)) {
             $x++;
-            $jn = '_cs'.$x;
+            $jn = '_cs' . $x;
             $dis_ids = $this->person_context->PermissionsManager->NewsCategories->getDisallowedCategories();
             if ($dis_ids) {
                 $dis_ids = implode(',', $dis_ids);
@@ -152,7 +153,7 @@ class PermissionFilter
         }
 
         $this->perm_join = implode("\n", $join);
-        $this->perm_where = "(".implode(" AND ", $where).")";
+        $this->perm_where = "(" . implode(" AND ", $where) . ")";
     }
 
     /**

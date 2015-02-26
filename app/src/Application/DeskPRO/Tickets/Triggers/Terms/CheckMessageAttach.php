@@ -56,6 +56,7 @@ class CheckMessageAttach extends AbstractTriggerTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

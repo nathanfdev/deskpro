@@ -93,9 +93,8 @@ abstract class AbstractLoader implements \Serializable
         $this->init();
     }
 
-    protected function init()
-    {
-    }
+    protected function init() {}
+
 
     /**
      * Get the usergroup IDs represented by the loaded permissions
@@ -106,6 +105,7 @@ abstract class AbstractLoader implements \Serializable
     {
         return $this->usergroup_ids;
     }
+
 
     /**
      * Get an array of data we'll serialize

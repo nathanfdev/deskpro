@@ -61,7 +61,7 @@ class DevRebuildSyncDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\
             $start = microtime(true);
 
             $classes = AbstractDataSync::getAvailableSyncClasses();
-            foreach ($classes as $name => $class) {
+            foreach ($classes AS $name => $class) {
                 /* @var $sync \Application\DeskPRO\DataSync\AbstractDataSync */
                 $sync = new $class();
                 $sync->writeToBase();

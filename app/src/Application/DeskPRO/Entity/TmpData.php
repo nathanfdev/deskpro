@@ -125,6 +125,7 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
         return $this->getData('_type');
     }
 
+
     /**
      * Set the type
      *
@@ -135,17 +136,16 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
         $this->setData('_type', $type);
     }
 
+
     /**
      * Get some data from the extra array
      */
     public function getData($key = null, $default = null)
     {
-        if ($key === null) {
-            return $this->data;
-        }
-
+        if ($key === null) return $this->data;
         return (isset($this->data[$key]) ? $this->data[$key] : $default);
     }
+
 
     /**
      * Set some data on the extra array.
@@ -166,13 +166,15 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
         $this->_onPropertyChanged('data', $old, $this->data);
     }
 
+
     /**
      * @return string
      */
     public function getCode()
     {
-        return Util::baseEncode($this->id, Util::LETTERS_ALPHABET).'-'.$this->auth;
+        return Util::baseEncode($this->id, Util::LETTERS_ALPHABET) . '-' . $this->auth;
     }
+
 
     /**
      * Splits a code into its id and auth
@@ -183,9 +185,7 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
     public static function getPartsFromCode($code)
     {
         $parts = explode('-', $code, 2);
-        if (count($parts) != 2) {
-            return null;
-        }
+        if (count($parts) != 2) return null;
 
         $parts[0] = Util::baseDecode($parts[0], Util::LETTERS_ALPHABET);
 
@@ -194,6 +194,8 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
             'auth' => $parts[1],
         );
     }
+
+
 
     ############################################################################
     # Doctrine Metadata
@@ -207,16 +209,16 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
             'name' => 'tmp_data',
             'indexes' => array(
                 'name_idx' => array('columns' => array('name')),
-                'date_expire_idx' => array('columns' => array('date_expire')),
-            ),
+                'date_expire_idx' => array('columns' => array('date_expire'))
+            )
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'name'));
-        $metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth'));
-        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data'));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
-        $metadata->mapField(array( 'fieldName' => 'date_expire', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_expire'));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'name', ));
+        $metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
+        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+        $metadata->mapField(array( 'fieldName' => 'date_expire', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_expire', ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

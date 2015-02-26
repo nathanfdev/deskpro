@@ -60,6 +60,7 @@ class AgentGroupConstraint extends Constraint
      */
     public $checkRepos  = true;
 
+
     /**
      * {@inheritDoc}
      */

@@ -248,7 +248,6 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     public function setPersonId($id)
     {
         $this->setModelField('person', App::getEntityRepository('DeskPRO:Person')->find($id));
-
         return $this;
     }
 
@@ -327,10 +326,10 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
             $download_url = App::getSetting('core.deskpro_url');
             $download_url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3]), false), '/');
 
-            $extra = 'data-downloadurl="'.$download_url.'" data-blob-authid="'.$m[2].'"';
+            $extra = 'data-downloadurl="' . $download_url . '" data-blob-authid="' . $m[2] . '"';
 
-            $marker_class_a = 'dp-embed-blob-a-'.$m[2];
-            $marker_class_img = 'dp-embed-blob-img-'.$m[2];
+            $marker_class_a = 'dp-embed-blob-a-' . $m[2];
+            $marker_class_img = 'dp-embed-blob-img-' . $m[2];
 
             // Add a sign code
             // There was a bug briefly in the wild where a blob that failed to save using its primary fs
@@ -339,7 +338,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
             if (substr($m[2], -1, 1) == '0') {
                 $aids = App::getContainer()->getBlobStorage()->getAdapterIds();
                 if (in_array('fs', $aids)) {
-                    $download_url .= '?sc='.\Orb\Util\Util::generateStaticSecurityToken(App::getSetting('core.install_token').$m[2]);
+                    $download_url .= '?sc=' . \Orb\Util\Util::generateStaticSecurityToken(App::getSetting('core.install_token') . $m[2]);
                 }
             }
 
@@ -398,18 +397,18 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
     public function convertEmbeddedImagesToInlineAttachInText($message_text)
     {
-        foreach ($this->attachments as $attachment) {
+        foreach ($this->attachments AS $attachment) {
             if ($attachment->is_inline) {
                 $blob = $attachment->blob;
                 $replace = $blob->getEmbedCode(true);
 
-                $regex = '#(<img[^>]+src=")'.preg_quote($blob->getDownloadUrl(true), '#').'("[^>]*>)#i';
+                $regex = '#(<img[^>]+src=")' . preg_quote($blob->getDownloadUrl(true), '#') . '("[^>]*>)#i';
                 $message_text = preg_replace($regex, $replace, $message_text);
 
-                $regex = '#<a[^>]+'.preg_quote('dp-embed-blob-a-'.$blob->getAuthId()).'[^>]*>.*?</a>#';
+                $regex = '#<a[^>]+' . preg_quote('dp-embed-blob-a-' . $blob->getAuthId()) . '[^>]*>.*?</a>#';
                 $message_text = preg_replace($regex, $replace, $message_text);
 
-                $regex = '#<img[^>]+'.preg_quote('dp-embed-blob-img-'.$blob->getAuthId()).'[^>]>#';
+                $regex = '#<img[^>]+' . preg_quote('dp-embed-blob-img-' . $blob->getAuthId()) . '[^>]>#';
                 $message_text = preg_replace($regex, $replace, $message_text);
             }
         }
@@ -425,7 +424,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     {
         preg_match_all('#\[attach:signature_image:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#', $this->message, $matches, PREG_SET_ORDER);
         $auth_codes = array();
-        foreach ($matches as $match) {
+        foreach ($matches AS $match) {
             $auth_codes[] = $match[1];
         }
 
@@ -467,7 +466,6 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         if (!$this->message_full) {
             return '';
         }
-
         return $this->procInlineAttach($this->message_full);
     }
 
@@ -498,13 +496,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     public function setMessageText($message)
     {
         $this->setMessage(Strings::convert4ByteCharsToHtmlEntities(nl2br(htmlspecialchars($message))));
-
         return $this;
     }
 
     public function setMessage($message)
     {
-        $message = trim((string) $message);
+        $message = trim((string)$message);
         if (!$message) {
             $message = App::getTranslator()->getPhraseText('user.tickets.empty_message');
         }
@@ -524,9 +521,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         $this->_onPropertyChanged('visitor', $this->visitor, $visitor);
         $this->setModelField('visitor', $visitor);
 
-        if ($visitor === null) {
-            return;
-        }
+        if ($visitor === null) return;
 
         if (!$this->ip_address && $visitor->getIpAddress()) {
             $this['ip_address'] = $visitor->getIpAddress();
@@ -560,13 +555,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Set date created
      *
-     * @param  \DateTime $dat_created
+     * @param \DateTime $dat_created
      * @return $this
      */
     public function setDateCreated(\DateTime $dat_created)
     {
         $this->setModelField('date_created', $dat_created);
-
         return $this;
     }
 
@@ -624,7 +618,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         $hashable_msg = $this->message;
         $hashable_msg = preg_replace('#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#', '$3', $hashable_msg);
 
-        $hashes[] = sha1($hashable_msg.($this->person ? $this->person->id : 'noperson'));
+        $hashes[] = sha1($hashable_msg . ($this->person ? $this->person->id : 'noperson'));
 
         foreach ($this->attachments as $a) {
             $hashes[] = $a->blob['blob_hash'];
@@ -678,34 +672,34 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
             'name' => 'tickets_messages',
             'indexes' => array(
                 'date_created_idx' => array('columns' => array('date_created')),
-            ),
+            )
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->addLifecycleCallback('initHashCode', 'prePersist');
         $metadata->addLifecycleCallback('incTicketCount', 'prePersist');
         $metadata->addLifecycleCallback('initPersonAccessCode', 'postPersist');
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'columnName' => 'date_created'));
-        $metadata->mapField(array( 'fieldName' => 'is_agent_note', 'type' => 'boolean', 'columnName' => 'is_agent_note'));
-        $metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'columnName' => 'creation_system'));
-        $metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'columnName' => 'ip_address'));
-        $metadata->mapField(array( 'fieldName' => 'hostname', 'type' => 'string', 'length' => 255, 'columnName' => 'hostname'));
-        $metadata->mapField(array( 'fieldName' => 'geo_country', 'type' => 'string', 'length' => 10, 'nullable' => true, 'columnName' => 'geo_country'));
-        $metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'columnName' => 'email'));
-        $metadata->mapField(array( 'fieldName' => 'message_hash', 'type' => 'string', 'length' => 40, 'columnName' => 'message_hash'));
-        $metadata->mapField(array( 'fieldName' => 'message', 'type' => 'text', 'columnName' => 'message'));
-        $metadata->mapField(array( 'fieldName' => 'message_full', 'type' => 'text', 'nullable' => true, 'columnName' => 'message_full'));
-        $metadata->mapField(array( 'fieldName' => 'message_raw', 'type' => 'text', 'nullable' => true, 'columnName' => 'message_raw'));
-        $metadata->mapField(array( 'fieldName' => 'lang_code', 'type' => 'string', 'length' => 80, 'nullable' => true, 'columnName' => 'lang_code'));
-        $metadata->mapField(array( 'fieldName' => 'show_full_hint', 'type' => 'boolean', 'columnName' => 'show_full_hint'));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'columnName' => 'date_created', ));
+        $metadata->mapField(array( 'fieldName' => 'is_agent_note', 'type' => 'boolean', 'columnName' => 'is_agent_note', ));
+        $metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'columnName' => 'creation_system', ));
+        $metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'columnName' => 'ip_address', ));
+        $metadata->mapField(array( 'fieldName' => 'hostname', 'type' => 'string', 'length' => 255, 'columnName' => 'hostname', ));
+        $metadata->mapField(array( 'fieldName' => 'geo_country', 'type' => 'string', 'length' => 10, 'nullable' => true, 'columnName' => 'geo_country', ));
+        $metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'columnName' => 'email', ));
+        $metadata->mapField(array( 'fieldName' => 'message_hash', 'type' => 'string', 'length' => 40, 'columnName' => 'message_hash', ));
+        $metadata->mapField(array( 'fieldName' => 'message', 'type' => 'text', 'columnName' => 'message', ));
+        $metadata->mapField(array( 'fieldName' => 'message_full', 'type' => 'text', 'nullable' => true, 'columnName' => 'message_full', ));
+        $metadata->mapField(array( 'fieldName' => 'message_raw', 'type' => 'text', 'nullable' => true, 'columnName' => 'message_raw', ));
+        $metadata->mapField(array( 'fieldName' => 'lang_code', 'type' => 'string', 'length' => 80, 'nullable' => true, 'columnName' => 'lang_code', ));
+        $metadata->mapField(array( 'fieldName' => 'show_full_hint', 'type' => 'boolean', 'columnName' => 'show_full_hint', ));
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL)), 'dpApi' => true  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'email_source', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailSource', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_source_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'primary_translation', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessageTranslated', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'message_translated_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
-        $metadata->mapOneToMany(array( 'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAttachment', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'message', 'dpApi' => true, 'dpApiDeep' => true  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'email_source', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailSource', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_source_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'primary_translation', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessageTranslated', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'message_translated_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAttachment', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'message', 'dpApi' => true, 'dpApiDeep' => true  ));
 
         $metadata->mapOneToMany(array(
             'fieldName' => 'email_message_id',

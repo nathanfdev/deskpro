@@ -104,19 +104,19 @@ class PersonCustomDataChangeLogListener extends EntityChangeLogListener
      */
     protected function doFlush($oid, $type)
     {
-        if (!isset($this->{'queued_'.$type}[$oid])) {
+        if (!isset($this->{'queued_' . $type}[$oid])) {
             return;
         }
 
         /** @var LogEvent $entry */
-        $entry = $this->{'queued_'.$type}[$oid];
+        $entry = $this->{'queued_' . $type}[$oid];
         $person = $entry->getEventObject()->getSubject();
         $parentEntry = $this->person_log_listener->getUpdateLogEntry($person);
 
         $parentEntry->children->add($entry);
         $entry->parent = $parentEntry;
 
-        unset($this->{'queued_'.$type}[$oid]);
+        unset($this->{'queued_' . $type}[$oid]);
 
         /**
          * we do only one single flush, and only when all queued actions added as child to $parentEntry

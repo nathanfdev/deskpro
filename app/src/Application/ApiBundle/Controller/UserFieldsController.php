@@ -53,6 +53,7 @@ class UserFieldsController extends AbstractController implements ProtectedContro
         return $multi;
     }
 
+
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -114,14 +115,14 @@ class UserFieldsController extends AbstractController implements ProtectedContro
         if ($id) {
             return $this->createSuccessResponse(
                 array(
-                     'field_id' => $field->id,
+                     'field_id' => $field->id
                 )
             );
         } else {
             return $this->createSuccessResponse(
                 array(
                      'field_id' => $field->id,
-                     $this->generateUrl('api_user_fields_get', array('id' => $field->id)),
+                     $this->generateUrl('api_user_fields_get', array('id' => $field->id))
                 )
             );
         }

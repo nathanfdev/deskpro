@@ -34,6 +34,7 @@
 
 namespace Orb\Util;
 
+
 /**
  * Helps fetch stuff about the server/environment
  *
@@ -44,9 +45,7 @@ class Env
     /**
      * Static class
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Return 'upload_max_filesize' size in bytes
@@ -63,6 +62,7 @@ class Env
         return Numbers::parseIniSize($size);
     }
 
+
     /**
      * Return 'post_max_size' size in bytes
      *
@@ -77,6 +77,7 @@ class Env
 
         return Numbers::parseIniSize($size);
     }
+
 
     /**
      * Get the size in bytes of the effective maximum upload size.
@@ -100,6 +101,7 @@ class Env
         return $min;
     }
 
+
     /**
      * Return 'memory_limit' size in bytes or -1 if there is no limit
      *
@@ -115,6 +117,7 @@ class Env
         return Numbers::parseIniSize($size);
     }
 
+
     /**
      * Get phpinfo() as a string
      *
@@ -128,6 +131,7 @@ class Env
 
         return $phpinfo;
     }
+
 
     /**
      * Gets the path to the laoded php.ini file by scanning phpinfo
@@ -146,6 +150,7 @@ class Env
 
         return self::getPhpIniPathFromInfo($phpinfo);
     }
+
 
     /**
      * Get php.ini path from the phpinfo HTML string
@@ -168,6 +173,7 @@ class Env
         return false;
     }
 
+
     /**
      * Check if a function has been disabled in php.ini with 'disable_functions'
      *
@@ -182,6 +188,7 @@ class Env
 
         return isset($disabled[$func_name]);
     }
+
 
     /**
      * Check if a class has been disabled in php.ini with 'disable_classes'
@@ -198,6 +205,7 @@ class Env
 
         return isset($disabled[$class_name]);
     }
+
 
     /**
      * Check to see if two phpinfo's appear to be the same.
@@ -278,7 +286,7 @@ class Env
 
         if ($functions === null) {
             $functions = array();
-            $list = @ini_get('disable_functions').','.@ini_get('suhosin.executor.func.blacklist');
+            $list = @ini_get('disable_functions') . ',' . @ini_get('suhosin.executor.func.blacklist');
             $list = explode(',', $list);
 
             foreach ($list as $f) {
@@ -331,16 +339,14 @@ class Env
     public static function getMaxPostVars()
     {
         $vals = array(
-            (int) ini_get('max_input_vars'),
-            (int) ini_get('suhosin.post.max_vars'),
-            (int) ini_get('suhosin.request.max_vars'),
+            (int)ini_get('max_input_vars'),
+            (int)ini_get('suhosin.post.max_vars'),
+            (int)ini_get('suhosin.request.max_vars')
         );
 
         $min = null;
         foreach ($vals as $v) {
-            if (!$v) {
-                continue;
-            }
+            if (!$v) continue;
 
             if ($min === null) {
                 $min = $v;
@@ -362,16 +368,14 @@ class Env
     public static function getMaxGetVars()
     {
         $vals = array(
-            (int) ini_get('max_input_vars'),
-            (int) ini_get('suhosin.get.max_vars'),
-            (int) ini_get('suhosin.request.max_vars'),
+            (int)ini_get('max_input_vars'),
+            (int)ini_get('suhosin.get.max_vars'),
+            (int)ini_get('suhosin.request.max_vars')
         );
 
         $min = null;
         foreach ($vals as $v) {
-            if (!$v) {
-                continue;
-            }
+            if (!$v) continue;
 
             if ($min === null) {
                 $min = $v;

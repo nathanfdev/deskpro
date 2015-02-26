@@ -50,6 +50,7 @@ class FilterUserGroups extends AbstractFilterTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

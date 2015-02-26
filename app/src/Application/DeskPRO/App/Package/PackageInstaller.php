@@ -66,6 +66,7 @@ class PackageInstaller
         $this->imagine = $imagine;
     }
 
+
     /**
      * Install or update a package.
      *
@@ -336,11 +337,11 @@ class PackageInstaller
         if ($tag == 'html') {
             $content = file_get_contents($asset_info['real_path']);
             $content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function ($m) use ($package) {
-                $path = @realpath($package->getPath().'/html/'.$m[1]);
+                $path = @realpath($package->getPath() . '/html/' . $m[1]);
                 $path_std = str_replace('\\', '/', $path);
 
                 if (!$path || !is_file($path) || strpos($path_std, str_replace('\\', '/', $package->getPath())) !== 0) {
-                    return '<!-- Invalid include file: '.$m[1].' -->';
+                    return '<!-- Invalid include file: ' . $m[1] . ' -->';
                 }
 
                 $inc_content = @file_get_contents($path);

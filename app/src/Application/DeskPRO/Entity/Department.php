@@ -174,6 +174,7 @@ class Department extends DomainObject implements HasPhraseName
     {
         if ($type == 'tickets' && $this->is_tickets_enabled) {
             return true;
+
         } elseif ($type == 'chat' && $this->is_chat_enabled) {
             return true;
         }
@@ -210,6 +211,7 @@ class Department extends DomainObject implements HasPhraseName
     public function setUserTitle($title)
     {
         if (!$title) {
+
             $title = '';
         }
 
@@ -252,8 +254,11 @@ class Department extends DomainObject implements HasPhraseName
     public function setParentId($id)
     {
         if ($id) {
+
             $this->parent = App::getEntityRepository('DeskPRO:Department')->find($id);
+
         } else {
+
             $this->parent = null;
         }
     }
@@ -288,6 +293,7 @@ class Department extends DomainObject implements HasPhraseName
         $this->title = $title;
     }
 
+
     /**
      * Get the 'full' name of this department by prepending the parents name to it.
      *
@@ -298,15 +304,13 @@ class Department extends DomainObject implements HasPhraseName
 
     public function getFullTitle($sep = null)
     {
-        if ($sep === null) {
-            $sep = ' > ';
-        }
+        if ($sep === null) $sep = ' > ';
 
         if (!$this->parent) {
             return $this->getTitle();
         }
 
-        return $this->parent->getTitle().$sep.$this->getTitle();
+        return $this->parent->getTitle() . $sep . $this->getTitle();
     }
 
     /**
@@ -317,15 +321,13 @@ class Department extends DomainObject implements HasPhraseName
 
     public function getFullUserTitle($sep = null)
     {
-        if ($sep === null) {
-            $sep = ' > ';
-        }
+        if ($sep === null) $sep = ' > ';
 
         if (!$this->parent) {
             return $this->getUserTitle();
         }
 
-        return $this->parent->getUserTitle().$sep.$this->getUserTitle();
+        return $this->parent->getUserTitle() . $sep . $this->getUserTitle();
     }
 
     /**
@@ -394,12 +396,12 @@ class Department extends DomainObject implements HasPhraseName
             $property = 'title';
         }
 
-        $phrase_name = 'obj_department.'.$this->id.'_'.$property;
+        $phrase_name = 'obj_department.' . $this->id . '_' . $property;
 
         if ($property == 'user') {
             return array(
-                'obj_department.'.$this->id.'_user',
-                'obj_department.'.$this->id.'_title',
+                'obj_department.' . $this->id . '_user',
+                'obj_department.' . $this->id . '_title',
             );
         }
 
@@ -442,9 +444,7 @@ class Department extends DomainObject implements HasPhraseName
 
     public function _validateParent(ExecutionContextInterface $context)
     {
-        if (!$this->parent) {
-            return;
-        }
+        if (!$this->parent) return;
 
         if ($this->parent == $this) {
             $context->addViolationAt('parent', '[ParentNotSelf] Parent cannot be set to self');
@@ -455,7 +455,7 @@ class Department extends DomainObject implements HasPhraseName
     {
         $metadata->addPropertyConstraint('title', new NotBlank());
         $metadata->addConstraint(new Callback(array(
-            'methods' => array('_validateParent'),
+            'methods' => array('_validateParent')
         )));
     }
 
@@ -468,7 +468,7 @@ class Department extends DomainObject implements HasPhraseName
         $data['user_title'] = $this->getRealUserTitle();
 
         if ($this->parent) {
-            $data['title_full']       = $this->parent->title.' > '.$this->title;
+            $data['title_full']       = $this->parent->title . ' > ' . $this->title;
             $data['parent_id']        = $this->parent->getId();
             $data['parent_ids']       = array($this->parent->getId());
             $data['title_parts']      = array($this->parent->title, $this->title);
@@ -493,12 +493,10 @@ class Department extends DomainObject implements HasPhraseName
 
     public function getAvatarUrl($size = 50)
     {
-        if (!$this->hasAvatar()) {
-            return null;
-        }
-
+        if (!$this->hasAvatar()) return null;
         return $this->avatar->getThumbnailUrl($size);
     }
+
 
     ############################################################################
     # Doctrine Metadata
@@ -509,7 +507,7 @@ class Department extends DomainObject implements HasPhraseName
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Department';
-        $metadata->setPrimaryTable(array('name' => 'departments'));
+        $metadata->setPrimaryTable(array('name' => 'departments',));
 
         $metadata->mapField(
             array(
@@ -597,8 +595,8 @@ class Department extends DomainObject implements HasPhraseName
                  'fieldName'    => 'children',
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
                  'mappedBy'     => 'parent',
-                 'orderBy'      => array('display_order' => 'ASC'),
-                 'indexBy'      => 'id',
+                 'orderBy'      => array('display_order' => 'ASC',),
+                 'indexBy'      => 'id'
             )
         );
 
@@ -616,7 +614,7 @@ class Department extends DomainObject implements HasPhraseName
                     'columnDefinition' => NULL,
                 ),
             ),
-            'dpApi' => true,
+            'dpApi' => true
         ));
     }
 }

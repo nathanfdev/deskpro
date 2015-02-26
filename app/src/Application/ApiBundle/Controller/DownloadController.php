@@ -148,12 +148,12 @@ class DownloadController extends AbstractController
             'label' => DownloadSearch::TERM_LABEL,
             'new' => DownloadSearch::TERM_NEW,
             'popular' => DownloadSearch::TERM_POPULAR,
-            'status' => DownloadSearch::TERM_STATUS,
+            'status' => DownloadSearch::TERM_STATUS
         );
 
         $terms = array();
 
-        foreach ($search_map as $input => $search_key) {
+        foreach ($search_map AS $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ($value) {
                 $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
@@ -165,11 +165,11 @@ class DownloadController extends AbstractController
         if ($date_created_end) {
             $terms[] = array('type' => DownloadSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
                 'date1' => $date_created_start,
-                'date2' => $date_created_end,
+                'date2' => $date_created_end
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => DownloadSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start,
+                'date1' => $date_created_start
             ));
         }
 
@@ -186,9 +186,7 @@ class DownloadController extends AbstractController
         $result_cache = $this->getApiSearchResult('download', $terms, $extra, $this->in->getUint('cache_id'), new DownloadSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) {
-            $page = 1;
-        }
+        if (!$page) $page = 1;
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
@@ -202,7 +200,7 @@ class DownloadController extends AbstractController
             'per_page' => $per_page,
             'total' => count($ids),
             'cache_id' => $result_cache->id,
-            'downloads' => $this->getApiData($downloads),
+            'downloads' => $this->getApiData($downloads)
         ));
     }
 
@@ -287,7 +285,7 @@ class DownloadController extends AbstractController
         $cat = $this->em->find('DeskPRO:DownloadCategory', $this->in->getUint('category_id'));
         if (!$cat) {
             $errors['category_id'] = array('invalid_argument.category_id', 'category_id not found');
-        } else {
+            } else {
             $download->category = $cat;
         }
 
@@ -307,8 +305,8 @@ class DownloadController extends AbstractController
             if (!$error) {
                 $blob = $accept->accept($file);
             } else {
-                $message = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
-                $errors['attach'] = array($error['error_code'].'.attach', $message);
+                $message = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+                $errors['attach'] = array($error['error_code'] . '.attach', $message);
             }
         } else {
             $blob_id = $this->in->getUint('attach_id');
@@ -503,7 +501,7 @@ class DownloadController extends AbstractController
             }
         }
 
-        foreach ($revs as $rev) {
+        foreach ($revs AS $rev) {
             $this->em->persist($rev);
         }
         $this->em->persist($download);
@@ -965,7 +963,7 @@ class DownloadController extends AbstractController
         $comments = $this->em->getRepository('DeskPRO:DownloadComment')->getValidatingComments();
         $entity_key = 'download';
         $output = array();
-        foreach ($comments as $key => $value) {
+        foreach ($comments AS $key => $value) {
             $output[$key] = $value->toApiData(false, true);
             if ($value->$entity_key) {
                 $output[$key][$entity_key] = $value->$entity_key->toApiData(false, false);
@@ -1069,13 +1067,13 @@ class DownloadController extends AbstractController
             $this->em->persist($category);
             $this->em->flush();
 
-            foreach ($usergroup_ids as $usergroup_id) {
+            foreach ($usergroup_ids AS $usergroup_id) {
                 if (!$usergroup_id) {
                     continue;
                 }
                 App::getDb()->insert('download_category2usergroup', array(
                     'category_id'  => $category->getId(),
-                    'usergroup_id' => $usergroup_id,
+                    'usergroup_id' => $usergroup_id
                 ));
             }
 
@@ -1170,6 +1168,7 @@ class DownloadController extends AbstractController
             }
             $category->title = $title;
         }
+
 
         if ($this->in->checkIsset('parent_id')) {
             $parent_id = $this->in->getUint('parent_id');
@@ -1268,7 +1267,7 @@ class DownloadController extends AbstractController
         $category = $this->_getCategoryOr404($category_id);
 
         $terms = array(
-            array('type' => DownloadSearch::TERM_CATEGORY_SPECIFIC, 'op' => 'contains', 'options' => array($category->id)),
+            array('type' => DownloadSearch::TERM_CATEGORY_SPECIFIC, 'op' => 'contains', 'options' => array($category->id))
         );
 
         $order_by = $this->in->getString('order');
@@ -1284,9 +1283,7 @@ class DownloadController extends AbstractController
         $result_cache = $this->getApiSearchResult('download', $terms, $extra, $this->in->getUint('cache_id'), new DownloadSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) {
-            $page = 1;
-        }
+        if (!$page) $page = 1;
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
@@ -1300,7 +1297,7 @@ class DownloadController extends AbstractController
             'per_page' => $per_page,
             'total' => count($ids),
             'cache_id' => $result_cache->id,
-            'downloads' => $this->getApiData($downloads),
+            'downloads' => $this->getApiData($downloads)
         ));
     }
 
@@ -1368,7 +1365,7 @@ class DownloadController extends AbstractController
         }
 
         $exists = false;
-        foreach ($category->usergroups as $group) {
+        foreach ($category->usergroups AS $group) {
             if ($group->id == $group_id) {
                 $exists = true;
                 break;
@@ -1378,7 +1375,7 @@ class DownloadController extends AbstractController
         if (!$exists) {
             $this->db->insert('download_category2usergroup', array(
                 'category_id' => $category->id,
-                'usergroup_id' => $group_id,
+                'usergroup_id' => $group_id
             ));
         }
 
@@ -1419,7 +1416,7 @@ class DownloadController extends AbstractController
         $category = $this->_getCategoryOr404($category_id);
 
         $exists = false;
-        foreach ($category->usergroups as $group) {
+        foreach ($category->usergroups AS $group) {
             if ($group->id == $group_id) {
                 $exists = true;
                 break;
@@ -1459,7 +1456,7 @@ class DownloadController extends AbstractController
     {
         $category = $this->_getCategoryOr404($category_id);
 
-        foreach ($category->usergroups as $key => $group) {
+        foreach ($category->usergroups AS $key => $group) {
             if ($group->id == $group_id) {
                 $category->usergroups->remove($key);
                 $this->em->persist($category);

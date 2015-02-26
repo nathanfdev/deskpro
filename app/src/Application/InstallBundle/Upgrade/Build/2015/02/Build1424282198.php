@@ -39,7 +39,7 @@ class Build1424282198 extends AbstractBuild
     public function run()
     {
         $this->out("Relax email rejection setting");
-        $this->execMutateSql("REPLACE INTO `settings` (`name`, `value`) VALUES ('core.emails.rate_count', 300)");
-        $this->execMutateSql("REPLACE INTO `settings` (`name`, `value`) VALUES ('core.emails.rate_time', 300)");
+		$this->execMutateSql("REPLACE INTO `settings` (`name`, `value`) VALUES ('core.emails.rate_count', 300)");
+		$this->execMutateSql("REPLACE INTO `settings` (`name`, `value`) VALUES ('core.emails.rate_time', 300)");
     }
 }

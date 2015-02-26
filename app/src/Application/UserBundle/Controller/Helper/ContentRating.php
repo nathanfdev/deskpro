@@ -95,6 +95,7 @@ class ContentRating
         $this->em = App::getOrm();
     }
 
+
     /**
      * @param  \Symfony\Component\HttpFoundation\Request $request
      * @return void
@@ -105,6 +106,7 @@ class ContentRating
         $this->session = $request->getSession();
     }
 
+
     /**
      * Get this users existing rating
      *
@@ -113,11 +115,8 @@ class ContentRating
     public function getRating()
     {
         if ($this->rating !== null) {
-            if ($this->rating) {
-                return null;
-            } else {
-                return null;
-            }
+            if ($this->rating) return null;
+            else return null;
         }
 
         $em = App::getOrm();
@@ -145,7 +144,7 @@ class ContentRating
                         AND (r.person = ?3)
                 ")->setParameter(1, $this->content_object->getContentType())
                   ->setParameter(2, $this->content_object->getId())
-                  ->setParameter(3, $this->person)
+                  ->setParameter(3,$this->person)
                   ->execute();
             }
         } elseif ($this->visitor) {
@@ -161,7 +160,7 @@ class ContentRating
               ->execute();
         }
 
-        if ($res and count($res)) {
+        if ($res AND count($res)) {
             $this->rating = $res[0];
 
             return $this->rating;
@@ -172,6 +171,7 @@ class ContentRating
         }
     }
 
+
     /**
      * Get a search log ID that sholud be recorded if the user were to vote on the next page
      *
@@ -179,12 +179,12 @@ class ContentRating
      */
     public function getSearchLogId()
     {
-        if ($this->request and $this->session and $this->session->has('last_searchlog_id')) {
+        if ($this->request AND $this->session AND $this->session->has('last_searchlog_id')) {
             $ref = $this->request->server->get('HTTP_REFERER');
-            $search_url = App::getRouter()->generate('user', array(), true).'search';
+            $search_url = App::getRouter()->generate('user', array(), true) . 'search';
             $search_url = preg_replace('#^https?://#', '', $search_url);
 
-            if ($ref && preg_match('#'.preg_quote($search_url, '#').'(\?.*?)?$#', $ref)) {
+            if ($ref && preg_match('#' . preg_quote($search_url, '#') . '(\?.*?)?$#', $ref)) {
                 $searchlog = App::findEntity('DeskPRO:SearchLog', $this->session->has('last_searchlog_id'));
                 if ($searchlog->visitor && $this->visitor && $searchlog->visitor == $this->visitor) {
                     return $searchlog['id'];
@@ -194,6 +194,7 @@ class ContentRating
 
         return 0;
     }
+
 
     /**
      * Set the user rating on this

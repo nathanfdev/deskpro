@@ -60,7 +60,7 @@ class TicketFeedback extends AbstractEntityRepository
               ->setMaxResults(1)
               ->getOneOrNullResult();
 
-        if (!$feedback and $create_if_notexist) {
+        if (!$feedback AND $create_if_notexist) {
             $feedback = new TicketFeedbackEntity();
             $feedback->ticket = $message->ticket;
             $feedback->ticket_message = $message;
@@ -69,6 +69,7 @@ class TicketFeedback extends AbstractEntityRepository
 
         return $feedback;
     }
+
 
     /**
      * @param  TicketEntity $ticket
@@ -91,6 +92,7 @@ class TicketFeedback extends AbstractEntityRepository
         return $res;
     }
 
+
     /**
      * @param  int   $page
      * @return mixed
@@ -107,6 +109,7 @@ class TicketFeedback extends AbstractEntityRepository
         return $query->execute();
     }
 
+
     /**
      * @return mixed
      */
@@ -119,6 +122,7 @@ class TicketFeedback extends AbstractEntityRepository
         return $query->execute();
     }
 
+
     /**
      * @return float
      */
@@ -128,6 +132,7 @@ class TicketFeedback extends AbstractEntityRepository
 
         return ceil($count[0][1] / $this->per_page);
     }
+
 
     /**
      * @param  PersonEntity $agent
@@ -148,6 +153,7 @@ class TicketFeedback extends AbstractEntityRepository
 
         return $result;
     }
+
 
     /**
      * @return mixed

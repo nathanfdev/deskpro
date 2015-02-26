@@ -27,6 +27,7 @@
 
 namespace Application\DeskPRO\Settings;
 
+
 class EmailAccountsSettings
 {
     const PREFIX = 'core.emails';
@@ -68,7 +69,7 @@ class EmailAccountsSettings
             if ($k == 'sendemail_attach_maxsize') {
                 $storedValue = $this->settings->get('core.sendemail_attach_maxsize');
             } else {
-                $storedValue = $this->settings->get(self::PREFIX.'.'.$k, $v);
+                $storedValue = $this->settings->get(self::PREFIX . '.' . $k, $v);
             }
 
             if (is_int($v)) {
@@ -81,7 +82,7 @@ class EmailAccountsSettings
         }
 
         foreach ($this->other_values as $k => $v) {
-            $data[str_replace('.', '_', $k)] = (bool) $this->settings->get($k);
+            $data[str_replace('.', '_', $k)] = (bool)$this->settings->get($k);
         }
 
         return $data;
@@ -104,9 +105,9 @@ class EmailAccountsSettings
             $this->values[$k] = $v;
 
             if ($k == 'sendemail_attach_maxsize') {
-                $this->settings->setSetting('core.sendemail_attach_maxsize', (int) $storeValue ?: null);
+                $this->settings->setSetting('core.sendemail_attach_maxsize', (int)$storeValue ?: null);
             } else {
-                $this->settings->setSetting(self::PREFIX.'.'.$k, $storeValue);
+                $this->settings->setSetting(self::PREFIX . '.' . $k, $storeValue);
             }
         }
 
@@ -116,7 +117,7 @@ class EmailAccountsSettings
                 continue;
             }
 
-            $v = (int) ((bool) $v);
+            $v = (int)((bool)$v);
             $this->settings->setSetting($k, $v);
             $this->other_values[$k] = $v;
         }

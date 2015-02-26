@@ -53,8 +53,7 @@ class SitemapFile extends AbstractJob
                 if ($blob) {
                     App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
                 }
-            } catch (\Exception $e) {
-            }
+            } catch (\Exception $e) {}
         }
 
         $gen = new \Application\DeskPRO\Portal\SitemapGenerator(App::getSetting('core.deskpro_url'), App::getOrm(), App::getRouter());

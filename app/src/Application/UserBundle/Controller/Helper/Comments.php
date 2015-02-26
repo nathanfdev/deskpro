@@ -78,7 +78,7 @@ class Comments
         $this->entity = $entity;
 
         if (is_string($adapter)) {
-            $class = 'Application\\UserBundle\\Controller\\Helper\\CommentsAdapter\\'.$adapter;
+            $class = 'Application\\UserBundle\\Controller\\Helper\\CommentsAdapter\\' . $adapter;
             $adapter = new $class($entity);
         }
 

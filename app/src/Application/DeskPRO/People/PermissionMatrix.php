@@ -75,6 +75,7 @@ class PermissionMatrix
      */
     private $usergroup_perms;
 
+
     /**
      * @param \Application\DeskPRO\Entity\Person[]    $agents
      * @param \Application\DeskPRO\Entity\Usergroup[] $groups
@@ -106,6 +107,7 @@ class PermissionMatrix
         }
     }
 
+
     /**
      * Set permissions from a "permission" array (eg including raw department_permissions records from the db)
      *
@@ -124,7 +126,7 @@ class PermissionMatrix
         $this->agentgroup_perms = array();
         $this->usergroup_perms  = array();
 
-        foreach ($records as $rec) {
+        foreach($records as $rec) {
             if (empty($rec['value']) || !$rec['value']) {
                 continue;
             }
@@ -172,10 +174,11 @@ class PermissionMatrix
                 'usergroup_id' => !empty($rec->usergroup) ? $rec->usergroup->id : null,
                 'person_id'    => !empty($rec->person) ? $rec->person->id : null,
                 'name'         => $rec->name,
-                'value'        => $rec->value,
+                'value'        => $rec->value
             );
         }
     }
+
 
     /**
      * Re-writes the set permissions into a reduced set of permissions based on

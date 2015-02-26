@@ -53,6 +53,7 @@ class CheckUserValidEmail extends AbstractTriggerTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -72,17 +73,11 @@ class CheckUserValidEmail extends AbstractTriggerTerm
         $context->getLogger()->debug(sprintf('[CheckUserValidEmail] Email %s is %s', $email->email, $email->is_validated ? 'validated' : 'not valiadated'));
 
         if ($is_valid) {
-            if ($this->getTermOperator() == 'is') {
-                return true;
-            } else {
-                return false;
-            }
+            if ($this->getTermOperator() == 'is') return true;
+            else return false;
         } else {
-            if ($this->getTermOperator() == 'is') {
-                return false;
-            } else {
-                return true;
-            }
+            if ($this->getTermOperator() == 'is') return false;
+            else return true;
         }
     }
 }

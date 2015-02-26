@@ -68,6 +68,7 @@ class SlaProcessor
         $this->cm_sender = $cm_sender;
     }
 
+
     /**
      * @param Ticket                   $ticket
      * @param ExecutorContextInterface $context
@@ -193,11 +194,12 @@ class SlaProcessor
         $this->cm_sender->sendQueue();
     }
 
+
     /**
      * Look up SLAs in the db that are past warning threshold and update them.
      *
-     * @param  callback      $context_factory A factory that returns a new ExecutorContext
-     * @param  TicketManager $tm
+     * @param  callback $context_factory A factory that returns a new ExecutorContext
+     * @param TicketManager $tm
      * @return int
      */
     public function processAllFailed($context_factory, TicketManager $tm)
@@ -218,6 +220,7 @@ class SlaProcessor
             $current_status   = $ticket_sla->sla_status;
 
             if ($ticket_sla->sla->getCalculator()->isTicketSlaFailed($ticket_sla->ticket, $ticket_sla)) {
+
                 $ticket_sla->sla_status = TicketSla::STATUS_FAIL;
                 $this->em->persist($ticket_sla);
                 $this->em->flush($ticket_sla);
@@ -241,11 +244,12 @@ class SlaProcessor
         return $count;
     }
 
+
     /**
      * Look up SLAs in the db that are past failing threshold and update them.
      *
-     * @param  callback      $context_factory A factory that returns a new ExecutorContext
-     * @param  TicketManager $tm
+     * @param  callback $context_factory A factory that returns a new ExecutorContext
+     * @param TicketManager $tm
      * @return int
      */
     public function processAllWarning($context_factory, TicketManager $tm)
@@ -266,6 +270,7 @@ class SlaProcessor
             $current_status   = $ticket_sla->sla_status;
 
             if ($ticket_sla->sla->getCalculator()->isTicketSlaWarning($ticket_sla->ticket, $ticket_sla)) {
+
                 $ticket_sla->sla_status = TicketSla::STATUS_WARNING;
                 $this->em->persist($ticket_sla);
                 $this->em->flush($ticket_sla);
@@ -288,6 +293,7 @@ class SlaProcessor
 
         return $count;
     }
+
 
     /**
      * @param Ticket                   $ticket

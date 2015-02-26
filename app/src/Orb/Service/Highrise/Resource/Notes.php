@@ -48,7 +48,7 @@ class Notes extends AbstractResource
      */
     public function getNotesForPerson($person_id)
     {
-        $resource = '/people/'.$person_id.'/notes.xml';
+        $resource = '/people/' . $person_id . '/notes.xml';
         $response = $this->highrise->sendReadRequest($resource);
 
         return $this->highrise->xmlToArray($response->getBody());

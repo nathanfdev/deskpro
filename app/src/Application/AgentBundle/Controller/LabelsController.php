@@ -34,6 +34,7 @@
 
 namespace Application\AgentBundle\Controller;
 
+
 /**
  * Handles label definitions
  */

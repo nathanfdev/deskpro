@@ -75,7 +75,7 @@ class Prefs
         );
 
         foreach (self::$apps as $app_name => $bool) {
-            $method = 'get'.ucfirst($app_name).'NotifyTypes';
+            $method = 'get' . ucfirst($app_name) . 'NotifyTypes';
 
             $this->app_subs[$app_name] = array(
                 self::TYPE_EMAIL => array_fill_keys($this->$method(self::TYPE_EMAIL), false),
@@ -83,6 +83,7 @@ class Prefs
             );
         }
     }
+
 
     /**
      * @param  TicketFilter              $filter
@@ -108,9 +109,10 @@ class Prefs
                 continue;
             }
 
-            $this->filter_subs[$type][$filter->id][$sub_type] = (bool) $value;
+            $this->filter_subs[$type][$filter->id][$sub_type] = (bool)$value;
         }
     }
+
 
     /**
      * @param $type
@@ -127,6 +129,7 @@ class Prefs
 
         return $prefs;
     }
+
 
     /**
      * This gets the filter sub settings for all set filters.
@@ -162,6 +165,7 @@ class Prefs
         return $this->filter_subs[$type];
     }
 
+
     /**
      * @return string
      */
@@ -169,6 +173,7 @@ class Prefs
     {
         return $this->email_mention_mode;
     }
+
 
     /**
      * @param $mode
@@ -183,6 +188,7 @@ class Prefs
         $this->email_mention_mode = $mode;
     }
 
+
     /**
      * @param  string $type
      * @return mixed
@@ -191,6 +197,7 @@ class Prefs
     {
         return $this->filter_notify_prefs[$type];
     }
+
 
     /**
      * @param string $type
@@ -207,6 +214,7 @@ class Prefs
         }
     }
 
+
     /**
      * @param  string $type
      * @param  string $app_name
@@ -216,6 +224,7 @@ class Prefs
     {
         return $this->app_subs[$app_name][$type];
     }
+
 
     /**
      * @param  string                    $type
@@ -232,6 +241,7 @@ class Prefs
             $this->app_subs[$app_name][$type][$k] = $v;
         }
     }
+
 
     ####################################################################################################################
     # These methods return valid types for each category of notifications
@@ -258,7 +268,7 @@ class Prefs
                     'user_activity',
                     'agent_activity',
                     'agent_note',
-                    'property_change',
+                    'property_change'
                 );
             } else {
                 $notify_types = array(
@@ -268,7 +278,7 @@ class Prefs
                     'user_activity',
                     'agent_activity',
                     'agent_note',
-                    'property_change',
+                    'property_change'
                 );
             }
 
@@ -280,12 +290,13 @@ class Prefs
                 'user_activity',
                 'agent_activity',
                 'agent_note',
-                'property_change',
+                'property_change'
             );
         }
 
         return $notify_types;
     }
+
 
     /**
      * @param  string                    $type
@@ -296,9 +307,10 @@ class Prefs
     {
         return array(
             'override_all',
-            'override_forward',
+            'override_forward'
         );
     }
+
 
     /**
      * @param  string $type
@@ -308,12 +320,13 @@ class Prefs
     {
         if ($type == self::TYPE_EMAIL) {
             return array(
-                'chat_message',
+                'chat_message'
             );
         } else {
             return array();
         }
     }
+
 
     /**
      * @param  string $type
@@ -328,6 +341,7 @@ class Prefs
             'task_due',
         );
     }
+
 
     /**
      * @param  string $type
@@ -346,6 +360,7 @@ class Prefs
         );
     }
 
+
     /**
      * @param  string $type
      * @return array
@@ -357,6 +372,7 @@ class Prefs
             'new_feedback_validate',
         );
     }
+
 
     /**
      * @param  string $type
@@ -370,6 +386,7 @@ class Prefs
         );
     }
 
+
     /**
      * @param  string $type
      * @return array
@@ -381,6 +398,7 @@ class Prefs
             'new_user_validate',
         );
     }
+
 
     /**
      * @param  string $type

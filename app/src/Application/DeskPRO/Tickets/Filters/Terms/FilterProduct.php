@@ -55,6 +55,7 @@ class FilterProduct extends AbstractFilterTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

@@ -55,10 +55,12 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $id = null;
 
+
     /**
      * @var string
      */
     protected $name;
+
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
@@ -82,6 +84,7 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->members = new ArrayCollection();
     }
+
 
     public function addPerson(Entity\Person $person)
     {
@@ -115,6 +118,7 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
         return $this->avatar->getThumbnailUrl($size);
     }
 
+
     ############################################################################
     # Validation Metadata
     ############################################################################
@@ -124,6 +128,7 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
         $metadata->addPropertyConstraint('name', new NotBlank());
     }
 
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -132,10 +137,10 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\AgentTeam';
-        $metadata->setPrimaryTable(array( 'name' => 'agent_teams'));
+        $metadata->setPrimaryTable(array( 'name' => 'agent_teams', ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToMany(array(
             'fieldName' => 'members',
@@ -147,7 +152,7 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
                 'inverseJoinColumns' => array(array( 'name' => 'person_id' )),
                 'onDelete' => 'cascade',
             ),
-            'orderBy' => array( 'name' => 'ASC'),
+            'orderBy' => array( 'name' => 'ASC', ),
         ));
         $metadata->mapManyToOne(array(
             'fieldName' => 'avatar',
@@ -160,7 +165,7 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
                 'nullable' => true,
                 'onDelete' => 'set null',
             )),
-            'dpApi' => true,
+            'dpApi' => true
         ));
     }
 }

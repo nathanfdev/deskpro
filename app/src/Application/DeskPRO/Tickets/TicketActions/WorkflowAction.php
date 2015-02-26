@@ -48,6 +48,7 @@ class WorkflowAction extends AbstractAction implements PermissionableAction
         $this->workflow_id = $workflow;
     }
 
+
     /**
      * Apply the property to the ticket
      *
@@ -57,6 +58,7 @@ class WorkflowAction extends AbstractAction implements PermissionableAction
     {
         $ticket['workflow_id'] = $this->workflow_id;
     }
+
 
     /**
      * Get an array of actions that would be performed on the ticket
@@ -70,9 +72,10 @@ class WorkflowAction extends AbstractAction implements PermissionableAction
         }
 
         return array(
-            array('action' => 'workflow', 'workflow_id' => $this->workflow_id),
+            array('action' => 'workflow', 'workflow_id' => $this->workflow_id)
         );
     }
+
 
     /**
      * {@inheritDoc}
@@ -90,6 +93,7 @@ class WorkflowAction extends AbstractAction implements PermissionableAction
         return true;
     }
 
+
     /**
      * Get the workflow id
      *
@@ -99,6 +103,7 @@ class WorkflowAction extends AbstractAction implements PermissionableAction
     {
         return $this->workflow_id;
     }
+
 
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action

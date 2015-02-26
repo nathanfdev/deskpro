@@ -75,7 +75,7 @@ class FacebookLike
             'entity_type'      => get_class($this->entity),
             'entity_basetype'  => Util::getBaseClassname($this->entity),
 
-            'page_permalink'   => $this->entity->getPermalink(),
+            'page_permalink'   => $this->entity->getPermalink()
         ));
 
         return $html;

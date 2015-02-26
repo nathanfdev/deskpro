@@ -77,6 +77,7 @@ class HtmlMatcher
      */
     protected $reverse = true;
 
+
     /**
      * @param string             $body
      * @param string|HtmlPattern $pattern
@@ -91,6 +92,7 @@ class HtmlMatcher
 
         $this->pattern = $pattern;
     }
+
 
     /**
      * Given a tokenized pattern, process it against the body to find matching results
@@ -156,7 +158,7 @@ class HtmlMatcher
             $this->root_state[$id] = array(
                 'closed' => false,
                 'mark_spot' => null,
-                'mark_pattern' => null,
+                'mark_pattern' => null
             );
 
             while ($use_tokens) {
@@ -240,12 +242,12 @@ class HtmlMatcher
             $piece2 = substr($this->marked_body, $wrap_pos);
 
             if (preg_match($this->root_state[$this->pattern_match_id]['mark_pattern'], $piece1)) {
-                $piece2 = preg_replace($this->root_state[$this->pattern_match_id]['mark_pattern'], self::CUT_MARK.'$0', $piece2, 1);
+                $piece2 = preg_replace($this->root_state[$this->pattern_match_id]['mark_pattern'], self::CUT_MARK . '$0', $piece2, 1);
             } else {
-                $piece2 = self::CUT_MARK.$piece2;
+                $piece2 = self::CUT_MARK . $piece2;
             }
 
-            $this->marked_body = $piece1.$piece2;
+            $this->marked_body = $piece1 . $piece2;
         }
 
         $this->marked_body = trim($this->marked_body);
@@ -255,6 +257,7 @@ class HtmlMatcher
 
         return $this->marked_body;
     }
+
 
     /**
      * Cut at the first cut mark
@@ -274,6 +277,7 @@ class HtmlMatcher
         return substr($body, 0, $pos);
     }
 
+
     /**
      * Consume  all navigate finds and return a new array of branches that match
      *
@@ -286,6 +290,7 @@ class HtmlMatcher
         $current = $branch->branch()->first();
 
         while ($token = array_shift($tokens)) {
+
             // Next token isnt a match
             if ($token[0] != 'nav') {
                 array_unshift($tokens, $token);
@@ -318,6 +323,7 @@ class HtmlMatcher
         return $current;
     }
 
+
     /**
      * Process all match requirements on the result set and return a new array of branches that match.
      *
@@ -328,6 +334,7 @@ class HtmlMatcher
     public function consumeMatches($id, $branch, array &$tokens)
     {
         while ($token = array_shift($tokens)) {
+
             // Next token isnt a match
             if ($token[0] != 'match') {
                 array_unshift($tokens, $token);
@@ -341,6 +348,7 @@ class HtmlMatcher
 
             $m = null;
             if (!preg_match($token[0], $text, $m)) {
+
                 // Check entire contents
                 $html = $branch->innerHTML();
                 $text = str_replace(array('<br />', '<br/>', '<br>'), "\n", $html);
@@ -362,6 +370,7 @@ class HtmlMatcher
         return $branch;
     }
 
+
     /**
      * Used internally by the PatternCutter to fetch the qp and set it on the next pattern when
      * we know a pattern didnt match and we havent mutated the collection, saves
@@ -374,6 +383,7 @@ class HtmlMatcher
     {
         $this->qp = $qp;
     }
+
 
     /**
      * @return \QueryPath\DOMQuery

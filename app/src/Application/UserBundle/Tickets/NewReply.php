@@ -44,7 +44,7 @@ class NewReply extends \ArrayObject
     /** @var array */
     protected static $prop_names = array(
         'message' => 1, 'new_upload' => 1, 'attach_ids' => 1,
-        'attach_ids_authed' => 1,
+        'attach_ids_authed' => 1
     );
 
     /** @var string */
@@ -122,29 +122,29 @@ class NewReply extends \ArrayObject
             return null;
         }
 
-        $this->ticket->addMessage($ticket_message);
+            $this->ticket->addMessage($ticket_message);
 
-        if ($dupe_message = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
-            $this->ticket_message = $dupe_message;
+            if ($dupe_message = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
+                $this->ticket_message = $dupe_message;
 
-            return;
-        }
+                return;
+            }
 
             // If status is pending, we'll switch it to open so agents will see it
             if ($this->ticket['status'] == Ticket::STATUS_AWAITING_USER || $this->ticket['status'] == Ticket::STATUS_RESOLVED) {
                 $this->ticket['status'] = Ticket::STATUS_AWAITING_AGENT;
             }
 
-        if ($this->person->id && !$this->ticket->hasParticipantPerson($this->person)) {
-            // someone like the org manager replying - need to make sure they're CC'd
+            if ($this->person->id && !$this->ticket->hasParticipantPerson($this->person)) {
+                // someone like the org manager replying - need to make sure they're CC'd
                 $this->ticket->addParticipantPerson($this->person);
-        }
+            }
 
-        App::getOrm()->beginTransaction();
-        App::getOrm()->persist($ticket_message);
-        App::getOrm()->persist($this->ticket);
-        App::getOrm()->flush();
-        App::getOrm()->commit();
+            App::getOrm()->beginTransaction();
+            App::getOrm()->persist($ticket_message);
+            App::getOrm()->persist($this->ticket);
+            App::getOrm()->flush();
+            App::getOrm()->commit();
     }
 
     public function getNewMessage()
@@ -152,26 +152,8 @@ class NewReply extends \ArrayObject
         return $this->ticket_message;
     }
 
-    public function offsetExists($offset)
-    {
-        return (isset(self::$prop_names[$offset]) && isset($this->$offset));
-    }
-    public function offsetGet($offset)
-    {
-        if (isset(self::$prop_names[$offset])) {
-            return $this->$offset;
-        }
-    }
-    public function offsetSet($offset, $value)
-    {
-        if (isset(self::$prop_names[$offset])) {
-            $this->$offset = $value;
-        }
-    }
-    public function offsetUnset($offset)
-    {
-        if (isset(self::$prop_names[$offset])) {
-            $this->$offset = null;
-        }
-    }
+    public function offsetExists($offset) { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
+    public function offsetGet($offset) { if (isset(self::$prop_names[$offset])) return $this->$offset; }
+    public function offsetSet($offset, $value) { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
+    public function offsetUnset($offset) { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
 }

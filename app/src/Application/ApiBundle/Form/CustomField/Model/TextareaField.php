@@ -36,4 +36,5 @@ namespace Application\ApiBundle\Form\CustomField\Model;
 
 class TextareaField extends TextField
 {
+
 }

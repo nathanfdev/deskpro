@@ -80,7 +80,7 @@ class TwigEngine extends \Symfony\Bundle\TwigBundle\TwigEngine
             $errinfo['no_send_error'] = true;
             \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($errinfo);
 
-            $this->environment->markCustomTemplateAsCrashed((string) $name);
+            $this->environment->markCustomTemplateAsCrashed((string)$name);
 
             try {
                 return $this->render($name, $parameters);

@@ -50,6 +50,7 @@ class Office365Config implements AccountConfigInterface
      */
     public $password;
 
+
     /**
      * {@inheritDoc}
      */
@@ -60,6 +61,7 @@ class Office365Config implements AccountConfigInterface
             'password'    => $this->password,
         );
     }
+
 
     /**
      * {@inheritDoc}
@@ -74,6 +76,7 @@ class Office365Config implements AccountConfigInterface
         return $obj;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -81,6 +84,7 @@ class Office365Config implements AccountConfigInterface
     {
         return 'office365';
     }
+
 
     ############################################################################
     # Validation Metadata

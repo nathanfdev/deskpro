@@ -25,9 +25,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-if (php_sapi_name() !== 'cli') {
-    die('CLI only');
-}
+if (php_sapi_name() !== 'cli') die('CLI only');
 
 ini_set('display_errors', true);
 chdir(__DIR__);

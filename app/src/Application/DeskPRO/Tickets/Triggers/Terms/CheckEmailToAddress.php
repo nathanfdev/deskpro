@@ -56,6 +56,7 @@ class CheckEmailToAddress extends AbstractTriggerTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

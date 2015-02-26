@@ -25,6 +25,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+
 /**
  * DeskPRO
  *
@@ -106,7 +107,7 @@ class TwitterUserController extends AbstractController
             if ($user) {
                 return $this->createJsonResponse(array(
                     'success' => true,
-                    'url' => $this->generateUrl('agent_twitter_user', array('user_id' => $user->id)),
+                    'url' => $this->generateUrl('agent_twitter_user', array('user_id' => $user->id))
                 ));
             } else {
                 return $this->createJsonResponse(array('success' => false));
@@ -145,7 +146,7 @@ class TwitterUserController extends AbstractController
             'statuses' => $statuses,
             'messages' => $messages,
             'mentions' => $mentions,
-            'account_statuses' => $account_statuses,
+            'account_statuses' => $account_statuses
         ));
     }
 
@@ -178,7 +179,7 @@ class TwitterUserController extends AbstractController
             'statuses' => $statuses,
             'account_statuses' => $account_statuses,
             'more' => $more,
-            'more_page' => $page + 1,
+            'more_page' => $page + 1
         ));
     }
 
@@ -197,13 +198,13 @@ class TwitterUserController extends AbstractController
         $page = max(1, $page);
         $per_page = 25;
 
-        $friends = $user->getFriends($page, $per_page);
+        $friends = $user->getFriends($page, $per_page );
         $more = count($user->getFriends(($page + 1) * $per_page, 1)) > 0;
         if ($more) {
             $friends = array_slice($friends, 0, $per_page, true);
         }
 
-        foreach ($friends as $friend) {
+        foreach ($friends AS $friend) {
             $friend->friend_user->registerStub();
         }
 
@@ -213,7 +214,7 @@ class TwitterUserController extends AbstractController
             'account' => $account,
             'friends' => $friends,
             'more' => $more,
-            'more_page' => $page + 1,
+            'more_page' => $page + 1
         ));
     }
 
@@ -238,7 +239,7 @@ class TwitterUserController extends AbstractController
             $followers = array_slice($followers, 0, $per_page, true);
         }
 
-        foreach ($followers as $follower) {
+        foreach ($followers AS $follower) {
             $follower->follower_user->registerStub();
         }
 
@@ -248,7 +249,7 @@ class TwitterUserController extends AbstractController
             'account' => $account,
             'followers' => $followers,
             'more' => $more,
-            'more_page' => $page + 1,
+            'more_page' => $page + 1
         ));
     }
 
@@ -319,7 +320,7 @@ class TwitterUserController extends AbstractController
         return $this->render('AgentBundle:TwitterUser:message-overlay.html.twig', array(
             'user' => $user,
             'accounts' => $accounts,
-            'account' => $account,
+            'account' => $account
         ));
     }
 
@@ -330,7 +331,7 @@ class TwitterUserController extends AbstractController
 
         try {
             $account->getTwitterApi()->post_friendshipsCreate(array(
-                'user_id' => $user->id,
+                'user_id' => $user->id
             ));
         } catch (\EpiTwitterException $e) {
             // likely already following
@@ -351,7 +352,7 @@ class TwitterUserController extends AbstractController
                 'channel' => 'agent.twitter-friend',
                 'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
-                'data' => serialize(array('action' => 'new', 'account_id' => $account->id)),
+                'data' => serialize(array('action' => 'new', 'account_id' => $account->id))
             ));
 
             $follower = $this->em->getRepository('DeskPRO:TwitterAccountFollower')
@@ -369,7 +370,7 @@ class TwitterUserController extends AbstractController
                         'channel' => 'agent.twitter-follower',
                         'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
                         'date_created' => date('Y-m-d H:i:s'),
-                        'data' => serialize(array('action' => $follower->is_archived ? 'archived' : 'unarchived', 'account_id' => $account->id)),
+                        'data' => serialize(array('action' => $follower->is_archived ? 'archived' : 'unarchived', 'account_id' => $account->id))
                     ));
                 }
             }
@@ -387,7 +388,7 @@ class TwitterUserController extends AbstractController
 
         try {
             $account->getTwitterApi()->post_friendshipsDestroy(array(
-                'user_id' => $user->id,
+                'user_id' => $user->id
             ));
         } catch (\EpiTwitterException $e) {
             // likely not following already
@@ -404,7 +405,7 @@ class TwitterUserController extends AbstractController
                 'channel' => 'agent.twitter-friend',
                 'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
-                'data' => serialize(array('action' => 'removed', 'account_id' => $account->id)),
+                'data' => serialize(array('action' => 'removed', 'account_id' => $account->id))
             ));
         }
 
@@ -434,7 +435,7 @@ class TwitterUserController extends AbstractController
                     'channel' => 'agent.twitter-follower',
                     'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
                     'date_created' => date('Y-m-d H:i:s'),
-                    'data' => serialize(array('action' => $follower->is_archived ? 'archived' : 'unarchived', 'account_id' => $account->id)),
+                    'data' => serialize(array('action' => $follower->is_archived ? 'archived' : 'unarchived', 'account_id' => $account->id))
                 ));
             }
         }
@@ -453,8 +454,8 @@ class TwitterUserController extends AbstractController
                 return $this->createJsonResponse(array(
                     'success' => true,
                     'html' => $this->renderView('AgentBundle:TwitterUser:part-possible-person.html.twig', array(
-                        'person' => $person,
-                    )),
+                        'person' => $person
+                    ))
                 ));
             }
         }
@@ -473,8 +474,8 @@ class TwitterUserController extends AbstractController
                 return $this->createJsonResponse(array(
                     'success' => true,
                     'html' => $this->renderView('AgentBundle:TwitterUser:part-possible-organization.html.twig', array(
-                        'org' => $org,
-                    )),
+                        'org' => $org
+                    ))
                 ));
             }
         }
@@ -499,7 +500,7 @@ class TwitterUserController extends AbstractController
         ", array($entity->id, $user_id, $screen_name));
 
         $has_account = false;
-        foreach ($entity->getContactData('twitter') as $twitter_details) {
+        foreach ($entity->getContactData('twitter') AS $twitter_details) {
             if ($twitter_details->field_1 == $screen_name || ($twitter_details->field_3 && $twitter_details->field_3 == $user_id)) {
                 $has_account = true;
             }
@@ -544,7 +545,7 @@ class TwitterUserController extends AbstractController
         $split = $this->in->getBool('split');
         if (strlen($text)) {
             if ($type == 'public' && strpos($text, '@'.$user->screen_name) === false) {
-                $text = '@'.$user->screen_name.' '.$text;
+                $text = '@' . $user->screen_name . ' ' . $text;
             }
 
             $twitter_service = new \Application\DeskPRO\Service\Twitter();
@@ -558,7 +559,7 @@ class TwitterUserController extends AbstractController
 
         return $this->createJsonResponse(array(
             'success' => $success,
-            'error' => $error,
+            'error' => $error
         ));
     }
 
@@ -572,20 +573,18 @@ class TwitterUserController extends AbstractController
         $this->person->setPreference('agent.ui.last_twitter_account', $account->id);
 
         $page = $this->in->getUint('page');
-        if (!$page) {
-            $page = 1;
-        }
+        if (!$page) $page = 1;
         $per_page = 100;
 
         $total_count = $account->countFollowers();
 
         $params = array(
-            'account'    => $account,
+            'account'	=> $account,
             'followers' => $account->getFollowers($page, $per_page),
             'page' => $page,
             'per_page' => $per_page,
             'total_count' => $total_count,
-            'showing_to' => min($total_count, $page * $per_page),
+            'showing_to' => min($total_count, $page * $per_page)
         );
 
         if ($this->in->getBool('partial')) {
@@ -605,20 +604,18 @@ class TwitterUserController extends AbstractController
         $this->person->setPreference('agent.ui.last_twitter_account', $account->id);
 
         $page = $this->in->getUint('page');
-        if (!$page) {
-            $page = 1;
-        }
+        if (!$page) $page = 1;
         $per_page = 100;
 
         $total_count = $account->countFollowing();
 
         $params = array(
-            'account'    => $account,
+            'account'	=> $account,
             'followers' => $account->getFollowing($page, $per_page),
             'page' => $page,
             'per_page' => $per_page,
             'total_count' => $total_count,
-            'showing_to' => min($total_count, $page * $per_page),
+            'showing_to' => min($total_count, $page * $per_page)
         );
 
         if ($this->in->getBool('partial')) {
@@ -635,20 +632,18 @@ class TwitterUserController extends AbstractController
         $this->person->setPreference('agent.ui.last_twitter_account', $account->id);
 
         $page = $this->in->getUint('page');
-        if (!$page) {
-            $page = 1;
-        }
+        if (!$page) $page = 1;
         $per_page = 100;
 
         $total_count = $account->countNewFollowers();
 
         $params = array(
-            'account'    => $account,
+            'account'	=> $account,
             'followers' => $account->getNewFollowers($page, $per_page),
             'page' => $page,
             'per_page' => $per_page,
             'total_count' => $total_count,
-            'showing_to' => min($total_count, $page * $per_page),
+            'showing_to' => min($total_count, $page * $per_page)
         );
 
         if ($this->in->getBool('last')) {

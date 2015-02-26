@@ -45,6 +45,6 @@ class PersonFile extends AbstractEntityRepository
             FROM DeskPRO:PersonFile f
             WHERE f.person = ?1
             ORDER BY f.id DESC
-        ")->execute(array(1 => $person));
+        ")->execute(array(1=> $person));
     }
 }

@@ -79,7 +79,7 @@ class FilterQuery
         static $count = 0;
         $count++;
 
-        return "__dp{$type}_{$base}_".Util::baseEncode($count, 'letters').'__';
+        return "__dp{$type}_{$base}_" . Util::baseEncode($count, 'letters') . '__';
     }
 
     /**
@@ -103,9 +103,10 @@ class FilterQuery
             'join'        => $join,
             'input_alias' => $input_alias,
             'alias'       => $alias,
-            'condition'   => $condition,
+            'condition'   => $condition
         );
     }
+
 
     /**
      * @param string $where
@@ -114,6 +115,7 @@ class FilterQuery
     {
         $this->wheres_and[] = $where;
     }
+
 
     /**
      * Generates the proper 'where in(?,?,?)' code
@@ -125,12 +127,8 @@ class FilterQuery
     public function andWhereIn($field_name, array $params, $not = false)
     {
         if (!$params) {
-            if ($not) {
-                $this->andWhere("1");
-            } else {
-                $this->andWhere("0");
-            }
-
+            if ($not) $this->andWhere("1");
+            else $this->andWhere("0");
             return;
         }
 
@@ -141,8 +139,9 @@ class FilterQuery
         }
 
         $not_str = $not ? "NOT " : "";
-        $this->andWhere("$field_name {$not_str}IN (".implode(',', $names).")");
+        $this->andWhere("$field_name {$not_str}IN (" . implode(',', $names) . ")");
     }
+
 
     /**
      * Generates the proper 'where in(?,?,?)' code
@@ -154,12 +153,8 @@ class FilterQuery
     public function orWhereIn($field_name, array $params, $not = false)
     {
         if (!$params) {
-            if ($not) {
-                $this->andWhere("1");
-            } else {
-                $this->andWhere("0");
-            }
-
+            if ($not) $this->andWhere("1");
+            else $this->andWhere("0");
             return;
         }
 
@@ -170,8 +165,9 @@ class FilterQuery
         }
 
         $not_str = $not ? "NOT " : "";
-        $this->orWhere("$field_name {$not_str}IN (".implode(',', $names).")");
+        $this->orWhere("$field_name {$not_str}IN (" . implode(',', $names) . ")");
     }
+
 
     /**
      * @param string $where
@@ -180,6 +176,7 @@ class FilterQuery
     {
         $this->wheres_or[] = $where;
     }
+
 
     /**
      * @param string $name
@@ -199,9 +196,10 @@ class FilterQuery
             'name'       => $name,
             'input_name' => $input_name,
             'value'      => $value,
-            'type'       => $type,
+            'type'       => $type
         );
     }
+
 
     /**
      * @return array
@@ -213,12 +211,12 @@ class FilterQuery
 
         $where_and = null;
         if ($this->wheres_and) {
-            $where_and = '('.implode(') AND (', $this->wheres_and).')';
+            $where_and = '(' . implode(') AND (', $this->wheres_and) . ')';
         }
 
         $where_or = null;
         if ($this->wheres_or) {
-            $where_or = '('.implode(') OR (', $this->wheres_or).')';
+            $where_or = '(' . implode(') OR (', $this->wheres_or) . ')';
         }
 
         foreach ($joins as &$j) {
@@ -230,7 +228,7 @@ class FilterQuery
         if ($where_or || $where_and) {
             $where = array($where_and, $where_or);
             $where = Arrays::removeFalsey($where);
-            $where = '('.implode(') AND (', $where).')';
+            $where = '(' . implode(') AND (', $where) . ')';
             $where = str_replace(array_keys($this->var_renamed), array_values($this->var_renamed), $where);
         } else {
             $where = '1';

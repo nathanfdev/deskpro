@@ -40,10 +40,10 @@ class AbstractRevisionRepository extends AbstractEntityRepository
 {
     public function getRevisionsForAgent(PersonEntity $agent, array $options = array())
     {
-        $class_parts = explode('\\', get_class($this));
+        $class_parts = explode('\\',get_class($this));
         $class_name = array_pop($class_parts);
 
-        if (isset($options['date_range'])) {
+        if(isset($options['date_range'])) {
             $query = $this->_em->createQuery("
                 SELECT rev
                 FROM DeskPRO:{$class_name} rev INDEX BY rev.id

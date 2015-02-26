@@ -83,7 +83,7 @@ class PhpVarEngine extends \Symfony\Bundle\FrameworkBundle\Templating\PhpEngine
             $OUTPUT = implode('', $OUTPUT);
         }
 
-        return (string) $OUTPUT;
+        return (string)$OUTPUT;
     }
 
     public function supports($name)

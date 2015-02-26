@@ -47,7 +47,7 @@ class TicketValueImporter extends AbstractValueImporter
      */
     public function importValue($tval)
     {
-        //        if (!($tval instanceof TicketValue)) {
+//        if (!($tval instanceof TicketValue)) {
 //            throw new \InvalidArgumentException("This importer can only import TicketValue");
 //        }
 //

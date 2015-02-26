@@ -34,6 +34,7 @@
 
 namespace Orb\Util;
 
+
 /**
  * General utility functions.
  *
@@ -44,6 +45,7 @@ class Util
     const BASE62_ALPHABET  = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const BASE36_ALPHABET  = '0123456789abcdefghijklmnopqrstuvwxyz';
     const LETTERS_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
 
     /**
      * Get the type of a variable. If it's an object, also get the classname.
@@ -56,7 +58,7 @@ class Util
         $type = gettype($var);
 
         if ($type == 'object') {
-            $type .= ':'.get_class($var);
+            $type .= ':' . get_class($var);
         }
 
         return $type;
@@ -169,6 +171,8 @@ class Util
         return func_get_arg(func_num_args() - 1);
     }
 
+
+
     /**
      * Encode a number using an alphabet.
      *
@@ -178,13 +182,9 @@ class Util
      */
     public static function baseEncode($num, $alphabet)
     {
-        if ($alphabet == 'base62') {
-            $alphabet = self::BASE62_ALPHABET;
-        } elseif ($alphabet == 'base36') {
-            $alphabet = self::BASE36_ALPHABET;
-        } elseif ($alphabet == 'letters') {
-            $alphabet = self::LETTERS_ALPHABET;
-        }
+        if ($alphabet == 'base62') $alphabet = self::BASE62_ALPHABET;
+        elseif ($alphabet == 'base36') $alphabet = self::BASE36_ALPHABET;
+        elseif ($alphabet == 'letters') $alphabet = self::LETTERS_ALPHABET;
 
         if ($num == 0) {
             return $alphabet[0];
@@ -195,7 +195,7 @@ class Util
 
         while ($num) {
             $rem = $num % $base;
-            $num = (int) ($num / $base);
+            $num = (int)($num / $base);
             $arr[] = $alphabet[$rem];
         }
 
@@ -203,6 +203,8 @@ class Util
 
         return implode('', $arr);
     }
+
+
 
     /**
      * Decode a number using an alphabet.
@@ -213,13 +215,9 @@ class Util
      */
     public static function baseDecode($string, $alphabet)
     {
-        if ($alphabet == 'base62') {
-            $alphabet = self::BASE62_ALPHABET;
-        } elseif ($alphabet == 'base36') {
-            $alphabet = self::BASE36_ALPHABET;
-        } elseif ($alphabet == 'letters') {
-            $alphabet = self::LETTERS_ALPHABET;
-        }
+        if ($alphabet == 'base62') $alphabet = self::BASE62_ALPHABET;
+        elseif ($alphabet == 'base36') $alphabet = self::BASE36_ALPHABET;
+        elseif ($alphabet == 'letters') $alphabet = self::LETTERS_ALPHABET;
 
         $alphabet = str_split($alphabet);
         $base = sizeof($alphabet);
@@ -243,6 +241,8 @@ class Util
         return $num;
     }
 
+
+
     /**
      * Serialize a data structure and sign it with some secret key. The data
      * is also base64.
@@ -259,12 +259,14 @@ class Util
     {
         $ser = base64_encode(serialize($data));
         $ser = rtrim($ser, '=');
-        $md5 = md5($sign_key.$ser);
+        $md5 = md5($sign_key . $ser);
 
         // the :b64: part is so if in the future we change the encoding method,
         // the unserialize method below can be backwards compat by reading the b64 label
-        return $md5.':'.$ser;
+        return $md5 . ':' . $ser;
     }
+
+
 
     /**
      * Unserialized a signed serialized string.
@@ -280,13 +282,15 @@ class Util
         $md5 = substr($string, 0, 32);
         $ser = substr($string, 33);
 
-        $md5_check = md5($sign_key.$ser);
+        $md5_check = md5($sign_key . $ser);
         if ($md5 != $md5_check) {
             throw new \Exception('Invalid data or sign key.');
         }
 
         return @unserialize(@base64_decode($ser));
     }
+
+
 
     /**
      * Create a new object and pass $args as arguments to the constructor.
@@ -351,6 +355,7 @@ class Util
         return ++$x;
     }
 
+
     /**
      * A unique string based on time and a random number, plus the requestUniqueId.
      *
@@ -358,10 +363,12 @@ class Util
      */
     public static function requestUniqueIdString($prefix = 'id')
     {
-        $str = $prefix.'_'.substr(time(), -4).'_'.self::requestUniqueId();
+        $str = $prefix . '_' . substr(time(), -4) . '_' . self::requestUniqueId();
 
         return $str;
     }
+
+
 
     /**
      * Generate a random security token using some secret.
@@ -383,10 +390,12 @@ class Util
 
         $rand_str = Strings::random(10, Strings::CHARS_ALPHA_I);
 
-        $token = $expire_time_enc.'-'.$rand_str.'-'.sha1($secret.$expire_time_enc.$rand_str);
+        $token = $expire_time_enc . '-' . $rand_str . '-' . sha1($secret . $expire_time_enc . $rand_str);
 
         return $token;
     }
+
+
 
     /**
      * Check a security token to see if its valid.
@@ -405,7 +414,7 @@ class Util
         list($expire_time_enc, $rand_str, $hash) = explode('-', $token, 3);
 
         // Check the hash first
-        $check_hash = sha1($secret.$expire_time_enc.$rand_str);
+        $check_hash = sha1($secret . $expire_time_enc . $rand_str);
 
         if ($check_hash != $hash) {
             return false;
@@ -421,6 +430,8 @@ class Util
 
         return true;
     }
+
+
 
     /**
      * Get all the parts of a classname (i.e., split up by namespace).
@@ -438,6 +449,7 @@ class Util
         return explode('\\', $classname);
     }
 
+
     /**
      * Get the namespace of a class
      *
@@ -450,6 +462,8 @@ class Util
 
         return implode('\\', $parts);
     }
+
+
 
     /**
      * Get the base name of a class. That is, the classname itself without the full
@@ -464,6 +478,8 @@ class Util
 
         return array_pop($parts);
     }
+
+
 
     /**
      * Create a UUIDv4 string.
@@ -487,13 +503,14 @@ class Util
         $clock_seq_hi_and_reserved = $clock_seq_hi_and_reserved >> 2;
         $clock_seq_hi_and_reserved = $clock_seq_hi_and_reserved | 0x8000;
 
-        $node = bin2hex(substr($bits, 10, 6));
+        $node = bin2hex(substr($bits,10, 6));
 
         return sprintf(
             '%08s-%04s-%04x-%04x-%012s',
             $time_low, $time_mid, $time_hi_and_version, $clock_seq_hi_and_reserved, $node
         );
     }
+
 
     /**
      * Converts a hex string to binary (opposite of bin2hex).
@@ -513,13 +530,15 @@ class Util
         $bin_string = '';
 
         $pos = 0;
-        while ($pos < $len) {
+        while($pos < $len) {
             $bin_string .= pack("H*", substr($hex_string, $pos, 2));
             $pos += 2;
         }
 
         return $bin_string;
     }
+
+
 
     /**
      * Generate random bytes.
@@ -533,13 +552,13 @@ class Util
         if (function_exists('openssl_random_pseudo_bytes')) {
             $data = openssl_random_pseudo_bytes($len);
         } else {
-            $fp = @fopen('/dev/urandom', 'rb');
+            $fp = @fopen('/dev/urandom','rb');
             if ($fp !== false) {
                 $data = fread($fp, $len);
                 fclose($fp);
             } else {
                 // Fallback on just rand
-                for ($x = 0; $x < $len; $x++) {
+                for($x=0; $x < $len; $x++){
                     $data .= chr(mt_rand(0, 255));
                 }
             }
@@ -547,6 +566,8 @@ class Util
 
         return $data;
     }
+
+
 
     /**
      * This takes an array of numbers, and encodes them as an alpha string (0-26 as a-z).
@@ -579,6 +600,8 @@ class Util
         return implode('', $enc_string);
     }
 
+
+
     /**
      * Decodes an array of integers from encodeNumberSegments().
      *
@@ -606,13 +629,12 @@ class Util
                 $state = 1;
                 $pos++;
             } elseif ($state == 1) {
+
                 $read = '';
                 for ($i = 0; $i < $read_len; $i++) {
                     $read .= $encoded_string[$pos];
                     $pos++;
-                    if ($pos > $len) {
-                        return array();
-                    } // invalid
+                    if ($pos > $len) return array(); // invalid
                 }
 
                 $num = self::baseDecode($read, $alphabet);
@@ -625,6 +647,7 @@ class Util
 
         return $parts;
     }
+
 
     /**
      * Gets a numerically indexed array (suitable for call user func) by using
@@ -660,6 +683,7 @@ class Util
         return $ret;
     }
 
+
     /**
      * Get the filename a class is defined in
      *
@@ -677,6 +701,7 @@ class Util
         return $refl->getFileName();
     }
 
+
     /**
      * @static
      * @param $var
@@ -686,21 +711,21 @@ class Util
     {
         if (is_object($var)) {
             if (method_exists($var, '__tostring')) {
-                return str_repeat("\t", $d)."[".get_class($var).":".$var->__tostring()."]";
+                return str_repeat("\t", $d) . "[" . get_class($var) . ":" . $var->__tostring() . "]";
             } else {
-                return str_repeat("\t", $d)."[".get_class($var)."]";
+                return str_repeat("\t", $d) . "[" . get_class($var) . "]";
             }
         } elseif (is_array($var)) {
             $str = array();
-            $str[] = str_repeat("\t", $d)."array(";
+            $str[] = str_repeat("\t", $d) . "array(";
             foreach ($var as $k => $v) {
-                $str[] = str_repeat("\t", $d+1)."$k: ".self::debugVar($v, $d + 1);
+                $str[] = str_repeat("\t", $d+1) . "$k: " . self::debugVar($v, $d + 1);
             }
-            $str[] = str_repeat("\t", $d).")";
+            $str[] = str_repeat("\t", $d) . ")";
 
             return implode("\n", $str);
         } else {
-            return str_repeat("\t", $d).$var;
+            return str_repeat("\t", $d) . $var;
         }
     }
 
@@ -713,31 +738,31 @@ class Util
         return $value ? 1 : 0;
     }
 
-    /**
-     * Map a function over a collection and flatten the result by one-level.
-     *
-     * - Returns null if $val is null.
-     * - Returns $fn($val) if $val is not a collection (makes a useful one-liner to apply $fn($val) when $val may be null)
-     *
-     * @param  mixed      $val
-     * @param  callable   $fn
-     * @return mixed|null
-     */
-    public static function flatMap($val, $fn)
-    {
-        if ($val !== null) {
-            if (is_array($val) || $val instanceof \Traversable) {
-                $ret = array();
-                foreach ($val as $v) {
-                    $ret[] = self::flatMap($v, $fn);
-                }
 
-                return $ret;
-            } else {
-                return call_user_func($fn, $val);
-            }
-        }
+	/**
+	 * Map a function over a collection and flatten the result by one-level.
+	 *
+	 * - Returns null if $val is null.
+	 * - Returns $fn($val) if $val is not a collection (makes a useful one-liner to apply $fn($val) when $val may be null)
+	 *
+	 * @param mixed $val
+	 * @param callable $fn
+	 * @return mixed|null
+	 */
+	public static function flatMap($val, $fn)
+	{
+		if ($val !== null) {
+			if (is_array($val) || $val instanceof \Traversable) {
+				$ret = array();
+				foreach ($val as $v) {
+					$ret[] = self::flatMap($v, $fn);
+				}
+				return $ret;
+			} else {
+				return call_user_func($fn, $val);
+			}
+		}
 
-        return null;
-    }
+		return null;
+	}
 }

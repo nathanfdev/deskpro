@@ -68,7 +68,7 @@ final class DownloadLabel implements MapperInterface
     {
         /** @var Entity\LabelDownload $record */
         $record = $this->repository->findOneBy($criteria);
-        if (! $record && $throw_exception) {
+        if ( ! $record && $throw_exception) {
             throw new MapperException('Download label not found', $criteria);
         }
 

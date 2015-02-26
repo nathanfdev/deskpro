@@ -63,12 +63,14 @@ class Language extends AbstractEntityRepository
         }
 
         $ret = array();
-        foreach ((array) $for_ids as $id) {
+        foreach ((array)$for_ids as $id) {
             $ret[$id] = $this->lang_titles[$id];
         }
 
         return $ret;
     }
+
+
 
     /**
      * @return \Application\DeskPRO\Entity\Language
@@ -126,11 +128,11 @@ class Language extends AbstractEntityRepository
         }
     }
 
-    public function getByTitle($title)
-    {
-        return $this->getEntityManager()->createQuery('
+	public function getByTitle($title)
+	{
+		return $this->getEntityManager()->createQuery('
 				SELECT l FROM DeskPRO:Language l
 				WHERE l.sys_name = :title OR LOWER(l.title) = :title
 			')->setParameter('title', mb_strtolower(trim($title)))->getOneOrNullResult();
-    }
+	}
 }

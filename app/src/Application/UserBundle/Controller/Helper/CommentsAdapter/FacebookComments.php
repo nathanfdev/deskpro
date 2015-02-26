@@ -54,7 +54,7 @@ class FacebookComments extends AbstractComments
 
             'facebook_num_posts' => App::getSetting('core.facebook_comments_num_posts'),
             'facebook_admins'    => App::getSetting('core.facebook_comments_admins'),
-            'page_permalink'     => $this->page_url,
+            'page_permalink'     => $this->page_url
         ));
 
         return $html;

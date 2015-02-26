@@ -52,6 +52,7 @@ class Filters
             ->getFiltersForPerson($person);
     }
 
+
     public function getGroupedFiltersForPerson($person)
     {
         $all_filters = App::getApi('tickets.filters')->getFiltersForPerson($person);
@@ -80,6 +81,7 @@ class Filters
         $sys_filters_hold = array();
         $custom_filters = array();
         $archive_filters = array();
+
 
         $unset_ids = array();
 
@@ -156,6 +158,7 @@ class Filters
         );
     }
 
+
     /**
      * Get a ticket filter from an ID
      * @param  int          $ticket_filter_id
@@ -167,6 +170,7 @@ class Filters
             ->getRepository('DeskPRO:TicketFilter')
             ->find($ticket_filter_id);
     }
+
 
     /**
      * Get the number of results in a filter.
@@ -180,6 +184,7 @@ class Filters
 
         return $ticket_filter->getResultsCount();
     }
+
 
     /**
      * Get the counts for each filter a person can see.
@@ -196,6 +201,7 @@ class Filters
         return $this->getAllCountsForFiltersCollection($coll, $person);
     }
 
+
     /**
      * Get the counts for each custom filter a person can see.
      *
@@ -210,6 +216,7 @@ class Filters
 
         return $this->getAllCountsForFiltersCollection($coll);
     }
+
 
     /**
      * Get counts for each filter in a collection.
@@ -231,6 +238,7 @@ class Filters
         }
 
         foreach ($ticket_filters as $ticket_filter) {
+
             $count = 0;
 
             switch ($ticket_filter['sys_name']) {
@@ -263,6 +271,7 @@ class Filters
         return $counts;
     }
 
+
     /**
      * Get an array of IDs for each filter in a collection
      *
@@ -284,6 +293,7 @@ class Filters
         return $all_ids;
     }
 
+
     /**
      * Get an array of IDs for each filter in a collection
      *
@@ -302,6 +312,7 @@ class Filters
         return $all_ids;
     }
 
+
     /**
      * @param $ticket_filter
      * @return
@@ -314,6 +325,7 @@ class Filters
 
         return $result_ids;
     }
+
 
     /**
      * Get ticket results from a filter
@@ -348,6 +360,7 @@ class Filters
             ->getRepository('DeskPRO:Ticket')
             ->getTicketsFromIds($page_ids);
     }
+
 
     /**
      * Get flagged tickets
@@ -385,6 +398,7 @@ class Filters
             ->getRepository('DeskPRO:Ticket')
             ->getTicketsFromIds($page_ids);
     }
+
 
     /**
      * Get the counts for each flag a person has.

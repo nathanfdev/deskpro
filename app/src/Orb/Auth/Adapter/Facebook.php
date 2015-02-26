@@ -68,6 +68,7 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
         $this->app_secret = $app_secret;
     }
 
+
     /**
      * Sets the display context: page or popup
      *
@@ -84,6 +85,7 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
         $this->display = $context;
     }
 
+
     /**
      * Initialize the auth process by setting state, and returning a redirect result.
      *
@@ -94,7 +96,7 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
         $this->fb = new \Facebook(
             array(
                 'appId'  => $this->app_id,
-                'secret' => $this->app_secret,
+                'secret' => $this->app_secret
             ),
             $state
         );
@@ -117,9 +119,10 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 
         // Already a user
         if ($me) {
+
             if ($this->logger) {
                 $this->logger->log(
-                    "No need to redirect, user is already logged in: \n".trim(
+                    "No need to redirect, user is already logged in: \n" . trim(
                         Arrays::implodeTemplate($me, "{KEY}: {VAL}\n")
                     ),
                     Logger::DEBUG
@@ -145,6 +148,8 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
         return new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
     }
 
+
+
     /**
      * Process the callback and return a final result.
      *
@@ -155,7 +160,7 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
         $this->fb = new \Facebook(
             array(
                 'appId'  => $this->app_id,
-                'secret' => $this->app_secret,
+                'secret' => $this->app_secret
             ),
             $state
         );
@@ -190,7 +195,7 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 
         if ($this->logger) {
             $this->logger->log(
-                "Facebook Success: \n".trim(Arrays::implodeTemplate($me, "{KEY}: {VAL}\n")),
+                "Facebook Success: \n" . trim(Arrays::implodeTemplate($me, "{KEY}: {VAL}\n")),
                 Logger::DEBUG
             );
         }
@@ -203,6 +208,7 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 
         return $this->_meToResult($me);
     }
+
 
     protected function _meToResult($me)
     {

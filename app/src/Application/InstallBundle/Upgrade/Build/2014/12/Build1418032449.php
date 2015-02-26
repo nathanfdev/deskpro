@@ -42,6 +42,6 @@ class Build1418032449 extends AbstractBuild
         $this->execMutateSql("TRUNCATE TABLE agent_alerts", true);
 
         $this->out("Add index: agent_alerts.is_dismissed_idx");
-        $this->execMutateSql("CREATE INDEX is_dismissed_idx ON agent_alerts (is_dismissed, date_created)", true);
+		$this->execMutateSql("CREATE INDEX is_dismissed_idx ON agent_alerts (is_dismissed, date_created)", true);
     }
 }

@@ -96,12 +96,14 @@ class ArticleResults
                     array('type' => 'category_specific', 'op' => 'is', 'options' => array('category' => $options['category']['id'])),
                     array('type' => 'agent_list', 'op' => 'is', 'options' => 1),
                 );
+
             } elseif (isset($options['pending_translate'])) {
+
                 $terms = array(
                     array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'published')),
                     array('type' => 'pending_translate', 'op' => 'id', 'options' => array(
-                        'language_id' => isset($options['pending_translate_lang']) ? $options['pending_translate_lang'] : 0,
-                    )),
+                        'language_id' => isset($options['pending_translate_lang']) ? $options['pending_translate_lang'] : 0
+                    ))
                 );
 
             // "all" is published but no category term
@@ -112,7 +114,7 @@ class ArticleResults
 
             // Otherwise its a user filter with custom terms
             } else {
-                $form_terms = $controller->in->getCleanValueArray('terms', 'raw', 'string');
+                $form_terms = $controller->in->getCleanValueArray('terms', 'raw' , 'string');
                 $form_terms = Arrays::removeFalsey($form_terms);
 
                 $terms = $term_rules->readForm($form_terms);
@@ -160,6 +162,7 @@ class ArticleResults
         return $helper;
     }
 
+
     public function __construct($controller, ResultCache $result_cache = null)
     {
         $this->controller = $controller;
@@ -170,6 +173,7 @@ class ArticleResults
         }
     }
 
+
     /**
      * @return \Application\DeskPRO\Entity\ResultCache
      */
@@ -177,6 +181,7 @@ class ArticleResults
     {
         return $this->result_cache;
     }
+
 
     /**
      * @param array $article_ids
@@ -186,6 +191,7 @@ class ArticleResults
         $this->article_ids = $article_ids;
     }
 
+
     /**
      * @return array
      */
@@ -193,6 +199,7 @@ class ArticleResults
     {
         return $this->article_ids;
     }
+
 
     /**
      * @return array
@@ -206,6 +213,7 @@ class ArticleResults
     {
         return $this->_getPageFromArticleIds($this->getArticleIds(), $page, $per_page);
     }
+
 
     protected function _getPageFromArticleIds(array $article_ids, $page, $per_page)
     {

@@ -32,7 +32,6 @@
  */
 
 namespace Application\DeskPRO\Settings;
-
 use Orb\Util\Util;
 
 class ServerSettings
@@ -58,12 +57,13 @@ class ServerSettings
         $this->resetSettings();
     }
 
+
     /**
      * Resets settings based on stored values.
      */
     public function resetSettings()
     {
-        $this->rewrite_urls         = (bool) $this->settings->get('core.rewrite_urls');
+        $this->rewrite_urls         = (bool)$this->settings->get('core.rewrite_urls');
 
         $this->cookie_path = $this->settings->get('core.cookie_path');
         if ($this->cookie_path === null) {
@@ -75,6 +75,7 @@ class ServerSettings
             $this->cookie_domain = '';
         }
     }
+
 
     /**
      * @return array
@@ -90,6 +91,7 @@ class ServerSettings
         return $export_settings;
     }
 
+
     /**
      * @param array $set_settings
      */
@@ -101,6 +103,7 @@ class ServerSettings
             }
         }
     }
+
 
     /**
      * Persists settings

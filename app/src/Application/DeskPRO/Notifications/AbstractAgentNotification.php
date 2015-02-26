@@ -108,11 +108,12 @@ abstract class AbstractAgentNotification
 
         $this->notify_list = array(
             'email' => $send_email,
-            'browser' => $send_browser,
+            'browser' => $send_browser
         );
 
         return $this->notify_list;
     }
+
 
     /**
      * Send an email notification to agents from the build list
@@ -128,13 +129,14 @@ abstract class AbstractAgentNotification
             return;
         }
 
-        foreach ($notify_list['email'] as $agent) {
+        foreach	($notify_list['email'] as $agent) {
             $message = App::getMailer()->createMessage();
             $message->setTemplate($tpl, $vars);
             $message->setToPerson($agent);
             App::getMailer()->send($message);
         }
     }
+
 
     /**
      * Send a browser notification to agents from the built list.
@@ -153,7 +155,7 @@ abstract class AbstractAgentNotification
             return;
         }
 
-        foreach ($notify_list['browser'] as $agent) {
+        foreach	($notify_list['browser'] as $agent) {
             $tpl_line = App::getTemplating()->render($tpl, $vars);
 
             $data = $vars['notify_data'];
@@ -161,10 +163,10 @@ abstract class AbstractAgentNotification
 
             $cm = new ClientMessage();
             $cm->fromArray(array(
-                'channel' => 'agent-notify.'.$data['notify_type'],
+                'channel' => 'agent-notify.' . $data['notify_type'],
                 'data' => $data,
                 'for_person'        => $agent,
-                'created_by_client' => $this->client,
+                'created_by_client' => $this->client
             ));
             $this->em->persist($cm);
         }

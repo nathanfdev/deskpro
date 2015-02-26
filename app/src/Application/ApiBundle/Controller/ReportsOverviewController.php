@@ -51,6 +51,7 @@ class ReportsOverviewController extends AbstractController
         return $this->createApiResponse($reports_overview->getOverviewData($type));
     }
 
+
     ####################################################################################################################
     # get statistics (for specified type)
     ####################################################################################################################
@@ -72,7 +73,7 @@ class ReportsOverviewController extends AbstractController
 
         try {
             return $this->createApiResponse($reports_overview->getStats($type, $grouping_field, $options));
-        } catch (\InvalidArgumentException $e) {
+        } catch(\InvalidArgumentException $e) {
             return $this->createApiResponse($reports_overview->getStats($type, 'department'));
         }
     }

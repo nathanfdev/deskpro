@@ -55,8 +55,7 @@ class Build1400056728 extends AbstractBuild
         // use the new schema before its been upgraded
         try {
             $db->exec("ALTER TABLE departments ADD avatar_blob_id INT DEFAULT NULL");
-        } catch (\Exception $e) {
-        }
+        } catch (\Exception $e) {}
 
         #------------------------------
         # Get current layouts
@@ -116,7 +115,6 @@ class Build1400056728 extends AbstractBuild
 
         try {
             $db->exec("ALTER TABLE departments DROP avatar_blob_id");
-        } catch (\Exception $e) {
-        }
+        } catch (\Exception $e) {}
     }
 }

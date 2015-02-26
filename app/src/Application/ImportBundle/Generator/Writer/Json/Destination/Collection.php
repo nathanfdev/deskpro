@@ -40,13 +40,12 @@ final class Collection extends AbstractCollection
     /**
      * Attach a destination configuration
      *
-     * @param  DestinationInterface $destination
+     * @param DestinationInterface $destination
      * @return $this
      */
     public function attach(DestinationInterface $destination)
     {
         $this->collection[] = $destination;
-
         return $this;
     }
 }

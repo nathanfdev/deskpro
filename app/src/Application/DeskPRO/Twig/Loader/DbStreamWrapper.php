@@ -149,7 +149,7 @@ class DbStreamWrapper
     {
         $left = substr($this->php_code, 0, $this->position);
         $right = substr($this->php_code, $this->position + strlen($data));
-        $this->php_code = $left.$data.$right;
+        $this->php_code = $left . $data . $right;
         $this->position += strlen($data);
 
         return strlen($data);

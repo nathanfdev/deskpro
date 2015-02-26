@@ -43,4 +43,5 @@ namespace Application\DeskPRO\Tickets\TicketSaveActions;
  */
 interface ErrorCheckedInterface
 {
+
 }

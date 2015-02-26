@@ -51,6 +51,7 @@ class SubjectAction extends AbstractAction
         $this->subject = $subject;
     }
 
+
     /**
      * Apply the property to the ticket
      *
@@ -66,6 +67,7 @@ class SubjectAction extends AbstractAction
         $ticket['subject'] = $subject_text;
     }
 
+
     /**
      * Get an array of actions that would be performed on the ticket
      *
@@ -74,9 +76,10 @@ class SubjectAction extends AbstractAction
     public function getApplyActions(Ticket $ticket)
     {
         return array(
-            array('action' => 'subject', 'subject' => $this->subject),
+            array('action' => 'subject', 'subject' => $this->subject)
         );
     }
+
 
     /**
      * @return string
@@ -85,6 +88,7 @@ class SubjectAction extends AbstractAction
     {
         return $this->subject;
     }
+
 
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
@@ -102,9 +106,9 @@ class SubjectAction extends AbstractAction
     {
         if ($as_html) {
             $html = htmlspecialchars($this->subject, \ENT_QUOTES);
-            $ret = 'Set subject: <span class="with-set-subject">'.$html.'</span>';
+            $ret = 'Set subject: <span class="with-set-subject">' . $html .'</span>';
         } else {
-            $ret = 'Set subject: '.$this->subject;
+            $ret = 'Set subject: ' . $this->subject;
         }
 
         return $ret;

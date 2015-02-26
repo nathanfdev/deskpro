@@ -44,7 +44,7 @@ class FilterUserField extends AbstractFilterTerm
      */
     public function getFilterQuery(ExecutorContextInterface $context = null)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException;
     }
 
     /**
@@ -52,6 +52,6 @@ class FilterUserField extends AbstractFilterTerm
      */
     public function getTermType()
     {
-        return 'FilterUserField'.$this->getTermOptions()->get('field_id');
+        return 'FilterUserField' . $this->getTermOptions()->get('field_id');
     }
 }

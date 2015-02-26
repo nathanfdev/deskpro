@@ -87,6 +87,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
         }
     }
 
+
     /**
      * @param  Blob   $blob
      * @return string
@@ -103,8 +104,9 @@ class AmazonS3Storage extends AbstractStorageAdapter
             $path[] = md5(uniqid('', true));
         }
 
-        return implode('/', $path).'-'.$blob->getFilenameSafe();
+        return implode('/', $path) . '-' . $blob->getFilenameSafe();
     }
+
 
     /**
      * Get the full path from a path string
@@ -116,8 +118,9 @@ class AmazonS3Storage extends AbstractStorageAdapter
     {
         $path = trim($path, '/\\');
 
-        return $this->base_path.DIRECTORY_SEPARATOR.$path;
+        return $this->base_path . DIRECTORY_SEPARATOR . $path;
     }
+
 
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
@@ -131,6 +134,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
         );
     }
 
+
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
      * @return bool
@@ -141,11 +145,12 @@ class AmazonS3Storage extends AbstractStorageAdapter
 
         $this->s3->deleteObject(array(
             'Bucket' => $this->bucket,
-            'Key' => $path,
+            'Key' => $path
         ));
 
         return true;
     }
+
 
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
@@ -157,7 +162,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
         $path = $this->resolvePath($blob->getPath());
 
         $disposition = $blob->getMeta('content_disposition') ?: 'attachment';
-        $disposition .= '; filename="'.str_replace(array('\'', '"'), '-', $blob->getFilename()).'"';
+        $disposition .= '; filename="' . str_replace(array('\'', '"'), '-', $blob->getFilename()) . '"';
 
         $try = $this->attempts;
         while (--$try >= 0) {
@@ -182,13 +187,14 @@ class AmazonS3Storage extends AbstractStorageAdapter
         }
 
         if (!$this->file_url_domain) {
-            $blob->setMeta('file_url', 'https://'.$this->bucket.'.s3.amazonaws.com'.$path);
+            $blob->setMeta('file_url', 'https://'. $this->bucket . '.s3.amazonaws.com' . $path);
         } else {
-            $blob->setMeta('file_url', 'https://'.$this->file_url_domain.$path);
+            $blob->setMeta('file_url', 'https://'. $this->file_url_domain . $path);
         }
 
         return strlen($data);
     }
+
 
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
@@ -200,6 +206,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
         return $this->writeBlobString($blob, stream_get_contents($fp_source));
     }
 
+
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
      * @param  string                                $source_path
@@ -209,6 +216,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
     {
         return $this->writeBlobString($blob, file_get_contents($source_path));
     }
+
 
     /**
      * Loads the entire blob into a string
@@ -265,5 +273,6 @@ class AmazonS3Storage extends AbstractStorageAdapter
      */
     public function getFileUrlLink(Blob $blob)
     {
+
     }
 }

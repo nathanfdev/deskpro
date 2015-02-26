@@ -86,7 +86,7 @@ class UserChatController extends AbstractController
         $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
         $convo_api = array();
-        foreach (array('id', 'subject', 'person_name', 'person_email', 'status', 'ended_by') as $key) {
+        foreach (array('id', 'subject', 'person_name', 'person_email', 'status', 'ended_by') AS $key) {
             $convo_api[$key] = $convo->$key;
         }
         if ($convo->person) {
@@ -117,6 +117,7 @@ class UserChatController extends AbstractController
             'custom_fields'  => $custom_fields,
         ));
     }
+
 
     /**
      * Reassign a chat
@@ -156,14 +157,12 @@ class UserChatController extends AbstractController
         $groups = $this->getGroups();
         $group_counts = array();
 
-        foreach ($user_groups as $filter_id => $group_id) {
-            if (!$filter_id || !in_array($filter_id, $filters)) {
+        foreach($user_groups as $filter_id => $group_id) {
+            if(!$filter_id || !in_array($filter_id, $filters))
                 $filter_id = $filters[0];
-            }
 
-            if (!$group_id || !in_array($group_id, $groups)) {
+            if(!$group_id || !in_array($group_id, $groups))
                 $group_id = $groups[0];
-            }
 
             $searcher = new ChatConversationSearch();
             $searcher->setPersonContext($this->person);
@@ -200,7 +199,7 @@ class UserChatController extends AbstractController
             'channel' => 'chat.invited',
             'data' => $convo->getInfo(),
             'for_person' => $agent,
-            'created_by_client' => $this->session->getId(),
+            'created_by_client' => $this->session->getId()
         ));
         $this->em->persist($cm);
         $this->em->flush();
@@ -227,7 +226,7 @@ class UserChatController extends AbstractController
 
         $props = $this->in->getCleanValueArray('props', 'raw', 'string');
 
-        if (isset($props['department_id'])) {
+        if (isset($props['department_id'])){
             $dep = null;
             if ($props['department_id']) {
                 $dep = $this->em->find('DeskPRO:Department', $props['department_id']);
@@ -237,6 +236,7 @@ class UserChatController extends AbstractController
 
         return $this->createJsonCmResponse();
     }
+
 
     /**
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
@@ -261,6 +261,7 @@ class UserChatController extends AbstractController
         ));
     }
 
+
     /**
      * Add a participant
      *
@@ -276,7 +277,7 @@ class UserChatController extends AbstractController
         }
 
         $agent = $this->em->find('DeskPRO:Person', $agent_id);
-        if (!$agent or $convo->hasParticipant($agent)) {
+        if (!$agent OR $convo->hasParticipant($agent)) {
             return $this->createJsonResponse(array());
         }
 
@@ -311,9 +312,10 @@ class UserChatController extends AbstractController
         });
 
         return $this->createJsonCmResponse(array(
-            'client_messages' => $client_messages,
+            'client_messages' => $client_messages
         ));
     }
+
 
     /**
      * @param $conversation_id
@@ -379,9 +381,10 @@ class UserChatController extends AbstractController
         }
 
         return $this->createJsonCmResponse(array(
-            'client_messages' => $client_messages,
+            'client_messages' => $client_messages
         ));
     }
+
 
     /**
      * End a chat
@@ -403,6 +406,7 @@ class UserChatController extends AbstractController
         return $this->createJsonCmResponse();
     }
 
+
     /**
      * Accepts a POST of a new message to a conversation
      */
@@ -417,6 +421,7 @@ class UserChatController extends AbstractController
 
         $other_data = array();
         if ($this->in->getString('content')) {
+
             $metadata = array();
             if ($this->in->getBool('is_html')) {
                 $metadata['is_html'] = true;
@@ -441,6 +446,7 @@ class UserChatController extends AbstractController
 
         return $this->createJsonCmResponse($other_data);
     }
+
 
     /**
      * End a chat
@@ -476,6 +482,7 @@ class UserChatController extends AbstractController
         return $this->createJsonCmResponse();
     }
 
+
     public function sendFileAction($conversation_id)
     {
         if ($conversation_id instanceof ChatConversation) {
@@ -491,9 +498,9 @@ class UserChatController extends AbstractController
             return $this->createJsonCmResponse();
         }
 
-        $msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">".htmlspecialchars($blob->filename)."</a> (".$blob->getReadableFilesize().")";
+        $msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">" . htmlspecialchars($blob->filename) . "</a> (" . $blob->getReadableFilesize() . ")";
         if ($blob->isImage()) {
-            $msg .= '<div class="file-thumb"><img src="'.$blob->getThumbnailUrl(50, true).'" /></div>';
+            $msg .= '<div class="file-thumb"><img src="' . $blob->getThumbnailUrl(50, true) . '" /></div>';
         }
 
         /** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
@@ -508,6 +515,7 @@ class UserChatController extends AbstractController
         return $this->createJsonCmResponse();
     }
 
+
     /**
      * List the articles
      */
@@ -518,7 +526,7 @@ class UserChatController extends AbstractController
         $filters = array();
         $tr = App::getTranslator();
 
-        foreach ($this->getFilters() as $filter_id) {
+        foreach($this->getFilters() as $filter_id) {
             $searcher = new ChatConversationSearch();
             $searcher->setPersonContext($this->person);
             $searcher->setColumns('COUNT(*)');
@@ -529,17 +537,17 @@ class UserChatController extends AbstractController
             $filter['id'] = $filter_id;
 
             $filter['count'] = $this->container->getDb()->fetchColumn($searcher->getSQL());
-            $filter['title'] = $tr->phrase('agent.chat.filter_title_'.$filter_id);
+            $filter['title'] = $tr->phrase('agent.chat.filter_title_' . $filter_id);
             $filter['disallowed'] = implode(',', $this->getDisallowedGroupsForFilter($filter_id));
             $filters[] = $filter;
         }
 
         $groupers = array();
 
-        foreach ($this->getGroups() as $grouper_id) {
+        foreach($this->getGroups() as $grouper_id) {
             $grouper = array();
             $grouper['id'] = $grouper_id;
-            $grouper['title'] = $tr->hasPhrase('agent.general.group_'.$grouper_id) ? $tr->hasPhrase('agent.general.group_'.$grouper_id) : $grouper_id;
+            $grouper['title'] = $tr->hasPhrase('agent.general.group_' . $grouper_id) ? $tr->hasPhrase('agent.general.group_' . $grouper_id) : $grouper_id;
             $groupers[] = $grouper;
         }
 
@@ -581,7 +589,7 @@ class UserChatController extends AbstractController
 
         return $this->createJsonResponse(array(
             'counts' => $initial_counts,
-            'dep_counts' => $dep_counts,
+            'dep_counts' => $dep_counts
         ));
     }
 
@@ -598,7 +606,7 @@ class UserChatController extends AbstractController
         $initial_counts['total'] = array_sum(array_values($initial_counts));
         $initial_counts['active'] = $initial_counts['total'];
 
-        if (isset($initial_counts[-1])) {
+        if(isset($initial_counts[-1])) {
             $initial_counts['active'] -= $initial_counts[-1];
         }
 
@@ -628,9 +636,9 @@ class UserChatController extends AbstractController
 
             foreach ($dep['children'] as $child_dep) {
                 $child_id = $child_dep['id'];
-                $dep_counts[$child_id.'_total'] = 0;
+                $dep_counts[$child_id . '_total'] = 0;
                 if (isset($dep_counts[$child_id])) {
-                    $dep_counts[$child_id.'_total'] = $dep_counts[$child_id];
+                    $dep_counts[$child_id . '_total'] = $dep_counts[$child_id];
                     $total += $dep_counts[$child_id];
                 }
             }
@@ -641,9 +649,10 @@ class UserChatController extends AbstractController
 
         return array(
             $initial_counts,
-            $dep_counts,
+            $dep_counts
         );
     }
+
 
     public function listNewChatsAction($department_id)
     {
@@ -751,6 +760,7 @@ class UserChatController extends AbstractController
         return $this->createJsonResponse($other_data);
     }
 
+
     /**
      * Lists previously closed chats
      *
@@ -769,7 +779,7 @@ class UserChatController extends AbstractController
         if ($filter_id == 'label' && $filter_param) {
             $searcher->addTerm(ChatConversationSearch::TERM_LABEL, SearcherAbstract::OP_IS, $filter_param);
         } else {
-            if (!$filter_id || !in_array($filter_id, $filters)) {
+            if(!$filter_id || !in_array($filter_id, $filters)) {
                 $filter_id = $filters[0];
             }
 
@@ -781,26 +791,24 @@ class UserChatController extends AbstractController
         $group_by = $this->in->getString('group_var');
         $group_id = '';
 
-        if ($group_by && in_array($group_by, $groups)) {
-            switch ($group_by) {
+        if($group_by && in_array($group_by, $groups)) {
+            switch($group_by) {
                 case 'agent':
                     $group_id = $this->in->getInt('group_val');
                     $searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS, $group_id);
                     break;
                 case 'date_created':
                     $group_id = $this->in->getString('group_val');
-                    $month_year = explode('-', $group_id, 2);
+                    $month_year = explode('-',$group_id,2);
 
-                    if (count($month_year) != 2) {
+                    if(count($month_year) != 2)
                         break;
-                    }
 
-                    $month = (int) $month_year[0];
-                    $year = (int) $month_year[1];
+                    $month = (int)$month_year[0];
+                    $year = (int)$month_year[1];
 
-                    if (!checkdate($month, 1, $year)) {
+                    if(!checkdate($month, 1, $year))
                         break;
-                    }
 
                     $beginning = Dates::firstDayInMonth($month, $year);
                     $end = Dates::lastDayInMonth($month, $year);
@@ -824,9 +832,7 @@ class UserChatController extends AbstractController
         $max_page = ceil($total / $limit);
 
         $page = $this->in->getUint('p');
-        if (!$page || $page > $max_page) {
-            $page = 1;
-        }
+        if (!$page || $page > $max_page) $page = 1;
 
         $start = ($page - 1) * $limit;
 
@@ -846,7 +852,7 @@ class UserChatController extends AbstractController
             'filter_id'      => $filter_id,
             'filter_param'   => $filter_param,
             'group_var'      => $group_by,
-            'group_val'      => $group_id,
+            'group_val'      => $group_id
         ));
     }
 
@@ -921,9 +927,9 @@ class UserChatController extends AbstractController
 
     protected function updateSearcherFilter($searcher, $filter)
     {
-        switch ($filter) {
+        switch($filter) {
             case 'mine':
-                $searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS, $this->person['id']);
+                $searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS,$this->person['id']);
                 break;
 
             case 'assigned':
@@ -940,12 +946,11 @@ class UserChatController extends AbstractController
     {
         $groups = array();
 
-        foreach ($this->groups as $group) {
-            if ($group == 'agent'
+        foreach($this->groups as $group) {
+            if($group == 'agent'
             && !$this->person->hasPerm('agent_tickets.view_others')
-            && !$this->person->hasPerm('agent_tickets.view_unassigned')) {
+            && !$this->person->hasPerm('agent_tickets.view_unassigned'))
                 continue;
-            }
 
             $groups[] = $group;
         }
@@ -957,7 +962,7 @@ class UserChatController extends AbstractController
     {
         $disallowed = array();
 
-        if ($filter == 'mine') {
+        if($filter == 'mine') {
             $disallowed[] = 'agent';
         }
 
@@ -968,8 +973,8 @@ class UserChatController extends AbstractController
     {
         $filters = array();
 
-        foreach ($this->filters as $filter) {
-            if ($filter == 'assigned' && !$this->person->hasPerm('agent_chat.view_others') && !$this->person->hasPerm('agent_chat.view_unassigned')) {
+        foreach($this->filters as $filter) {
+            if($filter == 'assigned' && !$this->person->hasPerm('agent_chat.view_others') && !$this->person->hasPerm('agent_chat.view_unassigned')) {
                 continue;
             }
 

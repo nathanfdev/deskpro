@@ -65,9 +65,7 @@ class Choice extends HandlerAbstract
 
     public function renderHtml($data = null, array $template_vars = array())
     {
-        if ($data === null) {
-            return '';
-        }
+        if ($data === null) return '';
 
         $data['value'] = $this->_getRenderableString($data);
 
@@ -76,9 +74,7 @@ class Choice extends HandlerAbstract
 
     public function renderText($data = null, array $template_vars = array())
     {
-        if ($data === null) {
-            return '';
-        }
+        if ($data === null) return '';
 
         $data['value'] = $this->_getRenderableString($data);
 
@@ -100,12 +96,12 @@ class Choice extends HandlerAbstract
 
         foreach ($children as $child) {
             $id = $child['id'];
-            if (isset($data['children'][$id]) and isset($data['children'][$id]['value'])) {
+            if (isset($data['children'][$id]) AND isset($data['children'][$id]['value'])) {
                 $parent_title = '';
                 if ($child->getOption('parent_id')) {
-                    $parent_title = $children[$child->getOption('parent_id')]->getTitle().' > ';
+                    $parent_title = $children[$child->getOption('parent_id')]->getTitle() . ' > ';
                 }
-                $val[] = $parent_title.$child['title'];
+                $val[] = $parent_title . $child['title'];
             }
         }
 
@@ -144,7 +140,7 @@ class Choice extends HandlerAbstract
                     $options[$title][$child->getId()] = $child->getTitle();
                 } else {
                     $title = $children[$child->getOption('parent_id')]->getTitle();
-                    $options[$child->getId()] = $title.' > '.$child->getTitle();
+                    $options[$child->getId()] = $title . ' > ' . $child->getTitle();
                 }
             } else {
                 $options[$child->getId()] = $child->getTitle();
@@ -154,7 +150,7 @@ class Choice extends HandlerAbstract
         foreach ($children as $child) {
             $id = $child['id'];
             if (!$child['handler_class']) {
-                if (isset($data['children'][$id]) and isset($data['children'][$id]['value'])) {
+                if (isset($data['children'][$id]) AND isset($data['children'][$id]['value'])) {
                     $selected_options[] = $id;
                 }
             }
@@ -224,7 +220,7 @@ class Choice extends HandlerAbstract
             } else {
                 // Single selections in the form of field_1 = childid
                 $ret = array(
-                    array($value, 'value', 1),
+                    array($value, 'value', 1)
                 );
             }
 
@@ -246,14 +242,14 @@ class Choice extends HandlerAbstract
 
         $data = Arrays::removeFalsey($data);
 
-        // - Choice values are always ints
-        // But if a multi-select is sent via JS in some old JS code
-        // it's possible a JS null value is sent, which when sent as a POST
-        // to PHP becomes the string 'null', which in turn will become a validation error
-        // - So this is removing those possible 'null' strings
-        $data = array_filter($data, function ($d) {
-            return $d !== 'null';
-        });
+		// - Choice values are always ints
+		// But if a multi-select is sent via JS in some old JS code
+		// it's possible a JS null value is sent, which when sent as a POST
+		// to PHP becomes the string 'null', which in turn will become a validation error
+		// - So this is removing those possible 'null' strings
+		$data = array_filter($data, function($d) {
+			return $d !== 'null';
+		});
 
         #------------------------------
         # Validate selections
@@ -285,7 +281,7 @@ class Choice extends HandlerAbstract
 
         $options = array();
         foreach (array('required', 'min_length', 'max_length') as $k) {
-            $options[$k] = $this->field_def->getOption($opt_prefix.$k);
+            $options[$k] = $this->field_def->getOption($opt_prefix . $k);
         }
 
         // Without required there are no requirements

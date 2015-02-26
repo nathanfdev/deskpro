@@ -62,6 +62,7 @@ abstract class AbstractBuild
      */
     protected $logger;
 
+
     /**
      * @param DeskproContainer $container
      * @param LoggerInterface  $logger
@@ -78,6 +79,7 @@ abstract class AbstractBuild
         $this->init();
     }
 
+
     /**
      * Saves data to the filesystem (into the tmp dir). Will be overwritten if it already exists.
      *
@@ -89,8 +91,8 @@ abstract class AbstractBuild
     public function saveUpgradeData($tag, $name, $data, $throw_exception = true)
     {
         if (is_array($data)) {
-            $fname = 'updata-'.$tag.'.'.$name.'.json';
-            $path = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$fname;
+            $fname = 'updata-' . $tag . '.' . $name . '.json';
+            $path = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $fname;
             $data = json_encode($data);
             if (file_put_contents($path, $data) === false) {
                 if ($throw_exception) {
@@ -100,9 +102,9 @@ abstract class AbstractBuild
                 return false;
             }
         } else {
-            $fname = 'updata-'.$tag.'.'.$name.'.dat';
-            $path = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$fname;
-            $data = (string) $data;
+            $fname = 'updata-' . $tag . '.' . $name . '.dat';
+            $path = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $fname;
+            $data = (string)$data;
             if (file_put_contents($path, $data) === false) {
                 if ($throw_exception) {
                     throw new \RuntimeException("Failed to write upgrade data file to: $path");
@@ -117,6 +119,7 @@ abstract class AbstractBuild
         return $path;
     }
 
+
     /**
      * Read previously saved upgrade data.
      *
@@ -126,8 +129,8 @@ abstract class AbstractBuild
      */
     public function getUpgradeData($tag, $name)
     {
-        $name_part = 'updata-'.$tag.'.'.$name.'.';
-        $path_part = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$name_part;
+        $name_part = 'updata-' . $tag . '.' . $name . '.';
+        $path_part = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $name_part;
 
         if (file_exists($path_part.'json')) {
             $data = file_get_contents($path_part.'json');
@@ -143,12 +146,12 @@ abstract class AbstractBuild
         }
     }
 
+
     /**
      * Empty hook into the constructor.
      */
-    protected function init()
-    {
-    }
+    protected function init() { }
+
 
     /**
      * Run through the upgrade
@@ -156,6 +159,7 @@ abstract class AbstractBuild
      * @return void
      */
     abstract public function run();
+
 
     /**
      * Set this build handler to run again.
@@ -167,8 +171,9 @@ abstract class AbstractBuild
      */
     public function setRerun($rerun = true)
     {
-        return $this->rerun = (bool) $rerun;
+        return $this->rerun = (bool)$rerun;
     }
+
 
     /**
      * @return bool
@@ -177,6 +182,7 @@ abstract class AbstractBuild
     {
         return $this->rerun;
     }
+
 
     /**
      * Write to output
@@ -188,6 +194,7 @@ abstract class AbstractBuild
         $this->logger->info($string);
     }
 
+
     /**
      * @param $sql
      */
@@ -197,8 +204,8 @@ abstract class AbstractBuild
         try {
             $this->container->getDb()->exec($sql);
         } catch (\Exception $e) {
-            $this->logger->info("SQL: ".$sql);
-            $this->logger->info("Ignored: ".$e->getMessage());
+            $this->logger->info("SQL: " . $sql);
+            $this->logger->info("Ignored: " . $e->getMessage());
             if (!$ignore_err) {
                 throw $e;
             }
@@ -235,6 +242,7 @@ abstract class AbstractBuild
     public function execSlowAlterTable($table, $alter)
     {
         if (dp_get_config('online_schema_upgrade')) {
+
             $logger = $this->logger;
             $logger->info("Using online_schema_update");
 
@@ -266,7 +274,7 @@ abstract class AbstractBuild
                 '{db_name}' => escapeshellarg(DP_DATABASE_NAME),
                 '{db_user}' => escapeshellarg(@$GLOBALS['DP_CONFIG']['online_schema_upgrade_user'] ?: DP_DATABASE_USER),
                 '{db_pass}' => escapeshellarg(@$GLOBALS['DP_CONFIG']['online_schema_upgrade_password'] ?: DP_DATABASE_PASSWORD),
-                '{dsn}'     => "t=$table",
+                '{dsn}'     => "t=$table"
             );
 
             $params_test = $params;
@@ -280,21 +288,22 @@ abstract class AbstractBuild
             $logger->info("BEGIN: LIVE");
             $proc = new Process($cmd_exec, DP_ROOT);
             $proc->setTimeout(600);
-            $proc->run(function ($type, $data) use ($logger) {
+            $proc->run(function($type, $data) use ($logger) {
                 $logger->info(sprintf("\t%s\n", str_replace("\n", "\n\t", trim($data))));
             });
             $logger->info("DONE: LIVE");
-            $logger->info("Exit status: ".$proc->getExitCode());
+            $logger->info("Exit status: " . $proc->getExitCode());
 
             if (!$proc->isSuccessful()) {
                 $logger->critical("!!!!!!!!!!!!!!!");
-                throw new \RuntimeException("LIVE run failed with status: ".$proc->getExitCode());
+                throw new \RuntimeException("LIVE run failed with status: " . $proc->getExitCode());
             }
         } else {
             $sql = "ALTER TABLE `$table` $alter";
             $this->execMutateSql($sql);
         }
     }
+
 
     /**
      * Save status data (ex. steps completed etc)
@@ -305,10 +314,11 @@ abstract class AbstractBuild
     public function saveStatus($key, $val)
     {
         $this->container->getDb()->replace('import_datastore', array(
-            'typename' => 'up.'.$this->getBuildId().'.'.$key,
-            'data' => $val,
+            'typename' => 'up.' . $this->getBuildId() . '.' . $key,
+            'data' => $val
         ));
     }
+
 
     /**
      * @param  string $key
@@ -321,7 +331,7 @@ abstract class AbstractBuild
             SELECT data
             FROM import_datastore
             WHERE typename = ?
-        ", array('up.'.$this->getBuildId().'.'.$key));
+        ", array('up.' . $this->getBuildId() . '.' . $key));
 
         if (!$val) {
             return $default;
@@ -357,7 +367,7 @@ abstract class AbstractBuild
                 ), array('id' => $tpl['id']));
             } catch (\Exception $e) {
                 @file_put_contents(
-                    dp_get_backup_dir().DIRECTORY_SEPARATOR.'tpl-backup-'.str_replace(':', '_', $tpl['name']),
+                    dp_get_backup_dir() . DIRECTORY_SEPARATOR . 'tpl-backup-' . str_replace(':', '_', $tpl['name']),
                     $tpl['template_code']
                 );
                 $this->container->getDb()->delete('templates', array('id' => $tpl['id']));
@@ -375,6 +385,7 @@ abstract class AbstractBuild
 
         return $collation ?: 'utf8_general_ci';
     }
+
 
     /**
      * @static
@@ -398,6 +409,7 @@ abstract class AbstractBuild
     {
         if ($this->schema_helper) {
             return $this->schema_helper;
+
         }
 
         $this->schema_helper = new SchemaHelper($this->container->getDb());

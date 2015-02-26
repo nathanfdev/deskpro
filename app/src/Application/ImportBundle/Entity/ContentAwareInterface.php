@@ -47,7 +47,7 @@ interface ContentAwareInterface
     /**
      * Set entity title
      *
-     * @param  string $title
+     * @param string $title
      * @return $this
      */
     public function setTitle($title);
@@ -62,7 +62,7 @@ interface ContentAwareInterface
     /**
      * Set entity content
      *
-     * @param  string $content
+     * @param string $content
      * @return $this
      */
     public function setContent($content);
@@ -80,7 +80,7 @@ interface ContentAwareInterface
      * Turns a string into an acceptable URL slug.
      * "My Great Title!" becomes "my-great-title"
      *
-     * @param  string $slug
+     * @param string $slug
      * @return $this
      */
     public function setSlug($slug);
@@ -95,7 +95,7 @@ interface ContentAwareInterface
     /**
      * Set entity language
      *
-     * @param  string $language
+     * @param string $language
      * @return $this
      */
     public function setLanguage($language);
@@ -110,7 +110,7 @@ interface ContentAwareInterface
     /**
      * Status
      *
-     * @param  string $status
+     * @param string $status
      * @return $this
      */
     public function setStatus($status);
@@ -125,7 +125,7 @@ interface ContentAwareInterface
     /**
      * Set a view count
      *
-     * @param  int   $view_count
+     * @param int $view_count
      * @return $this
      */
     public function setViewCount($view_count);
@@ -140,7 +140,7 @@ interface ContentAwareInterface
     /**
      * Set total rating
      *
-     * @param  int   $total_rating
+     * @param int $total_rating
      * @return $this
      */
     public function setTotalRating($total_rating);
@@ -155,7 +155,7 @@ interface ContentAwareInterface
     /**
      * Set number of comments
      *
-     * @param  int   $num_comments
+     * @param int $num_comments
      * @return $this
      */
     public function setNumComments($num_comments);
@@ -170,7 +170,7 @@ interface ContentAwareInterface
     /**
      * Set number of rating
      *
-     * @param  int   $num_ratings
+     * @param int $num_ratings
      * @return $this
      */
     public function setNumRatings($num_ratings);
@@ -185,7 +185,7 @@ interface ContentAwareInterface
     /**
      * Set date created
      *
-     * @param  DateTime $date_created
+     * @param DateTime $date_created
      * @return $this
      */
     public function setDateCreated(DateTime $date_created);
@@ -200,7 +200,7 @@ interface ContentAwareInterface
     /**
      * Set date published
      *
-     * @param  DateTime $date_published
+     * @param DateTime $date_published
      * @return $this
      */
     public function setDatePublished(DateTime $date_published);

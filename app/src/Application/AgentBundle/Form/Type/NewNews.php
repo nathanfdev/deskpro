@@ -56,14 +56,14 @@ class NewNews extends AbstractType
             'type' => 'hidden',
             'required' => false,
             'allow_add' => true,
-            'allow_delete' => true,
+            'allow_delete' => true
         ));
 
         $builder->add('attach', 'collection', array(
             'type' => 'hidden',
             'required' => false,
             'allow_add' => true,
-            'allow_delete' => true,
+            'allow_delete' => true
         ));
     }
 

@@ -68,6 +68,7 @@ class UsersourceTester
      */
     private $raw_data;
 
+
     /**
      * @param  string           $type
      * @param  array            $settings
@@ -82,6 +83,7 @@ class UsersourceTester
         return new self($us->getAdapter()->getAuthAdapter());
     }
 
+
     /**
      * @param  Usersource       $usersource
      * @return UsersourceTester
@@ -91,6 +93,7 @@ class UsersourceTester
         return new self($usersource->getAdapter()->getAuthAdapter());
     }
 
+
     /**
      * @param AdapterInterface $adapter
      */
@@ -98,6 +101,7 @@ class UsersourceTester
     {
         $this->adapter = $adapter;
     }
+
 
     /**
      * @param  string            $username
@@ -118,7 +122,7 @@ class UsersourceTester
         $arr_wr = new ArrayWriter();
         $logger->addWriter($arr_wr);
 
-        $logger->logDebug("Adapter: ".get_class($adapter));
+        $logger->logDebug("Adapter: " . get_class($adapter));
         $logger->logDebug("Test: $username :: $password");
         $logger->logDebug("--- Begin ---");
         $start = microtime(true);
@@ -129,7 +133,7 @@ class UsersourceTester
 
         $adapter->setFormData(array(
             'username' => $username,
-            'password' => $password,
+            'password' => $password
         ));
         $result = $adapter->authenticate();
 

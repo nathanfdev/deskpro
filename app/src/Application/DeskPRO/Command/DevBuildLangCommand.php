@@ -77,6 +77,7 @@ class DevBuildLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
             $build->getLogger()->addWriter($wr);
 
             if ($input->getOption('lang-id')) {
+
                 if (!$build->getLangPackInfo()->hasLang($input->getOption('lang-id'))) {
                     $output->writeln("Invalid language ID");
 
@@ -114,6 +115,7 @@ class DevBuildLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
             $build->getLogger()->addWriter($wr);
 
             if ($input->getOption('lang-id')) {
+
                 if (!$build->getLangPackInfo()->hasLang($input->getOption('lang-id'))) {
                     $output->writeln("Invalid language ID");
 

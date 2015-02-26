@@ -72,6 +72,7 @@ class FetcherStorageFactory
         );
     }
 
+
     /**
      * @param  GmailConfig $config
      * @return Pop3Storage
@@ -86,6 +87,7 @@ class FetcherStorageFactory
             'ssl'
         );
     }
+
 
     /**
      * @param  Office365Config $config

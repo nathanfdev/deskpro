@@ -39,4 +39,5 @@ namespace Application\DeskPRO\Publish;
  */
 class ContentSearchRating
 {
+
 }

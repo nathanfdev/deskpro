@@ -80,7 +80,7 @@ final class ArticleLabel extends AbstractImporter
     /**
      * Returns a new article label entity
      *
-     * @param  string                     $label
+     * @param string $label
      * @return DeskPROEntity\LabelArticle
      */
     private function createArticleLabel($label)
@@ -89,7 +89,6 @@ final class ArticleLabel extends AbstractImporter
         $entity->setLabel($label);
 
         $this->records->add($entity);
-
         return $entity;
     }
 

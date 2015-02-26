@@ -41,7 +41,6 @@ class Build1341318405 extends AbstractBuild
         $this->out("Make sure original_phrase is on phrases");
         try {
             $this->execMutateSql("ALTER TABLE phrases ADD original_phrase LONGTEXT NOT NULL");
-        } catch (\Exception $e) {
-        }
+        } catch (\Exception $e) {}
     }
 }

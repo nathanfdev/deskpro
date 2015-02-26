@@ -61,7 +61,8 @@ class DayName extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    ) {
+    )
+    {
         if (count($this->_arguments) != 1) {
             throw new Exception('DAYNAME() can only accept 1 argument.');
         }
@@ -69,7 +70,7 @@ class DayName extends AbstractFunc
         $expression = reset($this->_arguments);
         $prepped = $expression->prepare($statement, $section, $stack, $select, $result);
 
-        $sql = 'DAYOFWEEK('.$prepped->sql().')';
+        $sql = 'DAYOFWEEK(' . $prepped->sql() . ')';
         $renderer = function (AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer) {
             switch ($value) {
                 case 1: return 'Sunday';
@@ -82,7 +83,7 @@ class DayName extends AbstractFunc
             }
         };
 
-        $res = new Prepared($sql, 'DAYNAME('.$prepped->name().')', false, $renderer);
+        $res = new Prepared($sql, 'DAYNAME(' . $prepped->name() . ')', false, $renderer);
 
         $res->setGroupFill(function ($min, $max) {
             if ($min == $max) {

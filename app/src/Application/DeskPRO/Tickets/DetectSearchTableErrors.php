@@ -52,6 +52,7 @@ class DetectSearchTableErrors
         $this->db = $db;
     }
 
+
     /**
      * @return int $limit
      */
@@ -60,6 +61,7 @@ class DetectSearchTableErrors
         return $this->limit;
     }
 
+
     /**
      * @param int $limit
      */
@@ -67,6 +69,7 @@ class DetectSearchTableErrors
     {
         $this->limit = $limit;
     }
+
 
     public function outputErrors($errors = null)
     {
@@ -88,8 +91,8 @@ class DetectSearchTableErrors
                     echo "[data_mismatch] #{$error['ticket_id']} contains different data in search and real\n";
                     foreach ($error['mismatch'] as $k => $v) {
                         echo "\t[$k]\n";
-                        echo "\t\tsearch: ".$v['search']."\n";
-                        echo "\t\treal:   ".$v['real']."\n";
+                        echo "\t\tsearch: " . $v['search'] . "\n";
+                        echo "\t\treal:   " . $v['real'] . "\n";
                     }
                     break;
             }
@@ -155,6 +158,7 @@ class DetectSearchTableErrors
         }
         $q->closeCursor();
 
+
         $real_tickets = array();
         $q = $this->db->executeQuery("
             SELECT $select_fields
@@ -167,6 +171,7 @@ class DetectSearchTableErrors
             $real_tickets[$r['id']] = $r;
         }
         $q->closeCursor();
+
 
         #------------------------------
         # Check for bad tickets
@@ -185,7 +190,7 @@ class DetectSearchTableErrors
                     if ($real_tickets[$tid][$k] != $v) {
                         $mismatch[$k] = array(
                             'real'   => $real_tickets[$tid][$k],
-                            'search' => $v,
+                            'search' => $v
                         );
                     }
                 }
@@ -195,8 +200,9 @@ class DetectSearchTableErrors
                         'type'      => 'data_mismatch',
                         'ticket_id' => $tid,
                         'msg'       => "contains different data in search and real",
-                        'mismatch'  => $mismatch,
+                        'mismatch'  => $mismatch
                     );
+
                 }
             }
         }

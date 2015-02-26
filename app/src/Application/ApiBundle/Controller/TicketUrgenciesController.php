@@ -46,6 +46,7 @@ class TicketUrgenciesController extends AbstractController implements ProtectedC
         return new AdminManagePermission();
     }
 
+
     ####################################################################################################################
     # list
     ####################################################################################################################

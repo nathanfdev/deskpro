@@ -56,6 +56,7 @@ class FilterOrgLabels extends AbstractFilterTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

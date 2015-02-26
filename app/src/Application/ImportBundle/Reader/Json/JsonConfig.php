@@ -64,13 +64,12 @@ class JsonConfig
     }
 
     /**
-     * @param  string $path
+     * @param string $path
      * @return $this
      */
     public function setPath($path)
     {
         $this->path = $path;
-
         return $this;
     }
 
@@ -83,13 +82,12 @@ class JsonConfig
     }
 
     /**
-     * @param  boolean $exclude_done
+     * @param boolean $exclude_done
      * @return $this
      */
     public function setExcludeDone($exclude_done)
     {
         $this->exclude_done = $exclude_done;
-
         return $this;
     }
 }

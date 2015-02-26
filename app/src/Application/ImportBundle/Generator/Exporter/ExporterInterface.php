@@ -53,7 +53,7 @@ interface ExporterInterface extends GeneratorConfigAwareInterface
     /**
      * Returns count of records of the current type to be exported
      *
-     * @param  string $type
+     * @param string $type
      * @return int
      */
     public function getCountByType($type);
@@ -61,7 +61,7 @@ interface ExporterInterface extends GeneratorConfigAwareInterface
     /**
      * Returns a collection of records of the current type
      *
-     * @param  string            $type
+     * @param string $type
      * @return Entity\Collection
      */
     public function exportByType($type);

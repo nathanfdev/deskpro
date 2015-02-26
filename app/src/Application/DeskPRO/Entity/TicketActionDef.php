@@ -77,6 +77,7 @@ class TicketActionDef extends DomainObject
      */
     private $_def;
 
+
     /**
      * Set settings
      *
@@ -91,6 +92,7 @@ class TicketActionDef extends DomainObject
         }
     }
 
+
     /**
      * Override because we need to unset the cached $_def if a setting changed.
      *
@@ -104,6 +106,7 @@ class TicketActionDef extends DomainObject
         return parent::setModelField($field, $value);
     }
 
+
     /**
      * Get settings
      *
@@ -114,6 +117,7 @@ class TicketActionDef extends DomainObject
         return $this->settings ? $this->settings : array();
     }
 
+
     /**
      * @param  string $name
      * @param  mixed  $default
@@ -123,6 +127,7 @@ class TicketActionDef extends DomainObject
     {
         return isset($this->settings[$name]) ? $this->settings[$name] : $default;
     }
+
 
     /**
      * @return \Application\DeskPRO\Tickets\Actions\ActionDef\AbstractActionDef
@@ -138,6 +143,7 @@ class TicketActionDef extends DomainObject
 
         return $this->_def;
     }
+
 
     /**
      * {@inheritDoc}
@@ -158,6 +164,7 @@ class TicketActionDef extends DomainObject
         return $data;
     }
 
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -171,7 +178,7 @@ class TicketActionDef extends DomainObject
 
         $metadata->setPrimaryTable(array(
             'name' => 'ticket_actions_def',
-            'uniqueConstraints' => array('action_name_idx' => array('columns' => array('action_name'))),
+            'uniqueConstraints' => array('action_name_idx' => array('columns' => array('action_name')))
         ));
 
         $metadata->mapField(array(
@@ -213,7 +220,7 @@ class TicketActionDef extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-            )),
+            ))
         ));
     }
 }

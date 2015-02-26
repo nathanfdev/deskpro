@@ -32,37 +32,37 @@ use Symfony\Component\Form\DataTransformerInterface;
 
 class PhoneNumberModelTransformer implements DataTransformerInterface
 {
-    public function transform($number)
-    {
-        return $number;
-    }
+	public function transform($number)
+	{
+		return $number;
+	}
 
-    /**
-     * Transforms a string (number) to an object (issue).
-     *
-     * @param string $number
-     *
-     * @return Issue|null
-     *
-     * @throws TransformationFailedException if object (issue) is not found.
-     */
-    public function reverseTransform($number)
-    {
-        if (!$number) {
-            return null;
-        }
+	/**
+	 * Transforms a string (number) to an object (issue).
+	 *
+	 * @param  string $number
+	 *
+	 * @return Issue|null
+	 *
+	 * @throws TransformationFailedException if object (issue) is not found.
+	 */
+	public function reverseTransform($number)
+	{
+		if (!$number) {
+			return null;
+		}
 
-        try {
-            if (!$formatted = PhoneNumbers::toE164Format($number)) {
-                return null;
-            }
-            if (!$region = PhoneNumbers::getRegionForNumber($number)) {
-                return null;
-            }
-        } catch (\Exception $e) {
-            return null;
-        }
+		try {
+			if (!$formatted = PhoneNumbers::toE164Format($number)) {
+				return null;
+			}
+			if (!$region = PhoneNumbers::getRegionForNumber($number)) {
+				return null;
+			}
+		} catch (\Exception $e) {
+			return null;
+		}
 
-        return $formatted;
-    }
+		return $formatted;
+	}
 }

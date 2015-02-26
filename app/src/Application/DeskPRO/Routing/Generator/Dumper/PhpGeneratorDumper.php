@@ -50,11 +50,11 @@ class PhpGeneratorDumper extends BasePhpGeneratorDumper
 
         // First opening brace, as in class {
         $pos = strpos($class, '{') + 1;
-        $class = Strings::inject($class, "\n".$var_code."\n", $pos);
+        $class = Strings::inject($class, "\n" . $var_code . "\n", $pos);
 
         // Last closing brace, as in } at the end of the class
         $pos = strrpos($class, '}');
-        $class = Strings::inject($class, "\n".$method_code."\n", $pos);
+        $class = Strings::inject($class, "\n" . $method_code . "\n", $pos);
 
         $class = str_replace("\$this->context = \$context;", "\$this->setContext(\$context);", $class);
 
@@ -69,6 +69,7 @@ class PhpGeneratorDumper extends BasePhpGeneratorDumper
         $fragment_types   = array();
 
         foreach ($this->getRoutes()->all() as $name => $route) {
+
             $route_patterns[$name] = $route->getPath();
 
             $a_name = $route->getOption('fragment_name');
@@ -81,10 +82,10 @@ class PhpGeneratorDumper extends BasePhpGeneratorDumper
         }
 
         $var_code = array();
-        $var_code['routePatterns'] = 'static private $routePatterns = '.var_export($route_patterns, true).';';
-        $var_code['routeFragments'] = 'static private $routeFragments = '.var_export($route_fragments, true).';';
-        $var_code['fragmentNames']   = 'static private $fragmentNames = '.var_export($fragment_names, true).';';
-        $var_code['fragmentTypes']   = 'static private $fragmentTypes = '.var_export($fragment_types, true).';';
+        $var_code['routePatterns'] = 'static private $routePatterns = ' . var_export($route_patterns, true) . ';';
+        $var_code['routeFragments'] = 'static private $routeFragments = ' . var_export($route_fragments, true) . ';';
+        $var_code['fragmentNames']   = 'static private $fragmentNames = ' . var_export($fragment_names, true) . ';';
+        $var_code['fragmentTypes']   = 'static private $fragmentTypes = ' . var_export($fragment_types, true) . ';';
         $var_code = implode("\n", $var_code);
 
         if (preg_match('#DevUrlGenerator$#', $this->className)) {

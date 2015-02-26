@@ -52,6 +52,7 @@ class RecountRatings
         $this->em = $em;
     }
 
+
     /**
      * @param int $batch_size
      */
@@ -59,6 +60,7 @@ class RecountRatings
     {
         $this->batch_size = $batch_size;
     }
+
 
     /**
      * @return int
@@ -74,6 +76,7 @@ class RecountRatings
         return $id_max;
     }
 
+
     /**
      * @return float
      */
@@ -88,6 +91,7 @@ class RecountRatings
         return $num_batches;
     }
 
+
     /**
      * @param callable $status_fn
      */
@@ -100,7 +104,7 @@ class RecountRatings
         $pages = $this->countBatches();
         $status_fn('start', array('num_batches' => $pages, 'batch_size' => $this->batch_size));
 
-        for ($i = 1; $i <= $pages; $i++) {
+        for($i = 1; $i <= $pages; $i++) {
             $status_fn('batch_start', array('batch' => $i));
             $this->recountBatch($i);
             $status_fn('batch_end', array('batch' => $i));
@@ -108,6 +112,7 @@ class RecountRatings
 
         $status_fn('end', $i);
     }
+
 
     /**
      * @param int $page
@@ -125,7 +130,7 @@ class RecountRatings
 
         $update_set = array();
         foreach ($ratings as $rating) {
-            $key = $rating['object_type'].$rating['object_id'];
+            $key = $rating['object_type'] . $rating['object_id'];
             if (!isset($update_set[$key])) {
                 $update_set[$key] = array('type' => $rating['object_type'], 'id' => $rating['object_id'], 'count' => 0, 'rating' => 0);
             }

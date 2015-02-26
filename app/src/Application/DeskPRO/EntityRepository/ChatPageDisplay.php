@@ -117,17 +117,17 @@ class ChatPageDisplay extends AbstractEntityRepository
         if ($zone == 'create') {
             $page_data[] = array(
                 'id' => 'person_name',
-                'field_type' => 'person_name',
+                'field_type' => 'person_name'
             );
             $page_data[] = array(
                 'id' => 'person_email',
-                'field_type' => 'person_email',
+                'field_type' => 'person_email'
             );
         }
 
         $page_data[] = array(
             'id' => 'chat_department',
-            'field_type' => 'chat_department',
+            'field_type' => 'chat_department'
         );
 
         // Custom fields
@@ -136,7 +136,7 @@ class ChatPageDisplay extends AbstractEntityRepository
             $page_data[] = array(
                 'id' => 'chat_field['.$f->getId().']',
                 'field_type' => 'chat_field',
-                'field_id' => $f->getId(),
+                'field_id' => $f->getId()
             );
         }
 
@@ -182,8 +182,7 @@ class ChatPageDisplay extends AbstractEntityRepository
         $d = null;
         try {
             $d = $this->findOneBy(array('department' => $department ? $department['id'] : null, 'zone' => $zone, 'section' => $section));
-        } catch (\Exception $e) {
-        }
+        } catch (\Exception $e) {}
 
         if (!$d) {
             $d = new ChatPageDisplayEntity();

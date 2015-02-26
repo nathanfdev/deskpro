@@ -50,6 +50,8 @@ class ZendValidator extends AbstractValidator
         $this->zend_validator = $this->getOption('zend_validator');
     }
 
+
+
     /**
      * Create a new ZendValidator and automatically instantiate the Zend validator.
      *

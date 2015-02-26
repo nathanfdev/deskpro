@@ -40,7 +40,7 @@ interface SkipDuplicateInterface
     /**
      * Throws an exception if importing entity already exists
      *
-     * @param  Entity\EntityInterface $entity
+     * @param Entity\EntityInterface $entity
      * @throws DuplicateException
      */
     public function checkAlreadyExists(Entity\EntityInterface $entity);

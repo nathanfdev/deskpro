@@ -52,11 +52,11 @@ class Build1363036050 extends AbstractBuild
             $ins[] = array(
                 'ticket_id' => $tid,
                 'date_created' => '2012-01-01 00:00:00',
-                'reason' => '(system marked)',
+                'reason' => '(system marked)'
             );
         }
 
-        if ($ins) {
+        if($ins) {
             $this->container->getDb()->batchInsert('tickets_deleted', $ins, true);
         }
     }

@@ -107,7 +107,6 @@ class FeedbackController extends AbstractController
                 if ($this->db->count('feedback_categories', array('id' => $category_id))) {
                     return $this->renderLoginOrPermissionError();
                 }
-
                 return $this->renderStandardError('@user.error.not-found-title', '@user.error.not-found', 404);
             }
 
@@ -117,6 +116,7 @@ class FeedbackController extends AbstractController
             }
 
             $category_path = $category->getTreeParents();
+
         } else {
             $category = null;
             $category_path = array();
@@ -168,7 +168,7 @@ class FeedbackController extends AbstractController
         $pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
         $limit = array(
             'offset' => ($pageinfo['curpage']-1) * $per_page,
-            'max' => $per_page,
+            'max' => $per_page
         );
 
         $feedback_ids = array();
@@ -204,7 +204,7 @@ class FeedbackController extends AbstractController
             $newfeedback->category_id = $category->getId();
         }
 
-        if ($this->person) {
+        if($this->person) {
             $newfeedback->person_name = $this->person->name;
         }
 
@@ -227,6 +227,7 @@ class FeedbackController extends AbstractController
         $errors = $error_fields = null;
         $is_submitted = false;
         if ($this->in->getBool('process_new') && $this->person->hasPerm('feedback.submit') && ($this->person->id || !$this->settings->get('core.interact_require_login'))) {
+
             $this->ensureStandardRequestToken();
 
             $is_submitted = true;
@@ -432,6 +433,8 @@ class FeedbackController extends AbstractController
         return $this->redirectRoute('user_feedback_view', array('slug' => $feedback->getUrlSlug()));
     }
 
+
+
     /**
      * View an feedback
      *
@@ -511,7 +514,7 @@ class FeedbackController extends AbstractController
 
             'facebook_like'     => isset($facebook_like) ? $facebook_like : null,
 
-            'related_content'   => $related_content,
+            'related_content'   => $related_content
         ));
     }
 
@@ -555,6 +558,7 @@ class FeedbackController extends AbstractController
         }
 
         if ($this->get('request')->getMethod() == 'POST') {
+
             $trap_fail = false;
             if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
                 $trap_fail = true;

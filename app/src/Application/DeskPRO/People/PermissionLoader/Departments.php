@@ -57,7 +57,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
     public function getSubkey()
     {
         if ($this->person && $this->person->is_agent) {
-            return 'person-'.$this->person->id;
+            return 'person-' . $this->person->id;
         }
     }
 
@@ -71,6 +71,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
         $in = implode(',', $this->getUsergroupIds());
 
         if (DP_INTERFACE == 'agent' || ($this->person->is_agent && DP_INTERFACE != 'user')) {
+
             $agent_groups = App::$container->getAgentGroups();
             $allow_all = false;
             foreach ($this->usergroup_ids as $ugid) {
@@ -91,10 +92,11 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
                             'department_id' => $d->id,
                             'app'           => $d->is_tickets_enabled ? 'tickets' : 'chat',
                             'name'          => 'full',
-                            'value'         => 1,
+                            'value'         => 1
                         );
                     }
                 }
+
             } else {
                 $agent_ugs = App::getDataService('Usergroup')->getAgentUsergroups();
                 $has_agent_ugs = array();
@@ -120,17 +122,18 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 
         $parent_with_allowed_child = array(
             'tickets' => array(),
-            'chat'    => array(),
+            'chat'    => array()
         );
 
         foreach ($res as $d) {
+
             if (!empty($d['person_id'])) {
                 $this->with_overrides = true;
             }
 
             $dep = App::getDataService('Department')->get($d['department_id']);
 
-            $check = 'is_'.$d['app'].'_enabled';
+            $check = 'is_' . $d['app'] . '_enabled';
             if (!isset($dep[$check]) || !$dep[$check]) {
                 continue;
             }
@@ -173,6 +176,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
         return !empty($this->allowed_cats[$app][$id][$permission]);
     }
 
+
     /**
      * Get an array of all allowed categories.
      *
@@ -183,7 +187,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
         $this->_init();
 
         $ids = array();
-        foreach ($this->allowed_cats[$app] as $id => $perms) {
+        foreach ($this->allowed_cats[$app] AS $id => $perms) {
             if (!empty($perms[$permission]) || !empty($perms['full'])) {
                 $ids[$id] = $id;
             }
@@ -191,6 +195,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 
         return $ids;
     }
+
 
     /**
      * @param  string $app
@@ -215,6 +220,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 
         return $ids;
     }
+
 
     /**
      * Get an array of data we'll serialize

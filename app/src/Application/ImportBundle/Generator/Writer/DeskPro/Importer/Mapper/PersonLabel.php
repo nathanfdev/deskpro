@@ -68,7 +68,7 @@ final class PersonLabel implements MapperInterface
     {
         /** @var Entity\LabelPerson $record */
         $record = $this->repository->findOneBy($criteria);
-        if (! $record && $throw_exception) {
+        if ( ! $record && $throw_exception) {
             throw new MapperException('Person label not found', $criteria);
         }
 

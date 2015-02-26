@@ -60,6 +60,7 @@ class CheckLabel extends AbstractTriggerTerm
         return $options;
     }
 
+
     /**
      * {@inheritDoc}
      */

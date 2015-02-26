@@ -68,7 +68,7 @@ class SaveLogController extends AbstractController
             'session_name'  => DP_REQUEST_ID,
             'die'           => false,
             'display'       => false,
-            'process_log'   => '',
+            'process_log'   => ''
         );
 
         @KernelErrorHandler::logErrorInfo($einfo);

@@ -70,6 +70,7 @@ class AcceptAttachment
         $this->blobstorage = $blobstorage;
     }
 
+
     /**
      * @param $id
      * @param \Application\DeskPRO\Attachments\RestrictionSet $set
@@ -78,6 +79,7 @@ class AcceptAttachment
     {
         $this->restriction_sets[$id] = $set;
     }
+
 
     /**
      * @param $id
@@ -92,6 +94,7 @@ class AcceptAttachment
 
         return $this->restriction_sets[$id];
     }
+
 
     /**
      * @param  \Symfony\Component\HttpFoundation\File\UploadedFile $file
@@ -121,7 +124,7 @@ class AcceptAttachment
         $log_error = false;
         $error = array(
             'error_code' => null,
-            'error_detail' => null,
+            'error_detail' => null
         );
 
         if (!$file->isValid()) {
@@ -194,7 +197,7 @@ class AcceptAttachment
                 'filename' => $file->getClientOriginalName(),
                 'type' => $file->getClientMimeType(),
                 'size' => $file->getClientSize(),
-                'file_err_code' => $file->getError(),
+                'file_err_code' => $file->getError()
             ), "{KEY}: {VAL}\n");
 
             $e = new \Exception($info, 0);
@@ -203,6 +206,7 @@ class AcceptAttachment
 
         return $error;
     }
+
 
     /**
      * @param  \Symfony\Component\HttpFoundation\File\UploadedFile $file
@@ -227,10 +231,10 @@ class AcceptAttachment
 
         $filename = $file->getClientOriginalName();
         if (!$filename) {
-            $filename = crc32(mt_rand(1111, 9999).mt_rand(1111, 9999).mt_rand(1111, 9999).mt_rand(1111, 9999));
+            $filename = crc32(mt_rand(1111,9999) . mt_rand(1111,9999) . mt_rand(1111,9999) . mt_rand(1111,9999));
             $ext = ContentTypes::findExtensionForContentType($mime_type);
             if ($ext) {
-                $filename .= '.'.$ext;
+                $filename .= '.' . $ext;
             }
         }
 

@@ -38,6 +38,7 @@ use Application\DeskPRO\App\Native\NativeApp;
 use Application\DeskPRO\App\Native\NativePackageConfig;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
+use Application\DeskPRO\Entity\Person;
 
 class AppManager implements AppManagerInterface
 {
@@ -84,6 +85,7 @@ class AppManager implements AppManagerInterface
      */
     private $usersources;
 
+
     /**
      * @param AppPackage[]        $packages
      * @param array               $app_paths
@@ -122,6 +124,7 @@ class AppManager implements AppManagerInterface
         $this->usersources = $usersources;
     }
 
+
     /**
      * @param  string $name
      * @return bool
@@ -130,6 +133,7 @@ class AppManager implements AppManagerInterface
     {
         return isset($this->packages[$name]);
     }
+
 
     /**
      * @param  string                    $name
@@ -145,6 +149,7 @@ class AppManager implements AppManagerInterface
         return $this->packages[$name];
     }
 
+
     /**
      * @return AppPackage[]
      */
@@ -152,6 +157,7 @@ class AppManager implements AppManagerInterface
     {
         return array_values($this->packages);
     }
+
 
     /**
      * @param  int  $id
@@ -161,6 +167,7 @@ class AppManager implements AppManagerInterface
     {
         return isset($this->apps[$id]);
     }
+
 
     /**
      * @param  int                       $id
@@ -176,6 +183,7 @@ class AppManager implements AppManagerInterface
         return $this->apps[$id];
     }
 
+
     /**
      * @return AppInstance[]
      */
@@ -183,6 +191,7 @@ class AppManager implements AppManagerInterface
     {
         return array_values($this->apps);
     }
+
 
     /**
      * @param  string|AppPackage $name
@@ -200,6 +209,7 @@ class AppManager implements AppManagerInterface
 
         return $this->package_to_apps[$name];
     }
+
 
     /**
      * Gets a single app for a package.
@@ -220,6 +230,7 @@ class AppManager implements AppManagerInterface
         return $this->package_to_apps[$name][0];
     }
 
+
     /**
      * Checks if a package has been installed at least once
      *
@@ -235,12 +246,13 @@ class AppManager implements AppManagerInterface
         return isset($this->package_to_apps[$name]);
     }
 
+
     /**
      * Gets an AppManager with a specific scope filter applied to it
      *
-     * @param  string              $scope          The scope to search for
+     * @param  string              $scope The scope to search for
      * @param  callable            $package_filter Optionally specify a custom package filter
-     * @param  callable            $app_filter     Optionally specify a custom app filter
+     * @param  callable            $app_filter Optionally specify a custom app filter
      * @return AppManagerInterface
      */
     public function getScopeFilter($scope, $package_filter = null, $app_filter = null)
@@ -258,6 +270,7 @@ class AppManager implements AppManagerInterface
 
         return $manager;
     }
+
 
     /**
      * @param  AppInstance|int $app The app or app_id
@@ -289,6 +302,7 @@ class AppManager implements AppManagerInterface
         return $native_app;
     }
 
+
     /**
      * @param  AppPackage                $package
      * @return NativePackageConfig
@@ -311,6 +325,7 @@ class AppManager implements AppManagerInterface
 
         return $native_config;
     }
+
 
     /**
      * @param NativePackageConfig $native_config
@@ -337,11 +352,12 @@ class AppManager implements AppManagerInterface
             $inc_name = str_replace('\\', DIRECTORY_SEPARATOR, $inc_name);
             $inc_name .= '.php';
 
-            include $directory.DIRECTORY_SEPARATOR.$inc_name;
+            include($directory . DIRECTORY_SEPARATOR . $inc_name);
 
             return true;
         });
     }
+
 
     /**
      * @param  string                    $name
@@ -352,6 +368,7 @@ class AppManager implements AppManagerInterface
     {
         return $this->app_service_container->getService($name, $app);
     }
+
 
     /**
      * Gets the base app path for a given app name.
@@ -364,7 +381,7 @@ class AppManager implements AppManagerInterface
     {
         if ($check_exists) {
             foreach ($this->app_paths as $path) {
-                $p = $path.'/'.$app_name;
+                $p = $path . '/' . $app_name;
                 if (file_exists($p)) {
                     return $p;
                 }
@@ -372,9 +389,9 @@ class AppManager implements AppManagerInterface
         } else {
             foreach ($this->app_paths as $prefix => $path) {
                 if ($prefix === 'default') {
-                    return $path.'/'.$app_name;
+                    return $path . '/' . $app_name;
                 } elseif (strpos($app_name, $prefix) === 0) {
-                    return $path.'/'.$app_name;
+                    return $path . '/' . $app_name;
                 }
             }
         }
@@ -393,6 +410,7 @@ class AppManager implements AppManagerInterface
                 return $usersource;
             }
         }
+
     }
 
     /**

@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\ResourceScanner;
 
+
 /**
  * Defines which settings are to be displayed in the 'advanced' page
  */

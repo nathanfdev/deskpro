@@ -55,8 +55,8 @@ class DeskproSourceMapperFactory
             $redis_queuer = new RedisPendingQueuer($client, 'sendmail_queue');
 
             $external = new ExternalPendingQueue($source_mapper, $redis_queuer);
-
             return $external;
+
         } else {
             return $source_mapper;
         }

@@ -50,6 +50,7 @@ class TemplatesController extends AbstractController implements ProtectedControl
         return new AdminManagePermission();
     }
 
+
     ####################################################################################################################
     # get-template-info
     ####################################################################################################################
@@ -84,7 +85,7 @@ class TemplatesController extends AbstractController implements ProtectedControl
         if ($custom_templates) {
             foreach ($list as &$type_coll) {
                 foreach ($type_coll['groups'] as &$group_coll) {
-                    foreach ($group_coll['templates'] as &$tpl) {
+                    foreach ($group_coll['templates'] as &$tpl){
                         if (isset($custom_templates[$tpl['name']])) {
                             $tpl['is_custom'] = true;
                         } else {
@@ -103,12 +104,12 @@ class TemplatesController extends AbstractController implements ProtectedControl
         $list['custom']['groups']['custom'] = array(
             'groupId'   => 'custom',
             'title'     => 'Custom Emails',
-            'templates' => array(),
+            'templates' => array()
         );
 
         $custom_emails = $this->db->fetchAll("SELECT id, name FROM templates WHERE name LIKE 'DeskPRO:emails_custom:%'");
         foreach ($custom_emails as $tpl) {
-            $name = Strings::extractRegexMatch('#^DeskPRO:emails_custom:(.*?).html.twig$#', $tpl['name'], 1).'.html';
+            $name = Strings::extractRegexMatch('#^DeskPRO:emails_custom:(.*?).html.twig$#', $tpl['name'], 1) . '.html';
             $list['custom']['groups']['custom']['templates'][] = array(
                 'typeId'    => 'custom',
                 'groupId'   => 'custom',
@@ -116,13 +117,13 @@ class TemplatesController extends AbstractController implements ProtectedControl
                 'title'     => $name,
                 'desc'      => '',
                 'name'      => $tpl['name'],
-                'showName'  => 'emails_custom/'.$name,
+                'showName'  => 'emails_custom/' . $name,
             );
         }
 
         return $this->createApiResponse(array(
             'list'             => $list,
-            'custom_templates' => $custom_templates,
+            'custom_templates' => $custom_templates
         ));
     }
 
@@ -220,6 +221,7 @@ class TemplatesController extends AbstractController implements ProtectedControl
         ));
     }
 
+
     ####################################################################################################################
     # delete-template
     ####################################################################################################################
@@ -248,6 +250,7 @@ class TemplatesController extends AbstractController implements ProtectedControl
             'old_name' => $name,
         ));
     }
+
 
     ####################################################################################################################
 

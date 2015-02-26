@@ -76,6 +76,7 @@ class TemplateCustom extends Template
         $this->template_file = new TemplateFile($this->entity->name);
     }
 
+
     /**
      * @return \Application\DeskPRO\Entity\Template
      */
@@ -83,6 +84,7 @@ class TemplateCustom extends Template
     {
         return $this->entity;
     }
+
 
     /**
      * Check if the template file exists
@@ -94,6 +96,7 @@ class TemplateCustom extends Template
         return $this->entity->id ? true : false;
     }
 
+
     /**
      * @return bool
      */
@@ -101,6 +104,7 @@ class TemplateCustom extends Template
     {
         return true;
     }
+
 
     /**
      * @return string
@@ -110,6 +114,7 @@ class TemplateCustom extends Template
         return $this->entity->template_code;
     }
 
+
     /**
      * @return string
      */
@@ -117,6 +122,7 @@ class TemplateCustom extends Template
     {
         return $this->template_file->getName();
     }
+
 
     /**
      * @return string
@@ -126,6 +132,7 @@ class TemplateCustom extends Template
         return $this->template_file->getContent();
     }
 
+
     /**
      * @return EmailTemplateCode|TemplateCode
      */
@@ -133,6 +140,7 @@ class TemplateCustom extends Template
     {
         return $this->template_file->getTemplateCode();
     }
+
 
     /**
      * @return string

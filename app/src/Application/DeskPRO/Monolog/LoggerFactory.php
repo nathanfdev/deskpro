@@ -56,6 +56,7 @@ class LoggerFactory
      */
     private $presets = array();
 
+
     /**
      * @param DeskproContainer $container
      */
@@ -64,6 +65,7 @@ class LoggerFactory
         $this->container = $container;
     }
 
+
     /**
      * @param string $class
      */
@@ -71,6 +73,7 @@ class LoggerFactory
     {
         $this->logger_class = $class;
     }
+
 
     /**
      * @param  string $channel
@@ -100,6 +103,7 @@ class LoggerFactory
                 return $this->createLogger($channel, $config);
         }
     }
+
 
     /**
      * @param  string $channel

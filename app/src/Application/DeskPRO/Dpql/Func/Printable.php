@@ -60,7 +60,8 @@ class Printable extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    ) {
+    )
+    {
         if (!in_array($section, array('split', 'group'))) {
             throw new Exception('PRINT() may only be used in SPLIT BY and GROUP BY sections.');
         }

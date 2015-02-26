@@ -123,19 +123,13 @@ class ActionsFactory
                 break;
             case 'add_labels':
                 $options['add_labels'] = array();
-                if (is_array($value['labels'])) {
-                    $options['add_labels'] = $value['labels'];
-                } elseif (!empty($value['labels'])) {
-                    $options['add_labels'] = Strings::explodeTrim(',', $value['labels']);
-                }
+                if (is_array($value['labels'])) $options['add_labels'] = $value['labels'];
+                elseif (!empty($value['labels'])) $options['add_labels'] = Strings::explodeTrim(',', $value['labels']);
                 break;
             case 'remove_labels':
                 $options['remove_labels'] = array();
-                if (is_array($value['labels'])) {
-                    $options['remove_labels'] = $value['labels'];
-                } elseif (!empty($value['labels'])) {
-                    $options['remove_labels'] = Strings::explodeTrim(',', $value['labels']);
-                }
+                if (is_array($value['labels'])) $options['remove_labels'] = $value['labels'];
+                elseif (!empty($value['labels'])) $options['remove_labels'] = Strings::explodeTrim(',', $value['labels']);
                 break;
             case 'reply':
                 if (empty($value['reply_text']) || !trim(strip_tags($value['reply_text']))) {
@@ -286,7 +280,7 @@ class ActionsFactory
                 if (strpos($name, 'set_email_template_') !== false) {
                     $options = array(
                         'tpl' => $value['tpl'],
-                        'tpl_type' => isset($value['tpl_type']) ? $value['tpl_type'] : '',
+                        'tpl_type' => isset($value['tpl_type']) ? $value['tpl_type'] : ''
                     );
                 } else {
                     $options = $value;
@@ -305,12 +299,12 @@ class ActionsFactory
     {
         $class = str_replace('_', '-', $name);
         $class = ucfirst(Strings::dashToCamelCase($class));
-        $class = 'Application\\DeskPRO\\Tickets\\TicketActions\\'.$class;
+        $class = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $class;
 
         $options = array_merge($this->global_options, $options);
 
-        $action_class = $class.'Action';
-        $modifier_class = $class.'Modifier';
+        $action_class = $class . 'Action';
+        $modifier_class = $class . 'Modifier';
 
         if (class_exists($action_class)) {
             return $this->createActionObject($action_class, $options);
