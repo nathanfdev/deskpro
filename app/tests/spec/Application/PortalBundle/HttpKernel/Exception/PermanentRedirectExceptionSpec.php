@@ -31,15 +31,15 @@
  * @package DeskPRO
  */
 
-namespace spec\Application\PortalBundle\HttpKernel\Exception;
+namespace spec\DeskPRO\Bundle\PortalBundle\HttpKernel\Exception;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Application\PortalBundle\HttpKernel\Exception\PermanentRedirectException;
+use DeskPRO\Bundle\PortalBundle\HttpKernel\Exception\PermanentRedirectException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * @mixin \Application\PortalBundle\HttpKernel\Exception\PermanentRedirectException
+ * @mixin \DeskPRO\Bundle\PortalBundle\HttpKernel\Exception\PermanentRedirectException
  */
 class PermanentRedirectExceptionSpec extends ObjectBehavior
 {

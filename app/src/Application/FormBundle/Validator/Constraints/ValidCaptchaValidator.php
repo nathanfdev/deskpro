@@ -34,7 +34,7 @@
 
 namespace Application\FormBundle\Validator\Constraints;
 
-use Application\DeskPRO\Brand\BrandStack;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -45,6 +45,7 @@ class ValidCaptchaValidator extends ConstraintValidator
     protected $cache;
 
     protected $private_key;
+
     /**
      * Request Stack
      *
@@ -56,7 +57,7 @@ class ValidCaptchaValidator extends ConstraintValidator
      */
     const RECAPTCHA_VERIFY_SERVER = 'www.google.com';
     /**
-     * @var \Application\DeskPRO\Brand\BrandStack
+     * @var \DeskPRO\Bundle\AppBundle\Brand\BrandStack
      */
     private $brand_stack;
 

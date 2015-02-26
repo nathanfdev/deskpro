@@ -4,8 +4,8 @@ namespace spec\DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
-use Application\DeskPRO\Brand\BrandContainer;
-use Application\DeskPRO\Brand\BrandStack;
+use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;

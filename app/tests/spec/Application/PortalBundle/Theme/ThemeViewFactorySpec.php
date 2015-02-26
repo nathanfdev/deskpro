@@ -31,15 +31,15 @@
  * @package DeskPRO
  */
 
-namespace spec\Application\PortalBundle\Theme;
+namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
-use Application\DeskPRO\Brand\BrandStack;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Application\PortalBundle\Theme\ThemeViewFactory;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeViewFactory;
 
 /**
- * @mixin \Application\PortalBundle\Theme\ThemeViewFactory
+ * @mixin \DeskPRO\Bundle\PortalBundle\Theme\ThemeViewFactory
  */
 class ThemeViewFactorySpec extends ObjectBehavior
 {
@@ -52,6 +52,6 @@ class ThemeViewFactorySpec extends ObjectBehavior
     {
         $view = $this->createView($options = array('options' => 'here'));
 
-        $view->shouldHaveType('Application\PortalBundle\Theme\ThemeView');
+        $view->shouldHaveType('DeskPRO\Bundle\PortalBundle\Theme\ThemeView');
     }
 }

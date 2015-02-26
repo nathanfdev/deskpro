@@ -31,14 +31,14 @@
  * @package DeskPRO
  */
 
-namespace spec\Application\PortalBundle\Theme;
+namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Application\PortalBundle\Theme\Tag;
+use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 
 /**
- * @mixin \Application\PortalBundle\Theme\Tag
+ * @mixin \DeskPRO\Bundle\PortalBundle\Theme\Tag
  */
 class TagSpec extends ObjectBehavior
 {

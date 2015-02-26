@@ -31,13 +31,13 @@
  * @package DeskPRO
  */
 
-namespace spec\Application\PortalBundle\Theme;
+namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
 use Application\DeskPRO\Entity\Article;
-use Application\PortalBundle\Theme\Tag;
+use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Application\PortalBundle\Theme\TagRequestFactory;
+use DeskPRO\Bundle\PortalBundle\Theme\TagRequestFactory;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,7 +47,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Zend\Ldap\Node\RootDse\eDirectory;
 
 /**
- * @mixin \Application\PortalBundle\Theme\TagRequestFactory
+ * @mixin \DeskPRO\Bundle\PortalBundle\Theme\TagRequestFactory
  */
 class TagRequestFactorySpec extends ObjectBehavior
 {
@@ -83,7 +83,7 @@ class TagRequestFactorySpec extends ObjectBehavior
         $arguments = array();
         $tag_request = $this->create($tag, $arguments);
 
-        $tag_request->shouldHaveType('Application\PortalBundle\Request\TagRequest');
+        $tag_request->shouldHaveType('DeskPRO\Bundle\PortalBundle\Request\TagRequest');
         $tag_request->getOptionsResolver()->shouldHaveType('Symfony\Component\OptionsResolver\Options');
     }
 
@@ -129,7 +129,7 @@ class TagRequestFactorySpec extends ObjectBehavior
 
         $tag_request = $this->create($tag, $arguments = array('b' => 'not b'));
 
-        $tag_request->shouldHaveType('Application\PortalBundle\Request\TagRequest');
+        $tag_request->shouldHaveType('DeskPRO\Bundle\PortalBundle\Request\TagRequest');
         $tag_request->query->all()->shouldBeLike(array(
             'tag_options' => array(
                 'a' => 'a',
@@ -158,7 +158,7 @@ class TagRequestFactorySpec extends ObjectBehavior
             'will_be_ignored' => new \SplStack()
         ));
 
-        $tag_request->shouldHaveType('Application\PortalBundle\Request\TagRequest');
+        $tag_request->shouldHaveType('DeskPRO\Bundle\PortalBundle\Request\TagRequest');
         $tag_request->query->all()->shouldBeLike(array(
             'tag_options' => array(
                 'a' => 'a',

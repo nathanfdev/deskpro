@@ -31,10 +31,10 @@
  * @package DeskPRO
  */
 
-namespace spec\Application\PortalBundle\Theme\TagHandler;
+namespace spec\DeskPRO\Bundle\PortalBundle\Theme\TagHandler;
 
-use Application\PortalBundle\Request\TagRequest;
-use Application\PortalBundle\Theme\Tag;
+use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
+use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -44,7 +44,7 @@ use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
- * @mixin \Application\PortalBundle\Theme\TagHandler\InlineTagHandler
+ * @mixin \DeskPRO\Bundle\PortalBundle\Theme\TagHandler\InlineTagHandler
  */
 class InlineTagHandlerSpec extends ObjectBehavior
 {

@@ -34,8 +34,8 @@
 
 namespace DpUnitTests\PortalBundle\Helper;
 
-use Application\PortalBundle\Helper\FeedbackFilterUriHelper;
-use Application\PortalBundle\Model\FeedbackFilter;
+use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
+use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
 
 class FeedbackFilterUriHelperTest extends \PHPUnit_Framework_TestCase
 {

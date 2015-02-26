@@ -34,7 +34,7 @@
 namespace spec\Application\LanguageBundle\Routing;
 
 use Application\LanguageBundle\Language\LanguageManager;
-use Application\PortalBundle\Mode\PortalModeStorage;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Application\LanguageBundle\Routing\Router;

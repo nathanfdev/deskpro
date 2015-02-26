@@ -31,18 +31,18 @@
  * @package DeskPRO
  */
 
-namespace spec\Application\PortalBundle\HttpCache;
+namespace spec\DeskPRO\Bundle\PortalBundle\HttpCache;
 
-use Application\PortalBundle\HttpCache\PortalHttpCache;
+use DeskPRO\Bundle\PortalBundle\HttpCache\PortalHttpCache;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Application\PortalBundle\HttpCache\PortalCacheHelper;
+use DeskPRO\Bundle\PortalBundle\HttpCache\PortalCacheHelper;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * @mixin \Application\PortalBundle\HttpCache\PortalCacheHelper
+ * @mixin \DeskPRO\Bundle\PortalBundle\HttpCache\PortalCacheHelper
  */
 class PortalCacheHelperSpec extends ObjectBehavior
 {

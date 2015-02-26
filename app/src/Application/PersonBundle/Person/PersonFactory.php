@@ -34,7 +34,7 @@
 
 namespace Application\PersonBundle\Person;
 
-use Application\DeskPRO\Brand\BrandStack;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
@@ -57,7 +57,7 @@ class PersonFactory
     private $event_dispatcher;
 
     /**
-     * @var \Application\DeskPRO\Brand\BrandStack
+     * @var \DeskPRO\Bundle\AppBundle\Brand\BrandStack
      */
     private $brand_stack;
 

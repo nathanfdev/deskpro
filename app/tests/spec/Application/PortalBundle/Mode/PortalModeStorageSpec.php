@@ -1,9 +1,9 @@
 <?php
 
-namespace spec\Application\PortalBundle\Mode;
+namespace spec\DeskPRO\Bundle\PortalBundle\Mode;
 
-use Application\PortalBundle\Mode\PortalMode;
-use Application\PortalBundle\Mode\PortalModeStorage;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -11,7 +11,7 @@ class PortalModeStorageSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType('Application\PortalBundle\Mode\PortalModeStorage');
+        $this->shouldHaveType('DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage');
     }
 
     function it_starts_with_no_mode()

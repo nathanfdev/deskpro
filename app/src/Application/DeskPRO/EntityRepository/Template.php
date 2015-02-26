@@ -36,7 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\Entity\Template as TemplateEntity;
-use Application\PortalBundle\Theme\ThemeInterface;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
 
 class Template extends AbstractEntityRepository
 {

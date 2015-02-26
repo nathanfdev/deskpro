@@ -2248,9 +2248,9 @@
         <metrics loc="93" ncloc="52" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="22" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\DeskPRO\Brand">
+    <package name="DeskPRO\Bundle\AppBundle\Brand">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/DeskPRO/Brand/BrandContainer.php">
-        <class name="BrandContainer" namespace="Application\DeskPRO\Brand">
+        <class name="BrandContainer" namespace="DeskPRO\Bundle\AppBundle\Brand">
           <metrics methods="8" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="7" elements="19" coveredelements="11"/>
         </class>
         <line num="69" type="method" name="__construct" crap="1" count="3"/>
@@ -2275,7 +2275,7 @@
         <metrics loc="132" ncloc="62" classes="1" methods="8" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="7" elements="19" coveredelements="11"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/DeskPRO/Brand/BrandContainerFactory.php">
-        <class name="BrandContainerFactory" namespace="Application\DeskPRO\Brand">
+        <class name="BrandContainerFactory" namespace="DeskPRO\Bundle\AppBundle\Brand">
           <metrics methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="4" elements="6" coveredelements="6"/>
         </class>
         <line num="56" type="method" name="__construct" crap="1" count="1"/>
@@ -2287,7 +2287,7 @@
         <metrics loc="66" ncloc="26" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="4" elements="6" coveredelements="6"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/DeskPRO/Brand/BrandStack.php">
-        <class name="BrandStack" namespace="Application\DeskPRO\Brand">
+        <class name="BrandStack" namespace="DeskPRO\Bundle\AppBundle\Brand">
           <metrics methods="6" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="17" elements="25" coveredelements="21"/>
         </class>
         <line num="84" type="method" name="__construct" crap="1" count="1"/>
@@ -2318,7 +2318,7 @@
         <metrics loc="144" ncloc="64" classes="1" methods="6" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="17" elements="25" coveredelements="21"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/DeskPRO/Brand/DefaultBrandFinder.php">
-        <class name="DefaultBrandFinder" namespace="Application\DeskPRO\Brand">
+        <class name="DefaultBrandFinder" namespace="DeskPRO\Bundle\AppBundle\Brand">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="0" elements="10" coveredelements="0"/>
         </class>
         <line num="61" type="method" name="__construct" crap="2" count="0"/>
@@ -3304,23 +3304,23 @@
         <metrics loc="62" ncloc="31" classes="1" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="0" elements="8" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Annotation">
+    <package name="DeskPRO\Bundle\PortalBundle\Annotation">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Annotation/Tag.php">
-        <class name="Tag" namespace="Application\PortalBundle\Annotation">
+        <class name="Tag" namespace="DeskPRO\Bundle\PortalBundle\Annotation">
           <metrics methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
         </class>
         <metrics loc="48" ncloc="13" classes="1" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Annotation/TagOptions.php">
-        <class name="TagOptions" namespace="Application\PortalBundle\Annotation">
+        <class name="TagOptions" namespace="DeskPRO\Bundle\PortalBundle\Annotation">
           <metrics methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
         </class>
         <metrics loc="48" ncloc="13" classes="1" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\CacheWarmer">
+    <package name="DeskPRO\Bundle\PortalBundle\CacheWarmer">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/CacheWarmer/ThemeRepositoryCacheWarmer.php">
-        <class name="ThemeRepositoryCacheWarmer" namespace="Application\PortalBundle\CacheWarmer">
+        <class name="ThemeRepositoryCacheWarmer" namespace="DeskPRO\Bundle\PortalBundle\CacheWarmer">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="0" elements="8" coveredelements="0"/>
         </class>
         <line num="47" type="method" name="__construct" crap="2" count="0"/>
@@ -3334,7 +3334,7 @@
         <metrics loc="67" ncloc="26" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="0" elements="8" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/CacheWarmer/ThemeTemplateCacheWarmer.php">
-        <class name="ThemeTemplateCacheWarmer" namespace="Application\PortalBundle\CacheWarmer">
+        <class name="ThemeTemplateCacheWarmer" namespace="DeskPRO\Bundle\PortalBundle\CacheWarmer">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="0" elements="8" coveredelements="0"/>
         </class>
         <line num="47" type="method" name="__construct" crap="2" count="0"/>
@@ -3348,9 +3348,9 @@
         <metrics loc="67" ncloc="26" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="0" elements="8" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Controller">
+    <package name="DeskPRO\Bundle\PortalBundle\Controller">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Controller/AbstractController.php">
-        <class name="AbstractController" namespace="Application\PortalBundle\Controller">
+        <class name="AbstractController" namespace="DeskPRO\Bundle\PortalBundle\Controller">
           <metrics methods="26" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="45" coveredstatements="0" elements="71" coveredelements="0"/>
         </class>
         <line num="47" type="method" name="getEm" crap="2" count="0"/>
@@ -3427,7 +3427,7 @@
         <metrics loc="301" ncloc="164" classes="1" methods="26" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="45" coveredstatements="0" elements="71" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Controller/ArticlesController.php">
-        <class name="ArticlesController" namespace="Application\PortalBundle\Controller">
+        <class name="ArticlesController" namespace="DeskPRO\Bundle\PortalBundle\Controller">
           <metrics methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="78" coveredstatements="0" elements="85" coveredelements="0"/>
         </class>
         <line num="55" type="method" name="indexAction" crap="6" count="0"/>
@@ -3518,7 +3518,7 @@
         <metrics loc="241" ncloc="137" classes="1" methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="78" coveredstatements="0" elements="85" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Controller/DownloadsController.php">
-        <class name="DownloadsController" namespace="Application\PortalBundle\Controller">
+        <class name="DownloadsController" namespace="DeskPRO\Bundle\PortalBundle\Controller">
           <metrics methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="94" coveredstatements="0" elements="102" coveredelements="0"/>
         </class>
         <line num="58" type="method" name="indexAction" crap="6" count="0"/>
@@ -3626,7 +3626,7 @@
         <metrics loc="282" ncloc="170" classes="1" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="94" coveredstatements="0" elements="102" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Controller/FeedbackController.php">
-        <class name="FeedbackController" namespace="Application\PortalBundle\Controller">
+        <class name="FeedbackController" namespace="DeskPRO\Bundle\PortalBundle\Controller">
           <metrics methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="115" coveredstatements="0" elements="120" coveredelements="0"/>
         </class>
         <line num="60" type="method" name="indexAction" crap="90" count="0"/>
@@ -3752,7 +3752,7 @@
         <metrics loc="284" ncloc="181" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="115" coveredstatements="0" elements="120" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Controller/NewTicketController.php">
-        <class name="NewTicketController" namespace="Application\PortalBundle\Controller">
+        <class name="NewTicketController" namespace="DeskPRO\Bundle\PortalBundle\Controller">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="64" coveredstatements="0" elements="67" coveredelements="0"/>
         </class>
         <line num="56" type="method" name="newTicketAction" crap="90" count="0"/>
@@ -3825,7 +3825,7 @@
         <metrics loc="169" ncloc="118" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="64" coveredstatements="0" elements="67" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Controller/NewsController.php">
-        <class name="NewsController" namespace="Application\PortalBundle\Controller">
+        <class name="NewsController" namespace="DeskPRO\Bundle\PortalBundle\Controller">
           <metrics methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="91" coveredstatements="0" elements="99" coveredelements="0"/>
         </class>
         <line num="59" type="method" name="indexAction" crap="6" count="0"/>
@@ -3930,7 +3930,7 @@
         <metrics loc="278" ncloc="162" classes="1" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="91" coveredstatements="0" elements="99" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Controller/PortalController.php">
-        <class name="PortalController" namespace="Application\PortalBundle\Controller">
+        <class name="PortalController" namespace="DeskPRO\Bundle\PortalBundle\Controller">
           <metrics methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="69" coveredstatements="0" elements="73" coveredelements="0"/>
         </class>
         <line num="52" type="method" name="indexAction" crap="2" count="0"/>
@@ -4009,7 +4009,7 @@
         <metrics loc="181" ncloc="128" classes="1" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="69" coveredstatements="0" elements="73" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Controller/ProfileController.php">
-        <class name="ProfileController" namespace="Application\PortalBundle\Controller">
+        <class name="ProfileController" namespace="DeskPRO\Bundle\PortalBundle\Controller">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="66" coveredstatements="0" elements="68" coveredelements="0"/>
         </class>
         <line num="51" type="method" name="registerAction" crap="12" count="0"/>
@@ -4083,7 +4083,7 @@
         <metrics loc="152" ncloc="105" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="66" coveredstatements="0" elements="68" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Controller/SearchController.php">
-        <class name="SearchController" namespace="Application\PortalBundle\Controller">
+        <class name="SearchController" namespace="DeskPRO\Bundle\PortalBundle\Controller">
           <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" elements="2" coveredelements="0"/>
         </class>
         <line num="46" type="method" name="indexAction" crap="2" count="0"/>
@@ -4091,7 +4091,7 @@
         <metrics loc="50" ncloc="16" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" elements="2" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Controller/TicketsController.php">
-        <class name="TicketsController" namespace="Application\PortalBundle\Controller">
+        <class name="TicketsController" namespace="DeskPRO\Bundle\PortalBundle\Controller">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="88" coveredstatements="0" elements="91" coveredelements="0"/>
         </class>
         <line num="52" type="method" name="indexAction" crap="20" count="0"/>
@@ -4188,9 +4188,9 @@
         <metrics loc="200" ncloc="141" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="88" coveredstatements="0" elements="91" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\DataCollector">
+    <package name="DeskPRO\Bundle\PortalBundle\DataCollector">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/DataCollector/PortalCollector.php">
-        <class name="PortalCollector" namespace="Application\PortalBundle\DataCollector">
+        <class name="PortalCollector" namespace="DeskPRO\Bundle\PortalBundle\DataCollector">
           <metrics methods="14" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="33" coveredstatements="0" elements="47" coveredelements="0"/>
         </class>
         <line num="63" type="method" name="__construct" crap="2" count="0"/>
@@ -4243,9 +4243,9 @@
         <metrics loc="165" ncloc="117" classes="1" methods="14" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="33" coveredstatements="0" elements="47" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\DataFixtures\ORM">
+    <package name="DeskPRO\Bundle\PortalBundle\DataFixtures\ORM">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/DataFixtures/ORM/FakeContentData.php">
-        <class name="FakeContentData" namespace="Application\PortalBundle\DataFixtures\ORM">
+        <class name="FakeContentData" namespace="DeskPRO\Bundle\PortalBundle\DataFixtures\ORM">
           <metrics methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="124" coveredstatements="0" elements="130" coveredelements="0"/>
         </class>
         <line num="56" type="method" name="load" crap="2" count="0"/>
@@ -4381,9 +4381,9 @@
         <metrics loc="230" ncloc="183" classes="1" methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="124" coveredstatements="0" elements="130" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\DependencyInjection">
+    <package name="DeskPRO\Bundle\PortalBundle\DependencyInjection">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/DependencyInjection/PortalExtension.php">
-        <class name="PortalExtension" namespace="Application\PortalBundle\DependencyInjection">
+        <class name="PortalExtension" namespace="DeskPRO\Bundle\PortalBundle\DependencyInjection">
           <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="0" elements="11" coveredelements="0"/>
         </class>
         <line num="45" type="method" name="load" crap="2" count="0"/>
@@ -4400,9 +4400,9 @@
         <metrics loc="57" ncloc="26" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="0" elements="11" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\EventListener">
+    <package name="DeskPRO\Bundle\PortalBundle\EventListener">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/EventListener/BrandDetectionListener.php">
-        <class name="BrandDetectionListener" namespace="Application\PortalBundle\EventListener">
+        <class name="BrandDetectionListener" namespace="DeskPRO\Bundle\PortalBundle\EventListener">
           <metrics methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="0" elements="34" coveredelements="0"/>
         </class>
         <line num="85" type="method" name="__construct" crap="2" count="0"/>
@@ -4442,7 +4442,7 @@
         <metrics loc="142" ncloc="85" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="0" elements="34" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/EventListener/OriginalUriListener.php">
-        <class name="OriginalUriListener" namespace="Application\PortalBundle\EventListener">
+        <class name="OriginalUriListener" namespace="DeskPRO\Bundle\PortalBundle\EventListener">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="0" elements="12" coveredelements="0"/>
         </class>
         <line num="54" type="method" name="onKernelRequest" crap="12" count="0"/>
@@ -4460,7 +4460,7 @@
         <metrics loc="76" ncloc="38" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="0" elements="12" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/EventListener/PortalModeListener.php">
-        <class name="PortalModeListener" namespace="Application\PortalBundle\EventListener">
+        <class name="PortalModeListener" namespace="DeskPRO\Bundle\PortalBundle\EventListener">
           <metrics methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="0" elements="28" coveredelements="0"/>
         </class>
         <line num="24" type="method" name="__construct" crap="2" count="0"/>
@@ -4494,7 +4494,7 @@
         <metrics loc="75" ncloc="59" classes="1" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="0" elements="28" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/EventListener/RedirectExceptionListener.php">
-        <class name="RedirectExceptionListener" namespace="Application\PortalBundle\EventListener">
+        <class name="RedirectExceptionListener" namespace="DeskPRO\Bundle\PortalBundle\EventListener">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="17" coveredstatements="0" elements="20" coveredelements="0"/>
         </class>
         <line num="62" type="method" name="__construct" crap="2" count="0"/>
@@ -4520,7 +4520,7 @@
         <metrics loc="96" ncloc="52" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="17" coveredstatements="0" elements="20" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/EventListener/TagOptionsListener.php">
-        <class name="TagOptionsListener" namespace="Application\PortalBundle\EventListener">
+        <class name="TagOptionsListener" namespace="DeskPRO\Bundle\PortalBundle\EventListener">
           <metrics methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="51" coveredstatements="0" elements="56" coveredelements="0"/>
         </class>
         <line num="75" type="method" name="__construct" crap="2" count="0"/>
@@ -4582,7 +4582,7 @@
         <metrics loc="164" ncloc="115" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="51" coveredstatements="0" elements="56" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/EventListener/VisitorIdentificationListener.php">
-        <class name="VisitorIdentificationListener" namespace="Application\PortalBundle\EventListener">
+        <class name="VisitorIdentificationListener" namespace="DeskPRO\Bundle\PortalBundle\EventListener">
           <metrics methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="26" coveredstatements="0" elements="30" coveredelements="0"/>
         </class>
         <line num="61" type="method" name="__construct" crap="2" count="0"/>
@@ -4618,9 +4618,9 @@
         <metrics loc="109" ncloc="65" classes="1" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="26" coveredstatements="0" elements="30" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Helper">
+    <package name="DeskPRO\Bundle\PortalBundle\Helper">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Helper/ContentSubscriptionsHelper.php">
-        <class name="ContentSubscriptionsHelper" namespace="Application\PortalBundle\Helper">
+        <class name="ContentSubscriptionsHelper" namespace="DeskPRO\Bundle\PortalBundle\Helper">
           <metrics methods="12" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="67" coveredstatements="0" elements="79" coveredelements="0"/>
         </class>
         <line num="62" type="method" name="__construct" crap="2" count="0"/>
@@ -4705,7 +4705,7 @@
         <metrics loc="255" ncloc="173" classes="1" methods="12" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="67" coveredstatements="0" elements="79" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Helper/FeedbackFilterUriHelper.php">
-        <class name="FeedbackFilterUriHelper" namespace="Application\PortalBundle\Helper">
+        <class name="FeedbackFilterUriHelper" namespace="DeskPRO\Bundle\PortalBundle\Helper">
           <metrics methods="9" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="91" coveredstatements="88" elements="100" coveredelements="95"/>
         </class>
         <line num="46" type="method" name="extractFeedbackFilter" crap="9" count="10"/>
@@ -4812,7 +4812,7 @@
         <metrics loc="228" ncloc="175" classes="1" methods="9" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="92" coveredstatements="89" elements="101" coveredelements="96"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Helper/PortalRatingsHelper.php">
-        <class name="PortalRatingsHelper" namespace="Application\PortalBundle\Helper">
+        <class name="PortalRatingsHelper" namespace="DeskPRO\Bundle\PortalBundle\Helper">
           <metrics methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="63" coveredstatements="0" elements="71" coveredelements="0"/>
         </class>
         <line num="56" type="method" name="__construct" crap="2" count="0"/>
@@ -4889,7 +4889,7 @@
         <metrics loc="195" ncloc="143" classes="1" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="63" coveredstatements="0" elements="71" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Helper/PortalTabsHelper.php">
-        <class name="PortalTabsHelper" namespace="Application\PortalBundle\Helper">
+        <class name="PortalTabsHelper" namespace="DeskPRO\Bundle\PortalBundle\Helper">
           <metrics methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="48" coveredstatements="0" elements="52" coveredelements="0"/>
         </class>
         <line num="55" type="method" name="__construct" crap="2" count="0"/>
@@ -4947,9 +4947,9 @@
         <metrics loc="134" ncloc="91" classes="1" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="48" coveredstatements="0" elements="52" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\HttpCache\Configuration">
+    <package name="DeskPRO\Bundle\PortalBundle\HttpCache\Configuration">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/HttpCache/Configuration/PageHttpCache.php">
-        <class name="PageHttpCache" namespace="Application\PortalBundle\HttpCache\Configuration">
+        <class name="PageHttpCache" namespace="DeskPRO\Bundle\PortalBundle\HttpCache\Configuration">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="0" elements="4" coveredelements="0"/>
         </class>
         <line num="48" type="method" name="getAliasName" crap="2" count="0"/>
@@ -4959,7 +4959,7 @@
         <metrics loc="62" ncloc="17" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="0" elements="4" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/HttpCache/Configuration/PortalHttpCache.php">
-        <class name="PortalHttpCache" namespace="Application\PortalBundle\HttpCache\Configuration">
+        <class name="PortalHttpCache" namespace="DeskPRO\Bundle\PortalBundle\HttpCache\Configuration">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="5" coveredelements="0"/>
         </class>
         <line num="50" type="method" name="getContent" crap="2" count="0"/>
@@ -4970,7 +4970,7 @@
         <metrics loc="62" ncloc="22" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="5" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/HttpCache/Configuration/TagHttpCache.php">
-        <class name="TagHttpCache" namespace="Application\PortalBundle\HttpCache\Configuration">
+        <class name="TagHttpCache" namespace="DeskPRO\Bundle\PortalBundle\HttpCache\Configuration">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="0" elements="4" coveredelements="0"/>
         </class>
         <line num="48" type="method" name="getAliasName" crap="2" count="0"/>
@@ -4980,9 +4980,9 @@
         <metrics loc="62" ncloc="17" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="0" elements="4" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\HttpCache\EventListener">
+    <package name="DeskPRO\Bundle\PortalBundle\HttpCache\EventListener">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/HttpCache/EventListener/PortalHttpCacheListener.php">
-        <class name="PortalHttpCacheListener" namespace="Application\PortalBundle\HttpCache\EventListener">
+        <class name="PortalHttpCacheListener" namespace="DeskPRO\Bundle\PortalBundle\HttpCache\EventListener">
           <metrics methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="78" coveredstatements="0" elements="86" coveredelements="0"/>
         </class>
         <line num="73" type="method" name="__construct" crap="2" count="0"/>
@@ -5082,7 +5082,7 @@
         <metrics loc="236" ncloc="173" classes="1" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="86" coveredstatements="0" elements="94" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/HttpCache/EventListener/PortalUserContextSubscriber.php">
-        <class name="PortalUserContextSubscriber" namespace="Application\PortalBundle\HttpCache\EventListener">
+        <class name="PortalUserContextSubscriber" namespace="DeskPRO\Bundle\PortalBundle\HttpCache\EventListener">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="22" coveredelements="0"/>
         </class>
         <line num="67" type="method" name="__construct" crap="2" count="0"/>
@@ -5110,9 +5110,9 @@
         <metrics loc="123" ncloc="60" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="22" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\HttpCache">
+    <package name="DeskPRO\Bundle\PortalBundle\HttpCache">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/HttpCache/PortalCacheHelper.php">
-        <class name="PortalCacheHelper" namespace="Application\PortalBundle\HttpCache">
+        <class name="PortalCacheHelper" namespace="DeskPRO\Bundle\PortalBundle\HttpCache">
           <metrics methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="14" coveredstatements="0" elements="19" coveredelements="0"/>
         </class>
         <line num="53" type="method" name="__construct" crap="2" count="0"/>
@@ -5137,7 +5137,7 @@
         <metrics loc="107" ncloc="53" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="14" coveredstatements="0" elements="19" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/HttpCache/PortalHttpCache.php">
-        <class name="PortalHttpCache" namespace="Application\PortalBundle\HttpCache">
+        <class name="PortalHttpCache" namespace="DeskPRO\Bundle\PortalBundle\HttpCache">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="0" elements="12" coveredelements="0"/>
         </class>
         <line num="62" type="method" name="getDefaultSubscribers" crap="2" count="0"/>
@@ -5155,7 +5155,7 @@
         <metrics loc="87" ncloc="38" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="0" elements="12" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/HttpCache/PortalUserHashContextProvider.php">
-        <class name="PortalUserHashContextProvider" namespace="Application\PortalBundle\HttpCache">
+        <class name="PortalUserHashContextProvider" namespace="DeskPRO\Bundle\PortalBundle\HttpCache">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="0" elements="18" coveredelements="0"/>
         </class>
         <line num="61" type="method" name="__construct" crap="2" count="0"/>
@@ -5179,9 +5179,9 @@
         <metrics loc="95" ncloc="40" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="0" elements="18" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\HttpKernel">
+    <package name="DeskPRO\Bundle\PortalBundle\HttpKernel">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/HttpKernel/ControllerNameParser.php">
-        <class name="ControllerNameParser" namespace="Application\PortalBundle\HttpKernel">
+        <class name="ControllerNameParser" namespace="DeskPRO\Bundle\PortalBundle\HttpKernel">
           <metrics methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="0" elements="35" coveredelements="0"/>
         </class>
         <line num="62" type="method" name="__construct" crap="2" count="0"/>
@@ -5222,9 +5222,9 @@
         <metrics loc="138" ncloc="82" classes="1" methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="0" elements="35" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\HttpKernel\Exception">
+    <package name="DeskPRO\Bundle\PortalBundle\HttpKernel\Exception">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/HttpKernel/Exception/PermanentRedirectException.php">
-        <class name="PermanentRedirectException" namespace="Application\PortalBundle\HttpKernel\Exception">
+        <class name="PermanentRedirectException" namespace="DeskPRO\Bundle\PortalBundle\HttpKernel\Exception">
           <metrics methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="0" elements="13" coveredelements="0"/>
         </class>
         <line num="61" type="method" name="__construct" crap="2" count="0"/>
@@ -5243,9 +5243,9 @@
         <metrics loc="93" ncloc="40" classes="1" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="0" elements="13" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Mode">
+    <package name="DeskPRO\Bundle\PortalBundle\Mode">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Mode/PortalMode.php">
-        <class name="PortalMode" namespace="Application\PortalBundle\Mode">
+        <class name="PortalMode" namespace="DeskPRO\Bundle\PortalBundle\Mode">
           <metrics methods="17" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="37" coveredstatements="0" elements="54" coveredelements="0"/>
         </class>
         <line num="20" type="method" name="__construct" crap="2" count="0"/>
@@ -5305,7 +5305,7 @@
         <metrics loc="125" ncloc="125" classes="1" methods="17" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="37" coveredstatements="0" elements="54" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Mode/PortalModeFactory.php">
-        <class name="PortalModeFactory" namespace="Application\PortalBundle\Mode">
+        <class name="PortalModeFactory" namespace="DeskPRO\Bundle\PortalBundle\Mode">
           <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="20" coveredelements="0"/>
         </class>
         <line num="11" type="method" name="createMode" crap="56" count="0"/>
@@ -5331,7 +5331,7 @@
         <metrics loc="37" ncloc="37" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="20" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Mode/PortalModeStorage.php">
-        <class name="PortalModeStorage" namespace="Application\PortalBundle\Mode">
+        <class name="PortalModeStorage" namespace="DeskPRO\Bundle\PortalBundle\Mode">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="5" coveredelements="0"/>
         </class>
         <line num="21" type="method" name="getMode" crap="2" count="0"/>
@@ -5342,9 +5342,9 @@
         <metrics loc="33" ncloc="18" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="5" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Model">
+    <package name="DeskPRO\Bundle\PortalBundle\Model">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Model/FeedbackFilter.php">
-        <class name="FeedbackFilter" namespace="Application\PortalBundle\Model">
+        <class name="FeedbackFilter" namespace="DeskPRO\Bundle\PortalBundle\Model">
           <metrics methods="14" coveredmethods="11" conditionals="0" coveredconditionals="0" statements="41" coveredstatements="38" elements="55" coveredelements="49"/>
         </class>
         <line num="78" type="method" name="__construct" crap="1" count="16"/>
@@ -5405,7 +5405,7 @@
         <metrics loc="206" ncloc="145" classes="1" methods="14" coveredmethods="11" conditionals="0" coveredconditionals="0" statements="41" coveredstatements="38" elements="55" coveredelements="49"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Model/TicketFilter.php">
-        <class name="TicketFilter" namespace="Application\PortalBundle\Model">
+        <class name="TicketFilter" namespace="DeskPRO\Bundle\PortalBundle\Model">
           <metrics methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="0" elements="38" coveredelements="0"/>
         </class>
         <line num="74" type="method" name="__construct" crap="2" count="0"/>
@@ -5449,9 +5449,9 @@
         <metrics loc="161" ncloc="94" classes="1" methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="0" elements="38" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle">
+    <package name="DeskPRO\Bundle\PortalBundle">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/PortalBundle.php">
-        <class name="PortalBundle" namespace="Application\PortalBundle">
+        <class name="PortalBundle" namespace="DeskPRO\Bundle\PortalBundle">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="6" coveredelements="0"/>
         </class>
         <line num="41" type="method" name="registerCommands" crap="2" count="0"/>
@@ -5463,9 +5463,9 @@
         <metrics loc="54" ncloc="24" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="6" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Request">
+    <package name="DeskPRO\Bundle\PortalBundle\Request">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Request/DeskproSlugConverter.php">
-        <class name="DeskproSlugConverter" namespace="Application\PortalBundle\Request">
+        <class name="DeskproSlugConverter" namespace="DeskPRO\Bundle\PortalBundle\Request">
           <metrics methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="66" coveredstatements="0" elements="71" coveredelements="0"/>
         </class>
         <line num="62" type="method" name="__construct" crap="2" count="0"/>
@@ -5542,7 +5542,7 @@
         <metrics loc="174" ncloc="124" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="66" coveredstatements="0" elements="71" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Request/TagRequest.php">
-        <class name="TagRequest" namespace="Application\PortalBundle\Request">
+        <class name="TagRequest" namespace="DeskPRO\Bundle\PortalBundle\Request">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="0" elements="8" coveredelements="0"/>
         </class>
         <line num="50" type="method" name="getOptionsResolver" crap="2" count="0"/>
@@ -5556,7 +5556,7 @@
         <metrics loc="71" ncloc="28" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="0" elements="8" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Request/TagRequestConverter.php">
-        <class name="TagRequestConverter" namespace="Application\PortalBundle\Request">
+        <class name="TagRequestConverter" namespace="DeskPRO\Bundle\PortalBundle\Request">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="20" coveredstatements="0" elements="23" coveredelements="0"/>
         </class>
         <line num="54" type="method" name="__construct" crap="2" count="0"/>
@@ -5585,9 +5585,9 @@
         <metrics loc="131" ncloc="19" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="20" coveredstatements="0" elements="23" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Session">
+    <package name="DeskPRO\Bundle\PortalBundle\Session">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Session/DbalSessionHandler.php">
-        <class name="DbalSessionHandler" namespace="Application\PortalBundle\Session" fullPackage="DeskPRO" package="DeskPRO">
+        <class name="DbalSessionHandler" namespace="DeskPRO\Bundle\PortalBundle\Session" fullPackage="DeskPRO" package="DeskPRO">
           <metrics methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="93" coveredstatements="0" elements="101" coveredelements="0"/>
         </class>
         <line num="73" type="method" name="__construct" crap="2" count="0"/>
@@ -5694,9 +5694,9 @@
         <metrics loc="270" ncloc="167" classes="1" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="93" coveredstatements="0" elements="101" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Templating">
+    <package name="DeskPRO\Bundle\PortalBundle\Templating">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Templating/PortalTemplating.php">
-        <class name="PortalTemplating" namespace="Application\PortalBundle\Templating">
+        <class name="PortalTemplating" namespace="DeskPRO\Bundle\PortalBundle\Templating">
           <metrics methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="0" elements="15" coveredelements="0"/>
         </class>
         <line num="48" type="method" name="__construct" crap="2" count="0"/>
@@ -5717,9 +5717,9 @@
         <metrics loc="78" ncloc="44" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="0" elements="15" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Theme">
+    <package name="DeskPRO\Bundle\PortalBundle\Theme">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Theme/AbstractTheme.php">
-        <class name="AbstractTheme" namespace="Application\PortalBundle\Theme">
+        <class name="AbstractTheme" namespace="DeskPRO\Bundle\PortalBundle\Theme">
           <metrics methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="42" coveredstatements="0" elements="51" coveredelements="0"/>
         </class>
         <line num="54" type="method" name="serialize" crap="2" count="0"/>
@@ -5776,7 +5776,7 @@
         <metrics loc="155" ncloc="98" classes="1" methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="42" coveredstatements="0" elements="51" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Theme/Tag.php">
-        <class name="Tag" namespace="Application\PortalBundle\Theme">
+        <class name="Tag" namespace="DeskPRO\Bundle\PortalBundle\Theme">
           <metrics methods="10" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="38" coveredstatements="0" elements="48" coveredelements="0"/>
         </class>
         <line num="59" type="method" name="__construct" crap="2" count="0"/>
@@ -5830,7 +5830,7 @@
         <metrics loc="166" ncloc="102" classes="1" methods="10" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="38" coveredstatements="0" elements="48" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Theme/TagProcessor.php">
-        <class name="TagProcessor" namespace="Application\PortalBundle\Theme">
+        <class name="TagProcessor" namespace="DeskPRO\Bundle\PortalBundle\Theme">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="15" coveredstatements="0" elements="18" coveredelements="0"/>
         </class>
         <line num="50" type="method" name="__construct" crap="2" count="0"/>
@@ -5854,7 +5854,7 @@
         <metrics loc="86" ncloc="43" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="15" coveredstatements="0" elements="18" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Theme/TagRequestFactory.php">
-        <class name="TagRequestFactory" namespace="Application\PortalBundle\Theme">
+        <class name="TagRequestFactory" namespace="DeskPRO\Bundle\PortalBundle\Theme">
           <metrics methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="34" coveredstatements="0" elements="38" coveredelements="0"/>
         </class>
         <line num="48" type="method" name="__construct" crap="2" count="0"/>
@@ -5898,7 +5898,7 @@
         <metrics loc="124" ncloc="81" classes="1" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="34" coveredstatements="0" elements="38" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Theme/ThemeRepository.php">
-        <class name="ThemeRepository" namespace="Application\PortalBundle\Theme" fullPackage="Application" package="Application">
+        <class name="ThemeRepository" namespace="DeskPRO\Bundle\PortalBundle\Theme" fullPackage="Application" package="Application">
           <metrics methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="91" coveredstatements="0" elements="99" coveredelements="0"/>
         </class>
         <line num="79" type="method" name="__construct" crap="2" count="0"/>
@@ -6033,7 +6033,7 @@
         <metrics loc="304" ncloc="216" classes="1" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="121" coveredstatements="0" elements="129" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Theme/ThemeResolver.php">
-        <class name="ThemeResolver" namespace="Application\PortalBundle\Theme">
+        <class name="ThemeResolver" namespace="DeskPRO\Bundle\PortalBundle\Theme">
           <metrics methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="54" coveredstatements="0" elements="61" coveredelements="0"/>
         </class>
         <line num="76" type="method" name="__construct" crap="2" count="0"/>
@@ -6100,7 +6100,7 @@
         <metrics loc="209" ncloc="134" classes="1" methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="54" coveredstatements="0" elements="61" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Theme/ThemeView.php">
-        <class name="ThemeView" namespace="Application\PortalBundle\Theme">
+        <class name="ThemeView" namespace="DeskPRO\Bundle\PortalBundle\Theme">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="22" coveredelements="0"/>
         </class>
         <line num="52" type="method" name="__construct" crap="2" count="0"/>
@@ -6128,7 +6128,7 @@
         <metrics loc="92" ncloc="49" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="22" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Theme/ThemeViewFactory.php">
-        <class name="ThemeViewFactory" namespace="Application\PortalBundle\Theme">
+        <class name="ThemeViewFactory" namespace="DeskPRO\Bundle\PortalBundle\Theme">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="5" coveredelements="0"/>
         </class>
         <line num="47" type="method" name="__construct" crap="2" count="0"/>
@@ -6139,9 +6139,9 @@
         <metrics loc="56" ncloc="22" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="5" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Theme\TagHandler">
+    <package name="DeskPRO\Bundle\PortalBundle\Theme\TagHandler">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Theme/TagHandler/EsiTagHandler.php">
-        <class name="EsiTagHandler" namespace="Application\PortalBundle\Theme\TagHandler">
+        <class name="EsiTagHandler" namespace="DeskPRO\Bundle\PortalBundle\Theme\TagHandler">
           <metrics methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="0" elements="34" coveredelements="0"/>
         </class>
         <line num="63" type="method" name="__construct" crap="2" count="0"/>
@@ -6181,7 +6181,7 @@
         <metrics loc="119" ncloc="75" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="0" elements="34" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Theme/TagHandler/InlineTagHandler.php">
-        <class name="InlineTagHandler" namespace="Application\PortalBundle\Theme\TagHandler">
+        <class name="InlineTagHandler" namespace="DeskPRO\Bundle\PortalBundle\Theme\TagHandler">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="0" elements="8" coveredelements="0"/>
         </class>
         <line num="50" type="method" name="__construct" crap="2" count="0"/>
@@ -6201,9 +6201,9 @@
     <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Theme/ThemeInterface.php">
       <metrics loc="150" ncloc="46" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
     </file>
-    <package name="Application\PortalBundle\Themes\Base">
+    <package name="DeskPRO\Bundle\PortalBundle\Themes\Base">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Themes/Base/BaseTheme.php">
-        <class name="BaseTheme" namespace="Application\PortalBundle\Themes\Base">
+        <class name="BaseTheme" namespace="DeskPRO\Bundle\PortalBundle\Themes\Base">
           <metrics methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="14" coveredelements="0"/>
         </class>
         <line num="42" type="method" name="getHardCodedTags" crap="2" count="0"/>
@@ -6223,9 +6223,9 @@
         <metrics loc="98" ncloc="49" classes="1" methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="14" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Themes\Base\Controller">
+    <package name="DeskPRO\Bundle\PortalBundle\Themes\Base\Controller">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Themes/Base/Controller/ArticlesController.php">
-        <class name="ArticlesController" namespace="Application\PortalBundle\Themes\Base\Controller">
+        <class name="ArticlesController" namespace="DeskPRO\Bundle\PortalBundle\Themes\Base\Controller">
           <metrics methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="66" coveredstatements="0" elements="75" coveredelements="0"/>
         </class>
         <line num="80" type="method" name="categoriesAction" crap="2" count="0"/>
@@ -6306,7 +6306,7 @@
         <metrics loc="343" ncloc="150" classes="1" methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="66" coveredstatements="0" elements="75" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Themes/Base/Controller/CommonController.php">
-        <class name="CommonController" namespace="Application\PortalBundle\Themes\Base\Controller">
+        <class name="CommonController" namespace="DeskPRO\Bundle\PortalBundle\Themes\Base\Controller">
           <metrics methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="46" coveredstatements="0" elements="51" coveredelements="0"/>
         </class>
         <line num="63" type="method" name="getInTouchAction" crap="2" count="0"/>
@@ -6363,7 +6363,7 @@
         <metrics loc="160" ncloc="104" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="46" coveredstatements="0" elements="51" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Themes/Base/Controller/DevController.php">
-        <class name="DevController" namespace="Application\PortalBundle\Themes\Base\Controller">
+        <class name="DevController" namespace="DeskPRO\Bundle\PortalBundle\Themes\Base\Controller">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="0" elements="4" coveredelements="0"/>
         </class>
         <line num="50" type="method" name="devAction" crap="2" count="0"/>
@@ -6373,7 +6373,7 @@
         <metrics loc="68" ncloc="25" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="0" elements="4" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Themes/Base/Controller/DownloadsController.php">
-        <class name="DownloadsController" namespace="Application\PortalBundle\Themes\Base\Controller">
+        <class name="DownloadsController" namespace="DeskPRO\Bundle\PortalBundle\Themes\Base\Controller">
           <metrics methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="63" coveredstatements="0" elements="72" coveredelements="0"/>
         </class>
         <line num="74" type="method" name="categoriesAction" crap="2" count="0"/>
@@ -6451,7 +6451,7 @@
         <metrics loc="343" ncloc="147" classes="1" methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="63" coveredstatements="0" elements="72" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Themes/Base/Controller/FeedbackController.php">
-        <class name="FeedbackController" namespace="Application\PortalBundle\Themes\Base\Controller">
+        <class name="FeedbackController" namespace="DeskPRO\Bundle\PortalBundle\Themes\Base\Controller">
           <metrics methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="51" coveredstatements="0" elements="57" coveredelements="0"/>
         </class>
         <line num="81" type="method" name="listAction" crap="2" count="0"/>
@@ -6514,7 +6514,7 @@
         <metrics loc="260" ncloc="118" classes="1" methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="51" coveredstatements="0" elements="57" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Themes/Base/Controller/NewsController.php">
-        <class name="NewsController" namespace="Application\PortalBundle\Themes\Base\Controller">
+        <class name="NewsController" namespace="DeskPRO\Bundle\PortalBundle\Themes\Base\Controller">
           <metrics methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="61" coveredstatements="0" elements="70" coveredelements="0"/>
         </class>
         <line num="77" type="method" name="categoriesAction" crap="2" count="0"/>
@@ -6590,7 +6590,7 @@
         <metrics loc="343" ncloc="145" classes="1" methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="61" coveredstatements="0" elements="70" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Themes/Base/Controller/PortalController.php">
-        <class name="PortalController" namespace="Application\PortalBundle\Themes\Base\Controller">
+        <class name="PortalController" namespace="DeskPRO\Bundle\PortalBundle\Themes\Base\Controller">
           <metrics methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="42" coveredstatements="0" elements="49" coveredelements="0"/>
         </class>
         <line num="55" type="method" name="homeAction" crap="2" count="0"/>
@@ -6645,9 +6645,9 @@
         <metrics loc="161" ncloc="103" classes="1" methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="42" coveredstatements="0" elements="49" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Themes\DevTest\Controller">
+    <package name="DeskPRO\Bundle\PortalBundle\Themes\DevTest\Controller">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Themes/DevTest/Controller/TestController.php">
-        <class name="TestController" namespace="Application\PortalBundle\Themes\DevTest\Controller">
+        <class name="TestController" namespace="DeskPRO\Bundle\PortalBundle\Themes\DevTest\Controller">
           <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" elements="2" coveredelements="0"/>
         </class>
         <line num="58" type="method" name="testAction" crap="2" count="0"/>
@@ -6655,9 +6655,9 @@
         <metrics loc="62" ncloc="19" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" elements="2" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Themes\DevTest">
+    <package name="DeskPRO\Bundle\PortalBundle\Themes\DevTest">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Themes/DevTest/DevTestTheme.php">
-        <class name="DevTestTheme" namespace="Application\PortalBundle\Themes\DevTest">
+        <class name="DevTestTheme" namespace="DeskPRO\Bundle\PortalBundle\Themes\DevTest">
           <metrics methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="14" coveredelements="0"/>
         </class>
         <line num="44" type="method" name="getId" crap="2" count="0"/>
@@ -6677,9 +6677,9 @@
         <metrics loc="98" ncloc="49" classes="1" methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="14" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Themes\Sidebar">
+    <package name="DeskPRO\Bundle\PortalBundle\Themes\Sidebar">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Themes/Sidebar/SidebarTheme.php">
-        <class name="SidebarTheme" namespace="Application\PortalBundle\Themes\Sidebar">
+        <class name="SidebarTheme" namespace="DeskPRO\Bundle\PortalBundle\Themes\Sidebar">
           <metrics methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="14" coveredelements="0"/>
         </class>
         <line num="44" type="method" name="getId" crap="2" count="0"/>
@@ -6699,9 +6699,9 @@
         <metrics loc="99" ncloc="50" classes="1" methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="14" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Themes\Simple">
+    <package name="DeskPRO\Bundle\PortalBundle\Themes\Simple">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Themes/Simple/SimpleTheme.php">
-        <class name="SimpleTheme" namespace="Application\PortalBundle\Themes\Simple">
+        <class name="SimpleTheme" namespace="DeskPRO\Bundle\PortalBundle\Themes\Simple">
           <metrics methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="14" coveredelements="0"/>
         </class>
         <line num="44" type="method" name="getId" crap="2" count="0"/>
@@ -6721,9 +6721,9 @@
         <metrics loc="99" ncloc="50" classes="1" methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="14" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Themes\Standard">
+    <package name="DeskPRO\Bundle\PortalBundle\Themes\Standard">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Themes/Standard/StandardTheme.php">
-        <class name="StandardTheme" namespace="Application\PortalBundle\Themes\Standard">
+        <class name="StandardTheme" namespace="DeskPRO\Bundle\PortalBundle\Themes\Standard">
           <metrics methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="14" coveredelements="0"/>
         </class>
         <line num="44" type="method" name="getId" crap="2" count="0"/>
@@ -6743,9 +6743,9 @@
         <metrics loc="99" ncloc="50" classes="1" methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="14" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Themes\TabBar">
+    <package name="DeskPRO\Bundle\PortalBundle\Themes\TabBar">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Themes/TabBar/TabBarTheme.php">
-        <class name="TabBarTheme" namespace="Application\PortalBundle\Themes\TabBar">
+        <class name="TabBarTheme" namespace="DeskPRO\Bundle\PortalBundle\Themes\TabBar">
           <metrics methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="14" coveredelements="0"/>
         </class>
         <line num="44" type="method" name="getId" crap="2" count="0"/>
@@ -6819,9 +6819,9 @@
         <metrics loc="147" ncloc="92" classes="1" methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="39" coveredstatements="0" elements="46" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Twig">
+    <package name="DeskPRO\Bundle\PortalBundle\Twig">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Twig/PortalExtension.php">
-        <class name="PortalExtension" namespace="Application\PortalBundle\Twig">
+        <class name="PortalExtension" namespace="DeskPRO\Bundle\PortalBundle\Twig">
           <metrics methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="0" elements="37" coveredelements="0"/>
         </class>
         <line num="60" type="method" name="__construct" crap="2" count="0"/>
@@ -6864,7 +6864,7 @@
         <metrics loc="147" ncloc="81" classes="1" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="0" elements="37" coveredelements="0"/>
       </file>
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Twig/PortalLoader.php">
-        <class name="PortalLoader" namespace="Application\PortalBundle\Twig">
+        <class name="PortalLoader" namespace="DeskPRO\Bundle\PortalBundle\Twig">
           <metrics methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="0" elements="30" coveredelements="0"/>
         </class>
         <line num="54" type="method" name="__construct" crap="2" count="0"/>
@@ -6900,9 +6900,9 @@
         <metrics loc="149" ncloc="74" classes="1" methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="0" elements="30" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\View\Pagerfanta">
+    <package name="DeskPRO\Bundle\PortalBundle\View\Pagerfanta">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/View/Pagerfanta/DeskproView.php">
-        <class name="DeskproView" namespace="Application\PortalBundle\View\Pagerfanta">
+        <class name="DeskproView" namespace="DeskPRO\Bundle\PortalBundle\View\Pagerfanta">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="6" coveredelements="0"/>
         </class>
         <line num="43" type="method" name="createDefaultTemplate" crap="2" count="0"/>
@@ -6914,9 +6914,9 @@
         <metrics loc="62" ncloc="23" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="6" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\View\Pagerfanta\Template">
+    <package name="DeskPRO\Bundle\PortalBundle\View\Pagerfanta\Template">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/View/Pagerfanta/Template/DeskproTemplate.php">
-        <class name="DeskproTemplate" namespace="Application\PortalBundle\View\Pagerfanta\Template">
+        <class name="DeskproTemplate" namespace="DeskPRO\Bundle\PortalBundle\View\Pagerfanta\Template">
           <metrics methods="16" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="33" coveredstatements="0" elements="49" coveredelements="0"/>
         </class>
         <line num="53" type="method" name="container" crap="2" count="0"/>
@@ -6971,9 +6971,9 @@
         <metrics loc="159" ncloc="129" classes="1" methods="16" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="33" coveredstatements="0" elements="49" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\PortalBundle\Visitor">
+    <package name="DeskPRO\Bundle\PortalBundle\Visitor">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/PortalBundle/Visitor/VisitorIdentificationProvider.php">
-        <class name="VisitorIdentificationProvider" namespace="Application\PortalBundle\Visitor">
+        <class name="VisitorIdentificationProvider" namespace="DeskPRO\Bundle\PortalBundle\Visitor">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="0" elements="21" coveredelements="0"/>
         </class>
         <line num="55" type="method" name="__construct" crap="2" count="0"/>

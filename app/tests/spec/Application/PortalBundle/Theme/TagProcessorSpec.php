@@ -31,22 +31,22 @@
  * @package DeskPRO
  */
 
-namespace spec\Application\PortalBundle\Theme;
+namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
-use Application\PortalBundle\Request\TagRequest;
-use Application\PortalBundle\Theme\Tag;
-use Application\PortalBundle\Theme\TagHandler\EsiTagHandler;
-use Application\PortalBundle\Theme\TagHandler\InlineTagHandler;
-use Application\PortalBundle\Theme\TagHandlerInterface;
-use Application\PortalBundle\Theme\TagRequestFactory;
-use Application\PortalBundle\Theme\ThemeInterface;
+use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
+use DeskPRO\Bundle\PortalBundle\Theme\Tag;
+use DeskPRO\Bundle\PortalBundle\Theme\TagHandler\EsiTagHandler;
+use DeskPRO\Bundle\PortalBundle\Theme\TagHandler\InlineTagHandler;
+use DeskPRO\Bundle\PortalBundle\Theme\TagHandlerInterface;
+use DeskPRO\Bundle\PortalBundle\Theme\TagRequestFactory;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Application\PortalBundle\Theme\TagProcessor;
+use DeskPRO\Bundle\PortalBundle\Theme\TagProcessor;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @mixin \Application\PortalBundle\Theme\TagProcessor
+ * @mixin \DeskPRO\Bundle\PortalBundle\Theme\TagProcessor
  */
 class TagProcessorSpec extends ObjectBehavior
 {

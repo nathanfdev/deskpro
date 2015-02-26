@@ -34,7 +34,7 @@
 
 namespace DpUnitTests\DeskPRO\Brand;
 
-use Application\DeskPRO\Brand\BrandContainerFactory;
+use DeskPRO\Bundle\AppBundle\Brand\BrandContainerFactory;
 
 class BrandContainerFactoryTest extends \DpUnitTestCase
 {
@@ -45,7 +45,7 @@ class BrandContainerFactoryTest extends \DpUnitTestCase
 
         $mockSettingsResolver = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsResolver');
         $mockSettingsResolver->shouldReceive('getBrandSettings')->with($mockBrand)->andReturn($mockSettings)->once();
-        $themeResolver = \Mockery::mock('Application\PortalBundle\Theme\ThemeResolver');
+        $themeResolver = \Mockery::mock('DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver');
         $factory           = new BrandContainerFactory($mockSettingsResolver, $themeResolver);
 
         $container = $factory->create($mockBrand);

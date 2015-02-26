@@ -1,0 +1,91 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage
+ */
+
+namespace DeskPRO\Bundle\PortalBundle\Visitor;
+
+use Symfony\Component\HttpFoundation\RequestStack;
+use Psr\Log\LoggerInterface;
+
+class VisitorIdentificationProvider
+{
+    const COOKIE_NAME = 'dp__v';
+    const ATTRIBUTE_NAME = 'visitor_id';
+
+    /**
+     * @var RequestStack
+     */
+    private $request_stack;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(RequestStack $request_stack, LoggerInterface $logger)
+    {
+        $this->request_stack = $request_stack;
+        $this->logger = $logger;
+    }
+
+    public static function generateRandomIdentifier()
+    {
+        // take from a comment at: http://php.net/manual/en/function.com-create-guid.php
+        $charid = strtoupper(md5(uniqid(rand(), true)));
+        $hyphen = chr(45);// "-"
+        $uuid =
+            ''
+            .substr($charid, 0, 8).$hyphen
+            .substr($charid, 8, 4).$hyphen
+            .substr($charid, 12, 4).$hyphen
+            .substr($charid, 16, 4).$hyphen
+            .substr($charid, 20, 12)
+            ;
+
+        return $uuid;
+    }
+
+    public function getVisitorIdentifier()
+    {
+        if ($identifier = $this->request_stack->getCurrentRequest()->cookies->get(static::COOKIE_NAME)) {
+            $this->logger->info(sprintf('found visitor identifier in cookie "%s"', static::COOKIE_NAME));
+
+            return $identifier;
+        } else {
+            $identifier = static::generateRandomIdentifier();
+            $this->logger->info(sprintf('no visitor identifier in request, created one: %s', $identifier));
+        }
+
+        return $identifier;
+    }
+}

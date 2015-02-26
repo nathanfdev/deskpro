@@ -34,7 +34,7 @@
 namespace Application\LanguageBundle\Routing;
 
 use Application\DeskPRO\Entity\Language;
-use Application\PortalBundle\Mode\PortalMode;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 
 class PortalUrlBuilder
 {

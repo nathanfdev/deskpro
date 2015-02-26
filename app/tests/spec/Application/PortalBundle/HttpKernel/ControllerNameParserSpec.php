@@ -31,18 +31,18 @@
  * @package DeskPRO
  */
 
-namespace spec\Application\PortalBundle\HttpKernel;
+namespace spec\DeskPRO\Bundle\PortalBundle\HttpKernel;
 
-use Application\DeskPRO\Brand\BrandContainer;
-use Application\DeskPRO\Brand\BrandStack;
+use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Application\DeskPRO\Entity\Brand;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Application\PortalBundle\HttpKernel\ControllerNameParser;
+use DeskPRO\Bundle\PortalBundle\HttpKernel\ControllerNameParser;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
- * @mixin \Application\PortalBundle\HttpKernel\ControllerNameParser
+ * @mixin \DeskPRO\Bundle\PortalBundle\HttpKernel\ControllerNameParser
  */
 class ControllerNameParserSpec extends ObjectBehavior
 {
@@ -64,9 +64,9 @@ class ControllerNameParserSpec extends ObjectBehavior
         $brand_container->getBrand()->willReturn($brand);
 
         $brand_container->resolveController('Theme:Articles:list')
-            ->willReturn('Application\PortalBundle\Themes\Base\Controller\ArticlesController::listAction');
+            ->willReturn('DeskPRO\Bundle\PortalBundle\Themes\Base\Controller\ArticlesController::listAction');
 
         $this->parse('Theme:Articles:list')
-            ->shouldReturn('Application\PortalBundle\Themes\Base\Controller\ArticlesController::listAction');
+            ->shouldReturn('DeskPRO\Bundle\PortalBundle\Themes\Base\Controller\ArticlesController::listAction');
     }
 }

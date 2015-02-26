@@ -36,7 +36,7 @@ namespace Application\LanguageBundle\Routing;
 
 use Application\DeskPRO\Entity\Language;
 use Application\LanguageBundle\Language\LanguageManager;
-use Application\PortalBundle\Mode\PortalModeStorage;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use League\Url\Url;
 use Symfony\Bundle\FrameworkBundle\Routing\Router as BaseRouter;
 use Symfony\Component\HttpFoundation\Request;

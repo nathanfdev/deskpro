@@ -35,7 +35,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
-use Application\PortalBundle\Visitor\VisitorIdentificationProvider;
+use DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;

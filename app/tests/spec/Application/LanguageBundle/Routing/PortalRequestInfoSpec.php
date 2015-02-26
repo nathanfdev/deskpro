@@ -33,7 +33,7 @@
 
 namespace spec\Application\LanguageBundle\Routing;
 
-use Application\PortalBundle\Mode\PortalMode;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Application\LanguageBundle\Routing\PortalRequestInfo;

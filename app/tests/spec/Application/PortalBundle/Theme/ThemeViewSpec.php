@@ -31,18 +31,18 @@
  * @package DeskPRO
  */
 
-namespace spec\Application\PortalBundle\Theme;
+namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
-use Application\DeskPRO\Brand\BrandStack;
-use Application\DeskPRO\Brand\BrandContainer;
-use Application\PortalBundle\Theme\Tag;
-use Application\PortalBundle\Theme\ThemeInterface;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\PortalBundle\Theme\Tag;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Application\PortalBundle\Theme\ThemeView;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
 
 /**
- * @mixin \Application\PortalBundle\Theme\ThemeView
+ * @mixin \DeskPRO\Bundle\PortalBundle\Theme\ThemeView
  */
 class ThemeViewSpec extends ObjectBehavior
 {

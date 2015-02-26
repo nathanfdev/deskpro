@@ -31,22 +31,22 @@
  * @package DeskPRO
  */
 
-namespace spec\Application\PortalBundle\Themes\Standard;
+namespace spec\DeskPRO\Bundle\PortalBundle\Themes\Standard;
 
-use Application\PortalBundle\Theme\Tag;
-use Application\PortalBundle\Theme\ThemeInterface;
+use DeskPRO\Bundle\PortalBundle\Theme\Tag;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Application\PortalBundle\Themes\Standard\StandardTheme;
+use DeskPRO\Bundle\PortalBundle\Themes\Standard\StandardTheme;
 
 /**
- * @mixin \Application\PortalBundle\Themes\Standard\StandardTheme
+ * @mixin \DeskPRO\Bundle\PortalBundle\Themes\Standard\StandardTheme
  */
 class StandardThemeSpec extends ObjectBehavior
 {
     function it_is_a_theme()
     {
-        $this->shouldHaveType('Application\PortalBundle\Theme\ThemeInterface');
+        $this->shouldHaveType('DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface');
     }
 
     function it_has_the_correct_id_and_name()

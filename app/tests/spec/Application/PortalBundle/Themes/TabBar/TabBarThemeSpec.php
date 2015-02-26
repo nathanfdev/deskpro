@@ -31,20 +31,20 @@
  * @package DeskPRO
  */
 
-namespace spec\Application\PortalBundle\Themes\TabBar;
+namespace spec\DeskPRO\Bundle\PortalBundle\Themes\TabBar;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Application\PortalBundle\Themes\TabBar\TabBarTheme;
+use DeskPRO\Bundle\PortalBundle\Themes\TabBar\TabBarTheme;
 
 /**
- * @mixin \Application\PortalBundle\Themes\TabBar\TabBarTheme
+ * @mixin \DeskPRO\Bundle\PortalBundle\Themes\TabBar\TabBarTheme
  */
 class TabBarThemeSpec extends ObjectBehavior
 {
     function it_is_a_theme()
     {
-        $this->shouldHaveType('Application\PortalBundle\Theme\ThemeInterface');
+        $this->shouldHaveType('DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface');
     }
 
     function it_has_the_correct_id_and_name()

@@ -34,7 +34,7 @@
 namespace Application\LanguageBundle\Routing;
 
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
-use Application\PortalBundle\Mode\PortalMode;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 

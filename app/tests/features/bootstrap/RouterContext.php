@@ -34,7 +34,7 @@
 
 namespace DpBehat;
 
-use Application\DeskPRO\Brand\BrandStack;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
 use Application\DeskPRO\Languages\LangPackInfo;
 use Application\LanguageBundle\Language\LanguageManager;

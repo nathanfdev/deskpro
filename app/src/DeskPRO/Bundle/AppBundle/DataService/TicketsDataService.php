@@ -37,7 +37,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\ORM\EntityManager;
-use Application\PortalBundle\Model\TicketFilter;
+use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 

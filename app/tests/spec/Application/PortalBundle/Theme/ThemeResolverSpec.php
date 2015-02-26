@@ -31,21 +31,21 @@
  * @package DeskPRO
  */
 
-namespace spec\Application\PortalBundle\Theme;
+namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
-use Application\PortalBundle\Mode\PortalModeStorage;
-use Application\PortalBundle\Theme\Tag;
-use Application\PortalBundle\Theme\TagProcessor;
-use Application\PortalBundle\Theme\ThemeInterface;
-use Application\PortalBundle\Theme\ThemeRepository;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
+use DeskPRO\Bundle\PortalBundle\Theme\Tag;
+use DeskPRO\Bundle\PortalBundle\Theme\TagProcessor;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeRepository;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Application\PortalBundle\Theme\ThemeResolver;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * @mixin \Application\PortalBundle\Theme\ThemeResolver
+ * @mixin \DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver
  */
 class ThemeResolverSpec extends ObjectBehavior
 {

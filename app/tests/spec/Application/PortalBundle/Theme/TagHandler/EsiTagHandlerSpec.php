@@ -31,25 +31,25 @@
  * @package DeskPRO
  */
 
-namespace spec\Application\PortalBundle\Theme\TagHandler;
+namespace spec\DeskPRO\Bundle\PortalBundle\Theme\TagHandler;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\News;
-use Application\PortalBundle\HttpCache\PortalCacheHelper;
-use Application\PortalBundle\Mode\PortalMode;
-use Application\PortalBundle\Mode\PortalModeStorage;
-use Application\PortalBundle\Request\TagRequest;
-use Application\PortalBundle\Theme\Tag;
+use DeskPRO\Bundle\PortalBundle\HttpCache\PortalCacheHelper;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
+use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
+use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Application\PortalBundle\Theme\TagHandler\EsiTagHandler;
+use DeskPRO\Bundle\PortalBundle\Theme\TagHandler\EsiTagHandler;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Fragment\EsiFragmentRenderer;
 
 /**
- * @mixin \Application\PortalBundle\Theme\TagHandler\EsiTagHandler
+ * @mixin \DeskPRO\Bundle\PortalBundle\Theme\TagHandler\EsiTagHandler
  */
 class EsiTagHandlerSpec extends ObjectBehavior
 {

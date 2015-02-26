@@ -31,20 +31,20 @@
  * @package DeskPRO
  */
 
-namespace spec\Application\PortalBundle\Themes\Simple;
+namespace spec\DeskPRO\Bundle\PortalBundle\Themes\Simple;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Application\PortalBundle\Themes\Simple\SimpleTheme;
+use DeskPRO\Bundle\PortalBundle\Themes\Simple\SimpleTheme;
 
 /**
- * @mixin \Application\PortalBundle\Themes\Simple\SimpleTheme
+ * @mixin \DeskPRO\Bundle\PortalBundle\Themes\Simple\SimpleTheme
  */
 class SimpleThemeSpec extends ObjectBehavior
 {
     function it_is_a_theme()
     {
-        $this->shouldHaveType('Application\PortalBundle\Theme\ThemeInterface');
+        $this->shouldHaveType('DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface');
     }
 
     function it_has_the_correct_id_and_name()

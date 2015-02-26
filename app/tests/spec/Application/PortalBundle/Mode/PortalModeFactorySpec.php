@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\Application\PortalBundle\Mode;
+namespace spec\DeskPRO\Bundle\PortalBundle\Mode;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -9,7 +9,7 @@ class PortalModeFactorySpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType('Application\PortalBundle\Mode\PortalModeFactory');
+        $this->shouldHaveType('DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory');
     }
 
     function it_remains_normal_if_does_not_match_a_mode()

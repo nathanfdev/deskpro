@@ -31,20 +31,20 @@
  * @package DeskPRO
  */
 
-namespace spec\Application\PortalBundle\Themes\Sidebar;
+namespace spec\DeskPRO\Bundle\PortalBundle\Themes\Sidebar;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Application\PortalBundle\Themes\Sidebar\SidebarTheme;
+use DeskPRO\Bundle\PortalBundle\Themes\Sidebar\SidebarTheme;
 
 /**
- * @mixin \Application\PortalBundle\Themes\Sidebar\SidebarTheme
+ * @mixin \DeskPRO\Bundle\PortalBundle\Themes\Sidebar\SidebarTheme
  */
 class SidebarThemeSpec extends ObjectBehavior
 {
     function it_is_a_theme()
     {
-        $this->shouldHaveType('Application\PortalBundle\Theme\ThemeInterface');
+        $this->shouldHaveType('DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface');
     }
 
     function it_has_the_correct_id_and_name()

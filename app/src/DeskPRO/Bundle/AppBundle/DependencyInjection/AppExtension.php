@@ -38,19 +38,14 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\Finder\Finder;
 
 class AppExtension extends Extension
 {
     public function load(array $config, ContainerBuilder $container)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-
-        $loader->load('data_services.yml');
-        $loader->load('email.yml');
-        $loader->load('event_listeners.yml');
-        $loader->load('helpers.yml');
-        $loader->load('services.yml');
-        $loader->load('tickets.yml');
+        $loader = new YamlDirectoryLoader($container);
+        $loader->loadDir(__DIR__ . '/../Resources/config/services');
 
         $this->applyBackwardsCompatibilityRequirements($container);
     }

@@ -31,16 +31,16 @@
  * @package DeskPRO
  */
 
-namespace spec\Application\PortalBundle\Themes\Base;
+namespace spec\DeskPRO\Bundle\PortalBundle\Themes\Base;
 
-use Application\PortalBundle\Theme\Tag;
-use Application\PortalBundle\Theme\ThemeInterface;
+use DeskPRO\Bundle\PortalBundle\Theme\Tag;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Application\PortalBundle\Themes\Base\BaseTheme;
+use DeskPRO\Bundle\PortalBundle\Themes\Base\BaseTheme;
 
 /**
- * @mixin \Application\PortalBundle\Themes\Base\BaseTheme
+ * @mixin \DeskPRO\Bundle\PortalBundle\Themes\Base\BaseTheme
  */
 class BaseThemeSpec extends ObjectBehavior
 {
@@ -50,8 +50,8 @@ class BaseThemeSpec extends ObjectBehavior
 
     function it_is_a_theme_that_extends_abstract_theme()
     {
-        $this->shouldHaveType('Application\PortalBundle\Theme\ThemeInterface');
-        $this->shouldHaveType('Application\PortalBundle\Theme\AbstractTheme');
+        $this->shouldHaveType('DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface');
+        $this->shouldHaveType('DeskPRO\Bundle\PortalBundle\Theme\AbstractTheme');
     }
 
     function it_is_serializable()

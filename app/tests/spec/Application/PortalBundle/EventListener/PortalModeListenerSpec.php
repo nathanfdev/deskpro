@@ -1,13 +1,13 @@
 <?php
 
-namespace spec\Application\PortalBundle\EventListener;
+namespace spec\DeskPRO\Bundle\PortalBundle\EventListener;
 
 use League\Url\Components\Port;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Application\PortalBundle\Mode\PortalMode;
-use Application\PortalBundle\Mode\PortalModeFactory;
-use Application\PortalBundle\Mode\PortalModeStorage;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -19,7 +19,7 @@ class PortalModeListenerSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType('Application\PortalBundle\EventListener\PortalModeListener');
+        $this->shouldHaveType('DeskPRO\Bundle\PortalBundle\EventListener\PortalModeListener');
         $this->shouldImplement('Symfony\Component\EventDispatcher\EventSubscriberInterface');
     }
 
