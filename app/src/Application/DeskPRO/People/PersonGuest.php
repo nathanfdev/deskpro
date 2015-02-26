@@ -65,7 +65,6 @@ class PersonGuest extends Person
         return array('ROLE_GUEST');
     }
 
-
     public function noPersist()
     {
         throw new \BadMethodCallException('A PersonGuest cannot be persisted');

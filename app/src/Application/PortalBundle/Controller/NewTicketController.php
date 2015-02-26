@@ -34,13 +34,11 @@
 
 namespace Application\PortalBundle\Controller;
 
-
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
-use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -63,7 +61,6 @@ class NewTicketController extends AbstractController
         $ticket_message->setPerson($person);
         $ticket->addMessage($ticket_message);
 
-
         if ('GET' === $request->getMethod()) {
             // do a one through with the GET request to update our model before starting the "real" form
             $form = $this->createForm('ticket', $ticket, array(
@@ -71,16 +68,15 @@ class NewTicketController extends AbstractController
                 'ticket_message' => $ticket_message,
                 'method' => 'GET',
                 'validation_groups' => false,
-                'settings' => $this->getBrandContainer()->getSettings()
+                'settings' => $this->getBrandContainer()->getSettings(),
             ));
             $form->submit($request->get('ticket', array()), false);
         }
 
-
         $form = $this->createForm('ticket', $ticket, array(
                 'person' => $person,
                 'ticket_message' => $ticket_message,
-                'settings' => $this->getBrandContainer()->getSettings()
+                'settings' => $this->getBrandContainer()->getSettings(),
         ));
         $form->handleRequest($request);
 
@@ -90,14 +86,10 @@ class NewTicketController extends AbstractController
         }
 
         if ($form->isValid()) {
-
             // dont process if user hit "more attachments"
             if ($form->getClickedButton()->getConfig()->getName() !== "more_attachments") {
-
-
                 // if the form set a hidden field "rerender_form" then we want to skip actual processing for now
                 if (!$form->has('rerender_form')) {
-
                     // deal with guests via negotiating with PersonFactory
                     if ($person instanceof PersonGuest) {
                         $person = $this->getPersonFactory()->createPersonFromGuest($person);
@@ -109,7 +101,6 @@ class NewTicketController extends AbstractController
                         foreach ($ticket_message->getAttachments() as $attachment) {
                             $attachment->setPerson($person);
                         }
-
                     }
 
                     $ticket = $this->saveNewTicket($ticket, $person);
@@ -124,7 +115,7 @@ class NewTicketController extends AbstractController
         return $this->renderThemeView(
             'Theme:NewTicket:new_ticket.html.twig', array(
                 'form' => $form->createView(),
-                'rerendering' => $rerendering
+                'rerendering' => $rerendering,
             )
         );
     }
@@ -144,7 +135,6 @@ class NewTicketController extends AbstractController
         $em->beginTransaction();
 
         try {
-
             $em->persist($ticket);
 
             $ticket_manager = $this->getTicketManager();
@@ -153,9 +143,8 @@ class NewTicketController extends AbstractController
             $ticket_manager->saveTicket($ticket, $context);
             $em->flush();
             $em->commit();
-
         } catch (DuplicateTicketException $e) {
-           $em->rollback();
+            $em->rollback();
             $ticket = $em->find('DeskPRO:Ticket', $e->ticket_id);
 
             return $ticket;

@@ -65,7 +65,7 @@ class LabelManager
 
     public function createLabelEntity()
     {
-        $label = new $this->label_entity_classname;
+        $label = new $this->label_entity_classname();
 
         return $label;
     }
@@ -86,7 +86,7 @@ class LabelManager
                     $this->entity->getTicketLogger()->recordMultiPropertyChanged('label_removed', $label, null);
                 }
 
-                $type_name = strtolower(\Orb\Util\Util::getBaseClassname($this->entity)) . 's';
+                $type_name = strtolower(\Orb\Util\Util::getBaseClassname($this->entity)).'s';
                 if ($type_name == 'chatconversations') {
                     $type_name = 'chat';
                 }
@@ -134,7 +134,7 @@ class LabelManager
         $labelobj['label'] = $label;
         $this->entity->addLabel($labelobj);
 
-        $type_name = strtolower(\Orb\Util\Util::getBaseClassname($this->entity)) . 's';
+        $type_name = strtolower(\Orb\Util\Util::getBaseClassname($this->entity)).'s';
         if ($type_name == 'chatconversations') {
             $type_name = 'chat';
         }

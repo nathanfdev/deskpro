@@ -91,7 +91,6 @@ class TwitterSetup
                 'twitter_user_consumer_secret',
                 'twitter_auto_remove_time',
             ) as $s) {
-
             $export_settings[$s] = $this->$s;
         }
 

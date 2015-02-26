@@ -34,9 +34,7 @@
 
 namespace Application\PortalBundle\Request;
 
-
 use Application\DeskPRO\Brand\BrandStack;
-use Application\DeskPRO\ORM\EntityManager;
 use Application\PortalBundle\HttpKernel\Exception\PermanentRedirectException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
@@ -83,7 +81,6 @@ class TagRequestConverter implements ParamConverterInterface
         $tag_request->setSession($request->getSession());
 
         $request->attributes->set('tag_request', $tag_request);
-
 
         //$current_request = $this->container->get('request_stack')->getCurrentRequest();
         //$query = array('tag_options' => array_merge($tag->getDefaultOptions(), $arguments));

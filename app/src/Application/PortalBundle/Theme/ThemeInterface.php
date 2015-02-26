@@ -46,14 +46,12 @@ interface ThemeInterface
      */
     public function getId();
 
-
     /**
      * A human readable name of the theme (used in dropdown, reporting, etc)
      *
      * @return string
      */
     public function getName();
-
 
     /**
      * Returns the parent of this theme. This theme will inherit templates/tags/controllers of the parent, and can
@@ -63,7 +61,6 @@ interface ThemeInterface
      */
     public function getParent();
 
-
     /**
      * The theme ID of the parent theme
      *
@@ -71,24 +68,20 @@ interface ThemeInterface
      */
     public function getParentId();
 
-
     /**
      * @return string absolute path to the root of this theme's templates
      */
     public function getBaseTemplateDir();
-
 
     /**
      * @return string absolute path to the root of this theme's controllers
      */
     public function getBaseControllerDir();
 
-
     /**
      * @return string|null base namespace of controllers, like: Application\PortalBundle\Themes\Standard
      */
     public function getNamespace();
-
 
     /**
      * Get the tag for the given tag name.
@@ -98,7 +91,6 @@ interface ThemeInterface
      */
     public function getTag($tag_name);
 
-
     /**
      * Similar to getTag() but it also recursivley climbs the tree until it finds the tag
      *
@@ -107,14 +99,12 @@ interface ThemeInterface
      */
     public function resolveTag($tag_name);
 
-
     /**
      * Return a list of all tag objects
      *
      * @return Tag[]
      */
     public function getTags();
-
 
     /**
      * Get a map of "Theme:x:y.html.twig" => "/abs/path/to/source/twig/file.twig" for all templates that this theme
@@ -123,7 +113,6 @@ interface ThemeInterface
      * @return array
      */
     public function getTemplateMap();
-
 
     /**
      * Return an array of instantiated Tag objects for use within this theme.
@@ -135,7 +124,7 @@ interface ThemeInterface
     /**
      * Sets the parent of the theme
      *
-     * @param ThemeInterface $parent
+     * @param  ThemeInterface $parent
      * @return null
      */
     public function setParent(ThemeInterface $parent);
@@ -143,7 +132,7 @@ interface ThemeInterface
     /**
      * Sets an array of tag objects, replaces previously set tags with new array
      *
-     * @param Tag[] $tags
+     * @param  Tag[] $tags
      * @return null
      */
     public function setTags(array $tags);

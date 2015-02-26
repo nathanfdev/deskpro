@@ -60,7 +60,6 @@ class SetUrgency extends AbstractAction implements ActionInterface, MacroActionI
     const MODE_RAISE = 'raise';
     const MODE_LOWER = 'lower';
 
-
     /**
      * {@inheritDoc}
      */
@@ -71,7 +70,6 @@ class SetUrgency extends AbstractAction implements ActionInterface, MacroActionI
 
         return $options;
     }
-
 
     /**
      * @param  string $mode
@@ -109,7 +107,6 @@ class SetUrgency extends AbstractAction implements ActionInterface, MacroActionI
         return $current_urgency;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -123,7 +120,6 @@ class SetUrgency extends AbstractAction implements ActionInterface, MacroActionI
 
         $ticket->urgency = $target_urgency;
     }
-
 
     /**
      * {@inheritDoc}
@@ -142,7 +138,6 @@ class SetUrgency extends AbstractAction implements ActionInterface, MacroActionI
 
         return false;
     }
-
 
     /**
      * {@inheritDoc}

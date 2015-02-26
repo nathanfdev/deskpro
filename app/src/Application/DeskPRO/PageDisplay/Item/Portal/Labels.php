@@ -51,7 +51,7 @@ class Labels extends PortalItemAbstract implements CacheableItem
         $vars = array(
             'section' => $this->section,
             'options' => $this->options,
-            'cloud' => $cloud
+            'cloud' => $cloud,
         );
 
         $html = $this->renderView('UserBundle:Portal:labels-sidebar.html.twig', $vars);

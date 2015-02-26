@@ -45,7 +45,7 @@ class Staff extends PortalItemAbstract
     {
         return array(
             'lifetime' => 1800, // 30 mins
-            'user_indifferent' => true
+            'user_indifferent' => true,
         );
     }
 

@@ -34,11 +34,9 @@
 
 namespace Application\AppBundle\Mailer;
 
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class NewMailer
 {
@@ -56,8 +54,8 @@ class NewMailer
         $context = array(
             'person' => $person,
             'reset_url' => $this->getRouter()->generate('portal_reset_password_process', array(
-                'password_reset_code' => $person->getPasswordResetCode()
-            ))
+                'password_reset_code' => $person->getPasswordResetCode(),
+            )),
     );
 
         $this->sendMessage(
@@ -71,7 +69,7 @@ class NewMailer
     public function sendLoginAlert(Person $person, $success)
     {
         $context = array(
-            'success' => $success
+            'success' => $success,
         );
 
         $from = $this->getDefaultOutgoingEmailAddress();
@@ -86,7 +84,7 @@ class NewMailer
 
     /**
      * @param string $templateName
-     * @param array $context
+     * @param array  $context
      * @param string $fromEmail
      * @param string $toEmail
      */

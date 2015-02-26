@@ -34,19 +34,12 @@
 
 namespace Application\AppBundle\DataService;
 
-
-use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
-use Application\DeskPRO\Entity\ArticleCategory;
-use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
-use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\PortalBundle\Model\FeedbackFilter;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -65,7 +58,7 @@ class FeedbackDataService extends AbstractDataService
     /**
      * @param $page
      * @param $max_per_page
-     * @param FeedbackFilter $filter
+     * @param  FeedbackFilter $filter
      * @return Pagerfanta
      */
     public function getItemsPager($page, $max_per_page, FeedbackFilter $filter)
@@ -77,9 +70,9 @@ class FeedbackDataService extends AbstractDataService
                 'getItemsPager',
                 $page,
                 $max_per_page,
-                $filter
+                $filter,
             ),
-            function() use ($em, $page, $max_per_page, $filter) {
+            function () use ($em, $page, $max_per_page, $filter) {
                 $qb = $em->createQueryBuilder();
                 $qb->select('f')->from('DeskPRO:Feedback', 'f');
 
@@ -143,7 +136,7 @@ class FeedbackDataService extends AbstractDataService
     }
 
     /**
-     * @param int|null|Feedback $item
+     * @param  int|null|Feedback $item
      * @return null|Feedback
      */
     public function getItem($item)
@@ -153,9 +146,9 @@ class FeedbackDataService extends AbstractDataService
         return $this->generateAndCache(
             array(
                 'getItem',
-                $item
+                $item,
             ),
-            function() use ($that, $item) {
+            function () use ($that, $item) {
                 if (!$item) { // we need some input
                     return null;
                 }
@@ -177,9 +170,9 @@ class FeedbackDataService extends AbstractDataService
             array(
                 'getItemComments',
                 $item,
-                $person
+                $person,
             ),
-            function() use ($that, $item, $person) {
+            function () use ($that, $item, $person) {
                 $item = $that->getItem($item);
 
                 return $that->getItemCommetRepo()->getDisplayComments($item, $person);
@@ -188,7 +181,7 @@ class FeedbackDataService extends AbstractDataService
     }
 
     /**
-     * @param Person $person
+     * @param  Person             $person
      * @return FeedbackCategory[]
      */
     public function getFeedbackCategoriesForPerson(Person $person)
@@ -242,4 +235,3 @@ class FeedbackDataService extends AbstractDataService
         return $this->em->getRepository('DeskPRO:FeedbackComment');
     }
 }
- 

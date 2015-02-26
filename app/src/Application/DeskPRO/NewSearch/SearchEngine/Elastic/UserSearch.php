@@ -49,7 +49,6 @@ class UserSearch implements UserSearchInterface
      */
     private $transformer;
 
-
     /**
      * @param \Elastica\Index            $index
      * @param ElasticaResultsTransformer $transformer
@@ -59,7 +58,6 @@ class UserSearch implements UserSearchInterface
         $this->index = $index;
         $this->transformer = $transformer;
     }
-
 
     /**
      * @param  SearchContextInterface $context
@@ -158,7 +156,6 @@ class UserSearch implements UserSearchInterface
         return new ResultSet($objects);
     }
 
-
     /**
      * Makes sure a "query" var is formatted for use with QueryString
      *
@@ -172,7 +169,6 @@ class UserSearch implements UserSearchInterface
 
         return $q;
     }
-
 
     /**
      * Constructs the query string

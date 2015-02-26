@@ -57,7 +57,7 @@ class TicketMessageAttachmentType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event){
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             /** @var \Application\DeskPRO\Entity\TicketAttachment $attachment */
             $attachment = $event->getData() instanceof TicketAttachment ? $event->getData() : new TicketAttachment();
             $form = $event->getForm();
@@ -160,23 +160,22 @@ class TicketMessageAttachmentType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Application\\DeskPRO\\Entity\\TicketAttachment'
+                'data_class' => 'Application\\DeskPRO\\Entity\\TicketAttachment',
             )
         );
 
         $resolver->setRequired(
             array(
                 'ticket_message',
-                'person'
+                'person',
             )
         );
 
         $resolver->setAllowedTypes(
             array(
                 'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
-                'person' => 'Application\\DeskPRO\\Entity\\Person'
+                'person' => 'Application\\DeskPRO\\Entity\\Person',
             )
         );
     }
 }
- 

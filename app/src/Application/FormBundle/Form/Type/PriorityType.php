@@ -63,8 +63,7 @@ class PriorityType extends AbstractType
                         ->select('p')
                         ->addOrderBy('p.priority')
                     ;
-                }
+                },
         ));
     }
 }
- 

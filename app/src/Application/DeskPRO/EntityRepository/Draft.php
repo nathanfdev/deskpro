@@ -85,7 +85,7 @@ class Draft extends AbstractEntityRepository
         ')->execute(array($content_type, $content_id, new \DateTime("-$update_offset seconds")));
 
         $output = array();
-        foreach ($drafts AS $draft) {
+        foreach ($drafts as $draft) {
             $output[$draft->content_id][$draft->person->getId()] = $draft;
         }
 
@@ -134,7 +134,7 @@ class Draft extends AbstractEntityRepository
                     $content_type,
                     $content_id,
                     $person->getId(),
-                    $draft->id
+                    $draft->id,
                 ));
             } else {
                 $this->getEntityManager()->getConnection()->executeUpdate("
@@ -143,7 +143,7 @@ class Draft extends AbstractEntityRepository
                 ", array(
                     $content_type,
                     $content_id,
-                    $person->getId()
+                    $person->getId(),
                 ));
             }
 
@@ -175,8 +175,8 @@ class Draft extends AbstractEntityRepository
                     'data' => serialize(array(
                         'ticket_id'      => $content_id,
                         'draft_html'     => false,
-                        'via_person'     => $person->getId()
-                    ))
+                        'via_person'     => $person->getId(),
+                    )),
                 ));
             }
         }
@@ -186,7 +186,7 @@ class Draft extends AbstractEntityRepository
     {
         App::getDb()->delete('drafts', array(
             'content_type' => $content_type,
-            'content_id' => $content_id
+            'content_id' => $content_id,
         ));
     }
 }

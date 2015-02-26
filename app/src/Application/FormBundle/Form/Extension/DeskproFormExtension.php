@@ -48,7 +48,7 @@ class DeskproFormExtension extends AbstractTypeExtension
         $resolver->setDefaults(
             array(
                 'help'          => '',
-                'force_boolean' => false
+                'force_boolean' => false,
             )
         );
     }
@@ -64,7 +64,6 @@ class DeskproFormExtension extends AbstractTypeExtension
     {
         $view->vars['help'] = $options['help'];
     }
-
 
     public function getExtendedType()
     {

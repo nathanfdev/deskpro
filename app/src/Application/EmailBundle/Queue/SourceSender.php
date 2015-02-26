@@ -38,7 +38,6 @@ use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\EmailBundle\Mail\RawTransport\RawTransportException;
 use DeskPRO\Kernel\KernelErrorHandler;
-use Monolog;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 use Psr\Log\LoggerInterface;
@@ -62,8 +61,8 @@ class SourceSender
 
     /**
      * @param EmailAccountManager $email_accounts
-     * @param DeskproBlobStorage $bs
-     * @param LoggerInterface $logger
+     * @param DeskproBlobStorage  $bs
+     * @param LoggerInterface     $logger
      */
     public function __construct(EmailAccountManager $email_accounts, DeskproBlobStorage $bs, LoggerInterface $logger)
     {
@@ -79,13 +78,14 @@ class SourceSender
      * So exceptions = unexpected failure.
      * Return 0 = error that is unlikely to be temporary
      *
-     * @param array $sendmail
-     * @return int Number of emails sent
+     * @param  array $sendmail
+     * @return int   Number of emails sent
      */
     public function send(array $sendmail)
     {
         if (empty($sendmail['email_account_id']) || !$sendmail['email_account_id']) {
             $this->logger->error(sprintf("The email account that this email was sent with no longer exists"));
+
             return 0;
         }
 
@@ -94,6 +94,7 @@ class SourceSender
             $this->logger->info(sprintf("Using account #%d %s", $account->getId(), $account->getUseEmailAddress()));
         } catch (\Exception $e) {
             $this->logger->error(sprintf("Email account %d does not exist or has been disabled", $sendmail['email_account_id']));
+
             return 0;
         }
 
@@ -102,6 +103,7 @@ class SourceSender
             $this->logger->debug(sprintf("Using transport type: %s", Util::getBaseClassname($raw_tr)));
         } catch (\Exception $e) {
             $this->logger->error(sprintf("Email account has no transport: %s", $e->getMessage()));
+
             return 0;
         }
 
@@ -134,7 +136,6 @@ class SourceSender
             }
 
             $this->logger->info(sprintf('Sent %d messages', $sendmail));
-
         } catch (RawTransportException $e) {
             $this->logger->error(sprintf("Exception raised: %s [%s]: %s", get_class($e), $e->getCode(), $e->getMessage()));
             $this->logger->debug(KernelErrorHandler::formatBacktrace($e->getTrace(), true));

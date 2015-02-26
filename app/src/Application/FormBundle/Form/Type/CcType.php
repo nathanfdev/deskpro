@@ -74,7 +74,7 @@ class CcType extends AbstractType
 
         $cc_emails = array();
         foreach ($ticket->getUserParticipants() as $participant) {
-            $cc_emails[] = (string)$participant->getEmailAddress();
+            $cc_emails[] = (string) $participant->getEmailAddress();
         }
 
         $event->setData($cc_emails);
@@ -90,7 +90,6 @@ class CcType extends AbstractType
         $participants = array();
         $cc_emails = $form->getData();
         foreach ($cc_emails as $email) {
-
             $email = trim($email);
 
             if (strlen($email) === 0) {
@@ -134,14 +133,13 @@ class CcType extends AbstractType
         $resolver
             ->setRequired(
                 array(
-                    'ticket'
+                    'ticket',
                 )
             )
             ->setAllowedTypes(
                 array(
-                    'ticket' => 'Application\\DeskPRO\\Entity\\Ticket'
+                    'ticket' => 'Application\\DeskPRO\\Entity\\Ticket',
                 )
             );
     }
 }
- 

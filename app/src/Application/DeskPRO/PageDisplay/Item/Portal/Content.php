@@ -50,13 +50,13 @@ class Content extends PortalItemAbstract
         if (!$this->getOption('no_wrapper')) {
             $tpl = $this->getOption('custom_wrapper_tpl');
             if (!$tpl) {
-                $tpl = 'UserBundle:Portal:content-' . $this->section . '.html.twig';
+                $tpl = 'UserBundle:Portal:content-'.$this->section.'.html.twig';
             }
 
             $html = $this->renderView($tpl, array(
                 'html' => $html,
                 'section' => $this->section,
-                'options' => $this->options
+                'options' => $this->options,
             ));
         }
 

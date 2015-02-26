@@ -53,4 +53,3 @@ class DateType extends AbstractType
     {
     }
 }
- 

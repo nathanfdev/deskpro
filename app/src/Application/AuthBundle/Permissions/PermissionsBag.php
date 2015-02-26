@@ -46,12 +46,10 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
      */
     private $permissions;
 
-
     public function __construct(array $settings = array())
     {
         $this->setArray($settings);
     }
-
 
     public function hasPermission($permission)
     {
@@ -61,7 +59,6 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
 
         return (bool) $this->get($permission, false);
     }
-
 
     public function toArray()
     {
@@ -91,7 +88,6 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         return new \ArrayIterator($this->permissions);
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -99,7 +95,6 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     {
         return $this->has($offset);
     }
-
 
     /**
      * {@inheritdoc}
@@ -109,7 +104,6 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         return $this->get($offset);
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -117,7 +111,6 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     {
         throw new \LogicException('cannot set a permission in this way. instead, change the underlying entities in the permission system. this is just a dumb bag of data.');
     }
-
 
     /**
      * {@inheritdoc}
@@ -129,7 +122,6 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         );
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -138,7 +130,6 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         return serialize($this->permissions);
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -146,7 +137,6 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     {
         return unserialize($serialized);
     }
-
 
     /**
      * {@inheritdoc}

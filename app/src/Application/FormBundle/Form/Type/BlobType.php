@@ -36,9 +36,7 @@ namespace Application\FormBundle\Form\Type;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Blob;
-use Application\DeskPRO\Entity\BlobStorage;
 use Application\FormBundle\Form\DataTransformer\BlobTypeModelTransformer;
-use Application\FormBundle\Form\DataTransformer\BlobTypeViewTransformer;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -116,7 +114,7 @@ class BlobType extends AbstractType
 
         if (!$blob) {
             $form->add('upload', 'file', array(
-                'mapped' => false
+                'mapped' => false,
             ));
 
             if ($form->has('delete_blob')) {
@@ -136,7 +134,6 @@ class BlobType extends AbstractType
                 $form->remove('upload');
             }
         }
-
     }
 
     public function getName()
@@ -148,9 +145,8 @@ class BlobType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => null
+                'data_class' => null,
             )
         );
     }
 }
- 

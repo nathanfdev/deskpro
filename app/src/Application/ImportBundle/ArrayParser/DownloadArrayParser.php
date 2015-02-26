@@ -38,7 +38,6 @@ use Orb\Util\Strings;
 
 class DownloadArrayParser implements ArrayParserInterface
 {
-
     /**
      * @param  array       $data
      * @return PersonValue
@@ -50,22 +49,22 @@ class DownloadArrayParser implements ArrayParserInterface
         $value = new DownloadValue();
 
         ArrayParserUtils::copyValueMapping(array(
-            'oid'			=> 'raw',
-            'person'		=> 'string',
-            'language'		=> 'string',
-            'num_downloads'		=> 'int',
-            'slug'			=> 'string',
-            'title'			=> 'string',
-            'content'		=> 'string',
-            'view_count'		=> 'int',
-            'total_rating'		=> 'int',
-            'num_comments'		=> 'int',
-            'num_ratings'		=> 'int',
-            'status'		=> 'string',
-            'date_created'		=> 'date',
-            'date_published'	=> 'date',
-            'category'		=> 'string',
-            'labels'		=> 'array',
+            'oid'            => 'raw',
+            'person'        => 'string',
+            'language'        => 'string',
+            'num_downloads'        => 'int',
+            'slug'            => 'string',
+            'title'            => 'string',
+            'content'        => 'string',
+            'view_count'        => 'int',
+            'total_rating'        => 'int',
+            'num_comments'        => 'int',
+            'num_ratings'        => 'int',
+            'status'        => 'string',
+            'date_created'        => 'date',
+            'date_published'    => 'date',
+            'category'        => 'string',
+            'labels'        => 'array',
         ), $data, $value);
 
         if ($value->title && !$value->slug) {
@@ -86,7 +85,7 @@ class DownloadArrayParser implements ArrayParserInterface
                 'blob_path'    => 'string',
                 'file_name'     => 'string',
                 'content_type' => 'string',
-                'is_inline'    => 'bool'
+                'is_inline'    => 'bool',
             ), $attach_data, $attach_value);
 
             $value->attachment = $attach_value;
@@ -94,5 +93,4 @@ class DownloadArrayParser implements ArrayParserInterface
 
         return $value;
     }
-
 }

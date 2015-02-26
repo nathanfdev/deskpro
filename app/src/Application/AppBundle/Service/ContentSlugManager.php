@@ -43,7 +43,7 @@ use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class ContentSlugManager 
+class ContentSlugManager
 {
     /**
      * @var EntityManager
@@ -71,8 +71,8 @@ class ContentSlugManager
      * It then ensures that the slug that is set on the object is correct,
      * if it is not correct, it will find something valid AND SET IT on the content.
      *
-     * @param ContentAbstract $content
-     * @return null or the new history object for the content
+     * @param  ContentAbstract $content
+     * @return null            or the new history object for the content
      */
     public function ensureValidSlug(ContentAbstract $content)
     {
@@ -88,10 +88,10 @@ class ContentSlugManager
         $i = 1;
         while (!$this->isValidSlug($new_slug, $content)) {
             // if expected slug is not valid, keep incrementing a value at the end until we get something valid
-            $new_slug = Strings::slugifyTitle($content->getTitle() . ' ' . ++$i);
+            $new_slug = Strings::slugifyTitle($content->getTitle().' '.++$i);
         }
 
-        $new_history = $content->setSlug($new_slug);;
+        $new_history = $content->setSlug($new_slug);
 
         return $new_history;
     }
@@ -145,7 +145,7 @@ class ContentSlugManager
     }
 
     /**
-     * @param ContentAbstract $content
+     * @param  ContentAbstract                $content
      * @return \Doctrine\ORM\EntityRepository
      */
     private function getRepoForContent(ContentAbstract $content)
@@ -166,7 +166,7 @@ class ContentSlugManager
     }
 
     /**
-     * @param ContentAbstract $content
+     * @param  ContentAbstract                $content
      * @return \Doctrine\ORM\EntityRepository
      */
     private function getHistoryRepoForContent(ContentAbstract $content)

@@ -40,7 +40,6 @@ class ImporterStatusFnCallback extends ImporterStatusCallback
      */
     private $callbacks = array();
 
-
     /**
      * @param callback[] $callbacks
      */
@@ -50,7 +49,6 @@ class ImporterStatusFnCallback extends ImporterStatusCallback
             $this->callbacks = $callbacks;
         }
     }
-
 
     /**
      * @param string   $event_name

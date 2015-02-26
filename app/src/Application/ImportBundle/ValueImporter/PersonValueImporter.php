@@ -43,7 +43,7 @@ class PersonValueImporter extends AbstractValueImporter
     protected $custom_fields_array = array();
     /** @var array */
     protected $supported_custom_field_types = array(
-        'Application\DeskPRO\CustomFields\Handler\Text'
+        'Application\DeskPRO\CustomFields\Handler\Text',
     );
 
     /**
@@ -70,7 +70,7 @@ class PersonValueImporter extends AbstractValueImporter
             throw new BadDataException("PersonValue must have at least one valid email");
         }
 
-        $log_id = "Person :: " . Arrays::getFirstItem($pval->emails) . "";
+        $log_id = "Person :: ".Arrays::getFirstItem($pval->emails)."";
 
         #------------------------------
         # Normalise name
@@ -86,7 +86,7 @@ class PersonValueImporter extends AbstractValueImporter
             }
         }
         if (!$pval->name && ($pval->first_name || $pval->last_name)) {
-            $pval->name = trim(($pval->first_name ?: '') . ($pval->last_name ?: ''));
+            $pval->name = trim(($pval->first_name ?: '').($pval->last_name ?: ''));
         }
 
         #------------------------------
@@ -164,7 +164,7 @@ class PersonValueImporter extends AbstractValueImporter
                 } else {
                     $this->getDb()->insert('organizations', array(
                         'name'         => $pval->organization,
-                        'date_created' => date('Y-m-d H:i:s')
+                        'date_created' => date('Y-m-d H:i:s'),
                     ));
                     $record['organization_id'] = $this->getDb()->lastInsertId();
                 }
@@ -214,7 +214,7 @@ class PersonValueImporter extends AbstractValueImporter
             if ($exist_id && $add_emails_str) {
                 $first_email_id = null;
                 foreach ($add_emails_str as $eml) {
-                    list (, $eml_domain) = explode('@', $eml, 2);
+                    list(, $eml_domain) = explode('@', $eml, 2);
                     $this->getDb()->insert('people_emails', array(
                         'person_id'      => $exist_id,
                         'email'          => $eml,
@@ -237,7 +237,7 @@ class PersonValueImporter extends AbstractValueImporter
                 $batch = array_map(function ($ug) use ($exist_id) {
                     return array(
                         'person_id'    => $exist_id,
-                        'usergroup_id' => $ug
+                        'usergroup_id' => $ug,
                     );
                 }, $add_ugs);
 
@@ -248,7 +248,7 @@ class PersonValueImporter extends AbstractValueImporter
                 $batch = array_map(function ($l) use ($exist_id) {
                     return array(
                         'person_id' => $exist_id,
-                        'label'     => $l
+                        'label'     => $l,
                     );
                 }, $add_labels);
 
@@ -277,7 +277,6 @@ class PersonValueImporter extends AbstractValueImporter
             }
         }
     }
-
 
     /**
      * @param  array $emails

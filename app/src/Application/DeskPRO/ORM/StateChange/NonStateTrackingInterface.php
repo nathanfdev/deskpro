@@ -40,5 +40,4 @@ namespace Application\DeskPRO\ORM\StateChange;
  */
 interface NonStateTrackingInterface
 {
-
 }

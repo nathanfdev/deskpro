@@ -43,7 +43,6 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-
 /**
  * If anyone throws a PermanentRedirectException, we catch it here to return a redirect response to the kernel.
  */
@@ -58,13 +57,11 @@ class RedirectExceptionListener implements EventSubscriberInterface
      */
     private $logger;
 
-
     public function __construct(UrlGeneratorInterface $url_generator, LoggerInterface $logger)
     {
         $this->url_generator = $url_generator;
         $this->logger = $logger;
     }
-
 
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
@@ -90,7 +87,7 @@ class RedirectExceptionListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::EXCEPTION => array('onKernelException', 129) // very high priority
+            KernelEvents::EXCEPTION => array('onKernelException', 129), // very high priority
         );
     }
 }

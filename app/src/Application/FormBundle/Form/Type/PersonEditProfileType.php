@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle\Form\Type;
 
-
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\ORM\EntityManager;
 use Application\FormBundle\Form\FormFieldManager;
@@ -84,13 +83,13 @@ class PersonEditProfileType extends AbstractType
 
         if ($this->language_manager->isMultiLanguagePortal()) {
             $builder->add('language_id', 'deskpro_language', array(
-                'view_context' => 'user'
+                'view_context' => 'user',
             ));
         }
 
         $blob_storage = $this->blob_storage;
         $em = $this->em;
-        $builder->addEventListener(FormEvents::SUBMIT, function(FormEvent $event) use ($blob_storage, $em) {
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($blob_storage, $em) {
             /** @var \Application\DeskPRO\Entity\Person $person */
             $person = $event->getData();
             $form = $event->getForm();
@@ -119,7 +118,6 @@ class PersonEditProfileType extends AbstractType
             }
         });
 
-
         $field_manager = $this->field_manager;
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($field_manager) {
 
@@ -132,7 +130,6 @@ class PersonEditProfileType extends AbstractType
             } else {
                 $form->add('upload_picture', 'file', array('required' => false, 'mapped' => false));
             }
-
 
             foreach ($field_manager->getAvailablePersonFields() as $field_def) {
                 if (!$field_def->is_enabled) {
@@ -148,7 +145,7 @@ class PersonEditProfileType extends AbstractType
                         'person' => $event->getData(),
                         'property_path' => sprintf('getCustomDataCollection[%s]', $id),
                         'agent_interface' => false,
-                        'label' => false
+                        'label' => false,
                     )
                 );
             }
@@ -159,7 +156,7 @@ class PersonEditProfileType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Application\DeskPRO\Entity\Person'
+                'data_class' => 'Application\DeskPRO\Entity\Person',
             )
         );
 
@@ -169,11 +166,10 @@ class PersonEditProfileType extends AbstractType
 
         $resolver->setAllowedTypes(
             array(
-                'settings' => 'Application\DeskPRO\NewSettings\SettingsBag'
+                'settings' => 'Application\DeskPRO\NewSettings\SettingsBag',
             )
         );
     }
-
 
     /**
      * Returns the name of this type.

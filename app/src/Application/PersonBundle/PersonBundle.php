@@ -34,7 +34,6 @@
 
 namespace Application\PersonBundle;
 
-
 use Application\PersonBundle\DependencyInjection\PersonExtension;
 use Symfony\Component\Console\Application;
 use Symfony\Component\HttpKernel\Bundle\Bundle;

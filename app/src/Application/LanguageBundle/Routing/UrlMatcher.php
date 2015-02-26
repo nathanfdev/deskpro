@@ -42,7 +42,7 @@ class UrlMatcher
     {
         $return = array(
             'lang_url_code' => null,
-            'remaining_pathinfo' => $pathinfo
+            'remaining_pathinfo' => $pathinfo,
         );
 
         $locale = Strings::extractRegexMatch('#^/([a-z]{2})/#', $pathinfo, 1);

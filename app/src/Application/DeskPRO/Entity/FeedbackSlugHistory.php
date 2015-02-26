@@ -71,7 +71,7 @@ class FeedbackSlugHistory extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @param Feedback $feedback the content
-     * @param string $old_slug the slug to put in history
+     * @param string   $old_slug the slug to put in history
      */
     public function __construct(Feedback $feedback, $old_slug)
     {
@@ -140,7 +140,7 @@ class FeedbackSlugHistory extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'slug', 'type' => 'string', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'slug', 'unique' => true));
         $metadata->mapManyToOne(array(
             'fieldName' => 'feedback', 'targetEntity' => 'Application\DeskPRO\Entity\Feedback',
-            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'inversedBy' => 'slug_history'
+            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'inversedBy' => 'slug_history',
         ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }

@@ -34,7 +34,6 @@
 
 namespace Application\EmailBundle\SwiftMailer\Transport;
 
-use Application\DeskPRO\BlobStorage;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\EmailBundle\SourceMapper\SourceMapperInterface;
 use Orb\Util\Arrays;
@@ -68,10 +67,10 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
     private $logger = null;
 
     /**
-     * @param SourceMapperInterface $source_mapper
-     * @param EmailAccountManager $email_accounts
+     * @param SourceMapperInterface        $source_mapper
+     * @param EmailAccountManager          $email_accounts
      * @param Swift_Events_EventDispatcher $event_dispatcher
-     * @param LoggerInterface $logger
+     * @param LoggerInterface              $logger
      */
     public function __construct(SourceMapperInterface $source_mapper, EmailAccountManager $email_accounts, Swift_Events_EventDispatcher $event_dispatcher, LoggerInterface $logger = null)
     {
@@ -80,7 +79,6 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
         $this->source_mapper    = $source_mapper;
         $this->logger           = $logger ?: new NullLogger();
     }
-
 
     /**
      * @param Swift_Mime_Message $message
@@ -116,7 +114,6 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
         $message->__dp_deskpro_transport_done_preproc = true;
     }
 
-
     /**
      * Tests if this Transport mechanism has started.
      *
@@ -124,33 +121,27 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
      */
     public function isStarted()
     {
-
     }
-
 
     /**
      * Starts this Transport mechanism.
      */
     public function start()
     {
-
     }
-
 
     /**
      * Stops this Transport mechanism.
      */
     public function stop()
     {
-
     }
-
 
     /**
      * Queue the message so it is sent by the queue processor.
      *
-     * @param Swift_Mime_Message $message
-     * @param \DateTime $send_date When to send the message. If not specified, it will be sent the next time the processor is run.
+     * @param  Swift_Mime_Message $message
+     * @param  \DateTime          $send_date When to send the message. If not specified, it will be sent the next time the processor is run.
      * @return int
      */
     public function queueMessage(Swift_Mime_Message $message, \DateTime $send_date = null)
@@ -170,11 +161,10 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
         return $r['id'];
     }
 
-
     /**
      * Save the message to the DB.
      *
-     * @param Swift_Mime_Message $message
+     * @param  Swift_Mime_Message $message
      * @return int
      */
     public function insertMessage(Swift_Mime_Message $message)
@@ -187,7 +177,6 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
 
         return $r['id'];
     }
-
 
     /**
      * Sends the given message. This might queue the message if queueing is enabled.
@@ -207,6 +196,7 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
                 $r = $this->source_mapper->createSourceForMessage($message, 'aborted');
                 $this->logger->info(sprintf('Message %d aborted', $r['id']), array('sendmail_source_id' => $r['ref']));
                 $r = $this->source_mapper->setLogText($r);
+
                 return 0;
             }
         }
@@ -221,7 +211,6 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
 
         return $sent;
     }
-
 
     /**
      * Register a plugin.

@@ -36,7 +36,6 @@ namespace Application\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
 use Application\PersonBundle\Person\Context\CreatePersonContext;
-use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -53,7 +52,7 @@ class ProfileController extends AbstractController
         $person = $this->getPersonFactory()->createNewPerson();
 
         $form = $this->createForm('person_registration', $person, array(
-            'settings' => $this->getBrandContainer()->getSettings()
+            'settings' => $this->getBrandContainer()->getSettings(),
         ));
 
         $form->handleRequest($request);
@@ -70,7 +69,7 @@ class ProfileController extends AbstractController
         return $this->renderThemeView(
             'Theme:Profile:register.html.twig',
             array(
-                'form' => $form->createView()
+                'form' => $form->createView(),
             )
         );
     }
@@ -87,6 +86,7 @@ class ProfileController extends AbstractController
                 $this->getUser()->setPrimaryEmail($proposed_new_primary_email);
                 $this->getEm()->flush();
                 $this->addFlash('success', 'updated.primary.email');
+
                 return $this->redirectToRoute('portal_user_profile');
             }
         }
@@ -99,15 +99,15 @@ class ProfileController extends AbstractController
                     $this->getEm()->remove($proposed_email_removal);
                     $this->getEm()->flush();
                     $this->addFlash('success', 'removed.email');
+
                     return $this->redirectToRoute('portal_user_profile');
                 }
             }
         }
 
-
         // PROFILE
         $profile_form = $this->createForm('person_profile', $this->getUser(), array(
-            'settings' => $this->getBrandContainer()->getSettings()
+            'settings' => $this->getBrandContainer()->getSettings(),
         ));
         $profile_form->handleRequest($request);
         if ($profile_form->isValid()) {
@@ -119,7 +119,7 @@ class ProfileController extends AbstractController
 
         // EMAILS
         $emails_form = $this->createForm('person_manage_emails', $this->getUser(), array(
-            'settings' => $this->getBrandContainer()->getSettings()
+            'settings' => $this->getBrandContainer()->getSettings(),
         ));
         $emails_form->handleRequest($request);
         if ($emails_form->isValid()) {
@@ -131,7 +131,7 @@ class ProfileController extends AbstractController
 
         // PASSWORD
         $password_form = $this->createForm('person_change_password', $this->getUser(), array(
-            'settings' => $this->getBrandContainer()->getSettings()
+            'settings' => $this->getBrandContainer()->getSettings(),
         ));
         $password_form->handleRequest($request);
         if ($password_form->isValid()) {
@@ -145,7 +145,7 @@ class ProfileController extends AbstractController
             'Theme:Profile:edit.html.twig', array(
                 'profile_form' => $profile_form->createView(),
                 'password_form' => $password_form->createView(),
-                'emails_form' => $emails_form->createView()
+                'emails_form' => $emails_form->createView(),
             )
         );
     }

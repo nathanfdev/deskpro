@@ -70,7 +70,7 @@ class TicketArrayParser implements ArrayParserInterface
             'date_archived'   => 'date',
             'subject'       => 'string',
             'participants'  => 'array',
-            'custom_fields' => 'array'
+            'custom_fields' => 'array',
         ), $data, $value);
 
         if (!empty($data['messages'])) {
@@ -84,7 +84,7 @@ class TicketArrayParser implements ArrayParserInterface
                     'date_created' => 'date',
                     'message_html' => 'string',
                     'message_text' => 'string',
-                    'is_note'      => 'bool'
+                    'is_note'      => 'bool',
                 ), $message_data, $message_value);
 
                 if (!empty($message_data['attachments'])) {
@@ -99,7 +99,7 @@ class TicketArrayParser implements ArrayParserInterface
                             'blob_path'    => 'string',
                             'filename'     => 'string',
                             'content_type' => 'string',
-                            'is_inline'    => 'bool'
+                            'is_inline'    => 'bool',
                         ), $attachment_data, $attachment);
                         $message_value->attachments[] = $attachment;
                     }

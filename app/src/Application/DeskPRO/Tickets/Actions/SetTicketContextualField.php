@@ -49,7 +49,6 @@ class SetTicketContextualField extends AbstractSetCustomField
         return $this->getContainer()->getTicketFieldManager();
     }
 
-
     /**
      * @param  Ticket                   $ticket
      * @param  ExecutorContextInterface $context

@@ -37,7 +37,6 @@ use Application\PortalBundle\Request\TagRequest;
 use Application\PortalBundle\Theme\Tag;
 use Application\PortalBundle\Theme\TagHandlerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class InlineTagHandler implements TagHandlerInterface

@@ -50,7 +50,6 @@ class PortalLoader implements \Twig_LoaderInterface
      */
     private $template_repo;
 
-
     public function __construct(BrandStack $brand_stack, Template $template_repo)
     {
         $this->brand_stack = $brand_stack;
@@ -77,7 +76,6 @@ class PortalLoader implements \Twig_LoaderInterface
         throw new Twig_Error_Loader('could not find theme template "'.$name.'"');
     }
 
-
     /**
      * Gets the cache key to use for the cache for a given template name.
      *
@@ -91,7 +89,6 @@ class PortalLoader implements \Twig_LoaderInterface
 
         return $brand->getBrand()->theme_id.$name.$this->brand_stack->getActive()->getBrand()->id;
     }
-
 
     /**
      * Returns true if the template is still fresh.
@@ -111,9 +108,8 @@ class PortalLoader implements \Twig_LoaderInterface
         // TODO: Possible flaw
         // if you have a template in DB and it is deleted, the cached version will still appear due to the below
         // solution is to mark a template as deleted=1 and have the loader ignore deleted=1 templates.
-        return filemtime($this->getBrandContainer()->resolveTemplatePath((string)$name)) <= $time;
+        return filemtime($this->getBrandContainer()->resolveTemplatePath((string) $name)) <= $time;
     }
-
 
     /**
      * @return \Application\DeskPRO\Brand\BrandContainer

@@ -59,7 +59,7 @@ class KbValueImporter extends AbstractValueImporter
             return false;
         }
 
-        $log_id = "Article :: " . $kbval->oid . " ";
+        $log_id = "Article :: ".$kbval->oid." ";
 
         $record = array();
 
@@ -94,15 +94,15 @@ class KbValueImporter extends AbstractValueImporter
             }
         }
 
-        $record['title']		= $kbval->title;
-        $record['content']		= $kbval->content;
-        $record['slug']			= $kbval->slug;
-        $record['date_created']		= isset($kbval->date_created) ? $kbval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-        $record['date_published']	= isset($kbval->date_published) ? $kbval->date_published->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-        $record['date_end']		= isset($kbval->date_end) ? $kbval->date_end->format('Y-m-d H:i:s') : null;
-        $record['total_rating']		= $kbval->total_rating;
-        $record['num_comments']		= $kbval->num_comments;
-        $record['num_ratings']		= $kbval->num_ratings;
+        $record['title']        = $kbval->title;
+        $record['content']        = $kbval->content;
+        $record['slug']            = $kbval->slug;
+        $record['date_created']        = isset($kbval->date_created) ? $kbval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
+        $record['date_published']    = isset($kbval->date_published) ? $kbval->date_published->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
+        $record['date_end']        = isset($kbval->date_end) ? $kbval->date_end->format('Y-m-d H:i:s') : null;
+        $record['total_rating']        = $kbval->total_rating;
+        $record['num_comments']        = $kbval->num_comments;
+        $record['num_ratings']        = $kbval->num_ratings;
 
         if ($kbval->date_end) {
             $record['status'] = 'archived';
@@ -154,8 +154,8 @@ class KbValueImporter extends AbstractValueImporter
         if ($articleId && $kbval->labels) {
             $batch = array_map(function ($l) use ($articleId) {
                 return array(
-                    'article_id'	=> $articleId,
-                    'label'		=> $l
+                    'article_id'    => $articleId,
+                    'label'        => $l,
                 );
             }, $kbval->labels);
 

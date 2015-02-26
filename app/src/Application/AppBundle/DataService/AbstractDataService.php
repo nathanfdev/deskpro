@@ -44,7 +44,7 @@ use Application\DeskPRO\Cache\ConvenientCache;
  *
  * Multiple calls to the same method with the same params are retrieved from memory (an array).
  */
-class AbstractDataService 
+class AbstractDataService
 {
     /**
      * @var ArbitraryHasher|null
@@ -57,8 +57,8 @@ class AbstractDataService
     protected $cache;
 
     /**
-     * @param mixed $params the "ArbitraryHasher" input to create cache key for this callable
-     * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     * @param  mixed      $params   the "ArbitraryHasher" input to create cache key for this callable
+     * @param  mixed      $callable doesn't need to be a callable, can be any default value, but usually is a callable
      * @return mixed|null
      */
     protected function generateAndCache($params, $callable)
@@ -79,7 +79,7 @@ class AbstractDataService
     }
 
     /**
-     * @param mixed $input
+     * @param  mixed  $input
      * @return string
      */
     protected function generateHash($input)

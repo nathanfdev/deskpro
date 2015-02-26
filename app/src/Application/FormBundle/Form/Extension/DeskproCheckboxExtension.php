@@ -45,7 +45,7 @@ class DeskproCheckboxExtension extends AbstractTypeExtension
     {
         $resolver->setDefaults(
             array(
-                'checkbox_label' => ''
+                'checkbox_label' => '',
             )
         );
     }
@@ -54,7 +54,6 @@ class DeskproCheckboxExtension extends AbstractTypeExtension
     {
         $view->vars['checkbox_label'] = $options['checkbox_label'];
     }
-
 
     public function getExtendedType()
     {

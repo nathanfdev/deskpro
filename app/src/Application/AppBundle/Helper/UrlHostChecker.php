@@ -29,7 +29,7 @@ class UrlHostChecker
             return true; // url does not contain host info, so it is an absolute url redirect (example: "/news")
         }
 
-        return $check_host === $verified_host && (int)$check_port === (int)$verified_port;
+        return $check_host === $verified_host && (int) $check_port === (int) $verified_port;
     }
 
     public function isMatchUrl($check_url, $verified_url)

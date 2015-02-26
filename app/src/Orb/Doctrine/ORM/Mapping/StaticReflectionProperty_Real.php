@@ -34,7 +34,7 @@
 
 namespace Orb\Doctrine\ORM\Mapping;
 
-class StaticReflectionProperty extends \ReflectionProperty
+class StaticReflectionProperty_Real extends \ReflectionProperty
 {
     /** @var string */
     public $_class;

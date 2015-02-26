@@ -64,7 +64,7 @@ class DownloadValueImporter extends AbstractValueImporter
             throw new DuplicateValueException(sprintf("A Download with the title \"%s\" already exists (skipping)", $dval->title));
         }
 
-        $log_id = "Download :: " . $dval->oid . " ";
+        $log_id = "Download :: ".$dval->oid." ";
 
         $record = array();
 
@@ -130,7 +130,7 @@ class DownloadValueImporter extends AbstractValueImporter
                 $this->getLogger()->info(sprintf("[%s] Found existing download category %s", $log_id, $category));
 
                 $record['category_id'] = $category_id;
-            } elseif(!$this->isTestMode()) {
+            } elseif (!$this->isTestMode()) {
                 $this->getLogger()->warning(sprintf("[%s] New download category %s (creating)", $log_id, $category));
 
                 $this->getDb()->insert('download_categories', array('title' => $category));
@@ -143,16 +143,16 @@ class DownloadValueImporter extends AbstractValueImporter
             }
         }
 
-        $record['title']		= $dval->title;
-        $record['content']		= $dval->content;
-        $record['slug']			= $dval->slug;
-        $record['date_created']		= isset($dval->date_created) ? $dval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-        $record['date_published']	= isset($dval->date_published) ? $dval->date_published->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-        $record['total_rating']		= $dval->total_rating;
-        $record['num_comments']		= $dval->num_comments;
-        $record['num_ratings']		= $dval->num_ratings;
-        $record['view_count']		= $dval->view_count;
-        $record['num_downloads']	= $dval->num_downloads;
+        $record['title']        = $dval->title;
+        $record['content']        = $dval->content;
+        $record['slug']            = $dval->slug;
+        $record['date_created']        = isset($dval->date_created) ? $dval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
+        $record['date_published']    = isset($dval->date_published) ? $dval->date_published->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
+        $record['total_rating']        = $dval->total_rating;
+        $record['num_comments']        = $dval->num_comments;
+        $record['num_ratings']        = $dval->num_ratings;
+        $record['view_count']        = $dval->view_count;
+        $record['num_downloads']    = $dval->num_downloads;
 
         if ($dval->date_published) {
             $record['status'] = 'published';
@@ -176,8 +176,8 @@ class DownloadValueImporter extends AbstractValueImporter
         if ($download_id && $dval->labels) {
             $batch = array_map(function ($l) use ($download_id) {
                 return array(
-                    'download_id'	=> $download_id,
-                    'label'		=> $l
+                    'download_id'    => $download_id,
+                    'label'        => $l,
                 );
             }, $dval->labels);
 

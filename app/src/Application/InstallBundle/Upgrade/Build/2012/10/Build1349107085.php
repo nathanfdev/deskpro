@@ -82,7 +82,6 @@ class Build1349107085 extends AbstractBuild
         $this->out("Update existing triggers to new event types");
 
         foreach ($triggers as $trigger) {
-
             $trigger['terms'] = unserialize($trigger['terms']);
             $terms = null;
             $event_trigger = '';
@@ -138,7 +137,7 @@ class Build1349107085 extends AbstractBuild
                         $terms[] = array(
                             'type' => 'new_reply_user',
                             'op' => 'is',
-                            'options' => array('do' => 1)
+                            'options' => array('do' => 1),
                         );
                     } else {
                         $creation_system = isset($sig_term['options']['creation_system']) ? $sig_term['options']['creation_system'] : '';
@@ -149,7 +148,7 @@ class Build1349107085 extends AbstractBuild
                                 $terms[] = array(
                                     'type' => 'new_reply_user',
                                     'op' => 'is',
-                                    'options' => array('do' => 1)
+                                    'options' => array('do' => 1),
                                 );
                                 break;
                             case 'web.agent':
@@ -158,7 +157,7 @@ class Build1349107085 extends AbstractBuild
                                 $terms[] = array(
                                     'type' => 'new_reply_agent',
                                     'op' => 'is',
-                                    'options' => array('do' => 1)
+                                    'options' => array('do' => 1),
                                 );
                                 break;
                             default:
@@ -166,7 +165,7 @@ class Build1349107085 extends AbstractBuild
                                 $terms[] = array(
                                     'type' => 'new_reply_user',
                                     'op' => 'is',
-                                    'options' => array('do' => 1)
+                                    'options' => array('do' => 1),
                                 );
                         }
                     }
@@ -200,7 +199,7 @@ class Build1349107085 extends AbstractBuild
                 $this->out("-- Updated {$trigger['id']} to $event_trigger");
                 $this->container->getDb()->update('ticket_triggers', array(
                     'terms' => serialize($terms),
-                    'event_trigger' => $event_trigger
+                    'event_trigger' => $event_trigger,
                 ), array('id' => $trigger['id']));
             }
         }

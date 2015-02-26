@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle\Form\DataTransformer;
 
-
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -116,4 +115,3 @@ class EntityToIdTransformer implements DataTransformerInterface
         return $this->repo->find($value);
     }
 }
- 

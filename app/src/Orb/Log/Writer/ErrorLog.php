@@ -33,6 +33,7 @@
  */
 
 namespace Orb\Log\Writer;
+
 use \Orb\Log\LogItem;
 
 /**

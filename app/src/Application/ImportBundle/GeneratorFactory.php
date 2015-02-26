@@ -51,10 +51,9 @@ class GeneratorFactory
 
     /** @var array */
     protected $generators_map = array(
-        'osticket'	=> 'Application\\ImportBundle\\Generator\\OsTicket',
-        'csv'		=> 'Application\\ImportBundle\\Generator\\Csv',
+        'osticket'    => 'Application\\ImportBundle\\Generator\\OsTicket',
+        'csv'        => 'Application\\ImportBundle\\Generator\\Csv',
     );
-
 
     /**
      * @param DeskproContainer $container
@@ -66,7 +65,6 @@ class GeneratorFactory
         $this->input = $input;
     }
 
-
     /**
      * @return GeneratorConfig
      */
@@ -75,10 +73,10 @@ class GeneratorFactory
         $config = new GeneratorConfig();
 
         $import_config = new OptionsArray(dp_get_config('import', array()));
-        $config->output_path	= $import_config->get('output_path');
-        $config->log_path	= $import_config->get('log_path', dp_get_log_dir() . '/export');
-        $config->mode		= $import_config->get('mode', 'test');
-        $config->mark_done	= $import_config->get('mark_done', true);
+        $config->output_path    = $import_config->get('output_path');
+        $config->log_path    = $import_config->get('log_path', dp_get_log_dir().'/export');
+        $config->mode        = $import_config->get('mode', 'test');
+        $config->mark_done    = $import_config->get('mark_done', true);
 
         if ($this->input) {
             if ($this->input->hasArgument('script')) {
@@ -86,7 +84,7 @@ class GeneratorFactory
             }
 
             if ($this->input->hasOption('output-path')) {
-                $config->output_path = rtrim($this->input->getOption('output-path'), "\\/") . "/";
+                $config->output_path = rtrim($this->input->getOption('output-path'), "\\/")."/";
             }
             if ($this->input->hasOption('input-path')) {
                 $config->input_path = $this->input->getOption('input-path');
@@ -101,7 +99,7 @@ class GeneratorFactory
                 $config->mode = 'live';
             }
             if ($this->input->hasOption('mark-done')) {
-                $config->mark_done = (bool)$this->input->getOption('mark-done');
+                $config->mark_done = (bool) $this->input->getOption('mark-done');
             }
         }
 
@@ -111,7 +109,6 @@ class GeneratorFactory
 
         return $config;
     }
-
 
     /**
      * @param  LoggerInterface $logger
@@ -124,11 +121,11 @@ class GeneratorFactory
         $generator = new $generator_class($config, $logger);
 
         if (!$generator instanceof GeneratorInterface) {
-            throw new \Exception($generator_class . ' is not a valid generator');
+            throw new \Exception($generator_class.' is not a valid generator');
         }
 
-        if (!method_exists($generator,'generateJson')) {
-            throw new \Exception($generator_class . ' does not have a "generateJson" method');
+        if (!method_exists($generator, 'generateJson')) {
+            throw new \Exception($generator_class.' does not have a "generateJson" method');
         }
 
         return $generator;

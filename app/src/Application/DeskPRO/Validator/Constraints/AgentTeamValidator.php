@@ -46,7 +46,6 @@ class AgentTeamValidator extends ConstraintValidator
      */
     private $agent_data;
 
-
     /**
      * @param AgentDataService $agent_data
      */
@@ -54,7 +53,6 @@ class AgentTeamValidator extends ConstraintValidator
     {
         $this->agent_data = $agent_data;
     }
-
 
     /**
      * @param mixed      $value
@@ -82,7 +80,6 @@ class AgentTeamValidator extends ConstraintValidator
             }
         }
     }
-
 
     /**
      * @return string

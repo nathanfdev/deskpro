@@ -34,18 +34,12 @@
 
 namespace Application\PortalBundle\Themes\Base\Controller;
 
-
 use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Request\TagRequest;
-use Pagerfanta\Adapter\DoctrineCollectionAdapter;
-use Pagerfanta\Pagerfanta;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Annotation\Tag;
@@ -86,7 +80,7 @@ class ArticlesController extends AbstractController
             array(
                 'category' => $category,
                 'category_children' => $category_children,
-                'articles_options' => $options['articles_options']
+                'articles_options' => $options['articles_options'],
             )
         );
     }
@@ -128,7 +122,7 @@ class ArticlesController extends AbstractController
             array(
                 'pager' => $pager,
                 'category' => $category,
-                'show_category_link' => $options['show_category_link']
+                'show_category_link' => $options['show_category_link'],
             )
         );
     }
@@ -152,7 +146,7 @@ class ArticlesController extends AbstractController
         return $this->renderThemeView(
             'Theme:Articles:Tag/article.html.twig',
             array(
-                'article' => $article
+                'article' => $article,
             )
         );
     }
@@ -186,7 +180,7 @@ class ArticlesController extends AbstractController
             sprintf('Theme:Articles:Tag/article_subscription_%s.html.twig', $options['style']),
             array(
                 'article' => $article,
-                'is_subscribed' => $is_subscribed
+                'is_subscribed' => $is_subscribed,
             )
         );
     }
@@ -219,7 +213,7 @@ class ArticlesController extends AbstractController
         return $this->renderThemeView(
             'Theme:Articles:Tag/subscription_category.html.twig', array(
                 'category' => $category,
-                'is_subscribed' => $is_subscribed
+                'is_subscribed' => $is_subscribed,
             )
         );
     }
@@ -247,7 +241,7 @@ class ArticlesController extends AbstractController
 
         return $this->renderThemeView('Theme:Articles:Tag/comments.html.twig', array(
             'article' => $article,
-            'comments' => $comments
+            'comments' => $comments,
         ));
     }
 
@@ -279,7 +273,7 @@ class ArticlesController extends AbstractController
 
         return $this->renderThemeView(
             'Theme:Common:pager.html.twig', array(
-                'pager' => $pager
+                'pager' => $pager,
             )
         );
     }
@@ -308,7 +302,7 @@ class ArticlesController extends AbstractController
         return $this->renderThemeView(
             'Theme:Articles:Tag/breadcrumbs.html.twig', array(
                 'category' => $category,
-                'article' => $article
+                'article' => $article,
             )
         );
     }
@@ -336,7 +330,7 @@ class ArticlesController extends AbstractController
             'Theme:Articles:Tag/ratings.html.twig',
             array(
                 'rating' => $rating,
-                'article' => $article
+                'article' => $article,
             )
         );
     }

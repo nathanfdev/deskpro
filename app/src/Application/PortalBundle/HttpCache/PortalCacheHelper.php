@@ -34,8 +34,6 @@
 
 namespace Application\PortalBundle\HttpCache;
 
-
-use Application\PortalBundle\HttpCache\PortalHttpCache;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class PortalCacheHelper
@@ -103,5 +101,4 @@ class PortalCacheHelper
     {
         return in_array($hash, array(PortalHttpCache::ANON_HASH, PortalHttpCache::GUEST_HASH));
     }
-
 }

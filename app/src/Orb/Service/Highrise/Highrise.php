@@ -84,7 +84,7 @@ class Highrise
      */
     public function sendReadRequest($resource, array $params = array())
     {
-        $resource_url = $this->highrise_url . $resource;
+        $resource_url = $this->highrise_url.$resource;
 
         $http = $this->getHttpClient();
         $http->setUri($resource_url);
@@ -106,7 +106,7 @@ class Highrise
      */
     public function sendWriteRequest($resource, $postdata, array $get_params = array(), $use_put = false)
     {
-        $resource_url = $this->highrise_url . $resource;
+        $resource_url = $this->highrise_url.$resource;
 
         $http = $this->getHttpClient();
         $http->setUri($resource_url);
@@ -149,7 +149,7 @@ class Highrise
      */
     public function sendDeleteRequest($resource, array $params = array())
     {
-        $resource_url = $this->highrise_url . $resource;
+        $resource_url = $this->highrise_url.$resource;
 
         $http = $this->getHttpClient();
         $http->setUri($resource_url);
@@ -185,7 +185,9 @@ class Highrise
      */
     public function getHttpClient()
     {
-        if ($this->http === null) $this->setHttpClient();
+        if ($this->http === null) {
+            $this->setHttpClient();
+        }
 
         $this->http->resetParameters();
         $this->http->setAuth($this->auth_token, 'X');
@@ -229,7 +231,7 @@ class Highrise
                     $array[$nodename][] = $this->xmlToArray($subnode);
                 }
             } else {
-                $text = trim((string)$node);
+                $text = trim((string) $node);
                 if ($text !== '') {
                     $array[$nodename] = $text;
                 }
@@ -251,15 +253,15 @@ class Highrise
 
         foreach ($array as $nodename => $node) {
             if (strpos('-id', $nodename) !== false) {
-                $xml[] = "<{$nodename} type=\"integer\">" . ((int)$node) . "</{$nodename}>";
+                $xml[] = "<{$nodename} type=\"integer\">".((int) $node)."</{$nodename}>";
             } elseif (strpos('-at', $nodename) !== false) {
-                $xml[] = "<{$nodename} type=\"datetime\">" . ((string)$node) . "</{$nodename}>";
+                $xml[] = "<{$nodename} type=\"datetime\">".((string) $node)."</{$nodename}>";
             } elseif (strpos('-on', $nodename) !== false) {
-                $xml[] = "<{$nodename} type=\"date\">" . ((string)$node) . "</{$nodename}>";
+                $xml[] = "<{$nodename} type=\"date\">".((string) $node)."</{$nodename}>";
             } elseif (is_array($node)) {
                 $xml[] = $this->arrayToXml($node, $nodename);
             } else {
-                $xml[] = "<{$nodename}>" . ((string)$node) . "</{$nodename}>";
+                $xml[] = "<{$nodename}>".((string) $node)."</{$nodename}>";
             }
         }
 
@@ -282,7 +284,7 @@ class Highrise
 
         $classname = str_replace($name, '_', '-');
         $classname = \Orb\Util\Strings::dashToCamelCase($classname);
-        $classname = 'Orb\\Service\\Highrise\\Resource\\' . ucfirst($classname);
+        $classname = 'Orb\\Service\\Highrise\\Resource\\'.ucfirst($classname);
 
         $obj = new $classname($this);
         $this->resources[$name] = $obj;

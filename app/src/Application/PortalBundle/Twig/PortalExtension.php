@@ -34,7 +34,6 @@
 
 namespace Application\PortalBundle\Twig;
 
-
 use Application\DeskPRO\Brand\BrandStack;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -51,7 +50,6 @@ class PortalExtension extends \Twig_Extension
      * @var \Application\DeskPRO\NewSettings\SettingsResolver
      */
     private $settings_resolver;
-
 
     /**
      * @param BrandStack       $brand_stack
@@ -105,8 +103,8 @@ class PortalExtension extends \Twig_Extension
      * Use this twig func instead of calling an entity directly in twig for urls
      *
      * @param Person $person
-     * @param int $size
-     * @param bool $secure
+     * @param int    $size
+     * @param bool   $secure
      *
      * @return string the url
      */
@@ -118,15 +116,14 @@ class PortalExtension extends \Twig_Extension
     }
 
     /**
-     * @param string $tag_name
-     * @param array  $arguments
+     * @param  string $tag_name
+     * @param  array  $arguments
      * @return string
      */
     public function processPortalTag($tag_name, $arguments = array())
     {
         return $this->brand_stack->getActive()->renderTag($tag_name, $arguments);
     }
-
 
     /**
      * @return array
@@ -135,7 +132,6 @@ class PortalExtension extends \Twig_Extension
     {
         return array('global_settings' => $this->settings_resolver->getGlobalSettings());
     }
-
 
     /**
      * @return string

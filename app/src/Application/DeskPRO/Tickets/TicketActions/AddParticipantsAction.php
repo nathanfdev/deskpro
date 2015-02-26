@@ -50,7 +50,6 @@ class AddParticipantsAction extends AbstractAction
         $this->add_people_ids = $add_participants;
     }
 
-
     /**
      * Apply the property to the ticket
      *
@@ -64,7 +63,6 @@ class AddParticipantsAction extends AbstractAction
         }
     }
 
-
     /**
      * Get an array of actions that would be performed on the ticket
      *
@@ -77,13 +75,12 @@ class AddParticipantsAction extends AbstractAction
         foreach ($this->add_people_ids as $pid) {
             $actions[] = array(
                 'action' => 'add_participant',
-                'person_id' => $pid
+                'person_id' => $pid,
             );
         }
 
         return $actions;
     }
-
 
     /**
      * Get the agent id
@@ -94,7 +91,6 @@ class AddParticipantsAction extends AbstractAction
     {
         return $this->add_people_ids;
     }
-
 
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
@@ -108,7 +104,6 @@ class AddParticipantsAction extends AbstractAction
 
         return new self($ids);
     }
-
 
     /**
      * @return string
@@ -131,10 +126,10 @@ class AddParticipantsAction extends AbstractAction
 
         $parts = array();
         if ($agents) {
-            $parts[] = "Add agent followers: " . implode(', ', $agents);
+            $parts[] = "Add agent followers: ".implode(', ', $agents);
         }
         if ($users) {
-            $parts[] = "CC users " . implode(', ', $users);
+            $parts[] = "CC users ".implode(', ', $users);
         }
 
         if (!$parts) {

@@ -69,7 +69,6 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
         $this->person_repo = $person_repo;
     }
 
-
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
         //
@@ -93,11 +92,10 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
                 'ip_address' => dp_get_user_ip_address(),
                 'hostname' => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
                 'user_agent' => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
-                'date_created' => date('Y-m-d H:i:s')
+                'date_created' => date('Y-m-d H:i:s'),
             ));
         }
 
         return parent::onAuthenticationFailure($request, $exception);
     }
-
 }

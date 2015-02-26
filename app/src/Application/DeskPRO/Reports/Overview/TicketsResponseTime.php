@@ -66,7 +66,6 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
         $this->date_end       = Dates::convertToUtcDateTime($date_end);
     }
 
-
     /**
      * @return string[]
      */
@@ -92,7 +91,6 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
         return $titles;
     }
 
-
     /**
      * @return string[]
      */
@@ -111,7 +109,6 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 
         return $this->grouping_field->getTitles($collect);
     }
-
 
     /**
      * @return int[]

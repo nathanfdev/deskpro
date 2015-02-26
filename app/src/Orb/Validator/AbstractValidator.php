@@ -70,10 +70,7 @@ abstract class AbstractValidator implements ValidatorInterface
 
     protected function init()
     {
-
     }
-
-
 
     /**
      * Check to see if a value is valid or not.
@@ -89,8 +86,6 @@ abstract class AbstractValidator implements ValidatorInterface
         return $this->checkIsValid($value);
     }
 
-
-
     /**
      * Check to see if a value is valid or not.
      *
@@ -102,16 +97,12 @@ abstract class AbstractValidator implements ValidatorInterface
         return $this->isValid($value);
     }
 
-
-
     /**
      * Check $value to see if its valid.
      *
      * @return bool
      */
     abstract protected function checkIsValid($value);
-
-
 
     /**
      * Get an array of error codes
@@ -120,7 +111,9 @@ abstract class AbstractValidator implements ValidatorInterface
      */
     public function getErrors($keyed = false)
     {
-        if (!$this->errors) return array();
+        if (!$this->errors) {
+            return array();
+        }
 
         if ($keyed) {
             return array_combine($this->errors, array_fill(0, count($this->errors), 1));
@@ -129,8 +122,6 @@ abstract class AbstractValidator implements ValidatorInterface
         return $this->errors;
     }
 
-
-
     /**
      * Get an array of errcode=>info. Null means no info available.
      *
@@ -138,7 +129,9 @@ abstract class AbstractValidator implements ValidatorInterface
      */
     public function getErrorsInfo()
     {
-        if (!$this->errors) return array();
+        if (!$this->errors) {
+            return array();
+        }
 
         $ret = array();
         foreach ($this->errors as $k) {
@@ -147,7 +140,6 @@ abstract class AbstractValidator implements ValidatorInterface
 
         return $ret;
     }
-
 
     /**
      * Using dot notation in error codes, we can sort errors into groups
@@ -161,7 +153,9 @@ abstract class AbstractValidator implements ValidatorInterface
      */
     public function getErrorGroups($keyed = false)
     {
-        if (!$this->errors) return array();
+        if (!$this->errors) {
+            return array();
+        }
 
         $groups = array();
 
@@ -198,7 +192,7 @@ abstract class AbstractValidator implements ValidatorInterface
         foreach ($this->errors as $k => $errcode) {
             $line = $errcode;
             if (!empty($this->errors_info[$k])) {
-                $line .= " :: " . $this->errors_info[$k];
+                $line .= " :: ".$this->errors_info[$k];
             }
 
             $ret[] = $line;

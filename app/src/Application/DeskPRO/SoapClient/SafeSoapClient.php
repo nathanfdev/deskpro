@@ -79,5 +79,4 @@ if (!class_exists('\SoapClient', false)) {
 
 class SafeSoapClientException extends \SoapFault
 {
-
 }

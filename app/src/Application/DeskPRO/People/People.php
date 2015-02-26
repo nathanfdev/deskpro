@@ -50,7 +50,6 @@ class People
             ->getTicketsFromIds($ids);
     }
 
-
     public function getPeopleOptions()
     {
         $options = array();

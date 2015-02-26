@@ -108,7 +108,7 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  Swift_Mailer $mailer
+     * @param  Swift_Mailer       $mailer
      * @return TicketEmailBuilder
      */
     public function setMailer(Swift_Mailer $mailer)
@@ -119,12 +119,13 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param EmailAccountManager $email_accounts
+     * @param  EmailAccountManager $email_accounts
      * @return $this
      */
     public function setEmailAccountManager(EmailAccountManager $email_accounts)
     {
         $this->options->set('email_accounts', $email_accounts);
+
         return $this;
     }
 
@@ -318,7 +319,6 @@ class TicketEmailBuilder
         return $this;
     }
 
-
     /**
      * Sets the maximum size of attachments that will be sent with the message.
      *
@@ -327,7 +327,7 @@ class TicketEmailBuilder
      */
     public function setMaxAttachSize($size)
     {
-        $this->options->set('max_attach_size', (int)$size);
+        $this->options->set('max_attach_size', (int) $size);
 
         return $this;
     }

@@ -118,7 +118,6 @@ class SetAgentFollowers extends AbstractContainerAwareAction implements ActionIn
         }
     }
 
-
     /**
      * {@inheritDoc}
      */

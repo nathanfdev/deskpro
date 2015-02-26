@@ -34,7 +34,6 @@
 
 namespace Application\AppBundle\Hierarchy\Formatter;
 
-
 use Application\AppBundle\Hierarchy\HierarchyNode;
 
 class DashesFormatter extends AbstractFormatter
@@ -46,7 +45,6 @@ class DashesFormatter extends AbstractFormatter
     {
         $prefix = str_repeat('--', $node->getDepth());
 
-        return strlen($prefix) > 0 ? $prefix . ' ' . $this->getDataValue($node) : $this->getDataValue($node);
+        return strlen($prefix) > 0 ? $prefix.' '.$this->getDataValue($node) : $this->getDataValue($node);
     }
 }
- 

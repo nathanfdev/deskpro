@@ -61,7 +61,6 @@ class ObjectLangRepository
      */
     protected $try_langs = array();
 
-
     /**
      * @param EntityManager $em
      */
@@ -69,7 +68,6 @@ class ObjectLangRepository
     {
         $this->em = $em;
     }
-
 
     /**
      * Set the default languages to try (in order). These are used when $lang is null in the get prop methods.
@@ -80,7 +78,6 @@ class ObjectLangRepository
     {
         $this->try_langs = $try_langs;
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\Language[]
@@ -107,7 +104,6 @@ class ObjectLangRepository
         return $this->try_langs;
     }
 
-
     /**
      * @param  int|\Application\DeskPRO\Entity\Language $lang
      * @param  object|string                            $object
@@ -120,7 +116,6 @@ class ObjectLangRepository
 
         return isset($this->loaded[$obj_ref][$lang_id]);
     }
-
 
     /**
      * Get all objects loaded on a rec
@@ -149,7 +144,6 @@ class ObjectLangRepository
 
         return $recs;
     }
-
 
     /**
      * Get the ObjectLang record for a given property. Returns null if no such record exists.
@@ -193,7 +187,6 @@ class ObjectLangRepository
         return null;
     }
 
-
     /**
      * Sets the value on a phrase lang. A new record will be created automatically if one doesnt exist.
      *
@@ -230,7 +223,6 @@ class ObjectLangRepository
 
         return $rec;
     }
-
 
     /**
      * Get the value of a given property. This is the actual translated text.
@@ -377,7 +369,6 @@ class ObjectLangRepository
         }
 
         foreach ($recs as $rec) {
-
             if (!trim($rec->value)) {
                 continue;
             }

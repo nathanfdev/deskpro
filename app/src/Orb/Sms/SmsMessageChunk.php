@@ -61,7 +61,6 @@ class SmsMessageChunk
         $this->result = $result;
     }
 
-
     public function __toString()
     {
         return $this->text ?: '';

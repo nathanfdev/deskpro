@@ -57,13 +57,13 @@ class CustomFeedbackType extends AbstractType
 
         foreach ($field_defs as $field_def) {
             $builder->add(
-                'custom_feedback_def_' . $field_def->getId(),
+                'custom_feedback_def_'.$field_def->getId(),
                 'deskpro_custom_data_feedback',
                 array(
                     'custom_data_field' => $field_def,
                     'property_path' => sprintf('[%s]', $field_def->getId()),
                     'agent_interface' => $options['agent_interface'],
-                    'label' => false
+                    'label' => false,
                 )
             );
         }
@@ -75,7 +75,7 @@ class CustomFeedbackType extends AbstractType
             array(
                 'data_class' => 'Application\FormBundle\Collection\CustomDataCollection',
                 'agent_interface' => false,
-                'label' => false
+                'label' => false,
             )
         );
     }

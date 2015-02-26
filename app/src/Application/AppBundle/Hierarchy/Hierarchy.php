@@ -62,14 +62,14 @@ class Hierarchy implements \Countable, \IteratorAggregate
     /**
      * @param HierarchyNode[]             $root_nodes
      * @param HierarchyFormatterInterface $formatter
-     * @param string|null $node_id_path
+     * @param string|null                 $node_id_path
      */
     public function __construct(array $root_nodes, HierarchyFormatterInterface $formatter = null, $node_id_path = null)
     {
-        $this->formatter = $formatter ? : new Formatter\FlatListFormatter();
+        $this->formatter = $formatter ?: new Formatter\FlatListFormatter();
 
         // suppress the bug in php in some versions for modifying an array in usort
-        @usort($root_nodes, function($node1, $node2) {
+        @usort($root_nodes, function ($node1, $node2) {
             return $node2->getOrder() - $node1->getOrder();
         });
         $this->root_nodes = $root_nodes;
@@ -112,7 +112,7 @@ class Hierarchy implements \Countable, \IteratorAggregate
      *
      * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
      * @return Traversable An instance of an object implementing <b>Iterator</b> or
-     *       <b>Traversable</b>
+     *                     <b>Traversable</b>
      */
     public function getIterator()
     {
@@ -125,9 +125,9 @@ class Hierarchy implements \Countable, \IteratorAggregate
      *
      * @link http://php.net/manual/en/countable.count.php
      * @return int The custom count as an integer.
-     *       </p>
-     *       <p>
-     *       The return value is cast to an integer.
+     *             </p>
+     *             <p>
+     *             The return value is cast to an integer.
      */
     public function count()
     {
@@ -135,19 +135,19 @@ class Hierarchy implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @param HierarchyNode $node
+     * @param  HierarchyNode $node
      * @return mixed
      */
     public function getNodeId(HierarchyNode $node)
     {
-        return $this->accessor->getValue($node, $this->node_id_path ? : 'data.id');
+        return $this->accessor->getValue($node, $this->node_id_path ?: 'data.id');
     }
 
     /**
      * Will find you a node in the tree for a given node ID (as defined by this hierarchy's node property acessor)
      *
      * @param $node_id
-     * @param bool $recursive
+     * @param  bool               $recursive
      * @return HierarchyNode|null
      */
     public function findNodeById($node_id, $recursive = true)
@@ -164,10 +164,8 @@ class Hierarchy implements \Countable, \IteratorAggregate
                     return $result;
                 }
             }
-
         }
 
         return null;
     }
 }
- 

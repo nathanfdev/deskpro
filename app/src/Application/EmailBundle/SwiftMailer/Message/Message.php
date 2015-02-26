@@ -39,5 +39,4 @@ use Application\DeskPRO\Mail\Message as DeskproMessage;
 // This is a backwards-compat class
 class Message extends DeskproMessage
 {
-
 }

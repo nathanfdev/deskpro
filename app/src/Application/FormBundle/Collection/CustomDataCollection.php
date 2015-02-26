@@ -55,7 +55,7 @@ class CustomDataCollection implements \ArrayAccess
 
     /**
      * @param Collection $custom_datas
-     * @param object     $data_holder the "object" that needs to report to doctrine its change
+     * @param object     $data_holder  the "object" that needs to report to doctrine its change
      */
     public function __construct(Collection $custom_datas, $data_holder)
     {
@@ -70,6 +70,7 @@ class CustomDataCollection implements \ArrayAccess
             if ($id == $data->getFieldId()) {
                 $this->custom_datas->set($real_offset, $value);
                 $this->data_holder->addCustomData($value);
+
                 return null;
             }
         }
@@ -104,6 +105,7 @@ class CustomDataCollection implements \ArrayAccess
         foreach ($this->custom_datas as $real_offset => $data) {
             if ($offset == $data->getFieldId()) {
                 $this->custom_datas->remove($real_offset);
+
                 return;
             }
         }

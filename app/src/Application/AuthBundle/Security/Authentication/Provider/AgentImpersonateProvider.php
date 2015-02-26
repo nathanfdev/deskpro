@@ -35,22 +35,14 @@
 namespace Application\AuthBundle\Security\Authentication\Provider;
 
 use Application\AuthBundle\Security\AgentImpersonateToken;
-use Application\AuthBundle\Security\DpFormLoginToken;
 use Application\AuthBundle\Security\DpPersonUserProvider;
 use Application\DeskPRO\Auth\AuthenticationManager;
 use Application\DeskPRO\Auth\AuthenticationManager as DpAuthManager;
-use Application\DeskPRO\Auth\LoginProcessor;
-use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\ORM\EntityManager;
-use DeskPRO\Kernel\KernelErrorHandler;
-use Doctrine\DBAL\Driver\Connection;
-use Orb\Auth\Adapter\FormLoginInterface;
-use Orb\Auth\Result;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Application\DeskPRO\Entity\Person;
 
 class AgentImpersonateProvider implements AuthenticationProviderInterface
@@ -125,7 +117,7 @@ class AgentImpersonateProvider implements AuthenticationProviderInterface
     }
 
     /**
-     * @param string $auth
+     * @param  string $auth
      * @return array
      */
     private function getAgentAndPersonIds($auth)
@@ -140,6 +132,7 @@ class AgentImpersonateProvider implements AuthenticationProviderInterface
         if (!$agent_id || !$person_id) {
             throw new AuthenticationException();
         }
+
         return array($agent_id, $person_id);
     }
 
@@ -156,6 +149,7 @@ class AgentImpersonateProvider implements AuthenticationProviderInterface
         if (!$agent || !$person) {
             throw new AuthenticationException();
         }
+
         return array($agent, $person);
     }
 }

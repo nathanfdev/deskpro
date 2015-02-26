@@ -63,8 +63,7 @@ class WorkflowType extends AbstractType
                         ->select('w')
                         ->addOrderBy('w.display_order')
                     ;
-                }
+                },
         ));
     }
 }
- 

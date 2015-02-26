@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Tickets\Filters\Terms;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
-
 /**
  * Filters based on assigned agent team
  *
@@ -55,7 +54,6 @@ class FilterAgentTeam extends AbstractFilterTerm
 
         return $options;
     }
-
 
     /**
      * {@inheritDoc}

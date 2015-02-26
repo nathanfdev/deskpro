@@ -107,7 +107,7 @@ class Build1369921235 extends AbstractBuild
                 'category_id'   => isset($cat_map[$r['category_id']]) ? $cat_map[$r['category_id']] : Arrays::getFirstItem($cat_map),
                 'title'         => $r['title'],
                 'snippet'       => $snippet,
-                'shortcut_code' => $r['shortcut_code'] ?: ''
+                'shortcut_code' => $r['shortcut_code'] ?: '',
             ));
         }
 

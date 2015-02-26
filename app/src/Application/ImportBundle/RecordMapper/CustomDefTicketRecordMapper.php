@@ -31,7 +31,6 @@
 
 namespace Application\ImportBundle\RecordMapper;
 
-
 class CustomDefTicketRecordMapper extends CommonRecordMapper
 {
     /** @var  array */

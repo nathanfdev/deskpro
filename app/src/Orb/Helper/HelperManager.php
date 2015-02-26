@@ -52,8 +52,6 @@ class HelperManager
      */
     protected $_callable_names = array();
 
-
-
     /**
      * Add a helper object
      *
@@ -79,7 +77,7 @@ class HelperManager
         if ($object instanceof ShortCallableInterface) {
             foreach ($object->getShortCallableNames() as $short_name => $method) {
                 if ($prefix_callable) {
-                    $short_name = $prefix_callable . $short_name;
+                    $short_name = $prefix_callable.$short_name;
                 }
 
                 $short_name = strtolower($short_name);

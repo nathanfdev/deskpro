@@ -42,7 +42,6 @@ class LogItemEntity extends \Orb\Log\Writer\AbstractWriter
     public function _write(\Orb\Log\LogItem $log_item)
     {
         try {
-
             $message = $log_item->getMessage();
             $message_len = strlen($message);
 

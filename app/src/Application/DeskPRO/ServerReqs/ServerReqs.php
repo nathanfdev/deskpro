@@ -74,9 +74,8 @@ class ServerReqs
             $this->server_check->getErrors(), $this->server_check->getOptionals()
         ), true);
 
-        if (file_exists(dp_get_data_dir() . '/cli-server-reqs-check.dat')) {
-
-            $data = file_get_contents(dp_get_data_dir() . '/cli-server-reqs-check.dat');
+        if (file_exists(dp_get_data_dir().'/cli-server-reqs-check.dat')) {
+            $data = file_get_contents(dp_get_data_dir().'/cli-server-reqs-check.dat');
             $data = @unserialize($data);
 
             $this->cli_checks = $this->_generateMessages($data['checks']);
@@ -113,17 +112,14 @@ class ServerReqs
         $result = array();
 
         foreach ($this->checksTable as $checkKey => $check) {
-
             $arr                = array();
             $arr['description'] = $check['description'];
 
             if (isset($errors[$checkKey])) {
-
                 $arr['error']    = $check['error'];
                 $arr['readMore'] = $check['readMore'];
 
                 if (isset($check['recommendation'])) {
-
                     $arr['recommendation'] = $check['recommendation'];
                 }
             }
@@ -147,21 +143,16 @@ class ServerReqs
         $incorrect_paths = '';
 
         foreach (array('', 'backups', 'debug', 'files', 'logs', 'tmp') as $dir) {
-
-            $path = dp_get_data_dir() . DIRECTORY_SEPARATOR . $dir;
+            $path = dp_get_data_dir().DIRECTORY_SEPARATOR.$dir;
 
             if (!is_dir($path)) {
-
                 @mkdir($path, 0777, true);
                 @chmod($path, 0777);
             }
 
             if (!is_dir($path)) {
-
                 $incorrect_paths .= "&bull; $path does not exist<br/>";
-
             } elseif (!is_writable($path)) {
-
                 $incorrect_paths .= "&bull; $path is not writable<br/>";
             }
         }
@@ -169,17 +160,16 @@ class ServerReqs
         $linux_solve_incorrect_paths = '';
 
         if (!$is_win) {
-
             $linux_solve_incorrect_paths = '<p>
                     On Linux systems, you can run this command from the terminal:
-                    <code>chmod -R 0777 ' . $data_dir . '</code>
+                    <code>chmod -R 0777 '.$data_dir.'</code>
                 </p>';
         }
 
         $this->checksTable = array(
             'php_version'            => array(
                 'description' => 'Check that the <a href="http://php.net/">PHP</a> version is &gt;= 5.3.2',
-                'error'       => 'DeskPRO requires PHP 5.3.2. You have ' . phpversion(),
+                'error'       => 'DeskPRO requires PHP 5.3.2. You have '.phpversion(),
                 'readMore'    => App::get('deskpro.service_urls')->get('dp.kb.install.error_php_version'),
             ),
             'pdo_ext'                => array(
@@ -229,22 +219,22 @@ class ServerReqs
             ),
             'php_functions'          => array(
                 'description' => 'Check for disabled functions',
-                'error'       => 'We have detected the <code><a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">disable_functions</a></code> directive in your php.ini file ' . $ini_path . '. If you want to use the automatic upgrade feature, you must edit your php.ini and remove the disable_functions directive. These functions are required for automatic upgrades: escapeshellarg, exec, passthru, chdir and proc_open.',
+                'error'       => 'We have detected the <code><a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">disable_functions</a></code> directive in your php.ini file '.$ini_path.'. If you want to use the automatic upgrade feature, you must edit your php.ini and remove the disable_functions directive. These functions are required for automatic upgrades: escapeshellarg, exec, passthru, chdir and proc_open.',
                 'readMore'    => App::get('deskpro.service_urls')->get('dp.kb.install.error_disabled_functions'),
             ),
             'memory_limit'           => array(
                 'description' => 'Check that PHP\'s <a href="http://php.net/manual/en/ini.core.php#ini.memory-limit">memory limit</a> is at least 128 MB',
-                'error'       => 'DeskPRO requires PHP\'s memory_limit option to be at least 128 MB. Edit your php.ini file (<code>' . $ini_path . '</code>) to increase the limit.',
+                'error'       => 'DeskPRO requires PHP\'s memory_limit option to be at least 128 MB. Edit your php.ini file (<code>'.$ini_path.'</code>) to increase the limit.',
                 'readMore'    => App::get('deskpro.service_urls')->get('dp.kb.install.error_memory_limit'),
             ),
             'upload_tmp_dir'         => array(
                 'description' => 'Check that the temporary upload directory is writable',
-                'error'       => 'We have detected the <code><a href="http://php.net/manual/en/ini.core.php#ini.upload-tmp-dir">upload_tmp_dir</a></code> directive in your php.ini file (<code>' . $ini_path . '</code>) contains an invalid value. The temporary upload directory must be writable by the web server for uploads to be accepted. If you do not fix this problem, you will not be able to add attachments to tickets or articles or upload any other kind of file.',
+                'error'       => 'We have detected the <code><a href="http://php.net/manual/en/ini.core.php#ini.upload-tmp-dir">upload_tmp_dir</a></code> directive in your php.ini file (<code>'.$ini_path.'</code>) contains an invalid value. The temporary upload directory must be writable by the web server for uploads to be accepted. If you do not fix this problem, you will not be able to add attachments to tickets or articles or upload any other kind of file.',
                 'readMore'    => App::get('deskpro.service_urls')->get('dp.kb.install.error_upload_tmp_dir'),
             ),
             'data_write'             => array(
                 'description' => 'Check that the data directory is writable',
-                'error'       => 'The data directory ' . $data_dir . ' and all sub-directories must be writable.<br/>' . $incorrect_paths . $linux_solve_incorrect_paths,
+                'error'       => 'The data directory '.$data_dir.' and all sub-directories must be writable.<br/>'.$incorrect_paths.$linux_solve_incorrect_paths,
                 'readMore'    => App::get('deskpro.service_urls')->get('dp.kb.install.error_data_dir'),
             ),
             'openssl_ext'            => array(
@@ -255,7 +245,7 @@ class ServerReqs
             ),
             'magic_quotes_gpc_check' => array(
                 'description'    => 'Checking if <a href="http://www.php.net/manual/en/security.magicquotes.disabling.php">magic_quotes_gpc</a> is disabled',
-                'error'          => 'We recommend disabling <code>magic_quotes_gpc</code> in your php.ini for a small performance improvement. (Your php.ini file is located at <code>' . $ini_path . '</code>)',
+                'error'          => 'We recommend disabling <code>magic_quotes_gpc</code> in your php.ini for a small performance improvement. (Your php.ini file is located at <code>'.$ini_path.'</code>)',
                 'readMore'       => App::get('deskpro.service_urls')->get('dp.kb.install.error_magic_quotes'),
                 'recommendation' => true,
             ),
@@ -278,7 +268,7 @@ class ServerReqs
         $recommendOpcache = version_compare(phpversion(), '5.5.0', '<')
             ? (\Orb\Util\Env::isWindows()
                 ? '<a href="http://www.php.net/manual/en/book.wincache.php">WinCache extension</a>'
-                : '<a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a>' )
+                : '<a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a>')
             : '<a href="http://php.net/manual/book.opcache.php">OPcache extension</a>';
 
         $this->checksTable['apc_check'] = array(
@@ -298,7 +288,7 @@ class ServerReqs
      */
     protected function addOptionals()
     {
-//		$this->checksTable['test'] = array(
+        //		$this->checksTable['test'] = array(
 //			'description'    => 'Checking test',
 //			'error'          => 'We recommend test',
 //			'readMore'       => 'read more',

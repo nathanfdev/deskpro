@@ -34,7 +34,6 @@
 
 namespace Application\PortalBundle\Themes\DevTest\Controller;
 
-
 use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Request\TagRequest;
 use Symfony\Component\HttpFoundation\Response;

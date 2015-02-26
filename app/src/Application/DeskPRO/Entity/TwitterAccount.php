@@ -386,8 +386,6 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
         return false;
     }
 
-
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -397,7 +395,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccount';
-        $metadata->setPrimaryTable(array('name' => 'twitter_accounts',));
+        $metadata->setPrimaryTable(array('name' => 'twitter_accounts'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
@@ -420,7 +418,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
                  'nullable'   => false,
                  'columnName' => 'oauth_token',
                  'dpApi'      => false,
-                 'dpqlAccess' => false
+                 'dpqlAccess' => false,
             )
         );
         $metadata->mapField(
@@ -433,7 +431,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
                  'nullable'   => false,
                  'columnName' => 'oauth_token_secret',
                  'dpApi'      => false,
-                 'dpqlAccess' => false
+                 'dpqlAccess' => false,
             )
         );
         $metadata->mapField(

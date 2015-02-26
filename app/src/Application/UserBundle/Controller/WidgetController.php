@@ -55,18 +55,18 @@ class WidgetController extends AbstractController
         if (strpos($this->getRequest()->getRequestUri(), '/chat') !== false) {
             // The login page also has code for no perm if theres already a user sess
             return $this->render('UserBundle:Chat:chat-login.html.twig', array(
-                'parent_url' => $this->in->getString('parent_url')
+                'parent_url' => $this->in->getString('parent_url'),
             ));
         }
 
         if ($this->person->getId()) {
             return $this->render('UserBundle:Widget:overlay-perm-error.html.twig', array(
-                'parent_url' => $this->in->getString('parent_url')
+                'parent_url' => $this->in->getString('parent_url'),
             ));
         }
 
         return $this->render('UserBundle:Widget:overlay-login.html.twig', array(
-            'parent_url' => $this->in->getString('parent_url')
+            'parent_url' => $this->in->getString('parent_url'),
         ));
     }
 
@@ -83,7 +83,6 @@ class WidgetController extends AbstractController
 
             $this->db->beginTransaction();
             try {
-
                 if (!$this->person->isGuest()) {
                     $this->em->persist($this->person);
                 }
@@ -102,7 +101,6 @@ class WidgetController extends AbstractController
             $cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dplid', $lang->getId(), 'never', true);
             $cookie->send();
         }
-
 
         #------------------------------
         # New ticket form
@@ -133,7 +131,6 @@ class WidgetController extends AbstractController
         $feedback_categories = $structure->getFeedbackRootCategories();
 
         $show_feedback = $this->container->getSetting('user.portal_tab_feedback') && $this->person->hasPerm('feedback.use');
-
 
         #------------------------------
         # Fetch latest content
@@ -210,7 +207,6 @@ class WidgetController extends AbstractController
         return $this->render('UserBundle:Widget:overlay.html.twig', $vars);
     }
 
-
     ################################################################################
     # new-ticket
     ################################################################################
@@ -271,14 +267,14 @@ class WidgetController extends AbstractController
 
             return $this->createJsonResponse(array(
                 'ticket_id' => $ticket->id,
-                'email' => $ticket->person->getPrimaryEmailAddress()
+                'email' => $ticket->person->getPrimaryEmailAddress(),
             ));
         } else {
             $error_fields = $validator->getErrorGroups(true);
 
             return $this->createJsonResponse(array(
                 'is_error' => true,
-                'errors' => $error_fields
+                'errors' => $error_fields,
             ));
         }
     }
@@ -301,8 +297,7 @@ class WidgetController extends AbstractController
         $validator = new \Application\UserBundle\Validator\NewFeedbackValidator();
 
         if ($validator->isValid($newfeedback)) {
-
-            $hash = md5($newfeedback->title . $newfeedback->content . $newfeedback->category_id);
+            $hash = md5($newfeedback->title.$newfeedback->content.$newfeedback->category_id);
 
             $dupe = false;
             $person_from_email = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($newfeedback->person_email);
@@ -315,7 +310,7 @@ class WidgetController extends AbstractController
                 ")->setMaxResults(10)->setParameters(array($person_from_email, $datecut))->execute();
 
                 foreach ($exist_feedback as $f) {
-                    $hash_check = md5($f->title . $f->content . $f->category->getId());
+                    $hash_check = md5($f->title.$f->content.$f->category->getId());
                     if ($hash == $hash_check) {
                         $dupe = $f->getId();
                     }
@@ -335,14 +330,14 @@ class WidgetController extends AbstractController
             $GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
             return $this->createJsonResponse(array(
-                'feedback_id' => $feedback_id
+                'feedback_id' => $feedback_id,
             ));
         } else {
             $error_fields = $validator->getErrorGroups(true);
 
             return $this->createJsonResponse(array(
                 'is_error' => true,
-                'errors' => $error_fields
+                'errors' => $error_fields,
             ));
         }
     }
@@ -411,7 +406,7 @@ class WidgetController extends AbstractController
         $chat_display = new \Application\DeskPRO\PageDisplay\Page\ChatPageZoneCollection('create');
         $chat_display->setPersonContext($this->person);
         $chat_display->addPagesFromDb();
-        $chat_display_js = "window.DESKPRO_CHAT_DISPLAY = " . $chat_display->compileJs() . ";";
+        $chat_display_js = "window.DESKPRO_CHAT_DISPLAY = ".$chat_display->compileJs().";";
 
         $default_page = $chat_display->getDepartmentPage(0);
 
@@ -462,7 +457,7 @@ class WidgetController extends AbstractController
             'initial_email'          => $this->in->getString('email'),
             'initial_department_id'  => $this->in->getUint('department_id'),
             'auto_start'             => $this->in->getBool('auto_start'),
-            'is_window_mode'         => $is_window
+            'is_window_mode'         => $is_window,
         );
 
         if ($convo) {

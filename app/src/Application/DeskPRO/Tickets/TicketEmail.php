@@ -233,7 +233,6 @@ class TicketEmail
         }
     }
 
-
     /**
      * @return string
      */
@@ -241,7 +240,6 @@ class TicketEmail
     {
         return $this->user_mode;
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\EmailAccount
@@ -251,7 +249,6 @@ class TicketEmail
         return $this->from_email_account;
     }
 
-
     /**
      * @return null|string
      */
@@ -259,7 +256,6 @@ class TicketEmail
     {
         return $this->from_name;
     }
-
 
     /**
      * @return boolean
@@ -269,7 +265,6 @@ class TicketEmail
         return $this->do_cc_users;
     }
 
-
     /**
      * @return string
      */
@@ -277,7 +272,6 @@ class TicketEmail
     {
         return $this->template_name;
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\Ticket
@@ -287,7 +281,6 @@ class TicketEmail
         return $this->ticket;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\Person
      */
@@ -295,7 +288,6 @@ class TicketEmail
     {
         return $this->to_person;
     }
-
 
     /**
      * @param array $vars

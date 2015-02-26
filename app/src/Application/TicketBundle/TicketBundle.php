@@ -34,7 +34,6 @@
 
 namespace Application\TicketBundle;
 
-
 use Application\TicketBundle\DependencyInjection\TicketExtension;
 use Symfony\Component\Console\Application;
 use Symfony\Component\HttpKernel\Bundle\Bundle;

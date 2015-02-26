@@ -66,7 +66,7 @@ class ContentCommentVoter extends AbstractVoter
             return false; // if this setting is off, never allow comments
         }
 
-        switch($attribute) {
+        switch ($attribute) {
             case static::COMMENT_ARTICLES:
                 return $permission_bag->get('articles.comment');
             case static::COMMENT_FEEDBACK:
@@ -83,11 +83,10 @@ class ContentCommentVoter extends AbstractVoter
     /**
      * Return an array of supported classes. This will be called by supportsClass
      *
-     * @return array    an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
+     * @return array an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
      */
     protected function getSupportedClasses()
     {
         return true;
     }
 }
- 

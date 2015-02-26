@@ -43,7 +43,6 @@ class TicketWorkflows extends LazyCollection
      */
     private $default_id;
 
-
     /**
      * @return array
      */
@@ -54,7 +53,6 @@ class TicketWorkflows extends LazyCollection
 
         return $recs;
     }
-
 
     /**
      * This sets the 'default' preference.

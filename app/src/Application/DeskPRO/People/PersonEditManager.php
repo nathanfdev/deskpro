@@ -77,7 +77,6 @@ class PersonEditManager implements PersonContextInterface
 
     public function mergeUsers(Person $person, Person $other_person)
     {
-
     }
 
     /**
@@ -119,7 +118,6 @@ class PersonEditManager implements PersonContextInterface
         $new_prefs = array();
 
         try {
-
             // Clear out old preferences
             $this->db->executeUpdate("
                 DELETE FROM people_prefs
@@ -128,7 +126,9 @@ class PersonEditManager implements PersonContextInterface
 
             // Rebuild new ones
             foreach ($prefs as $name => $checked) {
-                if (!$checked || !in_array($name, $valid_names)) continue;
+                if (!$checked || !in_array($name, $valid_names)) {
+                    continue;
+                }
 
                 $pref = new \Application\DeskPRO\Entity\PersonPref();
                 $pref->person = $person;
@@ -181,7 +181,9 @@ class PersonEditManager implements PersonContextInterface
         $current = $this->db->fetchAllKeyed("SELECT * FROM ticket_filter_subscriptions WHERE person_id = ?", array($person->id), 'filter_id');
 
         foreach ($filter_info['all_filters'] as $filter) {
-            if (!isset($subs[$filter->id])) $subs[$filter->id] = array();
+            if (!isset($subs[$filter->id])) {
+                $subs[$filter->id] = array();
+            }
 
             $props = array();
             foreach ($valid_names as $k) {
@@ -193,7 +195,9 @@ class PersonEditManager implements PersonContextInterface
             if (DP_INTERFACE != 'admin') {
                 if ($person->getPref('agent_notif.no_allow_set_email')) {
                     foreach ($valid_names as $k) {
-                        if (strpos($k, 'email_') !== 0) continue;
+                        if (strpos($k, 'email_') !== 0) {
+                            continue;
+                        }
                         if (isset($current[$filter->id]) && $current[$filter->id][$k]) {
                             $props[$k] = true;
                         } else {
@@ -202,7 +206,9 @@ class PersonEditManager implements PersonContextInterface
                     }
                 } elseif ($person->getPref('agent_notif.no_allow_set_browser')) {
                     foreach ($valid_names as $k) {
-                        if (strpos($k, 'alert_') !== 0) continue;
+                        if (strpos($k, 'alert_') !== 0) {
+                            continue;
+                        }
                         if (isset($current[$filter->id]) && $current[$filter->id][$k]) {
                             $props[$k] = true;
                         } else {

@@ -25,10 +25,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
-
 namespace Application\DeskPRO\Service;
-
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
@@ -38,130 +35,128 @@ use Application\DeskPRO\People\PersonGuest;
 
 class RateLimit
 {
-	const KEY = 'rate_limit';
+    const KEY = 'rate_limit';
 
-	const ACT_LOGIN = 'login';
-	const ACT_REGISTRATION = 'registration';
-	const ACT_RESET_PWD = 'reset_password';
-	const ACT_TOKEN_EXCHANGE = 'token_exchange';
+    const ACT_LOGIN = 'login';
+    const ACT_REGISTRATION = 'registration';
+    const ACT_RESET_PWD = 'reset_password';
+    const ACT_TOKEN_EXCHANGE = 'token_exchange';
 
-	const ACT_SUBMIT_COMMENT = 'submit_comment';
-	const ACT_SUBMIT_FEEDBACK = 'submit_feedback';
-	const ACT_SUBMIT_TICKET = 'submit_ticket';
+    const ACT_SUBMIT_COMMENT = 'submit_comment';
+    const ACT_SUBMIT_FEEDBACK = 'submit_feedback';
+    const ACT_SUBMIT_TICKET = 'submit_ticket';
 
+    /** @var DeskproContainer  */
+    protected $container;
 
-	/** @var DeskproContainer  */
-	protected $container;
+    protected $params_cache = array();
 
-	protected $params_cache = array();
+    public function __construct(DeskproContainer $continer)
+    {
+        $this->container = $continer;
+    }
 
-	public function __construct(DeskproContainer $continer)
-	{
-		$this->container = $continer;
-	}
+    /**
+     * save action
+     * @param $action
+     * @return bool
+     * @throws \Exception
+     */
+    public function saveAction($action)
+    {
+        if (!$this->container->isScopeActive('request')) {
+            return false;
+        }
 
-	/**
-	 * save action
-	 * @param $action
-	 * @return bool
-	 * @throws \Exception
-	 */
-	public function saveAction($action)
-	{
-		if (!$this->container->isScopeActive('request')) {
-			return false;
-		}
+        /** @var Request $request */
+        $request = $this->container->get('request');
+        $person = $request->getSession()->getPerson();
+        $ip = $request->getClientIp();
 
-		/** @var Request $request */
-		$request = $this->container->get('request');
-		$person = $request->getSession()->getPerson();
-		$ip = $request->getClientIp();
+        if (!$params = $this->getParams($action, $person, $ip)) {
+            throw new \Exception('Invalid rate limit action');
+        }
 
-		if (!$params = $this->getParams($action, $person, $ip)) {
-			throw new \Exception('Invalid rate limit action');
-		}
+        /** @var RateLimitLog $rep */
+        $rep = $this->container->getEm()->getRepository('DeskPRO:RateLimitLog');
+        $rep->save($action, $person, $ip);
+    }
 
-		/** @var RateLimitLog $rep */
-		$rep = $this->container->getEm()->getRepository('DeskPRO:RateLimitLog');
-		$rep->save($action, $person, $ip);
-	}
+    /**
+     * response. bool for now
+     * @param $action
+     * @param  Person     $person
+     * @param  null       $ip
+     * @return bool
+     * @throws \Exception
+     */
+    public function getResponse($action, Person $person, $ip = null)
+    {
+        if (!$params = $this->getParams($action, $person, $ip)) {
+            throw new \Exception('Invalid rate limit action');
+        }
 
-	/**
-	 * response. bool for now
-	 * @param $action
-	 * @param Person $person
-	 * @param null $ip
-	 * @return bool
-	 * @throws \Exception
-	 */
-	public function getResponse($action, Person $person, $ip = null)
-	{
-		if (!$params = $this->getParams($action, $person, $ip)) {
-			throw new \Exception('Invalid rate limit action');
-		}
+        /** @var RateLimitLog $rep */
+        $rep = $this->container->getEm()->getRepository('DeskPRO:RateLimitLog');
+        $res = $rep->count($action, $params['time'], $person, $ip);
 
-		/** @var RateLimitLog $rep */
-		$rep = $this->container->getEm()->getRepository('DeskPRO:RateLimitLog');
-		$res = $rep->count($action, $params['time'], $person, $ip);
+        // all rate limit actions have a captcha as response, so we return bool for now
+        return $res >= (int) $params['limit']
+            ? (bool) $params['response']
+            : false;
+    }
 
-		// all rate limit actions have a captcha as response, so we return bool for now
-		return $res >= (int)$params['limit']
-			? (bool) $params['response']
-			: false;
-	}
+    /**
+     * params for current dataset
+     * @param $action
+     * @param  Person $person
+     * @param  null   $ip
+     * @return array
+     */
+    protected function getParams($action, Person $person, $ip = null)
+    {
+        $_k = sha1($action.'|'.$person['id'].'|'.$ip);
+        if (isset($this->params_cache[$_k])) {
+            return $this->params_cache[$_k];
+        }
 
-	/**
-	 * params for current dataset
-	 * @param $action
-	 * @param Person $person
-	 * @param null $ip
-	 * @return array
-	 */
-	protected function getParams($action, Person $person, $ip = null)
-	{
-		$_k = sha1($action . '|' . $person['id'] . '|' . $ip);
-		if (isset($this->params_cache[$_k])) {
-			return $this->params_cache[$_k];
-		}
+        $settings = $this->container->getSettingsHandler();
 
-		$settings = $this->container->getSettingsHandler();
+        $res = array();
+        foreach (array('limit', 'time', 'response') as $key) {
+            // try guest first
+            if ($person instanceof PersonGuest) {
+                if (null !== $value = $settings->get(self::KEY.'.'.$action.'.guest.'.$key)) {
+                    $res[$key] = $value;
+                    continue;
+                }
+            }
 
-		$res = array();
-		foreach (array('limit', 'time', 'response') as $key) {
+            if (null === $value = $settings->get(self::KEY.'.'.$action.'.'.$key)) {
+                return array();
+            }
+            $res[$key] = $value;
+        }
 
-			// try guest first
-			if ($person instanceof PersonGuest) {
-				if (null !== $value = $settings->get(self::KEY . '.' . $action . '.guest.' . $key)) {
-					$res[$key] = $value;
-					continue;
-				}
-			}
+        return $this->params_cache[$_k] = $res;
+    }
 
-			if (null === $value = $settings->get(self::KEY . '.' . $action . '.' . $key)) {
-				return array();
-			}
-			$res[$key] = $value;
-		}
+    /**
+     * @param $action
+     * @return bool
+     * @throws \Exception
+     */
+    public function isActionLimited($action)
+    {
+        if (!$this->container->isScopeActive('request')) {
+            return false;
+        }
 
-		return $this->params_cache[$_k] = $res;
-	}
+        /** @var Request $request */
+        $request = $this->container->get('request');
+        $person = $request->getSession()->getPerson();
+        $ip = $request->getClientIp();
 
-	/**
-	 * @param $action
-	 * @return bool
-	 * @throws \Exception
-	 */
-	public function isActionLimited($action)
-	{
-		if (!$this->container->isScopeActive('request')) {
-			return false;
-		}
-
-		/** @var Request $request */
-		$request = $this->container->get('request');
-		$person = $request->getSession()->getPerson();
-		$ip = $request->getClientIp();
-
-		return (bool) $this->getResponse($action, $person, $ip);
-	}
+        return (bool) $this->getResponse($action, $person, $ip);
+    }
 }

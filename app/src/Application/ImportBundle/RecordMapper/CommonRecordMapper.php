@@ -61,7 +61,6 @@ class CommonRecordMapper implements LearnableRecordMapperInterface
      */
     protected $record_ids;
 
-
     /**
      * @param Connection $db
      * @param string     $table
@@ -74,7 +73,6 @@ class CommonRecordMapper implements LearnableRecordMapperInterface
         $this->match_field = $match_field;
     }
 
-
     /**
      * Fetches DB records from the databases
      */
@@ -82,7 +80,6 @@ class CommonRecordMapper implements LearnableRecordMapperInterface
     {
         return $this->db->fetchAll("SELECT * FROM {$this->table} ORDER BY id ASC");
     }
-
 
     /**
      * Inits the lookup records
@@ -99,17 +96,15 @@ class CommonRecordMapper implements LearnableRecordMapperInterface
         }
 
         foreach ($raw_records as $rec) {
-
             $title = $rec[$this->match_field];
             if (isset($rec['parent_id']) && $rec['parent_id'] && isset($id_to_title[$rec['parent_id']])) {
-                $title = $id_to_title[$rec['parent_id']] . ' > ' . $title;
+                $title = $id_to_title[$rec['parent_id']].' > '.$title;
             }
 
             $this->records[$rec['id']] = $this->normalizeMatchField($title);
             $this->record_ids[$rec['id']] = $rec['id'];
         }
     }
-
 
     /**
      * Have the mapper learn a new value. For examlpe, this might add a new value to an internal cache.
@@ -127,7 +122,6 @@ class CommonRecordMapper implements LearnableRecordMapperInterface
         $this->record_ids[$record['id']] = $record['id'];
     }
 
-
     /**
      * @param  string $value
      * @return string
@@ -140,7 +134,6 @@ class CommonRecordMapper implements LearnableRecordMapperInterface
 
         return $value;
     }
-
 
     /**
      * Returns person ID given an email address.

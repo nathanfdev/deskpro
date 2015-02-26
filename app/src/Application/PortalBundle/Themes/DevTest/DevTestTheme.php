@@ -46,7 +46,6 @@ class DevTestTheme extends AbstractTheme
         return 'devtest';
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -54,7 +53,6 @@ class DevTestTheme extends AbstractTheme
     {
         return 'base';
     }
-
 
     /**
      * {@inheritdoc}
@@ -64,19 +62,17 @@ class DevTestTheme extends AbstractTheme
         return 'Dev Test';
     }
 
-
     public static function getHardCodedTags()
     {
         return array();
     }
-
 
     /**
      * {@inheritdoc}
      */
     public function getBaseTemplateDir()
     {
-        return __DIR__ . '/Resources/views';
+        return __DIR__.'/Resources/views';
     }
 
     /**
@@ -84,9 +80,8 @@ class DevTestTheme extends AbstractTheme
      */
     public function getBaseControllerDir()
     {
-        return __DIR__ . '/Controller';
+        return __DIR__.'/Controller';
     }
-
 
     /**
      * {@inheritdoc}

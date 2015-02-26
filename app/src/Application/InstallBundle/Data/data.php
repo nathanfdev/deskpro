@@ -1,4 +1,6 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 
 ################################################################################
 # Language
@@ -138,14 +140,14 @@ if (!$IMPORT_INSTALL) {
     foreach (array('gathering-feedback', 'planning', 'started', 'under-review') as $t) {
         $s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
         $s->status_type = 'active';
-        $s->title = $translate->phrase('user.defaults.feedback_status_' . $t);
+        $s->title = $translate->phrase('user.defaults.feedback_status_'.$t);
         $em->persist($s);
     }
 
     foreach (array('completed', 'duplicate', 'declined') as $t) {
         $s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
         $s->status_type = 'closed';
-        $s->title = $translate->phrase('user.defaults.feedback_status_' . $t);
+        $s->title = $translate->phrase('user.defaults.feedback_status_'.$t);
         $em->persist($s);
     }
     $em->flush();
@@ -221,7 +223,6 @@ $b->type = 'twitter';
 $b->is_enabled = false;
 $em->persist($b);
 $em->flush();
-
 
 ################################################################################
 # Agent Teams

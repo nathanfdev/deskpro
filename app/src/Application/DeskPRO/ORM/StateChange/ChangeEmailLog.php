@@ -76,7 +76,6 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
      */
     private $template;
 
-
     /**
      * @param string   $field_id
      * @param string   $user_mode
@@ -99,7 +98,6 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
         $this->template   = $template;
     }
 
-
     /**
      * @return string
      */
@@ -108,7 +106,6 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
         return $this->field_id;
     }
 
-
     /**
      * @return array
      */
@@ -116,7 +113,6 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
     {
         return null;
     }
-
 
     /**
      * @return array

@@ -34,13 +34,11 @@
 
 namespace Application\FormBundle\Form\DataTransformer;
 
-
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class ForceBooleanTransformer implements DataTransformerInterface
 {
-
     /**
      * Transforms a value from the original representation to a transformed representation.
      *
@@ -102,4 +100,3 @@ class ForceBooleanTransformer implements DataTransformerInterface
         return (bool) $value;
     }
 }
- 

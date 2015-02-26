@@ -56,12 +56,12 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 
     public function getCacheKey($name)
     {
-        return md5((string)$name);
+        return md5((string) $name);
     }
 
     public function getSource($name)
     {
-        $str_name = (string)$name;
+        $str_name = (string) $name;
 
         $source = file_get_contents($this->findTemplate($name));
 
@@ -75,19 +75,20 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 
     protected function findTemplate($template)
     {
-        $logicalName = (string)$template;
+        $logicalName = (string) $template;
 
         if (strpos($logicalName, 'Apps:') === 0) {
             if (class_exists('Application\\DeskPRO\\App', false)) {
-
                 $logicalName = preg_replace('#^Apps:#', '', $logicalName);
 
                 try {
                     $manager = App::getContainer()->getAppManager();
                     $package = null;
                     foreach ($manager->getAllPackages() as $p) {
-                        if (!$p->native_name) continue;
-                        if (preg_match('#^' . preg_quote($p->native_name) . ':#', $logicalName)) {
+                        if (!$p->native_name) {
+                            continue;
+                        }
+                        if (preg_match('#^'.preg_quote($p->native_name).':#', $logicalName)) {
                             $package = $p;
                             break;
                         }
@@ -96,11 +97,12 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
                     if ($package) {
                         $path_name = preg_replace('#^.*?:(.*?)$#', '$2', $logicalName);
                         $path_name = str_replace(':', '/', $path_name);
-                        $path = DP_ROOT.'/apps/' . $package->native_name . '/native/Resources/views/'.$path_name;
+                        $path = DP_ROOT.'/apps/'.$package->native_name.'/native/Resources/views/'.$path_name;
 
                         return $path;
                     }
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
         }
 

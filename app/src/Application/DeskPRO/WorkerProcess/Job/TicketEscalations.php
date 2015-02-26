@@ -96,11 +96,11 @@ class TicketEscalations extends AbstractJob
             $tickets = App::$container->getEm()->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids);
 
             if (!count($tickets)) {
-                $logger->warn("testTickets: No tickets found: " . implode(',', $ticket_ids));
+                $logger->warn("testTickets: No tickets found: ".implode(',', $ticket_ids));
 
                 return;
             } else {
-                $logger->info("testTickets: Found tickets: " . implode(',', $ticket_ids));
+                $logger->info("testTickets: Found tickets: ".implode(',', $ticket_ids));
             }
 
             $matcher = new EscalationTicketMatcherTest(App::$container->getEm(), App::$container->getDb());

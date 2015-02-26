@@ -78,7 +78,7 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
     public function addConnectionLog($message)
     {
         $this->logger->debug($message);
-        $this->connection_log[] = '[' . date('Y-m-d H:i:s') . '] ' . trim($message);
+        $this->connection_log[] = '['.date('Y-m-d H:i:s').'] '.trim($message);
     }
 
     /**
@@ -87,11 +87,11 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
     public function addMessageLog($message)
     {
         $this->logger->debug($message);
-        $this->message_logs[] = '[' . date('Y-m-d H:i:s') . '] ' . trim($message);
+        $this->message_logs[] = '['.date('Y-m-d H:i:s').'] '.trim($message);
     }
 
     /**
-     * @param bool $with_connection
+     * @param  bool   $with_connection
      * @return string
      */
     public function getMessageLogs($with_connection = true)
@@ -99,14 +99,14 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
         $l = implode("\n", $this->message_logs);
 
         if ($with_connection) {
-            $l = implode("\n", $this->connection_log) . "\n" . $l;
+            $l = implode("\n", $this->connection_log)."\n".$l;
         }
 
         return $l;
     }
 
     /**
-     * @param bool $with_connection
+     * @param  bool  $with_connection
      * @return array
      */
     public function getMessageLogsAsArray($with_connection = true)
@@ -118,7 +118,6 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
         }
     }
 
-
     /**
      * Clears message logs
      */
@@ -126,8 +125,6 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
     {
         $this->message_logs = array();
     }
-
-
 
     /**
      * Invoked immediately following a command being sent.
@@ -221,7 +218,7 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
         if ($this->connection_log) {
             $this->addMessageLog(sprintf("%d messages were sent before this. Here is the connection log from the initial connection:", $this->message_count-1));
             foreach ($this->connection_log as $l) {
-                $this->addMessageLog('<Connect History> ' . $l);
+                $this->addMessageLog('<Connect History> '.$l);
             }
         }
     }
@@ -233,7 +230,6 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
      */
     public function sendPerformed(Swift_Events_SendEvent $evt)
     {
-
     }
 
     /**

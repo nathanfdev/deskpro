@@ -34,16 +34,9 @@
 
 namespace Application\PortalBundle\Themes\Base\Controller;
 
-
-use Application\PortalBundle\HttpCache\PortalHttpCache;
-use Application\PortalBundle\EventListener\OriginalUriListener;
 use Application\PortalBundle\Request\TagRequest;
-use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Application\PortalBundle\Annotation\Tag;
-use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\HttpCache\Configuration\TagHttpCache;
 
 class PortalController extends AbstractController
@@ -71,7 +64,7 @@ class PortalController extends AbstractController
             array(
                 'enabled_languages' => $language_manager->getEnabledLanguages(),
                 'current_language' => $language_manager->getLanguageStack()->getActive(),
-                'is_multi_language' => $language_manager->isMultiLanguagePortal()
+                'is_multi_language' => $language_manager->isMultiLanguagePortal(),
             )
         );
     }
@@ -99,7 +92,7 @@ class PortalController extends AbstractController
             'Theme:Portal:Tag/top_tabs.html.twig',
             array(
                 'url_starts_with' => isset($path_parts[0]) ? $path_parts[0] : null,
-                'tabs' => $tabs
+                'tabs' => $tabs,
             )
         );
     }
@@ -120,6 +113,7 @@ class PortalController extends AbstractController
     {
         if (!$user = $this->getUser()) {
             $auth_manager = $this->get('dp_authentication_manager.user');
+
             return $this->renderThemeView(
                 'Theme:Portal:Tag/sidebar_login.html.twig',
                 array(
@@ -137,7 +131,7 @@ class PortalController extends AbstractController
             'Theme:Portal:Tag/sidebar_user.html.twig',
             array(
                 'user' => $user,
-                'ticket_count' => $this->getTicketsDataService()->getTicketCount($user)
+                'ticket_count' => $this->getTicketsDataService()->getTicketCount($user),
             )
         );
     }
@@ -154,7 +148,7 @@ class PortalController extends AbstractController
             array(
                 'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
                 'ticket_count' => $user ? $this->getTicketsDataService()->getTicketCount($user) : 0,
-                'user' => $user
+                'user' => $user,
             )
         );
     }

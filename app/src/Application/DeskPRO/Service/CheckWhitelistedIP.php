@@ -26,12 +26,12 @@
 \**************************************************************************/
 
 namespace Application\DeskPRO\Service;
+
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\EntityRepository\WhiteListedIp;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-
 
 /**
  * Class CheckWhitelistedIP
@@ -80,11 +80,11 @@ class CheckWhitelistedIP
             'agent_whitelist_ip', array('code' => $code_data->getCode()), UrlGeneratorInterface::ABSOLUTE_URL
         );
         $vars = array(
-            'ip'		=> dp_get_user_ip_address(),
-            'code'		=> $code_data->getCode(),
-            'person'	=> $person,
-            'interface'	=> DP_INTERFACE,
-            'url'		=> $url,
+            'ip'        => dp_get_user_ip_address(),
+            'code'        => $code_data->getCode(),
+            'person'    => $person,
+            'interface'    => DP_INTERFACE,
+            'url'        => $url,
         );
 
         $message = $container->getMailer()->createMessage();

@@ -44,7 +44,6 @@ class Language extends AbstractEntityRepository
     /** @var \Application\DeskPRO\Entity\Language|null */
     protected $default_lang = null;
 
-
     public function countPortalLanguages()
     {
         return $this->_em->createQuery('SELECT COUNT(l) FROM DeskPRO:Language l WHERE l.has_user = true ORDER BY l.title ASC')->getSingleScalarResult();
@@ -79,14 +78,12 @@ class Language extends AbstractEntityRepository
         }
 
         $ret = array();
-        foreach ((array)$for_ids as $id) {
+        foreach ((array) $for_ids as $id) {
             $ret[$id] = $this->lang_titles[$id];
         }
 
         return $ret;
     }
-
-
 
     /**
      * @return \Application\DeskPRO\Entity\Language

@@ -50,7 +50,7 @@ class ExternalPendingQueue implements SourceMapperInterface
     private $queuer;
 
     /**
-     * @param SourceMapperInterface $source_mapper
+     * @param SourceMapperInterface  $source_mapper
      * @param PendingQueuerInterface $queuer
      */
     public function __construct(SourceMapperInterface $source_mapper, PendingQueuerInterface $queuer)
@@ -71,7 +71,7 @@ class ExternalPendingQueue implements SourceMapperInterface
     /**
      * Get a resource for a source (the actual message data)
      *
-     * @param array $source
+     * @param  array    $source
      * @return resource
      */
     public function getRowBlobHandle(array $source)
@@ -80,21 +80,22 @@ class ExternalPendingQueue implements SourceMapperInterface
     }
 
     /**
-     * @param \Swift_Mime_Message $message
+     * @param  \Swift_Mime_Message $message
      * @param $status
-     * @param \DateTime $queue_date
+     * @param  \DateTime           $queue_date
      * @return array
      */
     public function createSourceForMessage(\Swift_Mime_Message $message, $status, \DateTime $queue_date = null)
     {
         $r = $this->source_mapper->createSourceForMessage($message, $status, $queue_date);
         $r = $this->enqueueMessage($r);
+
         return $r;
     }
 
     /**
-     * @param array $source
-     * @param null $log_text
+     * @param  array $source
+     * @param  null  $log_text
      * @return mixed
      */
     public function markSourceComplete(array $source, $log_text = null)
@@ -103,8 +104,8 @@ class ExternalPendingQueue implements SourceMapperInterface
     }
 
     /**
-     * @param array $source
-     * @param null $log_text
+     * @param  array $source
+     * @param  null  $log_text
      * @return mixed
      */
     public function markSourceAborted(array $source, $log_text = null)
@@ -113,9 +114,9 @@ class ExternalPendingQueue implements SourceMapperInterface
     }
 
     /**
-     * @param array $source
-     * @param null $log_text
-     * @param \DateTime $next_date
+     * @param  array     $source
+     * @param  null      $log_text
+     * @param  \DateTime $next_date
      * @return mixed
      */
     public function markSourceRetry(array $source, $log_text = null, \DateTime $next_date = null)
@@ -127,9 +128,9 @@ class ExternalPendingQueue implements SourceMapperInterface
     }
 
     /**
-     * @param array $source
-     * @param string $error_code
-     * @param null $log_text
+     * @param  array  $source
+     * @param  string $error_code
+     * @param  null   $log_text
      * @return mixed
      */
     public function markSourceError(array $source, $error_code, $log_text = null)
@@ -138,8 +139,8 @@ class ExternalPendingQueue implements SourceMapperInterface
     }
 
     /**
-     * @param array $source
-     * @param \DateTime $next_date
+     * @param  array     $source
+     * @param  \DateTime $next_date
      * @return mixed
      */
     public function setSourcePending(array $source, \DateTime $next_date = null)
@@ -151,7 +152,7 @@ class ExternalPendingQueue implements SourceMapperInterface
     }
 
     /**
-     * @param array $source
+     * @param  array $source
      * @return mixed
      */
     public function setSourceProcessing(array $source)
@@ -160,8 +161,8 @@ class ExternalPendingQueue implements SourceMapperInterface
     }
 
     /**
-     * @param array $source
-     * @param string $log_text
+     * @param  array  $source
+     * @param  string $log_text
      * @return array
      */
     public function setLogText(array $source, $log_text = '')
@@ -176,7 +177,7 @@ class ExternalPendingQueue implements SourceMapperInterface
                 $this->queuer->queueMessageSource($r);
             } catch (\Exception $e) {
                 $status['error_code'] = SendmailSource::ERR_ENQUEUE_FAILED;
-                $r = $this->source_mapper->markSourceRetry($r, "Failed to queue message: " . $e->getMessage());
+                $r = $this->source_mapper->markSourceRetry($r, "Failed to queue message: ".$e->getMessage());
             }
         }
 

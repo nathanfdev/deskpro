@@ -46,7 +46,6 @@ use Doctrine\Common\Annotations\FileCacheReader;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Security\Core\Util\ClassUtils;
 
 /**
  * A reporistory of themes.
@@ -119,7 +118,8 @@ class ThemeRepository
         // if fresh, we are done, return the stored array and retain it for easy access
         if (file_exists($this->config_cache) && !$this->config_cache->isFresh()) {
             $this->logger->debug('theme repository: unserializing from file cache');
-           return $this->theme_map = require $this->config_cache;
+
+            return $this->theme_map = require $this->config_cache;
         }
 
         $this->logger->debug('theme repository: creating theme map and then caching it for future use');
@@ -141,7 +141,7 @@ class ThemeRepository
             $this->theme_map[$theme->getId()] = $theme;
         }
 
-        $this->config_cache->write('<?php return unserialize(\'' . serialize($this->theme_map) . '\');');
+        $this->config_cache->write('<?php return unserialize(\''.serialize($this->theme_map).'\');');
 
         return $this->theme_map;
     }
@@ -149,7 +149,7 @@ class ThemeRepository
     /**
      * Finds and adds all of the tags a theme can use to it. Static method calls and annotations supported.
      *
-     * @param ThemeInterface $theme
+     * @param  ThemeInterface $theme
      * @return Tag[]
      */
     private function resolveTags(ThemeInterface $theme)
@@ -162,7 +162,6 @@ class ThemeRepository
             $tags[$tag->getName()] = $tag;
         }
 
-
         // source 2: annotations
         $dir = $theme->getBaseControllerDir();
         if (!is_dir($dir)) {
@@ -171,7 +170,7 @@ class ThemeRepository
 
         $files = iterator_to_array(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir), \RecursiveIteratorIterator::LEAVES_ONLY));
         usort($files, function (\SplFileInfo $a, \SplFileInfo $b) {
-            return (string)$a > (string)$b ? 1 : -1;
+            return (string) $a > (string) $b ? 1 : -1;
         });
         foreach ($files as $file) {
             if (!$file->isFile() || '.php' !== substr($file->getFilename(), -4)) {
@@ -206,7 +205,6 @@ class ThemeRepository
                         }
                     }
                 }
-
             }
         }
 
@@ -279,7 +277,7 @@ class ThemeRepository
             }
 
             if (true === $class && T_STRING === $token[0]) {
-                return $namespace . '\\' . $token[1];
+                return $namespace.'\\'.$token[1];
             }
 
             if (true === $namespace && T_STRING === $token[0]) {

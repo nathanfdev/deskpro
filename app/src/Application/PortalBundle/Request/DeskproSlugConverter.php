@@ -34,7 +34,6 @@
 
 namespace Application\PortalBundle\Request;
 
-
 use Application\AppBundle\Service\ContentSlugManager;
 use Application\DeskPRO\ORM\EntityManager;
 use Application\PortalBundle\HttpKernel\Exception\PermanentRedirectException;
@@ -58,7 +57,6 @@ class DeskproSlugConverter implements ParamConverterInterface
      */
     private $slug_manager;
 
-
     public function __construct(EntityManager $em, ContentSlugManager $slug_manager)
     {
         $this->em = $em;
@@ -74,11 +72,12 @@ class DeskproSlugConverter implements ParamConverterInterface
         $slug_input = $request->attributes->get($slug_attribute_name);
         $slug_col         = $param_options['slug_col']; // this will always be "slug" (for now)
 
-        if ($param_name === 'tag_request') return;
+        if ($param_name === 'tag_request') {
+            return;
+        }
 
         if ($this->isContentClass($param_class)) {
             if ($obj = $this->slug_manager->findContentObjectBySlug($slug_input, $param_class)) {
-
                 // this must have come from history, we should redirect to the new url
                 if ($obj->getSlug() !== $slug_input) {
                     throw new PermanentRedirectException(
@@ -86,7 +85,7 @@ class DeskproSlugConverter implements ParamConverterInterface
                         array_merge(
                             $request->attributes->get('_route_params'),
                             array(
-                                $slug_attribute_name => $obj->getSlug(7)
+                                $slug_attribute_name => $obj->getSlug(7),
                             )
                         )
                     );
@@ -110,7 +109,7 @@ class DeskproSlugConverter implements ParamConverterInterface
         if ($obj = $repo->find($id)) {
             // it exists and we are on the old url at the moment, lets flag a 301 response
             $new_slug_attribute = array(
-                $slug_attribute_name => $obj->slug
+                $slug_attribute_name => $obj->slug,
             );
 
             throw new PermanentRedirectException(
@@ -126,7 +125,7 @@ class DeskproSlugConverter implements ParamConverterInterface
         if ($obj = $repo->find($id)) {
             // it exists and we are on the old url at the moment, lets flag a 301 response
             $new_slug_attribute = array(
-                $slug_attribute_name => $obj->slug
+                $slug_attribute_name => $obj->slug,
             );
 
             throw new PermanentRedirectException(

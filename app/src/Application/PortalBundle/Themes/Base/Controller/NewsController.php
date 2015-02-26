@@ -34,18 +34,14 @@
 
 namespace Application\PortalBundle\Themes\Base\Controller;
 
-
 use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
-use Application\DeskPRO\EntityRepository\ArticleCategory;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Request\TagRequest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\HttpCache\Configuration\TagHttpCache;
 
 class NewsController extends AbstractController
@@ -82,7 +78,7 @@ class NewsController extends AbstractController
             sprintf('Theme:News:Tag/%s.html.twig', $options['style']),
             array(
                 'category' => $category,
-                'category_children' => $category_children
+                'category_children' => $category_children,
             )
         );
     }
@@ -122,7 +118,7 @@ class NewsController extends AbstractController
             array(
                 'pager' => $pager,
                 'show_category_link' => $options['show_category_link'],
-                'category' => $category
+                'category' => $category,
             )
         );
     }
@@ -148,7 +144,7 @@ class NewsController extends AbstractController
         return $this->renderThemeView(
             'Theme:News:Tag/post.html.twig',
             array(
-                'post' => $post
+                'post' => $post,
             )
         );
     }
@@ -184,7 +180,7 @@ class NewsController extends AbstractController
             sprintf('Theme:News:Tag/post_subscription_%s.html.twig', $options['style']),
             array(
                 'post' => $post,
-                'is_subscribed' => $is_subscribed
+                'is_subscribed' => $is_subscribed,
             )
         );
     }
@@ -217,7 +213,7 @@ class NewsController extends AbstractController
         return $this->renderThemeView(
             'Theme:News:Tag/subscription_category.html.twig', array(
                 'category' => $category,
-                'is_subscribed' => $is_subscribed
+                'is_subscribed' => $is_subscribed,
             )
         );
     }
@@ -245,7 +241,7 @@ class NewsController extends AbstractController
 
         return $this->renderThemeView('Theme:News:Tag/comments.html.twig', array(
             'post' => $post,
-            'comments' => $comments
+            'comments' => $comments,
         ));
     }
 
@@ -280,7 +276,7 @@ class NewsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Common:pager.html.twig',
             array(
-                'pager' => $pager
+                'pager' => $pager,
             )
         );
     }
@@ -308,7 +304,7 @@ class NewsController extends AbstractController
             'Theme:News:Tag/breadcrumbs.html.twig',
             array(
                 'category' => $category,
-                'post' => $post
+                'post' => $post,
             )
         );
     }
@@ -336,7 +332,7 @@ class NewsController extends AbstractController
             'Theme:News:Tag/ratings.html.twig',
             array(
                 'post' => $post,
-                'rating' => $rating
+                'rating' => $rating,
             )
         );
     }

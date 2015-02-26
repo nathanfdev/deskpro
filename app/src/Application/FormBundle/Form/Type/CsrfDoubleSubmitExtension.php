@@ -35,13 +35,11 @@
 namespace Application\FormBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractTypeExtension;
-use Symfony\Component\Form\Exception;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormTypeExtensionInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -76,7 +74,7 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
 
             $csrfForm = $factory->createNamed($options['csrf_double_submit_cookie_name'], 'hidden', '', array(
                 'mapped' => false,
-                'label' => false
+                'label' => false,
             ));
 
             $view->children[$options['csrf_double_submit_cookie_name']] = $csrfForm->createView($view);
@@ -124,17 +122,16 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
                 'csrf_protection' => false,
                 'csrf_double_submit_protection' => true,
                 'csrf_double_submit_cookie_name' => '_dp_csrf_token',
-                'csrf_double_submit_error_message' => 'You did not submit a valid token. For security reasons, please ensure javascript is enabled, and cookies are enabled.'
+                'csrf_double_submit_error_message' => 'You did not submit a valid token. For security reasons, please ensure javascript is enabled, and cookies are enabled.',
             )
         )->setAllowedTypes(
             array(
                 'csrf_double_submit_protection' => 'bool',
                 'csrf_double_submit_cookie_name' => 'string',
-                'csrf_double_submit_error_message' => 'string'
+                'csrf_double_submit_error_message' => 'string',
             )
         );
     }
-
 
     /**
      * Returns the name of the type being extended.

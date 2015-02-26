@@ -51,7 +51,6 @@ class ResetCommand extends ContainerAwareCommand
         $this->addOption('log-path', null, InputOption::VALUE_REQUIRED, 'A base path to write log data to. Defaults to a file in the default log directory.');
     }
 
-
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
@@ -59,7 +58,6 @@ class ResetCommand extends ContainerAwareCommand
     {
         return parent::getContainer();
     }
-
 
     /**
      * {@inheritDoc}
@@ -75,7 +73,7 @@ class ResetCommand extends ContainerAwareCommand
 
         $importer->setStatusCallback(new ImporterStatusFnCallback(array('postResetDoneMarker' => function () {
             echo ".";
-        })));
+        }, )));
         $importer->resetDoneMarkers();
 
         echo "\n";

@@ -42,7 +42,7 @@ class Feed extends PortalItemAbstract implements CacheableItem
     {
         return array(
             'lifetime' => 43200, /*12 hours*/
-            'force_cache' => true
+            'force_cache' => true,
         );
     }
 
@@ -79,7 +79,7 @@ class Feed extends PortalItemAbstract implements CacheableItem
 
         $tpl = $this->getOption('tpl');
         if (!$tpl) {
-            $tpl = 'UserBundle:Portal:feed-' . $this->section;
+            $tpl = 'UserBundle:Portal:feed-'.$this->section;
         }
 
         $vars = $this->getTplVars();
@@ -87,7 +87,7 @@ class Feed extends PortalItemAbstract implements CacheableItem
             'section'    => $this->section,
             'options'    => $this->options,
             'feed_info'  => $feed_info,
-            'feed_items' => $feed_items
+            'feed_items' => $feed_items,
         ));
 
         $html = $this->renderView($tpl, $vars);

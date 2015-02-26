@@ -34,7 +34,6 @@
 
 namespace Application\PersonBundle\Events;
 
-
 use Application\DeskPRO\Entity\Person;
 use Application\PersonBundle\Person\Context\CreatePersonContext;
 use Symfony\Component\EventDispatcher\Event;
@@ -89,4 +88,3 @@ class PersonCreateEvent extends Event
         $this->context = $context;
     }
 }
- 

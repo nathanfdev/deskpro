@@ -61,7 +61,6 @@ class CheckSlaStatus extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

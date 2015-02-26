@@ -66,7 +66,7 @@ class Web
 
         // Standard header
         } else {
-            header('Location: ' . Strings::getFirstLine($url));
+            header('Location: '.Strings::getFirstLine($url));
         }
 
         exit;
@@ -80,7 +80,9 @@ class Web
      */
     public static function sendHttpStatus($type)
     {
-        if (headers_sent()) return false;
+        if (headers_sent()) {
+            return false;
+        }
 
         switch ($type) {
             case self::HTTP_STATUS_OK: header('HTTP/1.1 200 OK'); break;
@@ -112,7 +114,7 @@ class Web
             $filename = 'file';
         }
 
-        $headers['Content-Disposition'] = 'inline; filename="' . str_replace('"', '\\"', $filename) . '"';
+        $headers['Content-Disposition'] = 'inline; filename="'.str_replace('"', '\\"', $filename).'"';
 
         if ($mimetype !== null) {
             $headers['Content-Type'] = $mimetype;
@@ -151,7 +153,7 @@ class Web
 
                     if (!$expire) {
                         $expire = null;
-                        throw new \Exception('Unknown expire format: ' . $expire);
+                        throw new \Exception('Unknown expire format: '.$expire);
                     }
                 }
             }
@@ -242,16 +244,15 @@ class Web
         $alt_ip = null;
 
         if ($alt_ip === null) {
-
             if (isset($_SERVER['HTTP_CLIENT_IP'])) {
                 $alt_ip = $_SERVER['HTTP_CLIENT_IP'];
             }
 
-            if (!$alt_ip AND isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            if (!$alt_ip and isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 $ip_arr = array();
 
                 if (preg_match_all('#\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}#s', $_SERVER['HTTP_X_FORWARDED_FOR'], $ip_arr)) {
-                    foreach($ip_arr[0] AS $ip) {
+                    foreach ($ip_arr[0] as $ip) {
                         if (!preg_match("#^(10|172\.16|192\.168)\.#", $ip)) {
                             $alt_ip = $ip;
                             break;
@@ -302,19 +303,17 @@ class Web
         // The URL
         if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI']) {
             $script_path = $_SERVER['REQUEST_URI'];
-        } else	{
+        } else {
             if (isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO']) {
                 $script_path = $_SERVER['PATH_INFO'];
-
             } elseif (isset($_SERVER['REDIRECT_URL']) && $_SERVER['REDIRECT_URL']) {
                 $script_path = $_SERVER['REDIRECT_URL'];
-
             } elseif (isset($_SERVER['PHP_SELF']) && $_SERVER['PHP_SELF']) {
                 $script_path = $_SERVER['PHP_SELF'];
             }
 
             if (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING']) {
-                $script_path .= '?' . $_SERVER['QUERY_STRING'];
+                $script_path .= '?'.$_SERVER['QUERY_STRING'];
             }
         }
 
@@ -322,7 +321,7 @@ class Web
 
         if ($quest_pos !== false) {
             $script = urldecode(substr($script_path, 0, $quest_pos));
-            $script_path = $script . substr($script_path, $quest_pos);
+            $script_path = $script.substr($script_path, $quest_pos);
         } else {
             $script_path = urldecode($script_path);
         }
@@ -385,7 +384,7 @@ class Web
         if (empty($url_parts['query'])) {
             $url_parts['query'] = '';
         } else {
-            $url_parts['query'] = '?' . $url_parts['query'];
+            $url_parts['query'] = '?'.$url_parts['query'];
         }
 
         if (empty($url_parts['port'])) {
@@ -448,12 +447,12 @@ class Web
             foreach ($parts as $res) {
                 $matches = null;
                 if (preg_match("#^HTTP/1\\.\\d (\\d+)#", $res, $matches)) {
-                    $status = (int)$matches[1];
+                    $status = (int) $matches[1];
 
                     if ($status == 200 || ($status > 300 && $status <= 308)) {
                         $matches = null;
                         if (preg_match("#Content-Length: (\\d+)#", $res, $matches)) {
-                            $content_length = (int)$matches[1];
+                            $content_length = (int) $matches[1];
 
                             return $content_length;
                         }
@@ -488,7 +487,7 @@ class Web
             foreach ($parts as $res) {
                 $matches = null;
                 if (preg_match("#^HTTP/1\\.\\d (\\d+)#", $res, $matches)) {
-                    $status = (int)$matches[1];
+                    $status = (int) $matches[1];
 
                     if ($status == 200 || ($status > 300 && $status <= 308)) {
                         $matches = null;
@@ -536,7 +535,7 @@ class Web
             'AltaVista',
             'Ask Jeeves/Teoma', 'Teoma',
             'Gigabot',
-            'bingbot'
+            'bingbot',
         );
 
         foreach ($bot_strings as $bot) {

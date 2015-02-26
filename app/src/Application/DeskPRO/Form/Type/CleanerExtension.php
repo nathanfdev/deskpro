@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Form\Type;
 
-
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -110,11 +109,11 @@ class CleanerExtension extends AbstractTypeExtension
 
         $resolver->setDefaults(
             array(
-                'filter_clean' => true
+                'filter_clean' => true,
             )
         )->setAllowedTypes(
             array(
-                'filter_clean' => 'bool'
+                'filter_clean' => 'bool',
             )
         );
     }

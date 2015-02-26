@@ -34,22 +34,17 @@
 
 namespace Application\PortalBundle\EventListener;
 
-use Application\DeskPRO\Brand\BrandStack;
 use Application\DeskPRO\EntityRepository\Brand;
-use Application\DeskPRO\Entity\Brand as BrandEntity;
-use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Request\TagRequest;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\FileCacheReader;
 use Doctrine\Common\Util\ClassUtils;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ExpressionLanguage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -135,13 +130,12 @@ class TagOptionsListener implements EventSubscriberInterface
                 break; // we only care about finding one TagOptions here
             }
         }
-
     }
 
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::CONTROLLER => array('onKernelController', -10)
+            KernelEvents::CONTROLLER => array('onKernelController', -10),
         );
     }
 

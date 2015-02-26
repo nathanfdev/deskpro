@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle\Form\Type;
 
-
 use Application\FormBundle\Form\DataTransformer\HierarchyNodeTransformer;
 use Application\FormBundle\Hierarchy\HierarchyGenerator;
 use Symfony\Component\Form\AbstractType;
@@ -72,10 +71,9 @@ class EntityHeirarchyType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'hierarchy_generator' => $this->hierarchy_generator
+            'hierarchy_generator' => $this->hierarchy_generator,
         ));
 
         $resolver->setRequired('choice_list');
     }
 }
- 

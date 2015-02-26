@@ -102,10 +102,10 @@ class TweetNewNotification extends AbstractAgentNotification
     {
         $this->sendBrowserNotifications('AgentBundle:TwitterStatus:notify-row-new.html.twig', array(
             'account_status' => $this->account_status,
-            'notify_data' => array('notify_type' => 'twitter')
+            'notify_data' => array('notify_type' => 'twitter'),
         ));
         $this->sendEmailNotifications('DeskPRO:emails_agent:tweet-new.html.twig', array(
-            'account_status' => $this->account_status
+            'account_status' => $this->account_status,
         ));
     }
 }

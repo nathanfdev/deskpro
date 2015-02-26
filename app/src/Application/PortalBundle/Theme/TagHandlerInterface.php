@@ -40,15 +40,15 @@ interface TagHandlerInterface
     /**
      * If the handler can handle the tag.... for instance, ESI handler can only handle ESI tags, but not if its a guest
      *
-     * @param Tag $tag
-     * @param TagRequest $tag_request
+     * @param  Tag        $tag
+     * @param  TagRequest $tag_request
      * @return bool
      */
     public function supports(Tag $tag, TagRequest $tag_request);
 
     /**
-     * @param Tag $tag
-     * @param TagRequest $tag_request
+     * @param  Tag                                        $tag
+     * @param  TagRequest                                 $tag_request
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function handle(Tag $tag, TagRequest $tag_request);

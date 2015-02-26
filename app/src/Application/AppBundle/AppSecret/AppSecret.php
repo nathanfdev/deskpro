@@ -34,8 +34,7 @@
 
 namespace Application\AppBundle\AppSecret;
 
-
-class AppSecret 
+class AppSecret
 {
     public function getAppSecret()
     {

@@ -33,5 +33,4 @@ namespace Application\ImportBundle\Exception;
 
 class DuplicateValueException extends \Exception
 {
-
 }

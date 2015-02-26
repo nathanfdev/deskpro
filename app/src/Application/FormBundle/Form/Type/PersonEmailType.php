@@ -47,7 +47,7 @@ class PersonEmailType extends AbstractType
         $builder->add('email', 'email', array(
             'label' => $options['email_label'],
             'required' => $options['required'],
-            'constraints' => $options['email_constraints']
+            'constraints' => $options['email_constraints'],
         ));
     }
 
@@ -64,8 +64,7 @@ class PersonEmailType extends AbstractType
             'email_constraints' => array(
                 new NotBlank(array('message' => 'Please provide us with your email')),
                 new Email(array('message' => 'This email adddress is not valid')),
-            )
+            ),
         ));
     }
 }
- 

@@ -72,7 +72,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @param string $entity_name
+     * @param  string                         $entity_name
      * @return \Doctrine\ORM\EntityRepository
      */
     public function getRepo($entity_name)
@@ -81,7 +81,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @param array $options
+     * @param  array                                     $options
      * @return \Application\PortalBundle\Theme\ThemeView
      */
     public function createThemeView(array $options = array())
@@ -92,7 +92,7 @@ class AbstractController extends BaseController
     public function renderThemeView($template_name, array $options = array())
     {
         $page_vars = array(
-            'page' => $this->createThemeView($options)
+            'page' => $this->createThemeView($options),
         );
 
         // since "page" is a reserved template var, we need to rename it on the way in.
@@ -122,7 +122,7 @@ class AbstractController extends BaseController
 
     /**
      * @param $setting
-     * @param null $default
+     * @param  null  $default
      * @return mixed
      */
     protected function getBrandSetting($setting, $default = null)

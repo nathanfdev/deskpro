@@ -73,7 +73,6 @@ class Twilio
         );
     }
 
-
     /**
      * @return string a friendly name that the user sets in twillio, usually their email
      */
@@ -81,7 +80,6 @@ class Twilio
     {
         return $this->twilio->accounts->get($this->sid)->friendly_name;
     }
-
 
     /**
      * This method works only for phone numbers already purchased on Twilio. The number must be
@@ -103,7 +101,7 @@ class Twilio
                 $number = $this->twilio->account->incoming_phone_numbers->get($number_sid);
                 $number->update(
                     array(
-                        "SmsUrl"   => "http://demo.twilio.com/docs/sms.xml"
+                        "SmsUrl"   => "http://demo.twilio.com/docs/sms.xml",
                     )
                 );
             }
@@ -123,7 +121,6 @@ class Twilio
         return $numbers;
     }
 
-
     public function setUrlForNumber($url, $number)
     {
         $nums = $this->twilio->account->incoming_phone_numbers;
@@ -133,7 +130,7 @@ class Twilio
                 $num->update(
                     array(
                         "SmsUrl"   => $url,
-                        "SmsMethod" => 'POST'
+                        "SmsMethod" => 'POST',
                     )
                 );
             }

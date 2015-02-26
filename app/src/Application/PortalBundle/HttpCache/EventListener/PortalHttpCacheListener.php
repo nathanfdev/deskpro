@@ -34,13 +34,10 @@
 
 namespace Application\PortalBundle\HttpCache\EventListener;
 
-
 use Application\DeskPRO\Brand\BrandStack;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\News;
-use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\PortalBundle\HttpCache\PortalCacheHelper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -98,7 +95,7 @@ class PortalHttpCacheListener implements EventSubscriberInterface
         $content = null;
         if ($content_name = $config->getContent()) {
             if (!$content = $request->attributes->get($content_name)) {
-                throw new \InvalidArgumentException('could not find content for PortalHttpCacheListener (request attribute name = "' . $content_name . '" does not exist)');
+                throw new \InvalidArgumentException('could not find content for PortalHttpCacheListener (request attribute name = "'.$content_name.'" does not exist)');
             }
         }
 
@@ -161,15 +158,15 @@ class PortalHttpCacheListener implements EventSubscriberInterface
         $is_guest = $this->cache_helper->isGuestRequest();
         if ($page_cache_config) {
             if ($is_guest) {
-                $smaxage = (int)$this->getBrandSetting('portal.smaxage_guest_page');
+                $smaxage = (int) $this->getBrandSetting('portal.smaxage_guest_page');
             } else {
-                $smaxage = (int)$this->getBrandSetting('portal.smaxage_user_page');
+                $smaxage = (int) $this->getBrandSetting('portal.smaxage_user_page');
             }
         } else {
             if ($is_guest) {
-                $smaxage = (int)$this->getBrandSetting('portal.smaxage_guest_tag');
+                $smaxage = (int) $this->getBrandSetting('portal.smaxage_guest_tag');
             } else {
-                $smaxage = (int)$this->getBrandSetting('portal.smaxage_user_tag');
+                $smaxage = (int) $this->getBrandSetting('portal.smaxage_user_tag');
             }
         }
 
@@ -206,7 +203,7 @@ class PortalHttpCacheListener implements EventSubscriberInterface
     }
 
     /**
-     * @param ContentAbstract $content
+     * @param  ContentAbstract $content
      * @return \DateTime
      */
     protected function generateLastModified(ContentAbstract $content)
@@ -219,7 +216,7 @@ class PortalHttpCacheListener implements EventSubscriberInterface
     }
 
     /**
-     * @param ContentAbstract $content
+     * @param  ContentAbstract $content
      * @return string
      */
     protected function generateEtag(ContentAbstract $content)
@@ -229,7 +226,7 @@ class PortalHttpCacheListener implements EventSubscriberInterface
         $id = $content->getId();
         $last_modified = $this->generateLastModified($content);
 
-        $etag = hash('sha256', $global_timestamp . $type . $id . $last_modified->getTimestamp());
+        $etag = hash('sha256', $global_timestamp.$type.$id.$last_modified->getTimestamp());
 
         return $etag;
     }

@@ -34,7 +34,6 @@
 
 namespace Application\PortalBundle\Controller;
 
-
 use Application\AuthBundle\Voter\Portal\ContentCommentVoter;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
@@ -68,7 +67,6 @@ class ArticlesController extends AbstractController
 
             return $this->render('PortalBundle:Articles:feed.rss.twig', array('pager' => $pager, 'category' => null));
         }
-
 
         //
         // RENDER THEME
@@ -105,7 +103,6 @@ class ArticlesController extends AbstractController
             return $this->render('PortalBundle:Articles:feed.rss.twig', array('pager' => $pager, 'category' => $category));
         }
 
-
         //
         // RENDER THEME
         //
@@ -115,7 +112,7 @@ class ArticlesController extends AbstractController
                 'category' => $category,
                 'page' => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
-                'show_pagination' => true
+                'show_pagination' => true,
             )
         );
     }
@@ -136,7 +133,7 @@ class ArticlesController extends AbstractController
             $comment = new ArticleComment();
             $comment->setObject($article);
             $new_comment_form = $this->createForm('comment', $comment, array(
-                'person' => $this->getUser()
+                'person' => $this->getUser(),
             ));
             $new_comment_form->handleRequest($request);
             if ($new_comment_form->isValid()) {
@@ -148,7 +145,6 @@ class ArticlesController extends AbstractController
             }
         }
 
-
         //
         // RENDER THEME
         //
@@ -159,7 +155,7 @@ class ArticlesController extends AbstractController
                 'category' => $article->getPrimaryCategory(),
                 'content_id' => $article->getId(),
                 'content_type' => Article::CONTENT_TYPE,
-                'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null
+                'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
             )
         );
     }
@@ -203,7 +199,6 @@ class ArticlesController extends AbstractController
 
         return $this->redirectToRoute('portal_kb_view', array('slug' => $article->getSlug()));
     }
-
 
     /**
      * @Route("/kb/category/toggle-subscription/{slug}", name="portal_kb_article_category_toggle_subscription")

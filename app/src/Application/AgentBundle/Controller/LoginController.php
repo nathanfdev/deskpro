@@ -38,7 +38,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 use Application\DeskPRO\Service\RateLimit;
 use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class LoginController extends \Application\UserBundle\Controller\LoginController
 {

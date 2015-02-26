@@ -1,6 +1,7 @@
 <?php
 
 namespace Application\AppBundle\Helper;
+
 use Application\DeskPRO\Domain\DomainObject;
 
 /**
@@ -20,7 +21,7 @@ class ArbitraryHasher
      * is only in the memory of the current process. This hash should not be trusted for cache's that persist over more than
      * a single request.
      *
-     * @param mixed $input
+     * @param  mixed  $input
      * @return string
      */
     public function generateHash($input)
@@ -31,7 +32,7 @@ class ArbitraryHasher
             sort($inputs);
         }
 
-        $v=  md5(json_encode($inputs));
+        $v =  md5(json_encode($inputs));
 
         return $v;
     }
@@ -48,11 +49,10 @@ class ArbitraryHasher
 
         if (is_object($input)) {
             try {
-                 return serialize($input);
+                return serialize($input);
             } catch (\Exception $e) {
-                  return spl_object_hash($input);
+                return spl_object_hash($input);
             }
-
         }
 
         if (is_array($input) || $input instanceof \Traversable) {

@@ -52,14 +52,14 @@ class TicketMessageType extends AbstractType
         } else {
             $constraints = array(
                 new NotNull(),
-                new Length(array('min' => 10, 'minMessage' => 'Your message must be at least 10 characters in length.'))
+                new Length(array('min' => 10, 'minMessage' => 'Your message must be at least 10 characters in length.')),
             );
         }
 
         $builder->add('message', 'textarea', array(
             'label' => $options['message_label'],
             'required' => $options['required'],
-            'constraints' => $constraints
+            'constraints' => $constraints,
         ));
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreData'));
@@ -92,14 +92,14 @@ class TicketMessageType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => 'Application\\DeskPRO\\Entity\\TicketMessage',
             'message_label' => 'Message',
-            'message_constraints' => array()
+            'message_constraints' => array(),
         ));
         $resolver->setRequired(array(
-            'person', 'ticket'
+            'person', 'ticket',
         ));
         $resolver->setAllowedTypes(array(
             'person' => 'Application\\DeskPRO\\Entity\\Person',
-            'ticket' => 'Application\\DeskPRO\\Entity\\Ticket'
+            'ticket' => 'Application\\DeskPRO\\Entity\\Ticket',
         ));
     }
 }

@@ -51,6 +51,7 @@ class PortalModeListener implements EventSubscriberInterface
         if ('/_proxy' === substr($path, 0, 7)) {
             $this->logger->info(sprintf('detected proxy request, attempting to get mode from query'));
             $this->processInternalRequest($event);
+
             return;
         }
 

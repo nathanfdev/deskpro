@@ -126,7 +126,7 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
                 $name        = $temp->getFilename();
                 $path_broken = explode('/', $path);
                 $controller = array_shift($path_broken);
-                if (count($path_broken) == 0){
+                if (count($path_broken) == 0) {
                     $name = $controller;
                     $controller = '';
                 } else {

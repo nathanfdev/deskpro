@@ -68,7 +68,6 @@ class TwitterAccounts
         $this->twitter_accounts = $this->em->getRepository('DeskPRO:TwitterAccount')->getAll();
     }
 
-
     /**
      * Resets this repository so the next time data is requested form it, it will
      * be queried again.
@@ -102,7 +101,6 @@ class TwitterAccounts
         $resultData = array();
 
         if ($twitter_account) {
-
             $data['id']                        = $twitter_account->id;
             $data['verified']                  = $twitter_account->verifyCredentials();
             $data['user']['profile_image_url'] = $twitter_account->user->profile_image_url;
@@ -112,7 +110,6 @@ class TwitterAccounts
             $agentsArray = array();
 
             foreach ($twitter_account->persons as $agent) {
-
                 $agentsArray[] = array('id' => $agent->id, 'display_name' => $agent->display_name);
             }
 
@@ -146,7 +143,6 @@ class TwitterAccounts
         $resultData = array();
 
         foreach ($this->twitter_accounts as $twitter_account) {
-
             $data['id']                        = $twitter_account->id;
             $data['verified']                  = $twitter_account->verifyCredentials();
             $data['user']['profile_image_url'] = $twitter_account->user->profile_image_url;
@@ -169,8 +165,7 @@ class TwitterAccounts
 
         $resultData = array();
 
-        foreach($agents as $agent) {
-
+        foreach ($agents as $agent) {
             $data['id']           = $agent->id;
             $data['display_name'] = $agent->display_name;
 

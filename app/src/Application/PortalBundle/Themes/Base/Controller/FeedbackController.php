@@ -34,20 +34,14 @@
 
 namespace Application\PortalBundle\Themes\Base\Controller;
 
-
 use Application\DeskPRO\Entity\Feedback;
 use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Model\FeedbackFilter;
 use Application\PortalBundle\Request\TagRequest;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Pagerfanta;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\HttpCache\Configuration\TagHttpCache;
-use Zend\Feed\Reader\Extension\CreativeCommons\Feed;
 
 class FeedbackController extends AbstractController
 {
@@ -85,7 +79,7 @@ class FeedbackController extends AbstractController
             'status_categories' => $options['status_categories'],
             'types' => $options['types'],
             'sort' => $options['sort'],
-            'sort_direction' => $options['sort_direction']
+            'sort_direction' => $options['sort_direction'],
         ));
 
         $pager = $this->getFeedbackDataService()->getItemsPager(
@@ -97,7 +91,7 @@ class FeedbackController extends AbstractController
         return $this->renderThemeView(
             sprintf('Theme:Feedback:Tag/items_%s.html.twig', $options['style']),
             array(
-                'pager' => $pager
+                'pager' => $pager,
             )
         );
     }
@@ -121,7 +115,7 @@ class FeedbackController extends AbstractController
         return $this->renderThemeView(
             'Theme:Feedback:Tag/item.html.twig',
             array(
-                'item' => $item
+                'item' => $item,
             )
         );
     }
@@ -160,7 +154,7 @@ class FeedbackController extends AbstractController
             'status_categories' => $options['status_categories'],
             'types' => $options['types'],
             'sort' => $options['sort'],
-            'sort_direction' => $options['sort_direction']
+            'sort_direction' => $options['sort_direction'],
         ));
 
         $pager = $this->getFeedbackDataService()->getItemsPager(
@@ -172,7 +166,7 @@ class FeedbackController extends AbstractController
         return $this->renderThemeView(
             'Theme:Common:pager.html.twig',
             array(
-                'pager' => $pager
+                'pager' => $pager,
             )
         );
     }
@@ -197,7 +191,7 @@ class FeedbackController extends AbstractController
         return $this->renderThemeView(
             'Theme:Feedback:Tag/breadcrumbs.html.twig',
             array(
-                'item' => $item
+                'item' => $item,
             )
         );
     }
@@ -225,7 +219,7 @@ class FeedbackController extends AbstractController
 
         return $this->renderThemeView('Theme:Feedback:Tag/comments.html.twig', array(
             'item' => $item,
-            'comments' => $comments
+            'comments' => $comments,
         ));
     }
 
@@ -253,7 +247,7 @@ class FeedbackController extends AbstractController
             'Theme:Feedback:Tag/ratings.html.twig',
             array(
                 'rating' => $rating,
-                'item' => $item
+                'item' => $item,
             )
         );
     }

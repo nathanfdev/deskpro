@@ -70,7 +70,6 @@ class TicketWorkflow extends \Application\DeskPRO\Domain\DomainObject implements
         return $this->id;
     }
 
-
     /**
      * @return string
      */
@@ -79,7 +78,6 @@ class TicketWorkflow extends \Application\DeskPRO\Domain\DomainObject implements
         return App::getTranslator()->getPhraseObject($this, 'title');
     }
 
-
     /**
      * @return string
      */
@@ -87,7 +85,6 @@ class TicketWorkflow extends \Application\DeskPRO\Domain\DomainObject implements
     {
         return $this->title;
     }
-
 
     /**
      * @param  string $property
@@ -98,11 +95,10 @@ class TicketWorkflow extends \Application\DeskPRO\Domain\DomainObject implements
         if (!$property) {
             $property = 'title';
         }
-        $phrase_name = 'obj_ticketworkflow.' . $this->id . '_' . $property;
+        $phrase_name = 'obj_ticketworkflow.'.$this->id.'_'.$property;
 
         return $phrase_name;
     }
-
 
     /**
      * @param  string $property
@@ -113,13 +109,10 @@ class TicketWorkflow extends \Application\DeskPRO\Domain\DomainObject implements
         return $this->title;
     }
 
-
     public function __toString()
     {
         return $this->title;
     }
-
-
 
     ############################################################################
     # Doctrine Metadata
@@ -129,11 +122,11 @@ class TicketWorkflow extends \Application\DeskPRO\Domain\DomainObject implements
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketWorkflow';
-        $metadata->setPrimaryTable(array( 'name' => 'ticket_workflows', ));
+        $metadata->setPrimaryTable(array( 'name' => 'ticket_workflows'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-        $metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
+        $metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

@@ -102,7 +102,6 @@ class Importer
      */
     private $container;
 
-
     /**
      * @param Connection      $db
      * @param ImporterConfig  $config
@@ -117,41 +116,40 @@ class Importer
         $this->config = $config;
 
         $this->mappers = new RecordMapperRegistry();
-        $this->mappers['person']		= new PersonRecordMapper($this->db);
-        $this->mappers['ticket_department']	= new TicketDepartmentRecordMapper($this->db);
-        $this->mappers['ticket_category']	= new CommonRecordMapper($this->db, 'ticket_categories', 'title');
-        $this->mappers['ticket_workflow']	= new CommonRecordMapper($this->db, 'ticket_workflows', 'title');
-        $this->mappers['ticket_priority']	= new CommonRecordMapper($this->db, 'ticket_priorities', 'title');
-        $this->mappers['ticket_status']		= new TicketStatusRecordMapper();
-        $this->mappers['department']		= new CommonRecordMapper($this->db, 'departments', 'title');
-        $this->mappers['product']		= new CommonRecordMapper($this->db, 'products', 'title');
-        $this->mappers['usergroup']		= new CommonRecordMapper($this->db, 'usergroups', 'title');
-        $this->mappers['organization']		= new CommonRecordMapper($this->db, 'organizations', 'name');
-        $this->mappers['language']		= new CommonRecordMapper($this->db, 'languages', 'title');
-        $this->mappers['article_category']	= new CommonRecordMapper($this->db, 'article_categories', 'title');
-        $this->mappers['article']		= new CommonRecordMapper($this->db, 'articles', 'title');
-        $this->mappers['news_category']		= new CommonRecordMapper($this->db, 'news_categories', 'title');
-        $this->mappers['news']			= new CommonRecordMapper($this->db, 'news', 'title');
-        $this->mappers['feedback_category']	= new CommonRecordMapper($this->db, 'feedback_categories', 'title');
-        $this->mappers['feedback']		= new CommonRecordMapper($this->db, 'feedback', 'title');
-        $this->mappers['download_category']	= new CommonRecordMapper($this->db, 'download_categories', 'title');
-        $this->mappers['download']		= new CommonRecordMapper($this->db, 'download', 'title');
-        $this->mappers['custom_def_ticket']	= new CustomDefTicketRecordMapper($this->db, 'custom_def_ticket', 'title');
-        $this->mappers['custom_def_people']	= new CommonRecordMapper($this->db, 'custom_def_people', 'title');
+        $this->mappers['person']        = new PersonRecordMapper($this->db);
+        $this->mappers['ticket_department']    = new TicketDepartmentRecordMapper($this->db);
+        $this->mappers['ticket_category']    = new CommonRecordMapper($this->db, 'ticket_categories', 'title');
+        $this->mappers['ticket_workflow']    = new CommonRecordMapper($this->db, 'ticket_workflows', 'title');
+        $this->mappers['ticket_priority']    = new CommonRecordMapper($this->db, 'ticket_priorities', 'title');
+        $this->mappers['ticket_status']        = new TicketStatusRecordMapper();
+        $this->mappers['department']        = new CommonRecordMapper($this->db, 'departments', 'title');
+        $this->mappers['product']        = new CommonRecordMapper($this->db, 'products', 'title');
+        $this->mappers['usergroup']        = new CommonRecordMapper($this->db, 'usergroups', 'title');
+        $this->mappers['organization']        = new CommonRecordMapper($this->db, 'organizations', 'name');
+        $this->mappers['language']        = new CommonRecordMapper($this->db, 'languages', 'title');
+        $this->mappers['article_category']    = new CommonRecordMapper($this->db, 'article_categories', 'title');
+        $this->mappers['article']        = new CommonRecordMapper($this->db, 'articles', 'title');
+        $this->mappers['news_category']        = new CommonRecordMapper($this->db, 'news_categories', 'title');
+        $this->mappers['news']            = new CommonRecordMapper($this->db, 'news', 'title');
+        $this->mappers['feedback_category']    = new CommonRecordMapper($this->db, 'feedback_categories', 'title');
+        $this->mappers['feedback']        = new CommonRecordMapper($this->db, 'feedback', 'title');
+        $this->mappers['download_category']    = new CommonRecordMapper($this->db, 'download_categories', 'title');
+        $this->mappers['download']        = new CommonRecordMapper($this->db, 'download', 'title');
+        $this->mappers['custom_def_ticket']    = new CustomDefTicketRecordMapper($this->db, 'custom_def_ticket', 'title');
+        $this->mappers['custom_def_people']    = new CommonRecordMapper($this->db, 'custom_def_people', 'title');
 
         if (!$logger) {
             $logger = new Logger('importer');
         }
 
         if ($config->log_path) {
-            $logger->pushHandler(new StreamHandler($config->log_path . '.full.log', Logger::INFO));
-            $logger->pushHandler(new StreamHandler($config->log_path . '.notice.log', Logger::NOTICE));
-            $logger->pushHandler(new StreamHandler($config->log_path . '.error.log', Logger::ERROR));
+            $logger->pushHandler(new StreamHandler($config->log_path.'.full.log', Logger::INFO));
+            $logger->pushHandler(new StreamHandler($config->log_path.'.notice.log', Logger::NOTICE));
+            $logger->pushHandler(new StreamHandler($config->log_path.'.error.log', Logger::ERROR));
         }
 
         $this->logger = $logger;
     }
-
 
     /**
      * @param ImporterStatusCallback $callback
@@ -161,20 +159,20 @@ class Importer
         $this->status_callback = $callback;
     }
 
-
     /**
      * Reset all done markers.
      */
     public function resetDoneMarkers()
     {
         foreach ($this->getDirectoryIterator('/', false) as $file) {
-            if (file_exists($file->getPath() . '.done')) {
-                unlink(@file_exists($file->getPath() . '.done'));
-                if ($this->status_callback) $this->status_callback->postResetDoneMarker($this, $file);
+            if (file_exists($file->getPath().'.done')) {
+                unlink(@file_exists($file->getPath().'.done'));
+                if ($this->status_callback) {
+                    $this->status_callback->postResetDoneMarker($this, $file);
+                }
             }
         }
     }
-
 
     public function processImports()
     {
@@ -223,7 +221,6 @@ class Importer
         ));
     }
 
-
     /**
      * @param  string                $dir
      * @param  AbstractValueImporter $value_importer
@@ -231,7 +228,9 @@ class Importer
      */
     private function processDirectory($dir, AbstractValueImporter $value_importer, $callback = null)
     {
-        if ($this->status_callback) $this->status_callback->preStep($this, $value_importer, $dir);
+        if ($this->status_callback) {
+            $this->status_callback->preStep($this, $value_importer, $dir);
+        }
         $step_start = microtime(true);
 
         $it = $this->getDirectoryIterator($dir, true);
@@ -242,11 +241,13 @@ class Importer
             /** @var \SplFileInfo $file */
             $json = @file_get_contents($file->getRealPath());
 
-            if ($this->status_callback) $this->status_callback->preImportValueRead($this, $value_importer, $file, $count);
+            if ($this->status_callback) {
+                $this->status_callback->preImportValueRead($this, $value_importer, $file, $count);
+            }
 
             if (!$json) {
                 $this->getLogger()
-                    ->warning("File is not readable or empty: " . $file->getRealPath());
+                    ->warning("File is not readable or empty: ".$file->getRealPath());
                 continue;
             }
 
@@ -254,14 +255,16 @@ class Importer
             unset($json);
             if (!$data) {
                 $this->getLogger()
-                    ->warning("Invalid JSON data file: " . $file->getRealPath());
+                    ->warning("Invalid JSON data file: ".$file->getRealPath());
                 continue;
             }
 
             try {
                 $start = microtime(true);
 
-                if ($this->status_callback) $this->status_callback->preImportValue($this, $value_importer, $file, $count, $data);
+                if ($this->status_callback) {
+                    $this->status_callback->preImportValue($this, $value_importer, $file, $count, $data);
+                }
 
                 //TODO clean this up
                 switch (Util::getBaseClassname($value_importer)) {
@@ -292,7 +295,9 @@ class Importer
                 }
 
                 $value_importer->importValue($value);
-                if ($this->status_callback) $this->status_callback->postImportValue($this, $value_importer, $file, $count, $data, microtime(true) - $start);
+                if ($this->status_callback) {
+                    $this->status_callback->postImportValue($this, $value_importer, $file, $count, $data, microtime(true) - $start);
+                }
             } catch (BadDataException $ex) {
                 $this->getLogger()
                     ->warning(sprintf("Invalid or missing data in file (@%s) -- %s", $file->getRealPath(), $ex->getMessage()));
@@ -319,7 +324,6 @@ class Importer
         }
     }
 
-
     /**
      * @param  string                     $dir
      * @param  bool                       $exclude_done
@@ -327,10 +331,10 @@ class Importer
      */
     public function getDirectoryIterator($dir, $exclude_done)
     {
-        if (!is_dir($this->config->data_path . '/' . $dir)) {
+        if (!is_dir($this->config->data_path.'/'.$dir)) {
             return array();
         }
-        $iterator = new RecursiveDirectoryIterator($this->config->data_path . '/' . $dir, RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::CURRENT_AS_FILEINFO);
+        $iterator = new RecursiveDirectoryIterator($this->config->data_path.'/'.$dir, RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::CURRENT_AS_FILEINFO);
 
         $filter = new DirectoryIteratorFilter($iterator);
         if ($exclude_done) {

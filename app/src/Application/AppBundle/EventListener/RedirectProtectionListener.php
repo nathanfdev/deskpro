@@ -40,9 +40,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class RedirectProtectionListener implements EventSubscriberInterface
 {
@@ -99,7 +97,6 @@ class RedirectProtectionListener implements EventSubscriberInterface
                 return; // matches brand settings
             }
 
-
             $this->logger->info(sprintf('invalid redirect detected: attempted to redirect to unauthorized host "%s"', $location));
 
             $event->setResponse(new Response(
@@ -118,7 +115,7 @@ class RedirectProtectionListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::RESPONSE => array('onResponse')
+            KernelEvents::RESPONSE => array('onResponse'),
         );
     }
 

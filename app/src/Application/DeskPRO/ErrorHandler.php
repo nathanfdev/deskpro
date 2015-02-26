@@ -44,7 +44,9 @@ class ErrorHandler
 
     public function handleError($errno, $errstr, $errfile, $errline)
     {
-        if (!(error_reporting() & $errno)) return;
+        if (!(error_reporting() & $errno)) {
+            return;
+        }
 
         $die = false;
 
@@ -97,7 +99,8 @@ class ErrorHandler
         try {
             $logger = App::createNewLogger('error_log', null);
             $logger->log($summary, $pri, array('trace' => $trace));
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         if (in_array(ini_get('display_errors'), array(1, '1', 'on', 'On', true))) {
             echo $summary;
@@ -114,7 +117,7 @@ class ErrorHandler
 
     public function stripPathPrefix($content)
     {
-        $prefix = DP_ROOT . '/';
+        $prefix = DP_ROOT.'/';
 
         $content = str_replace($prefix, '', $content);
 

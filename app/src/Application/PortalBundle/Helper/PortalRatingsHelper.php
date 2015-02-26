@@ -34,7 +34,6 @@
 
 namespace Application\PortalBundle\Helper;
 
-
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Rating;
 use Application\DeskPRO\Entity\Person;
@@ -83,11 +82,13 @@ class PortalRatingsHelper
     {
         if ($person && $content_rating = $this->findPersonRating($content, $person)) {
             $this->changeExistingRating($content, $content_rating, $down);
+
             return $content_rating;
         }
 
         if (!$person && $content_rating = $this->findVisitorRating($content, $visitor_id)) {
             $this->changeExistingRating($content, $content_rating, $down);
+
             return $content_rating;
         }
 
@@ -109,8 +110,8 @@ class PortalRatingsHelper
     }
 
     /**
-     * @param ContentAbstract $content
-     * @param Person $person
+     * @param  ContentAbstract $content
+     * @param  Person          $person
      * @return Rating|null
      */
     public function findPersonRating(ContentAbstract $content, Person $person = null)
@@ -139,7 +140,7 @@ class PortalRatingsHelper
     }
 
     /**
-     * @param ContentAbstract $content
+     * @param  ContentAbstract $content
      * @param $visitor_id
      * @return Rating|null
      */

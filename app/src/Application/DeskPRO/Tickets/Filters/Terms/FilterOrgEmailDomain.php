@@ -55,7 +55,6 @@ class FilterOrgEmailDomain extends AbstractFilterTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

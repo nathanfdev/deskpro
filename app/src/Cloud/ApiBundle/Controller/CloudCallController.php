@@ -36,7 +36,6 @@ namespace Cloud\ApiBundle\Controller;
 
 use DeskPRO\Kernel\License;
 use Application\DeskPRO\Entity\TmpData;
-
 use Application\ApiBundle\Controller\AbstractController;
 
 class CloudCallController extends AbstractController
@@ -84,7 +83,7 @@ class CloudCallController extends AbstractController
                 'code'      => $code_data->getCode(),
                 'person'    => $person,
                 'email'     => $email,
-                'interface' => $interface
+                'interface' => $interface,
             );
 
             $message = $this->container->getMailer()->createMessage();
@@ -98,7 +97,6 @@ class CloudCallController extends AbstractController
         #------------------------------
         # Reset password
         #------------------------------
-
         } else {
             $new_pass = $this->in->getString('password');
 

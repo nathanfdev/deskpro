@@ -60,7 +60,6 @@ class ClientMessage extends AbstractEntityRepository
             } else {
                 $data['last_id'] = 1;
             }
-
         } else {
             $all_messages = $this->getMessagesForClient($session->getEntityId(), $person, $since);
         }
@@ -85,12 +84,12 @@ class ClientMessage extends AbstractEntityRepository
                 $info = array(
                     $message['id'],
                     $message['channel'],
-                    $msg_data
+                    $msg_data,
                 );
 
                 if ($message['id'] < $since && $with_last_since) {
                     $info[] = array(
-                        'offline_messsage' => true
+                        'offline_messsage' => true,
                     );
                 }
 
@@ -107,22 +106,22 @@ class ClientMessage extends AbstractEntityRepository
             $convos = $this->_em->getRepository('DeskPRO:ChatConversation')->getOpenForAgentAndDepartment(0, -1);
             foreach ($convos as $c) {
                 $chatdata = array(
-                    'conversation_id'=> $c->getId(),
+                    'conversation_id' => $c->getId(),
                     'author_id' => $c->person ? $c->person->getId() : 0,
                     'author_name' => $c->person ? $c->person->getDisplayName() : 0,
                     'author_email' => $c->person ? $c->person->getEmailAddress() : 0,
-                    'subject_line' => 'Chat ' . $c->getId(),
+                    'subject_line' => 'Chat '.$c->getId(),
                     'agent_id' => 0,
                     'agent_name' => '',
                     'department_id' => $c->department ? $c->department->getId() : 0,
                     'department_name' => $c->department ? $c->department->getTitle() : '',
-                    'date_created' => $c->date_created->getTimestamp()
+                    'date_created' => $c->date_created->getTimestamp(),
                 );
 
                 $data['messages'][] = array(
                     null,
                     'chat.new',
-                    $chatdata
+                    $chatdata,
                 );
             }
         }
@@ -224,7 +223,6 @@ class ClientMessage extends AbstractEntityRepository
         return $this->_em->getConnection()->fetchAll($sql, $params);
     }
 
-
     /**
      * Get messages for a client based on their registered subscriptions
      *
@@ -293,7 +291,7 @@ class ClientMessage extends AbstractEntityRepository
         ", array($person_id, $person_id));
 
         foreach ($chat_ids as $chat_id) {
-            $channels[] = 'chat_convo.' . $chat_id;
+            $channels[] = 'chat_convo.'.$chat_id;
         }
 
         return self::getMessagesForClientInChannels($client_id, $person_id, $channels, $since_id);

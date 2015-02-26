@@ -56,7 +56,7 @@ class NewsValueImporter extends AbstractValueImporter
             throw new DuplicateValueException(sprintf("A News item with the title \"%s\" already exists (skipping)", $nval->title));
         }
 
-        $log_id = "News Item :: " . $nval->oid . " ";
+        $log_id = "News Item :: ".$nval->oid." ";
 
         $record = array();
 
@@ -114,15 +114,15 @@ class NewsValueImporter extends AbstractValueImporter
             }
         }
 
-        $record['title']		= $nval->title;
-        $record['content']		= $nval->content;
-        $record['slug']			= $nval->slug;
-        $record['date_created']		= isset($nval->date_created) ? $nval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-        $record['date_published']	= isset($nval->date_published) ? $nval->date_published->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-        $record['total_rating']		= $nval->total_rating;
-        $record['num_comments']		= $nval->num_comments;
-        $record['num_ratings']		= $nval->num_ratings;
-        $record['view_count']		= $nval->view_count;
+        $record['title']        = $nval->title;
+        $record['content']        = $nval->content;
+        $record['slug']            = $nval->slug;
+        $record['date_created']        = isset($nval->date_created) ? $nval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
+        $record['date_published']    = isset($nval->date_published) ? $nval->date_published->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
+        $record['total_rating']        = $nval->total_rating;
+        $record['num_comments']        = $nval->num_comments;
+        $record['num_ratings']        = $nval->num_ratings;
+        $record['view_count']        = $nval->view_count;
 
         if ($nval->date_published) {
             $record['status'] = 'published';
@@ -146,8 +146,8 @@ class NewsValueImporter extends AbstractValueImporter
         if ($news_id && $nval->labels) {
             $batch = array_map(function ($l) use ($news_id) {
                 return array(
-                    'news_id'	=> $news_id,
-                    'label'		=> $l
+                    'news_id'    => $news_id,
+                    'label'        => $l,
                 );
             }, $nval->labels);
 

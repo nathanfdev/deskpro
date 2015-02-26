@@ -35,8 +35,6 @@
 namespace Application\FormBundle\Form\Type;
 
 use Application\AppBundle\Hierarchy\HierarchyNode;
-use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
@@ -51,7 +49,6 @@ use Application\FormBundle\TicketLayout\TicketLayoutDiffer;
 use Application\FormBundle\TicketLayout\TicketLayoutFactory;
 use Application\FormBundle\Validator\Constraints\ValidCaptcha;
 use Application\LanguageBundle\Language\LanguageManager;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -59,10 +56,8 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotNull;
 
 class TicketType extends AbstractType
 {
@@ -108,8 +103,7 @@ class TicketType extends AbstractType
         EntityManager $em,
         LanguageManager $language_manager,
         CaptchaDecider $captcha_decider
-    )
-    {
+    ) {
         $this->layout_differ = $layout_differ;
         $this->field_manager = $field_manager;
         $this->ticket_layout_factory = $ticket_layout_factory;
@@ -123,7 +117,7 @@ class TicketType extends AbstractType
      * The entire Ticket Form is created using listeners. Nothing exists by default.
      *
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -179,7 +173,6 @@ class TicketType extends AbstractType
 
         // now we need to compare the department's layout and see if we need to add/remove fields before we submit data
         if ($form->has(FormFields::DEPARTMENT) && isset($pre_submit_data[FormFields::DEPARTMENT])) {
-
             //
             // here we just get the submitted department id (its not the same as submitted value due to choice lists)
             //
@@ -221,7 +214,6 @@ class TicketType extends AbstractType
             //
 
 
-
             $destination_layout = $this->ticket_layout_factory->getLayoutForTicketForm($new_department_id ?: null);
             $context->setNewLayout($destination_layout);
         }
@@ -230,11 +222,11 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param Layout $initial_layout
-     * @param Layout $new_layout
+     * @param Layout            $initial_layout
+     * @param Layout            $new_layout
      * @param TicketFormContext $context
-     * @param array $submitted_data
-     * @param bool $potentially_rerender_form
+     * @param array             $submitted_data
+     * @param bool              $potentially_rerender_form
      */
     protected function manipulateForm(Layout $initial_layout, Layout $new_layout, TicketFormContext $context, $submitted_data = array(), $potentially_rerender_form = false)
     {
@@ -291,9 +283,9 @@ class TicketType extends AbstractType
      *
      * This inspects the submitted data on our form and gives us data we're interesed in.
      *
-     * @param array $submitted_data
-     * @param TicketFormContext $context
-     * @return array the form key and its selected entity ID (or null if not submitted)
+     * @param  array             $submitted_data
+     * @param  TicketFormContext $context
+     * @return array             the form key and its selected entity ID (or null if not submitted)
      */
     private function getTicketDataIds(array $submitted_data, TicketFormContext $context)
     {
@@ -329,26 +321,25 @@ class TicketType extends AbstractType
             'data_class'          => 'Application\\DeskPRO\\Entity\\Ticket',
             'method'              => 'POST',
             'allow_extra_fields'  => true,
-            'ticket_message'      => null
+            'ticket_message'      => null,
         ));
         $resolver->setRequired(array(
             'person',
-            'settings'
+            'settings',
         ));
         $resolver->addAllowedValues(array(
             'ticket_visibility' => array(
                 TicketFormContext::VISIBILITY_NEW,
                 TicketFormContext::VISIBILITY_EDIT,
-                TicketFormContext::VISIBILITY_VIEW
-            )
+                TicketFormContext::VISIBILITY_VIEW,
+            ),
         ));
         $resolver->setAllowedTypes(array(
             'person'        => 'Application\\DeskPRO\\Entity\\Person',
             'settings'        => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
-            'ticket_message' => array('Application\\DeskPRO\\Entity\\TicketMessage', 'null')
+            'ticket_message' => array('Application\\DeskPRO\\Entity\\TicketMessage', 'null'),
         ));
     }
-
 
     public function getName()
     {
@@ -435,7 +426,7 @@ class TicketType extends AbstractType
         }
 
         $form_context->getForm()->add($field->getId(), 'deskpro_department', array(
-            'person' => $form_context->getPerson()
+            'person' => $form_context->getPerson(),
         ));
     }
 
@@ -446,8 +437,8 @@ class TicketType extends AbstractType
             'required' => true,
             'constraints' => array(
                 new NotBlank(array('message' => 'This value is required')),
-                new Length(array('min' => 5, 'minMessage' => 'The subject must be at least 5 characters in length.'))
-            )
+                new Length(array('min' => 5, 'minMessage' => 'The subject must be at least 5 characters in length.')),
+            ),
         );
 
         if ($ignore_validation) {
@@ -468,7 +459,7 @@ class TicketType extends AbstractType
             'label'  => false,
             'person' => $form_context->getPerson(),
             'ticket' => $form_context->getTicket(),
-            'data'   => $form_context->getMessage()
+            'data'   => $form_context->getMessage(),
         ));
     }
 
@@ -476,14 +467,14 @@ class TicketType extends AbstractType
     {
         $form_context->getForm()->add($field->getId(), 'deskpro_person_email', array(
             'property_path' => 'person.primary_email',
-            'label' => false
+            'label' => false,
         ));
     }
 
     private function addUserTimezone(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         $form_context->getForm()->add($field->getId(), 'timezone', array(
-            'property_path' => 'person.timezone'
+            'property_path' => 'person.timezone',
         ));
     }
 
@@ -492,7 +483,7 @@ class TicketType extends AbstractType
         $form_context->getForm()->add($field->getId(), 'text', array(
             'property_path' => 'person.name',
             'label'         => 'Name',
-            'empty_data'    => $form_context->getPerson()->getName()
+            'empty_data'    => $form_context->getPerson()->getName(),
         ));
     }
 
@@ -504,7 +495,7 @@ class TicketType extends AbstractType
 
         $form_context->getForm()->add($field->getId(), 'deskpro_language', array(
             'property_path' => 'person.language',
-            'view_context'  => $form_context->getViewContext()
+            'view_context'  => $form_context->getViewContext(),
         ));
     }
 
@@ -521,7 +512,7 @@ class TicketType extends AbstractType
             'ticket' => $form_context->getTicket(),
             'property_path' => sprintf('getCustomDataCollection[%s]', $field->getFieldId()),
             'agent_interface' => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
-            'label' => false
+            'label' => false,
         );
 
         if ($ignore_validation) {
@@ -549,7 +540,7 @@ class TicketType extends AbstractType
             'person' => $form_context->getPerson(),
             'property_path' => sprintf('person.getCustomDataCollection[%s]', $field->getFieldId()),
             'agent_interface' => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
-            'label' => false
+            'label' => false,
         );
 
         if ($ignore_validation) {
@@ -654,8 +645,8 @@ class TicketType extends AbstractType
             'mapped' => false,
             'error_bubbling' => false,
             'constraints' => array(
-                new ValidCaptcha()
-            )
+                new ValidCaptcha(),
+            ),
         );
 
         if ($ignore_validation) {
@@ -670,7 +661,7 @@ class TicketType extends AbstractType
         $form_context->getForm()->add($field->getId(), 'deskpro_cc', array(
             'ticket' => $form_context->getTicket(),
             'mapped' => false,
-            'required' => false
+            'required' => false,
         ));
     }
 
@@ -681,11 +672,11 @@ class TicketType extends AbstractType
                 'property_path'  => 'messages[0].attachments',
                 'required'       => false,
                 'person'         => $form_context->getPerson(),
-                'ticket_message' => $form_context->getMessage()
+                'ticket_message' => $form_context->getMessage(),
             ));
             $form_context->getForm()->add('more_attachments', 'submit', array(
                 'validation_groups' => false,
-                'label' => 'Add Another Attachment'
+                'label' => 'Add Another Attachment',
             ));
         }
     }
@@ -693,15 +684,15 @@ class TicketType extends AbstractType
     private function addSubmit(TicketFormContext $form_context)
     {
         $form_context->getForm()->add('submit', 'submit', array(
-            'label' => 'Submit Ticket'
+            'label' => 'Submit Ticket',
         ));
     }
 
     /**
-     * @param Ticket $ticket
-     * @param TicketMessage $ticket_message
-     * @param FormInterface $form
-     * @param TicketLayout $initial_layout
+     * @param  Ticket            $ticket
+     * @param  TicketMessage     $ticket_message
+     * @param  FormInterface     $form
+     * @param  TicketLayout      $initial_layout
      * @return TicketFormContext
      */
     private function createTicketFormContext(Ticket $ticket, TicketMessage $ticket_message = null, FormInterface $form, TicketLayout $initial_layout)
@@ -723,12 +714,12 @@ class TicketType extends AbstractType
     {
         return array_merge($options, array(
             'validation_groups' => array(),
-            'constraints' => array()
+            'constraints' => array(),
         ));
     }
 
     /**
-     * @param FormInterface $form
+     * @param  FormInterface                                $form
      * @return \Application\DeskPRO\NewSettings\SettingsBag
      */
     private function getSettingsBag(FormInterface $form)

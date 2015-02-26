@@ -92,7 +92,7 @@ class RawMessage
     private $attachments = array();
 
     /**
-     * @param array $info
+     * @param  array      $info
      * @return RawMessage
      */
     public static function newFromArray(array $info)
@@ -208,7 +208,7 @@ class RawMessage
             'headers'     => $this->headers,
             'text_part'   => $this->text_part,
             'html_part'   => $this->html_part,
-            'attachments' => $this->attachments
+            'attachments' => $this->attachments,
         );
     }
 }

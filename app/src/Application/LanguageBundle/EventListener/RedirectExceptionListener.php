@@ -42,7 +42,6 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Application\LanguageBundle\Routing\RedirectToUrlException;
 
-
 /**
  * If anyone throws a RedirectToUrlException, we catch it here to return a redirect response to the kernel.
  */
@@ -61,10 +60,9 @@ class RedirectExceptionListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::EXCEPTION => array('onKernelException', 129) // high priority
+            KernelEvents::EXCEPTION => array('onKernelException', 129), // high priority
         );
     }
-
 
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
@@ -77,7 +75,7 @@ class RedirectExceptionListener implements EventSubscriberInterface
         }
 
         $url = $e->getUrl();
-        $this->logger->info('RedirectToUrlException caught: 302 redirecting to "' . $url . '"');
+        $this->logger->info('RedirectToUrlException caught: 302 redirecting to "'.$url.'"');
 
         $event->setResponse(new RedirectResponse($url, Response::HTTP_FOUND));
         $event->stopPropagation();

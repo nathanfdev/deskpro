@@ -34,8 +34,7 @@
 
 namespace Application\PortalBundle\Model;
 
-
-class TicketFilter 
+class TicketFilter
 {
     const TYPE_OWN = 'own';
     const TYPE_ORGANIZATION = 'organization';

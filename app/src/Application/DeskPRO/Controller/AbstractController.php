@@ -301,7 +301,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 
         if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {
             if ($sso_result->isRedirectRequired()) {
-
                 $return = $this->request->getReturnParam();
                 $this->session->set('auth_return', $return);
                 $this->session->save();

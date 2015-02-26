@@ -103,7 +103,6 @@ class EmailDomainManager
     {
         $this->em->beginTransaction();
         try {
-
             // Update tickets
             $this->db->executeUpdate("
                 UPDATE tickets

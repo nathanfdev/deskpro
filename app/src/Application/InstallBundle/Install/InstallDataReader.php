@@ -60,14 +60,16 @@ class InstallDataReader implements \IteratorAggregate, \Countable
     public function _read()
     {
         // Already read
-        if ($this->data !== null) return;
+        if ($this->data !== null) {
+            return;
+        }
 
         $this->tags = array();
         $this->data = array();
 
         // prefix here so the array_shift below gets rid of junk,
         // but doesnt bug out if theres a BEGIN right on the first line
-        $file = "\n\nxxx\n\n" . file_get_contents($this->filepath);
+        $file = "\n\nxxx\n\n".file_get_contents($this->filepath);
 
         $parts = preg_split('/^##BEGIN:(.*?)##\s*$/m', $file, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
         if (!$parts) {
@@ -79,9 +81,10 @@ class InstallDataReader implements \IteratorAggregate, \Countable
 
         $_desc_str = null;
         foreach ($parts as $part) {
-
             $part = trim($part);
-            if (!$part) continue;
+            if (!$part) {
+                continue;
+            }
 
             // The name of the part is before each part itself,
             // so we read it first and next time around we have the real content
@@ -100,10 +103,12 @@ class InstallDataReader implements \IteratorAggregate, \Countable
                 $tag = 'default';
                 $name = $desc_parts;
             } else {
-                list ($tag, $name) = $desc_parts;
+                list($tag, $name) = $desc_parts;
             }
 
-            if (!isset($this->tags[$tag])) $this->tags[$tag] = array();
+            if (!isset($this->tags[$tag])) {
+                $this->tags[$tag] = array();
+            }
             $this->tags[$tag][] = "$tag.$name";
 
             $part = trim($part);
@@ -111,7 +116,7 @@ class InstallDataReader implements \IteratorAggregate, \Countable
                 $part = rtrim($part, ';'); // trailing ;'s
             }
 
-            $this->data[$tag . '.' . $name] = $part;
+            $this->data[$tag.'.'.$name] = $part;
         }
     }
 

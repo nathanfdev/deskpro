@@ -34,19 +34,14 @@
 
 namespace Application\PortalBundle\Controller;
 
-
 use Application\AuthBundle\Voter\Portal\ContentCommentVoter;
-use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
-use Application\PortalBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Application\PortalBundle\HttpCache\Configuration\PageHttpCache;
 
 class NewsController extends AbstractController
@@ -60,7 +55,6 @@ class NewsController extends AbstractController
     {
         $page = $request->query->get('page', 1);
 
-
         //
         // RSS
         //
@@ -73,10 +67,9 @@ class NewsController extends AbstractController
 
             return $this->render('PortalBundle:News:feed.rss.twig', array(
                 'pager' => $pager,
-                'category' => null
+                'category' => null,
             ));
         }
-
 
         //
         // RENDER THEME
@@ -85,7 +78,7 @@ class NewsController extends AbstractController
             'Theme:News:index.html.twig',
             array(
                 'page' => $page,
-                'count' => $this->getBrandSetting('portal.per_page_content')
+                'count' => $this->getBrandSetting('portal.per_page_content'),
             )
         );
     }
@@ -112,10 +105,9 @@ class NewsController extends AbstractController
 
             return $this->render('PortalBundle:News:feed.rss.twig', array(
                 'pager' => $pager,
-                'category' => $category
+                'category' => $category,
             ));
         }
-
 
         //
         // RENDER THEME
@@ -126,7 +118,7 @@ class NewsController extends AbstractController
                 'category' => $category,
                 'page' => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
-                'show_pagination' => true
+                'show_pagination' => true,
             )
         );
     }
@@ -147,7 +139,7 @@ class NewsController extends AbstractController
             $comment = new NewsComment();
             $comment->setObject($post);
             $new_comment_form = $this->createForm('comment', $comment, array(
-                'person' => $this->getUser()
+                'person' => $this->getUser(),
             ));
             $new_comment_form->handleRequest($request);
             if ($new_comment_form->isValid()) {
@@ -159,7 +151,6 @@ class NewsController extends AbstractController
             }
         }
 
-
         //
         // RENDER THEME
         //
@@ -170,7 +161,7 @@ class NewsController extends AbstractController
                 'category' => $post->category,
                 'content_id' => $post->getId(),
                 'content_type' => News::CONTENT_TYPE,
-                'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null
+                'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
             )
         );
     }
@@ -189,13 +180,12 @@ class NewsController extends AbstractController
             throw $this->createNotFoundException('could not find new post for slug "'.$slug.'"');
         }
 
-
         //
         // RENDER THEME
         //
         return $this->redirect(
             $this->generateUrl('portal_news_view', array(
-                'slug' => $post->getSlug()
+                'slug' => $post->getSlug(),
             )),
             301
         );
@@ -240,7 +230,6 @@ class NewsController extends AbstractController
 
         return $this->redirectToRoute('portal_news_view', array('slug' => $post->getSlug()));
     }
-
 
     /**
      * @Route("/news/category/toggle-subscription/{slug}", name="portal_news_category_toggle_subscription")

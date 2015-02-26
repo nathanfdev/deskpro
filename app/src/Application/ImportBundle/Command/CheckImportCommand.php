@@ -52,7 +52,6 @@ class CheckImportCommand extends ContainerAwareCommand
         $this->addOption('log-path', null, InputOption::VALUE_REQUIRED, 'A base path to write log data to. Defaults to a file in the default log directory.');
     }
 
-
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
@@ -60,7 +59,6 @@ class CheckImportCommand extends ContainerAwareCommand
     {
         return parent::getContainer();
     }
-
 
     /**
      * {@inheritDoc}
@@ -74,7 +72,7 @@ class CheckImportCommand extends ContainerAwareCommand
             $config->mode = 'test';
         } catch (\InvalidArgumentException $e) {
             $output->writeln("<error>Config Error</error>");
-            $output->writeln("Message: " . $e->getMessage());
+            $output->writeln("Message: ".$e->getMessage());
             $output->writeln("");
             $output->writeln("Run this command with --help to see options. You can also define configuration in your config.php file under the 'import' section.");
             $output->writeln("");

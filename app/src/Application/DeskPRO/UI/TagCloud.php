@@ -76,7 +76,7 @@ class TagCloud
 
         foreach ($this->_tag_counts as $tag => $count) {
             $size = round(1 + (($count - $this->_min_count) * (($this->_max_count - 1) / $this->_spread)));
-            $size_class = $this->_class_prefix . $size;
+            $size_class = $this->_class_prefix.$size;
 
             $cloud[$tag] = $size_class;
         }

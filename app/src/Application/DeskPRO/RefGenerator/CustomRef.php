@@ -144,7 +144,6 @@ class CustomRef implements RefGeneratorInterface
         return isset(self::$keywords[$word]);
     }
 
-
     /**
      * @param  string $entity_name
      * @return string
@@ -175,9 +174,8 @@ class CustomRef implements RefGeneratorInterface
 
             $m = null;
             if ($this->isRefMatch($last, $m)) {
-                $append_count = (int)$m['count'];
+                $append_count = (int) $m['count'];
             }
-
 
             if (!$append_count) {
                 $append_count = 0;
@@ -195,7 +193,7 @@ class CustomRef implements RefGeneratorInterface
 
                 if ($attempt > $this->max_tries-5) {
                     // Last five allowed attempts, fallback to trying random nums at the end
-                    $ref = $this->generateRefString($append_count . mt_rand(1000,9999));
+                    $ref = $this->generateRefString($append_count.mt_rand(1000, 9999));
                 } else {
                     $ref = $this->generateRefString($append_count);
                 }
@@ -222,7 +220,6 @@ class CustomRef implements RefGeneratorInterface
 
         return $ref;
     }
-
 
     /**
      * Generate a new ref string
@@ -338,7 +335,7 @@ class CustomRef implements RefGeneratorInterface
                     break;
 
                 default:
-                    $regex[] = "(" . preg_quote(str_repeat($type, $length), '#') . ")";
+                    $regex[] = "(".preg_quote(str_repeat($type, $length), '#').")";
                     break;
             }
         }
@@ -351,7 +348,6 @@ class CustomRef implements RefGeneratorInterface
 
         return implode('', $regex);
     }
-
 
     /**
      * Check if a string is a valid ref format. This only checks

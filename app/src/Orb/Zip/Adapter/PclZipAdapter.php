@@ -51,7 +51,6 @@ class PclZipAdapter implements ZipAdapterInterface
         $z->create($path, PCLZIP_OPT_REMOVE_PATH, $path);
     }
 
-
     /**
      * Decompress a ZIP.
      *

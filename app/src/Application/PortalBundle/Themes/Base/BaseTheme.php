@@ -35,7 +35,6 @@
 namespace Application\PortalBundle\Themes\Base;
 
 use Application\PortalBundle\Theme\AbstractTheme;
-use Application\PortalBundle\Theme\Tag;
 
 class BaseTheme extends AbstractTheme
 {
@@ -43,7 +42,6 @@ class BaseTheme extends AbstractTheme
     {
         return array();
     }
-
 
     /**
      * {@inheritdoc}
@@ -53,7 +51,6 @@ class BaseTheme extends AbstractTheme
         return 'base';
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -61,7 +58,6 @@ class BaseTheme extends AbstractTheme
     {
         return null;
     }
-
 
     /**
      * {@inheritdoc}
@@ -71,13 +67,12 @@ class BaseTheme extends AbstractTheme
         return 'Base';
     }
 
-
     /**
      * {@inheritdoc}
      */
     public function getBaseTemplateDir()
     {
-        return __DIR__ . '/Resources/views';
+        return __DIR__.'/Resources/views';
     }
 
     /**
@@ -93,6 +88,6 @@ class BaseTheme extends AbstractTheme
      */
     public function getBaseControllerDir()
     {
-        return __DIR__ . '/Controller';
+        return __DIR__.'/Controller';
     }
 }

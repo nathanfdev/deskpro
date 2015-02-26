@@ -34,7 +34,6 @@
 
 namespace Application\AppBundle\Hierarchy\Formatter;
 
-
 use Application\AppBundle\Hierarchy\HierarchyNode;
 
 class ParentListFormatter extends AbstractFormatter
@@ -46,11 +45,10 @@ class ParentListFormatter extends AbstractFormatter
     {
         $formatted = '';
 
-        foreach($node->getParents() as $parent) {
+        foreach ($node->getParents() as $parent) {
             $formatted .= sprintf('%s > ', $parent->getData()->title);
         }
 
-        return $formatted . sprintf("%s", $node->getData()->title);
+        return $formatted.sprintf("%s", $node->getData()->title);
     }
 }
- 

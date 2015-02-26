@@ -33,7 +33,6 @@
 
 namespace Application\AdminInterfaceBundle\Controller;
 
-use Application\ApiBundle\ApiUser;
 use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Chat\UserChat\ChatAvailableCheck;
@@ -64,7 +63,7 @@ class PortalEditorController extends AbstractController
         if (!$api_token || $api_token->scope != 'session') {
             return $this->createJsonResponse(array(
                 'error_code' => 'invalid_api_token',
-                'error_message' => 'API requests via token must be with a valid session'
+                'error_message' => 'API requests via token must be with a valid session',
             ), 403);
         }
 
@@ -73,7 +72,7 @@ class PortalEditorController extends AbstractController
         if (!$session || !$session->person || $session->person != $api_token->person) {
             return $this->createJsonResponse(array(
                 'error_code' => 'invalid_api_token',
-                'error_message' => 'API requests via token must be with a valid session'
+                'error_message' => 'API requests via token must be with a valid session',
             ), 403);
         }
 
@@ -81,10 +80,10 @@ class PortalEditorController extends AbstractController
         if (!$api_user->request_token || !$api_user->session->checkSecurityToken('request_token', $api_user->request_token)) {
             return $this->createJsonResponse(array(
                 'error_code' => 'invalid_request_token',
-                'error_message' => 'You must provide a valid request token'
+                'error_message' => 'You must provide a valid request token',
             ), 403);
         }
-   }
+    }
 
     public function uploadFaviconAction()
     {

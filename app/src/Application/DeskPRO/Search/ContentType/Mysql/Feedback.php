@@ -47,7 +47,7 @@ class Feedback extends AbstractContentType
         $data = array();
         $data['id'] = $feedback['id'];
         $data['content_type'] = 'feedback';
-        $data['content'] = $feedback['title'] . "\n" . $feedback['content'] . "\n";
+        $data['content'] = $feedback['title']."\n".$feedback['content']."\n";
 
         foreach ($feedback->getLabelManager()->getLabelsArray() as $label) {
             $label = MysqlAdapter::encodeLabel($label);

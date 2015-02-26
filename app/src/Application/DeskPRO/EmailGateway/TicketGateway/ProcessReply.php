@@ -193,7 +193,6 @@ class ProcessReply extends ProcessAbstract
 
         $ticket_attach = array();
         foreach ($this->processBlobs() as $blob) {
-
             if (isset($this->dupe_inline_blobs[$blob->getId()])) {
                 continue;
             }
@@ -227,13 +226,12 @@ class ProcessReply extends ProcessAbstract
         // so the "empty reply" isnt processed as a reply
         $did_add_message = false;
         if (!isset($this->ticket_email->reply_actions['no_reply']) && ($has_message || ($has_reply_codes && !$has_message))) {
-
-            $this->logMessage('[TicketGatewayProcessor] Checking for dupe message: ' . $message->getMessageHash());
+            $this->logMessage('[TicketGatewayProcessor] Checking for dupe message: '.$message->getMessageHash());
 
             $did_add_message = true;
             if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $this->ticket, 10800, $this->getLogger())) {
                 $this->setError('duplicate_message');
-                $this->logMessage('[TicketGatewayProcessor] doNewReply duplicate message ' . $dupe_message->getId());
+                $this->logMessage('[TicketGatewayProcessor] doNewReply duplicate message '.$dupe_message->getId());
 
                 // Reset some objects so they dont get flushed during next loop
                 App::getOrm()->detach($this->ticket);

@@ -63,7 +63,7 @@ class PersonArrayParser implements ArrayParserInterface
             'date_created'          => 'date',
             'usergroups'            => 'array',
             'emails'                => 'string[]',
-            'custom_fields'		=> 'array'
+            'custom_fields'        => 'array',
         ), $data, $value);
 
         if (!$value->organization) {

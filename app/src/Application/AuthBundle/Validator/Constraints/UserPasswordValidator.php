@@ -34,7 +34,6 @@
 
 namespace Application\AuthBundle\Validator\Constraints;
 
-
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
@@ -61,7 +60,7 @@ class UserPasswordValidator extends ConstraintValidator
     public function validate($password, Constraint $constraint)
     {
         if (!$constraint instanceof UserPassword) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\UserPassword');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\UserPassword');
         }
 
         /** @var \Application\DeskPRO\Entity\Person $user */

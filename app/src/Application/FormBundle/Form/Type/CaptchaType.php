@@ -87,8 +87,8 @@ class CaptchaType extends AbstractType
                 'empty_data'  => null,
                 'mapped'      => false,
                 'constraints' => array(
-                    new ValidCaptcha()
-                )
+                    new ValidCaptcha(),
+                ),
 
             ))
         );

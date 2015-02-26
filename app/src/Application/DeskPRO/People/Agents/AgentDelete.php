@@ -54,7 +54,6 @@ class AgentDelete
      */
     private $db;
 
-
     /**
      * @param  Person                    $agent
      * @param  EntityManager             $em
@@ -70,7 +69,6 @@ class AgentDelete
         $this->em     = $em;
         $this->db     = $em->getConnection();
     }
-
 
     /**
      * Makes the agent account a user account instead
@@ -90,7 +88,6 @@ class AgentDelete
 
         $this->db->beginTransaction();
         try {
-
             $this->em->flush();
 
             // Specific department permissions are agent-only feature, remove those
@@ -149,7 +146,6 @@ class AgentDelete
         return true;
     }
 
-
     /**
      * Marks the agent account as deleted
      */
@@ -159,9 +155,9 @@ class AgentDelete
         $this->agent->can_admin  = false; // to be safe
 
         // Remove their permissions
-        $this->db->delete('department_permissions'     , array('person_id' => $this->agent->getId()));
-        $this->db->delete('permissions'                , array('person_id' => $this->agent->getId()));
-        $this->db->delete('agent_team_members'         , array('person_id' => $this->agent->getId()));
+        $this->db->delete('department_permissions', array('person_id' => $this->agent->getId()));
+        $this->db->delete('permissions', array('person_id' => $this->agent->getId()));
+        $this->db->delete('agent_team_members', array('person_id' => $this->agent->getId()));
         $this->db->delete('ticket_filter_subscriptions', array('person_id' => $this->agent->getId()));
 
         // Any open tickets should be unassigned
@@ -181,7 +177,6 @@ class AgentDelete
 
         return true;
     }
-
 
     /**
      * Clears any sessions the agent has open.

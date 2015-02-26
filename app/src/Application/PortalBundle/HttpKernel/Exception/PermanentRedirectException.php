@@ -57,7 +57,6 @@ class PermanentRedirectException extends \RuntimeException
      */
     private $url_type;
 
-
     public function __construct($route_name, array $route_params, $url_type = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
         $this->message = 'Permenantly Redirecting';

@@ -58,7 +58,6 @@ class LabelSearch
      */
     protected $limit = 15;
 
-
     /**
      * @param \Doctrine\ORM\EntityManager $em
      */
@@ -67,7 +66,6 @@ class LabelSearch
         $this->em = $em;
         $this->db = $em->getConnection();
     }
-
 
     /**
      * Set the types of things we want to search for
@@ -79,7 +77,6 @@ class LabelSearch
         $this->search_types = $types;
     }
 
-
     /**
      * Set the max number of objects to fetch per type
      *
@@ -89,7 +86,6 @@ class LabelSearch
     {
         $this->limit = $limit;
     }
-
 
     /**
      * Do a search and get an array of results
@@ -105,7 +101,7 @@ class LabelSearch
             'news' => array(),
             'ticket' => array(),
             'person' => array(),
-            'organization' => array()
+            'organization' => array(),
         );
 
         if (in_array('ticket', $this->search_types)) {

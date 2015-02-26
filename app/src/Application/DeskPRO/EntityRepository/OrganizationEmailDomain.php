@@ -77,7 +77,6 @@ class OrganizationEmailDomain extends AbstractEntityRepository
         return $this->_getCounts($org, $domains, '!=');
     }
 
-
     /**
      * Count the number of emails that belong to a domain and are members of an org.
      *

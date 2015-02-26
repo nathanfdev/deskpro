@@ -137,7 +137,6 @@ class LanguageStack
         return $this->getActive();
     }
 
-
     /**
      * A common use case is to switch to the default language (routing for ex.) quickly. This is a convenience method.
      *
@@ -148,7 +147,6 @@ class LanguageStack
         return $this->push($this->getDefaultLanguage());
     }
 
-
     /**
      * Reverts pops the state, making the previous language container active.
      */
@@ -156,7 +154,6 @@ class LanguageStack
     {
         array_pop($this->stack);
     }
-
 
     /**
      * Can find the default system language. You should use the stack directly, but if nothing is on the stack

@@ -40,12 +40,10 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
     {
         // if we need to define all properties, not only children
         if (!$options['children_only']) {
-
             parent::buildForm($builder, $options);
             $builder->get('options')
                 ->add('multiple', 'checkbox')
                 ->add('expanded', 'checkbox');
-
         } else {
             // called in parent
             $builder->addEventSubscriber($this);
@@ -111,6 +109,6 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         parent::buildView($view, $form, $options);
-        $view->vars['rendered_data'] = $form->get('_children')->count() . ' Options';
+        $view->vars['rendered_data'] = $form->get('_children')->count().' Options';
     }
 }

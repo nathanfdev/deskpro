@@ -37,8 +37,6 @@ namespace Orb\Log\Filter;
 use \Orb\Log\Logger;
 use \Orb\Log\LogItem;
 
-
-
 /**
  * This filter fitlers out log events whose priority is below a certain level.
  */
@@ -54,7 +52,9 @@ class PriorityFilter extends \Orb\Filter\AbstractFilter
 
     public function filter($log_item)
     {
-        if (!$log_item) return null;
+        if (!$log_item) {
+            return null;
+        }
 
         if (isset($log_item['ignore_pri_filter'])) {
             unset($log_item['ignore_pri_filter']);

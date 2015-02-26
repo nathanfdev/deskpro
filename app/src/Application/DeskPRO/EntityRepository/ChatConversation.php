@@ -129,7 +129,6 @@ class ChatConversation extends AbstractEntityRepository
         return $qb->getQuery()->execute($params);
     }
 
-
     public function getAgentList($agent)
     {
         $agent_ids = App::getDb()->fetchAllCol("
@@ -229,7 +228,6 @@ class ChatConversation extends AbstractEntityRepository
         return $this->getByIds($convo_ids, true);
     }
 
-
     /**
      * Count how many chats there have been between a person, and someone else
      *
@@ -269,7 +267,6 @@ class ChatConversation extends AbstractEntityRepository
             ', array($agent['id']));
     }
 
-
     /**
      * This fetches the latest conversation where all $participants participated, and only
      * they participated. Usually this is used to find a private conversation between two people
@@ -285,7 +282,7 @@ class ChatConversation extends AbstractEntityRepository
             throw new \InvalidArgumentException('$participant_ids should be an array of at least two people');
         }
 
-        if ($date_limit !== null AND !($date_limit instanceof \DateTime)) {
+        if ($date_limit !== null and !($date_limit instanceof \DateTime)) {
             $date_limit = new \DateTime($date_limit);
         }
         if ($date_limit) {
@@ -311,9 +308,9 @@ class ChatConversation extends AbstractEntityRepository
             SELECT c.id
             FROM chat_conversations c
             INNER JOIN chat_conversation_to_person p ON (p.conversation_id = c.id)
-            " . ($date_limit ? "WHERE c.date_created > '$date_limit'" : '') . "
+            ".($date_limit ? "WHERE c.date_created > '$date_limit'" : '')."
             GROUP BY c.id
-            HAVING SUM(IF(p.person_id IN (" . implode(',', $participant_ids) . "), 1, 0)) = $count AND COUNT(*) = $count
+            HAVING SUM(IF(p.person_id IN (".implode(',', $participant_ids)."), 1, 0)) = $count AND COUNT(*) = $count
             ORDER BY c.id DESC
             LIMIT 1
         ";
@@ -325,7 +322,6 @@ class ChatConversation extends AbstractEntityRepository
 
         return $this->find($conversation_id);
     }
-
 
     public function getActiveChatForVisitor($visitor)
     {

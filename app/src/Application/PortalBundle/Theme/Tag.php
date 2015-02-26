@@ -48,13 +48,13 @@ class Tag implements \Serializable
     protected $always_guest_inline;
 
     /**
-     * @param string $name                  The tag's name
-     * @param string $controller_name       Theme:Portal:index
-     * @param array  $defined_options       An indexed array of options names (if not in this list, an exception thrown)
-     * @param array  $default_options       A map of pre-determined default values for some or all options (can override)
-     * @param bool   $esi                   True if this should be an edge side include
-     * @param bool   $always_guest_inline   Ignore ESI=true if the user is a guest
-     * @param bool   $allow_route_params    True if the /_proxy call will include _route and _route_params
+     * @param string $name                The tag's name
+     * @param string $controller_name     Theme:Portal:index
+     * @param array  $defined_options     An indexed array of options names (if not in this list, an exception thrown)
+     * @param array  $default_options     A map of pre-determined default values for some or all options (can override)
+     * @param bool   $esi                 True if this should be an edge side include
+     * @param bool   $always_guest_inline Ignore ESI=true if the user is a guest
+     * @param bool   $allow_route_params  True if the /_proxy call will include _route and _route_params
      */
     public function __construct(
         $name,
@@ -64,8 +64,7 @@ class Tag implements \Serializable
         $esi = false,
         $always_guest_inline = false,
         $allow_route_params = true
-    )
-    {
+    ) {
         $this->name = $name;
         $this->controller_name = $controller_name;
         $this->defined_options = $defined_options;
@@ -85,7 +84,7 @@ class Tag implements \Serializable
                 'default_options' => $this->default_options,
                 'esi' => $this->esi,
                 'always_guest_inline' => $this->always_guest_inline,
-                'allow_route_params' => $this->allow_route_params
+                'allow_route_params' => $this->allow_route_params,
             )
         );
     }

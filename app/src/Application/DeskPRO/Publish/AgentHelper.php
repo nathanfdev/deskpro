@@ -77,7 +77,6 @@ class AgentHelper implements PersonContextInterface
         $this->person_context = $person;
     }
 
-
     /**
      * Get the category structure
      *
@@ -91,7 +90,6 @@ class AgentHelper implements PersonContextInterface
         return App::getEntityRepository($entity_name)->getRootNodes();
     }
 
-
     /**
      * @param  string $type
      * @return int
@@ -104,7 +102,6 @@ class AgentHelper implements PersonContextInterface
 
         return $counts;
     }
-
 
     /**
      * Get an array of categories and their perms usergroups
@@ -130,7 +127,6 @@ class AgentHelper implements PersonContextInterface
         return $cats_to_ugs;
     }
 
-
     ############################################################################
     # Glossary
     ############################################################################
@@ -148,7 +144,6 @@ class AgentHelper implements PersonContextInterface
         return $glossary_words;
     }
 
-
     ############################################################################
     # Validating Content
     ############################################################################
@@ -163,7 +158,7 @@ class AgentHelper implements PersonContextInterface
         $db = App::getDb();
         foreach ($this->enabled_types as $t) {
             $table = $db->quoteIdentifier($t);
-            $alias = $db->quoteIdentifier('count_' . $t);
+            $alias = $db->quoteIdentifier('count_'.$t);
             $sql_parts[] = "(
                 SELECT COUNT(*)
                 FROM $table
@@ -171,12 +166,11 @@ class AgentHelper implements PersonContextInterface
             ) AS $alias";
         }
 
-        $sql =  "SELECT " . implode(', ', $sql_parts);
+        $sql =  "SELECT ".implode(', ', $sql_parts);
         $results = $db->fetchAssoc($sql);
 
         return array_sum($results);
     }
-
 
     /**
      * Get an array of all content awaiting validation from each content type.
@@ -197,7 +191,7 @@ class AgentHelper implements PersonContextInterface
         if ($limit !== null && !is_array($limit)) {
             $limit = array(
                 'max' => $limit,
-                'offset' => 0
+                'offset' => 0,
             );
         }
 
@@ -247,11 +241,11 @@ class AgentHelper implements PersonContextInterface
         if (!is_array($limit)) {
             $limit = array(
                 'max' => $limit,
-                'offset' => 0
+                'offset' => 0,
             );
         }
-        $offset = (int)$limit['offset'];
-        $limit = (int)$limit['max'];
+        $offset = (int) $limit['offset'];
+        $limit = (int) $limit['max'];
 
         $types = $this->getCommentTypeInfo();
 
@@ -274,7 +268,9 @@ class AgentHelper implements PersonContextInterface
         $db = App::getDb();
         $results = $db->fetchAll($sql);
 
-        if (!$results) return array();
+        if (!$results) {
+            return array();
+        }
 
         #------------------------------
         # Fetch each comment in the result
@@ -308,7 +304,7 @@ class AgentHelper implements PersonContextInterface
             if (isset($results_typed[$r['content_type']][$r['comment_id']])) {
                 $results_ordered[] = array(
                     'info' => $r,
-                    'obj'  => $results_typed[$r['content_type']][$r['comment_id']]
+                    'obj'  => $results_typed[$r['content_type']][$r['comment_id']],
                 );
             }
         }
@@ -325,7 +321,7 @@ class AgentHelper implements PersonContextInterface
 
         foreach ($this->enabled_types as $t) {
             $t_info = $types[$t];
-            $alias = $db->quoteIdentifier('count_' . $t);
+            $alias = $db->quoteIdentifier('count_'.$t);
             $sql_parts[] = "(
                 SELECT COUNT(*)
                 FROM {$t_info['table']}
@@ -333,7 +329,7 @@ class AgentHelper implements PersonContextInterface
             ) AS $alias";
         }
 
-        $sql =  "SELECT " . implode(', ', $sql_parts);
+        $sql =  "SELECT ".implode(', ', $sql_parts);
         $results = $db->fetchAssoc($sql);
 
         return array_sum($results);
@@ -350,11 +346,11 @@ class AgentHelper implements PersonContextInterface
         if (!is_array($limit)) {
             $limit = array(
                 'max' => $limit,
-                'offset' => 0
+                'offset' => 0,
             );
         }
-        $offset = (int)$limit['offset'];
-        $limit = (int)$limit['max'];
+        $offset = (int) $limit['offset'];
+        $limit = (int) $limit['max'];
 
         $types = $this->getCommentTypeInfo();
 
@@ -377,7 +373,9 @@ class AgentHelper implements PersonContextInterface
         $db = App::getDb();
         $results = $db->fetchAll($sql);
 
-        if (!$results) return array();
+        if (!$results) {
+            return array();
+        }
 
         #------------------------------
         # Fetch each comment in the result
@@ -411,7 +409,7 @@ class AgentHelper implements PersonContextInterface
             if (isset($results_typed[$r['content_type']][$r['comment_id']])) {
                 $results_ordered[] = array(
                     'info' => $r,
-                    'obj'  => $results_typed[$r['content_type']][$r['comment_id']]
+                    'obj'  => $results_typed[$r['content_type']][$r['comment_id']],
                 );
             }
         }
@@ -436,7 +434,7 @@ class AgentHelper implements PersonContextInterface
             ) AS $alias";
         }
 
-        $sql =  "SELECT " . implode(', ', $sql_parts);
+        $sql =  "SELECT ".implode(', ', $sql_parts);
         $results = $db->fetchAssoc($sql);
 
         $count_all = array_sum($results);
@@ -498,12 +496,12 @@ class AgentHelper implements PersonContextInterface
         if ($limit !== null && !is_array($limit)) {
             $limit = array(
                 'max' => $limit,
-                'offset' => 0
+                'offset' => 0,
             );
         }
         if (null !== $limit) {
-            $offset = (int)$limit['offset'];
-            $limit = (int)$limit['max'];
+            $offset = (int) $limit['offset'];
+            $limit = (int) $limit['max'];
         }
 
         $types = array(
@@ -523,7 +521,7 @@ class AgentHelper implements PersonContextInterface
             $person_sql = '';
             $table = $db->quoteIdentifier($t);
 
-            if(!$all) {
+            if (!$all) {
                 $person_sql = " AND c.person_id = {$this->person_context['id']}";
             }
 
@@ -548,7 +546,6 @@ class AgentHelper implements PersonContextInterface
         return $results;
     }
 
-
     /**
      * Count how many drafts there are for this user
      *
@@ -569,9 +566,9 @@ class AgentHelper implements PersonContextInterface
             $t_info = $types[$t];
             $person_sql = '';
             $table = $db->quoteIdentifier($t);
-            $alias = $db->quoteIdentifier('count_' . $t);
+            $alias = $db->quoteIdentifier('count_'.$t);
 
-            if($mine) {
+            if ($mine) {
                 $person_sql = " AND c.person_id = {$this->person_context['id']}";
             }
 
@@ -583,13 +580,12 @@ class AgentHelper implements PersonContextInterface
             ) AS $alias";
         }
 
-        $sql =  "SELECT " . implode(', ', $sql_parts);
+        $sql =  "SELECT ".implode(', ', $sql_parts);
 
         $results = $db->fetchAssoc($sql);
 
         return array_sum($results);
     }
-
 
     ############################################################################
 
@@ -638,14 +634,13 @@ class AgentHelper implements PersonContextInterface
             if (isset($results_typed[$r['content_type']][$r['content_id']])) {
                 $results_ordered[] = array(
                     'info' => $r,
-                    'obj'  => $results_typed[$r['content_type']][$r['content_id']]
+                    'obj'  => $results_typed[$r['content_type']][$r['content_id']],
                 );
             }
         }
 
         return $results_ordered;
     }
-
 
     /**
      * Get the content entity for a publish type
@@ -673,7 +668,6 @@ class AgentHelper implements PersonContextInterface
 
         throw new \InvalidArgumentException("Unknown type `$type`");
     }
-
 
     /**
      * Get the category entity for a publish type

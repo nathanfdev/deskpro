@@ -47,7 +47,7 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
         $response->headers->add(
             array(
                 'X-Content-Type-Options' => 'nosniff',
-                'X-FRAME-OPTIONS' => 'DENY'
+                'X-FRAME-OPTIONS' => 'DENY',
             )
         );
     }
@@ -55,7 +55,7 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::RESPONSE => array('onResponse', 64)
+            KernelEvents::RESPONSE => array('onResponse', 64),
         );
     }
 }

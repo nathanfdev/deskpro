@@ -56,7 +56,7 @@ class DisplayHtmlType extends AbstractType
         $resolver->setDefaults(
             array(
                 'html' => '',
-                'label' => false
+                'label' => false,
             )
         );
     }
@@ -66,4 +66,3 @@ class DisplayHtmlType extends AbstractType
         $view->vars['html'] = $options['html'];
     }
 }
- 

@@ -65,9 +65,9 @@ class DatabaseSourceMapper implements SourceMapperInterface
     private $email_accounts;
 
     /**
-     * @param Connection $db
-     * @param DeskproBlobStorage $bs
-     * @param EmailAccountManager $email_accounts
+     * @param Connection            $db
+     * @param DeskproBlobStorage    $bs
+     * @param EmailAccountManager   $email_accounts
      * @param LogCollectorInterface $log_collector
      */
     public function __construct(Connection $db, DeskproBlobStorage $bs, EmailAccountManager $email_accounts, LogCollectorInterface $log_collector = null)
@@ -90,18 +90,17 @@ class DatabaseSourceMapper implements SourceMapperInterface
     /**
      * Get a resource for a source (the actual message data)
      *
-     * @param array $source
+     * @param  array    $source
      * @return resource
      */
     public function getRowBlobHandle(array $source)
     {
-
     }
 
     /**
-     * @param \Swift_Mime_Message $message
+     * @param  \Swift_Mime_Message $message
      * @param $status
-     * @param \DateTime $queue_date
+     * @param  \DateTime           $queue_date
      * @return array
      */
     public function createSourceForMessage(\Swift_Mime_Message $message, $status, \DateTime $queue_date = null)
@@ -176,9 +175,9 @@ class DatabaseSourceMapper implements SourceMapperInterface
 
         // Should aready be set via Mailer so this is a fallback
         if (!$ref) {
-            $ref = Numbers::roundToMultiple(time(), 5) . '-' . Strings::random(40, Strings::CHARS_ALPHANUM_IU);
+            $ref = Numbers::roundToMultiple(time(), 5).'-'.Strings::random(40, Strings::CHARS_ALPHANUM_IU);
             $message->getHeaders()->addTextHeader('X-DeskPRO-MessageRef', $ref);
-            $message->setId($ref . '@deskpro-message');
+            $message->setId($ref.'@deskpro-message');
         }
 
         $blob = $this->bs->createBlobRowFromString($message->toString(), 'out_email.eml', 'message/rfc822');
@@ -204,7 +203,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
             'status'           => $status,
             'date_status'      => $date,
             'date_created'     => $date,
-            'exec_count'       => $exec_count
+            'exec_count'       => $exec_count,
         );
 
         if ($status == 'pending') {
@@ -226,8 +225,8 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * @param array $source
-     * @param null $log_text
+     * @param  array $source
+     * @param  null  $log_text
      * @return array
      */
     public function markSourceComplete(array $source, $log_text = null)
@@ -246,8 +245,8 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * @param array $source
-     * @param null $log_text
+     * @param  array $source
+     * @param  null  $log_text
      * @return array
      */
     public function markSourceAborted(array $source, $log_text = null)
@@ -264,9 +263,9 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * @param array $source
-     * @param null $log_text
-     * @param \DateTime $next_date
+     * @param  array     $source
+     * @param  null      $log_text
+     * @param  \DateTime $next_date
      * @return mixed
      */
     public function markSourceRetry(array $source, $log_text = null, \DateTime $next_date = null)
@@ -288,9 +287,9 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * @param array $source
-     * @param string $error_code
-     * @param null $log_text
+     * @param  array  $source
+     * @param  string $error_code
+     * @param  null   $log_text
      * @return mixed
      */
     public function markSourceError(array $source, $error_code, $log_text = null)
@@ -308,8 +307,8 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * @param array $source
-     * @param \DateTime $next_date
+     * @param  array     $source
+     * @param  \DateTime $next_date
      * @return mixed
      */
     public function setSourcePending(array $source, \DateTime $next_date = null)
@@ -330,7 +329,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * @param array $source
+     * @param  array $source
      * @return mixed
      */
     public function setSourceProcessing(array $source)
@@ -346,8 +345,8 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * @param array $source
-     * @param string $log_text
+     * @param  array  $source
+     * @param  string $log_text
      * @return array
      */
     public function setLogText(array $source, $log_text = '')
@@ -362,8 +361,8 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * @param array $source
-     * @param string $log_text
+     * @param  array  $source
+     * @param  string $log_text
      * @return bool
      */
     private function appendLogText(&$source, $log_text)
@@ -371,7 +370,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
         $log_text = trim($log_text);
 
         if ($this->log_collector && !empty($source['id']) && $source['id']) {
-            $log_text = trim($this->log_collector->getLogForMessage($source['id']) . "\n" . $log_text);
+            $log_text = trim($this->log_collector->getLogForMessage($source['id'])."\n".$log_text);
         }
 
         if (!$log_text) {
@@ -384,10 +383,11 @@ class DatabaseSourceMapper implements SourceMapperInterface
             try {
                 $old_log_blob = $this->db->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($source['log_blob_id']));
                 $exist_log = $this->bs->copyBlobRowToString($old_log_blob);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
 
             if ($exist_log) {
-                $log_text = $exist_log . "\n\n\n" . str_repeat('#', 72) . "\n\n\n" . $log_text;
+                $log_text = $exist_log."\n\n\n".str_repeat('#', 72)."\n\n\n".$log_text;
             }
         }
 
@@ -395,6 +395,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
             $new_log_blob = $this->bs->createBlobRowFromString($log_text, 'log.txt', 'text/plain', array('tag' => 'logs.sendmail_source_log'));
         } catch (\Exception $e) {
             KernelErrorHandler::handleException($e);
+
             return false;
         }
 
@@ -452,10 +453,12 @@ class DatabaseSourceMapper implements SourceMapperInterface
         );
 
         foreach ($new as $k => $v) {
-            if (!isset($valid_keys[$k])) continue;
+            if (!isset($valid_keys[$k])) {
+                continue;
+            }
             if (isset($always_save[$k])) {
                 $diff[$k] = $v;
-            } else if (!isset($orig[$k]) || $orig[$k] != $v) {
+            } elseif (!isset($orig[$k]) || $orig[$k] != $v) {
                 $diff[$k] = $v;
             }
         }

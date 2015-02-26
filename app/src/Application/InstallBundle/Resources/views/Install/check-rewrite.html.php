@@ -1,4 +1,6 @@
-<?php if (!defined('DP_ROOT')) exit('No access'); ?>
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+} ?>
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
 <?php $view['slots']->start('subtitle') ?>Step 3: Check URL rewriting<?php $view['slots']->stop() ?>
 

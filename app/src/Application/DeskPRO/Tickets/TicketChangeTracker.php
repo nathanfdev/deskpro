@@ -110,7 +110,6 @@ class TicketChangeTracker
 
     public function preDone()
     {
-
     }
 
     public function getLogMessagesAsString()

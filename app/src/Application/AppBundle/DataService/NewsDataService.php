@@ -34,16 +34,10 @@
 
 namespace Application\AppBundle\DataService;
 
-
-use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
-use Application\DeskPRO\Entity\ArticleCategory;
-use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -60,7 +54,7 @@ class NewsDataService extends AbstractDataService
     }
 
     /**
-     * @param NewsCategory $category
+     * @param  NewsCategory $category
      * @param $page
      * @param $max_per_page
      * @return Pagerfanta
@@ -74,7 +68,7 @@ class NewsDataService extends AbstractDataService
                 'getNewsPager',
                 $category,
                 $page,
-                $max_per_page
+                $max_per_page,
             ),
             function () use ($em, $category, $max_per_page, $page) {
                 $qb = $em->createQueryBuilder();
@@ -105,7 +99,7 @@ class NewsDataService extends AbstractDataService
      *
      * TODO: this is using the doctrine proxy as a method of finding children of the category. Might be able to improve that.
      *
-     * @param int|null|NewsCategory $category
+     * @param  int|null|NewsCategory     $category
      * @return NewsCategory[]
      * @throws \InvalidArgumentException
      */
@@ -116,9 +110,9 @@ class NewsDataService extends AbstractDataService
         return $this->generateAndCache(
             array(
                 'getCategoryChildren',
-                $category
+                $category,
             ),
-            function() use ($that, $category) {
+            function () use ($that, $category) {
                 if (!$category) { // get root categories
                     return $that->getNewsCategoriesRepo()->findBy(array('parent' => null));
                 }
@@ -135,7 +129,7 @@ class NewsDataService extends AbstractDataService
     }
 
     /**
-     * @param int|null|News $post
+     * @param  int|null|News $post
      * @return News|null
      */
     public function getPost($post)
@@ -145,9 +139,9 @@ class NewsDataService extends AbstractDataService
         return $this->generateAndCache(
             array(
                 'getPost',
-                $post
+                $post,
             ),
-            function() use ($that, $post) {
+            function () use ($that, $post) {
                 if (!$post) { // we need some input
                     return null;
                 }
@@ -166,7 +160,7 @@ class NewsDataService extends AbstractDataService
      *
      * TODO: optimize the heck out of any possible inputs here (if it helps: cache in an array at least, cache long term if desired, should normalize cache key on lowest common denominator "id")
      *
-     * @param int|null|NewsCategory $category
+     * @param  int|null|NewsCategory $category
      * @return NewsCategory|null
      */
     public function getCategory($category)
@@ -176,9 +170,9 @@ class NewsDataService extends AbstractDataService
         return $this->generateAndCache(
             array(
                 'getCategory',
-                $category
+                $category,
             ),
-            function() use ($that, $category) {
+            function () use ($that, $category) {
                 if (!$category) { // we need some input
                     return null;
                 }
@@ -200,9 +194,9 @@ class NewsDataService extends AbstractDataService
             array(
                 'getPostComments',
                 $post,
-                $person
+                $person,
             ),
-            function() use ($that, $post, $person) {
+            function () use ($that, $post, $person) {
                 $post = $that->getPost($post);
 
                 return $that->getNewsCommentRepo()->getDisplayComments($post, $person);
@@ -242,4 +236,3 @@ class NewsDataService extends AbstractDataService
         return $this->em->getRepository('DeskPRO:RelatedContent');
     }
 }
- 

@@ -34,11 +34,9 @@
 
 namespace Application\FormBundle\Form\DataTransformer;
 
-
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\EntityRepository\Blob as BlobRepo;
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Exception\TransformationFailedException;
 
 /**
  * BlobType has an array as its "normalized" data:
@@ -54,7 +52,7 @@ class BlobTypeViewTransformer implements DataTransformerInterface
         'blob'        => null,
         'blob_auth'   => null,
         'upload'      => null,
-        'delete_blob' => false
+        'delete_blob' => false,
     );
 
     /**
@@ -72,7 +70,6 @@ class BlobTypeViewTransformer implements DataTransformerInterface
         return isset($default_normailzed['blob']) ? $default_normailzed['blob'] : null;
     }
 
-
     public function reverseTransform($value)
     {
         $data = array_merge(self::$default_normailzed, $value);
@@ -86,4 +83,3 @@ class BlobTypeViewTransformer implements DataTransformerInterface
         }
     }
 }
- 

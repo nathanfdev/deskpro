@@ -50,9 +50,9 @@ class RedisPendingQueuer implements PendingQueuerInterface
 
     /**
      * @param Predis\Client $client
-     * @param string $key
+     * @param string        $key
      */
-    function __construct(Predis\Client $client, $key)
+    public function __construct(Predis\Client $client, $key)
     {
         $this->client = $client;
         $this->key = $key;
@@ -64,7 +64,7 @@ class RedisPendingQueuer implements PendingQueuerInterface
     public function queueMessageSource(array $source)
     {
         $data = array(
-            'id' => $source['id']
+            'id' => $source['id'],
         );
 
         if (defined('DPC_IS_CLOUD')) {

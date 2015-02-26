@@ -68,7 +68,7 @@ class RunQueuedTasks extends AbstractJob
                 $result = $task->runTask($remaining_time, $logger);
             } catch (\Exception $e) {
                 $result = false;
-                $logger->logWarn("Task #$task->id ($task->runner_class) errored: " . $e->getMessage());
+                $logger->logWarn("Task #$task->id ($task->runner_class) errored: ".$e->getMessage());
             }
 
             $em->flush();

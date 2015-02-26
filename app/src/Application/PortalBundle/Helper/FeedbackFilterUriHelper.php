@@ -34,7 +34,6 @@
 
 namespace Application\PortalBundle\Helper;
 
-
 use Application\PortalBundle\Model\FeedbackFilter;
 
 class FeedbackFilterUriHelper
@@ -85,7 +84,6 @@ class FeedbackFilterUriHelper
             }
         }
 
-
         return $filter;
     }
 
@@ -125,7 +123,7 @@ class FeedbackFilterUriHelper
     {
         $categories = explode(',', $parts);
         $categories = array_filter($categories, function ($val) {
-            return (int)$val;
+            return (int) $val;
         });
 
         return $categories;
@@ -147,7 +145,6 @@ class FeedbackFilterUriHelper
         $segment = $this->filterSegment($segment);
 
         $parts = $this->getSortParts($segment);
-
 
         if (count($parts) && strlen($parts[0])) {
             foreach (FeedbackFilter::$sorts as $sort) {
@@ -171,17 +168,18 @@ class FeedbackFilterUriHelper
         if (count($parts) === 2) {
             if (!in_array($parts[1], array(
                 FeedbackFilter::SORT_DIRECTION_DESC,
-                FeedbackFilter::SORT_DIRECTION_ASC
+                FeedbackFilter::SORT_DIRECTION_ASC,
             ))) {
-                return array($parts[0] . '-' . $parts[1]);
+                return array($parts[0].'-'.$parts[1]);
             }
         }
 
         if (count($parts) > 2) {
             $parts = array(
-                $parts[0] . '-' . $parts[1],
-                $parts[2]
+                $parts[0].'-'.$parts[1],
+                $parts[2],
             );
+
             return $parts;
         }
 
@@ -201,7 +199,7 @@ class FeedbackFilterUriHelper
         $uri = '';
 
         if ($filter->getStatus() != $defaults['status']) {
-            $uri .= '/' . $filter->getStatus();
+            $uri .= '/'.$filter->getStatus();
         }
 
         if ($filter->getStatusCategories() != $defaults['status_categories']) {

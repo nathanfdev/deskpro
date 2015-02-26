@@ -1296,7 +1296,6 @@ class TicketController extends AbstractController
         $changed_agent = false;
         $changed_team  = false;
         try {
-
             if ((!$message['is_agent_note'] || $macro) && $collection->countActions()) {
                 $collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
             }

@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle\Form\Type;
 
-
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -54,4 +53,3 @@ class HeirarchicalEntityType extends AbstractType
     {
     }
 }
- 

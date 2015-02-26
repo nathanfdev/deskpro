@@ -57,22 +57,20 @@ class SetHold extends AbstractContainerAwareAction implements ActionInterface, M
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $ticket->is_hold = (bool)$this->getActionOption('is_hold');
+        $ticket->is_hold = (bool) $this->getActionOption('is_hold');
     }
-
 
     /**
      * {@inheritDoc}
      */
     public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $v = (bool)$this->getActionOption('is_hold');
+        $v = (bool) $this->getActionOption('is_hold');
 
         return $ticket->is_hold == $v;
     }

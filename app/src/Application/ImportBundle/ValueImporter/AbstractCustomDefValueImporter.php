@@ -55,7 +55,7 @@ abstract class AbstractCustomDefValueImporter extends AbstractValueImporter
         'Application\DeskPRO\CustomFields\Handler\Choice',
         'Application\DeskPRO\CustomFields\Handler\Textarea',
         'Application\DeskPRO\CustomFields\Handler\Toggle',
-        'Application\DeskPRO\CustomFields\Handler\Date'
+        'Application\DeskPRO\CustomFields\Handler\Date',
     );
 
     public function __construct($mode, DeskproContainer $container, LoggerInterface $logger, RecordMapperRegistry $mappers, $mapped_value)
@@ -137,5 +137,4 @@ abstract class AbstractCustomDefValueImporter extends AbstractValueImporter
     {
         return $this->getMappers()->getMapper($this->mapper_class);
     }
-
 }

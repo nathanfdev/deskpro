@@ -64,8 +64,8 @@ class TagRequestFactory
     }
 
     /**
-     * @param Tag $tag
-     * @param array $arguments
+     * @param  Tag   $tag
+     * @param  array $arguments
      * @return array
      */
     private function makeQuery(Tag $tag, array $arguments)
@@ -83,15 +83,14 @@ class TagRequestFactory
             $new_args[$key] = $value;
         }
 
-
         $tag_options = array_merge($tag->getDefaultOptions(), array_merge($new_args, array('_tag_name' => $tag->getName())));
 
         return array('tag_options' => $tag_options);
     }
 
     /**
-     * @param Tag $tag
-     * @param array $arguments
+     * @param  Tag   $tag
+     * @param  array $arguments
      * @return array
      */
     private function makeAttributes(Tag $tag, array $arguments)

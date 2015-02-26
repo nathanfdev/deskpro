@@ -58,7 +58,6 @@ class Hierarchy extends BaseHierarchy
         $this->leaf_selections_only = false;
     }
 
-
     /**
      * @return HierarchyNode[]
      */
@@ -73,8 +72,8 @@ class Hierarchy extends BaseHierarchy
     }
 
     /**
-     * @param HierarchyNode   $node
-     * @param ArrayCollection $append_to_collection
+     * @param  HierarchyNode                   $node
+     * @param  ArrayCollection                 $append_to_collection
      * @return ArrayCollection|HierarchyNode[]
      */
     public static function flatten(HierarchyNode $node, ArrayCollection $append_to_collection = null)
@@ -103,7 +102,7 @@ class Hierarchy extends BaseHierarchy
         if (!$this->leaf_selections_only) {
             /** @var HierarchyNode $node */
             foreach ($this->getFlattened() as $node) {
-                $label = (string)$node;
+                $label = (string) $node;
                 $key = $this->getNodeId($node);
 
                 $choices[$key] = $node;
@@ -116,7 +115,7 @@ class Hierarchy extends BaseHierarchy
         /** @var HierarchyNode $node */
         foreach ($this as $node) {
             $choices[$this->getNodeId($node)] = $node;
-            $labels[$this->getNodeId($node)] = (string)$node;
+            $labels[$this->getNodeId($node)] = (string) $node;
             foreach ($node->getChoices() as $id => $nid) {
                 $choices[$id] = $nid;
             }
@@ -127,7 +126,6 @@ class Hierarchy extends BaseHierarchy
 
         return new HierarchyChoiceList($choices, $labels);
     }
-
 
     public function markOnlyLeafSelections()
     {
@@ -160,7 +158,7 @@ class Hierarchy extends BaseHierarchy
     /**
      * Counts all nodes in the tree
      *
-     * @param bool $only_count_left_nodes
+     * @param  bool $only_count_left_nodes
      * @return int
      */
     public function countTree($only_count_left_nodes = false)
@@ -174,4 +172,3 @@ class Hierarchy extends BaseHierarchy
         return $count;
     }
 }
- 

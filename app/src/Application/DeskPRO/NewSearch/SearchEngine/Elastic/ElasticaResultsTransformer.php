@@ -44,7 +44,6 @@ class ElasticaResultsTransformer
         $this->em = $em;
     }
 
-
     /**
      * @param  \Elastica\Result[] $results
      * @return array
@@ -75,7 +74,7 @@ class ElasticaResultsTransformer
             $ent_objects = $this->em->getRepository($ent)->getByIds($ids, true);
             if ($ent_objects) {
                 foreach ($ent_objects as $o) {
-                    $key = $ent . ':' . $o->id;
+                    $key = $ent.':'.$o->id;
                     $objects[$key] = $o;
                 }
             }
@@ -88,7 +87,7 @@ class ElasticaResultsTransformer
         $sorted_objects = array();
         foreach ($results as $hit) {
             $ent = $this->getEntityFromType($hit->getType());
-            $key = $ent . ':' . $hit->getId();
+            $key = $ent.':'.$hit->getId();
             if (isset($objects[$key])) {
                 $sorted_objects[] = $objects[$key];
             }
@@ -96,7 +95,6 @@ class ElasticaResultsTransformer
 
         return $sorted_objects;
     }
-
 
     /**
      * @param  string                    $type

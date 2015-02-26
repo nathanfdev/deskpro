@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle\Form\DataTransformer;
 
-
 use Application\AppBundle\Hierarchy\HierarchyNode;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -157,8 +156,6 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
             $items[] = $item->getData()->getId();
         }
 
-
         return $items;
     }
 }
- 

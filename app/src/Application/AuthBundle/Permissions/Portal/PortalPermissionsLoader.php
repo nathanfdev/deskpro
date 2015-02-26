@@ -34,7 +34,6 @@
 
 namespace Application\AuthBundle\Permissions\Portal;
 
-
 use Application\AppBundle\Helper\ArbitraryHasher;
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
@@ -70,9 +69,9 @@ class PortalPermissionsLoader
         return $this->generateAndCache(
             array(
                 'loadPermissionsForGroupSet',
-                $usergroupIds
+                $usergroupIds,
             ),
-            function() use ($that, $usergroupIds) {
+            function () use ($that, $usergroupIds) {
                 $perms = $that->getUsergroupsPermissions($usergroupIds);
 
                 $result = array();
@@ -97,9 +96,9 @@ class PortalPermissionsLoader
 
         return $this->generateAndCache(
             array(
-                'getAllPermissions'
+                'getAllPermissions',
             ),
-            function() use ($conn) {
+            function () use ($conn) {
                 return $conn->fetchAllGrouped(
                     '
                     SELECT usergroup_id, name, value
@@ -125,7 +124,7 @@ class PortalPermissionsLoader
         return $this->generateAndCache(
             array(
                 'getUsergroupsPermissions',
-                $usergroupIds
+                $usergroupIds,
             ),
             function () use ($that, $usergroupIds) {
                 $usergroupIds = array_fill_keys($usergroupIds, true);
@@ -143,8 +142,8 @@ class PortalPermissionsLoader
     }
 
     /**
-     * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable
-     * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     * @param  mixed      $params   the "ArbitraryHasher" input to create cache key for this callable
+     * @param  mixed      $callable doesn't need to be a callable, can be any default value, but usually is a callable
      * @return mixed|null
      */
     protected function generateAndCache($params, $callable)
@@ -165,7 +164,7 @@ class PortalPermissionsLoader
     }
 
     /**
-     * @param mixed $input
+     * @param  mixed  $input
      * @return string
      */
     protected function generateHash($input)

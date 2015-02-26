@@ -34,8 +34,6 @@
 
 namespace Application\PortalBundle\Controller;
 
-
-use Application\PortalBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class SearchController extends AbstractController

@@ -34,8 +34,6 @@
 
 namespace Application\FormBundle\Form\Type;
 
-
-use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\FormBundle\Captcha\CaptchaDecider;
 use Application\FormBundle\Form\FormFieldManager;
 use Application\FormBundle\Validator\Constraints\ValidCaptcha;
@@ -77,13 +75,13 @@ class PersonRegistrationType extends AbstractType
         $builder->add('name', 'text', array(
             'required' => true,
             'constraints' => array(
-                new NotBlank()
+                new NotBlank(),
             ),
         ));
 
         $builder->add('primary_email', 'deskpro_person_email', array(
             'required' => true,
-            'label' => false
+            'label' => false,
         ));
 
         $builder->add('password', 'repeated', array(
@@ -95,22 +93,21 @@ class PersonRegistrationType extends AbstractType
             'mapped' => false,
             'required' => true,
             'constraints' => array(
-                new NotBlank()
-            )
+                new NotBlank(),
+            ),
         ));
 
         $builder->add('timezone', 'timezone', array());
 
         if ($this->language_manager->isMultiLanguagePortal()) {
             $builder->add('language_id', 'deskpro_language', array(
-                'view_context' => 'user'
+                'view_context' => 'user',
             ));
         }
 
-
         $field_manager = $this->field_manager;
         $captcha_decider = $this->captcha_decider;
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) use ($field_manager, $captcha_decider) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($field_manager, $captcha_decider) {
             foreach ($field_manager->getAvailablePersonFields() as $field_def) {
                 if (!$field_def->is_enabled) {
                     continue;
@@ -125,7 +122,7 @@ class PersonRegistrationType extends AbstractType
                         'person' => $event->getData(),
                         'property_path' => sprintf('getCustomDataCollection[%s]', $id),
                         'agent_interface' => false,
-                        'label' => false
+                        'label' => false,
                     )
                 );
             }
@@ -136,13 +133,13 @@ class PersonRegistrationType extends AbstractType
                     'error_bubbling' => false,
                     'label' => false,
                     'constraints' => array(
-                        new ValidCaptcha()
-                    )
+                        new ValidCaptcha(),
+                    ),
                 ));
             }
         });
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) use ($field_manager) {
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($field_manager) {
             $event->getData()->setPassword($event->getForm()->get('password')->getData());
         });
     }
@@ -151,7 +148,7 @@ class PersonRegistrationType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Application\DeskPRO\Entity\Person'
+                'data_class' => 'Application\DeskPRO\Entity\Person',
             )
         );
 
@@ -161,11 +158,10 @@ class PersonRegistrationType extends AbstractType
 
         $resolver->setAllowedTypes(
             array(
-                'settings' => 'Application\DeskPRO\NewSettings\SettingsBag'
+                'settings' => 'Application\DeskPRO\NewSettings\SettingsBag',
             )
         );
     }
-
 
     /**
      * Returns the name of this type.

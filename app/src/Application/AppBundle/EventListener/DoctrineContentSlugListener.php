@@ -35,14 +35,12 @@
 namespace Application\AppBundle\EventListener;
 
 use Application\AppBundle\Service\ContentSlugManager;
-use Application\DeskPRO\Entity\ArticleSlugHistory;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\PostFlushEventArgs;
-use Doctrine\ORM\UnitOfWork;
 
 /**
  * Just ensures that the slug of a content object is set correctly (pre persist, and pre update) before flushing.
@@ -104,7 +102,6 @@ class DoctrineContentSlugListener implements EventSubscriber
     public function postFlush(PostFlushEventArgs $args)
     {
         if ($this->new_entities->count() > 0) {
-
             $em = $args->getEntityManager();
 
             foreach ($this->new_entities as $entity) {
@@ -122,7 +119,7 @@ class DoctrineContentSlugListener implements EventSubscriber
         return array(
             'prePersist',
             'preUpdate',
-            'postFlush'
+            'postFlush',
         );
     }
 }

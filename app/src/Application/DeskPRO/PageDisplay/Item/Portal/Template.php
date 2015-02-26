@@ -46,7 +46,7 @@ class Template extends PortalItemAbstract
         $vars = $this->getVars();
         $vars = array_merge($vars, array(
             'section' => $this->section,
-            'options' => $this->options
+            'options' => $this->options,
         ));
 
         $html = $this->renderView($this->getOption('tpl'), $vars);

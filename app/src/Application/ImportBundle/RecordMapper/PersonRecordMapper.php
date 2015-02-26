@@ -45,7 +45,6 @@ class PersonRecordMapper implements RecordMapperInterface
      */
     private $cache = array();
 
-
     /**
      * @param Connection $db
      */
@@ -53,7 +52,6 @@ class PersonRecordMapper implements RecordMapperInterface
     {
         $this->db = $db;
     }
-
 
     /**
      * Returns person ID given an email address.

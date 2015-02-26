@@ -35,8 +35,6 @@
 namespace Application\AppBundle\Hierarchy;
 
 
-use Application\AppBundle\Hierarchy\Hierarchy;
-
 class HierarchyNode implements \IteratorAggregate, \Countable
 {
     /**
@@ -161,7 +159,7 @@ class HierarchyNode implements \IteratorAggregate, \Countable
      * Able to recursively find a child with a given ID (ID as defined by the hierarchy property accessor)
      *
      * @param $node_id
-     * @param bool $recursive
+     * @param  bool               $recursive
      * @return HierarchyNode|null
      */
     public function findChildById($node_id, $recursive = false)
@@ -212,7 +210,6 @@ class HierarchyNode implements \IteratorAggregate, \Countable
             foreach ($grant_parents as $grant_parent) {
                 $parents[] = $grant_parent;
             }
-
         }
 
         return array_reverse($parents);

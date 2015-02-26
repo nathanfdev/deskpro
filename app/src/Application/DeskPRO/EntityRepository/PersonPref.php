@@ -91,7 +91,6 @@ class PersonPref extends AbstractEntityRepository
         }
     }
 
-
     /**
      * Get the value of a specific setting.
      *
@@ -163,7 +162,6 @@ class PersonPref extends AbstractEntityRepository
         ", array($person_id, $pref_name.'%'));
     }
 
-
     public function savePref($person, $pref_id, $value)
     {
         $pref = $person->setPreference($pref_id, $value);
@@ -173,7 +171,7 @@ class PersonPref extends AbstractEntityRepository
             'name' => $pref['name'],
             'value_str' => $pref['value_str'],
             'value_array' => $pref['value_array'],
-            'date_expire' => $pref['date_expire']
+            'date_expire' => $pref['date_expire'],
         ));
 
         return $pref;

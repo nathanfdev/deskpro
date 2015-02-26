@@ -55,7 +55,6 @@ class AppBundle extends Bundle
         $container->addCompilerPass(new AppSecretPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
     }
 
-
     public function registerCommands(Application $application)
     {
     }

@@ -41,7 +41,9 @@ class DbErrorLoggerQueue
     /** @var array */
     protected $waiting = array();
 
-    private function __construct() { }
+    private function __construct()
+    {
+    }
 
     /**
      * Get the single instance of the queue
@@ -58,7 +60,6 @@ class DbErrorLoggerQueue
         return $inst;
     }
 
-
     /**
      * Inits the queue once
      */
@@ -67,7 +68,7 @@ class DbErrorLoggerQueue
         static $has_init;
         if (!$has_init) {
             App::getDb()->getEventManager()->addEventListener(array(
-                'onPostCommit', 'onPostRollback'
+                'onPostCommit', 'onPostRollback',
             ), self::getInstance());
         }
     }
@@ -109,7 +110,8 @@ class DbErrorLoggerQueue
     {
         try {
             $this->flush();
-        } catch (\Exception $e){}
+        } catch (\Exception $e) {
+        }
     }
 
     /**
@@ -119,6 +121,7 @@ class DbErrorLoggerQueue
     {
         try {
             $this->flush();
-        } catch (\Exception $e){}
+        } catch (\Exception $e) {
+        }
     }
 }

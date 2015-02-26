@@ -55,7 +55,6 @@ class FilterUserName extends AbstractFilterTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -74,7 +73,7 @@ class FilterUserName extends AbstractFilterTerm
                 $like_value = $check_value;
                 $like_value = str_replace('%', '%%', $like_value);
                 $like_value = str_replace('_', '__', $like_value);
-                $like_value = '%' . $like_value . '%';
+                $like_value = '%'.$like_value.'%';
                 break;
             default:
                 throw new \InvalidArgumentException("Invalid operator: {$this->getTermOperator()}");

@@ -34,8 +34,7 @@
 
 namespace Application\PortalBundle\Model;
 
-
-class FeedbackFilter 
+class FeedbackFilter
 {
     const STATUS_ALL = 'all';
     const STATUS_ACTIVE = 'active';
@@ -53,7 +52,7 @@ class FeedbackFilter
     public static $statuses = array(
         self::STATUS_ALL,
         self::STATUS_CLOSED,
-        self::STATUS_ACTIVE
+        self::STATUS_ACTIVE,
     );
 
     public static $sorts = array(
@@ -61,12 +60,12 @@ class FeedbackFilter
         self::SORT_POPULARITY,
         self::SORT_VIEWS,
         self::SORT_COMMENTS,
-        self::SORT_RATING
+        self::SORT_RATING,
     );
 
     public static $sort_directions = array(
         self::SORT_DIRECTION_ASC,
-        self::SORT_DIRECTION_DESC
+        self::SORT_DIRECTION_DESC,
     );
 
     protected $status;
@@ -87,7 +86,7 @@ class FeedbackFilter
             'status_categories' => $this->getStatusCategories(),
             'types' => $this->getTypes(),
             'sort' => $this->getSort(),
-            'sort_direction' => $this->getSortDirection()
+            'sort_direction' => $this->getSortDirection(),
         );
     }
 
@@ -107,7 +106,7 @@ class FeedbackFilter
             'status_categories' => array(),
             'types' => array(),
             'sort' => static::SORT_DATE,
-            'sort_direction' => static::SORT_DIRECTION_DESC
+            'sort_direction' => static::SORT_DIRECTION_DESC,
         );
     }
 

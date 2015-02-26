@@ -116,7 +116,6 @@ class ProcessEmailGateways extends AbstractJob
             }
 
             $runner->executeSource($source);
-
         } elseif ($this->options->get('run_account_id')) {
             $gid = $this->options->get('run_account_id');
             $this->getLogger()->log("Running specific account: $gid", 'DEBUG');
@@ -130,7 +129,6 @@ class ProcessEmailGateways extends AbstractJob
 
             $runner->setAccounts(array($account));
             $runner->execute(180);
-
         } else {
             $runner->loadAccountsFromDb(false);
             $runner->execute(180);

@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Entity;
 
 class SettingBrand extends AbstractEntityRepository
 {

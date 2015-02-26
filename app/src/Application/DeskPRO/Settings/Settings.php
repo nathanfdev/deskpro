@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Settings;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 
-
 /**
  * DEPRECEATED way of getting settings
  *
@@ -68,7 +67,6 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     private $db;
 
-
     /**
      * DEPRECEATED way of getting settings
      *
@@ -86,7 +84,6 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         $this->db = $db;
     }
 
-
     /**
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
@@ -96,7 +93,6 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         $this->settings         = $this->new_settings_resolver->getGlobalSettings(true);
         $this->default_settings = $this->new_settings_resolver->getDefaultSettings(true);
     }
-
 
     /**
      * Get the value of a setting
@@ -110,12 +106,10 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         return $this->settings->get($name, $default);
     }
 
-
     public function getAll()
     {
         return $this->settings->toArray();
     }
-
 
     /**
      * This loads the default for a value as defined in the setting file
@@ -129,7 +123,6 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
     {
         return $this->default_settings->get($name);
     }
-
 
     /**
      * Get the default values for an entire group
@@ -145,7 +138,6 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         $this->default_settings->getGroup($group, $short);
     }
 
-
     /**
      * Get all settings in a group
      *
@@ -158,8 +150,6 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
     {
         return $this->settings->getGroup($group);
     }
-
-
 
     /**
      * Manually set the value for one or more settings. Note that these values are
@@ -178,7 +168,6 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         $this->settings->setArray(array_merge($this->settings->toArray(), $settings));
     }
 
-
     /**
      * Persist a new value for a setting, and update this as well
      *
@@ -195,10 +184,12 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         //
         $this->db->beginTransaction();
         try {
-
             if ($value !== null) {
-                if ($value === true) $value = '1';
-                else if ($value === false) $value = '0';
+                if ($value === true) {
+                    $value = '1';
+                } elseif ($value === false) {
+                    $value = '0';
+                }
 
                 $this->db->executeUpdate("
                     INSERT INTO settings

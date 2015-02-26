@@ -50,8 +50,8 @@ class FilterData extends AbstractDefaultData
             'order_by' => 'ticket.urgency:desc',
             'terms'    => array(
                 array('type' => 'agent',  'op' => 'is', 'options' => array('agent' => '-1')),
-                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'awaiting_agent')
-            ))
+                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'awaiting_agent'),
+            ), ),
         );
 
         $filters[] = array(
@@ -60,8 +60,8 @@ class FilterData extends AbstractDefaultData
             'order_by' => 'ticket.urgency:desc',
             'terms'    => array(
                 array('type' => 'agent_team',  'op' => 'is', 'options' => array('agent_team' => '-1')),
-                array('type' => 'status',      'op' => 'is', 'options' => array('status' => 'awaiting_agent')
-            ))
+                array('type' => 'status',      'op' => 'is', 'options' => array('status' => 'awaiting_agent'),
+            ), ),
         );
 
         $filters[] = array(
@@ -70,8 +70,8 @@ class FilterData extends AbstractDefaultData
             'order_by' => 'ticket.urgency:desc',
             'terms'    => array(
                 array('type' => 'participant',  'op' => 'is', 'options' => array('agent' => '-1')),
-                array('type' => 'status',       'op' => 'is', 'options' => array('status' => 'awaiting_agent')
-            ))
+                array('type' => 'status',       'op' => 'is', 'options' => array('status' => 'awaiting_agent'),
+            ), ),
         );
 
         $filters[] = array(
@@ -81,8 +81,8 @@ class FilterData extends AbstractDefaultData
             'terms'    => array(
                 array('type' => 'agent',      'op' => 'is', 'options' => array('agent' => '0')),
                 array('type' => 'agent_team', 'op' => 'is', 'options' => array('agent_team' => '0')),
-                array('type' => 'status',     'op' => 'is', 'options' => array('status' => 'awaiting_agent')
-            ))
+                array('type' => 'status',     'op' => 'is', 'options' => array('status' => 'awaiting_agent'),
+            ), ),
         );
 
         $filters[] = array(
@@ -90,8 +90,8 @@ class FilterData extends AbstractDefaultData
             'sys_name' => 'all',
             'order_by' => 'ticket.urgency:desc',
             'terms'    => array(
-                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'awaiting_agent')
-            ))
+                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'awaiting_agent'),
+            ), ),
         );
 
         $filters[] = array(
@@ -99,8 +99,8 @@ class FilterData extends AbstractDefaultData
             'sys_name' => 'archive_awaiting_user',
             'order_by' => 'ticket.urgency:desc',
             'terms'    => array(
-                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'awaiting_user')
-            ))
+                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'awaiting_user'),
+            ), ),
         );
 
         $filters[] = array(
@@ -108,8 +108,8 @@ class FilterData extends AbstractDefaultData
             'sys_name' => 'archive_resolved',
             'order_by' => 'ticket.urgency:desc',
             'terms'    => array(
-                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'resolved')
-            ))
+                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'resolved'),
+            ), ),
         );
 
         $filters[] = array(
@@ -117,8 +117,8 @@ class FilterData extends AbstractDefaultData
             'sys_name' => 'archive_archived',
             'order_by' => 'ticket.urgency:desc',
             'terms'    => array(
-                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'archived')
-            ))
+                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'archived'),
+            ), ),
         );
 
         $filters[] = array(
@@ -126,8 +126,8 @@ class FilterData extends AbstractDefaultData
             'sys_name' => 'archive_validating',
             'order_by' => 'ticket.urgency:desc',
             'terms'    => array(
-                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'hidden.validating')
-            ))
+                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'hidden.validating'),
+            ), ),
         );
 
         $filters[] = array(
@@ -135,8 +135,8 @@ class FilterData extends AbstractDefaultData
             'sys_name' => 'archive_spam',
             'order_by' => 'ticket.urgency:desc',
             'terms'    => array(
-                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'hidden.spam')
-            ))
+                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'hidden.spam'),
+            ), ),
         );
 
         $filters[] = array(
@@ -144,8 +144,8 @@ class FilterData extends AbstractDefaultData
             'sys_name' => 'archive_deleted',
             'order_by' => 'ticket.urgency:desc',
             'terms'    => array(
-                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'hidden.deleted')
-            ))
+                array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'hidden.deleted'),
+            ), ),
         );
 
         #------------------------------
@@ -161,7 +161,6 @@ class FilterData extends AbstractDefaultData
         $order = 1;
         foreach (array(0, 1) as $is_hold) {
             foreach ($filters as $f) {
-
                 $is_archive = strpos($f['sys_name'], 'archive_') === 0;
 
                 if ($is_archive && $is_hold) {

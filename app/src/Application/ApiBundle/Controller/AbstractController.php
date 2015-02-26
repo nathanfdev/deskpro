@@ -661,6 +661,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             ), 404);
         } else {
             KernelErrorHandler::logException($e);
+
             return $this->createApiResponse(array(
                 'error_code'     => 500,
                 'error_message'  => $e->getMessage(),

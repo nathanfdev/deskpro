@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle;
 
-
 class FormFields
 {
     const DEPARTMENT = 'department';

@@ -34,26 +34,20 @@
 
 namespace Application\FormBundle\Hierarchy;
 
-
 use Application\AppBundle\DataService\DepartmentDataService;
 use Application\AppBundle\DataService\FeedbackDataService;
 use Application\AppBundle\Helper\ArbitraryHasher;
 use Application\AppBundle\Hierarchy\Formatter\FlatListFormatter;
 use Application\AppBundle\Hierarchy\Formatter\ParentListFormatter;
-use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\CustomDefAbstract;
-use Application\DeskPRO\Entity\CustomDefPerson;
-use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Person;
-use Application\AppBundle\Hierarchy\Formatter\DashesFormatter;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\TicketCategory;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 
 //
 // TODO: the methods in this class are very repetitive, meaning we have a good chance to extract a class for reuse
@@ -98,7 +92,7 @@ class HierarchyGenerator
         return $this->generateAndCache(
             array(
                 'generateForCustomFormField',
-                $field
+                $field,
             ),
             function () use ($field) {
                 $root_nodes = array();
@@ -137,7 +131,7 @@ class HierarchyGenerator
 
         return $this->generateAndCache(
             array(
-                'generateTicketProductsHierarchy'
+                'generateTicketProductsHierarchy',
             ),
             function () use ($em) {
                 $products = $em->getRepository('DeskPRO:Product')->findAll();
@@ -176,7 +170,7 @@ class HierarchyGenerator
         return $this->generateAndCache(
             array(
                 'generateTicketDepartmentsHierarchy',
-                $person
+                $person,
             ),
             function () use ($department_data_service, $person) {
                 $departments = $department_data_service->getAuthorizedDepartmentsForPersonInPortal($person);
@@ -211,7 +205,7 @@ class HierarchyGenerator
 
         return $this->generateAndCache(
             array(
-                'generateTicketCategoriesHierarchy'
+                'generateTicketCategoriesHierarchy',
             ),
             function () use ($em) {
                 $products = $em->getRepository('DeskPRO:TicketCategory')->findAll();
@@ -250,7 +244,7 @@ class HierarchyGenerator
         return $this->generateAndCache(
             array(
                 'generateForFeedbackCategories',
-                $person
+                $person,
             ),
             function () use ($feedback_data_service, $person) {
 
@@ -284,8 +278,8 @@ class HierarchyGenerator
     }
 
     /**
-     * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable
-     * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     * @param  mixed      $params   the "ArbitraryHasher" input to create cache key for this callable
+     * @param  mixed      $callable doesn't need to be a callable, can be any default value, but usually is a callable
      * @return mixed|null
      */
     protected function generateAndCache($params, $callable)
@@ -306,7 +300,7 @@ class HierarchyGenerator
     }
 
     /**
-     * @param mixed $input
+     * @param  mixed  $input
      * @return string
      */
     protected function generateHash($input)
@@ -318,4 +312,3 @@ class HierarchyGenerator
         return $this->hash_generator->generateHash($input);
     }
 }
- 

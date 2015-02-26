@@ -36,13 +36,10 @@ namespace Application\FormBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\FormBundle\Form\DataTransformer\CustomDefHierarchyNodeTransformer;
-use Application\FormBundle\Form\DataTransformer\StringToArrayTransformer;
 use Application\FormBundle\Form\DataTransformer\StringToIntegerArrayTransformer;
 use Application\FormBundle\Hierarchy\HierarchyGenerator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -84,16 +81,15 @@ class CustomFieldChoiceType extends AbstractType
             'empty_data' => null,
             'choice_list'    => function (Options $options) use ($hierarchy_generator) {
                     return $hierarchy_generator->generateForCustomFormField($options['custom_field'])->getChoiceList();
-                }
+                },
         ));
 
         $resolver->setRequired(array(
-            'custom_field'
+            'custom_field',
         ));
 
         $resolver->setAllowedTypes(array(
-            'custom_field' => 'Application\\DeskPRO\\Entity\\CustomDefAbstract'
+            'custom_field' => 'Application\\DeskPRO\\Entity\\CustomDefAbstract',
         ));
     }
 }
- 

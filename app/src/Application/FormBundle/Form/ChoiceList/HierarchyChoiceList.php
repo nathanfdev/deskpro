@@ -39,4 +39,3 @@ use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList;
 class HierarchyChoiceList extends ChoiceList
 {
 }
- 

@@ -34,13 +34,12 @@
 
 namespace Application\FormBundle\Twig;
 
-
 class FormTwigExtension extends\Twig_Extension
 {
     public function getFilters()
     {
         return array(
-            new \Twig_SimpleFilter('str_replace', array($this, 'stringReplace'))
+            new \Twig_SimpleFilter('str_replace', array($this, 'stringReplace')),
         );
     }
 
@@ -59,4 +58,3 @@ class FormTwigExtension extends\Twig_Extension
         return 'form_twig_extension';
     }
 }
- 

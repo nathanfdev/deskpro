@@ -38,7 +38,6 @@ use Application\PortalBundle\Mode\PortalMode;
 
 class PortalUrlBuilder
 {
-
     private $path;
     /**
      * @var Language

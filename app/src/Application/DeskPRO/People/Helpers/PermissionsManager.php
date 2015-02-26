@@ -158,12 +158,11 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         $this->usergroups_key = PermissionCache::generateUsergroupSetKey($this->usergroup_ids);
 
         if ($this->person->is_agent) {
-            $this->usergroups_key = $this->usergroups_key . '-person-' . $this->person->id;
+            $this->usergroups_key = $this->usergroups_key.'-person-'.$this->person->id;
         }
 
         \DpShutdown::add(array($this, 'flushCache'));
     }
-
 
     /**
      * Admin mode enables all permissions when viewing the user interface (usually through the portal editor).
@@ -175,7 +174,6 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         $this->admin_god_mode = true;
     }
 
-
     /**
      * Get an array of usergroups this user has applied to them
      *
@@ -185,8 +183,6 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
     {
         return $this->usergroup_ids;
     }
-
-
 
     /**
      * Of the groups we belong to, get the ones we inherited from our organization.
@@ -198,8 +194,6 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         return $this->org_usergroup_ids;
     }
 
-
-
     /**
      * Get the usergroups set key
      *
@@ -209,8 +203,6 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
     {
         return $this->usergroups_key;
     }
-
-
 
     /**
      * Load permissions of a particular type.
@@ -233,8 +225,6 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
             $this->queued_types[] = $name;
         }
     }
-
-
 
     /**
      * This loads up the queued permission types. The reason they're queued is so we
@@ -281,7 +271,6 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         $this->queued_types = array();
 
         foreach ($queued_types as $name) {
-
             if (isset($this->loaders[strtolower($name)])) {
                 continue;
             }
@@ -324,7 +313,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
         if (preg_match('#Checker$#', $name)) {
             if (!isset($this->checkers[$namel])) {
-                $class = 'Application\\DeskPRO\\People\\PermissionChecker\\' . $name;
+                $class = 'Application\\DeskPRO\\People\\PermissionChecker\\'.$name;
                 if (!$class) {
                     throw new \InvalidArgumentException("Unknown permission checker `{$name}`");
                 }
@@ -407,7 +396,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
                     'name'            => $c->getName(),
                     'usergroup_key'   => $c->getUsergroupKey(),
                     'usergroup_ids'   => implode(',', $c->getUsergroupIds()),
-                    'perms'           => serialize($c->getPerms())
+                    'perms'           => serialize($c->getPerms()),
                 );
 
                 App::getDb()->replace('permissions_cache', $insert_cache);
@@ -428,7 +417,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
      */
     public function getLoaderClass($name)
     {
-        return 'Application\\DeskPRO\\People\\PermissionLoader\\' . $name;
+        return 'Application\\DeskPRO\\People\\PermissionLoader\\'.$name;
     }
 
     public function getShortCallableNames()
@@ -441,5 +430,8 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         );
     }
 
-    public function _getthis() { return $this; }
+    public function _getthis()
+    {
+        return $this;
+    }
 }

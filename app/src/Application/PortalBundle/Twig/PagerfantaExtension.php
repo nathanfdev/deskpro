@@ -42,7 +42,7 @@ class PagerfantaExtension extends \Twig_Extension
     {
         return array(
             'pagerfanta' => new \Twig_Function_Method($this, 'renderPagerfanta', array('is_safe' => array('html'))),
-            'pagerfanta_page_url' => new \Twig_Function_Method($this, 'getPageUrl')
+            'pagerfanta_page_url' => new \Twig_Function_Method($this, 'getPageUrl'),
         );
     }
 
@@ -71,7 +71,7 @@ class PagerfantaExtension extends \Twig_Extension
      *
      * @param \Pagerfanta\PagerfantaInterface $pagerfanta
      * @param $page
-     * @param array $options
+     * @param array                           $options
      *
      * @return string The url of the given page
      *
@@ -114,22 +114,22 @@ class PagerfantaExtension extends \Twig_Extension
             if ('_internal' === $options['routeName']) {
                 throw new \Exception('PagerfantaBundle can not guess the route when used in a subrequest');
             }
-            
-            // make sure we read the route parameters from the passed option array            
+
+            // make sure we read the route parameters from the passed option array
             $defaultRouteParams = array_merge($request->query->all(), $request->attributes->get('_route_params'));
 
             if (array_key_exists('routeParams', $options)) {
                 $options['routeParams'] = array_merge($defaultRouteParams, $options['routeParams']);
             } else {
                 $options['routeParams'] = $defaultRouteParams;
-            }   
+            }
         }
 
         $routeName = $options['routeName'];
         $routeParams = $options['routeParams'];
         $pagePropertyPath = new PropertyPath($options['pageParameter']);
 
-        return function($page) use($router, $routeName, $routeParams, $pagePropertyPath) {
+        return function ($page) use ($router, $routeName, $routeParams,$pagePropertyPath) {
             $propertyAccessor = PropertyAccess::getPropertyAccessor();
             $propertyAccessor->setValue($routeParams, $pagePropertyPath, $page);
 

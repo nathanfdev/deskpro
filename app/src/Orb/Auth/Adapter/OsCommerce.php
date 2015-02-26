@@ -50,7 +50,7 @@ class OsCommerce extends DbTable
     {
         list($pass_hash, $pass_salt) = explode(':', $userinfo['customers_password']);
 
-        $hashed_input = md5($pass_salt . $password_input);
+        $hashed_input = md5($pass_salt.$password_input);
 
         if ($hashed_input == $pass_hash) {
             return true;

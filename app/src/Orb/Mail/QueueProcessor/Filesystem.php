@@ -34,7 +34,6 @@
 
 namespace Orb\Mail\QueueProcessor;
 
-
 /**
  * Stores messages in the filesystem
  */
@@ -47,14 +46,12 @@ class Filesystem implements QueueProcessorInterface
     {
         $path = rtrim($path, '/\\');
 
-        if (!is_dir($path) OR !is_writable($path)) {
+        if (!is_dir($path) or !is_writable($path)) {
             throw new \InvalidArgumentException('$path is not writable');
         }
 
         $this->filepath = $path;
     }
-
-
 
     /**
      * Process queues
@@ -66,14 +63,13 @@ class Filesystem implements QueueProcessorInterface
         $files = scandir($this->filepath);
 
         foreach ($files as $file) {
-
-            if (!($message = unserialize(file_get_contents($this->filepath . DIRECTORY_SEPARATOR . $file)))) {
+            if (!($message = unserialize(file_get_contents($this->filepath.DIRECTORY_SEPARATOR.$file)))) {
                 throw new \RuntimeException('Failed to read or unserialize message');
             }
 
             $ret = call_user_func($callback, $message);
             if ($ret & self::PROCESS_SUCCESS) {
-                if (!unlink($this->filepath . DIRECTORY_SEPARATOR . $file)) {
+                if (!unlink($this->filepath.DIRECTORY_SEPARATOR.$file)) {
                     throw new \RuntimeException('Failed to remove old message file');
                 }
             }
@@ -84,8 +80,6 @@ class Filesystem implements QueueProcessorInterface
         }
     }
 
-
-
     /**
      * Add a message to the queue
      *
@@ -93,10 +87,10 @@ class Filesystem implements QueueProcessorInterface
      */
     public function addQueuedMessage(\Orb\Mail\Message $message)
     {
-        $name = time() . '_' . preg_replace('#[^a-zA-Z0-9]#', '-', $message->getSubject()) . '.dat';
+        $name = time().'_'.preg_replace('#[^a-zA-Z0-9]#', '-', $message->getSubject()).'.dat';
         $name = preg_replace('#-{,2}#', '-', $name);
 
-        $path = $this->filepath . DIRECTORY_SEPARATOR . $name;
+        $path = $this->filepath.DIRECTORY_SEPARATOR.$name;
 
         if (!file_put_contents($path, serialize($message))) {
             return false;
@@ -108,10 +102,14 @@ class Filesystem implements QueueProcessorInterface
     /**
      * Start the queue system
      */
-    public function startQueue() {}
+    public function startQueue()
+    {
+    }
 
     /**
      * Shutdown the queue system
      */
-    public function shutdownQueue() {}
+    public function shutdownQueue()
+    {
+    }
 }

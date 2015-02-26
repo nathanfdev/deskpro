@@ -34,10 +34,6 @@
 
 namespace Application\FormBundle\Form;
 
-use Application\ApiBundle\Form\CustomField\Model\ChoiceField;
-use Application\DeskPRO\Entity\CustomDataAbstract;
-use Application\DeskPRO\Entity\CustomDataPerson;
-use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -131,8 +127,8 @@ class FormFieldManager
     }
 
     /**
-     * @param CustomDefAbstract $field
-     * @param                   $agent_interface
+     * @param  CustomDefAbstract $field
+     * @param                    $agent_interface
      * @return array
      */
     protected function createCustomField(CustomDefAbstract $field, $agent_interface)
@@ -147,8 +143,8 @@ class FormFieldManager
     }
 
     /**
-     * @param CustomDefAbstract $field_type
-     * @param                   $agent_interface
+     * @param  CustomDefAbstract         $field_type
+     * @param                            $agent_interface
      * @return array
      * @throws \InvalidArgumentException
      */
@@ -160,14 +156,14 @@ class FormFieldManager
                 return array(
                     'text',
                     'input',
-                    $this->getGeneralOptionsForField($field_type, array(), $agent_interface));
+                    $this->getGeneralOptionsForField($field_type, array(), $agent_interface), );
 
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea':
 
                 return array(
                     'textarea',
                     'input',
-                    $this->getGeneralOptionsForField($field_type, array(), $agent_interface));
+                    $this->getGeneralOptionsForField($field_type, array(), $agent_interface), );
 
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle':
 
@@ -176,8 +172,8 @@ class FormFieldManager
                     'value',
                     $this->getGeneralOptionsForField($field_type, array(
                         'checkbox_label' => $field_type->getOption('label_text'),
-                        'force_boolean'  => true
-                    ), $agent_interface));
+                        'force_boolean'  => true,
+                    ), $agent_interface), );
 
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Display':
 
@@ -186,13 +182,13 @@ class FormFieldManager
                     'input',
                     $this->getGeneralOptionsForField($field_type, array(
                         'html' => $field_type->getOption('html'),
-                        'data' => ''
-                    ), $agent_interface));
+                        'data' => '',
+                    ), $agent_interface), );
 
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
 
-                $multiple = (bool)$field_type->getOption('multiple');
-                $expanded = (bool)$field_type->getOption('expanded');
+                $multiple = (bool) $field_type->getOption('multiple');
+                $expanded = (bool) $field_type->getOption('expanded');
 
                 return array(
                     'deskpro_custom_field_choice',
@@ -200,8 +196,8 @@ class FormFieldManager
                     $this->getGeneralOptionsForField($field_type, array(
                         'expanded'     => $expanded,
                         'multiple'     => $multiple,
-                        'custom_field' => $field_type
-                    ), $agent_interface));
+                        'custom_field' => $field_type,
+                    ), $agent_interface), );
 
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Date':
 
@@ -211,8 +207,8 @@ class FormFieldManager
                     $this->getGeneralOptionsForField($field_type, array(
                         'input' => 'string',
                         'widget' => 'choice',
-                        'format' => 'y-M-d'
-                    ), $agent_interface));
+                        'format' => 'y-M-d',
+                    ), $agent_interface), );
 
             case 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime':
 
@@ -222,8 +218,8 @@ class FormFieldManager
                     $this->getGeneralOptionsForField($field_type, array(
                         'input' => 'string',
                         'widget' => 'choice',
-                        'format' => 'Y-m-d H:i'
-                    ), $agent_interface));
+                        'format' => 'Y-m-d H:i',
+                    ), $agent_interface), );
 
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden':
 
@@ -231,7 +227,7 @@ class FormFieldManager
                     'auto_fill'          => !$agent_interface,
                     'hidden'             => !$agent_interface,
                     'cookie_param_name'  => $field_type->getOption('cookie_name'),
-                    'request_param_name' => $field_type->getOption('param_name')
+                    'request_param_name' => $field_type->getOption('param_name'),
                 );
 
                 if (!$agent_interface) {
@@ -252,7 +248,7 @@ class FormFieldManager
         $isAgent = $agent_nterface;
 
         $options = array(
-            'required' => $field_type->isRequired($isAgent)
+            'required' => $field_type->isRequired($isAgent),
         );
 
         $constraints = array();

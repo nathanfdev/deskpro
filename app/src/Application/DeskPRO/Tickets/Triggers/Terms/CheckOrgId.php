@@ -56,7 +56,6 @@ class CheckOrgId extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -65,11 +64,17 @@ class CheckOrgId extends AbstractTriggerTerm
         $options = $this->getTermOptions();
 
         if ($this->getTermOperator() == 'isset') {
-            if ($ticket->organization) return true;
-            else return false;
+            if ($ticket->organization) {
+                return true;
+            } else {
+                return false;
+            }
         } elseif ($this->getTermOperator() == 'not_isset') {
-            if (!$ticket->organization) return true;
-            else return false;
+            if (!$ticket->organization) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         return $this->isEntityMatch($ticket, $context, 'organization', 'id', $options['id']);

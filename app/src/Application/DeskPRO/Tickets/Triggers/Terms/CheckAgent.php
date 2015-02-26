@@ -56,7 +56,6 @@ class CheckAgent extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

@@ -33,6 +33,7 @@
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
+
 use Application\DeskPRO\App;
 use Application\EmailBundle\SourceMapper\ExternalPendingQueue;
 

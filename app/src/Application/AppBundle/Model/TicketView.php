@@ -34,7 +34,7 @@
 
 namespace Application\AppBundle\Model;
 
-class TicketView 
+class TicketView
 {
     public $ticket;
     public $attribute_list = array();

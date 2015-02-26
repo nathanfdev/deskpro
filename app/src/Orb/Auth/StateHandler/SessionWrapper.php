@@ -67,7 +67,6 @@ class SessionWrapper implements StateHandlerInterface
         $this->setPrefix($prefix);
     }
 
-
     /**
      * Set the key prefix
      *
@@ -78,7 +77,6 @@ class SessionWrapper implements StateHandlerInterface
     {
         $this->_prefix = $prefix;
     }
-
 
     /**
      * If the object has it's own clear method, then you can set it's method name
@@ -94,7 +92,6 @@ class SessionWrapper implements StateHandlerInterface
         // we know how to clear the session storage
     }
 
-
     /**
      * Clears all state data, or resets back into its initial state.
      *
@@ -104,7 +101,6 @@ class SessionWrapper implements StateHandlerInterface
     {
         $this->getSessionBag()->clear();
     }
-
 
     public function offsetUnset($offset)
     {

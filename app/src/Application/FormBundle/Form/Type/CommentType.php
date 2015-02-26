@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle\Form\Type;
 
-
 use Application\FormBundle\Validator\Constraints\ValidCaptcha;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -48,7 +47,7 @@ class CommentType extends AbstractType
     {
         $builder->add('content_real', 'textarea', array('label' => 'What is your comment?'));
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $comment = $event->getData();
             $form = $event->getForm();
 
@@ -61,8 +60,8 @@ class CommentType extends AbstractType
                     'mapped' => false,
                     'error_bubbling' => false,
                     'constraints' => array(
-                        new ValidCaptcha()
-                    )
+                        new ValidCaptcha(),
+                    ),
                 ));
             }
         });
@@ -72,15 +71,15 @@ class CommentType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Application\\DeskPRO\\Entity\\CommentAbstract',
-            'person' => null
+            'person' => null,
         ));
 
         $resolver->setRequired(array(
-            'person'
+            'person',
         ));
 
         $resolver->setAllowedTypes(array(
-            'person' => array('Application\\DeskPRO\\Entity\\Person', 'null')
+            'person' => array('Application\\DeskPRO\\Entity\\Person', 'null'),
         ));
     }
 

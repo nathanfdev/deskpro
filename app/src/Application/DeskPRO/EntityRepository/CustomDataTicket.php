@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-
 class CustomDataTicket extends AbstractEntityRepository
 {
     public function getDataForTicket(Entity\Ticket $ticket)
@@ -45,7 +44,6 @@ class CustomDataTicket extends AbstractEntityRepository
             WHERE d.ticket = ?1
         ")->setParameter(1, $ticket)->execute();
     }
-
 
     /**
      * Fetch data for a whole bunch of things.

@@ -52,7 +52,6 @@ class SmsAccountDetector
         $this->em = $em;
     }
 
-
     /**
      * @param                                         $sms_account_id
      * @param  null                                   $to_number

@@ -331,8 +331,8 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setTitle($t)
     {
-		$t = $t ? trim($t) : '';
-		$this->setModelField('title', $t);
+        $t = $t ? trim($t) : '';
+        $this->setModelField('title', $t);
     }
 
     /**

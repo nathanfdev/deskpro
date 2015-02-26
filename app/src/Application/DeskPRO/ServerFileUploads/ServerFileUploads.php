@@ -46,7 +46,6 @@ class ServerFileUploads
      */
     protected $em;
 
-
     /**
      * @param EntityManager $em
      */
@@ -54,7 +53,6 @@ class ServerFileUploads
     {
         $this->em = $em;
     }
-
 
     /**
      * @return array
@@ -64,7 +62,6 @@ class ServerFileUploads
         $php_vars = array();
 
         foreach (array('file_uploads', 'upload_tmp_dir', 'upload_max_filesize', 'post_max_size') as $var) {
-
             $php_vars[$var] = @ini_get($var);
         }
 
@@ -74,7 +71,6 @@ class ServerFileUploads
 
         return $php_vars;
     }
-
 
     /**
      * @return string
@@ -87,11 +83,10 @@ class ServerFileUploads
         $result = ($result['number'] > 1 ?
             floor($result['number']) :
             $result['number'])
-            . ' ' . $result['symbol'];
+            .' '.$result['symbol'];
 
         return $result;
     }
-
 
     /**
      * @return string
@@ -101,7 +96,6 @@ class ServerFileUploads
         return App::get('deskpro.service_urls')->get('dp.kb.editing_php_ini');
     }
 
-
     /**
      * @return string
      */
@@ -109,7 +103,6 @@ class ServerFileUploads
     {
         return Env::getPhpIniPath();
     }
-
 
     /**
      * @return array
@@ -126,7 +119,6 @@ class ServerFileUploads
         );
     }
 
-
     /**
      * @return array
      */
@@ -135,13 +127,9 @@ class ServerFileUploads
         $moving_id = App::getContainer()->getSetting('core.filesystem_move_from_id');
 
         if ($moving_id) {
-
             if ($moving_id < 1) {
-
                 $count_done = 0;
-
             } else {
-
                 $count_done = App::getDb()->fetchColumn(
                     "SELECT COUNT(*) FROM blobs WHERE id < ?",
                     array($moving_id)
@@ -151,15 +139,12 @@ class ServerFileUploads
             $count_todo = App::getDb()->fetchColumn("SELECT COUNT(*) FROM blobs", array($moving_id));
 
             if (!$count_todo) {
-
                 $count_todo = 1;
             }
 
             $count_left       = $count_todo - $count_done;
             $count_percentage = floor(($count_done / $count_todo) * 100);
-
         } else {
-
             $count_done = $count_todo = $count_left = $count_percentage = 0;
             $count_todo = App::getDb()->fetchColumn("SELECT COUNT(*) FROM blobs");
         }
@@ -177,7 +162,6 @@ class ServerFileUploads
         );
     }
 
-
     /**
      * @return bool
      */
@@ -185,7 +169,6 @@ class ServerFileUploads
     {
         return App::getContainer()->getSetting('core.filestorage_method');
     }
-
 
     /**
      * @return string
@@ -195,7 +178,6 @@ class ServerFileUploads
         return   App::getContainer()->getBlobDir();
     }
 
-
     /**
      * @return string
      */
@@ -203,7 +185,6 @@ class ServerFileUploads
     {
         return App::getRouter()->generate('api_server_file_uploads');
     }
-
 
     /**
      * @param $file
@@ -219,19 +200,15 @@ class ServerFileUploads
         $error  = $accept->getError($file, 'agent');
 
         if ($error) {
-
             if ($error['error_code'] == 'no_file') {
-
                 $is_tmp_writable = Env::getUploadTempDir() && is_writable(Env::getUploadTempDir());
             }
 
             $upload_failed = App::getContainer()->getTranslator()->phrase(
-                'agent.general.attach_error_' . $error['error_code'],
+                'agent.general.attach_error_'.$error['error_code'],
                 $error
             );
-
         } else {
-
             $attach_url = $accept->accept($file)->getDownloadUrl();
         }
 
@@ -241,7 +218,6 @@ class ServerFileUploads
             'is_tmp_writable'   => $is_tmp_writable,
         );
     }
-
 
     /**
      * @param  array                        $options
@@ -290,7 +266,6 @@ class ServerFileUploads
         $settings->setSetting('core.filesystem_move_from_id', '-1');
     }
 
-
     /**
      * @return array
      */
@@ -300,8 +275,7 @@ class ServerFileUploads
 
         $to_method = App::$container->getSettingsHandler()->get('core.filestorage_method');
 
-        if(!empty($transfer['id'])) {
-
+        if (!empty($transfer['id'])) {
             $status  = 'progress';
 
             switch ($to_method) {
@@ -310,18 +284,16 @@ class ServerFileUploads
                 case 's3': $message = 'Currently transferring files AmazonS3'; break;
             }
 
-            $message .= $transfer['count_done'] . ' of ' .  $transfer['count_todo'];
-            $message .= ' (' . $transfer['count_percentage'] . '%) files have been processed.';
-
+            $message .= $transfer['count_done'].' of '.$transfer['count_todo'];
+            $message .= ' ('.$transfer['count_percentage'].'%) files have been processed.';
         } else {
-
             $status  = 'completed';
             $message = 'Transferring done!';
         }
 
         return array(
             'status'  => $status,
-            'message' => $message
+            'message' => $message,
         );
     }
 }

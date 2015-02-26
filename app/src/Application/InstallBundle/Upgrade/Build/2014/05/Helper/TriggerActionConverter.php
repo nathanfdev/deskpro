@@ -59,7 +59,7 @@ class TriggerActionConverter
         $func = "upgradeAction_{$t}";
 
         if (!method_exists($this, $func)) {
-            $e = new \Exception("Unknown trigger action: " . $info['type']);
+            $e = new \Exception("Unknown trigger action: ".$info['type']);
             KernelErrorHandler::logException($e);
 
             return null;
@@ -68,7 +68,7 @@ class TriggerActionConverter
         try {
             return $this->$func($info['type'], new OptionsArray($info['options']));
         } catch (\Exception $e) {
-            $e = new \Exception("Invalid trigger option: " . $e->getMessage());
+            $e = new \Exception("Invalid trigger option: ".$e->getMessage());
             KernelErrorHandler::logException($e);
 
             return null;
@@ -160,7 +160,7 @@ class TriggerActionConverter
     {
         return array(
             new Actions\ModMuteAgentEmails(),
-            new Actions\ModMuteUserEmails()
+            new Actions\ModMuteUserEmails(),
         );
     }
 
@@ -204,7 +204,7 @@ class TriggerActionConverter
 
     private function upgradeAction_hold($type, OptionsArray $options)
     {
-        return new Actions\SetHold(array('is_hold' => (bool)$options->get('is_hold')));
+        return new Actions\SetHold(array('is_hold' => (bool) $options->get('is_hold')));
     }
 
     private function upgradeAction_language($type, OptionsArray $options)
@@ -260,7 +260,7 @@ class TriggerActionConverter
             'reply_text'        => $options->get('reply_text'),
             'by_assigned_agent' => true,
             'by_agent_id'       => 1,
-            'no_formatter'      => false
+            'no_formatter'      => false,
         ));
     }
 
@@ -268,7 +268,7 @@ class TriggerActionConverter
     {
         return new Actions\SendAgentEmail(array(
             'agent_ids' => $options->get('agents', array()),
-            'template' => $this->getNewTemplateName($options->get('template_name'))
+            'template' => $this->getNewTemplateName($options->get('template_name')),
         ));
     }
 
@@ -295,7 +295,7 @@ class TriggerActionConverter
     private function upgradeAction_send_user_email($type, OptionsArray $options)
     {
         return new Actions\SendUserEmail(array(
-            'template' => $this->getNewTemplateName($options->get('template_name'))
+            'template' => $this->getNewTemplateName($options->get('template_name')),
         ));
     }
 
@@ -344,7 +344,7 @@ class TriggerActionConverter
 
         $id = $this->mappings['gateway_address_to_email_account'][$address_id];
 
-        return new Actions\SetEmailAccount(array('email_account_id'=> $id));
+        return new Actions\SetEmailAccount(array('email_account_id' => $id));
     }
 
     private function upgradeAction_set_initial_from_name($type, OptionsArray $options)
@@ -358,7 +358,7 @@ class TriggerActionConverter
         if ($options->get('sla_complete')) {
             return new Actions\SetSlasComplete(array(
                 'sla_ids' => array($options->get('sla_id')),
-                'sla_status' => 'nochange'
+                'sla_status' => 'nochange',
             ));
         } else {
             return new Actions\SetSlaReset(array('sla_ids' => array($options->get('sla_id'))));
@@ -369,7 +369,7 @@ class TriggerActionConverter
     {
         return new Actions\SetSlasComplete(array(
             'sla_ids' => array($options->get('sla_id')),
-            'sla_status' => $options->get('sla_status')
+            'sla_status' => $options->get('sla_status'),
         ));
     }
 
@@ -403,13 +403,15 @@ class TriggerActionConverter
     private function upgradeAction_ticket_field($type, OptionsArray $options)
     {
         $field_id = Strings::extractRegexMatch('#\[(\d+)\]$#', $type);
-        if (!$field_id) return null;
+        if (!$field_id) {
+            return null;
+        }
 
-        $value = Arrays::getValue($options->all(), 'custom_fields.field_'. $field_id);
+        $value = Arrays::getValue($options->all(), 'custom_fields.field_'.$field_id);
 
         return new Actions\SetTicketField(array(
             'field_id' => $field_id,
-            'value'    => $value
+            'value'    => $value,
         ));
     }
 
@@ -425,7 +427,7 @@ class TriggerActionConverter
 
         return new Actions\SetUrgency(array(
             'urgency' => $num,
-            'mode'    => $mode
+            'mode'    => $mode,
         ));
     }
 
@@ -433,7 +435,7 @@ class TriggerActionConverter
     {
         return new Actions\SetUrgency(array(
             'urgency' => $options->get('num'),
-            'mode'    => $options->get('allow_lower') ? Actions\SetUrgency::MODE_RAISE : Actions\SetUrgency::MODE_SET
+            'mode'    => $options->get('allow_lower') ? Actions\SetUrgency::MODE_RAISE : Actions\SetUrgency::MODE_SET,
         ));
     }
 

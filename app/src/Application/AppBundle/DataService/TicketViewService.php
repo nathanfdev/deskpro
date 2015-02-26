@@ -34,7 +34,6 @@
 
 namespace Application\AppBundle\DataService;
 
-
 use Application\AppBundle\Model\TicketView;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Translate\Translate;
@@ -173,6 +172,7 @@ class TicketViewService extends AbstractDataService
                 $value = '';
                 break;
         }
+
         return $value;
     }
 }

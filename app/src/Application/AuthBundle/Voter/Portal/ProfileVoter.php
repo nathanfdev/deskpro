@@ -34,10 +34,7 @@
 
 namespace Application\AuthBundle\Voter\Portal;
 
-
-
 use Application\AuthBundle\Voter\AbstractVoter;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class ProfileVoter extends AbstractVoter
 {

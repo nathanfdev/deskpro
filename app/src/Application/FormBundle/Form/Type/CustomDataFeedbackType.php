@@ -37,7 +37,6 @@ namespace Application\FormBundle\Form\Type;
 use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\FormBundle\Form\FormFieldManager;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -82,7 +81,7 @@ class CustomDataFeedbackType extends AbstractType
         if ($config->getOption('ignore_validation')) {
             $options = array_merge($options, array(
                 'validation_groups' => array(),
-                'constraints' => null
+                'constraints' => null,
             ));
         }
 
@@ -129,15 +128,15 @@ class CustomDataFeedbackType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class'   => 'Application\DeskPRO\Entity\CustomDataFeedback',
-            'ignore_validation' => false
+            'ignore_validation' => false,
         ));
         $resolver->setRequired(array(
             'custom_data_field',
-            'agent_interface'
+            'agent_interface',
         ));
         $resolver->setAllowedTypes(array(
             'custom_data_field' => 'Application\DeskPRO\Entity\CustomDefFeedback',
-            'agent_interface' => 'bool'
+            'agent_interface' => 'bool',
         ));
     }
 

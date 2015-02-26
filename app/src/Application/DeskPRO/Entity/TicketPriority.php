@@ -83,7 +83,6 @@ class TicketPriority extends \Application\DeskPRO\Domain\DomainObject implements
         return App::getTranslator()->getPhraseObject($this, 'title');
     }
 
-
     /**
      * @return string
      */
@@ -91,7 +90,6 @@ class TicketPriority extends \Application\DeskPRO\Domain\DomainObject implements
     {
         return $this->title;
     }
-
 
     /**
      * @param  string $property
@@ -102,11 +100,10 @@ class TicketPriority extends \Application\DeskPRO\Domain\DomainObject implements
         if (!$property) {
             $property = 'title';
         }
-        $phrase_name = 'obj_ticketpriority.' . $this->id . '_' . $property;
+        $phrase_name = 'obj_ticketpriority.'.$this->id.'_'.$property;
 
         return $phrase_name;
     }
-
 
     /**
      * @param  string $property
@@ -117,7 +114,6 @@ class TicketPriority extends \Application\DeskPRO\Domain\DomainObject implements
         return $this->title;
     }
 
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -126,11 +122,11 @@ class TicketPriority extends \Application\DeskPRO\Domain\DomainObject implements
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketPriority';
-        $metadata->setPrimaryTable(array( 'name' => 'ticket_priorities', ));
+        $metadata->setPrimaryTable(array( 'name' => 'ticket_priorities'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-        $metadata->mapField(array( 'fieldName' => 'priority', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'priority', ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
+        $metadata->mapField(array( 'fieldName' => 'priority', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'priority'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

@@ -34,12 +34,10 @@
 
 namespace Application\PortalBundle\Themes\Base\Controller;
 
-
 use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Request\TagRequest;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class DevController extends AbstractController

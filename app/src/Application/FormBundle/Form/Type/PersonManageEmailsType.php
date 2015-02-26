@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle\Form\Type;
 
-
 use Application\DeskPRO\Entity\PersonEmail;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
@@ -42,9 +41,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PersonManageEmailsType extends AbstractType
 {
@@ -55,7 +52,6 @@ class PersonManageEmailsType extends AbstractType
 
     public function __construct(EntityManager $em)
     {
-
         $this->em = $em;
     }
 
@@ -73,8 +69,8 @@ class PersonManageEmailsType extends AbstractType
                 'required' => false,
                 'email_constraints' => array(
                     new Email(array('message' => 'This email adddress is not valid')),
-                )
-            )
+                ),
+            ),
         ));
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
@@ -107,7 +103,7 @@ class PersonManageEmailsType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Application\DeskPRO\Entity\Person'
+                'data_class' => 'Application\DeskPRO\Entity\Person',
             )
         );
 
@@ -117,11 +113,10 @@ class PersonManageEmailsType extends AbstractType
 
         $resolver->setAllowedTypes(
             array(
-                'settings' => 'Application\DeskPRO\NewSettings\SettingsBag'
+                'settings' => 'Application\DeskPRO\NewSettings\SettingsBag',
             )
         );
     }
-
 
     /**
      * Returns the name of this type.

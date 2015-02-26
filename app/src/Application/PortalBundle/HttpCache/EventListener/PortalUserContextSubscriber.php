@@ -35,11 +35,9 @@
 namespace Application\PortalBundle\HttpCache\EventListener;
 
 use Application\PortalBundle\HttpCache\PortalCacheHelper;
-use FOS\HttpCache\UserContext\HashGenerator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestMatcherInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -68,8 +66,7 @@ class PortalUserContextSubscriber implements EventSubscriberInterface
         RequestMatcherInterface $requestMatcher,
         PortalCacheHelper $cache_helper,
         $hashHeader = "X-User-Context-Hash"
-    )
-    {
+    ) {
         $this->requestMatcher = $requestMatcher;
         $this->hashHeader = $hashHeader;
         $this->cache_helper = $cache_helper;
@@ -117,7 +114,7 @@ class PortalUserContextSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::RESPONSE => array('onKernelResponse', 256) // run this right after the UserContextsubscriber
+            KernelEvents::RESPONSE => array('onKernelResponse', 256), // run this right after the UserContextsubscriber
         );
     }
 }

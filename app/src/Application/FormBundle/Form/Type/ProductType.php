@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle\Form\Type;
 
-use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -54,13 +53,12 @@ class ProductType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'choice_list' => function(Options $options) {
+            'choice_list' => function (Options $options) {
                 /** @var \Application\FormBundle\Hierarchy\HierarchyGenerator $hierarchy_generator */
                 $hierarchy_generator = $options['hierarchy_generator'];
 
                 return $hierarchy_generator->generateTicketProductsHierarchy()->getChoiceList();
-            }
+            },
         ));
     }
 }
- 

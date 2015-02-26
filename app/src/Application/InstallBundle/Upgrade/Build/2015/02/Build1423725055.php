@@ -39,7 +39,7 @@ class Build1423725055 extends AbstractBuild
     public function run()
     {
         $this->out("Upgrade Ticket Messages Class");
-		$this->execMutateSql("CREATE TABLE tickets_message_email_id (id INT AUTO_INCREMENT NOT NULL, message_id INT DEFAULT NULL, email_id VARCHAR(255) NOT NULL, INDEX IDX_C0D32802537A1329 (message_id), INDEX email_id_idx (email_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 ENGINE = InnoDB DEFAULT CHARSET=utf8");
-		$this->execMutateSql("ALTER TABLE tickets_message_email_id ADD CONSTRAINT FK_C0D32802537A1329 FOREIGN KEY (message_id) REFERENCES tickets_messages (id) ON DELETE CASCADE");
+        $this->execMutateSql("CREATE TABLE tickets_message_email_id (id INT AUTO_INCREMENT NOT NULL, message_id INT DEFAULT NULL, email_id VARCHAR(255) NOT NULL, INDEX IDX_C0D32802537A1329 (message_id), INDEX email_id_idx (email_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 ENGINE = InnoDB DEFAULT CHARSET=utf8");
+        $this->execMutateSql("ALTER TABLE tickets_message_email_id ADD CONSTRAINT FK_C0D32802537A1329 FOREIGN KEY (message_id) REFERENCES tickets_messages (id) ON DELETE CASCADE");
     }
 }

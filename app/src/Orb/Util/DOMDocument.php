@@ -36,5 +36,4 @@ namespace Orb\Util;
 
 class DOMDocument extends \DOMDocument
 {
-
 }

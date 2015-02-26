@@ -48,7 +48,6 @@ class CategoryAction extends AbstractAction implements PermissionableAction
         $this->category_id = $category;
     }
 
-
     /**
      * Apply the property to the ticket
      *
@@ -58,7 +57,6 @@ class CategoryAction extends AbstractAction implements PermissionableAction
     {
         $ticket['category_id'] = $this->category_id;
     }
-
 
     /**
      * {@inheritDoc}
@@ -76,7 +74,6 @@ class CategoryAction extends AbstractAction implements PermissionableAction
         return true;
     }
 
-
     /**
      * Get an array of actions that would be performed on the ticket
      *
@@ -89,10 +86,9 @@ class CategoryAction extends AbstractAction implements PermissionableAction
         }
 
         return array(
-            array('action' => 'category', 'category_id' => $this->category_id)
+            array('action' => 'category', 'category_id' => $this->category_id),
         );
     }
-
 
     /**
      * Get the category id
@@ -104,7 +100,6 @@ class CategoryAction extends AbstractAction implements PermissionableAction
         return $this->category_id;
     }
 
-
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
@@ -113,7 +108,6 @@ class CategoryAction extends AbstractAction implements PermissionableAction
     {
         return $other_action;
     }
-
 
     /**
      * @return string

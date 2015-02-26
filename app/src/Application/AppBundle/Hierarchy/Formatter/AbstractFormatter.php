@@ -34,7 +34,6 @@
 
 namespace Application\AppBundle\Hierarchy\Formatter;
 
-
 use Application\AppBundle\Hierarchy\HierarchyFormatterInterface;
 use Application\AppBundle\Hierarchy\HierarchyNode;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -58,10 +57,10 @@ abstract class AbstractFormatter implements HierarchyFormatterInterface
     {
         if ($this->stringPropertyPath) {
             $accessor = PropertyAccess::createPropertyAccessor();
+
             return $accessor->getValue($node->getData(), $this->stringPropertyPath);
         }
 
         return (string) $node->getData();
     }
 }
- 

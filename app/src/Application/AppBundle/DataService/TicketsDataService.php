@@ -34,17 +34,10 @@
 
 namespace Application\AppBundle\DataService;
 
-
-use Application\AppBundle\Helper\ArbitraryHasher;
-use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
-use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\ORM\EntityManager;
-use Application\DeskPRO\Translate\Translate;
 use Application\PortalBundle\Model\TicketFilter;
-use Doctrine\Common\Collections\ArrayCollection;
-use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -61,8 +54,8 @@ class TicketsDataService extends AbstractDataService
     }
 
     /**
-     * @param Person $person
-     * @param TicketFilter $filter
+     * @param  Person       $person
+     * @param  TicketFilter $filter
      * @param $page
      * @param $max_per_page
      * @return Pagerfanta
@@ -77,9 +70,9 @@ class TicketsDataService extends AbstractDataService
                 $person,
                 $filter,
                 $page,
-                $max_per_page
+                $max_per_page,
             ),
-            function() use($em, $person, $filter, $page, $max_per_page) {
+            function () use ($em, $person, $filter, $page,$max_per_page) {
                 $qb = $em->createQueryBuilder();
 
                 $qb->select('t')
@@ -90,14 +83,10 @@ class TicketsDataService extends AbstractDataService
 
                 // type
                 if (TicketFilter::TYPE_OWN === $filter->getType()) {
-
                     if ($person->is_agent) {
-
                         // agents only their own tickets
                         $qb->andWhere('t.person = :person')->setParameter('person', $person);
-
                     } else {
-
                         if (!$person->organization || !$person->organization_manager) {
                             //  show non-agents the tickets they participate in
                             $qb->leftJoin('t.participants', 'part');
@@ -108,15 +97,11 @@ class TicketsDataService extends AbstractDataService
                             $qb->andWhere('t.person = :person OR (part.person = :person AND t.organization != :organization)');
                             $qb->setParameter('person', $person)->setParameter('organization', $person->organization);
                         }
-
                     }
-
                 } else {
-
                     // its assumed that if you send in a person with an "organization" type filter that they have an
                     // organization and are a manger. ensure the controller/calling-code has this secured
                     $qb->andWhere('t.organization = :organization')->setParameter('organization', $person->organization);
-
                 }
 
                 // category
@@ -169,8 +154,8 @@ class TicketsDataService extends AbstractDataService
     /**
      * Returns the count of tickets that can be seen by the user by default. You can optionally provide a status to count on.
      *
-     * @param Person $person
-     * @param string $status
+     * @param  Person   $person
+     * @param  string   $status
      * @return int|null
      */
     public function getTicketCount(Person $person, $status = 'all')
@@ -181,18 +166,18 @@ class TicketsDataService extends AbstractDataService
             array(
                 'getTicketCount',
                 $person,
-                $status
+                $status,
             ),
             function () use ($em, $person, $status) {
                 $qb = $em->createQueryBuilder();
 
-                if ('all' !== $status){
+                if ('all' !== $status) {
                     $status_list = array($status);
                 } else {
                     $status_list = array(
                         Ticket::STATUS_AWAITING_AGENT,
                         Ticket::STATUS_RESOLVED,
-                        Ticket::STATUS_AWAITING_USER
+                        Ticket::STATUS_AWAITING_USER,
                     );
                 }
 

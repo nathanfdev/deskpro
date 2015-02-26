@@ -422,7 +422,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      * Get the value of an option, or a default value if none is set.
      *
      * @param  $name
-     * @param  null       $default
+     * @param  null  $default
      * @return mixed
      */
     public function getOption($name, $default = null)
@@ -478,42 +478,46 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @param bool $isAgent
+     * @param  bool  $isAgent
      * @return mixed
      */
     public function isRequired($isAgent = false)
     {
         $option_name = ($isAgent ? 'agent_' : '').'required';
+
         return (bool) $this->getOption($option_name, false);
     }
 
     /**
-     * @param bool $isAgent
+     * @param  bool  $isAgent
      * @return mixed
      */
     public function getMinLength($isAgent = false)
     {
         $option_name = ($isAgent ? 'agent_' : '').'min_length';
+
         return $this->getOption($option_name, 0);
     }
 
     /**
-     * @param bool $isAgent
+     * @param  bool  $isAgent
      * @return mixed
      */
     public function getMaxLength($isAgent = false)
     {
         $option_name = ($isAgent ? 'agent_' : '').'max_length';
+
         return $this->getOption($option_name, 0);
     }
 
     /**
-     * @param bool $isAgent
+     * @param  bool  $isAgent
      * @return mixed
      */
     public function getRegex($isAgent = false)
     {
         $option_name = ($isAgent ? 'agent_' : '').'regex';
+
         return $this->getOption($option_name, null);
     }
 

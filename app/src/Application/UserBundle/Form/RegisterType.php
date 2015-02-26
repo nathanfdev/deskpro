@@ -45,8 +45,6 @@ class RegisterType extends AbstractType
         $this->buildPersonForm($builder);
     }
 
-
-
     /**
      * Configures the person form
      */
@@ -60,7 +58,7 @@ class RegisterType extends AbstractType
         $langs = App::getDataService('Language')->getTitles();
         if (count($langs) != 1) {
             $builder->add('language_id', 'choice', array(
-                'choices' => $langs
+                'choices' => $langs,
             ));
         }
     }

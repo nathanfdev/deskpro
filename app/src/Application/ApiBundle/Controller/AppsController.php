@@ -315,7 +315,7 @@ class AppsController extends AbstractController
                     $batch[] = array(
                         'app_instance_id' => $app->id,
                         'usergroup_id'    => $ugid,
-                        'person_id'       => null
+                        'person_id'       => null,
                     );
                 }
             }
@@ -324,7 +324,7 @@ class AppsController extends AbstractController
                     $batch[] = array(
                         'app_instance_id' => $app->id,
                         'usergroup_id'    => null,
-                        'person_id'       => $aid
+                        'person_id'       => $aid,
                     );
                 }
             }
@@ -853,13 +853,13 @@ class AppsController extends AbstractController
         return $app_manipulator;
     }
 
-	public function jiraSettingsAction()
-	{
-		/** @var JIRA $js */
-		$js = $this->get(JIRA::NAME);
-		$meta = $js->getMeta();
-		$meta = $meta ? $meta->toArray() : null;
+    public function jiraSettingsAction()
+    {
+        /** @var JIRA $js */
+        $js = $this->get(JIRA::NAME);
+        $meta = $js->getMeta();
+        $meta = $meta ? $meta->toArray() : null;
 
-		return $this->createApiResponse(array('enabled' => $js->isEnabled(), 'meta' => $meta));
-	}
+        return $this->createApiResponse(array('enabled' => $js->isEnabled(), 'meta' => $meta));
+    }
 }

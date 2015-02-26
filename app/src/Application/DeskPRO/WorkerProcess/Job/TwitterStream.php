@@ -111,7 +111,7 @@ class TwitterStream extends AbstractJob
                             $data
                         );
                     } catch (\Exception $e) {
-                        $this->logStatus('exception caught: ' . $e->getMessage() . ' ' . $e->getFile() . ':' . $e->getLine());
+                        $this->logStatus('exception caught: '.$e->getMessage().' '.$e->getFile().':'.$e->getLine());
                         $success = false;
                         \DeskPRO\Kernel\KernelErrorHandler::logException($e);
                     }
@@ -126,7 +126,7 @@ class TwitterStream extends AbstractJob
 
             if ($success) {
                 $this->db->delete('twitter_stream', array(
-                    'id' => $event['id']
+                    'id' => $event['id'],
                 ));
 
                 $processed++;
@@ -377,7 +377,7 @@ class TwitterStream extends AbstractJob
                                 'channel' => 'agent.twitter-friend',
                                 'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
                                 'date_created' => date('Y-m-d H:i:s'),
-                                'data' => serialize(array('action' => 'new', 'account_id' => $account->id))
+                                'data' => serialize(array('action' => 'new', 'account_id' => $account->id)),
                             ));
                         }
                     } elseif ($targetUser->id == $account->getUserId()) {
@@ -395,7 +395,7 @@ class TwitterStream extends AbstractJob
                                 'channel' => 'agent.twitter-follower',
                                 'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
                                 'date_created' => date('Y-m-d H:i:s'),
-                                'data' => serialize(array('action' => ($friend ? 'new-archived' : 'new'), 'account_id' => $account->id))
+                                'data' => serialize(array('action' => ($friend ? 'new-archived' : 'new'), 'account_id' => $account->id)),
                             ));
                         }
                     }
@@ -414,7 +414,7 @@ class TwitterStream extends AbstractJob
                                 'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
                                 'date_created' => date('Y-m-d H:i:s'),
                                 'data' => serialize(array('action' => 'removed', 'account_id' => $account->id)),
-                                'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray'
+                                'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray',
                             ));
                         }
                     }

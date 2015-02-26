@@ -53,7 +53,6 @@ class CheckUserIsNew extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -62,11 +61,17 @@ class CheckUserIsNew extends AbstractTriggerTerm
         $is_news = $ticket->person->isNewPerson();
 
         if ($is_news) {
-            if ($this->getTermOperator() == 'is') return true;
-            else return false;
+            if ($this->getTermOperator() == 'is') {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            if ($this->getTermOperator() == 'is') return false;
-            else return true;
+            if ($this->getTermOperator() == 'is') {
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 }

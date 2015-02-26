@@ -63,18 +63,18 @@ class LanguageExtension extends \Twig_Extension
                 array(
                     'is_safe'           => array('html'),
                     'needs_context'     => true,
-                    'needs_environment' => true
+                    'needs_environment' => true,
                 )
-            )
+            ),
         );
     }
 
     /**
-     * @param \Twig_Environment $env
-     * @param array             $context
-     * @param string            $phrase_name
-     * @param array             $vars
-     * @param bool              $raw
+     * @param  \Twig_Environment   $env
+     * @param  array               $context
+     * @param  string              $phrase_name
+     * @param  array               $vars
+     * @param  bool                $raw
      * @return mixed
      * @throws \Twig_Error_Runtime
      */

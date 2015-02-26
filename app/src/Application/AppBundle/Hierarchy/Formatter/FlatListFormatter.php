@@ -34,7 +34,6 @@
 
 namespace Application\AppBundle\Hierarchy\Formatter;
 
-
 use Application\AppBundle\Hierarchy\HierarchyNode;
 
 class FlatListFormatter extends AbstractFormatter
@@ -47,4 +46,3 @@ class FlatListFormatter extends AbstractFormatter
         return sprintf("%s", $node->getData()->title);
     }
 }
- 

@@ -80,7 +80,6 @@ class CompressFile
         return $this->type;
     }
 
-
     /**
      * Check to see which methods of compression we can use, and choose one.
      *
@@ -112,14 +111,13 @@ class CompressFile
         return false;
     }
 
-
     /**
      * Compress using the GZ extension
      */
     public function compressGz()
     {
         $this->type = 'gz';
-        $this->tmpfile = tempnam(sys_get_temp_dir(), 'gzfile' . mt_rand(1000,9999));
+        $this->tmpfile = tempnam(sys_get_temp_dir(), 'gzfile'.mt_rand(1000, 9999));
         $fp = @fopen($this->tmpfile, 'w');
 
         if (!$fp) {
@@ -130,14 +128,13 @@ class CompressFile
         fclose($fp);
     }
 
-
     /**
      * Compress using the Bzip extension
      */
     public function compressBzip()
     {
         $this->type = 'bzip2';
-        $this->tmpfile = tempnam(sys_get_temp_dir(), 'bzipfile' . mt_rand(1000,9999));
+        $this->tmpfile = tempnam(sys_get_temp_dir(), 'bzipfile'.mt_rand(1000, 9999));
         $fp = @fopen($this->tmpfile, 'w');
 
         if (!$fp) {
@@ -148,21 +145,19 @@ class CompressFile
         fclose($fp);
     }
 
-
     /**
      * Compress using the Zip extension
      */
     public function compressZip()
     {
         $this->type = 'zip';
-        $this->tmpfile = tempnam(sys_get_temp_dir(), 'zipfile' . mt_rand(1000,9999));
+        $this->tmpfile = tempnam(sys_get_temp_dir(), 'zipfile'.mt_rand(1000, 9999));
 
         $zip = new \ZipArchive();
         $zip->open($this->tmpfile, \ZipArchive::CREATE);
         $zip->addFromString('file', $this->file_contents);
         $zip->close();
     }
-
 
     /**
      * Compress using the command-line by executing $gzip_path as the gzip binary
@@ -172,10 +167,10 @@ class CompressFile
     public function compressGzCommand($gzip_path)
     {
         $this->type = 'gz';
-        $this->tmpfile = tempnam(sys_get_temp_dir(), 'zipfile' . mt_rand(1000,9999));
+        $this->tmpfile = tempnam(sys_get_temp_dir(), 'zipfile'.mt_rand(1000, 9999));
         file_put_contents($this->tmpfile, $this->file_contents);
 
-        $cmd = $gzip_path . ' ' . $this->tmpfile;
+        $cmd = $gzip_path.' '.$this->tmpfile;
         shell_exec($cmd);
 
         $this->tmpfile .= '.gz';

@@ -60,7 +60,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
      * - headers[]
      * - attachments[]
      *
-     * @param resource $raw_fp
+     * @param  resource   $raw_fp
      * @return RawMessage
      */
     public function createRawMessage($raw_fp)
@@ -92,9 +92,9 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
     /**
      * Read a list of email addresses and returns array of array('email' => '', 'name' => '').
      *
-     * @param Part   $message
-     * @param string $header_name The header to read from. E.g., 'to' or 'cc'
-     * @param bool   $single      True when only one address should be returned
+     * @param  Part   $message
+     * @param  string $header_name The header to read from. E.g., 'to' or 'cc'
+     * @param  bool   $single      True when only one address should be returned
      * @return array
      */
     private function _readAddresses(Part $message, $header_name, $single = false)
@@ -109,10 +109,10 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
             return array();
         }
 
-        $list = array_values(Arrays::map(function($v) {
+        $list = array_values(Arrays::map(function ($v) {
             return array(
                 'name'  => trim($v->getName(), "\"'"),
-                'email' => $v->getEmail()
+                'email' => $v->getEmail(),
             );
         }, $header->getAddressList()));
 
@@ -127,7 +127,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
      * Reads non-common headers from the message (i.e., headers that are not ones we handle specificaly like the subject
      * or to or cc etc).
      *
-     * @param Part $message
+     * @param  Part  $message
      * @return array
      */
     private function _readHeaders(Part $message)
@@ -164,7 +164,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
     /**
      * Reads a subject from an email message.
      *
-     * @param Part $message
+     * @param  Part   $message
      * @return string
      */
     private function _readSubject(Part $message)
@@ -185,7 +185,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
     /**
      * Reads a plain-text version of the email.
      *
-     * @param Part $message
+     * @param  Part   $message
      * @return string
      */
     private function _readTextPart(Part $message)
@@ -196,7 +196,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
     /**
      * Reads a html-text version of the email.
      *
-     * @param Part $message
+     * @param  Part   $message
      * @return string
      */
     private function _readHtmlPart(Part $message)
@@ -207,8 +207,8 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
     /**
      * Reads the body of a message.
      *
-     * @param Part $message
-     * @param string $body_type  'text/plain' or 'text/html'
+     * @param  Part        $message
+     * @param  string      $body_type 'text/plain' or 'text/html'
      * @return string|null
      */
     private function _readBodyPart(Part $message, $body_type)
@@ -263,7 +263,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
     }
 
     /**
-     * @param Part $message
+     * @param  Part                                                               $message
      * @param $header_name
      * @return array|\ArrayIterator|null|string|\Zend\Mail\Header\HeaderInterface
      */
@@ -279,7 +279,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
     /**
      * Reads attachments from the email
      *
-     * @param Part $message
+     * @param  Part   $message
      * @return string
      */
     private function _readAttachments(Part $message)
@@ -338,7 +338,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
                     'cid'      => $content_id,
                     'bin_data' => $data,
                     'type'     => $content_type,
-                    'crc32'    => sprintf("%x", crc32($data))
+                    'crc32'    => sprintf("%x", crc32($data)),
                 );
 
                 $attachments[] = $a;
@@ -349,8 +349,8 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
     }
 
     /**
-     * @param string $string
-     * @param string $enc_type The way the string is encoded: quoted-printable, base64, 7bit, 8bit
+     * @param  string $string
+     * @param  string $enc_type The way the string is encoded: quoted-printable, base64, 7bit, 8bit
      * @return string
      */
     public static function decodeString($string, $enc_type)

@@ -95,7 +95,10 @@ class ArticleSearch extends SearcherAbstract
     {
         $ids = $this->getMatches($limit);
 
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
+
         return App::getEntityRepository('DeskPRO:Article')->getByResultIds($ids);
     }
 
@@ -121,7 +124,7 @@ class ArticleSearch extends SearcherAbstract
 
         $dis_ids = implode(',', $dis_ids);
 
-        return '('.$where.' AND catperm.category_id NOT IN(' . $dis_ids . '))';
+        return '('.$where.' AND catperm.category_id NOT IN('.$dis_ids.'))';
     }
 
     /**
@@ -141,14 +144,14 @@ class ArticleSearch extends SearcherAbstract
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
-                $sql .= $j[1] . " ";
+                $sql .= $j[1]." ";
             } else {
                 $sql .= "LEFT JOIN $j ON $j.article_id = articles.id ";
             }
         }
 
         if (is_array($order_by)) {
-            list ($order_join, $order_by) = $order_by;
+            list($order_join, $order_by) = $order_by;
 
             $sql .= " $order_join ";
         }
@@ -161,11 +164,11 @@ class ArticleSearch extends SearcherAbstract
         if (!$this->findTerm(self::TERM_AGENT_LIST)) {
             $where_perm = $this->getPermWhere();
             if ($where_perm) {
-                $sql .= $where_perm . ' AND ';
+                $sql .= $where_perm.' AND ';
             }
         }
         if ($parts['wheres']) {
-            $sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
+            $sql .= '('.implode(") AND (", $parts['wheres']).')';
         } else {
             $sql .= '1';
         }
@@ -201,21 +204,20 @@ class ArticleSearch extends SearcherAbstract
         $parts = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
-
         #------------------------------
         # Add joins
         #------------------------------
 
         foreach ($parts['joins'] as $j) {
             if (is_array($j)) {
-                $sql .= $j[1] . " ";
+                $sql .= $j[1]." ";
             } else {
                 $sql .= "LEFT JOIN $j ON $j.article_id = articles.id ";
             }
         }
 
         if (is_array($order_by)) {
-            list ($order_join, $order_by) = $order_by;
+            list($order_join, $order_by) = $order_by;
 
             $sql .= " $order_join ";
         }
@@ -229,12 +231,12 @@ class ArticleSearch extends SearcherAbstract
         if (!$this->findTerm(self::TERM_AGENT_LIST)) {
             $where_perm = $this->getPermWhere();
             if ($where_perm) {
-                $sql .= $where_perm . ' AND ';
+                $sql .= $where_perm.' AND ';
             }
         }
 
         if ($parts['wheres']) {
-            $sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
+            $sql .= '('.implode(") AND (", $parts['wheres']).')';
         } else {
             $sql .= '1';
         }
@@ -251,7 +253,6 @@ class ArticleSearch extends SearcherAbstract
         return $sql;
     }
 
-
     /**
      * Get the ORDER BY clause based on order info set.
      *
@@ -267,7 +268,7 @@ class ArticleSearch extends SearcherAbstract
         list($type, $dir) = $this->order_by;
 
         $dir = strtoupper($dir);
-        if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
+        if ($dir != self::ORDER_ASC and $dir != self::ORDER_DESC) {
             $dir = self::ORDER_DESC;
         }
 
@@ -287,7 +288,6 @@ class ArticleSearch extends SearcherAbstract
         return $order_by;
     }
 
-
     /**
      * Get the SQL parts we need in the query.
      *
@@ -295,14 +295,16 @@ class ArticleSearch extends SearcherAbstract
      */
     public function getSqlParts()
     {
-        if ($this->sql_parts !== null) return $this->sql_parts;
+        if ($this->sql_parts !== null) {
+            return $this->sql_parts;
+        }
 
         $db = App::getDbRead('search.filter.articles');
         $tr = App::getTranslator();
 
         $wheres = array();
         $joins = array(
-            array('article_to_categories_perm', "LEFT JOIN article_to_categories AS catperm ON (catperm.article_id = articles.id)")
+            array('article_to_categories_perm', "LEFT JOIN article_to_categories AS catperm ON (catperm.article_id = articles.id)"),
         );
 
         foreach ($this->terms as $info) {
@@ -342,17 +344,17 @@ class ArticleSearch extends SearcherAbstract
 
                 case self::TERM_STATUS:
 
-                    $choice = (array)$choice;
+                    $choice = (array) $choice;
                     $choice = array_pop($choice);
 
                     // Normal vis status
-                    if (strpos($choice, '.') === false){
+                    if (strpos($choice, '.') === false) {
                         $status = $choice;
                         $hidden_status = '';
 
                     // Formatted: hidden.hidden_status
                     } else {
-                        list ($status, $hidden_status) = explode('.', $choice, 2);
+                        list($status, $hidden_status) = explode('.', $choice, 2);
                     }
 
                     if ($hidden_status) {
@@ -363,7 +365,7 @@ class ArticleSearch extends SearcherAbstract
 
                     $phrase_vars = array('field' => 'Status', 'value' => ($hidden_status ? $hidden_status : $status));
 
-                    if ($op == self::OP_NOT OR $op == self::OP_NOTCONTAINS) {
+                    if ($op == self::OP_NOT or $op == self::OP_NOTCONTAINS) {
                         $this->summary[] = $tr->phrase('agent.general.x_is_not_y', $phrase_vars);
                     } else {
                         $this->summary[] = $tr->phrase('agent.general.x_is_y', $phrase_vars);
@@ -373,17 +375,17 @@ class ArticleSearch extends SearcherAbstract
 
                 case self::TERM_QUERY:
 
-                    $j1 = $join_name . '_t';
-                    $j2 = $join_name . '_c';
+                    $j1 = $join_name.'_t';
+                    $j2 = $join_name.'_c';
 
                     $joins[] = array(
                         'object_lang',
-                        "LEFT JOIN object_lang AS $j1 ON ($j1.ref_type = 'article' AND $j1.ref_id = articles.id AND $j1.prop_name = 'title')"
+                        "LEFT JOIN object_lang AS $j1 ON ($j1.ref_type = 'article' AND $j1.ref_id = articles.id AND $j1.prop_name = 'title')",
                     );
 
                     $joins[] = array(
                         'object_lang',
-                        "LEFT JOIN object_lang AS $j2 ON ($j2.ref_type = 'article' AND $j2.ref_id = articles.id AND $j2.prop_name = 'content')"
+                        "LEFT JOIN object_lang AS $j2 ON ($j2.ref_type = 'article' AND $j2.ref_id = articles.id AND $j2.prop_name = 'content')",
                     );
 
                     $string = $choice['query'];
@@ -394,17 +396,17 @@ class ArticleSearch extends SearcherAbstract
                     }
 
                     $w = array();
-                    $w[] = '(' . $this->_stringSearch("articles.title", $op, $string, $type) . ')';
-                    $w[] = '(' . $this->_stringSearch("articles.content", $op, $string, $type) . ')';
-                    $w[] = '(' . $this->_stringSearch("$j1.value", $op, $string, $type) . ')';
-                    $w[] = '(' . $this->_stringSearch("$j2.value", $op, $string, $type) . ')';
+                    $w[] = '('.$this->_stringSearch("articles.title", $op, $string, $type).')';
+                    $w[] = '('.$this->_stringSearch("articles.content", $op, $string, $type).')';
+                    $w[] = '('.$this->_stringSearch("$j1.value", $op, $string, $type).')';
+                    $w[] = '('.$this->_stringSearch("$j2.value", $op, $string, $type).')';
 
-                    $wheres[] = implode(' OR ' , $w);
+                    $wheres[] = implode(' OR ', $w);
                     break;
 
                 case self::TERM_CATEGORY:
                 case self::TERM_CATEGORY_SPECIFIC:
-                    $base_ids = (array)((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
+                    $base_ids = (array) ((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
                     $ids = array();
 
                     if ($term == self::TERM_CATEGORY_SPECIFIC) {
@@ -419,13 +421,13 @@ class ArticleSearch extends SearcherAbstract
 
                     $joins[] = array(
                         'article_to_categories',
-                        "LEFT JOIN article_to_categories AS $join_name ON ($join_name.article_id = articles.id)"
+                        "LEFT JOIN article_to_categories AS $join_name ON ($join_name.article_id = articles.id)",
                     );
 
                     $wheres[] = $this->_choiceMatch("$join_name.category_id", $op, $ids);
 
                     $this->summary[] = $this->_choiceSummary('Category', $op, $choice, function ($choice) {
-                        $titles = App::getEntityRepository('DeskPRO:ArticleCategory')->getNames((array)$choice);
+                        $titles = App::getEntityRepository('DeskPRO:ArticleCategory')->getNames((array) $choice);
 
                         return $titles;
                     });
@@ -475,14 +477,13 @@ class ArticleSearch extends SearcherAbstract
                     }
 
                     foreach ($langs as $lang) {
-
                         $lang_id   = $lang->getId();
                         $join_id   = Util::requestUniqueId();
                         $join_name = "j_$join_id";
 
                         $joins[] = array(
                             'object_lang',
-                            "LEFT JOIN object_lang AS $join_name ON ($join_name.ref_type = 'articles' AND $join_name.ref_id = articles.id AND $join_name.language_id = $lang_id)"
+                            "LEFT JOIN object_lang AS $join_name ON ($join_name.ref_type = 'articles' AND $join_name.ref_id = articles.id AND $join_name.language_id = $lang_id)",
                         );
 
                         $w[] = "(articles.language_id != $lang_id AND $join_name.id IS NULL)";
@@ -497,7 +498,7 @@ class ArticleSearch extends SearcherAbstract
 
                     $choices_in = array();
                     if (is_array($choice)) {
-                        foreach ((array)$choice as $c) {
+                        foreach ((array) $choice as $c) {
                             $choices_in[] = $db->quote($c);
                         }
                         $choices_in = implode(',', $choices_in);
@@ -509,21 +510,21 @@ class ArticleSearch extends SearcherAbstract
                         case self::OP_IS:
                             $joins[] = array(
                                 'labels_articles',
-                                "LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id)"
+                                "LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id)",
                             );
-                            $wheres[] = "$join_name.label = " . $db->quote($choice);
+                            $wheres[] = "$join_name.label = ".$db->quote($choice);
                             break;
                         case self::OP_NOT:
                             $joins[] = array(
                                 'labels_articles',
-                                "LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id AND $join_name.label = '.$db->quote($choice).')"
+                                "LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id AND $join_name.label = '.$db->quote($choice).')",
                             );
                             $wheres[] = "$join_name.person_id IS NULL";
                             break;
                         case self::OP_CONTAINS:
                             $joins[] = array(
                                 'labels_articles',
-                                "LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id)"
+                                "LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id)",
                             );
                             $wheres[] = "$join_name.label IN ($choices_in)";
                             break;
@@ -531,7 +532,7 @@ class ArticleSearch extends SearcherAbstract
                         case self::OP_NOTCONTAINS:
                             $joins[] = array(
                                 'labels_articles',
-                                "LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id AND $join_name.label IN ($choices_in)"
+                                "LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id AND $join_name.label IN ($choices_in)",
                             );
                             $wheres[] = "$join_name.person_id IS NULL";
                             break;
@@ -545,7 +546,7 @@ class ArticleSearch extends SearcherAbstract
         $this->sql_parts = array(
             'joins' => $joins,
 
-            'wheres' => $wheres
+            'wheres' => $wheres,
         );
 
         return $this->sql_parts;

@@ -53,7 +53,7 @@ class BanEmail extends AbstractEntityRepository
 
         if (!empty($search_phrase)) {
             $where .= " AND banned_email LIKE :search";
-            $params['search'] = '%' . str_replace('%', '\%', $search_phrase) . '%';
+            $params['search'] = '%'.str_replace('%', '\%', $search_phrase).'%';
         }
 
         if ($wildcard) {
@@ -149,7 +149,7 @@ class BanEmail extends AbstractEntityRepository
 
         if (!empty($search_phrase)) {
             $where .= " AND banned_email LIKE :search";
-            $params['search'] = '%' . str_replace('%', '\%', $search_phrase) . '%';
+            $params['search'] = '%'.str_replace('%', '\%', $search_phrase).'%';
         }
 
         if ($wildcard) {

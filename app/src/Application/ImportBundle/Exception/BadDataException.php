@@ -33,5 +33,4 @@ namespace Application\ImportBundle\Exception;
 
 class BadDataException extends \Exception
 {
-
 }

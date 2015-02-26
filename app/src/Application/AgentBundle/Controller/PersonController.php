@@ -45,7 +45,6 @@ use Application\DeskPRO\Log\Event\UserMerged;
 use Application\DeskPRO\Mail\Mailer;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -599,14 +598,18 @@ class PersonController extends AbstractController
                     : array();
 
                 foreach ($person->usergroups as $personGroup) {
-                    if ($personGroup->is_agent_group) continue; // dont touch agent groups
+                    if ($personGroup->is_agent_group) {
+                        continue;
+                    } // dont touch agent groups
                     if (false === in_array($personGroup, $usergroups, true)) {
                         $person->removeUsergroup($personGroup);
                     }
                 }
 
                 foreach ($usergroups as $personGroup) {
-                    if ($personGroup->is_agent_group) continue; // dont touch agent groups
+                    if ($personGroup->is_agent_group) {
+                        continue;
+                    } // dont touch agent groups
                     $person->addUsergroup($personGroup);
                 }
 
@@ -1438,20 +1441,20 @@ class PersonController extends AbstractController
                     }
             $this->em->flush();
 
-                    if ($this->in->getString('newperson.send_welcome_email')) {
-                        /** @var Mailer $mailer */
+            if ($this->in->getString('newperson.send_welcome_email')) {
+                /** @var Mailer $mailer */
                         $mailer = $this->get('mailer');
-                        $message = $mailer->createMessage();
-                        $message->setToPerson($person);
-                        $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
-                            'person' => $person
+                $message = $mailer->createMessage();
+                $message->setToPerson($person);
+                $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
+                            'person' => $person,
                         ));
-                        $mailer->sendNow($message);
-                    }
+                $mailer->sendNow($message);
+            }
 
-                    return $this->createJsonResponse(array(
+            return $this->createJsonResponse(array(
                             'success' => true,
-                            'person_id' => $person['id']
+                            'person_id' => $person['id'],
                     ));
         }
 
@@ -1491,7 +1494,7 @@ class PersonController extends AbstractController
                 $message = $mailer->createMessage();
                 $message->setToPerson($person);
                 $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
-                    'person' => $person
+                    'person' => $person,
                 ));
 
                 $mailer->sendNow($message);

@@ -34,14 +34,10 @@
 
 namespace Application\FormBundle\Form\Type;
 
-use Application\FormBundle\Form\DataTransformer\EntityToIdTransformer;
 use Application\FormBundle\Hierarchy\HierarchyGenerator;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\NotNull;
 
 class DepartmentType extends AbstractType
 {
@@ -63,10 +59,9 @@ class DepartmentType extends AbstractType
                 $hierarchy_generator = $options['hierarchy_generator'];
 
                 return $hierarchy_generator->generateTicketDepartmentsHierarchy($options['person'])->getChoiceList();
-            }
+            },
         ));
 
         $resolver->setRequired(array('person'));
     }
 }
- 

@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle\Form\DataTransformer;
 
-
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
@@ -122,4 +121,3 @@ class StringToIntegerArrayTransformer implements DataTransformerInterface
         return implode($this->delimiter, $value);
     }
 }
- 

@@ -60,7 +60,6 @@ class SendUserEmail extends AbstractEmailAction
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -131,7 +130,7 @@ class SendUserEmail extends AbstractEmailAction
                 return;
             }
 
-            foreach($ticket->getStateChangeRecorder()->getNewUserReplies() as $m) {
+            foreach ($ticket->getStateChangeRecorder()->getNewUserReplies() as $m) {
                 if ($m->person->disable_autoresponses) {
                     $context->getLogger()->info(sprintf("Skipping email because user #%d %s on message #%d is an auto-responder", $m->person->id, $m->person->getDisplayContact(), $m->id));
 
@@ -156,7 +155,6 @@ class SendUserEmail extends AbstractEmailAction
 
         $context->getLogger()->info(sprintf("[SendUserEmail] Sent message in %.3fs", microtime(true)-$start_time));
     }
-
 
     /**
      * {@inheritDoc}

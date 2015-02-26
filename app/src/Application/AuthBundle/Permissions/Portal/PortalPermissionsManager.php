@@ -34,9 +34,7 @@
 
 namespace Application\AuthBundle\Permissions\Portal;
 
-
 use Application\AuthBundle\Permissions\PermissionsBag;
-use Application\DeskPRO\App;
 use Application\DeskPRO\Cache\CacheAdapterInterface;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\Permission;
@@ -106,8 +104,7 @@ class PortalPermissionsManager
         CacheAdapterInterface $cacheAdapter,
         PortalUsergroupDecider $usergroupDecider,
         PortalPermissionsLoader $permissionsLoader
-    )
-    {
+    ) {
         $this->settingsResolver = $settingsResolver;
         $this->usergroupDecider = $usergroupDecider;
         $this->permissionsLoader = $permissionsLoader;
@@ -124,7 +121,7 @@ class PortalPermissionsManager
     public function invalidatePortalPermissionsCaches()
     {
         // execute a SQL statement to update the portal.global_cache_timestamp setting
-        $this->conn->executeQuery('REPLACE INTO settings SET name = "' . static::CACHE_TIMESTAMP_SETTING_NAME . '", value = ' . time());
+        $this->conn->executeQuery('REPLACE INTO settings SET name = "'.static::CACHE_TIMESTAMP_SETTING_NAME.'", value = '.time());
 
         // force a reload of global settings
         $this->settingsResolver->getGlobalSettings(true)->get(static::CACHE_TIMESTAMP_SETTING_NAME);
@@ -133,7 +130,7 @@ class PortalPermissionsManager
     /**
      * Returns the PermissionBag for the given person
      *
-     * @param Person $person
+     * @param  Person         $person
      * @return PermissionsBag
      */
     public function getPermissionsBagForPerson(Person $person)
@@ -188,13 +185,14 @@ class PortalPermissionsManager
         $that = $this;
         $generate = function () use ($person, $that) {
             $ids = $that->getEm()->createQuery('SELECT d.id FROM DeskPRO:Department d')->getScalarResult();
+
             return array_map(function ($val) {
                 return $val['id'];
             }, $ids);
         };
 
         if (!$this->isCacheDisabled()) {
-            $cache_key = $this->getCacheTimestamp() . '-deps-' . $this->getCacheKeyForPerson($person);
+            $cache_key = $this->getCacheTimestamp().'-deps-'.$this->getCacheKeyForPerson($person);
 
             return $this->cache->get($cache_key, $generate);
         }
@@ -206,12 +204,12 @@ class PortalPermissionsManager
     /**
      * Given a set of ints, combines a hash of them with the current cache timestamp to get the cache key
      *
-     * @param array $usergroupIds
+     * @param  array  $usergroupIds
      * @return string
      */
     public function getCacheKeyForUsergroupIds(array $usergroupIds)
     {
-        return $this->getCacheTimestamp() . '-permissions-' . Usergroup::generateUsergroupSetKey($usergroupIds);
+        return $this->getCacheTimestamp().'-permissions-'.Usergroup::generateUsergroupSetKey($usergroupIds);
     }
 
     /**
@@ -227,7 +225,7 @@ class PortalPermissionsManager
     /**
      * Given a person, uses IDs from usergroups and does getCacheKeyForUsergroupIds
      *
-     * @param Person $person
+     * @param  Person $person
      * @return string
      */
     public function getCacheKeyForPerson(Person $person)
@@ -243,7 +241,7 @@ class PortalPermissionsManager
     /**
      * Get IDs from usergroups and does getCacheKeyForUsergroupIds
      *
-     * @param array $usergroups
+     * @param  array  $usergroups
      * @return string
      */
     public function getCacheKeyForUsergroups(array $usergroups)
@@ -260,7 +258,7 @@ class PortalPermissionsManager
     /**
      * Generates the permissions map
      *
-     * @param Person $person
+     * @param  Person $person
      * @return array
      */
     public function generatePermissionsMapForPerson(Person $person)

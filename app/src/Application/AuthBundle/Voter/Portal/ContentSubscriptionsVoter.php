@@ -58,7 +58,7 @@ class ContentSubscriptionsVoter extends AbstractVoter
             self::SUBSCRIBE_NEWS,
             self::SUBSCRIBE_NEWS_CATEGORIES,
             self::SUBSCRIBE_DOWNLOADS,
-            self::SUBSCRIBE_DOWNLOADS_CATEGORIES
+            self::SUBSCRIBE_DOWNLOADS_CATEGORIES,
         );
     }
 
@@ -70,7 +70,7 @@ class ContentSubscriptionsVoter extends AbstractVoter
 
         $permissionBag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
 
-        switch($attribute) {
+        switch ($attribute) {
             case static::SUBSCRIBE_ARTICLES:
             case static::SUBSCRIBE_ARTICLE_CATEGORIES:
                 return $this->getActiveBrandSetting('user.kb_subscriptions');
@@ -88,11 +88,10 @@ class ContentSubscriptionsVoter extends AbstractVoter
     /**
      * Return an array of supported classes. This will be called by supportsClass
      *
-     * @return array    an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
+     * @return array an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
      */
     protected function getSupportedClasses()
     {
         return true;
     }
 }
- 

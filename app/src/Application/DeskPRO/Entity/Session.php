@@ -266,7 +266,9 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 
     public static function getIdFromCode($sess_code)
     {
-        if (!is_string($sess_code) || !strpos($sess_code, '-')) return null;
+        if (!is_string($sess_code) || !strpos($sess_code, '-')) {
+            return null;
+        }
 
         list($session_id,) = explode('-', $sess_code, 2);
 

@@ -37,7 +37,6 @@ namespace Orb\Log\Filter;
 use Orb\Log\LogItem;
 use Orb\Log\Logger;
 
-
 /**
  * This wraps the message in console outputer formatting tags depending on its
  * priority.
@@ -46,7 +45,9 @@ class ConsoleOutputFormatter extends \Orb\Filter\AbstractFilter
 {
     public function filter($log_item)
     {
-        if (!$log_item) return null;
+        if (!$log_item) {
+            return null;
+        }
 
         $message = isset($log_item[LogItem::MESSAGE_LINE]) ? $log_item[LogItem::MESSAGE_LINE] : $log_item[LogItem::MESSAGE];
 

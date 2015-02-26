@@ -55,7 +55,6 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
      */
     private $logger;
 
-
     public function __construct(LanguageManager $language_manager, LoggerInterface $logger)
     {
         $this->language_manager = $language_manager;
@@ -65,7 +64,7 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::REQUEST => array('onRequest', 512) // very high priority
+            KernelEvents::REQUEST => array('onRequest', 512), // very high priority
         );
     }
 
@@ -85,7 +84,6 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
             || ($lang = $this->detectFromRequestCookies($request))
             || ($lang = $this->detectFromEsiQuery($request))
         ) {
-
             $this->logger->info(
                 sprintf('detected "%s" and initializing language stack with it',
                     $lang->getTwoLetterLanguageCode()
@@ -117,7 +115,7 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
     }
 
     /**
-     * @param  Request $request
+     * @param  Request       $request
      * @return Language|null
      */
     protected function detectFromRequestCookies(Request $request)

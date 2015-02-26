@@ -40,7 +40,6 @@ use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\ORM\StateChange\ChangeData;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Orb\Util\Strings;
 use Orb\Util\Util;
 
 class TicketLogGenerator
@@ -71,7 +70,6 @@ class TicketLogGenerator
         $this->context = $context;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\TicketLog[]
      */
@@ -94,18 +92,18 @@ class TicketLogGenerator
         $logs[] = $group;
 
         if ($this->state->isNewTicket() || $this->context->getEventType() == 'newticket') {
-			$data = array(
+            $data = array(
                 'action_type' => 'ticket_created',
                 'id_after'    => $this->ticket->id,
                 'ticket_id'   => $this->ticket->id,
-				'event_performer' => $this->context->getEventPerformer(),
-				'event_method'    => $this->context->getEventMethod(),
-			);
-			if ($this->context->getEventMethod() == 'email' && $this->context->getEmailContext() && $this->context->getEmailContext()->getDeliveredAddresses()) {
-				$data['email_to']   = array_map(function($a) { return $a->email; }, $this->context->getEmailContext()->getReceivedAddresses());
-				$data['email_from'] = Util::flatMap($this->context->getEmailContext()->getRealFromAddress(), function($v) { return $v->email; });
-			}
-			$log = $this->getLogFromData($data);
+                'event_performer' => $this->context->getEventPerformer(),
+                'event_method'    => $this->context->getEventMethod(),
+            );
+            if ($this->context->getEventMethod() == 'email' && $this->context->getEmailContext() && $this->context->getEmailContext()->getDeliveredAddresses()) {
+                $data['email_to']   = array_map(function ($a) { return $a->email; }, $this->context->getEmailContext()->getReceivedAddresses());
+                $data['email_from'] = Util::flatMap($this->context->getEmailContext()->getRealFromAddress(), function ($v) { return $v->email; });
+            }
+            $log = $this->getLogFromData($data);
             $log->parent = $group;
             $logs[] = $log;
         }
@@ -165,7 +163,6 @@ class TicketLogGenerator
         return $logs;
     }
 
-
     /**
      * @param  array     $log_data
      * @return TicketLog
@@ -194,7 +191,6 @@ class TicketLogGenerator
 
         return $log;
     }
-
 
     /**
      * @param  ChangeInterface $change
@@ -268,7 +264,7 @@ class TicketLogGenerator
                     'value_after'  => $new ? $new['value'] : null,
 
                     'field_id'   => $old ? $old['field_def']->id : null,
-                    'field_name' => $old ? $old['field_def']->title : null
+                    'field_name' => $old ? $old['field_def']->title : null,
                 );
                 break;
 
@@ -311,8 +307,8 @@ class TicketLogGenerator
                     'id_before' => $old ? 1 : 0,
                     'id_after'  => $new ? 0 : 1,
 
-                    'was_hold'  => (bool)$old,
-                    'is_hold'   => (bool)$new,
+                    'was_hold'  => (bool) $old,
+                    'is_hold'   => (bool) $new,
                 );
                 break;
 
@@ -320,7 +316,7 @@ class TicketLogGenerator
                 return array(
                     'action_type' => 'changed_labels',
                     'added'   => array_map(function ($l) { return $l->label; }, $added),
-                    'removed' => array_map(function ($l) { return $l->label; }, $removed)
+                    'removed' => array_map(function ($l) { return $l->label; }, $removed),
                 );
                 break;
 
@@ -398,15 +394,23 @@ class TicketLogGenerator
                 if ($added_users || $removed_users) {
                     return array(
                         'action_type' => 'changed_user_participants',
-                        'added'   => array_map(function ($part) { $p = $part->person; return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_users),
-                        'removed' => array_map(function ($part) { $p = $part->person; return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed_users)
+                        'added'   => array_map(function ($part) { $p = $part->person;
+
+return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_users),
+                        'removed' => array_map(function ($part) { $p = $part->person;
+
+return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed_users),
                     );
                 }
                 if ($added_agents || $removed_agents) {
                     return array(
                         'action_type' => 'changed_agent_participants',
-                        'added'   => array_map(function ($part) { $p = $part->person; return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_agents),
-                        'removed' => array_map(function ($part) { $p = $part->person; return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed_agents)
+                        'added'   => array_map(function ($part) { $p = $part->person;
+
+return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_agents),
+                        'removed' => array_map(function ($part) { $p = $part->person;
+
+return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed_agents),
                     );
                 }
                 break;
@@ -481,7 +485,7 @@ class TicketLogGenerator
                 return array(
                     'action_type' => 'changed_slas',
                     'added'   => array_map(function ($ts) { return array('id' => $ts->sla->id, 'title' => $ts->sla->title); }, $added),
-                    'removed' => array_map(function ($ts) { return array('id' => $ts->sla->id, 'title' => $ts->sla->title); }, $removed)
+                    'removed' => array_map(function ($ts) { return array('id' => $ts->sla->id, 'title' => $ts->sla->title); }, $removed),
                 );
                 break;
 
@@ -552,7 +556,7 @@ class TicketLogGenerator
                 return array(
                     'action_type' => 'merged_from',
                     'id_before'   => $new['old_ticket_id'],
-                    'lost_data'   => $new['lost_data']
+                    'lost_data'   => $new['lost_data'],
                 );
 
             case 'app_message':
@@ -562,7 +566,7 @@ class TicketLogGenerator
                     'app_title'      => $new['app_title'],
                     'package_name'   => $new['package_name'],
                     'package_title'  => $new['package_title'],
-                    'message'        => $new['message']
+                    'message'        => $new['message'],
                 );
 
             case 'attachments':
@@ -641,53 +645,53 @@ class TicketLogGenerator
 
                 return $data;
 
-			// Custom fields changed
-			case strpos($change->getField(), 'custom_data.') === 0:
-				$value_before = null;
-				$value_after  = null;
+            // Custom fields changed
+            case strpos($change->getField(), 'custom_data.') === 0:
+                $value_before = null;
+                $value_after  = null;
 
-				if ($old && $old->field) {
-					$field = $old->field;
-				} else if ($new && $new->field) {
-					$field = $new->field;
-				}
+                if ($old && $old->field) {
+                    $field = $old->field;
+                } elseif ($new && $new->field) {
+                    $field = $new->field;
+                }
 
-				if (!$field) {
-					return null;
-				}
+                if (!$field) {
+                    return null;
+                }
 
-				if ($field->parent) {
-					$field = $field->parent;
-				}
+                if ($field->parent) {
+                    $field = $field->parent;
+                }
 
-				$field_id   = $field->id;
-				$field_name = $field->getTitle();
-				$is_choice  = $field->isChoiceType();
+                $field_id   = $field->id;
+                $field_name = $field->getTitle();
+                $is_choice  = $field->isChoiceType();
 
-				if ($old) {
-					$value_before = $old->getData();
+                if ($old) {
+                    $value_before = $old->getData();
 
-					if ($is_choice) {
-						$value_before = $old->field->getTitle();
-					}
-				}
-				if ($new) {
-					$value_after = $new->getData();
+                    if ($is_choice) {
+                        $value_before = $old->field->getTitle();
+                    }
+                }
+                if ($new) {
+                    $value_after = $new->getData();
 
-					if ($is_choice) {
-						$value_after = $new->field->getTitle();
-					}
-				}
+                    if ($is_choice) {
+                        $value_after = $new->field->getTitle();
+                    }
+                }
 
-				$log_data = array();
-				$log_data['action_type']  = 'changed_custom_field';
-				$log_data['field_name']   = $field_name;
-				$log_data['field_id']     = $field_id;
-				$log_data['value_before'] = $value_before;
-				$log_data['value_after']  = $value_after;
-				$log_data['is_choice']    = $is_choice;
+                $log_data = array();
+                $log_data['action_type']  = 'changed_custom_field';
+                $log_data['field_name']   = $field_name;
+                $log_data['field_id']     = $field_id;
+                $log_data['value_before'] = $value_before;
+                $log_data['value_after']  = $value_after;
+                $log_data['is_choice']    = $is_choice;
 
-				return $log_data;
+                return $log_data;
 
             default:
                 return array();

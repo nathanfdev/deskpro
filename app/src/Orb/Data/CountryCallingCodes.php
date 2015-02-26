@@ -34,7 +34,6 @@
 
 namespace Orb\Data;
 
-
 /**
  * Source: http://www.itu.int/dms_pub/itu-t/opb/sp/T-SP-E.164D-2009-PDF-E.pdf
  */

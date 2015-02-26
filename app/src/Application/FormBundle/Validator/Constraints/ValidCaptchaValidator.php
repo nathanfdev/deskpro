@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle\Validator\Constraints;
 
-
 use Application\DeskPRO\Brand\BrandStack;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraint;
@@ -122,7 +121,7 @@ class ValidCaptchaValidator extends ConstraintValidator
                 'privatekey' => $privateKey,
                 'remoteip'   => $remoteip,
                 'challenge'  => $challenge,
-                'response'   => $response
+                'response'   => $response,
             ) + $extra_params);
         $answers = explode("\n", $response [1]);
         if (trim($answers[0]) == 'true') {
@@ -185,4 +184,3 @@ class ValidCaptchaValidator extends ConstraintValidator
         return $req;
     }
 }
- 

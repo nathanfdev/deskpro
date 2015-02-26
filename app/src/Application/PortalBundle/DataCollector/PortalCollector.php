@@ -34,10 +34,8 @@
 
 namespace Application\PortalBundle\DataCollector;
 
-
 use Application\DeskPRO\Brand\BrandStack;
 use Application\LanguageBundle\Language\LanguageStack;
-use Application\PortalBundle\Mode\PortalMode;
 use Application\PortalBundle\Mode\PortalModeStorage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -59,14 +57,12 @@ class PortalCollector extends DataCollector
      */
     private $mode_storage;
 
-
     public function __construct(BrandStack $brand_stack, LanguageStack $language_stack, PortalModeStorage $mode_storage)
     {
         $this->brand_stack = $brand_stack;
         $this->language_stack = $language_stack;
         $this->mode_storage = $mode_storage;
     }
-
 
     /**
      * Collects data for the given Request and Response.
@@ -92,7 +88,7 @@ class PortalCollector extends DataCollector
             'language_id'         => $language ? $language->getId() : 'N/A',
             'language_img'        => $language ? $language->flag_image : null,
             'mode'                => (string) $mode,
-            'settings'            => $brandContainer->getSettings()->toArray()
+            'settings'            => $brandContainer->getSettings()->toArray(),
         );
     }
 
@@ -121,42 +117,35 @@ class PortalCollector extends DataCollector
         return $this->data['route_name'];
     }
 
-
     public function getController()
     {
         return $this->data['executed_controller'];
     }
-
 
     public function getSettings()
     {
         return $this->data['settings'];
     }
 
-
     public function getThemeId()
     {
         return $this->data['theme_id'];
     }
-
 
     public function getThemeName()
     {
         return $this->data['theme_name'];
     }
 
-
     public function getBrandId()
     {
         return $this->data['brand_id'];
     }
 
-
     public function getBrandName()
     {
         return $this->data['brand_name'];
     }
-
 
     public function getName()
     {

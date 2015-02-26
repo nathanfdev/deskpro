@@ -70,7 +70,7 @@ class NewsSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     protected $date_created;
 
     /**
-     * @param News $news the content
+     * @param News   $news     the content
      * @param string $old_slug the slug to put in history
      */
     public function __construct(News $news, $old_slug)
@@ -140,7 +140,7 @@ class NewsSlugHistory extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'slug', 'type' => 'string', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'slug', 'unique' => true));
         $metadata->mapManyToOne(array(
             'fieldName' => 'news', 'targetEntity' => 'Application\DeskPRO\Entity\News',
-            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'inversedBy' => 'slug_history'
+            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'inversedBy' => 'slug_history',
         ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }

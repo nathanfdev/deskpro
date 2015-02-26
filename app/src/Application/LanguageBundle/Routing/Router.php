@@ -34,21 +34,13 @@
 
 namespace Application\LanguageBundle\Routing;
 
-
 use Application\DeskPRO\Entity\Language;
-use Application\LanguageBundle\EventListener\LastLanguageListener;
 use Application\LanguageBundle\Language\LanguageManager;
-use Application\PortalBundle\Mode\PortalMode;
 use Application\PortalBundle\Mode\PortalModeStorage;
 use League\Url\Url;
 use Symfony\Bundle\FrameworkBundle\Routing\Router as BaseRouter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
-use Symfony\Component\Routing\Exception\InvalidParameterException;
-use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouterInterface;
@@ -74,7 +66,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
         'admin_interface',
         'agent_interface',
         '_wdt',
-        '_profiler'
+        '_profiler',
     );
 
     /**
@@ -91,7 +83,6 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
      * @var PortalModeStorage
      */
     private $mode_store;
-
 
     public function __construct(BaseRouter $router, LanguageManager $language_manager, PortalModeStorage $mode_store)
     {
@@ -123,7 +114,6 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
             return (string) $url;
         }
 
-
         return $this->buildUrl($generated);
     }
 
@@ -139,6 +129,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
         if (!$request->isMethodSafe() || $request_info->isSpecialPath()) {
             $routable_path = $request_info->getRoutablePath();
             $params = $this->router->match($routable_path);
+
             return $params;
         }
 
@@ -154,6 +145,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 
         $routable_path = $request_info->getRoutablePath();
         $params = $this->router->match($routable_path);
+
         return $params;
     }
 
@@ -165,7 +157,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
             $this->getPortalMode()
         );
 
-        return (string)$url_builder;
+        return (string) $url_builder;
     }
 
     protected function getActiveLanguage()

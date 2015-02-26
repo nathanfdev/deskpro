@@ -57,7 +57,6 @@ class SetWorkflow extends AbstractContainerAwareAction implements ActionInterfac
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -76,7 +75,6 @@ class SetWorkflow extends AbstractContainerAwareAction implements ActionInterfac
 
         $ticket->workflow = $work;
     }
-
 
     /**
      * {@inheritDoc}
@@ -99,7 +97,6 @@ class SetWorkflow extends AbstractContainerAwareAction implements ActionInterfac
 
         return false;
     }
-
 
     /**
      * {@inheritDoc}

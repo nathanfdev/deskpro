@@ -114,7 +114,7 @@ class AgentTeam extends AbstractEntityRepository
     {
         $ret = array();
         if ($for_ids) {
-            $for_ids = (array)$for_ids;
+            $for_ids = (array) $for_ids;
         }
         foreach ($this->getTeams() as $team) {
             if ($for_ids and !in_array($team->id, $for_ids)) {
@@ -195,7 +195,6 @@ class AgentTeam extends AbstractEntityRepository
         return $agents;
     }
 
-
     /**
      * Get an array of all team IDs that the agents passed
      * belong to. This is an all inclusive list and unsorted.
@@ -214,7 +213,9 @@ class AgentTeam extends AbstractEntityRepository
             }
         }
 
-        if (!$agent_ids) return array();
+        if (!$agent_ids) {
+            return array();
+        }
 
         $team_ids = App::getDb()->fetchAllCol('
             SELECT team_id
@@ -225,7 +226,6 @@ class AgentTeam extends AbstractEntityRepository
 
         return $team_ids;
     }
-
 
     /**
      * Gets an array of team ID's for each agent. Keyed
@@ -246,7 +246,9 @@ class AgentTeam extends AbstractEntityRepository
             }
         }
 
-        if (!$agent_ids) return array();
+        if (!$agent_ids) {
+            return array();
+        }
         $agent_ids = implode(',', $agent_ids);
 
         $agent_teams = App::getDb()->fetchAllGrouped("
@@ -271,7 +273,6 @@ class AgentTeam extends AbstractEntityRepository
      */
     public function invalidateCaches()
     {
-
     }
 
     /**

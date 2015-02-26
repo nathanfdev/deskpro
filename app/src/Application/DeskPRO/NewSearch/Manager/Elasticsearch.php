@@ -40,7 +40,7 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
      * @var array
      */
     protected $requiresPermission = array(
-        'ticket'
+        'ticket',
     );
 
     /**
@@ -65,7 +65,6 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
         $repositoryManager = $this->container->get('fos_elastica.manager');
 
         foreach ($this->objects as $object => $model) {
-
             if ($limit_types !== null && !in_array($object, $limit_types)) {
                 continue;
             }
@@ -114,7 +113,7 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
             }
 
             $result = $repository->find($q, null, array(
-                'sort_type' => $sort
+                'sort_type' => $sort,
             ));
             if ($result) {
                 $this->handleResult($object, $result);

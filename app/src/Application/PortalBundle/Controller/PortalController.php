@@ -34,13 +34,10 @@
 
 namespace Application\PortalBundle\Controller;
 
-
-use Application\DeskPRO\Cache\Adapter\ExpiringDoctrineCache;
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Application\PortalBundle\HttpCache\Configuration\PageHttpCache;
-use Symfony\Component\Security\Core\Util\SecureRandom;
 use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 
 class PortalController extends AbstractController
@@ -66,7 +63,7 @@ class PortalController extends AbstractController
                 'auth_manager' => $this->get('dp_authentication_manager.user'),
                 'login_error' => $request->get('retry') == 'auth',
                 'last_username' => $this->getSession()->get('last_username'),
-                'reset_success' => $request->get('reset_success', 0)
+                'reset_success' => $request->get('reset_success', 0),
             )
         );
     }
@@ -91,7 +88,6 @@ class PortalController extends AbstractController
             $email = $data['email'];
 
             if ($person = $this->getPersonDataService()->getPersonForEmail($email)) {
-
                 if (!$person->password) {
                     // TODO: this is copied from old portal, and we need to verify it works, moving on for now
                     $associations = $this->getRepo('DeskPRO:PersonUsersourceAssoc')
@@ -114,7 +110,7 @@ class PortalController extends AbstractController
             }
 
             return $this->renderThemeView('Theme:Portal:password-reset-requested.html.twig', array(
-                'email' => $email
+                'email' => $email,
             ));
         } elseif ($form->isSubmitted()) {
             $render_error = true;
@@ -123,7 +119,7 @@ class PortalController extends AbstractController
         return $this->renderThemeView('Theme:Portal:password-reset-request.html.twig', array(
             'auth_manager' => $this->get('dp_authentication_manager.user'),
             'form' => $form->createView(),
-            'render_error' => $render_error
+            'render_error' => $render_error,
         ));
     }
 
@@ -137,7 +133,6 @@ class PortalController extends AbstractController
 
         $valid = false;
         if ($person && $reset_requested_date = $person->getDatePasswordResetRequested()) {
-
             // find the cut-off datetime for an invalid time
             $valid_seconds = $this->getBrandSetting('user.password_reset_code_time_limit', 86400);
             $valid_time = new \DateTime();
@@ -146,7 +141,6 @@ class PortalController extends AbstractController
             if ($reset_requested_date > $valid_time) {
                 $valid = true;
             }
-
         }
 
         if (!$valid) {
@@ -155,7 +149,7 @@ class PortalController extends AbstractController
 
         $form = $this->createForm('person_change_password', $person, array(
             'settings' => $this->getBrandContainer()->getSettings(),
-            'require_current_password' => false
+            'require_current_password' => false,
         ));
 
         $form->handleRequest($request);
@@ -172,10 +166,9 @@ class PortalController extends AbstractController
             return $this->redirectToRoute('portal_login', array('reset_success' => 1));
         }
 
-
         return $this->renderThemeView('Theme:Portal:password-reset.html.twig', array(
             'auth_manager' => $this->get('dp_authentication_manager.user'),
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ));
     }
 }

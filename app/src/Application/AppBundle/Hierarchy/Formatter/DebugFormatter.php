@@ -34,7 +34,6 @@
 
 namespace Application\AppBundle\Hierarchy\Formatter;
 
-
 use Application\AppBundle\Hierarchy\HierarchyNode;
 
 class DebugFormatter extends AbstractFormatter
@@ -47,4 +46,3 @@ class DebugFormatter extends AbstractFormatter
         return sprintf("%s - %s - %s", $node->getDepth(), $node->getOrder(), $this->getDataValue($node));
     }
 }
- 

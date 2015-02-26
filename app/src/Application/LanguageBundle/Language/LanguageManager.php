@@ -141,7 +141,7 @@ class LanguageManager
     /**
      * TODO this is meant to return a translate object for a specific lang
      *
-     * @param Language|string|null $lang
+     * @param  Language|string|null $lang
      * @return Translate
      */
     public function getTranslator($lang = null)

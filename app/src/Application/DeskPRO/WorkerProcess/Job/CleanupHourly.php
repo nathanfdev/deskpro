@@ -186,7 +186,8 @@ class CleanupHourly extends AbstractJob
                 if ($blob) {
                     App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
                 }
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
             $num++;
         }
 
@@ -332,20 +333,18 @@ class CleanupHourly extends AbstractJob
     {
         // don't run on cloud
         if (!defined('DPC_IS_CLOUD')) {
-
             // find the cache dir
             if (defined('DP_CACHE_DIR')) {
                 $cache_dir = DP_CACHE_DIR;
             } else {
-                $cache_dir = DP_ROOT . '/sys/cache';
+                $cache_dir = DP_ROOT.'/sys/cache';
             }
-
 
             // gather the http_cache dirs from dev and prod
             $environment_dirs = array();
             $environments = array('dev', 'prod');
             foreach ($environments as $env) {
-                $dir = $cache_dir . '/portal/' . $env . '/http_cache';
+                $dir = $cache_dir.'/portal/'.$env.'/http_cache';
                 if (is_dir($dir)) {
                     $environment_dirs[] = $dir;
                 }
@@ -357,7 +356,6 @@ class CleanupHourly extends AbstractJob
             foreach ($file_finder as $deletable_file) {
                 unlink($deletable_file);
             }
-
 
             // delete all empty directories
             // do this 3 times because the depth of empty directories can be up to 3, and many won't be empty on first pass
@@ -453,7 +451,7 @@ class CleanupHourly extends AbstractJob
     ####################################################################################################################
 
     /**
-     * @param array $blob_ids
+     * @param  array $blob_ids
      * @return int
      */
     private function _deleteBlobsBatch(array $blob_ids)
@@ -478,7 +476,8 @@ class CleanupHourly extends AbstractJob
             try {
                 $bs->deleteBlobRow($b);
                 ++$count;
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         return $count;

@@ -72,7 +72,7 @@ class PortalUsergroupDecider
     /**
      * Responsible for deciding the exact set of usergroups to use for the given person
      *
-     * @param Person $person
+     * @param  Person $person
      * @return array
      */
     public function getUsergroupIdsForPerson(Person $person)
@@ -84,7 +84,7 @@ class PortalUsergroupDecider
         return $this->generateAndCache(
             array(
                 'getUsergroupIdsForPerson',
-                $person
+                $person,
             ),
             function () use ($that, $conn, $em, $person) {
                 $ids = $conn->fetchAllCol(
@@ -106,7 +106,6 @@ class PortalUsergroupDecider
                 if ($registeredGroup && $registeredGroup->is_enabled && $person->getId() && $person->is_agent_confirmed) {
                     $ids[] = $registeredGroup->id;
                 }
-
 
                 if ($person->organization) {
                     if ($org_usergroup_ids = $that->getOrganizationUsergroups($person->organization['id'])) {
@@ -140,7 +139,7 @@ class PortalUsergroupDecider
         return $this->generateAndCache(
             array(
                 'getOrganizationUsergroups',
-                $organizationId
+                $organizationId,
             ),
             function () use ($conn, $organizationId) {
                 return $conn->fetchAllCol(
@@ -167,9 +166,9 @@ class PortalUsergroupDecider
 
         return $this->generateAndCache(
             array(
-                'getGroupsThatApplyToEveryone'
+                'getGroupsThatApplyToEveryone',
             ),
-            function() use ($em) {
+            function () use ($em) {
                 // everyone gets the everyone group if it exists and is enabled
                 $everyoneGroup = $em->getRepository('DeskPRO:Usergroup')->findOneBy(array('sys_name' => 'everyone'));
                 if ($everyoneGroup && $everyoneGroup->is_enabled) {
@@ -182,8 +181,8 @@ class PortalUsergroupDecider
     }
 
     /**
-     * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable
-     * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     * @param  mixed      $params   the "ArbitraryHasher" input to create cache key for this callable
+     * @param  mixed      $callable doesn't need to be a callable, can be any default value, but usually is a callable
      * @return mixed|null
      */
     protected function generateAndCache($params, $callable)
@@ -204,7 +203,7 @@ class PortalUsergroupDecider
     }
 
     /**
-     * @param mixed $input
+     * @param  mixed  $input
      * @return string
      */
     protected function generateHash($input)
@@ -216,4 +215,3 @@ class PortalUsergroupDecider
         return $this->hash_generator->generateHash($input);
     }
 }
- 

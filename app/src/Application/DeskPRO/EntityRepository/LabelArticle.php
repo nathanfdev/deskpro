@@ -37,5 +37,4 @@ namespace Application\DeskPRO\EntityRepository;
 
 class LabelArticle extends AbstractEntityRepository
 {
-
 }

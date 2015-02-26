@@ -55,7 +55,6 @@ class PasswordPolicyValidator
      */
     private $history_repos;
 
-
     /**
      * @param PasswordPolicy       $user_policy
      * @param PasswordPolicy       $agent_policy
@@ -67,7 +66,6 @@ class PasswordPolicyValidator
         $this->agent_policy  = $agent_policy;
         $this->history_repos = $history_repos;
     }
-
 
     /**
      * @param  string $password The password to check

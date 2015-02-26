@@ -45,6 +45,7 @@ class Build1349091208 extends AbstractBuild
         try {
             $this->execMutateSql("ALTER TABLE organization_email_domains DROP FOREIGN KEY FK_2CCB20C232C8A3DE");
             $this->execMutateSql("ALTER TABLE organization_email_domains ADD CONSTRAINT FK_2CCB20C232C8A3DE FOREIGN KEY (organization_id) REFERENCES organizations (id) ON DELETE CASCADE");
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
     }
 }

@@ -50,8 +50,8 @@ class InstallExtension extends Extension
         $container->setDefinition('cache.simple_array', $definition);
 
         $definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
-            DP_ROOT . '/sys/config/settings.php',
-            new Reference('database_connection')
+            DP_ROOT.'/sys/config/settings.php',
+            new Reference('database_connection'),
         ));
         $container->setDefinition('deskpro.core.settings', $definition);
 
@@ -102,7 +102,7 @@ class InstallExtension extends Extension
         $definition = new Definition('Application\DeskPRO\Input\Reader', array(new Reference('deskpro.core.input_cleaner')));
         $definition->addMethodCall('addSource', array('req', new Reference('deskpro.core.input_reader_req')));
         $definition->addMethodCall('addSource', array('post', new Reference('deskpro.core.input_reader_post')));
-        $definition->addMethodCall('addSource',array('get', new Reference('deskpro.core.input_reader_get')));
+        $definition->addMethodCall('addSource', array('get', new Reference('deskpro.core.input_reader_get')));
         $definition->addMethodCall('addSource', array('cookie', new Reference('deskpro.core.input_reader_cookie')));
         $definition->addMethodCall('setArrayStringSeparator', array('.'));
         $container->setDefinition('deskpro.core.input_reader', $definition);

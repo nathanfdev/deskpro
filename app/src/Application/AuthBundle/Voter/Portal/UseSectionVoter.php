@@ -63,7 +63,7 @@ class UseSectionVoter extends AbstractVoter
             $permissionBag = $this->getPortalPermissionsManager()->getPermissionsBagForGuest();
         }
 
-        switch($attribute) {
+        switch ($attribute) {
             case static::USE_ARTICLES:
                 return $this->getActiveBrandSetting('core.apps_kb') && $permissionBag->get('articles.use');
             case static::USE_FEEDBACK:
@@ -84,11 +84,10 @@ class UseSectionVoter extends AbstractVoter
     /**
      * Return an array of supported classes. This will be called by supportsClass
      *
-     * @return array    an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
+     * @return array an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
      */
     protected function getSupportedClasses()
     {
         return true;
     }
 }
- 

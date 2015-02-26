@@ -34,8 +34,7 @@
 
 namespace Application\PersonBundle\Person\Context;
 
-
-class CreatePersonContext 
+class CreatePersonContext
 {
     protected $creation_system;
 
@@ -60,4 +59,3 @@ class CreatePersonContext
         $this->creation_system = $creation_system;
     }
 }
- 

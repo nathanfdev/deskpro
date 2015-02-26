@@ -34,7 +34,6 @@
 
 namespace Application\PersonBundle\EventListener;
 
-
 use Application\DeskPRO\Entity\Person;
 use Application\PersonBundle\Events\PersonCreateEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -54,8 +53,7 @@ class CreationSystemListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            Person::EVENT_PRE_CREATE => 'onPreCreate'
+            Person::EVENT_PRE_CREATE => 'onPreCreate',
         );
     }
 }
- 

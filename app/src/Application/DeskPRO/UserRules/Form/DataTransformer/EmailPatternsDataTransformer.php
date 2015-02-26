@@ -73,7 +73,6 @@ class EmailPatternsDataTransformer implements DataTransformerInterface
         $patterns = explode("\n", $patterns);
 
         foreach ($patterns as $p) {
-
             $p       = Strings::utf8_strtolower($p);
             $items[] = trim($p);
         }
@@ -82,5 +81,4 @@ class EmailPatternsDataTransformer implements DataTransformerInterface
 
         return $items;
     }
-
 }

@@ -58,8 +58,6 @@ class Item implements \Orb\Scraper\ItemInterface
         $this->data = $data;
     }
 
-
-
     /**
      * Gets the unique ID that identifies this remote item.
      * The ID should NOT change. This means that integer ID's are good,

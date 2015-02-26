@@ -74,7 +74,9 @@ class WidgetHandler implements \ArrayAccess
         $this->init();
     }
 
-    protected function init() { }
+    protected function init()
+    {
+    }
 
     /**
      * Get the options to pass to the JS initiator
@@ -112,11 +114,11 @@ class WidgetHandler implements \ArrayAccess
     {
         $prefs = array();
 
-        $pref_prefix = 'widget.' . $this->widget['name_id'] . '.';
+        $pref_prefix = 'widget.'.$this->widget['name_id'].'.';
 
         // From person
         $person = App::getCurrentPerson();
-        if ($person AND $person['id']) {
+        if ($person and $person['id']) {
             $prefs = $person->loadPrefGroup($pref_prefix);
         }
 
@@ -136,12 +138,10 @@ class WidgetHandler implements \ArrayAccess
 
     public function offsetUnset($offset)
     {
-
     }
 
     public function offsetSet($offset, $value)
     {
-
     }
 
     public function offsetGet($offset)

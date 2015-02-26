@@ -71,8 +71,8 @@ class TagProcessor
     }
 
     /**
-     * @param Tag $tag
-     * @param TagRequest $tag_request
+     * @param  Tag                 $tag
+     * @param  TagRequest          $tag_request
      * @return TagHandlerInterface
      */
     private function findHandler(Tag $tag, TagRequest $tag_request)

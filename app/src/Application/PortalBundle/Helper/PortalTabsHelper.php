@@ -34,10 +34,8 @@
 
 namespace Application\PortalBundle\Helper;
 
-
 use Application\AuthBundle\Voter\Portal\UseSectionVoter;
 use Application\DeskPRO\Brand\BrandStack;
-use Symfony\Component\Security\Core\Authorization\AccessDecisionManager;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 class PortalTabsHelper
@@ -120,10 +118,11 @@ class PortalTabsHelper
             'news',
             'feedback',
             'downloads',
-            'newticket'
+            'newticket',
         ));
 
         $order = array_unique($order);
+
         return $order;
     }
 

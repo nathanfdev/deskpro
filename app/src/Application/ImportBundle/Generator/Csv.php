@@ -72,7 +72,7 @@ class Csv implements GeneratorInterface
         if ($this->config->mode == 'live') {
             foreach (array('people', 'tickets') as $n) {
                 if (!is_dir($this->output_path.$n)) {
-                    mkdir($this->output_path . $n, 0777, true);
+                    mkdir($this->output_path.$n, 0777, true);
                 }
             }
         }
@@ -84,9 +84,8 @@ class Csv implements GeneratorInterface
 
     protected function getFileName($data_source)
     {
-        return $this->input_path . DIRECTORY_SEPARATOR . $data_source . '.csv';
+        return $this->input_path.DIRECTORY_SEPARATOR.$data_source.'.csv';
     }
-
 
     protected function getFile($data_source)
     {
@@ -123,7 +122,7 @@ class Csv implements GeneratorInterface
     {
         $index = 1;
 
-        $output_file_path = $this->output_path . 'people/';
+        $output_file_path = $this->output_path.'people/';
 
         foreach ($this->getData('people') as $person) {
             if (!count(Arrays::removeEmptyString($person))) {
@@ -144,20 +143,20 @@ class Csv implements GeneratorInterface
                 $person['name'] = $e[0];
             }
 
-            $file_name = 'person' . $index . '.json';
+            $file_name = 'person'.$index.'.json';
 
             $names = explode(' ', $person['name']);
 
             $transformedArray = array();
 
-            $transformedArray['oid']		= $index;
-            $transformedArray['is_agent']		= isset($person['is_agent']) ? (bool) $person['is_agent'] : FALSE;
-            $transformedArray['first_name']		= $names[0];
-            $transformedArray['last_name']		= isset($names[1]) ? $names[1] : '';
-            $transformedArray['emails']		= array($person['email']);
+            $transformedArray['oid']        = $index;
+            $transformedArray['is_agent']        = isset($person['is_agent']) ? (bool) $person['is_agent'] : false;
+            $transformedArray['first_name']        = $names[0];
+            $transformedArray['last_name']        = isset($names[1]) ? $names[1] : '';
+            $transformedArray['emails']        = array($person['email']);
 
             if ($this->config->mode === 'live') {
-                file_put_contents($output_file_path . $file_name, json_encode($transformedArray));
+                file_put_contents($output_file_path.$file_name, json_encode($transformedArray));
             }
 
             $this->logger->info(sprintf('%s exported successfully!', $file_name));
@@ -166,14 +165,13 @@ class Csv implements GeneratorInterface
 
             $index++;
         }
-
     }
 
     public function exportTickets()
     {
         $index = 1;
 
-        $output_file_path = $this->output_path . 'tickets/';
+        $output_file_path = $this->output_path.'tickets/';
 
         foreach ($this->getData('tickets') as $ticket) {
             if (!count(Arrays::removeEmptyString($ticket))) {
@@ -189,19 +187,19 @@ class Csv implements GeneratorInterface
                 continue;
             }
 
-            $file_name = 'ticket_' . trim($ticket['id']) . '.json';
+            $file_name = 'ticket_'.trim($ticket['id']).'.json';
 
             $transformedArray = array();
 
-            $transformedArray['ref']		= $ticket['id'];
-            $transformedArray['person']		= $ticket['user'];
-            $transformedArray['agent']		= isset($ticket['agent']) ? $ticket['agent'] : null;
-            $transformedArray['status']		= isset($ticket['status']) ? $ticket['status'] : 'awaiting_agent';
-            $transformedArray['date_created']	= isset($ticket['date_created']) ? $ticket['date_created'] : date('Y-m-d H:i:s');
-            $transformedArray['subject']		= $ticket['subject'];
+            $transformedArray['ref']        = $ticket['id'];
+            $transformedArray['person']        = $ticket['user'];
+            $transformedArray['agent']        = isset($ticket['agent']) ? $ticket['agent'] : null;
+            $transformedArray['status']        = isset($ticket['status']) ? $ticket['status'] : 'awaiting_agent';
+            $transformedArray['date_created']    = isset($ticket['date_created']) ? $ticket['date_created'] : date('Y-m-d H:i:s');
+            $transformedArray['subject']        = $ticket['subject'];
 
             if ($this->config->mode === 'live') {
-                file_put_contents($output_file_path . $file_name, json_encode($transformedArray));
+                file_put_contents($output_file_path.$file_name, json_encode($transformedArray));
             }
 
             $this->logger->info(sprintf('%s exported successfully!', $file_name));
@@ -215,7 +213,7 @@ class Csv implements GeneratorInterface
 
     public function exportTicketMessages()
     {
-        $output_file_path = $this->output_path . 'tickets/';
+        $output_file_path = $this->output_path.'tickets/';
 
         $index = 0;
 
@@ -235,9 +233,9 @@ class Csv implements GeneratorInterface
 
             $ticket_id = trim($ticket_message['ticket_id']);
 
-            $ticket_file_name = 'ticket_' . $ticket_id . '.json';
+            $ticket_file_name = 'ticket_'.$ticket_id.'.json';
 
-            $ticket_file_path = $output_file_path . $ticket_file_name;
+            $ticket_file_path = $output_file_path.$ticket_file_name;
 
             if ($this->config->mode === 'live') {
                 if (is_file($ticket_file_path)) {
@@ -246,7 +244,7 @@ class Csv implements GeneratorInterface
                     $message = array(
                         'person' => $ticket_message['user'],
                         'date_created' => isset($ticket_message['date_created']) ? $ticket_message['date_created'] : date('Y-m-d H:i:s'),
-                        'message_text' => $ticket_message['message_text']
+                        'message_text' => $ticket_message['message_text'],
                     );
 
                     @$ticket_array['messages'][] = $message;
@@ -256,7 +254,6 @@ class Csv implements GeneratorInterface
                     }
 
                     $this->logger->info(sprintf('%s exported successfully!', $ticket_file_path));
-
                 } else {
                     $this->logger->warning(sprintf('Source ticket file for ticket_%s not found', $ticket_id));
                 }
@@ -276,7 +273,7 @@ class Csv implements GeneratorInterface
     {
         $handle = $this->getFile($data_source);
 
-        $header = NULL;
+        $header = null;
         $header_count = 0;
 
         $data = array();
@@ -292,8 +289,8 @@ class Csv implements GeneratorInterface
 
         if ($handle) {
             while (($row = fgetcsv($handle, 0, $sep)) !== FALSE) {
-                if(!$header) {
-                    $header = array_map('trim',$row);
+                if (!$header) {
+                    $header = array_map('trim', $row);
                     $header_count = count($header);
                 } else {
                     $c = count($row);
@@ -301,13 +298,17 @@ class Csv implements GeneratorInterface
                     // Fixes mis-matching column counts
                     if ($header_count > $c) {
                         // missing header cols, empty value
-                        for ($i = $c; $i < $header_count; $i++) $row[$i] = '';
-                    } else if ($c > $header_count) {
+                        for ($i = $c; $i < $header_count; $i++) {
+                            $row[$i] = '';
+                        }
+                    } elseif ($c > $header_count) {
                         // too many cols, discard them
-                        for ($i = $header_count; $i < $c; $i++) unset($row[$i]);
+                        for ($i = $header_count; $i < $c; $i++) {
+                            unset($row[$i]);
+                        }
                     }
 
-                    $data[] = array_combine($header, array_map('trim',$row));
+                    $data[] = array_combine($header, array_map('trim', $row));
                 }
             }
 
@@ -316,7 +317,6 @@ class Csv implements GeneratorInterface
 
         return $data;
     }
-
 
     public function generateJson()
     {

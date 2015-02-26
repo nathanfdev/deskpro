@@ -60,16 +60,16 @@ class AgentCombinedSearcher
 
     public function query($query_text, $per_page = 25, $page = 1, array $limit_types = null, $top = true)
     {
-        $limit_types = \Orb\Util\Arrays::removeFalsey((array)$limit_types);
+        $limit_types = \Orb\Util\Arrays::removeFalsey((array) $limit_types);
 
         // Incase they are label matches, try encoding those as labels
         $words = explode(' ', $query_text);
         foreach ($words as $w) {
-            $query_text .= " " . MysqlAdapter::encodeLabel(strtolower($w));
+            $query_text .= " ".MysqlAdapter::encodeLabel(strtolower($w));
         }
 
         if ($limit_types) {
-            $limit_types = "'" . implode('\',\'', $limit_types) . "'";
+            $limit_types = "'".implode('\',\'', $limit_types)."'";
             $where = "
                 object_type IN ($limit_types)
                 AND MATCH (content) AGAINST (? IN BOOLEAN MODE)
@@ -79,7 +79,6 @@ class AgentCombinedSearcher
                 MATCH (content) AGAINST (? IN BOOLEAN MODE)
             ";
         }
-
 
         $total = null;
         if (!$top) {

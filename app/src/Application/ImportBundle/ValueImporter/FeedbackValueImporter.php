@@ -60,7 +60,7 @@ class FeedbackValueImporter extends AbstractValueImporter
             throw new DuplicateValueException(sprintf("A Feedback item with the title \"%s\" already exists (skipping)", $fval->title));
         }
 
-        $log_id = "Feedback Item :: " . $fval->oid . " ";
+        $log_id = "Feedback Item :: ".$fval->oid." ";
 
         $record = array();
 
@@ -118,16 +118,16 @@ class FeedbackValueImporter extends AbstractValueImporter
             }
         }
 
-        $record['title']		= $fval->title;
-        $record['content']		= $fval->content;
-        $record['slug']			= $fval->slug;
-        $record['date_created']		= isset($fval->date_created) ? $fval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-        $record['date_published']	= isset($fval->date_published) ? $fval->date_published->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-        $record['total_rating']		= $fval->total_rating;
-        $record['num_comments']		= $fval->num_comments;
-        $record['num_ratings']		= $fval->num_ratings;
-        $record['view_count']		= $fval->view_count;
-        $record['popularity']		= $fval->popularity;
+        $record['title']        = $fval->title;
+        $record['content']        = $fval->content;
+        $record['slug']            = $fval->slug;
+        $record['date_created']        = isset($fval->date_created) ? $fval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
+        $record['date_published']    = isset($fval->date_published) ? $fval->date_published->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
+        $record['total_rating']        = $fval->total_rating;
+        $record['num_comments']        = $fval->num_comments;
+        $record['num_ratings']        = $fval->num_ratings;
+        $record['view_count']        = $fval->view_count;
+        $record['popularity']        = $fval->popularity;
 
         if ($fval->date_published) {
             $record['status'] = 'published';
@@ -151,8 +151,8 @@ class FeedbackValueImporter extends AbstractValueImporter
         if ($feedback_id && $fval->labels) {
             $batch = array_map(function ($l) use ($feedback_id) {
                 return array(
-                    'feedback_id'	=> $feedback_id,
-                    'label'		=> $l
+                    'feedback_id'    => $feedback_id,
+                    'label'        => $l,
                 );
             }, $fval->labels);
 

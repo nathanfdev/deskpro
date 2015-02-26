@@ -49,7 +49,6 @@ class TicketActionDefManager
      */
     private $names_to_def;
 
-
     /**
      * @var \Application\DeskPRO\Entity\TicketActionDef[]
      */

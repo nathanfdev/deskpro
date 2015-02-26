@@ -187,7 +187,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         $this->setModelField('date_last_comment', new \DateTime());
     }
 
-
     public function addToCategory(ArticleCategory $cat)
     {
         $this->categories->add($cat);
@@ -325,7 +324,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
 
         return $history;
     }
-
 
     ############################################################################
     # Doctrine Metadata
@@ -545,7 +543,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         );
         $metadata->mapOneToMany(array(
             'fieldName' => 'slug_history', 'targetEntity' => 'Application\DeskPRO\Entity\ArticleSlugHistory',
-            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'article'
+            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'article',
         ));
 
         ObjectTranslatable::loadEntityMetadata($metadata);

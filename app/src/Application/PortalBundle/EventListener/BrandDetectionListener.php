@@ -81,7 +81,6 @@ class BrandDetectionListener implements EventSubscriberInterface
      */
     private $mode_storage;
 
-
     public function __construct(BrandStack $brand_stack, SettingsResolver $settings_resolver, Brand $brand_repository, BrandEntity $default_brand, PortalModeStorage $mode_storage, LoggerInterface $logger)
     {
         $this->brand_stack = $brand_stack;
@@ -136,7 +135,7 @@ class BrandDetectionListener implements EventSubscriberInterface
     {
         return array(
             // high priority, must be called BEFORE RouterListener (which is 32)
-            KernelEvents::REQUEST => array('onKernelRequest', 33)
+            KernelEvents::REQUEST => array('onKernelRequest', 33),
         );
     }
 }

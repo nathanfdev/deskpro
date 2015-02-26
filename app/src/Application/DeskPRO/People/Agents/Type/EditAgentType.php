@@ -90,7 +90,6 @@ class EditAgentType extends AbstractType
         $builder->add('notification_settings', 'collection');
     }
 
-
     /**
      * @param OptionsResolverInterface $resolver
      */
@@ -101,7 +100,6 @@ class EditAgentType extends AbstractType
             'cascade_validation' => true,
         ));
     }
-
 
     /**
      * @return string

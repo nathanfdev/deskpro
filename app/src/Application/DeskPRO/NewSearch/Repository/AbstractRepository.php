@@ -53,18 +53,17 @@ abstract class AbstractRepository extends Repository
         $queryObj->setSize(50);
 
         if (isset($options['sort_type'])) {
-
             switch ($options['sort_type']) {
                 case 'date_active':
                     $queryObj->setSort(array(
                         array('date_active' => array('order' => 'desc')),
-                        '_score'
+                        '_score',
                     ));
                     break;
                 case 'date_created':
                     $queryObj->setSort(array(
                         array('date_created' => array('order' => 'desc')),
-                        '_score'
+                        '_score',
                     ));
                     break;
             }
@@ -100,8 +99,8 @@ abstract class AbstractRepository extends Repository
                         'filtered' => array(
                             'query'  => $queryString->toArray(),
                             'filter' => $this->getFilters(),
-                        )
-                    )
+                        ),
+                    ),
                 )
             );
         } else {
@@ -111,8 +110,8 @@ abstract class AbstractRepository extends Repository
                         'filtered' => array(
                             'query'  => $this->getQueryString($q)->toArray(),
                             'filter' => $this->getFilters(),
-                        )
-                    )
+                        ),
+                    ),
                 )
             );
         }
@@ -190,7 +189,7 @@ abstract class AbstractRepository extends Repository
         $query->setHighlight(array(
             'fields'    => $this->highlightFields,
             'pre_tags'  => array($this->highlightPreTag),
-            'post_tags' => array($this->highlightPostTag)
+            'post_tags' => array($this->highlightPostTag),
         ));
     }
 }

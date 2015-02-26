@@ -33,7 +33,6 @@
 
 namespace Application\PortalBundle\DataFixtures\ORM;
 
-
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Download;
@@ -63,7 +62,6 @@ class FakeContentData implements FixtureInterface
 
         $manager->flush();
     }
-
 
     /**
      * @param ObjectManager $manager
@@ -103,9 +101,11 @@ class FakeContentData implements FixtureInterface
 
         $i = 1;
         foreach ($article_items as $title) {
-            if ($i > 4) $i = 1;
+            if ($i > 4) {
+                $i = 1;
+            }
             $article           = new Article();
-            $cat               = 'kb_category' . $i;
+            $cat               = 'kb_category'.$i;
             $article->setCategories(array($$cat));
             $article->title    = $title;
             $article->person = $this->person;
@@ -115,7 +115,6 @@ class FakeContentData implements FixtureInterface
             $i++;
         }
     }
-
 
     /**
      * @param ObjectManager $manager
@@ -136,7 +135,7 @@ class FakeContentData implements FixtureInterface
             'Homer Simpson Real',
             'New Feature: News',
             'Happy Friday',
-            'Nintendo Sales Boom'
+            'Nintendo Sales Boom',
         );
 
         foreach ($news_items as $title) {
@@ -150,18 +149,23 @@ class FakeContentData implements FixtureInterface
         }
     }
 
-
     /**
      * @param ObjectManager $manager
      */
     protected function feedback(ObjectManager $manager)
     {
         $feedback_cat1 = $manager->getRepository('DeskPRO:FeedbackCategory')->find(1);
-        if (!$feedback_cat1) $feedback_cat1 = $this->addFeedbackCat('Suggestion', $manager);
+        if (!$feedback_cat1) {
+            $feedback_cat1 = $this->addFeedbackCat('Suggestion', $manager);
+        }
         $feedback_cat2 = $manager->getRepository('DeskPRO:FeedbackCategory')->find(2);
-        if (!$feedback_cat2) $feedback_cat2 = $this->addFeedbackCat('Feature Request', $manager);
+        if (!$feedback_cat2) {
+            $feedback_cat2 = $this->addFeedbackCat('Feature Request', $manager);
+        }
         $feedback_cat3 = $manager->getRepository('DeskPRO:FeedbackCategory')->find(3);
-        if (!$feedback_cat3) $feedback_cat3 = $this->addFeedbackCat('Bug Report', $manager);
+        if (!$feedback_cat3) {
+            $feedback_cat3 = $this->addFeedbackCat('Bug Report', $manager);
+        }
 
         $feedbacks = array(
             'I like it' => $feedback_cat1,
@@ -170,7 +174,7 @@ class FakeContentData implements FixtureInterface
             'What is this feature?' => $feedback_cat1,
             'Ok, fair enough' => $feedback_cat1,
             'Woohoo!' => $feedback_cat2,
-            'Latest Build' => $feedback_cat2
+            'Latest Build' => $feedback_cat2,
         );
 
         foreach ($feedbacks as $title => $cat) {
@@ -184,7 +188,6 @@ class FakeContentData implements FixtureInterface
             $manager->persist($feedback);
         }
     }
-
 
     /**
      * @param ObjectManager $manager

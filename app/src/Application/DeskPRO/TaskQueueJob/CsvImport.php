@@ -81,7 +81,7 @@ class CsvImport extends AbstractJob
     public function getTitle()
     {
         if ($this->_data['user_filename']) {
-            return 'CSV Import: ' . $this->_data['user_filename'];
+            return 'CSV Import: '.$this->_data['user_filename'];
         } else {
             return 'CSV Import';
         }
@@ -113,7 +113,7 @@ class CsvImport extends AbstractJob
     {
         $blob = App::getOrm()->find('DeskPRO:Blob', $this->_data['blob_id']);
 
-        $csv_file = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
+        $csv_file = dp_get_tmp_dir().'/blob-'.$blob->getId().'.csv';
 
         if (!file_exists($csv_file) || !is_readable($csv_file)) {
             file_put_contents($csv_file, App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob));
@@ -172,14 +172,12 @@ class CsvImport extends AbstractJob
         }
 
         $task = $this->getTask();
-        $task['run_status'] = "Processed " . $this->_data['lines_done']
-            . " entries, imported " . $this->_data['imported'] . " people";
+        $task['run_status'] = "Processed ".$this->_data['lines_done']
+            ." entries, imported ".$this->_data['imported']." people";
         $task['task_data'] = array_merge($task['task_data'], $this->_data);
 
-
         if ($complete) {
-
-            $tmpFile = dp_get_tmp_dir() . '/blob-import-log-'.$task['id'].'.csv';
+            $tmpFile = dp_get_tmp_dir().'/blob-import-log-'.$task['id'].'.csv';
             if ($task['task_data']['log'] && ($fp = fopen($tmpFile, 'w'))) {
                 foreach ($task['task_data']['log'] as $logEntry) {
                     fputcsv($fp, $logEntry, $options['delimeter'], $options['enclosure']);
@@ -200,7 +198,8 @@ class CsvImport extends AbstractJob
             @unlink($csv_file);
             try {
                 App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
 
             return self::TASK_COMPLETED;
         } else {
@@ -218,8 +217,10 @@ class CsvImport extends AbstractJob
     {
         $this->_data['new_custom_map'] = array();
 
-        foreach ($this->_data['field_maps'] AS $column_id => $info) {
-            if (!isset($info['map'])) continue;
+        foreach ($this->_data['field_maps'] as $column_id => $info) {
+            if (!isset($info['map'])) {
+                continue;
+            }
             if ($info['map'] == 'new_custom') {
                 $field = new \Application\DeskPRO\Entity\CustomDefPerson();
                 $field->title = $info['title'];
@@ -258,7 +259,7 @@ class CsvImport extends AbstractJob
         $addresses = array();
         $errors = array();
 
-        foreach ($field_maps AS $column_id => $info) {
+        foreach ($field_maps as $column_id => $info) {
             if (empty($info['map'])) {
                 continue;
             }
@@ -273,8 +274,6 @@ class CsvImport extends AbstractJob
             }
 
             if ($info['map'] == 'primary_email') {
-
-
                 if (!\Orb\Validator\StringEmail::isValueValid($column_value)) {
                     $errors[] = sprintf('Invalid email %s', $column_value);
                     continue;
@@ -321,14 +320,14 @@ class CsvImport extends AbstractJob
         $person->addEmailAddressString($primary_email);
 
         array_unique($secondary_emails);
-        foreach ($secondary_emails AS $secondary_email) {
+        foreach ($secondary_emails as $secondary_email) {
             if ($secondary_email == $primary_email) {
                 continue;
             }
             $person->addEmailAddressString($secondary_email);
         }
 
-        foreach ($field_maps AS $column_id => $info) {
+        foreach ($field_maps as $column_id => $info) {
             if (empty($info['map'])) {
                 continue;
             }
@@ -386,12 +385,16 @@ class CsvImport extends AbstractJob
                     break;
 
                 case 'phone':
-                    if (empty($info['type'])) $info['type'] = 'phone';
+                    if (empty($info['type'])) {
+                        $info['type'] = 'phone';
+                    }
                     $this->_addContactData($person, 'phone', array('type' => $info['type'], 'number' => $column_value), $label);
                     break;
 
                 case 'im':
-                    if (empty($info['type'])) $info['type'] = 'aim';
+                    if (empty($info['type'])) {
+                        $info['type'] = 'aim';
+                    }
                     $this->_addContactData($person, 'instant_message', array('service' => $info['type'], 'username' => $column_value), $label);
                     break;
 
@@ -425,7 +428,7 @@ class CsvImport extends AbstractJob
                             $test_value = strtolower($column_value);
 
                             // find an existing option by title
-                            foreach ($custom_field->getAllChildren() AS $child_field) {
+                            foreach ($custom_field->getAllChildren() as $child_field) {
                                 if (strtolower($child_field->getTitle()) == $test_value) {
                                     $selected_child = $child_field;
                                     break;
@@ -453,7 +456,8 @@ class CsvImport extends AbstractJob
                                 $em->persist($custom_data);
                                 $person->addCustomData($custom_data);
                             }
-                        } if ($custom_field->getTypeName() == 'date') {
+                        }
+                        if ($custom_field->getTypeName() == 'date') {
                             if (ctype_digit($column_value)) {
                                 // assume timestamp
                                 $set_field = true;
@@ -500,9 +504,9 @@ class CsvImport extends AbstractJob
         }
         $person->setPassword($password);
 
-        foreach ($addresses AS $address) {
+        foreach ($addresses as $address) {
             if (!isset($address['address'])) {
-                $address['address'] = trim((isset($address['address1']) ? $address['address1'] : '') . "\n" . (isset($address['address2']) ? $address['address2'] : ''));
+                $address['address'] = trim((isset($address['address1']) ? $address['address1'] : '')."\n".(isset($address['address2']) ? $address['address2'] : ''));
             }
             $this->_addContactData($person, 'address', $address, $address['label']);
         }

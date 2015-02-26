@@ -47,7 +47,7 @@ class PortalMode
             'original_path',
             'internal_path',
             'mode_path',
-            'data'
+            'data',
         );
     }
 

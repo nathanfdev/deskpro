@@ -34,9 +34,7 @@
 
 namespace Application\PortalBundle\Controller;
 
-
 use Application\AuthBundle\Voter\Portal\ContentCommentVoter;
-use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
@@ -44,7 +42,6 @@ use Application\DeskPRO\Entity\DownloadComment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Application\PortalBundle\HttpCache\Configuration\PageHttpCache;
 
@@ -71,10 +68,9 @@ class DownloadsController extends AbstractController
 
             return $this->render('PortalBundle:Downloads:feed.rss.twig', array(
                 'pager' => $pager,
-                'category' => null
+                'category' => null,
             ));
         }
-
 
         //
         // RENDER THEME
@@ -83,7 +79,7 @@ class DownloadsController extends AbstractController
             'Theme:Downloads:index.html.twig',
             array(
                 'page' => $page,
-                'count' => $this->getBrandSetting('portal.per_page_content')
+                'count' => $this->getBrandSetting('portal.per_page_content'),
             )
         );
     }
@@ -110,10 +106,9 @@ class DownloadsController extends AbstractController
 
             return $this->render('PortalBundle:Downloads:feed.rss.twig', array(
                 'pager' => $pager,
-                'category' => $category
+                'category' => $category,
             ));
         }
-
 
         //
         // RENDER THEME
@@ -124,11 +119,10 @@ class DownloadsController extends AbstractController
                 'category' => $category,
                 'page' => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
-                'show_pagination' => true
+                'show_pagination' => true,
             )
         );
     }
-
 
     /**
      * @Route("/downloads/files/{slug}", name="portal_downloads_view")
@@ -151,7 +145,7 @@ class DownloadsController extends AbstractController
             $comment = new DownloadComment();
             $comment->setObject($file);
             $new_comment_form = $this->createForm('comment', $comment, array(
-                'person' => $this->getUser()
+                'person' => $this->getUser(),
             ));
             $new_comment_form->handleRequest($request);
             if ($new_comment_form->isValid()) {
@@ -163,7 +157,6 @@ class DownloadsController extends AbstractController
             }
         }
 
-
         //
         // RENDER THEME
         //
@@ -173,11 +166,10 @@ class DownloadsController extends AbstractController
                 'file' => $file,
                 'content_type' => Download::CONTENT_TYPE,
                 'content_id' => $file->getId(),
-                'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null
+                'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
             )
         );
     }
-
 
     /**
      * @Route("/downloads/files/{slug}/download/{authcode}", name="portal_downloads_download")
@@ -201,7 +193,7 @@ class DownloadsController extends AbstractController
         return $this->redirectToRoute('serve_blob', array(
             'blob_auth_id' => $file->blob->auth_id,
             'filename' => $file->getFilenameSafe(),
-            'dl' => 1
+            'dl' => 1,
         ));
     }
 
@@ -244,7 +236,6 @@ class DownloadsController extends AbstractController
 
         return $this->redirectToRoute('portal_downloads_view', array('slug' => $file->getSlug()));
     }
-
 
     /**
      * @Route("/downloads/category/toggle-subscription/{slug}", name="portal_downloads_category_toggle_subscription")

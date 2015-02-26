@@ -51,7 +51,7 @@ class PersonDataService extends AbstractDataService
     }
 
     /**
-     * @param mixed $person right now only ID is useful
+     * @param  mixed       $person right now only ID is useful
      * @return Person|null
      */
     public function getPerson($person)
@@ -74,7 +74,7 @@ class PersonDataService extends AbstractDataService
         // using caution and not caching most PersonDataService methods
         if (strlen($code) > 0) {
             return $this->getPersonRepo()->findOneBy(array(
-                'password_reset_code' => $code
+                'password_reset_code' => $code,
             ));
         }
 

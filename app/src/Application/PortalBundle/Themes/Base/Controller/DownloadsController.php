@@ -34,7 +34,6 @@
 
 namespace Application\PortalBundle\Themes\Base\Controller;
 
-
 use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
@@ -79,11 +78,10 @@ class DownloadsController extends AbstractController
             sprintf('Theme:Downloads:Tag/%s.html.twig', $options['style']),
             array(
                 'category' => $category,
-                'category_children' => $category_children
+                'category_children' => $category_children,
             )
         );
     }
-
 
     /**
      * @Tag(name="downloads_files")
@@ -120,7 +118,7 @@ class DownloadsController extends AbstractController
             sprintf('Theme:Downloads:Tag/files_%s.html.twig', $options['style']),
             array(
                 'category' => $category,
-                'pager' => $pager
+                'pager' => $pager,
             )
         );
     }
@@ -149,7 +147,7 @@ class DownloadsController extends AbstractController
             'Theme:Downloads:Tag/download.html.twig',
             array(
                 'file' => $file,
-                'is_subscribed' => $is_subscribed
+                'is_subscribed' => $is_subscribed,
             )
         );
     }
@@ -183,7 +181,7 @@ class DownloadsController extends AbstractController
             sprintf('Theme:Downloads:Tag/download_subscription_%s.html.twig', $options['style']),
             array(
                 'file' => $file,
-                'is_subscribed' => $is_subscribed
+                'is_subscribed' => $is_subscribed,
             )
         );
     }
@@ -216,7 +214,7 @@ class DownloadsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Downloads:Tag/subscription_category.html.twig', array(
                 'category' => $category,
-                'is_subscribed' => $is_subscribed
+                'is_subscribed' => $is_subscribed,
             )
         );
     }
@@ -244,7 +242,7 @@ class DownloadsController extends AbstractController
 
         return $this->renderThemeView('Theme:Downloads:Tag/comments.html.twig', array(
             'file' => $file,
-            'comments' => $comments
+            'comments' => $comments,
         ));
     }
 
@@ -280,7 +278,7 @@ class DownloadsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Common:pager.html.twig',
             array(
-                'pager' => $pager
+                'pager' => $pager,
             )
         );
     }
@@ -308,7 +306,7 @@ class DownloadsController extends AbstractController
             'Theme:Downloads:Tag/breadcrumbs.html.twig',
             array(
                 'category' => $category,
-                'file' => $file
+                'file' => $file,
             )
         );
     }
@@ -336,7 +334,7 @@ class DownloadsController extends AbstractController
             'Theme:Downloads:Tag/ratings.html.twig',
             array(
                 'rating' => $rating,
-                'file' => $file
+                'file' => $file,
             )
         );
     }

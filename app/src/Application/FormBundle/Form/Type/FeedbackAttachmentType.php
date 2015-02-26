@@ -58,7 +58,7 @@ class FeedbackAttachmentType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event){
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             /** @var \Application\DeskPRO\Entity\TicketAttachment $attachment */
             $attachment = $event->getData() instanceof FeedbackAttachment ? $event->getData() : new FeedbackAttachment();
             $form = $event->getForm();
@@ -154,21 +154,20 @@ class FeedbackAttachmentType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Application\\DeskPRO\\Entity\\FeedbackAttachment'
+                'data_class' => 'Application\\DeskPRO\\Entity\\FeedbackAttachment',
             )
         );
 
         $resolver->setRequired(
             array(
-                'person'
+                'person',
             )
         );
 
         $resolver->setAllowedTypes(
             array(
-                'person' => 'Application\\DeskPRO\\Entity\\Person'
+                'person' => 'Application\\DeskPRO\\Entity\\Person',
             )
         );
     }
 }
- 

@@ -36,7 +36,6 @@ namespace Application\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Model\TicketFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -106,7 +105,7 @@ class TicketsController extends AbstractController
                 'resolved_tickets_pg_param' => $resolved_pg_param,
 
                 'type' => $type,
-                'person' => $person
+                'person' => $person,
             )
         );
     }
@@ -119,14 +118,14 @@ class TicketsController extends AbstractController
     {
         $form_data = array(
             'ticket_message' => $message = new TicketMessage(),
-            'attachments' => new ArrayCollection()
+            'attachments' => new ArrayCollection(),
         );
 
         $form = $this->createForm('ticket_reply', $form_data, array(
             'ticket' => $ticket,
             'ticket_message' => $message,
             'person' => $this->getUser(),
-            'settings' => $this->getBrandContainer()->getSettings()
+            'settings' => $this->getBrandContainer()->getSettings(),
         ));
 
         $form->handleRequest($request);
@@ -150,7 +149,7 @@ class TicketsController extends AbstractController
             'Theme:Tickets:view.html.twig',
             array(
                 'ticket_view' => $ticket_view,
-                'form' => $form->createView()
+                'form' => $form->createView(),
             )
         );
     }
@@ -164,7 +163,7 @@ class TicketsController extends AbstractController
         $form = $this->createForm('ticket', $ticket, array(
             'person' => $this->getUser(),
             'ticket_visibility' => 'edit',
-            'settings' => $this->getBrandContainer()->getSettings()
+            'settings' => $this->getBrandContainer()->getSettings(),
         ));
 
         $rerendering = false;
@@ -175,7 +174,6 @@ class TicketsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-
             // if the form set a hidden field "rerender_form" then we want to skip actual processing for now
             if (!$form->has('rerender_form')) {
                 // TODO: fire an event (Ticket::EDIT)
@@ -185,7 +183,6 @@ class TicketsController extends AbstractController
 
                 return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
             }
-
         }
 
         return $this->renderThemeView(
@@ -193,7 +190,7 @@ class TicketsController extends AbstractController
             array(
                 'ticket' => $ticket,
                 'form' => $form->createView(),
-                'rerendering' => $rerendering
+                'rerendering' => $rerendering,
             )
         );
     }

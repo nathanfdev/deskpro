@@ -161,7 +161,7 @@ class ChatPingTimeout extends AbstractJob
             $this->logStatus("Chat timeouts: {$count_agents} agents, {$count_users} users, {$count_wait} wait", array(
                 'count_agents' => $count_agents,
                 'count_users'  => $count_users,
-                'count_wait'   => $count_wait
+                'count_wait'   => $count_wait,
             ));
         }
     }

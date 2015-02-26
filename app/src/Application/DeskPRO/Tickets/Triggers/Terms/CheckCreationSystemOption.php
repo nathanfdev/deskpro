@@ -56,7 +56,6 @@ class CheckCreationSystemOption extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

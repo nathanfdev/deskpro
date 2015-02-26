@@ -34,7 +34,6 @@
 
 namespace Application\AppBundle\DataService;
 
-
 use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
@@ -65,9 +64,9 @@ class DepartmentDataService extends AbstractDataService
         return $this->generateAndCache(
             array(
                 'getAuthorizedDepartmentsForPersonInPortal',
-                $person
+                $person,
             ),
-            function() use ($person, $portal_permissions_manager, $em) {
+            function () use ($person, $portal_permissions_manager, $em) {
                 $allowed_department_ids = $portal_permissions_manager->getAllowedDepartmentIds($person);
 
                 // TODO: make sure allowed_department_ids is correct
@@ -86,4 +85,3 @@ class DepartmentDataService extends AbstractDataService
         );
     }
 }
- 

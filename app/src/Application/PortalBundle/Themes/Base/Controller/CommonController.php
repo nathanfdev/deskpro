@@ -34,23 +34,17 @@
 
 namespace Application\PortalBundle\Themes\Base\Controller;
 
-
 use Application\AuthBundle\Security\AgentImpersonateToken;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\News;
-use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\People\PersonGuest;
 use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Request\TagRequest;
-use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Response;
 use Application\PortalBundle\HttpCache\Configuration\TagHttpCache;
 
@@ -80,7 +74,7 @@ class CommonController extends AbstractController
 
         return $this->renderThemeView('Theme:Common:alerts.html.twig', array(
             'impersonator' => $agent,
-            'user' => $this->getUser()
+            'user' => $this->getUser(),
         ));
     }
 
@@ -98,7 +92,7 @@ class CommonController extends AbstractController
         return $this->renderThemeView(
             'Theme:Common:flashes.html.twig',
             array(
-                'flashes' => $flashes
+                'flashes' => $flashes,
             )
         );
     }
@@ -129,7 +123,7 @@ class CommonController extends AbstractController
             'content_type' => $content_type,
             'content_id' => $content_id,
             'content' => $content,
-            'related_content' => $related_content
+            'related_content' => $related_content,
         ));
     }
 
@@ -155,6 +149,7 @@ class CommonController extends AbstractController
                 $content = $this->getFeedbackDataService()->getItem($content_id);
                 break;
         }
+
         return $content;
     }
 }

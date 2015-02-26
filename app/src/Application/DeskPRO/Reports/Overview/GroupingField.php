@@ -69,7 +69,6 @@ class GroupingField
      */
     protected $titles = null;
 
-
     /**
      * @param string $field
      */
@@ -78,12 +77,11 @@ class GroupingField
         if (strpos($field, '.') === false) {
             $this->field = $field;
         } else {
-            list ($field, $field_id) = explode('.', $field);
+            list($field, $field_id) = explode('.', $field);
             $this->field    = $field;
             $this->field_id = $field_id;
         }
     }
-
 
     public function getFieldInfo()
     {
@@ -92,7 +90,7 @@ class GroupingField
                 return array('select'   => 'COALESCE(tickets.department_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -100,7 +98,7 @@ class GroupingField
                 return array('select'   => 'COALESCE(tickets.agent_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -108,7 +106,7 @@ class GroupingField
                 return array('select'   => 'COALESCE(tickets.agent_team_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -116,7 +114,7 @@ class GroupingField
                 return array('select'   => 'COALESCE(tickets.category_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -124,7 +122,7 @@ class GroupingField
                 return array('select'   => 'COALESCE(tickets.workflow_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -132,7 +130,7 @@ class GroupingField
                 return array('select'   => 'COALESCE(tickets.priority_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -140,7 +138,7 @@ class GroupingField
                 return array('select'   => 'tickets.language_id',
                              'group_by' => 'tickets.language_id',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -148,7 +146,7 @@ class GroupingField
                 return array('select'   => 'COALESCE(tickets.product_id, 0) AS group_field',
                              'group_by' => 'group_field',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -156,7 +154,7 @@ class GroupingField
                 return array('select'   => 'tickets.urgency',
                              'group_by' => 'tickets.urgency',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -164,7 +162,7 @@ class GroupingField
                 return array('select'   => 'COALESCE(tickets.organization_id, 0) AS org_id',
                              'group_by' => 'org_id',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -173,7 +171,7 @@ class GroupingField
                     'select'   => 'COALESCE(person2usergroups.usergroup_id, 0) AS usergroup_id',
                     'group_by' => 'usergroup_id',
                     'join'     => 'LEFT JOIN person2usergroups ON (person2usergroups.person_id = tickets.person_id)',
-                    'where'    => ''
+                    'where'    => '',
                 );
                 break;
 
@@ -181,7 +179,7 @@ class GroupingField
                 return array('select'   => 'tickets.person_id',
                              'group_by' => 'tickets.person_id',
                              'join'     => '',
-                             'where'    => ''
+                             'where'    => '',
                 );
                 break;
 
@@ -195,7 +193,7 @@ class GroupingField
                             'select'   => '0 as group_field',
                             'group_by' => 'group_field',
                             'join'     => '',
-                            'where'    => ''
+                            'where'    => '',
                         );
                     }
 
@@ -208,14 +206,14 @@ class GroupingField
                             LEFT JOIN custom_data_ticket ON (custom_data_ticket.ticket_id = tickets.id AND custom_data_ticket.field_id IN($ids))
                             LEFT JOIN custom_def_ticket ON (custom_def_ticket.id = custom_data_ticket.field_id)
                         ",
-                        'where'    => ''
+                        'where'    => '',
                     );
                 } else {
                     return array(
                         'select'   => 'COALESCE(custom_data_ticket.input, 0) AS group_field',
                         'group_by' => 'group_field',
-                        'join'     => 'LEFT JOIN custom_data_ticket ON (custom_data_ticket.ticket_id = tickets.id AND custom_data_ticket.field_id = ' . $this->field_id . ')',
-                        'where'    => ''
+                        'join'     => 'LEFT JOIN custom_data_ticket ON (custom_data_ticket.ticket_id = tickets.id AND custom_data_ticket.field_id = '.$this->field_id.')',
+                        'where'    => '',
                     );
                 }
                 break;
@@ -230,7 +228,7 @@ class GroupingField
                             'select'   => '0 as group_field',
                             'group_by' => 'group_field',
                             'join'     => '',
-                            'where'    => ''
+                            'where'    => '',
                         );
                     }
 
@@ -243,14 +241,14 @@ class GroupingField
                             LEFT JOIN custom_data_person ON (custom_data_person.person_id = tickets.person_id AND custom_data_person.field_id IN($ids))
                             LEFT JOIN custom_def_people ON (custom_def_people.id = custom_data_person.field_id)
                         ",
-                        'where'    => ''
+                        'where'    => '',
                     );
                 } else {
                     return array(
                         'select'   => 'COALESCE(custom_data_person.input, 0) AS group_field',
                         'group_by' => 'group_field',
-                        'join'     => 'LEFT JOIN custom_data_person ON (custom_data_person.person_id = tickets.person_id AND custom_data_person.field_id = ' . $this->field_id . ')',
-                        'where'    => ''
+                        'join'     => 'LEFT JOIN custom_data_person ON (custom_data_person.person_id = tickets.person_id AND custom_data_person.field_id = '.$this->field_id.')',
+                        'where'    => '',
                     );
                 }
                 break;
@@ -259,7 +257,6 @@ class GroupingField
                 throw new \InvalidArgumentException("Invalid field: {$this->field}");
         }
     }
-
 
     /**
      * @param  array                     $values

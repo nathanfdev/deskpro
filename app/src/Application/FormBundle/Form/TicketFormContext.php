@@ -99,9 +99,9 @@ class TicketFormContext
      * @param FormInterface $form
      * @param Person        $person
      * @param Ticket        $ticket
-     * @param TicketLayout  $layout       the ticket layout we are using for this form
-     * @param string        $view_context - "user" or "agent"?
-     * @param string        $visibility   the view, such as "new", "edit", "view" (contants of this class)
+     * @param TicketLayout  $layout         the ticket layout we are using for this form
+     * @param string        $view_context   - "user" or "agent"?
+     * @param string        $visibility     the view, such as "new", "edit", "view" (contants of this class)
      * @param TicketMessage $ticket_message
      */
     public function __construct(FormInterface $form, Ticket $ticket, TicketMessage $ticket_message = null, Person $person, TicketLayout $layout, $view_context, $visibility)
@@ -164,7 +164,7 @@ class TicketFormContext
     /**
      * Does this field have the right visibility, given our context?
      *
-     * @param LayoutField $field
+     * @param  LayoutField $field
      * @return bool
      */
     public function hasValidVisibility(LayoutField $field)

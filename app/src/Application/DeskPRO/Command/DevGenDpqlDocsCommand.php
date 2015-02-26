@@ -82,7 +82,7 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             'ticket_attachments' => 'Attachments to tickets',
             'ticket_charges' => 'Ticket billing charges',
             'ticket_feedback' => 'Feedback on ticket responses',
-            'ticket_slas' => 'SLA status records for tickets'
+            'ticket_slas' => 'SLA status records for tickets',
         );
 
         $conditionResolvers = array(

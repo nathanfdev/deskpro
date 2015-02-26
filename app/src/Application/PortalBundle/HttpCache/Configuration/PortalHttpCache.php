@@ -34,7 +34,6 @@
 
 namespace Application\PortalBundle\HttpCache\Configuration;
 
-
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationInterface;
 
 abstract class PortalHttpCache implements ConfigurationInterface

@@ -494,7 +494,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     protected $_sent_to_addresses;
 
     /**
-	 * @var null|\Application\DeskPRO\Labels\LabelManager
+     * @var null|\Application\DeskPRO\Labels\LabelManager
      */
     protected $_label_manager = null;
 
@@ -511,12 +511,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     protected $_search_highlights;
 
     /**
-	 * linked jira issues
-	 * @var
-	 */
-	protected $jira_issues;
+     * linked jira issues
+     * @var
+     */
+    protected $jira_issues;
 
-	/**
+    /**
      * If the tikcet was created from an email just now, then this is the reader
      * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
      */
@@ -1495,7 +1495,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             $this->addCustomData($custom_data);
         }
 
-		$this->_onPropertyChanged('custom_data', null, $this->custom_data);
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
 
         return $custom_data;
     }
@@ -1517,16 +1517,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface
                 $change = true;
                 $this->custom_data->removeElement($data);
 
-				if ($parent_id) {
-					$this->getStateChangeRecorder()->record("custom_data.$parent_id", $data, null, true);
-				} else {
-					$this->getStateChangeRecorder()->record("custom_data.$field_id", $data, null, true);
-				}
+                if ($parent_id) {
+                    $this->getStateChangeRecorder()->record("custom_data.$parent_id", $data, null, true);
+                } else {
+                    $this->getStateChangeRecorder()->record("custom_data.$field_id", $data, null, true);
+                }
             }
         }
 
         if ($change) {
-			$this->_onPropertyChanged('custom_data', null, $this->custom_data);
+            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
         }
     }
 
@@ -1540,20 +1540,20 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $this->custom_data->add($data);
         $data['ticket'] = $this;
 
-		$field = $data->field;
-		$parent_id = null;
-		$field_id = $field['id'];
-		if ($field->parent) {
-			$parent_id = $field->parent['id'];
-		}
+        $field = $data->field;
+        $parent_id = null;
+        $field_id = $field['id'];
+        if ($field->parent) {
+            $parent_id = $field->parent['id'];
+        }
 
-		if ($parent_id) {
-			$this->getStateChangeRecorder()->record("custom_data.$parent_id", null, $data, true);
-		} else {
-			$this->getStateChangeRecorder()->record("custom_data.$field_id", null, $data, true);
-		}
+        if ($parent_id) {
+            $this->getStateChangeRecorder()->record("custom_data.$parent_id", null, $data, true);
+        } else {
+            $this->getStateChangeRecorder()->record("custom_data.$field_id", null, $data, true);
+        }
 
-		$this->_onPropertyChanged('custom_data', null, $this->custom_data);
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
     }
 
     /**
@@ -2933,8 +2933,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             if ($escape) {
                 $v = htmlspecialchars($v);
             }
-            $string = str_replace("{{". $k ."}}", $v, $string);
-            $string = str_replace("{{" . $k . "}}", $v, $string);
+            $string = str_replace("{{".$k."}}", $v, $string);
+            $string = str_replace("{{".$k."}}", $v, $string);
         }
 
         return $string;
@@ -3157,7 +3157,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     public function _autoProcessTicket()
     {
-//        if ($this->__dp_is_processing_ticket) {
+        //        if ($this->__dp_is_processing_ticket) {
 //            return;
 //        }
 //
@@ -3739,15 +3739,15 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             'dpApi'                => true,
             'dpApiDeep'            => true,
         ));
-		$metadata->mapOneToMany(array(
-			'fieldName'            => 'jira_issues',
-			'targetEntity'         => 'Application\\DeskPRO\\Entity\\JiraIssue',
-			'cascade'              => array('persist', 'merge', 'remove'),
-			'mappedBy'             => 'ticket',
-			'orphanRemoval'        => true,
-			'dpApi'                => false,
-			'dpApiDeep'            => false
-		));
+        $metadata->mapOneToMany(array(
+            'fieldName'            => 'jira_issues',
+            'targetEntity'         => 'Application\\DeskPRO\\Entity\\JiraIssue',
+            'cascade'              => array('persist', 'merge', 'remove'),
+            'mappedBy'             => 'ticket',
+            'orphanRemoval'        => true,
+            'dpApi'                => false,
+            'dpApiDeep'            => false,
+        ));
     }
 
     /**

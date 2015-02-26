@@ -46,7 +46,6 @@ class Logger extends BaseLogger
      */
     private $test_handler;
 
-
     /**
      * @return bool
      */
@@ -54,7 +53,6 @@ class Logger extends BaseLogger
     {
         return $this->test_handler ? true : false;
     }
-
 
     /**
      * @return TestHandler
@@ -65,7 +63,6 @@ class Logger extends BaseLogger
 
         return $test_handler;
     }
-
 
     /**
      * Enables a local copy of all messages so you can easily fetch messages after
@@ -83,7 +80,6 @@ class Logger extends BaseLogger
         $this->pushHandler($this->test_handler);
     }
 
-
     /**
      * Clears any saved messages.
      *
@@ -99,7 +95,6 @@ class Logger extends BaseLogger
         $this->test_handler = $this->_createTestHandler();
         $this->handlers[$k] = $this->test_handler;
     }
-
 
     /**
      * Gets a string of all the logged messages.
@@ -126,7 +121,6 @@ class Logger extends BaseLogger
 
         return $log;
     }
-
 
     /**
      * Gets an array of raw records.

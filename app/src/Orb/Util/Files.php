@@ -41,8 +41,9 @@ namespace Orb\Util;
  */
 class Files
 {
-    private function __construct() {}
-
+    private function __construct()
+    {
+    }
 
     /**
      * @param  string|resource   $file_or_fp Path to a filename or an existing file resource
@@ -68,7 +69,9 @@ class Files
 
         $result = @fread($fp, $size);
 
-        if ($did_open) @fclose($fp);
+        if ($did_open) {
+            @fclose($fp);
+        }
 
         if ($result === false) {
             throw new \RuntimeException("Failed to seek");

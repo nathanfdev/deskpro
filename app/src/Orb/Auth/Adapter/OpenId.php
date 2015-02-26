@@ -43,8 +43,6 @@ class OpenId extends AbstractCallbackAdatper
     /** @var string */
     protected $openid_identifier = '';
 
-
-
     /**
      * Sets the data got from a form
      *
@@ -56,8 +54,6 @@ class OpenId extends AbstractCallbackAdatper
             $this->openid_identifier = $form_data['openid_identifier'];
         }
     }
-
-
 
     /**
      * Initialize the auth process by setting state, and returning a redirect result.
@@ -72,7 +68,7 @@ class OpenId extends AbstractCallbackAdatper
         $openid->optional = array(
             'namePerson/friendly', 'contact/email', 'namePerson',
             'birthDate', 'person/gender', 'contact/country/home',
-            'pref/language', 'pref/timezone'
+            'pref/language', 'pref/timezone',
         );
 
         try {
@@ -85,7 +81,6 @@ class OpenId extends AbstractCallbackAdatper
             return $result;
         }
     }
-
 
     protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
     {

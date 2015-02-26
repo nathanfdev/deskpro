@@ -31,7 +31,6 @@
 
 namespace Application\ImportBundle\Exception;
 
-class MissingMappingExceptionException extends \Exception
+class MissingMappingException extends \Exception
 {
-
 }

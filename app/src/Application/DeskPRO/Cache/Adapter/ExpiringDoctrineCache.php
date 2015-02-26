@@ -85,7 +85,7 @@ class ExpiringDoctrineCache implements CacheAdapterInterface
     /**
      * Fetch the data of the cache entry for key, but WILL NOT return it if it is expired.
      *
-     * @param string $key
+     * @param  string      $key
      * @return null|string
      */
     public function get($key)
@@ -94,9 +94,7 @@ class ExpiringDoctrineCache implements CacheAdapterInterface
         $cache = $this->getCacheRepo()->find($key);
 
         if ($cache && !$cache->isExpired()) {
-
             return $cache->getData();
-
         }
 
         return null;
@@ -105,7 +103,7 @@ class ExpiringDoctrineCache implements CacheAdapterInterface
     /**
      * Delete the entity (flushes)
      *
-     * @param string $key
+     * @param  string $key
      * @return null
      */
     public function delete($key)

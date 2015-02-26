@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle\Validator\Constraints;
 
-
 use Symfony\Component\Validator\Constraint;
 
 class ValidCaptcha extends Constraint
@@ -57,4 +56,3 @@ class ValidCaptcha extends Constraint
         return 'deskpro.captcha';
     }
 }
- 

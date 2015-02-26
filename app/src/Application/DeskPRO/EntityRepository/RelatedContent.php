@@ -16,28 +16,28 @@ class RelatedContent extends AbstractEntityRepository
 {
     public function findRelatedArticles(ArticleEntity $article)
     {
-       return $this->findBy(array(
+        return $this->findBy(array(
             'object_type' => 'articles',
             'rel_object_type' => 'articles',
-            'object_id' => $article->getId()
+            'object_id' => $article->getId(),
         ));
     }
 
     public function findRelatedNewsPosts(NewsEntity $post)
     {
-       return $this->findBy(array(
+        return $this->findBy(array(
             'object_type' => 'news',
             'rel_object_type' => 'news',
-            'object_id' => $post->getId()
+            'object_id' => $post->getId(),
         ));
     }
 
     public function findRelatedFiles(DownloadEntity $download)
     {
-       return $this->findBy(array(
+        return $this->findBy(array(
             'object_type' => 'downloads',
             'rel_object_type' => 'downloads',
-            'object_id' => $download->getId()
+            'object_id' => $download->getId(),
         ));
     }
 }

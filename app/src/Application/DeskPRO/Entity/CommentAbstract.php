@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 

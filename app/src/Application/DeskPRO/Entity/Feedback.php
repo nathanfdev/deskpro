@@ -228,7 +228,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * @param bool $absolute
+     * @param  bool   $absolute
      * @return string
      * @deprecated generate the route properly, check route name is right and use getSlug()
      */
@@ -240,7 +240,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * @param bool $absolute
+     * @param  bool   $absolute
      * @return string
      * @deprecated generate the route properly, check route name is right and use getSlug()
      */
@@ -652,7 +652,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         );
         $metadata->mapOneToMany(array(
             'fieldName' => 'slug_history', 'targetEntity' => 'Application\DeskPRO\Entity\FeedbackSlugHistory',
-            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback'
+            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback',
         ));
     }
 }

@@ -57,7 +57,6 @@ class CheckExportCommand extends ContainerAwareCommand
         $this->addOption('input-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the CSV files are present');
     }
 
-
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
@@ -65,7 +64,6 @@ class CheckExportCommand extends ContainerAwareCommand
     {
         return parent::getContainer();
     }
-
 
     /**
      * {@inheritDoc}
@@ -85,8 +83,8 @@ class CheckExportCommand extends ContainerAwareCommand
 
         $generator_config = $factory->createGeneratorConfig();
 
-        $generator_config->progress_bar	= $this->progress_bar;
-        $generator_config->output	= $output;
+        $generator_config->progress_bar    = $this->progress_bar;
+        $generator_config->output    = $output;
 
         $generator = $factory->createGenerator($generator_config, $logger);
 

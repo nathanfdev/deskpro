@@ -33,9 +33,8 @@
  */
 
 namespace Orb\Log\Filter;
+
 use \Orb\Log\LogItem;
-
-
 
 /**
  * This filter detends '--'s at the beginning of a message to denote an
@@ -46,7 +45,9 @@ class IndentFilter extends \Orb\Filter\AbstractFilter
 {
     public function filter($log_item)
     {
-        if (!$log_item) return null;
+        if (!$log_item) {
+            return null;
+        }
 
         $message = $log_item[LogItem::MESSAGE];
         $m = null;

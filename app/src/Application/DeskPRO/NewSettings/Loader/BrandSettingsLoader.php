@@ -56,7 +56,6 @@ class BrandSettingsLoader implements SettingsLoaderInterface
      */
     private $db;
 
-
     public function __construct(Connection $db, CacheAdapterInterface $cache)
     {
         $this->cache = new ConvenientCache($cache);
@@ -72,7 +71,7 @@ class BrandSettingsLoader implements SettingsLoaderInterface
             throw new \InvalidArgumentException('must pass a brand id');
         }
 
-        $cacheKey = self::CACHE_KEY_PREFIX . $brand_id;
+        $cacheKey = self::CACHE_KEY_PREFIX.$brand_id;
 
         if ($force) {
             $this->cache->delete($cacheKey);

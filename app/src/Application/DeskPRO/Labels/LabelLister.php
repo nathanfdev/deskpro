@@ -50,8 +50,6 @@ class LabelLister
         $this->label_type = $label_type;
     }
 
-
-
     /**
      * Gets an index of labels by index=>array(lables). THe index is usually the
      * letter, but maybe not depending on language. (?)

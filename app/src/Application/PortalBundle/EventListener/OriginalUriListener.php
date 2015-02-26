@@ -34,11 +34,6 @@
 
 namespace Application\PortalBundle\EventListener;
 
-use Application\DeskPRO\Brand\BrandStack;
-use Application\DeskPRO\EntityRepository\Brand;
-use Application\DeskPRO\Entity\Brand as BrandEntity;
-use Application\DeskPRO\NewSettings\SettingsResolver;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -70,7 +65,7 @@ class OriginalUriListener implements EventSubscriberInterface
     {
         return array(
             // high priority, must be called BEFORE RouterListener (which is 32)
-            KernelEvents::REQUEST => array('onKernelRequest', 33)
+            KernelEvents::REQUEST => array('onKernelRequest', 33),
         );
     }
 }

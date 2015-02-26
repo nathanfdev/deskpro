@@ -88,15 +88,13 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         $this->db = $db;
     }
 
-
     /**
      * @param bool $on_or_off
      */
     public function setAutoUnserialize($on_or_off)
     {
-        $this->auto_unserialize = (bool)$on_or_off;
+        $this->auto_unserialize = (bool) $on_or_off;
     }
-
 
     /**
      * Create the cache database table
@@ -113,7 +111,6 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         ");
     }
-
 
     /**
      * Set the prefix used on all IDs
@@ -135,7 +132,6 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         }
     }
 
-
     /**
      * Preload one or more keys
      *
@@ -147,14 +143,14 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     public function preloadIds()
     {
         if (func_num_args() == 1) {
-            $keys = (array)func_get_arg(1);
+            $keys = (array) func_get_arg(1);
         } else {
             $keys = func_get_args();
         }
 
         foreach ($keys as &$k) {
             if (!array_key_exists($k, $this->loaded)) {
-                $k = $this->id_prefix . $k;
+                $k = $this->id_prefix.$k;
             } else {
                 $k = 0;
             }
@@ -166,7 +162,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
             return;
         }
 
-        $keys_in = "'" . implode("','", $keys) . "'";
+        $keys_in = "'".implode("','", $keys)."'";
 
         $date = date('Y-m-d H:i:s');
 
@@ -198,7 +194,6 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         }
     }
 
-
     /**
      * Preload a number of items given a prefix
      *
@@ -206,8 +201,10 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
      */
     public function preloadPrefix($add_prefix = null)
     {
-        if (!$add_prefix) $add_prefix = '';
-        $prefix = $this->id_prefix . $add_prefix;
+        if (!$add_prefix) {
+            $add_prefix = '';
+        }
+        $prefix = $this->id_prefix.$add_prefix;
 
         if (in_array($prefix, $this->loaded_prefixes)) {
             return;
@@ -235,7 +232,6 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         }
     }
 
-
     /**
      * Delete all caches in the database with a key
      *
@@ -243,7 +239,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
      */
     public function flushPrefix($prefix)
     {
-        $prefix = $this->id_prefix . $prefix;
+        $prefix = $this->id_prefix.$prefix;
         $prefix_like = "$prefix%";
 
         try {
@@ -264,7 +260,6 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         }
     }
 
-
     /**
      * Fetches an entry from the cache.
      *
@@ -273,7 +268,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
      */
     public function fetch($id)
     {
-        $prefix_id = $this->id_prefix . $id;
+        $prefix_id = $this->id_prefix.$id;
 
         $is_loaded = false;
 
@@ -294,7 +289,6 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
             }
 
             $data = $this->loaded[$prefix_id];
-
         } else {
             $date = date('Y-m-d H:i:s');
 
@@ -328,7 +322,6 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         return $data;
     }
 
-
     /**
      * Test if an entry exists in the cache.
      *
@@ -337,7 +330,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
      */
     public function contains($id)
     {
-        $prefix_id = $this->id_prefix . $id;
+        $prefix_id = $this->id_prefix.$id;
 
         // If it exists in the array we know for sure if its set or not
         if (array_key_exists($prefix_id, $this->loaded)) {
@@ -345,7 +338,6 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 
         // Otherwise we have to do a query to fetch it
         } else {
-
             // Try to see if it matches one of the laoded prefixes
             foreach ($this->loaded_prefixes as $prefix) {
                 // If its found but it didnt match above, then we know it wasnt loaded
@@ -361,9 +353,6 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         }
     }
 
-
-
-
     /**
      * Puts data into the cache.
      *
@@ -374,7 +363,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
      */
     public function save($id, $data, $lifeTime = 0)
     {
-        $prefix_id = $this->id_prefix . $id;
+        $prefix_id = $this->id_prefix.$id;
 
         $date = null;
         if ($lifeTime) {
@@ -400,7 +389,6 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         return true;
     }
 
-
     /**
      * Deletes a cache entry.
      *
@@ -409,7 +397,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
      */
     public function delete($id)
     {
-        $prefix_id = $this->id_prefix . $id;
+        $prefix_id = $this->id_prefix.$id;
 
         try {
             $this->db->executeUpdate("
@@ -427,13 +415,12 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         return true;
     }
 
-
     /**
      * Clear the cache
      */
     public function flush()
     {
-        $prefix_like = $this->id_prefix . '%';
+        $prefix_like = $this->id_prefix.'%';
 
         try {
             $this->db->executeUpdate("

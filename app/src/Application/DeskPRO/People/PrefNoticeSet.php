@@ -77,7 +77,7 @@ class PrefNoticeSet implements \IteratorAggregate, \Countable
         #------------------------------
 
         $this->set_file = $set_file;
-        $this->set_data = require($set_file);
+        $this->set_data = require $set_file;
         $this->waiting_data = array();
 
         foreach ($this->set_data as $id => $item) {
@@ -160,7 +160,7 @@ class PrefNoticeSet implements \IteratorAggregate, \Countable
             'person_id'   => $this->person->getId(),
             'value_array' => $data,
             'value_str'   => null,
-            'date_expire' => null
+            'date_expire' => null,
         ));
     }
 }

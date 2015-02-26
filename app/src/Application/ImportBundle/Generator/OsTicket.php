@@ -67,7 +67,7 @@ class OsTicket implements GeneratorInterface
         $db_password = $os_config['db_password'];
 
         if (!is_dir($config->output_path)) {
-            throw new \Exception('Invalid output-path ' . $config->output_path);
+            throw new \Exception('Invalid output-path '.$config->output_path);
         }
 
         $this->config = $config;
@@ -110,8 +110,8 @@ class OsTicket implements GeneratorInterface
     public function findAllTickets($offset)
     {
         $query = 'SELECT * FROM ost_ticket t LEFT JOIN ost_ticket__cdata c ON t.ticket_id = c.ticket_id'
-        . ' LIMIT :limit'
-        . ' OFFSET :offset';
+        .' LIMIT :limit'
+        .' OFFSET :offset';
 
         $stmt   = $this->db->prepare($query);
 
@@ -127,8 +127,8 @@ class OsTicket implements GeneratorInterface
         $ticket_id = (int) $ticket_id;
 
         $query = 'SELECT f.name, f.type, a.file_id  FROM ost_file f JOIN ost_ticket_attachment a '
-        . ' ON f.id = a.file_id'
-        . ' WHERE ticket_id = ?';
+        .' ON f.id = a.file_id'
+        .' WHERE ticket_id = ?';
 
         $stmt   = $this->db->prepare($query);
         $stmt->execute(array($ticket_id));
@@ -152,8 +152,8 @@ class OsTicket implements GeneratorInterface
     public function findAllUser($offset = 0)
     {
         $query = 'SELECT * FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id'
-        . ' LIMIT :limit'
-        . ' OFFSET :offset';
+        .' LIMIT :limit'
+        .' OFFSET :offset';
 
         $stmt   = $this->db->prepare($query);
 
@@ -177,9 +177,9 @@ class OsTicket implements GeneratorInterface
     public function findUserEmailFromId($id)
     {
         $query = 'SELECT address FROM ost_user_email e'
-        . ' LEFT JOIN ost_user u '
-        . ' ON e.user_id=u.id'
-        . ' WHERE u.id = ?';
+        .' LEFT JOIN ost_user u '
+        .' ON e.user_id=u.id'
+        .' WHERE u.id = ?';
 
         $stmt   = $this->db->prepare($query);
         $stmt->execute(array($id));
@@ -247,7 +247,7 @@ class OsTicket implements GeneratorInterface
 
     public function exportPeople()
     {
-        $file_path = $this->output_path . 'people/';
+        $file_path = $this->output_path.'people/';
 
         $index = 1;
 
@@ -255,22 +255,22 @@ class OsTicket implements GeneratorInterface
 
         $person_batch = $this->findAllStaff($offset);
 
-        while($person_batch) {
+        while ($person_batch) {
             foreach ($person_batch as $person) {
                 $transformedArray = array();
 
-                $transformedArray['oid']		= $index;
-                $transformedArray['is_agent']		= true;
-                $transformedArray['first_name']		= $person['firstname'];
-                $transformedArray['last_name']		= $person['lastname'];
-                $transformedArray['timezone']		= $this->findTimezoneFromId($person['timezone_id']);
-                $transformedArray['date_created']	= $person['created'];
-                $transformedArray['emails']		= array($person['email']);
+                $transformedArray['oid']        = $index;
+                $transformedArray['is_agent']        = true;
+                $transformedArray['first_name']        = $person['firstname'];
+                $transformedArray['last_name']        = $person['lastname'];
+                $transformedArray['timezone']        = $this->findTimezoneFromId($person['timezone_id']);
+                $transformedArray['date_created']    = $person['created'];
+                $transformedArray['emails']        = array($person['email']);
 
-                $file_name = 'person' . $index . '.json';
+                $file_name = 'person'.$index.'.json';
 
                 if ($this->config->mode === 'live') {
-                    file_put_contents($file_path . $file_name, json_encode($transformedArray));
+                    file_put_contents($file_path.$file_name, json_encode($transformedArray));
                 }
 
                 //$this->logger->info(sprintf('%s exported successfully!', $file_name));
@@ -288,16 +288,16 @@ class OsTicket implements GeneratorInterface
         foreach ($this->findAllUser() as $person) {
             $transformedArray = array();
 
-            $transformedArray['oid']		= $index;
-            $transformedArray['is_user']		= true;
-            $transformedArray['name']		= $person['name'];
-            $transformedArray['date_created']	= $person['created'];
-            $transformedArray['emails']		= array($person['address']);
+            $transformedArray['oid']        = $index;
+            $transformedArray['is_user']        = true;
+            $transformedArray['name']        = $person['name'];
+            $transformedArray['date_created']    = $person['created'];
+            $transformedArray['emails']        = array($person['address']);
 
-            $file_name = 'person' . $index . '.json';
+            $file_name = 'person'.$index.'.json';
 
             if ($this->config->mode === 'live') {
-                file_put_contents($file_path . $file_name, json_encode($transformedArray));
+                file_put_contents($file_path.$file_name, json_encode($transformedArray));
             }
 
             $this->config->progress_bar->advance();
@@ -310,7 +310,7 @@ class OsTicket implements GeneratorInterface
 
     public function exportTickets()
     {
-        $ticketPath = $this->output_path . '/tickets/';
+        $ticketPath = $this->output_path.'/tickets/';
 
         $index = 1;
 
@@ -337,15 +337,14 @@ class OsTicket implements GeneratorInterface
                 foreach ($this->findMessageThreadFromId($ticket['ticket_id']) as $message_thread) {
                     if ($message_thread['thread_type'] === 'R' && $message_thread['staff_id']) {
                         $person_email = $this->findStaffEmailFromId($message_thread['staff_id']);
-
                     } elseif ($message_thread['thread_type'] === 'M' && $message_thread['user_id']) {
                         $person_email = $this->findUserEmailFromId($message_thread['user_id']);
                     }
 
                     $message_array = array(
-                        'person'	=> $person_email,
-                        'date_created'	=> $message_thread['created'],
-                        'message_text'	=> $message_thread['body']
+                        'person'    => $person_email,
+                        'date_created'    => $message_thread['created'],
+                        'message_text'    => $message_thread['body'],
                     );
 
                     if ($this->findTicketAttachment($ticket['ticket_id'])) {
@@ -355,10 +354,10 @@ class OsTicket implements GeneratorInterface
                             $file_data = $this->getFileData($attachment['file_id']);
 
                             $message_array['attachments'][] = array(
-                                'oid'		=> $index,
-                                'blob_data'	=> base64_encode($file_data),
-                                'file_name'	=> $attachment['name'],
-                                'content_type'	=> $attachment['type']
+                                'oid'        => $index,
+                                'blob_data'    => base64_encode($file_data),
+                                'file_name'    => $attachment['name'],
+                                'content_type'    => $attachment['type'],
                             );
                         }
                     }
@@ -366,10 +365,10 @@ class OsTicket implements GeneratorInterface
                     $transformedArray['messages'][] = $message_array;
                 }
 
-                $file_name = 'ticket' . $index++ . '.json';
+                $file_name = 'ticket'.$index++.'.json';
 
                 if ($this->config->mode === 'live') {
-                    file_put_contents($ticketPath . $file_name, json_encode($transformedArray));
+                    file_put_contents($ticketPath.$file_name, json_encode($transformedArray));
                 }
 
                 unset($transformedArray);

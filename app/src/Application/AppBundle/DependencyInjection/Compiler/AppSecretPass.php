@@ -34,7 +34,6 @@
 
 namespace Application\AppBundle\DependencyInjection\Compiler;
 
-
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -46,7 +45,6 @@ class AppSecretPass implements CompilerPassInterface
         $exp = new Expression("service('app_secret').getAppSecret()");
 
         foreach ($container->getDefinitions() as $service_id => $def) {
-
             if ('security.authentication.rememberme.services.simplehash.portal' === $service_id) {
                 $def->replaceArgument(1, $exp);
             }
@@ -69,6 +67,5 @@ class AppSecretPass implements CompilerPassInterface
                 }
             }
         }
-
     }
 }

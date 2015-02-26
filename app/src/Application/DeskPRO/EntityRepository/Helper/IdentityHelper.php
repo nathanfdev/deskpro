@@ -59,7 +59,6 @@ class IdentityHelper
      */
     protected $collections = array();
 
-
     /**
      * @param \Doctrine\ORM\EntityManager                                    $em
      * @param \Application\DeskPRO\EntityRepository\AbstractEntityRepository $repos
@@ -70,7 +69,6 @@ class IdentityHelper
         $this->em = $em;
         $this->entity_name = $repos->getName();
     }
-
 
     /**
      * Find a set of records by ID.

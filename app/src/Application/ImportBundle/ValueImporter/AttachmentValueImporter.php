@@ -51,7 +51,7 @@ class AttachmentValueImporter extends AbstractValueImporter
             throw new \InvalidArgumentException("This importer can only import Attachments");
         }
 
-        $log_id = "Attachment :: " . $aval->oid . " ";
+        $log_id = "Attachment :: ".$aval->oid." ";
 
         if (!$aval->blob_data &&
             !$aval->blob_path &&

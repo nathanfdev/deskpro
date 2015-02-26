@@ -41,7 +41,9 @@ namespace Orb\Util;
  */
 class Arrays
 {
-    private function __construct() { /* No instances allowed */ }
+    private function __construct()
+    { /* No instances allowed */
+    }
 
     /**
      * Used as the value placeholder when defining parameters to pass to a user
@@ -93,7 +95,7 @@ class Arrays
     public static function flatten($array)
     {
         if (!is_array($array)) {
-            return (array)$array;
+            return (array) $array;
         }
 
         $new_array = array();
@@ -139,7 +141,7 @@ class Arrays
         $new_array = array();
 
         if ($key_parts) {
-            $key_prefix = implode('.', $key_parts) . '.';
+            $key_prefix = implode('.', $key_parts).'.';
         } else {
             $key_prefix = '';
         }
@@ -151,7 +153,7 @@ class Arrays
                 $new_array = array_merge($new_array, $v);
                 array_pop($key_parts);
             } else {
-                $k = $key_prefix . $k;
+                $k = $key_prefix.$k;
                 $new_array[$k] = $v;
             }
         }
@@ -266,11 +268,10 @@ class Arrays
      */
     public static function mergeAssoc()
     {
-        $new_array = (array)func_get_arg(0);
+        $new_array = (array) func_get_arg(0);
 
         for ($i = 1, $size = func_num_args(); $i < $size; $i++) {
-
-            $arr = (array)func_get_arg($i);
+            $arr = (array) func_get_arg($i);
 
             foreach ($arr as $key => $val) {
                 $new_array[$key] = $val;
@@ -279,8 +280,6 @@ class Arrays
 
         return $new_array;
     }
-
-
 
     /**
      * Merge two or more arrays together recursively.
@@ -332,8 +331,6 @@ class Arrays
         return $array1;
     }
 
-
-
     /**
      * Goes through an array and makes sure each sub-array contains only unique items.
      *
@@ -367,8 +364,6 @@ class Arrays
         return array_unique($array);
     }
 
-
-
     /**
      * Add a new value to the beginning of an associative array.
      *
@@ -394,7 +389,7 @@ class Arrays
     public static function unshiftAssoc(&$array, $key, $value = false)
     {
         if (!is_array($array)) {
-            $array = (array)$array;
+            $array = (array) $array;
         }
 
         $old_array = $array;
@@ -462,7 +457,7 @@ class Arrays
     {
         $diff = array();
 
-        foreach($array1 as $key => $value) {
+        foreach ($array1 as $key => $value) {
             if (is_array($value)) {
                 if (array_key_exists($key, $array2) || !is_array($array2[$key])) {
                     $diff[$key] = $value;
@@ -472,7 +467,7 @@ class Arrays
                         $diff[$key] = $new_diff;
                     }
                 }
-            } elseif (!array_key_exists($key,$array2) || $array2[$key] !== $value) {
+            } elseif (!array_key_exists($key, $array2) || $array2[$key] !== $value) {
                 $diff[$key] = $value;
             }
         }
@@ -489,7 +484,7 @@ class Arrays
     public static function removeFalsey($array)
     {
         if (!is_array($array)) {
-            $array = (array)$array;
+            $array = (array) $array;
         }
 
         foreach (array_keys($array) as $k) {
@@ -652,18 +647,17 @@ class Arrays
     public static function removeEmptyString($array)
     {
         if (!is_array($array)) {
-            $array = (array)$array;
+            $array = (array) $array;
         }
 
         foreach (array_keys($array) as $k) {
-            if (is_string($array[$k]) AND trim($array[$k]) === '') {
+            if (is_string($array[$k]) and trim($array[$k]) === '') {
                 unset($array[$k]);
             }
         }
 
         return $array;
     }
-
 
     /**
      * Remove all values from an array that are an empty array. This differs
@@ -675,18 +669,17 @@ class Arrays
     public static function removeEmptyArray($array)
     {
         if (!is_array($array)) {
-            $array = (array)$array;
+            $array = (array) $array;
         }
 
         foreach (array_keys($array) as $k) {
-            if (is_array($array[$k]) AND !$array[$k]) {
+            if (is_array($array[$k]) and !$array[$k]) {
                 unset($array[$k]);
             }
         }
 
         return $array;
     }
-
 
     /**
      * Remove all values from an array that are an empty array. This differs
@@ -698,7 +691,7 @@ class Arrays
     public static function removeNull($array)
     {
         if (!is_array($array)) {
-            $array = (array)$array;
+            $array = (array) $array;
         }
 
         foreach (array_keys($array) as $k) {
@@ -709,7 +702,6 @@ class Arrays
 
         return $array;
     }
-
 
     /**
      * Take an array of arrays and then use data from the sub-arrays as keys in the
@@ -745,7 +737,6 @@ class Arrays
         return $new_array;
     }
 
-
     /**
      * Rekey an array using a callback function on each value.
      * Callback can return null and the item will not be included in the array.
@@ -767,7 +758,6 @@ class Arrays
 
         return $new_array;
     }
-
 
     /**
      * Push values into the array as long as they are not already in the array.
@@ -793,8 +783,6 @@ class Arrays
         return sizeof($array);
     }
 
-
-
     /**
      * Same as pushUnique() except this does strict comparisons (=== instead of ==).
      *
@@ -817,8 +805,6 @@ class Arrays
 
         return sizeof($array);
     }
-
-
 
     /**
      * Get the value from a multidimentional array using a path-like syntax.
@@ -859,7 +845,6 @@ class Arrays
             $path = substr($path, 0, strlen($path) - 1);
         }
 
-
         $parts = explode($path_sep, $path);
 
         if (!$parts) {
@@ -876,8 +861,6 @@ class Arrays
 
         return $array;
     }
-
-
 
     /**
      * Get a deep value from a multidimentional array using a dot to separate keys.
@@ -898,7 +881,6 @@ class Arrays
         return self::keyAsPath($array, $key, '.', $default);
     }
 
-
     /**
      * Takes a nested array and returns a flat version where sub-keys are separated with a dot.
      *
@@ -915,7 +897,7 @@ class Arrays
         }
 
         foreach ($array as $k => $v) {
-            $real_k = $_start_key ? $_start_key . $sub_sep . $k : $k;
+            $real_k = $_start_key ? $_start_key.$sub_sep.$k : $k;
 
             if (is_array($v) || $v instanceof \Traversable) {
                 self::flattenKeyValueArray($v, $sub_sep, $real_k, $_result);
@@ -926,8 +908,6 @@ class Arrays
 
         return $_result;
     }
-
-
 
     /**
      * Returns a string from an array using the given template on each item. Sortof like
@@ -945,14 +925,13 @@ class Arrays
             if (is_array($v)) {
                 $string .= self::implodeTemplate($v, $tpl, "$k.");
             } else {
-                $key_str = ($key_prefix ?: '') . $k;
+                $key_str = ($key_prefix ?: '').$k;
                 $string .= str_replace(array('{KEY}', '{VAL}'), array($key_str, $v), $tpl);
             }
         }
 
         return $string;
     }
-
 
     /**
      * Like var_export except the result is prettier.
@@ -998,13 +977,12 @@ class Arrays
                     $v = preg_replace('#\s*\)$#', ')', $v);
                     $v = preg_replace('#,\)$#', ')', $v);
                 }
-
             } else {
                 $v = var_export($v, true);
             }
 
             if ($is_numeric_array) {
-                $row = str_repeat("\t", $_level+1) . $v;
+                $row = str_repeat("\t", $_level+1).$v;
             } else {
                 $row = sprintf("%s%-{$max_keylen}s => %s", str_repeat("\t", $_level+1), var_export($k, true), $v);
             }
@@ -1015,7 +993,7 @@ class Arrays
         $rows = implode(",\n", $rows);
         $rows .= ',';
 
-        $output = str_repeat("\t", $_level) . "array(\n" . $rows . "\n" . str_repeat("\t", $_level) . ')';
+        $output = str_repeat("\t", $_level)."array(\n".$rows."\n".str_repeat("\t", $_level).')';
 
         return $output;
     }
@@ -1060,8 +1038,7 @@ class Arrays
         $new_array = array();
 
         foreach (array_keys($array) as $id) {
-
-            if (!isset($array[$id]) OR $array[$id][$parent_key] != $top_id) {
+            if (!isset($array[$id]) or $array[$id][$parent_key] != $top_id) {
                 continue;
             }
 
@@ -1126,7 +1103,7 @@ class Arrays
             $new_array[$index] = $arr;
             $new_array[$index]['depth'] = $current_depth;
 
-            if (isset($arr[$child_key]) AND $arr[$child_key]) {
+            if (isset($arr[$child_key]) and $arr[$child_key]) {
                 $sub_array = $arr[$child_key];
                 if (!is_array($sub_array)) {
                     $sub_array = iterator_to_array($sub_array);
@@ -1148,13 +1125,13 @@ class Arrays
         $sort_fn($array, function ($a, $b) use ($order_key, $parent_key) {
 
             if ($a[$parent_key]) {
-                $a_order = floatval($a[$parent_key][$order_key] . '.' . $a[$order_key]);
+                $a_order = floatval($a[$parent_key][$order_key].'.'.$a[$order_key]);
             } else {
                 $a_order = floatval($a[$order_key]);
             }
 
             if ($b[$parent_key]) {
-                $b_order = floatval($b[$parent_key][$order_key] . '.' . $b[$order_key]);
+                $b_order = floatval($b[$parent_key][$order_key].'.'.$b[$order_key]);
             } else {
                 $b_order = floatval($b[$order_key]);
             }
@@ -1186,10 +1163,10 @@ class Arrays
         $options = array();
         foreach ($flat as $i) {
             $indent = '';
-            if (!empty($i['depth']) AND $i['depth'] > 0) {
-                $indent = str_repeat($indent, $i['depth']) . ' ';
+            if (!empty($i['depth']) and $i['depth'] > 0) {
+                $indent = str_repeat($indent, $i['depth']).' ';
             }
-            $options[$i[$index_key]] = $indent . $i[$title_key];
+            $options[$i[$index_key]] = $indent.$i[$title_key];
         }
 
         return $options;
@@ -1239,8 +1216,6 @@ class Arrays
         return $ret;
     }
 
-
-
     /**
      * Take a multidimential array and return a new array where
      * only a single index exists.
@@ -1282,8 +1257,6 @@ class Arrays
         return $ret;
     }
 
-
-
     /**
      * Cast array values and/or keys to a specific type. Pass
      * null to $values or $keys to skip casting of that thing.
@@ -1316,7 +1289,6 @@ class Arrays
         return $ret;
     }
 
-
     /**
      * Same as castToType except recursively goes into subarrays
      *
@@ -1347,8 +1319,6 @@ class Arrays
 
         return $ret;
     }
-
-
 
     /**
      * Get the Nth key in the array. Obviously only useful for
@@ -1393,11 +1363,12 @@ class Arrays
     {
         $k = self::getNthKey($array, $num);
 
-        if ($k === null) return null;
+        if ($k === null) {
+            return null;
+        }
+
         return $array[$k];
     }
-
-
 
     /**
      * Get the first key of an array.
@@ -1410,8 +1381,6 @@ class Arrays
         return self::getNthKey($array, 0);
     }
 
-
-
     /**
      * Get the last key of an array
      *
@@ -1422,8 +1391,6 @@ class Arrays
     {
         return self::getNthKey($array, 0);
     }
-
-
 
     /**
      * Get the first item of an array.
@@ -1436,8 +1403,6 @@ class Arrays
         return self::getNthItem($array, 0);
     }
 
-
-
     /**
      * Get the last item of an array.
      *
@@ -1448,8 +1413,6 @@ class Arrays
     {
         return self::getNthItem($array, sizeof($array)-1);
     }
-
-
 
     /**
      * Check to see if an item is in an array. Just like in_array(), but works
@@ -1474,13 +1437,17 @@ class Arrays
             return false;
         }
 
-        $items = (array)$items;
+        $items = (array) $items;
 
         foreach ($items as $val) {
             if (in_array($val, $array, $strict)) {
-                if (!$all) return true;
+                if (!$all) {
+                    return true;
+                }
             } else {
-                if ($all) return false;
+                if ($all) {
+                    return false;
+                }
             }
         }
 
@@ -1490,8 +1457,6 @@ class Arrays
 
         return false;
     }
-
-
 
     /**
      * Check to see if keys are in an array. Just like array_key_exists() or an isset(),
@@ -1512,13 +1477,17 @@ class Arrays
             return false;
         }
 
-        $keys = (array)$keys;
+        $keys = (array) $keys;
 
         foreach ($keys as $k) {
             if (isset($array[$k])) {
-                if (!$all) return true;
+                if (!$all) {
+                    return true;
+                }
             } else {
-                if ($all) return false;
+                if ($all) {
+                    return false;
+                }
             }
         }
 
@@ -1528,8 +1497,6 @@ class Arrays
 
         return false;
     }
-
-
 
     /**
      * Search an entire array and return all keys that match a value. Just like
@@ -1561,7 +1528,6 @@ class Arrays
         return $found_keys;
     }
 
-
     /**
      * Use a callback function to get the value of first match in an array.
      *
@@ -1580,7 +1546,6 @@ class Arrays
 
         return $default;
     }
-
 
     /**
      * Use a callback function to find the key of the first match in an array
@@ -1601,7 +1566,6 @@ class Arrays
         return $default;
     }
 
-
     /**
      * Takes an array and normalizes all keys to lowercase.
      *
@@ -1613,7 +1577,9 @@ class Arrays
     {
         foreach ($array as $key => $value) {
             $lower_key = strtowloer($key);
-            if ($lower_key == $key) continue; // already lowercase
+            if ($lower_key == $key) {
+                continue;
+            } // already lowercase
 
             unset($array[$key]);
 
@@ -1638,8 +1604,6 @@ class Arrays
         return $array;
     }
 
-
-
     /**
      * Converts an array to a string of "equals lines".
      *
@@ -1663,8 +1627,6 @@ class Arrays
 
         return implode("\n", $lines);
     }
-
-
 
     /**
      * Generates an md5 hash of an arrays data. This tries to normalize
@@ -1726,8 +1688,6 @@ class Arrays
         return md5($data_str);
     }
 
-
-
     /**
      * Unset a specific deep value of an array.
      *
@@ -1737,7 +1697,7 @@ class Arrays
      */
     public static function unsetKey(array &$array, $keys)
     {
-        $keys = (array)$keys;
+        $keys = (array) $keys;
 
         // Top level, no looping needed
         if (count($keys) == 1) {
@@ -1751,7 +1711,7 @@ class Arrays
         $subarray = &$array;
 
         foreach ($keys as $key) {
-            if (!is_array($subarray) OR !isset($subarray[$key])) {
+            if (!is_array($subarray) or !isset($subarray[$key])) {
                 return false;
             }
 
@@ -1762,8 +1722,6 @@ class Arrays
 
         return true;
     }
-
-
 
     /**
      * Takes an array of error codes and flattens it into a
@@ -1796,9 +1754,10 @@ class Arrays
         $new = array();
 
         foreach ($array as $k => $v) {
-
             // May be empty array
-            if (!$v) continue;
+            if (!$v) {
+                continue;
+            }
 
             $k = $prefix.$k.'_';
 
@@ -1818,8 +1777,6 @@ class Arrays
         return $new;
     }
 
-
-
     /**
      * Search for a value in an array and remove it.
      *
@@ -1830,7 +1787,9 @@ class Arrays
      */
     public static function removeValue(array $array, $value, $strict = false)
     {
-        if (!is_array($value)) $value = array($value);
+        if (!is_array($value)) {
+            $value = array($value);
+        }
 
         foreach ($value as $v) {
             while (($k = array_search($v, $array, $strict)) !== false) {
@@ -1840,7 +1799,6 @@ class Arrays
 
         return $array;
     }
-
 
     /**
      * Replace all $find values in the array with $replace.
@@ -1861,7 +1819,6 @@ class Arrays
 
         return $new;
     }
-
 
     /**
      * Take an array of arrays, and merge each sub-array into one big one.
@@ -1886,7 +1843,7 @@ class Arrays
         $array = array();
 
         foreach ($array_of_arrays as $sub_array) {
-            if ($cur_level < $max_level AND is_array($sub_array)) {
+            if ($cur_level < $max_level and is_array($sub_array)) {
                 $sub_array = self::_mergeSubArray_helper($sub_array, $levels, $cur_level+1);
             }
 
@@ -1896,8 +1853,6 @@ class Arrays
         return $array;
     }
 
-
-
     /**
      * Same as PHP's shuffle() except works on assoc arrays by maintaining
      * indexes.
@@ -1906,7 +1861,9 @@ class Arrays
      */
     public static function shuffleAssoc(array &$array)
     {
-        if (!$array) return false;
+        if (!$array) {
+            return false;
+        }
 
         $old_array = $array;
         $array = array();
@@ -1934,7 +1891,9 @@ class Arrays
     public static function getPageChunk(array $array, $page, $per_page)
     {
         // aka "unlimited per page"
-        if (!$per_page) return $array;
+        if (!$per_page) {
+            return $array;
+        }
 
         $count = count($array);
 
@@ -1942,11 +1901,12 @@ class Arrays
         $start = ($page - 1) * $per_page;
 
         // Invalid page
-        if ($start > $count) return array();
+        if ($start > $count) {
+            return array();
+        }
+
         return array_slice($array, $start, $per_page);
     }
-
-
 
     /**
      * Use a key in an array of arrays as a grouping variable.
@@ -1989,7 +1949,9 @@ class Arrays
                 $group = $mutator_callback($group);
             }
 
-            if (!isset($ret[$group])) $ret[$group] = array();
+            if (!isset($ret[$group])) {
+                $ret[$group] = array();
+            }
 
             if ($preserve_keys) {
                 $ret[$group][$k] = $v;
@@ -2000,8 +1962,6 @@ class Arrays
 
         return $ret;
     }
-
-
 
     /**
      * Run a callback test on all items of an array, and return true if
@@ -2021,8 +1981,6 @@ class Arrays
 
         return true;
     }
-
-
 
     /**
      * Like array_walk() but the callback can take the key by reference to change it.
@@ -2047,7 +2005,6 @@ class Arrays
 
         return $array;
     }
-
 
     /**
      * Splices an assoc array and maintains keys.
@@ -2080,7 +2037,6 @@ class Arrays
         return $new_array;
     }
 
-
     /**
      * Sort an array into an alphabetical index.
      *
@@ -2108,13 +2064,12 @@ class Arrays
 
         if ($empty_letters) {
             $aindex = array('@' => array(), '#' => array());
-            foreach (range('A','Z') as $l) {
+            foreach (range('A', 'Z') as $l) {
                 $aindex[$l] = array();
             }
         }
 
         foreach ($array as $k => $item) {
-
             if (is_array($word_index)) {
                 $label = $item[$word_index];
             } else {
@@ -2145,7 +2100,7 @@ class Arrays
         ksort($aindex, SORT_STRING);
 
         // Put @ before #,
-        if (isset($aindex['@']) AND isset($aindex['#'])) {
+        if (isset($aindex['@']) and isset($aindex['#'])) {
             $a = $aindex['@'];
             $b = $aindex['#'];
 
@@ -2157,7 +2112,6 @@ class Arrays
 
         return $aindex;
     }
-
 
     /**
      * Sort an array by the value i a sub-array
@@ -2306,7 +2260,7 @@ class Arrays
     /**
      * Like array_map except works with iterators.
      *
-     * @param        $fn
+     * @param                     $fn
      * @param  array|\Traversable $array
      * @return array
      */
@@ -2341,9 +2295,9 @@ class Arrays
     /**
      * Given an array of k=>v, return array(array(k, v))
      *
-     * @param array|\Traversable $array
-     * @param string|null        $k_name  Optionally specify a key for the 'key' value
-     * @param string|null        $v_name  Optionally specify a key for the 'value' value
+     * @param  array|\Traversable $array
+     * @param  string|null        $k_name Optionally specify a key for the 'key' value
+     * @param  string|null        $v_name Optionally specify a key for the 'value' value
      * @return array
      */
     public static function kvpairs($array, $k_name = null, $v_name = null)

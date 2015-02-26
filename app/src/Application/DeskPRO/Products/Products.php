@@ -43,7 +43,6 @@ class Products extends LazyPreloadedHierarchy
      */
     private $default_id;
 
-
     /**
      * @return array
      */

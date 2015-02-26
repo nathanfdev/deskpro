@@ -81,7 +81,7 @@ class ControllerNameParser extends BaseParser
                 array(
                     'parse',
                     $brand_container->getBrand()->getId(),
-                    $controller
+                    $controller,
                 ),
                 array($this, 'doParse'),
                 array($brand_container, $controller)
@@ -102,8 +102,8 @@ class ControllerNameParser extends BaseParser
     }
 
     /**
-     * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable
-     * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     * @param  mixed      $params   the "ArbitraryHasher" input to create cache key for this callable
+     * @param  mixed      $callable doesn't need to be a callable, can be any default value, but usually is a callable
      * @return mixed|null
      */
     protected function generateAndCache($params, $callable, array $args = array())
@@ -124,7 +124,7 @@ class ControllerNameParser extends BaseParser
     }
 
     /**
-     * @param mixed $input
+     * @param  mixed  $input
      * @return string
      */
     protected function generateHash($input)

@@ -50,15 +50,15 @@ class TicketsVoter extends AbstractVoter
     }
 
     /**
-     * @param string $attribute
-     * @param object $ticket
-     * @param \Application\DeskPRO\Entity\Person|\Application\DeskPRO\People\PersonGuest|null $user
+     * @param  string                                                                          $attribute
+     * @param  object                                                                          $ticket
+     * @param  \Application\DeskPRO\Entity\Person|\Application\DeskPRO\People\PersonGuest|null $user
      * @return bool
      */
     protected function isGranted($attribute, $ticket, $user = null)
     {
         if (!$ticket instanceof Ticket) {
-            throw new InvalidArgumentException('expected Ticket entity, but got "'. get_class($ticket) .'"');
+            throw new InvalidArgumentException('expected Ticket entity, but got "'.get_class($ticket).'"');
         }
 
         // none of the attributes currently supported by this voter will grant unauthenticated tokens
@@ -68,7 +68,7 @@ class TicketsVoter extends AbstractVoter
 
         $decision = false;
 
-        switch($attribute) {
+        switch ($attribute) {
             case static::TICKET_LIST:
                 $decision = $this->isLoggedIn($user);
                 break;
@@ -89,11 +89,10 @@ class TicketsVoter extends AbstractVoter
     /**
      * Return an array of supported classes. This will be called by supportsClass
      *
-     * @return array    an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
+     * @return array an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
      */
     protected function getSupportedClasses()
     {
         return array('Application\\DeskPRO\\Entity\\Ticket');
     }
 }
- 

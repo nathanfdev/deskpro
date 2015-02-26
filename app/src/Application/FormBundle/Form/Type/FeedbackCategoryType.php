@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle\Form\Type;
 
-
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -47,14 +46,14 @@ class FeedbackCategoryType extends AbstractType
             ->setRequired('person')
             ->setAllowedTypes(
                 array(
-                    'person' => 'Application\DeskPRO\Entity\Person'
+                    'person' => 'Application\DeskPRO\Entity\Person',
                 )
             )
             ->setDefaults(
             array(
                 'choice_list' => function (Options $options) {
                     return $options['hierarchy_generator']->generateForFeedbackCategories($options['person'])->getChoiceList();
-                }
+                },
             )
         );
     }

@@ -37,7 +37,6 @@ use Orb\Util\Strings;
 
 class KbArrayParser implements ArrayParserInterface
 {
-
     /**
      * @param  array       $data
      * @return PersonValue
@@ -49,22 +48,22 @@ class KbArrayParser implements ArrayParserInterface
         $value = new KbValue();
 
         ArrayParserUtils::copyValueMapping(array(
-            'oid'		=> 'raw',
-            'person'	=> 'string',
-            'language'	=> 'string',
-            'date_end'	=> 'date',
-            'end_action'	=> 'string',
-            'slug'		=> 'string',
-            'title'		=> 'string',
-            'content'	=> 'string',
-            'total_rating'	=> 'int',
-            'num_comments'	=> 'int',
-            'num_ratings'	=> 'int',
-            'status'	=> 'string',
-            'date_created'	=> 'date',
-            'date_published'	=> 'date',
-            'categories'	=> 'array',
-            'labels'	=> 'array',
+            'oid'        => 'raw',
+            'person'    => 'string',
+            'language'    => 'string',
+            'date_end'    => 'date',
+            'end_action'    => 'string',
+            'slug'        => 'string',
+            'title'        => 'string',
+            'content'    => 'string',
+            'total_rating'    => 'int',
+            'num_comments'    => 'int',
+            'num_ratings'    => 'int',
+            'status'    => 'string',
+            'date_created'    => 'date',
+            'date_published'    => 'date',
+            'categories'    => 'array',
+            'labels'    => 'array',
         ), $data, $value);
 
         if ($value->title && !$value->slug) {
@@ -73,5 +72,4 @@ class KbArrayParser implements ArrayParserInterface
 
         return $value;
     }
-
 }

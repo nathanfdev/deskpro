@@ -36,7 +36,6 @@ namespace Application\AuthBundle\Security;
 
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class AgentImpersonateToken extends AbstractToken
 {

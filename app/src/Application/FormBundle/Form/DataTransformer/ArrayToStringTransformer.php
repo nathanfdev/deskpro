@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle\Form\DataTransformer;
 
-
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
@@ -116,10 +115,9 @@ class ArrayToStringTransformer implements DataTransformerInterface
 
         $k = array();
         foreach ($val as $v) {
-            $k[] = trim((string)$v);
+            $k[] = trim((string) $v);
         }
 
         return $k;
     }
 }
- 

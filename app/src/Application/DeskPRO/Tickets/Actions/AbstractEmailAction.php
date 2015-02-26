@@ -56,7 +56,6 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
     {
         $from_account = $this->getActionOption('from_account') ?: null;
         if ($from_account) {
-
             if (Numbers::isInteger($from_account)) {
                 $from_account_id = $from_account;
                 try {
@@ -82,7 +81,6 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 
         return $from_account;
     }
-
 
     /**
      * @param  Ticket                    $ticket
@@ -111,7 +109,6 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 
         return $template;
     }
-
 
     /**
      * @param  Ticket                   $ticket
@@ -190,7 +187,6 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         return $vars;
     }
 
-
     /**
      * @param TicketEmail              $ticket_email
      * @param Ticket                   $ticket
@@ -213,7 +209,6 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 
         $state->recordChange($change);
     }
-
 
     /**
      * @param  string                   $name
@@ -250,13 +245,12 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 
                     return trim(Strings::collapseWhitespace(Strings::removeLineBreaks($name)));
                 } catch (\Exception $e) {
-                    $context->getLogger()->warn('Invalid name pattern syntax: ' . $name . '. Exception: ' . $e->getMessage(), array('exception' => $e));
+                    $context->getLogger()->warn('Invalid name pattern syntax: '.$name.'. Exception: '.$e->getMessage(), array('exception' => $e));
 
                     return '';
                 }
         }
     }
-
 
     /**
      * @param  string                   $string
@@ -273,7 +267,6 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         return $renderer->renderTicketTemplate($string, $ticket, $context, $extra_vars);
     }
 
-
     /**
      * @param  array                    $raw_headers
      * @param  Ticket                   $ticket
@@ -286,7 +279,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         foreach ($raw_headers as $h) {
             $headers[] = array(
                 'name'  => $this->renderStringTemplate($h['name'], $ticket, $context),
-                'value' => $this->renderStringTemplate($h['value'], $ticket, $context)
+                'value' => $this->renderStringTemplate($h['value'], $ticket, $context),
             );
         }
 

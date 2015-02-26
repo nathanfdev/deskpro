@@ -74,7 +74,7 @@ class HierarchyNode extends BaseNode
         /** @var HierarchyNode $node */
         foreach ($this as $node) {
             $nodeId = $this->hierarchy->getNodeId($node);
-            $labels[$nodeId] = (string)$node;
+            $labels[$nodeId] = (string) $node;
             foreach ($node->getLabels() as $id => $nl) {
                 $labels[$id] = $nl;
             }
@@ -83,4 +83,3 @@ class HierarchyNode extends BaseNode
         return $labels;
     }
 }
- 

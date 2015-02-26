@@ -54,7 +54,6 @@ abstract class AbstractAction implements ActionDefinitionInterface
      */
     private $meta;
 
-
     /**
      * @param array $options
      */
@@ -64,7 +63,6 @@ abstract class AbstractAction implements ActionDefinitionInterface
         $this->_initOptions($options);
     }
 
-
     /**
      * @return OptionsArray
      */
@@ -72,7 +70,6 @@ abstract class AbstractAction implements ActionDefinitionInterface
     {
         return $this->meta;
     }
-
 
     /**
      * @param array $options
@@ -85,7 +82,6 @@ abstract class AbstractAction implements ActionDefinitionInterface
         $this->options->ensureRequired();
     }
 
-
     /**
      * @return array
      */
@@ -94,7 +90,6 @@ abstract class AbstractAction implements ActionDefinitionInterface
         return array();
     }
 
-
     /**
      * @return CheckedOptionsArray
      */
@@ -102,7 +97,6 @@ abstract class AbstractAction implements ActionDefinitionInterface
     {
         return new CheckedOptionsArray();
     }
-
 
     /**
      * Gets the type name of the criteria
@@ -113,7 +107,6 @@ abstract class AbstractAction implements ActionDefinitionInterface
     {
         return Util::getBaseClassname($this);
     }
-
 
     /**
      * Get's an array of options

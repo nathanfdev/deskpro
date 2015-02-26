@@ -51,7 +51,7 @@ class RatingsDataService extends AbstractDataService
     }
 
     /**
-     * @param int|null|Rating $rating
+     * @param  int|null|Rating $rating
      * @return Rating|null
      */
     public function getRating($rating)
@@ -61,9 +61,9 @@ class RatingsDataService extends AbstractDataService
         return $this->generateAndCache(
             array(
                 'getRating',
-                $rating
+                $rating,
             ),
-            function() use ($ratings_repo, $rating) {
+            function () use ($ratings_repo, $rating) {
                 if (!$rating) { // we need some input
                     return null;
                 }

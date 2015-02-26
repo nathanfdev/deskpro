@@ -34,16 +34,8 @@
 
 namespace Application\PortalBundle\Theme;
 
-use Application\DeskPRO\Domain\DomainObject;
-use Application\PortalBundle\HttpCache\PortalCacheHelper;
-use Application\PortalBundle\Mode\PortalMode;
-use Application\PortalBundle\Mode\PortalModeStorage;
-use Application\PortalBundle\Request\TagRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpKernel\Controller\ControllerReference;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ThemeResolver
 {
@@ -72,7 +64,6 @@ class ThemeResolver
      */
     private $themeTemplateMap;
 
-
     public function __construct(ContainerInterface $container, ThemeRepository $theme_repo, TagProcessor $tag_processor, LoggerInterface $logger)
     {
         $this->container  = $container;
@@ -98,9 +89,9 @@ class ThemeResolver
             $controller = $parts[1];
             $action     = $parts[2];
 
-            $try = $theme->getNamespace() . '\\Controller\\' . $controller . 'Controller';
+            $try = $theme->getNamespace().'\\Controller\\'.$controller.'Controller';
             if (class_exists($try)) {
-                $callable = $try . '::' . $action . 'Action';
+                $callable = $try.'::'.$action.'Action';
                 if (is_callable($callable)) {
                     $this->logger->debug(sprintf('theme resolver: resolved "%s" controller into %s', $input_controller, $callable));
 
@@ -117,7 +108,6 @@ class ThemeResolver
 
         return null;
     }
-
 
     /**
      * Get the absolute path to a filename for a theme, with the name format like:
@@ -141,13 +131,12 @@ class ThemeResolver
         // you can refer to the parent theme by prefixing "ThemeParent:" instead of "Theme:"
         if ('ThemeParent:' === substr($name, 0, 12)) {
             if ($parent = $theme->getParent()) {
-                return $this->templatePath($parent, 'Theme:' . substr($name, 12));
+                return $this->templatePath($parent, 'Theme:'.substr($name, 12));
             }
         }
 
         return null;
     }
-
 
     public function getThemeTemplateMap()
     {
@@ -172,7 +161,7 @@ class ThemeResolver
             $this->themeTemplateMap[$theme->getId()] = $theme->getTemplateMap();
         }
 
-        $mapCache->write('<?php return ' . var_export($this->themeTemplateMap, true) . ';');
+        $mapCache->write('<?php return '.var_export($this->themeTemplateMap, true).';');
 
         return $this->themeTemplateMap;
     }
@@ -183,7 +172,7 @@ class ThemeResolver
         if (isset($map[$theme->getId()])
             && isset($map[$theme->getId()][$name])
         ) {
-            return DP_ROOT . $map[$theme->getId()][$name];
+            return DP_ROOT.$map[$theme->getId()][$name];
         }
 
         return null;

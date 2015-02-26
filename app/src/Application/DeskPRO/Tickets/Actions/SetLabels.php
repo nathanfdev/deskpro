@@ -59,7 +59,6 @@ class SetLabels extends AbstractContainerAwareAction implements ActionInterface,
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -89,7 +88,6 @@ class SetLabels extends AbstractContainerAwareAction implements ActionInterface,
             }
         }
     }
-
 
     /**
      * {@inheritDoc}

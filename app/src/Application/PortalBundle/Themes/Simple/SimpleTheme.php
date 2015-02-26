@@ -46,7 +46,6 @@ class SimpleTheme extends AbstractTheme
         return 'simple';
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -54,7 +53,6 @@ class SimpleTheme extends AbstractTheme
     {
         return 'base';
     }
-
 
     /**
      * {@inheritdoc}
@@ -64,30 +62,26 @@ class SimpleTheme extends AbstractTheme
         return 'Simple';
     }
 
-
     public static function getHardCodedTags()
     {
         return array();
     }
-
 
     /**
      * {@inheritdoc}
      */
     public function getBaseTemplateDir()
     {
-        return __DIR__ . '/Resources/views';
+        return __DIR__.'/Resources/views';
     }
-
 
     /**
      * @return string absolute path to the root of this theme's controllers
      */
     public function getBaseControllerDir()
     {
-        return __DIR__ . '/Controller';
+        return __DIR__.'/Controller';
     }
-
 
     /**
      * @return string|null base namespace of controllers, like: Application\PortalBundle\Themes\Standard

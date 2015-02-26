@@ -57,7 +57,7 @@ class BanIp extends AbstractEntityRepository
 
         if (!empty($search_phrase)) {
             $where = " WHERE banned_ip LIKE :search";
-            $params['search'] = '%' . $search_phrase . '%';
+            $params['search'] = '%'.$search_phrase.'%';
         }
 
         $list = App::getDb()->fetchAllCol(sprintf("
@@ -95,7 +95,7 @@ class BanIp extends AbstractEntityRepository
 
         if (!empty($search_phrase)) {
             $where = "banned_ip LIKE :search";
-            $params['search'] = '%' . $search_phrase . '%';
+            $params['search'] = '%'.$search_phrase.'%';
         }
 
         $count = App::getDb()->countWithPlaceholders('ban_ips', $where, $params);

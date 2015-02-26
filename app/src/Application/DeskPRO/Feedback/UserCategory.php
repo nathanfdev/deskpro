@@ -54,7 +54,6 @@ class UserCategory
         $this->sub_field = $sub_field;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\CustomDefFeedback
      */
@@ -63,7 +62,6 @@ class UserCategory
         return $this->field;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\CustomDefFeedback|null
      */
@@ -71,7 +69,6 @@ class UserCategory
     {
         return $this->sub_field;
     }
-
 
     /**
      * Get the category ID
@@ -86,7 +83,6 @@ class UserCategory
 
         return $this->field->getId();
     }
-
 
     /**
      * Get the category title

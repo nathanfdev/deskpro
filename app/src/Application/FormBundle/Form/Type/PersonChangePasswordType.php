@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle\Form\Type;
 
-
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -51,9 +50,9 @@ class PersonChangePasswordType extends AbstractType
             $builder->add('current_password', 'password', array(
                 'required' => true,
                 'constraints' => array(
-                    new UserPassword()
+                    new UserPassword(),
                 ),
-                'mapped' => false // not mapping this, just using it for validation
+                'mapped' => false, // not mapping this, just using it for validation
             ));
         }
 
@@ -65,9 +64,9 @@ class PersonChangePasswordType extends AbstractType
             'type' => 'password',
             'required' => true,
             'constraints' => array(
-                new NotBlank()
+                new NotBlank(),
             ),
-            'mapped' => false
+            'mapped' => false,
         ));
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
@@ -80,7 +79,7 @@ class PersonChangePasswordType extends AbstractType
         $resolver->setDefaults(
             array(
                 'data_class' => 'Application\DeskPRO\Entity\Person',
-                'require_current_password' => true
+                'require_current_password' => true,
             )
         );
 
@@ -90,11 +89,10 @@ class PersonChangePasswordType extends AbstractType
 
         $resolver->setAllowedTypes(
             array(
-                'settings' => 'Application\DeskPRO\NewSettings\SettingsBag'
+                'settings' => 'Application\DeskPRO\NewSettings\SettingsBag',
             )
         );
     }
-
 
     /**
      * Returns the name of this type.

@@ -76,8 +76,6 @@ class OrbResource extends AbstractScraper
         }
     }
 
-
-
     /**
      * Get data from the resource
      *
@@ -93,7 +91,7 @@ class OrbResource extends AbstractScraper
 
         if ($identity) {
             if (is_array($identity)) {
-                foreach ($identity as $k=>$v) {
+                foreach ($identity as $k => $v) {
                     $http->setParameterPost('data['.$k.']', $v);
                 }
             } else {
@@ -130,7 +128,9 @@ class OrbResource extends AbstractScraper
      */
     public function getHttpClient()
     {
-        if ($this->http !== null) return $this->http;
+        if ($this->http !== null) {
+            return $this->http;
+        }
 
         $this->http = new \Zend\Http\Client();
         $this->http->resetParameters();

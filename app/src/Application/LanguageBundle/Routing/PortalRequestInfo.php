@@ -52,7 +52,7 @@ class PortalRequestInfo
         'portal_login_usersource_sso',
         'portal_login_callback',
         'portal_login_authenticate',
-        'portal_login_submit'
+        'portal_login_submit',
     );
 
     /**
@@ -137,7 +137,6 @@ class PortalRequestInfo
                 return in_array($route_name, self::$special_routes);
             }
         }
-
 
         return false;
     }

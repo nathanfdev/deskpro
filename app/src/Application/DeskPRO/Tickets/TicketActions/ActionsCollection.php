@@ -86,7 +86,6 @@ class ActionsCollection
         }
     }
 
-
     /**
      * @return int
      */
@@ -94,7 +93,6 @@ class ActionsCollection
     {
         return count($this->actions);
     }
-
 
     /**
      * Add a new action
@@ -127,7 +125,6 @@ class ActionsCollection
         }
     }
 
-
     /**
      * Apply a collection modifier
      *
@@ -146,7 +143,7 @@ class ActionsCollection
      */
     public function applyAllModifiers()
     {
-        foreach ($this->applied_modifiers AS $modifier) {
+        foreach ($this->applied_modifiers as $modifier) {
             $modifier->modifyCollection($this);
         }
     }
@@ -159,7 +156,7 @@ class ActionsCollection
     public function hasActionType($name)
     {
         if (strpos($name, '\\') === false) {
-            $name = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $name . 'Action';
+            $name = 'Application\\DeskPRO\\Tickets\\TicketActions\\'.$name.'Action';
         }
 
         return isset($this->actions[$name]);
@@ -173,7 +170,7 @@ class ActionsCollection
     public function hasModifierType($name)
     {
         if (strpos($name, '\\') === false) {
-            $name = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $name . 'Modifier';
+            $name = 'Application\\DeskPRO\\Tickets\\TicketActions\\'.$name.'Modifier';
         }
 
         return isset($this->applied_modifier_types[$name]);
@@ -189,7 +186,7 @@ class ActionsCollection
     public function getActionType($name)
     {
         if (strpos($name, '\\') === false) {
-            $name = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $name . 'Action';
+            $name = 'Application\\DeskPRO\\Tickets\\TicketActions\\'.$name.'Action';
         }
 
         if (!$this->hasActionType($name)) {
@@ -209,7 +206,7 @@ class ActionsCollection
     public function removeActionType($name)
     {
         if (strpos($name, '\\') === false) {
-            $name = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $name . 'Action';
+            $name = 'Application\\DeskPRO\\Tickets\\TicketActions\\'.$name.'Action';
         }
 
         if (!$this->hasActionType($name)) {
@@ -395,7 +392,10 @@ class ActionsCollection
             $a_order = isset($order[$a_name]) ? $order[$a_name] : $a_default;
             $b_order = isset($order[$b_name]) ? $order[$b_name] : $b_default;
 
-            if ($a_order == $b_order) return 0;
+            if ($a_order == $b_order) {
+                return 0;
+            }
+
             return $a_order < $b_order ? -1 : 1;
         });
     }

@@ -88,7 +88,6 @@ class HiddenType extends AbstractType
         $view->vars['hidden'] = (bool) $options['hidden'];
     }
 
-
     public function getName()
     {
         return 'deskpro_hidden';
@@ -105,11 +104,10 @@ class HiddenType extends AbstractType
             'auto_fill' => false,
             'hidden' => true,
             'label' => function (Options $options) {
-                    return ! ( (bool) $options->get('hidden') );
+                    return ! ((bool) $options->get('hidden'));
                 },
             'request_param_name' => null,
-            'cookie_param_name' => null
+            'cookie_param_name' => null,
         ));
     }
 }
- 

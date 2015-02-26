@@ -34,9 +34,7 @@
 
 namespace Application\FormBundle\Captcha;
 
-
 use Application\DeskPRO\Brand\BrandStack;
-use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 class CaptchaDecider

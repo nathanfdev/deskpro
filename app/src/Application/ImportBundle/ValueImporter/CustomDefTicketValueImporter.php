@@ -60,7 +60,7 @@ class CustomDefTicketValueImporter extends AbstractCustomDefValueImporter
             throw new \InvalidArgumentException("This importer can only import Ticket Custom Fields");
         }
 
-        $log_id = "Ticket CustomField :: " . $custom_value->oid . " ";
+        $log_id = "Ticket CustomField :: ".$custom_value->oid." ";
 
         if (!$custom_value->key) {
             throw new BadDataException(sprintf('[%s] Custom field data must have a key', $log_id));
@@ -68,5 +68,4 @@ class CustomDefTicketValueImporter extends AbstractCustomDefValueImporter
 
         return $this->processCustomField($custom_value);
     }
-
 }

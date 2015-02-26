@@ -34,17 +34,12 @@
 
 namespace Application\FormBundle\Form\Type;
 
-
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\People\PersonGuest;
 use Application\FormBundle\Captcha\CaptchaDecider;
-use Application\FormBundle\Form\FormFieldManager;
 use Application\FormBundle\Validator\Constraints\ValidCaptcha;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Length;
@@ -66,26 +61,26 @@ class NewFeedbackType extends AbstractType
         $builder->add('title', 'text');
         $builder->add('content', 'textarea');
         $builder->add('category', 'feedback_category', array(
-            'person' => $options['person']
+            'person' => $options['person'],
         ));
         $builder->add('custom_data_collection', 'custom_feedback_fields');
         $builder->add('attachments', 'feedback_attachment_collection', array(
-            'person' => $options['person']
+            'person' => $options['person'],
         ));
         $builder->add('more_attachments', 'submit', array(
             'validation_groups' => false,
-            'label' => 'Add Another Attachment'
+            'label' => 'Add Another Attachment',
         ));
 
         if (!$options['person'] || $options['person'] instanceof PersonGuest) {
             $builder->add('name', 'text', array(
                 'constraints' => new Length(array('min' => 2)),
-                'property_path' => 'person.name'
+                'property_path' => 'person.name',
             ));
             $builder->add('email', 'deskpro_person_email', array(
                 'label' => false,
                 'property_path' => 'person.primary_email',
-                'email_label' => false
+                'email_label' => false,
             ));
         }
 
@@ -94,8 +89,8 @@ class NewFeedbackType extends AbstractType
                 'mapped' => false,
                 'error_bubbling' => false,
                 'constraints' => array(
-                    new ValidCaptcha()
-                )
+                    new ValidCaptcha(),
+                ),
             ));
         }
     }
@@ -105,19 +100,19 @@ class NewFeedbackType extends AbstractType
         $resolver
             ->setRequired(
                 array(
-                    'person'
+                    'person',
                 )
 
             )
             ->setAllowedTypes(
                 array(
-                    'person' => 'Application\DeskPRO\Entity\Person'
+                    'person' => 'Application\DeskPRO\Entity\Person',
                 )
             )
             ->setDefaults(
                 array(
                     'data_class' => 'Application\DeskPRO\Entity\Feedback',
-                    'agent_interface' => false
+                    'agent_interface' => false,
                 )
             )
         ;

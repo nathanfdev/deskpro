@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle\EventListener;
 
-
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -73,7 +72,7 @@ class DoubleSubmitJavascriptListener implements EventSubscriberInterface
 
         if (false !== $pos) {
             $script = "\n<script>"
-                . str_replace(
+                .str_replace(
                     "\n",
                     "",
                     "
@@ -91,8 +90,8 @@ for (var i = 1; i < inputs.length; i++) {
 }
 })();
                     ")
-                . "</script>\n";
-            $content = substr($content, 0, $pos) . $script . substr($content, $pos);
+                ."</script>\n";
+            $content = substr($content, 0, $pos).$script.substr($content, $pos);
             $response->setContent($content);
         }
     }
@@ -100,7 +99,7 @@ for (var i = 1; i < inputs.length; i++) {
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::RESPONSE => array('onKernelResponse')
+            KernelEvents::RESPONSE => array('onKernelResponse'),
         );
     }
 }

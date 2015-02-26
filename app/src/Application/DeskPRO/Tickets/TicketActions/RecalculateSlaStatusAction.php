@@ -46,7 +46,6 @@ class RecalculateSlaStatusAction extends AbstractAction
     {
     }
 
-
     /**
      * Apply the property to the ticket
      *
@@ -58,7 +57,6 @@ class RecalculateSlaStatusAction extends AbstractAction
         // and the cron process will handle it. This just means that there's always an action listed.
     }
 
-
     /**
      * Get an array of actions that would be performed on the ticket
      *
@@ -69,8 +67,6 @@ class RecalculateSlaStatusAction extends AbstractAction
         return array();
     }
 
-
-
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
@@ -79,7 +75,6 @@ class RecalculateSlaStatusAction extends AbstractAction
     {
         return $other_action;
     }
-
 
     /**
      * @return string

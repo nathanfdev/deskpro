@@ -34,14 +34,12 @@
 
 namespace Application\LanguageBundle\Routing;
 
-
 class RedirectToUrlException extends \InvalidArgumentException
 {
     /**
      * @var string
      */
     private $url;
-
 
     public function __construct($url)
     {

@@ -34,9 +34,7 @@
 
 namespace Application\PersonBundle\Person;
 
-
 use Application\DeskPRO\Brand\BrandStack;
-use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
@@ -126,7 +124,7 @@ class PersonFactory
      * $guest->primary_email = new EmailAddress('chris.tickner@gmail.com')
      * $new_person = $person_factory->createPersonFromGuest($guest);
      *
-     * @param PersonGuest $guest
+     * @param  PersonGuest $guest
      * @return Person
      */
     public function createPersonFromGuest(PersonGuest $guest)
@@ -160,7 +158,6 @@ class PersonFactory
             // as an email address that requires validation. If validation is disabled,
             // we toggles it off
         } else {
-
             $person = $this->getPersonByEmail($email);
 
             // Still no, if we're here then we make a new profile
@@ -204,7 +201,7 @@ class PersonFactory
         if ($email instanceof PersonEmail) {
             $email = $email->email;
         }
+
         return $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
     }
 }
- 

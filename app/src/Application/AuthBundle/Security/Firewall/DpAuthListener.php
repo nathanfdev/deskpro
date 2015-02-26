@@ -71,7 +71,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             'portal_login_authenticate',
             'portal_login_callback',
             'portal_login_usersource_sso',
-            'portal_agent_login'
+            'portal_agent_login',
         );
 
         return in_array($request->attributes->get('_route'), $security_routes);

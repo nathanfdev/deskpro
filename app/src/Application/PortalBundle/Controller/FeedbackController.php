@@ -34,7 +34,6 @@
 
 namespace Application\PortalBundle\Controller;
 
-
 use Application\AuthBundle\Voter\Portal\ContentCommentVoter;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
@@ -65,13 +64,12 @@ class FeedbackController extends AbstractController
         // RSS
         //
         if ('rss' === $_format) {
-
             $filter = new FeedbackFilter(array(
                 'status' => $request->query->get('status', 'all'),
                 'status_categories' => $request->query->get('status_categories', array()),
                 'types' => $request->query->get('types', array()),
                 'sort' => $request->query->get('sort', 'date'),
-                'sort_direction' => $request->query->get('sort_direction', 'desc')
+                'sort_direction' => $request->query->get('sort_direction', 'desc'),
             ));
 
             $pager = $this->getFeedbackDataService()->getItemsPager(
@@ -82,11 +80,9 @@ class FeedbackController extends AbstractController
 
             return $this->render('PortalBundle:Feedback:feed.rss.twig', array(
                 'pager' => $pager,
-                'category' => null
+                'category' => null,
             ));
         }
-
-
 
         //
         // NEW FEEDBACK FORM
@@ -95,7 +91,7 @@ class FeedbackController extends AbstractController
         $new_feedback = new Feedback();
         $new_feedback->setPerson($person);
         $form = $this->createForm('new_feedback', $new_feedback, array(
-            'person' => $person
+            'person' => $person,
         ));
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -120,7 +116,6 @@ class FeedbackController extends AbstractController
                     foreach ($new_feedback->getAttachments() as $attachment) {
                         $attachment->setPerson($person);
                     }
-
                 }
 
                 $this->persistAndFlushEntity($new_feedback);
@@ -128,7 +123,6 @@ class FeedbackController extends AbstractController
                 return $this->redirectToRoute('portal_feedback_view', array('slug' => $new_feedback->getSlug()));
             }
         }
-
 
         //
         // RENDER THEME
@@ -140,7 +134,7 @@ class FeedbackController extends AbstractController
                 'count' => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination' => true,
                 'form' => $form->createView(),
-                'user' => $this->getUser()
+                'user' => $this->getUser(),
             )
         );
     }
@@ -175,7 +169,7 @@ class FeedbackController extends AbstractController
             'status_categories' => $filter->getStatusCategories(),
             'types' => $filter->getTypes(),
             'sort' => $filter->getSort(),
-            'sort_direction' => $filter->getSortDirection()
+            'sort_direction' => $filter->getSortDirection(),
         );
 
         if ($request->isXmlHttpRequest()) {
@@ -191,12 +185,12 @@ class FeedbackController extends AbstractController
         $new_feedback->setPerson($person);
         $form = $this->createForm('new_feedback', $new_feedback, array(
             'person' => $person,
-            'action' => $this->generateUrl('portal_feedback')
+            'action' => $this->generateUrl('portal_feedback'),
         ));
 
         $page_options = array_merge($page_options, array(
             'form' => $form->createView(),
-            'user' => $this->getUser()
+            'user' => $this->getUser(),
         ));
 
         //
@@ -207,7 +201,6 @@ class FeedbackController extends AbstractController
             $page_options
         );
     }
-
 
     /**
      * @Route("/feedback/view/{slug}", name="portal_feedback_view")
@@ -225,7 +218,7 @@ class FeedbackController extends AbstractController
             $comment = new FeedbackComment();
             $comment->setObject($item);
             $new_comment_form = $this->createForm('comment', $comment, array(
-                'person' => $this->getUser()
+                'person' => $this->getUser(),
             ));
             $new_comment_form->handleRequest($request);
             if ($new_comment_form->isValid()) {
@@ -237,7 +230,6 @@ class FeedbackController extends AbstractController
             }
         }
 
-
         //
         // RENDER THEME
         //
@@ -247,7 +239,7 @@ class FeedbackController extends AbstractController
                 'item' => $item,
                 'content_id' => $item->getId(),
                 'content_type' => Feedback::CONTENT_TYPE,
-                'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null
+                'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
             )
         );
     }

@@ -56,7 +56,6 @@ class CheckPerformerEmail extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

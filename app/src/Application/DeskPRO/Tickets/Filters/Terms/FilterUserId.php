@@ -55,7 +55,6 @@ class FilterUserId extends AbstractFilterTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

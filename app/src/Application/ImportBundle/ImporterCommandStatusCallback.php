@@ -62,7 +62,6 @@ class ImporterCommandStatusCallback extends ImporterStatusCallback
     {
         $this->command = $command;
         $this->output = $output;
-
     }
 
     public function preStep(Importer $importer, AbstractValueImporter $value_importer, $dir)
@@ -74,7 +73,7 @@ class ImporterCommandStatusCallback extends ImporterStatusCallback
 
         $this->current_progress = new ProgressBar($this->output);
         $this->current_progress->start();
-        $this->current_progress->setMessage("Running step: " . Util::getBaseClassname($value_importer));
+        $this->current_progress->setMessage("Running step: ".Util::getBaseClassname($value_importer));
     }
 
     public function postStep(Importer $importer, AbstractValueImporter $value_importer, $dir, $count, $time)

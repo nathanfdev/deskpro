@@ -37,8 +37,9 @@ use Orb\Util\Strings;
 
 class ArrayParserUtils
 {
-    private function __construct() {}
-
+    private function __construct()
+    {
+    }
 
     /**
      * @param string $type
@@ -58,7 +59,7 @@ class ArrayParserUtils
                     return $v;
                     break;
                 case 'int':
-                    return (int)$v;
+                    return (int) $v;
                     break;
                 case 'bool':
                     if ($v === 1 || $v === true || $v === "1" || $v === "true" || $v === "yes") {
@@ -67,10 +68,10 @@ class ArrayParserUtils
                         return false;
                     }
                 case 'string':
-                    return (string)$v;
+                    return (string) $v;
                     break;
                 case 'lstring':
-                    return Strings::utf8_strtolower((string)$v);
+                    return Strings::utf8_strtolower((string) $v);
                     break;
                 case 'array':
                     return is_array($v) ? array_values($v) : array($v);
@@ -92,7 +93,6 @@ class ArrayParserUtils
                 default:
                     // type[] -- string[] means array of strings, etc
                     if (preg_match('#^(.*?)\[\]$#', $type, $m)) {
-
                         if (!is_array($v)) {
                             $v = array($v);
                         }
@@ -113,7 +113,6 @@ class ArrayParserUtils
         return $value->$field = $clean_val($type, $data[$field]);
     }
 
-
     /**
      * @param array $mapping
      * @param array $data
@@ -125,7 +124,6 @@ class ArrayParserUtils
             self::copyValue($t, $f, $data, $value);
         }
     }
-
 
     /**
      * @param  array $data
@@ -149,7 +147,6 @@ class ArrayParserUtils
 
         return $data;
     }
-
 
     /**
      * @param  string|int     $value

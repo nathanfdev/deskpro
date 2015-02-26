@@ -37,7 +37,6 @@ namespace Application\FormBundle\Form\Type;
 use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\FormBundle\Form\FormFieldManager;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -86,7 +85,7 @@ class CustomDataPersonType extends AbstractType
         if ($config->getOption('ignore_validation')) {
             $options = array_merge($options, array(
                 'validation_groups' => array(),
-                'constraints' => array()
+                'constraints' => array(),
             ));
         }
 
@@ -135,17 +134,17 @@ class CustomDataPersonType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class'   => 'Application\DeskPRO\Entity\CustomDataPerson',
-            'ignore_validation' => false
+            'ignore_validation' => false,
         ));
         $resolver->setRequired(array(
             'custom_data_field',
             'person',
-            'agent_interface'
+            'agent_interface',
         ));
         $resolver->setAllowedTypes(array(
             'custom_data_field' => 'Application\DeskPRO\Entity\CustomDefPerson',
             'person' => 'Application\DeskPRO\Entity\Person',
-            'agent_interface' => 'bool'
+            'agent_interface' => 'bool',
         ));
     }
 

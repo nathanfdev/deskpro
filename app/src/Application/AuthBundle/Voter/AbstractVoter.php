@@ -29,8 +29,6 @@ namespace Application\AuthBundle\Voter;
 
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 abstract class AbstractVoter extends \Symfony\Component\Security\Core\Authorization\Voter\AbstractVoter
@@ -51,7 +49,7 @@ abstract class AbstractVoter extends \Symfony\Component\Security\Core\Authorizat
      * @param object         $object     The object to secure
      * @param array          $attributes An array of attributes associated with the method being invoked
      *
-     * @return int     either ACCESS_GRANTED, ACCESS_ABSTAIN, or ACCESS_DENIED
+     * @return int either ACCESS_GRANTED, ACCESS_ABSTAIN, or ACCESS_DENIED
      */
     public function vote(TokenInterface $token, $object, array $attributes)
     {
@@ -122,7 +120,7 @@ abstract class AbstractVoter extends \Symfony\Component\Security\Core\Authorizat
 
     /**
      * @param $setting
-     * @param mixed $default
+     * @param  mixed $default
      * @return mixed
      */
     public function getActiveBrandSetting($setting, $default = null)

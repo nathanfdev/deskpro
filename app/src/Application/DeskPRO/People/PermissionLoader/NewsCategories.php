@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\People\PermissionLoader;
 
-
 /**
  * Loads news category permissions
  */

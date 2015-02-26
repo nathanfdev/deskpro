@@ -34,15 +34,10 @@
 
 namespace Application\AppBundle\DataService;
 
-
-use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\People\PersonGuest;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -59,7 +54,7 @@ class ArticlesDataService extends AbstractDataService
     }
 
     /**
-     * @param ArticleCategory $category
+     * @param  ArticleCategory $category
      * @param $page
      * @param $max_per_page
      * @return Pagerfanta
@@ -73,9 +68,9 @@ class ArticlesDataService extends AbstractDataService
                 'getArticlesPager',
                 $category,
                 $page,
-                $max_per_page
+                $max_per_page,
             ),
-            function() use ($em, $category, $max_per_page, $page) {
+            function () use ($em, $category, $max_per_page, $page) {
                 $qb = $em->createQueryBuilder();
 
                 $qb->select('a')
@@ -105,7 +100,7 @@ class ArticlesDataService extends AbstractDataService
      *
      * TODO: this is using the doctrine proxy as a method of finding children of the category. Might be able to improve that.
      *
-     * @param int|null|ArticleCategory $category
+     * @param  int|null|ArticleCategory  $category
      * @return ArticleCategory[]
      * @throws \InvalidArgumentException
      */
@@ -116,9 +111,9 @@ class ArticlesDataService extends AbstractDataService
         return $this->generateAndCache(
             array(
                 'getCategoryChildren',
-                $category
+                $category,
             ),
-            function() use ($that, $category) {
+            function () use ($that, $category) {
                 if (!$category) { // get root categories
                     return $that->getArticleCategoriesRepo()->findBy(array('parent' => null));
                 }
@@ -135,7 +130,7 @@ class ArticlesDataService extends AbstractDataService
     }
 
     /**
-     * @param int|null|Article $article
+     * @param  int|null|Article $article
      * @return Article|null
      */
     public function getArticle($article)
@@ -145,9 +140,9 @@ class ArticlesDataService extends AbstractDataService
         return $this->generateAndCache(
             array(
                 'getArticle',
-                $article
+                $article,
             ),
-            function() use ($that, $article) {
+            function () use ($that, $article) {
                 if (!$article) { // we need some input
                     return null;
                 }
@@ -166,7 +161,7 @@ class ArticlesDataService extends AbstractDataService
      *
      * TODO: optimize the heck out of any possible inputs here (if it helps: cache in an array at least, cache long term if desired, should normalize cache key on lowest common denominator "id")
      *
-     * @param int|null|ArticleCategory $category
+     * @param  int|null|ArticleCategory $category
      * @return ArticleCategory|null
      */
     public function getCategory($category)
@@ -176,7 +171,7 @@ class ArticlesDataService extends AbstractDataService
         return $this->generateAndCache(
             array(
                 'getCategory',
-                $category
+                $category,
             ),
             function () use ($that, $category) {
                 if (!$category) { // we need some input
@@ -200,9 +195,9 @@ class ArticlesDataService extends AbstractDataService
             array(
                 'getArticleComments',
                 $article,
-                $person
+                $person,
             ),
-            function() use ($that, $article, $person) {
+            function () use ($that, $article, $person) {
                 $article = $that->getArticle($article);
 
                 return $that->getArticleCommentRepo()->getDisplayComments($article, $person);
@@ -242,4 +237,3 @@ class ArticlesDataService extends AbstractDataService
         return $this->em->getRepository('DeskPRO:RelatedContent');
     }
 }
- 

@@ -80,9 +80,6 @@ class ResizeFormListener extends BaseListener
             throw new UnexpectedTypeException($data, 'array or (\Traversable and \ArrayAccess)');
         }
 
-
-
-
         $map = array();
         foreach ($form as $name => $child) {
             $map[$child->get('id')->getData()] = $name;
@@ -102,9 +99,6 @@ class ResizeFormListener extends BaseListener
         $data = $newData;
         $event->setData($data);
 
-
-
-
         // Remove all empty rows
         if ($this->allowDelete) {
             foreach ($form as $name => $child) {
@@ -119,9 +113,10 @@ class ResizeFormListener extends BaseListener
         // Add all additional rows
         if ($this->allowAdd) {
             foreach ($data as $name => $value) {
-
                 // todo: very strange issue. might be php bug
-                if (!$name) continue;
+                if (!$name) {
+                    continue;
+                }
 
                 // todo $value['title'] is very rare! only for DpCategoryBuilderType
                 if (!$form->has($name) && !empty($value['title'])) {

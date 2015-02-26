@@ -63,14 +63,14 @@ class ContentAccessVoter extends AbstractVoter
             self::VIEW_ARTICLE_CATEGORY,
             self::VIEW_NEWS,
             self::VIEW_NEWS_CATEGORY,
-            self::VIEW_FEEDBACK
+            self::VIEW_FEEDBACK,
         );
     }
 
     protected function isGranted($attribute, $object, $user = null)
     {
         // $object is the content entity here (or content category) ie Article, ArticleCategory, etc.
-        switch($attribute) {
+        switch ($attribute) {
             case static::DOWNLOAD_DOWNLOAD:
             case static::VIEW_DOWNLOAD:
             case static::VIEW_DOWNLOAD_CATEGORY:
@@ -89,11 +89,10 @@ class ContentAccessVoter extends AbstractVoter
     /**
      * Return an array of supported classes. This will be called by supportsClass
      *
-     * @return array    an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
+     * @return array an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
      */
     protected function getSupportedClasses()
     {
         return true;
     }
 }
- 

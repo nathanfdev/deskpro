@@ -47,7 +47,7 @@ class TicketFilterSubscription extends AbstractEntityRepository
             FROM DeskPRO:TicketFilterSubscription s
             LEFT JOIN s.filter f
             WHERE s.person = ?1
-        ")->execute(array(1=> $person));
+        ")->execute(array(1 => $person));
 
         $ret = array();
 
@@ -129,7 +129,9 @@ class TicketFilterSubscription extends AbstractEntityRepository
             $agent_id = $s->person->id;
             $filter_id = $s->filter->id;
 
-            if (!isset($ret[$agent_id])) $ret[$agent_id] = array();
+            if (!isset($ret[$agent_id])) {
+                $ret[$agent_id] = array();
+            }
 
             $ret[$agent_id][$filter_id] = $s;
         }

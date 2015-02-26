@@ -35,10 +35,8 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
 
 /**
  * @property int $id
@@ -315,7 +313,7 @@ class TicketSearchActive extends DomainObject
                 'person_idx'       => array('columns' => array('person_id')),
                 'agent_idx'        => array('columns' => array('agent_id')),
                 'ref_idx'          => array('columns' => array('ref')),
-            )
+            ),
         ));
 
         $metadata->mapField(array(

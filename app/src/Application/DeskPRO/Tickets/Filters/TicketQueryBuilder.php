@@ -47,13 +47,13 @@ class TicketQueryBuilder
     {
         $parts = $query->getQueryParts();
 
-        $query = "SELECT " . implode(', ', $fields) . "\n";
+        $query = "SELECT ".implode(', ', $fields)."\n";
         $query .= "FROM tickets\n";
 
         $join_map = array();
         if (!empty($parts['joins'])) {
             $count = 0;
-            foreach ($parts['joins'] AS $join) {
+            foreach ($parts['joins'] as $join) {
                 $count++;
                 $alias = $join['alias'] ? $join['alias'] : $join['input_alias'];
                 $query .= "LEFT JOIN {$join['join']} AS $alias ON ({$join['condition']})\n";
@@ -62,7 +62,7 @@ class TicketQueryBuilder
                 }
             }
         }
-        $query .= "WHERE\n" . $parts['where'];
+        $query .= "WHERE\n".$parts['where'];
 
         $param_map = array();
         foreach ($parts['params'] as $p) {
@@ -85,7 +85,6 @@ class TicketQueryBuilder
         );
     }
 
-
     /**
      * @param  FilterQuery $query
      * @return array       array('sql' => '...', 'params' => array(...))
@@ -100,7 +99,7 @@ class TicketQueryBuilder
         $join_map = array();
         if (!empty($parts['joins'])) {
             $count = 0;
-            foreach ($parts['joins'] AS $join) {
+            foreach ($parts['joins'] as $join) {
                 $count++;
                 $alias = $join['alias'] ? $join['alias'] : $join['input_alias'];
                 $query .= "LEFT JOIN {$join['join']} AS $alias ON ({$join['condition']})\n";
@@ -109,7 +108,7 @@ class TicketQueryBuilder
                 }
             }
         }
-        $query .= "WHERE\n" . $parts['where'];
+        $query .= "WHERE\n".$parts['where'];
 
         $param_map = array();
         foreach ($parts['params'] as $p) {

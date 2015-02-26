@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle\Form\Type;
 
-
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
@@ -78,7 +77,7 @@ class LanguageType extends AbstractType
 
                         return $query;
                     };
-                }
+                },
         ));
     }
 }

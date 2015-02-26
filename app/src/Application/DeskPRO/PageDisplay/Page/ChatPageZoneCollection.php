@@ -75,7 +75,6 @@ class ChatPageZoneCollection implements PersonContextInterface
         $this->person_context = $person;
     }
 
-
     /**
      * Read all ChatPageDisplay records from the database, initialize ChatPageZone's,
      * and then add them to this collection.
@@ -200,7 +199,7 @@ class ChatPageZoneCollection implements PersonContextInterface
     public function addPage(ChatPageZone $page)
     {
         if ($page->getZone() != $this->zone) {
-            throw new \InvalidArgumentException('Invalid zone context. Must be: ' . $this->zone);
+            throw new \InvalidArgumentException('Invalid zone context. Must be: '.$this->zone);
         }
 
         $dep_id = $page->getDepartment() ? $page->getDepartment()->getId() : 0;
@@ -227,7 +226,10 @@ class ChatPageZoneCollection implements PersonContextInterface
      */
     public function hasPage($department)
     {
-        if (is_object($department)) $department = $department['id'];
+        if (is_object($department)) {
+            $department = $department['id'];
+        }
+
         return isset($this->department_pages[$department]);
     }
 
@@ -239,7 +241,9 @@ class ChatPageZoneCollection implements PersonContextInterface
      */
     public function getPage($department)
     {
-        if (is_object($department)) $department = $department['id'];
+        if (is_object($department)) {
+            $department = $department['id'];
+        }
 
         if (!isset($this->department_pages[$department])) {
             return null;
@@ -281,13 +285,13 @@ class ChatPageZoneCollection implements PersonContextInterface
         $chat_page_zone = new ChatPageZone($this->zone, null);
         $chat_page_zone->addPageDisplays(array($page_display));
 
-        $part[] = "\"all\": " . $chat_page_zone->compileJs();
+        $part[] = "\"all\": ".$chat_page_zone->compileJs();
 
         foreach ($this->department_pages as $dep_id => $page_zone) {
-            $part[] = "$dep_id: " . $page_zone->compileJs();
+            $part[] = "$dep_id: ".$page_zone->compileJs();
         }
 
-        $part = "{\n" . implode(",\n", $part) . "\n}";
+        $part = "{\n".implode(",\n", $part)."\n}";
 
         return $part;
     }

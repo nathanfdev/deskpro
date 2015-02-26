@@ -69,7 +69,7 @@ class LastLanguageListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::RESPONSE => array('onKernelResponse')
+            KernelEvents::RESPONSE => array('onKernelResponse'),
         );
     }
 
@@ -84,6 +84,5 @@ class LastLanguageListener implements EventSubscriberInterface
             $this->logger->debug('language: sending cookie for last language: '.$last_lang);
             $event->getResponse()->headers->setCookie(new Cookie(static::COOKIE_NAME, $last_lang));
         }
-
     }
 }

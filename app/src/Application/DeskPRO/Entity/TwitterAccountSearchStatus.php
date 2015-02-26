@@ -25,7 +25,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
@@ -70,8 +69,6 @@ class TwitterAccountSearchStatus extends \Application\DeskPRO\Domain\DomainObjec
         $this->setModelField('date_created', $status->date_created);
     }
 
-
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -84,12 +81,12 @@ class TwitterAccountSearchStatus extends \Application\DeskPRO\Domain\DomainObjec
         $metadata->setPrimaryTable(array(
             'name' => 'twitter_accounts_searches_statuses',
             'indexes' => array(
-                'search_date_idx' => array('columns' => array('search_id', 'date_created'))
-            )
+                'search_date_idx' => array('columns' => array('search_id', 'date_created')),
+            ),
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'account_status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountStatus', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'account_status_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'id' => true  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'search', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountSearch', 'mappedBy' => NULL, 'inversedBy' => 'search_statuses', 'joinColumns' => array( 0 => array( 'name' => 'search_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'id' => true  ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        $metadata->mapManyToOne(array( 'fieldName' => 'account_status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountStatus', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'account_status_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'id' => true  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'search', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountSearch', 'mappedBy' => NULL, 'inversedBy' => 'search_statuses', 'joinColumns' => array( 0 => array( 'name' => 'search_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'id' => true  ));
     }
 }

@@ -36,7 +36,7 @@ use Application\ImportBundle\Value\CustomDefValue;
 use Application\ImportBundle\Exception\BadDataException;
 use Application\ImportBundle\Exception\DuplicateValueException;
 
-class CustomDefPersonValueImporter extends AbstractCustomDefValueImporter
+class CustomDefPersontValueImporter extends AbstractCustomDefValueImporter
 {
     /** @var string */
     protected $mapped_column = 'person_id';
@@ -60,7 +60,7 @@ class CustomDefPersonValueImporter extends AbstractCustomDefValueImporter
             throw new \InvalidArgumentException("This importer can only import Person Custom Fields");
         }
 
-        $log_id = "Person CustomField :: " . $custom_value->oid . " ";
+        $log_id = "Person CustomField :: ".$custom_value->oid." ";
 
         if (!$custom_value->key) {
             throw new BadDataException(sprintf('[%s] Custom field data must have a key', $log_id));
@@ -68,5 +68,4 @@ class CustomDefPersonValueImporter extends AbstractCustomDefValueImporter
 
         return $this->processCustomField($custom_value);
     }
-
 }

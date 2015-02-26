@@ -34,7 +34,6 @@
 
 namespace Application\PortalBundle\Theme;
 
-
 use Application\DeskPRO\Brand\BrandStack;
 
 class ThemeViewFactory

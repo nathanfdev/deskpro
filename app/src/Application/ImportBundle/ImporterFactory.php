@@ -48,7 +48,6 @@ class ImporterFactory
      */
     private $input;
 
-
     /**
      * @param DeskproContainer $container
      * @param InputInterface   $input
@@ -59,7 +58,6 @@ class ImporterFactory
         $this->input = $input;
     }
 
-
     /**
      * @return ImporterConfig
      */
@@ -69,7 +67,7 @@ class ImporterFactory
 
         $import_config = new OptionsArray(dp_get_config('import', array()));
         $config->data_path = $import_config->get('data_path');
-        $config->log_path  = $import_config->get('log_path', dp_get_log_dir() . '/import');
+        $config->log_path  = $import_config->get('log_path', dp_get_log_dir().'/import');
         $config->mode      = $import_config->get('mode', 'test');
         $config->mark_done = $import_config->get('mark_done', true);
 
@@ -87,7 +85,7 @@ class ImporterFactory
                 $config->mode = 'live';
             }
             if ($this->input->hasOption('mark-done')) {
-                $config->mark_done = (bool)$this->input->getOption('mark-done');
+                $config->mark_done = (bool) $this->input->getOption('mark-done');
             }
         }
 

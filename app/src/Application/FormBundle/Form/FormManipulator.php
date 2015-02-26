@@ -33,8 +33,7 @@
  */
 
 namespace Application\FormBundle\Form;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Form\FormInterface;
+
 
 /**
  * A service that can use a FormContext to manipulate/add/delete fields from the form.
@@ -43,7 +42,6 @@ use Symfony\Component\Form\FormInterface;
  *
  * This is used almost exclusively by form types themselves ro reduce code reuse accross different forms.
  */
-class FormManipulator 
+class FormManipulator
 {
 }
- 

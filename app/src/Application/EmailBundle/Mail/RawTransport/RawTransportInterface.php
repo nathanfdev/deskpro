@@ -53,10 +53,10 @@ interface RawTransportInterface
      * If you send a message to a person who is not actually listed in the headers of the email,
      * then that is essentially a BCC.
      *
-     * @param string   $from          The account to send from (for use with SMTP 'MAIL FROM')
-     * @param array    $tos           Array of email addresses to send to (for use with SMTP 'RCPT TO')
-     * @param resource $raw_fp        A file pointer to the raw email source
-     * @param array    $failed        Array of failed recipients, if any
+     * @param  string   $from   The account to send from (for use with SMTP 'MAIL FROM')
+     * @param  array    $tos    Array of email addresses to send to (for use with SMTP 'RCPT TO')
+     * @param  resource $raw_fp A file pointer to the raw email source
+     * @param  array    $failed Array of failed recipients, if any
      * @return int
      */
     public function sendRawMessage($from, array $tos, $raw_fp, array &$failed = null);

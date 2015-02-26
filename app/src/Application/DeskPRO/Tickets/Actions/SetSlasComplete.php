@@ -60,7 +60,6 @@ class SetSlasComplete extends AbstractContainerAwareAction implements ActionInte
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -119,7 +118,6 @@ class SetSlasComplete extends AbstractContainerAwareAction implements ActionInte
             $this->getContainer()->getEm()->persist($ticket_sla);
         }
     }
-
 
     /**
      * {@inheritDoc}

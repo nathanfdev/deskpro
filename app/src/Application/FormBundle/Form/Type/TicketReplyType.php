@@ -40,7 +40,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class TicketReplyType extends AbstractType
@@ -53,23 +52,23 @@ class TicketReplyType extends AbstractType
             'message_label' => $options['message_label'],
             'label' => false,
             'message_constraints' => array(
-                new NotBlank()
-            )
+                new NotBlank(),
+            ),
         ));
 
         $builder->add('attachments', 'ticket_message_attachment_collection', array(
             'ticket_message' => $options['ticket_message'],
             'person'         => $options['person'],
-            'label' => false
+            'label' => false,
         ));
 
         $builder->add('more_attachments', 'submit', array(
             'validation_groups' => false,
-            'label' => 'Add Another Attachment'
+            'label' => 'Add Another Attachment',
         ));
 
         $builder->add('submit', 'submit', array(
-            'label' => 'Submit Reply'
+            'label' => 'Submit Reply',
         ));
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'onPostSubmit'));
@@ -93,17 +92,17 @@ class TicketReplyType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'message_label' => false
+                'message_label' => false,
             )
         );
         $resolver->setRequired(array(
-            'person', 'ticket', 'ticket_message', 'settings'
+            'person', 'ticket', 'ticket_message', 'settings',
         ));
         $resolver->setAllowedTypes(array(
             'ticket'         => 'Application\\DeskPRO\\Entity\\Ticket',
             'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
             'settings' => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
-            'person'         => 'Application\\DeskPRO\\Entity\\Person'
+            'person'         => 'Application\\DeskPRO\\Entity\\Person',
         ));
     }
 }

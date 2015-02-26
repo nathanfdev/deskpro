@@ -60,38 +60,38 @@ class MiscController extends AbstractController
 
         // Common names
         $js[] = 'window.DESKPRO_NAME_REGISTRY = {};';
-        $js[] = 'window.DESKPRO_NAME_REGISTRY.agent = ' . json_encode($this->container->getDataService('Person')->getAgentNames()) . ';';
+        $js[] = 'window.DESKPRO_NAME_REGISTRY.agent = '.json_encode($this->container->getDataService('Person')->getAgentNames()).';';
         if ($this->container->getSetting('core.use_agent_team')) {
-            $js[] = 'window.DESKPRO_NAME_REGISTRY.agent_team = ' . json_encode($this->container->getDataService('AgentTeam')->getTeamNames()) . ';';
+            $js[] = 'window.DESKPRO_NAME_REGISTRY.agent_team = '.json_encode($this->container->getDataService('AgentTeam')->getTeamNames()).';';
         } else {
             $js[] = 'window.DESKPRO_NAME_REGISTRY.agent_team = {};';
         }
-        $js[] = 'window.DESKPRO_NAME_REGISTRY.department = ' . json_encode($this->container->getDataService('Department')->getNames(null, true)) . ';';
-        $js[] = 'window.DESKPRO_NAME_REGISTRY.department_full = ' . json_encode($this->container->getDataService('Department')->getFullNames(null, true)) . ';';
-        $js[] = 'window.DESKPRO_NAME_REGISTRY.department_hierarchy = ' . json_encode($this->container->getDataService('Department')->getInHierarchy(null, true)) . ';';
+        $js[] = 'window.DESKPRO_NAME_REGISTRY.department = '.json_encode($this->container->getDataService('Department')->getNames(null, true)).';';
+        $js[] = 'window.DESKPRO_NAME_REGISTRY.department_full = '.json_encode($this->container->getDataService('Department')->getFullNames(null, true)).';';
+        $js[] = 'window.DESKPRO_NAME_REGISTRY.department_hierarchy = '.json_encode($this->container->getDataService('Department')->getInHierarchy(null, true)).';';
         if ($this->container->getSetting('core.use_product')) {
-            $js[] = 'window.DESKPRO_NAME_REGISTRY.product = ' . json_encode($this->container->getDataService('Product')->getNames()) . ';';
+            $js[] = 'window.DESKPRO_NAME_REGISTRY.product = '.json_encode($this->container->getDataService('Product')->getNames()).';';
         } else {
             $js[] = 'window.DESKPRO_NAME_REGISTRY.product = {};';
         }
         if ($this->container->getSetting('core.use_ticket_category')) {
-            $js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category = ' . json_encode($this->container->getDataService('TicketCategory')->getNames()) . ';';
-            $js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category_full = ' . json_encode($this->container->getDataService('TicketCategory')->getFullNames(null, true)) . ';';
+            $js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category = '.json_encode($this->container->getDataService('TicketCategory')->getNames()).';';
+            $js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category_full = '.json_encode($this->container->getDataService('TicketCategory')->getFullNames(null, true)).';';
         } else {
             $js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category = {};';
             $js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category_full = {};';
         }
         if ($this->container->getSetting('core.use_ticket_category')) {
-            $js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_priority = ' . json_encode($this->container->getDataService('TicketPriority')->getNames()) . ';';
+            $js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_priority = '.json_encode($this->container->getDataService('TicketPriority')->getNames()).';';
         } else {
             $js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_priority = {};';
         }
         if ($this->container->getSetting('core.use_ticket_workflow')) {
-            $js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_workflow = ' . json_encode($this->container->getDataService('TicketWorkflow')->getNames()) . ';';
+            $js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_workflow = '.json_encode($this->container->getDataService('TicketWorkflow')->getNames()).';';
         } else {
             $js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_workflow = {};';
         }
-        $js[] = 'window.DESKPRO_NAME_REGISTRY.language = ' . json_encode($this->container->getDataService('Language')->getTitles()) . ';';
+        $js[] = 'window.DESKPRO_NAME_REGISTRY.language = '.json_encode($this->container->getDataService('Language')->getTitles()).';';
 
         $lang_data = array();
         foreach ($this->container->getLanguageData()->getAll() as $lang) {
@@ -99,49 +99,49 @@ class MiscController extends AbstractController
                 'id'         => $lang->id,
                 'title'      => $this->container->getTranslator()->getPhraseObject($lang),
                 'title_real' => $lang->title,
-                'locale'     => $lang->locale
+                'locale'     => $lang->locale,
             );
         }
-        $js[] = 'window.DESKPRO_NAME_REGISTRY.lang_data = ' . json_encode($lang_data) . ';';
+        $js[] = 'window.DESKPRO_NAME_REGISTRY.lang_data = '.json_encode($lang_data).';';
 
-        $js[] = 'window.DESKPRO_NAME_REGISTRY.language = ' . json_encode($this->container->getDataService('Language')->getTitles()) . ';';
+        $js[] = 'window.DESKPRO_NAME_REGISTRY.language = '.json_encode($this->container->getDataService('Language')->getTitles()).';';
 
-        $js[] = 'window.DESKPRO_NAME_REGISTRY.status = ' . json_encode(array(
+        $js[] = 'window.DESKPRO_NAME_REGISTRY.status = '.json_encode(array(
             'awaiting_agent' => App::getTranslator()->phrase('agent.tickets.status_awaiting_agent'),
             'awaiting_user' => App::getTranslator()->phrase('agent.tickets.status_awaiting_user'),
             'hidden' => App::getTranslator()->phrase('agent.tickets.status_hidden'),
             'resolved' => App::getTranslator()->phrase('agent.tickets.status_resolved'),
             'archived' => App::getTranslator()->phrase('agent.tickets.status_archived'),
-        )) . ';';
-        $js[] = 'window.DESKPRO_NAME_REGISTRY.hidden_status = ' . json_encode(array(
+        )).';';
+        $js[] = 'window.DESKPRO_NAME_REGISTRY.hidden_status = '.json_encode(array(
             'deleted' => App::getTranslator()->phrase('agent.tickets.hidden_status_deleted'),
             'spam' => App::getTranslator()->phrase('agent.tickets.hidden_status_spam'),
             'validating' => App::getTranslator()->phrase('agent.tickets.hidden_status_validating'),
-        )) . ';';
+        )).';';
 
         // Common URLs
         $js[] = 'window.DESKPRO_URL_REGISTRY = {};';
-        $js[] = 'window.DESKPRO_URL_REGISTRY.serve_person_picture = ' . json_encode(str_replace(
+        $js[] = 'window.DESKPRO_URL_REGISTRY.serve_person_picture = '.json_encode(str_replace(
             array('000'),
             array('$person_id'),
             $this->generateUrl('serve_person_picture_size', array('person_id' => '000'))
-        )) . ';';
-        $js[] = 'window.DESKPRO_URL_REGISTRY.serve_person_picture_size = ' . json_encode(str_replace(
+        )).';';
+        $js[] = 'window.DESKPRO_URL_REGISTRY.serve_person_picture_size = '.json_encode(str_replace(
             array('000', '111'),
             array('{person_id}', '{size}'),
             $this->generateUrl('serve_person_picture_size', array('person_id' => '000', 'size' => '111'))
-        )) . ';';
+        )).';';
 
         // Data
         $js[] = 'window.DESKPRO_DATA_REGISTRY = {}';
 
         $system_filters = $this->db->fetchAllKeyValue("SELECT id, sys_name FROM ticket_filters WHERE is_global=1 AND sys_name IS NOT NULL");
         $system_filters = Arrays::castToType($system_filters, 'string', 'int');
-        $js[] = 'window.DESKPRO_DATA_REGISTRY.systemFilters = ' . json_encode($system_filters) . ';';
+        $js[] = 'window.DESKPRO_DATA_REGISTRY.systemFilters = '.json_encode($system_filters).';';
 
         // Ticket display elements
         $layouts = $this->container->getTicketLayoutManager()->getAgentLayouts();
-        $js[] = "window.DESKPRO_TICKET_DISPLAY = " . $layouts->compileJsObj() . ";";
+        $js[] = "window.DESKPRO_TICKET_DISPLAY = ".$layouts->compileJsObj().";";
 
         // Snippet short codes
         $ticket_snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent('tickets', $this->person);
@@ -160,7 +160,7 @@ class MiscController extends AbstractController
         }
 
         if ($snippet_short_codes) {
-            $js[] = "window.DESKPRO_TICKET_SNIPPET_SHORTCODES = " . json_encode($snippet_short_codes) . ";";
+            $js[] = "window.DESKPRO_TICKET_SNIPPET_SHORTCODES = ".json_encode($snippet_short_codes).";";
         } else {
             $js[] = "window.DESKPRO_TICKET_SNIPPET_SHORTCODES = {};";
         }
@@ -179,7 +179,7 @@ class MiscController extends AbstractController
         }
 
         if ($snippet_short_codes) {
-            $js[] = "window.DESKPRO_CHAT_SNIPPET_SHORTCODES = " . json_encode($snippet_short_codes) . ";";
+            $js[] = "window.DESKPRO_CHAT_SNIPPET_SHORTCODES = ".json_encode($snippet_short_codes).";";
         } else {
             $js[] = "window.DESKPRO_CHAT_SNIPPET_SHORTCODES = {};";
         }
@@ -188,16 +188,16 @@ class MiscController extends AbstractController
         $chat_display = new \Application\DeskPRO\PageDisplay\Page\ChatPageZoneCollection('create');
         $chat_display->addPagesFromDb();
         $js[] = "window.DESKPRO_CHAT_DISPLAY = {}";
-        $js[] = "window.DESKPRO_CHAT_DISPLAY.create = " . $chat_display->compileJs() . ";";
+        $js[] = "window.DESKPRO_CHAT_DISPLAY.create = ".$chat_display->compileJs().";";
 
-        $js[] = "window.DESKPRO_TICKET_PRI_MAP = " . json_encode($this->container->getDataService('TicketPriority')->getIdToPriorityMap()) . ';';
+        $js[] = "window.DESKPRO_TICKET_PRI_MAP = ".json_encode($this->container->getDataService('TicketPriority')->getIdToPriorityMap()).';';
 
         $fragment_router = new FragmentRouter($this->get('router')->getGenerator());
         $js[] = $fragment_router->compile();
 
         /** @var \Application\DeskPRO\EntityRepository\LabelDef $labelDef */
         $labelDef = $this->em->getRepository('DeskPRO:LabelDef');
-        $js[] = "window.DESKPRO_DATA_REGISTRY.labels = " . json_encode($labelDef->getAllLabelsToTyped());
+        $js[] = "window.DESKPRO_DATA_REGISTRY.labels = ".json_encode($labelDef->getAllLabelsToTyped());
 
         if ($this->container->getAppManager()->isPackageInstalled('deskpro_ms_translator')) {
             $ms_translator = $this->container->getAppManager()->getService('ms_translator');
@@ -226,7 +226,7 @@ class MiscController extends AbstractController
                 'translate_text_url'           => $this->generateUrl('agent_apps_run', array('app_id' => $app_id, 'action' => 'translate-text')),
             );
 
-            $js[] = "window.DESKPRO_TRANSLATE_SERVICE = " . json_encode($info) . ";";
+            $js[] = "window.DESKPRO_TRANSLATE_SERVICE = ".json_encode($info).";";
         }
 
         $date_formats = array(
@@ -236,7 +236,7 @@ class MiscController extends AbstractController
             'day_short' => \Application\DeskPRO\Util::momentJsDateFormat(App::getSetting('core.date_day_short')),
             'time'      => \Application\DeskPRO\Util::momentJsDateFormat(App::getSetting('core.date_time')),
         );
-        $js[] = 'window.DESKPRO_DATE_FORMATS = ' . json_encode($date_formats) . ';';
+        $js[] = 'window.DESKPRO_DATE_FORMATS = '.json_encode($date_formats).';';
 
         $js[] = <<<JS
 function Orb_Util_TimeAgo_getPhraseFor(type, num, ago)
@@ -300,7 +300,8 @@ JS;
                 try {
                     $date = new \DateTime($prefs_expire[$pref_name]);
                     $pref->date_expire = $date;
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
 
             App::getDb()->replace('people_prefs', array(
@@ -313,7 +314,7 @@ JS;
         }
 
         return $this->createJsonResponse(array(
-            'success' => true
+            'success' => true,
         ));
     }
 
@@ -328,7 +329,7 @@ JS;
         }
 
         $urlinfo = @parse_url($url);
-        if (!$url OR !$urlinfo OR empty($urlinfo['scheme']) OR !preg_match('#^https?#', $urlinfo['scheme'])) {
+        if (!$url or !$urlinfo or empty($urlinfo['scheme']) or !preg_match('#^https?#', $urlinfo['scheme'])) {
             return $this->createResponse('Bad url', 400);
         }
 
@@ -356,7 +357,7 @@ JS;
         }
 
         if ($method == 'GET' && is_array($passData) && $passData) {
-            $url .= (strpos($url, '?') ? '&' : '?') . http_build_query($passData);
+            $url .= (strpos($url, '?') ? '&' : '?').http_build_query($passData);
         }
 
         $ch = curl_init($url);
@@ -365,14 +366,13 @@ JS;
             curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($passData) ? http_build_query($passData) : $passData);
         }
 
-        if ($this->request->headers->get('X-DeskPRO-Proxy-Username') OR $this->request->headers->get('X-DeskPRO-Proxy-Password')) {
-            curl_setopt($ch, CURLOPT_USERPWD, $this->request->headers->get('X-DeskPRO-Proxy-Username','').':'.$this->request->headers->get('X-DeskPRO-Proxy-Password',''));
+        if ($this->request->headers->get('X-DeskPRO-Proxy-Username') or $this->request->headers->get('X-DeskPRO-Proxy-Password')) {
+            curl_setopt($ch, CURLOPT_USERPWD, $this->request->headers->get('X-DeskPRO-Proxy-Username', '').':'.$this->request->headers->get('X-DeskPRO-Proxy-Password', ''));
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         } else {
             $in_auth_type = $this->request->headers->get('X-DeskPRO-Proxy-Http-Auth', '');
 
             if ($in_auth_type) {
-
                 $in_auth_type = strtolower($in_auth_type);
                 $auth_type    = null;
 
@@ -408,9 +408,9 @@ JS;
 
         $headers = array();
         if ($this->request->headers->get('X-DeskPRO-Proxy-Content-Type')) {
-            $headers[] = 'Content-Type: ' . $this->request->headers->get('X-DeskPRO-Proxy-Content-Type');
+            $headers[] = 'Content-Type: '.$this->request->headers->get('X-DeskPRO-Proxy-Content-Type');
         } elseif (!empty($_SERVER['CONTENT_TYPE'])) {
-            $headers[] = 'Content-Type: ' . $_SERVER['CONTENT_TYPE'];
+            $headers[] = 'Content-Type: '.$_SERVER['CONTENT_TYPE'];
         }
 
         // Proxy custom headers
@@ -418,7 +418,7 @@ JS;
             $realname = Strings::extractRegexMatch('#^X\-DeskPRO\-Proxy\-Header\-(.*?)$#i', $name);
             if ($realname) {
                 foreach ($value as $v) {
-                    $headers[] = "$realname: " . $v;
+                    $headers[] = "$realname: ".$v;
                 }
             }
         }
@@ -445,7 +445,7 @@ JS;
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent(json_encode(array(
                 'error' => $err_msg,
-                'code'  => $err_no
+                'code'  => $err_no,
             )));
         } else {
             if ($info['content_type']) {
@@ -490,9 +490,9 @@ JS;
         $blob = $this->em->getRepository('DeskPRO:Blob')->find($blob_id);
 
         $response = $this->container->get('response');
-        $response->headers->set('Content-Type', $blob['content_type'] . '; filename=' . $blob['filename']);
+        $response->headers->set('Content-Type', $blob['content_type'].'; filename='.$blob['filename']);
         $response->headers->set('Content-Length', $blob['filesize']);
-        $response->headers->set('Content-Disposition', 'inline; filename=' . $blob['filename']);
+        $response->headers->set('Content-Disposition', 'inline; filename='.$blob['filename']);
 
         $file = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
         $response->setContent($file);
@@ -505,7 +505,6 @@ JS;
         $copy_blobauth = $this->in->getString('copy_blob');
 
         if ($copy_blobauth) {
-
             $blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthCode($copy_blobauth);
             if (!$blob) {
                 $error = array();
@@ -518,9 +517,9 @@ JS;
             if ($this->in->getBool('is_image') && !$blob->isImage()) {
                 $error = array(
                     'error_code' => 'not_in_allowed_exts',
-                    'error_detail' => implode(',', array('gif', 'png', 'jpg', 'jpeg'))
+                    'error_detail' => implode(',', array('gif', 'png', 'jpg', 'jpeg')),
                 );
-                $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+                $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
 
                 return $this->createJsonResponse($error);
             }
@@ -530,7 +529,6 @@ JS;
 
             $blob = $bs->createBlobRecordFromString($raw_file, $blob->filename, $blob->content_type);
             unset($raw_file);
-
         } else {
             $file = $this->request->files->get('file-upload');
             $accept = $this->container->getAttachmentAccepter();
@@ -543,7 +541,7 @@ JS;
                 $error = $accept->getError($file, 'only_images');
             }
             if ($error) {
-                $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+                $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
 
                 return $this->createJsonResponse(array($error));
             }
@@ -593,11 +591,11 @@ JS;
         $res = $this->createJsonResponse(array(array(
             'blob_id'           => $blob['id'],
             'blob_auth'         => $blob->authcode,
-            'blob_auth_id'      => $blob->id . '-' . $blob->authcode,
+            'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
             'download_url'      => $blob->getDownloadUrl(true, false),
             'filename'          => $blob['filename'],
             'filesize_readable' => $blob->getReadableFilesize(),
-            'is_image'          => $blob->isImage()
+            'is_image'          => $blob->isImage(),
         )));
 
         // Required for iframe transport on IE to prevent 'download' popup
@@ -611,7 +609,6 @@ JS;
         $copy_blobauth = $this->in->getString('copy_blob');
 
         if ($copy_blobauth) {
-
             $blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthCode($copy_blobauth);
             if (!$blob) {
                 $error = array();
@@ -624,9 +621,9 @@ JS;
             if (!$blob->isImage()) {
                 $error = array(
                     'error_code' => 'not_in_allowed_exts',
-                    'error_detail' => implode(',', array('gif', 'png', 'jpg', 'jpeg'))
+                    'error_detail' => implode(',', array('gif', 'png', 'jpg', 'jpeg')),
                 );
-                $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+                $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
 
                 return $this->createJsonResponse($error);
             }
@@ -636,7 +633,6 @@ JS;
 
             $blob = $bs->createBlobRecordFromString($raw_file, $blob->filename, $blob->content_type);
             unset($raw_file);
-
         } else {
             /** @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
             $file = $this->request->files->get('file');
@@ -658,7 +654,7 @@ JS;
                 $error = $accept->getError($file, 'only_images');
             }
             if ($error) {
-                $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+                $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
 
                 return $this->createJsonResponse($error);
             } else {
@@ -669,14 +665,14 @@ JS;
         $res = $this->createJsonResponse(array(
             'blob_id'           => $blob['id'],
             'blob_auth'         => $blob->authcode,
-            'blob_auth_id'      => $blob->id . '-' . $blob->authcode,
+            'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
             'download_url'      => $blob->getDownloadUrl(true),
             'filename'          => $blob['filename'],
             'filesize_readable' => $blob->getReadableFilesize(),
             'is_image'          => $blob->isImage(),
 
             // needed for Redactor
-            'filelink'     => $blob->getDownloadUrl(true)
+            'filelink'     => $blob->getDownloadUrl(true),
         ));
 
         return $res;
@@ -716,7 +712,7 @@ JS;
                 if ($ticket) {
                     $html = $this->renderView('AgentBundle:Ticket:ticket-message-draft.html.twig', array(
                         'draft' => $draft,
-                        'ticket' => $ticket
+                        'ticket' => $ticket,
                     ));
                 }
             }
@@ -728,13 +724,13 @@ JS;
                 'data' => serialize(array(
                     'ticket_id'      => $content_id,
                     'draft_html'     => $html,
-                    'via_person'     => $this->person->id
-                ))
+                    'via_person'     => $this->person->id,
+                )),
             ));
         }
 
         return $this->createJsonResponse(array(
-            'inserted' => $inserted
+            'inserted' => $inserted,
         ));
     }
 
@@ -779,7 +775,7 @@ JS;
      */
     public function setAgentStatusAction($status)
     {
-        if (!$status OR $status == 'away') {
+        if (!$status or $status == 'away') {
             $status = 'away';
         } else {
             $status = 'available';
@@ -794,8 +790,8 @@ JS;
         $this->session->save();
 
         // Update status in all other active sessions
-        $is_chat_avail = (int)$this->in->getBool('is_chat_available');
-        $is_chat_avail_old = (int)(!$this->in->getBool('is_chat_available'));
+        $is_chat_avail = (int) $this->in->getBool('is_chat_available');
+        $is_chat_avail_old = (int) (!$this->in->getBool('is_chat_available'));
 
         // using REPLACE on the session data as a quick way to toggle the status in session data
         // without actually loading up the entire record
@@ -807,7 +803,7 @@ JS;
             $this->in->getBool('is_chat_available'),
             $status,
             $this->person->getId(),
-            'agent')
+            'agent', )
         );
 
         $this->em->transactional(function ($em) use ($sessionEnt) {
@@ -826,7 +822,7 @@ JS;
         $this->em->persist($cm);
         $this->em->flush();
 
-        return $this->createJsonResponse(array('success' =>true, 'status' => $status));
+        return $this->createJsonResponse(array('success' => true, 'status' => $status));
     }
 
     public function userInterfaceFrameAction()
@@ -846,7 +842,7 @@ JS;
 
         return $this->render('AgentBundle:Misc:redirect-external.html.twig', array(
             'url' => $url,
-            'urlinfo' => $urlinfo
+            'urlinfo' => $urlinfo,
         ));
     }
 
@@ -879,7 +875,7 @@ JS;
 
         $invalid_res = $this->createJsonResponse(array('invalid' => true));
 
-        $code = $this->session->getEntity()->generateSecurityToken('password_confirm' . $this->person->secret_string);
+        $code = $this->session->getEntity()->generateSecurityToken('password_confirm'.$this->person->secret_string);
         $valid_res = $this->createJsonResponse(array('code' => $code));
 
         #------------------------------
@@ -905,7 +901,7 @@ JS;
                 $adapter = $this->_initUserSourceAdapter($us);
                 $adapter->setFormData(array(
                     'username' => $email,
-                    'password' => $password
+                    'password' => $password,
                 ));
 
                 try {
@@ -937,7 +933,7 @@ JS;
 
         if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
             $adapter->setCallbackUrl(
-                rtrim($this->container->getSetting('core.deskpro_url'), '/') .
+                rtrim($this->container->getSetting('core.deskpro_url'), '/').
                 $this->generateUrl('user_login_callback', array('usersource_id' => $usersource['id']), false)
             );
         }
@@ -967,15 +963,15 @@ JS;
             'timestamp_utc' => time(),
             'timestamp' => $d->getTimestamp(),
             'time_formatted' => $d->format('g:i a'),
-            'time_hour' => (int)$d->format('H'),
-            'time_minute' => (int)$d->format('i'),
+            'time_hour' => (int) $d->format('H'),
+            'time_minute' => (int) $d->format('i'),
         ));
     }
 
     public function saveDomAction()
     {
         $dom = $this->in->getRaw('html');
-        file_put_contents(dp_get_data_dir() . '/dom.html', $dom);
+        file_put_contents(dp_get_data_dir().'/dom.html', $dom);
 
         return $this->createJsonResponse(array('okay' => true));
     }
@@ -991,14 +987,14 @@ JS;
         if ($this->container->isDebug()) {
             $rjs->setUrlArgsExpr('"v=" + (new Date()).getTime()');
         } elseif (defined('DP_BUILD_TIME')) {
-            $rjs->setUrlArgsExpr('"v=' . DP_BUILD_TIME . '"');
+            $rjs->setUrlArgsExpr('"v='.DP_BUILD_TIME.'"');
         }
 
         $rjs->addPath('AppPlatform', 'app-build/Agent/AppPlatform/Platform');
         $rjs->addPath('AppPlatformConfig', str_replace('.js', '', $this->generateUrl('agent_apps_config_js')));
         $rjs->addPath('AgentApp', 'app-build/Agent/App/AgentModule');
 
-        $rjs_apps = new AppsRequireJsConfigGenerator($manager, $this->generateUrl('serve_file_root') . '/apps');
+        $rjs_apps = new AppsRequireJsConfigGenerator($manager, $this->generateUrl('serve_file_root').'/apps');
         $rjs->addPathsFromGenerator($rjs_apps);
 
         $rjs_config = $rjs->generateRequireJsConfigCode();
@@ -1031,7 +1027,7 @@ JS;
             }
 
             if ($package->native_name) {
-                $native_baseurl = $this->generateUrl('serve_file_root') . '/apps/' . $package->native_name;
+                $native_baseurl = $this->generateUrl('serve_file_root').'/apps/'.$package->native_name;
             } else {
                 $native_baseurl = null;
             }
@@ -1039,10 +1035,10 @@ JS;
             $asset_files = array();
             foreach (array('html', 'res') as $asset_type) {
                 foreach ($package->getTaggedAssets($asset_type) as $asset) {
-                    $asset_id = $package->name . "/$asset_type/" . $asset->name;
+                    $asset_id = $package->name."/$asset_type/".$asset->name;
 
                     if ($native_baseurl) {
-                        $asset_path = $native_baseurl . "/$asset_type/" . $asset->name;
+                        $asset_path = $native_baseurl."/$asset_type/".$asset->name;
                     } else {
                         $asset_path = $asset->blob->getDownloadUrl(false, false);
                     }
@@ -1056,7 +1052,7 @@ JS;
                 foreach ($asset_files as $k => $v) {
                     $asset_files_js[] = "\t\t\t\"$k\": \"$v\"";
                 }
-                $asset_files_js = "{\n" . implode(",\n", $asset_files_js) . "\n\t\t}";
+                $asset_files_js = "{\n".implode(",\n", $asset_files_js)."\n\t\t}";
             } else {
                 $asset_files_js = "{}";
             }
@@ -1066,7 +1062,7 @@ JS;
             $infoJson = '';
             $infoJson .= "\t\t\"id\": {$app->id},\n";
             $infoJson .= "\t\t\"packageName\": \"{$package->name}\",\n";
-            $infoJson .= "\t\t\"moduleName\": " . ($module_asset ? "\"{$package->name}/module\"" : 'null') . ",\n";
+            $infoJson .= "\t\t\"moduleName\": ".($module_asset ? "\"{$package->name}/module\"" : 'null').",\n";
             $infoJson .= "\t\t\"contextName\": \"$class_name\",\n";
             $infoJson .= "\t\t\"scope\": \"agent\",\n";
             $infoJson .= "\t\t\"settings\": ".json_encode($app->getOutputSettings(), JSON_FORCE_OBJECT).",\n";
@@ -1126,7 +1122,7 @@ JS;
 
     public function dismissDpNewsAction($id)
     {
-        $dp_news = require_once(DP_ROOT.'/sys/config/config.news.php');
+        $dp_news = require_once DP_ROOT.'/sys/config/config.news.php';
         if (!isset($dp_news[$id])) {
             throw $this->createNotFoundException();
         }
@@ -1137,18 +1133,18 @@ JS;
         $this->em->persist($p);
         $this->em->flush();
 
-        return $this->createJsonResponse(array('success'=> true));
+        return $this->createJsonResponse(array('success' => true));
     }
 
     public function viewDpNewsAction($id)
     {
-        $dp_news = require_once(DP_ROOT.'/sys/config/config.news.php');
+        $dp_news = require_once DP_ROOT.'/sys/config/config.news.php';
         if (!isset($dp_news[$id])) {
             throw $this->createNotFoundException();
         }
 
         return $this->render('AgentBundle:Misc:dp-news-view.html.twig', array(
-                'dp_news' => $dp_news[$id]
+                'dp_news' => $dp_news[$id],
             ));
     }
 }

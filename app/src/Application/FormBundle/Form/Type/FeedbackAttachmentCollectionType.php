@@ -34,9 +34,7 @@
 
 namespace Application\FormBundle\Form\Type;
 
-use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\FeedbackAttachment;
-use Application\DeskPRO\Entity\TicketAttachment;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
@@ -50,7 +48,7 @@ class FeedbackAttachmentCollectionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event){
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
             $collection = $event->getData();
 
@@ -92,24 +90,24 @@ class FeedbackAttachmentCollectionType extends AbstractType
                 'options' => function (Options $options) {
                         return array(
                             'person'         =>  $options->get('person'),
-                            'label'          => false
+                            'label'          => false,
                         );
                     },
                 'allow_add' => true,
                 'allow_delete' => true,
-                'label' => false
+                'label' => false,
             )
         );
 
         $resolver->setRequired(
             array(
-                'person'
+                'person',
             )
         );
 
         $resolver->setAllowedTypes(
             array(
-                'person' => 'Application\\DeskPRO\\Entity\\Person'
+                'person' => 'Application\\DeskPRO\\Entity\\Person',
             )
         );
     }
@@ -129,4 +127,3 @@ class FeedbackAttachmentCollectionType extends AbstractType
         return 'feedback_attachment_collection';
     }
 }
- 

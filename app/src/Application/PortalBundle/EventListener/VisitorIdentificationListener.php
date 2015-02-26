@@ -42,7 +42,6 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-
 /**
  * Ensures an accurate visitor identifier is always present in the VisitorIdentificationProvider by hooking into the HttpKernel lifecycle
  */
@@ -57,13 +56,11 @@ class VisitorIdentificationListener implements EventSubscriberInterface
      */
     private $visitor_provider;
 
-
     public function __construct(VisitorIdentificationProvider $visitor_provider, LoggerInterface $logger)
     {
         $this->logger = $logger;
         $this->visitor_provider = $visitor_provider;
     }
-
 
     public function onKernelRequest(GetResponseEvent $event)
     {
@@ -103,7 +100,7 @@ class VisitorIdentificationListener implements EventSubscriberInterface
     {
         return array(
             KernelEvents::REQUEST  => array('onKernelRequest', 129),
-            KernelEvents::RESPONSE => array('onKernelResponse')
+            KernelEvents::RESPONSE => array('onKernelResponse'),
         );
     }
 }

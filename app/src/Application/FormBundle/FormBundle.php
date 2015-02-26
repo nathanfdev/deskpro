@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle;
 
-
 use Application\FormBundle\DependencyInjection\FormExtension;
 use Symfony\Component\Console\Application;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -50,7 +49,6 @@ class FormBundle extends Bundle
         return new FormExtension();
     }
 
-
     public function getNamespace()
     {
         return __NAMESPACE__;
@@ -61,4 +59,3 @@ class FormBundle extends Bundle
         return __DIR__;
     }
 }
- 
