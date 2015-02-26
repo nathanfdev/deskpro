@@ -1907,6 +1907,13 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         if (!$this->primary_email && $this->emails->count() < 1) {
             $this->setModelField('primary_email', $email);
         }
+
+	    foreach ($this->emails as $old) {
+		    if ($email->email === $old->email) {
+			    return $email;
+		    }
+	    }
+
         $this->emails->add($email);
         $this->_onPropertyChanged('emails', $this->emails, $this->emails);
 
@@ -2775,9 +2782,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             );
         }
 
-        $data['primary_phone_number_text'] = $this->getPrimaryPhoneNumberText();
-        $data['primary_phone_number_region'] = $this->getPrimaryPhoneNumberRegion();
-
+	    $pp = $this->getPrimaryPhoneNumber();
+        $data['primary_phone'] = $pp ? $pp->toApiData() : array();
 
         $data['emails'] = array();
         foreach ($this->emails as $eml) {

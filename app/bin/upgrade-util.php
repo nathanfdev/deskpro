@@ -1086,6 +1086,16 @@ class Upgrade
             $this->outAndLog("Failed to delete these old files:\n".implode("\n", $failures));
         }
 
+        $fileutil->removeUnknownFiles(
+            $tmp_dir    . str_replace('/', DIRECTORY_SEPARATOR, '/web/bower_components/'),
+            DP_WEB_ROOT . str_replace('/', DIRECTORY_SEPARATOR, '/web/bower_components/'),
+            array(),
+            $failures
+        );
+        if ($failures) {
+            $this->outAndLog("Failed to delete these old files:\n" . implode("\n", $failures));
+        }
+
         $this->registerCleanupParam('unlink_scratch_dir', null);
 
         // New build time

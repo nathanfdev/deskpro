@@ -42,5 +42,6 @@ class NewCommentFeedback extends NewCommentAbstract
         $details = parent::getDetails();
         $details['feedback_id'] = $this->comment->feedback['id'];
         $details['feedback_title'] = $this->comment->feedback['title'];
+	    return $details;
     }
 }

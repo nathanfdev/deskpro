@@ -82,7 +82,7 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
     protected $region;
 
     /**
-     * @var int see Orb\Utils\PhoneNumbers constants for the meanings of the ints stored here
+     * @var int see Orb\Util\PhoneNumbers constants for the meanings of the ints stored here
      */
     protected $guessed_type;
 

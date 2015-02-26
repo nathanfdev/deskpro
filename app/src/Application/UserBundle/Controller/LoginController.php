@@ -896,7 +896,12 @@ HTML;
 
     public function sendResetPasswordAction($_format = 'html', Request $request)
     {
-        $this->ensureRequestToken('user_login');
+	    $p = $this->session->getPerson();
+	    if ($p && !$p instanceof PersonGuest) {
+		    $this->ensureStandardRequestToken();
+	    } else {
+		    $this->ensureRequestToken('user_login');
+	    }
 
         /** @var RateLimit $rateLimit */
         $rateLimit = $this->get(RateLimit::KEY);
@@ -1065,7 +1070,7 @@ HTML;
     public function resetPasswordNewPassAction($code)
     {
         if (!$this->session->getPerson() instanceof PersonGuest) {
-            $this->session->invalidate();
+	        $this->_logoutPerson();
             return $this->redirectRoute('user_login_resetpass_newpass', array('code' => $code));
         }
 
@@ -1116,11 +1121,6 @@ HTML;
                 $this->db->delete('api_token', array('person_id' => $person->id));
 
                 $this->session->setFlash('password_reset', 1);
-
-                $this->session->invalidate();
-                $this->session->set('auth_person_id', $person->getId());
-                $this->session->set('dp_interface', DP_INTERFACE);
-                $this->session->save();
 
                 if ($ticket_ref = $this->session->get('ticket_from_ptac_register')) {
                     $this->session->remove('ticket_from_ptac_register');

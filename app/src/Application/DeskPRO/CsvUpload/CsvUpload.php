@@ -94,7 +94,7 @@ class CsvUpload
      * @return array
      */
 
-    public function startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email, array $options = array())
+    public function startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email, $update_if_exists, array $options = array())
     {
         $has_email = false;
 
@@ -119,6 +119,7 @@ class CsvUpload
             'blob_id'       => $blob->getId(),
             'field_maps'    => $field_maps,
             'skip_first'    => $skip_first,
+	        'update_if_exists' => $update_if_exists,
             'welcome_email' => $welcome_email,
             'user_filename' => $user_filename,
             'options'       => $options,
@@ -223,7 +224,7 @@ class CsvUpload
                     $example_total++;
 
                     if ($example_total == $column_count) {
-                        // have example for all columns
+                        // h$this->getApiData($result)ave example for all columns
                         break 2;
                     }
                 }

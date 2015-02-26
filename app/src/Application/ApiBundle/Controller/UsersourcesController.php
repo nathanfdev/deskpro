@@ -67,16 +67,13 @@ class UsersourcesController extends AbstractController
         $sources  = $this->getUsersourceManager()->getAll()->forInterface($interface, true);
         $packages = $this->container->getAppManager()->getAllPackages();
 
-        // available packages are packages that are usersources, but have no usersource with an app instance
-        // of that package.
-        // TODO: support auth apps that are not single only
         $available_packages = array_filter($packages, function (AppPackage $package) use ($sources) {
                 if ($package->isUsersource()) {
                     /** @var \Application\DeskPRO\Entity\Usersource $source */
                     foreach ($sources as $source) {
                         /** @var \Application\DeskPRO\Entity\AppInstance $app */
                         if ($app = $source->app) {
-                            if ($app->package->name === $package->name) {
+                            if ($app->package->name === $package->name && $package->is_single) {
                                 return false;
                             }
                         }

@@ -86,8 +86,10 @@ class CleanerExtension extends AbstractTypeExtension
                 if ($child_form->getConfig()->getOption('filter_clean', true)) {
                     if (is_array($data)) {
                         $cleaned = $this->cleanData($data, $child_form);
-                    } else {
+                    } elseif (is_string($data)) {
                         $cleaned = $this->cleaner->clean($data, 'string');
+                    } else {
+	                    $cleaned = $data;
                     }
 
                     $clean_data[$form_name] = $cleaned;

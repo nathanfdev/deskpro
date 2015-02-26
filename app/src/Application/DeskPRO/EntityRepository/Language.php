@@ -144,6 +144,14 @@ class Language extends AbstractEntityRepository
         }
     }
 
+    public function getByTitle($title)
+	{
+		return $this->getEntityManager()->createQuery('
+				SELECT l FROM DeskPRO:Language l
+				WHERE l.sys_name = :title OR LOWER(l.title) = :title
+			')->setParameter('title', mb_strtolower(trim($title)))->getOneOrNullResult();
+	}
+
     public function getForLangCode($lang_code)
     {
         if (!strlen($lang_code) == 2) {
@@ -159,7 +167,6 @@ class Language extends AbstractEntityRepository
         }
 
         $r = $this->findOneBy(array('locale' => $lang_code));
-//		var_dump($lang_code, $r);exit;
         return $r;
     }
 }

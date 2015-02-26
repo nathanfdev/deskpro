@@ -405,13 +405,15 @@ class DpKernel extends AbstractKernel
         }
 
         $deskproUrl = App::getSetting('core.deskpro_url');
-        if (false === $correctScheme = $request->isCorrectScheme($deskproUrl)) {
-            $interface = false !== strpos($request->getReturnParam(), 'admin') ? 'admin' : $this->interface;
-            $request->attributes->set($interface . '.wrong_scheme', true);
-        }
-        if (false === $correctHost = $request->isCorrectHost($deskproUrl)) {
-            $interface = false !== strpos($request->getReturnParam(), 'admin') ? 'admin' : $this->interface;
-            $request->attributes->set($interface . '.wrong_host', true);
+        if ($deskproUrl) {
+            if (false === $correctScheme = $request->isCorrectScheme($deskproUrl)) {
+                $interface = false !== strpos($request->getReturnParam(), 'admin') ? 'admin' : $this->interface;
+                $request->attributes->set($interface . '.wrong_scheme', true);
+            }
+            if (false === $correctHost = $request->isCorrectHost($deskproUrl)) {
+                $interface = false !== strpos($request->getReturnParam(), 'admin') ? 'admin' : $this->interface;
+                $request->attributes->set($interface . '.wrong_host', true);
+            }
         }
 
 

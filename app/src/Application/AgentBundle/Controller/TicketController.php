@@ -3496,10 +3496,10 @@ class TicketController extends AbstractController
                 }
             }
 
-            if (!$this->in->getString('newticket.subject')) {
+            if (!$newticket->subject) {
                 $errors['subject'] = true;
             }
-            if (!$this->in->getString('newticket.message')) {
+            if (!$newticket->message) {
                 $errors['message'] = true;
             }
             if (!$this->in->getString('newticket.department_id')) {

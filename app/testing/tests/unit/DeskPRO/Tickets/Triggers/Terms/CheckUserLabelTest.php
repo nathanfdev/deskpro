@@ -16,6 +16,11 @@ class CheckUserLabelTest extends AbstractEntityCheckTest
      */
     public function createTicket($id, $object)
     {
+        if ($object === null) {
+            // no test for nulls
+            return null;
+        }
+
         $person = new Person();
 
         $bogus = new LabelPerson();

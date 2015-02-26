@@ -173,6 +173,14 @@ DeskPRO.User.Window = new Orb.Class({
 		$('input.datepicker, .datepicker input').datepicker({
 			dateFormat: 'yy-mm-dd'
 		});
+		$('.DateTime.customfield input').each(function(){
+			$(this).datetimepicker({
+				format: 'yyyy-mm-dd hh:mm',
+				container: $(this).parent().css('position', 'relative'),
+				autoclose: true
+			});
+		});
+
 
 		$(document).on('click', '.dp-bound-faded', function() {
 			var parent = $(this).parent();
@@ -246,8 +254,7 @@ DeskPRO.User.Window = new Orb.Class({
 						&& boundLeft < elementPosition.left
 						&& boundRight > (elementPosition.left + actualWidth)
 						&& boundBottom > (elementPosition.top + actualHeight)
-					};
-
+					}
 					var position;
 					if (above) {
 						position = 'top';
