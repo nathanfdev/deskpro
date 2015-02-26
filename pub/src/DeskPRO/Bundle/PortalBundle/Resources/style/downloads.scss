@@ -1,0 +1,135 @@
+.downloads {
+
+
+  ul.download-list {
+    @include blank-list;
+    margin-top: 20px;
+
+    > li {
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid $divider-color;
+      padding-left: 10px;
+
+      a { text-decoration: none; }
+
+      p {
+        color: $text-color;
+        margin-bottom: 10px;
+        font-weight: 300;
+      }
+
+      h1 {
+        font-size: 1.25em;
+        display: inline-block;
+        color: #3575bd;
+        margin-top: 5px;
+        margin-bottom: 5px;
+
+        i {
+          font-size: 0.8em;
+          position: relative;
+          top: -2px;
+          margin-right: 3px;
+        }
+      }
+      .date {
+        margin-left: 5px;
+        color: $text-faded;
+      }
+    }
+  }
+
+  .controls {
+    float: right;
+    font-weight: 400;
+
+    ul {
+      @include blank-list;
+      line-height: 1em;
+      display: inline-block;
+      border-radius: 2px;
+      overflow: hidden;
+      font-size: 0.8em;
+      background: darken($surface-secondary, 5%);
+
+      li {
+        display: inline-block;
+      }
+
+      a {
+        display: block;
+        background: darken($surface-secondary, 5%);
+
+        color: lighten($text-color-lighter, 20%);
+        padding: 8px 10px;
+        &:hover { background: darken($surface-secondary, 20%); color: #fff; }
+      }
+
+      i {
+        margin: 0px 3px;
+        font-size: 1.3em;
+      }
+
+      .the-file {
+        a {
+          background: $button-color;
+          color: #fff;
+          &:hover { background: darken($button-color, 10%); }
+        }
+      }
+
+      .the-cudos {
+        border-left: 1px solid $divider-color;
+      }
+
+      .the-cudos.has-cudos {
+        background: $button-color-secondary;
+        border-left: 1px solid $button-color-secondary;
+
+        a {
+          background: $button-color-secondary;
+          color: #fff;
+        }
+      }
+    }
+  }
+
+
+
+}
+
+// Downloads
+.front-page-downloads {
+  ul {
+
+    li {
+
+
+      .file-icon {
+        display: inline-block;
+        background: $button-color;
+        color: #fff;
+        border-radius: 2px;
+        vertical-align: middle;
+        margin-right: 10px;
+        padding: 5px;
+        text-align: center;
+        min-width: 35px;
+
+        font-size: 9px;
+        font-weight: 500;
+        text-transform: uppercase;
+
+        &.file-download {
+          background: $gold;
+        }
+
+        span {
+          line-height: 1em;
+        }
+      }
+
+    }
+  }
+}

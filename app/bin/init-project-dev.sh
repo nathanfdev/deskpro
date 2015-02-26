@@ -31,3 +31,13 @@ echo ">> Building web assets"
 gulp
 echo ".. done"
 echo
+
+echo ">> Installing new web dependencies (dev)"
+cd $DIR_ROOT/pub
+npm install --save-dev
+echo ".. done"
+
+echo ">> Building new web assets"
+gulp
+echo ".. done"
+echo
