@@ -14,7 +14,6 @@ $container->setParameter('http_kernel.class', 'Application\\DeskPRO\\HttpKernel\
 $container->setParameter('controller_resolver.class', 'Application\\DeskPRO\\HttpKernel\\Controller\\ControllerResolver');
 $container->setParameter('debug.controller_resolver.class', 'Application\\DeskPRO\\HttpKernel\\Controller\\TraceableControllerResolver');
 $container->setParameter('session.class', 'Application\\DeskPRO\\HttpFoundation\\Session');
-$container->setParameter('swiftmailer.class', 'Application\\DeskPRO\\Mail\\Mailer');
 $container->setParameter('router.options.generator_class', 'Application\\DeskPRO\\Routing\\Generator\\UrlGenerator');
 $container->setParameter('router.options.generator_base_class', 'Application\\DeskPRO\\Routing\\Generator\\UrlGenerator');
 $container->setParameter('validator.mapping.class_metadata_factory.class', 'Application\\DeskPRO\\Validator\\Mapping\\ClassMetadataFactory');

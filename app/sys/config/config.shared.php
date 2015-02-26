@@ -28,18 +28,6 @@ $definition->setArguments(array(
 );
 $container->setDefinition('settings_resolver', $definition);
 
-// swiftmailer.mailer
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Mail\\Mailer');
-$definition->setFactoryClass('Application\\DeskPRO\\DependencyInjection\\SystemServices\\MailerFactory');
-$definition->setFactoryMethod('create');
-$definition->setArguments(
-    array(
-        new Reference('service_container')
-    )
-);
-$container->setDefinition('swiftmailer.mailer', $definition);
-
 ############################################################################
 # Listeners
 ############################################################################
