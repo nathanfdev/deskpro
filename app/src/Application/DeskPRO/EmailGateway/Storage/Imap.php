@@ -43,10 +43,11 @@ class Imap extends Server
      */
     public function __construct($options = array())
     {
+	    $options['password'] = (string) @$options['password'];
+	    $options['port'] = $options['port'] ?: 143;
+
         if (!isset($options['host']) ||
-            !isset($options['port']) ||
-            !isset($options['user']) ||
-            !isset($options['password'])) {
+            !isset($options['user'])) {
             throw new \Exception('Insufficient Parameters');
         }
 
