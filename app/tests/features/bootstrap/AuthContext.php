@@ -34,114 +34,95 @@
 
 namespace DpBehat;
 
+use Application\AuthBundle\Security\DpFormLoginToken;
 use Application\DeskPRO\Brand\BrandStack;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
 use Application\DeskPRO\Languages\LangPackInfo;
 use Application\LanguageBundle\Language\LanguageManager;
 use Application\LanguageBundle\Language\LanguageStack;
+use Application\PortalBundle\Mode\PortalModeFactory;
+use Application\PortalBundle\Mode\PortalModeStorage;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Mink\Driver\BrowserKitDriver;
+use Behat\Mink\Exception\UnsupportedDriverActionException;
+use Behat\Mink\Tests\Driver\BrowserKitConfig;
+use Behat\Symfony2Extension\Driver\KernelDriver;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\HttpKernel\KernelInterface;
+use DpBehat\TestBundle\UserDetailsRepo;
+use Symfony\Component\BrowserKit\Cookie;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
-class LanguageContext extends BasePortalContext
+class AuthContext extends BasePortalContext
 {
     /**
-     * @var LanguageManager
+     * @var UserDetailsRepo
      */
-    private $language_manager;
-    /**
-     * @var EntityManager
-     */
-    private $em;
-    /**
-     * @var LanguageRepo
-     */
-    private $lang_repo;
-    /**
-     * @var LanguageStack
-     */
-    private $lang_stack;
+    private $user_details;
 
-    public function __construct(
-        LanguageManager $language_manager,
-        EntityManager $em,
-        LanguageRepo $lang_repo,
-        LanguageStack $lang_stack
-    )
+    /**
+     * @var TokenStorage
+     */
+    private $token_storage;
+
+    public function __construct(UserDetailsRepo $user_details, TokenStorage $token_storage)
     {
-        $this->language_manager = $language_manager;
-        $this->em = $em;
-        $this->lang_repo = $lang_repo;
-        $this->lang_stack = $lang_stack;
+        $this->user_details = $user_details;
+        $this->token_storage = $token_storage;
+    }
+    
+    /**
+     * @When I login using the sidebar with :who credentials
+     */
+    public function iLoginUsingTheSidebarWithCredentials($who)
+    {
+        $this->getPage('Home')->sidebarLogin(
+            $this->user_details->getEmail($who),
+            $this->user_details->getPass($who)
+        );
     }
 
     /**
-     * @Given the following languages are enabled:
+     * @When I login with :who credentials
      */
-    public function theFollowingLanguagesAreEnabled(TableNode $table)
+    public function iLoginWithCredentials($who)
     {
-        $langs = array();
-        foreach ($table->getRows() as $row) {
-            $langs[] = $row[0];
+        $this->getPage('Login')->login(
+            $this->user_details->getEmail($who),
+            $this->user_details->getPass($who)
+        );
+    }
+
+    /**
+     * @Then I should be authenticated as :who
+     */
+    public function iShouldBeAuthenticatedAs($who)
+    {
+        if (!$token = $this->getContainer()->get('security.token_storage')->getToken()) {
+            throw new \Exception('no token found');
         }
 
-        // remove existing if not listed
-        $existing_langs = $this->lang_repo->findAll();
-        /** @var \Application\DeskPRO\Entity\Language $existing */
-        foreach ($existing_langs as $existing) {
-            if (!in_array($existing->getSystemName(), $langs)) {
-                $this->em->remove($existing);
-            }
+        if (!$user = $token->getUser()) {
+            throw new \Exception('no user in token');
         }
 
-        // add new if not existing
-        $langpacks = new LangPackInfo();
-        foreach($langs as $lang) {
-            if (!$this->language_manager->getLanguageBySystemName($lang)) {
-                $new_lang = $langpacks->newLanguageEntity($lang);
-                $this->em->persist($new_lang);
-            }
+        if (!$user instanceof Person) {
+            $user = $this->getContainer()->get('doctrine.orm.default_entity_manager')->getRepository('DeskPRO:Person')->find($user);
         }
 
-        $this->em->flush();
+        print $this->user_details->getEmail($who);
+
+        expect($user->getPrimaryEmailAddress())->toBeEqualTo($this->user_details->getEmail($who));
     }
 
     /**
-     * @Then :lang_code should be the active language
+     * @Given I am authenticated as :who
      */
-    public function shouldBeTheActiveLanguage($lang_code)
+    public function iAmAuthenticatedAsUser($who)
     {
-        if (!$lang = $this->getLanguageStack()->getActive()) {
-            var_dump($this->lang_stack);
-            throw new \Exception('no active lang');
-        }
-
-        expect($lang->getSystemName())->toBe($lang_code);
-    }
-
-    /**
-     * @Given :lang is the active language
-     */
-    public function defaultIsTheActiveLanguage($lang)
-    {
-        $this->getLanguageStack()->push($this->getLanguageManager()->getLanguageBySystemName($lang));
-    }
-
-    /**
-     * @return LanguageStack
-     */
-    public function getLanguageStack()
-    {
-        return $this->get('language_stack');
-    }
-
-    /**
-     * @return LanguageManager
-     */
-    public function getLanguageManager()
-    {
-        return $this->get('language_manager');
+        $this->iLoginWithCredentials($who);
     }
 }

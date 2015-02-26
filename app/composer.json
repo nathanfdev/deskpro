@@ -36,7 +36,7 @@
 		"fzaninotto/faker": "1.4.*@dev",
 		"firebase/php-jwt": "dev-master",
 		"league/url": "3.2.*",
-		"onelogin/php-saml": "2.1.*",
+		"onelogin/php-saml": "dev-master@dev",
 		"google/apiclient": "1.0.*@dev",
 		"predis/predis": "1.0.*",
 		"react/event-loop": "0.4.*",
@@ -60,6 +60,7 @@
 		"phpunit/phpcov": "~2.0",
 		"behat/mink-extension": "~2.0@dev",
 		"behat/mink-browserkit-driver": "~1.1",
+		"sensiolabs/behat-page-object-extension": "2.0.*@dev",
 		"vipsoft/code-coverage-extension": "*@dev"
 	},
 	"preferred-install": "dist"

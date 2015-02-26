@@ -56,6 +56,18 @@ use Symfony\Component\Routing\RouterInterface;
 class Router implements WarmableInterface, RouterInterface, RequestMatcherInterface
 {
     public static $generating_ignored_routes = array(
+        'saml_sls',
+        'saml_metadata',
+        'portal_agent_login',
+        'user_saml_sls',
+        'saml_sls',
+        'user_saml_metadata',
+        'saml_metadata',
+        'portal_logout',
+        'portal_login_usersource_sso',
+        'portal_login_callback',
+        'portal_login_authenticate',
+        'portal_login_submit',
         'serve_blob_sizefit',
         'serve_default_picture',
         'serve_blob',
@@ -91,7 +103,26 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 
     public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
     {
-        $generated = $this->router->generate($name, $parameters);
+        $generated = $this->router->generate($name, $parameters, $referenceType);
+
+        if (in_array($name, self::$generating_ignored_routes)) {
+            return $generated;
+        }
+
+        if (self::ABSOLUTE_URL === $referenceType) {
+            // deal with an absolute URL by isolating just the path
+            $url = Url::createFromUrl($generated);
+            $path = (string) ($url->getPath());
+
+            // build with just the path
+            $built_path = $this->buildUrl($path);
+
+            // add the path back to the original generated url
+            $url->setPath($built_path);
+
+            return (string) $url;
+        }
+
 
         return $this->buildUrl($generated);
     }
@@ -102,6 +133,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
     public function matchRequest(Request $request)
     {
         $request_info = new PortalRequestInfo($request, $this->getPortalMode());
+        $request_info->setRouter($this->router);
 
         // if its not safe, or its a special url, just match it immediately
         if (!$request->isMethodSafe() || $request_info->isSpecialPath()) {

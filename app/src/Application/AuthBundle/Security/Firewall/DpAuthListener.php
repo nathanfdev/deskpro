@@ -34,6 +34,7 @@
 
 namespace Application\AuthBundle\Security\Firewall;
 
+use Application\AppBundle\EventListener\RedirectProtectionListener;
 use Application\AuthBundle\Security\AgentImpersonateToken;
 use Application\AuthBundle\Security\DpFormLoginToken;
 use Application\DeskPRO\Auth\LoginProcessor;
@@ -303,7 +304,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
     protected function redirect($url)
     {
-        return new RedirectResponse($url);
+        return new RedirectResponse($url, 302, array(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER => '1'));
     }
 
     protected function redirectRoute($route, $params = array())

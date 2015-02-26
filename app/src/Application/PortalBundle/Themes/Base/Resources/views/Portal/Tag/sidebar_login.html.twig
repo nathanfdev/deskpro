@@ -4,7 +4,7 @@
         <h1>Log in</h1>
 
         {% if show_login_form %}
-            <form action="{{ path('portal_login_submit') }}" method="post">
+            <form action="{{ path('portal_login_submit') }}" method="post" id="login-sidebar">
                 <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
                 <label>
                     <span>Your email:</span>

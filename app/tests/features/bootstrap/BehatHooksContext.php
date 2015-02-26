@@ -29,49 +29,56 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
  */
 
-namespace Application\AuthBundle\Handler;
+namespace DpBehat;
 
-use Application\AuthBundle\Security\AgentImpersonateToken;
-use Orb\Auth\Adapter\SsoLoginActionInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
 
-class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler implements ContainerAwareInterface
+use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
+use Symfony\Component\Filesystem\Filesystem;
+
+class BehatHooksContext extends BasePortalContext
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
+    private static $warmed_up_cache = false;
 
     /**
-     * {@inheritdoc}
+     * @BeforeSuite
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token)
+    // removed due to speed issues while developing
+    //public static function deleteCacheFolder(BeforeSuiteScope $scope)
+    //{
+    //    $cache = self::getCacheDir();
+    //
+    //    $fs = new Filesystem();
+    //    if (is_dir($cache)) {
+    //        $fs->remove($cache);
+    //    }
+    //    $fs->mkdir($cache, 0777);
+    //    $fs->mkdir($cache . '/annotations', 0777);
+    //    print "made new test folder " . (time() - (int)DP_TESTS_START_TIME) . " seconds in";
+    //}
+    ///**
+    // * @BeforeScenario
+    // */
+    //public function warmupCache()
+    //{
+    //    if (!self::$warmed_up_cache) {
+    //        $this->getContainer()->get('dataset_manager')->install('empty');
+    //
+    //        $warmer = $this->getContainer()->get('cache_warmer');
+    //        //$warmer->enableOptionalWarmers();
+    //        $warmer->warmUp(self::getCacheDir());
+    //        self::$warmed_up_cache = true;
+    //
+    //        print "finished warming cache " . (time() - (int)DP_TESTS_START_TIME) . " seconds in";
+    //    }
+    //}
+
+    /**
+     * @return string
+     */
+    private static function getCacheDir()
     {
-        if ($token instanceof AgentImpersonateToken) {
-            return $this->httpUtils->createRedirectResponse($request, '/');
-        }
-
-        if (
-            $token->hasAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH)
-            && $token->getAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH)
-        ) {
-            $token->setAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH, false);
-
-            return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_refresh.html.twig');
-        }
-
-        return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
-    }
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
+        return DP_ROOT . '/sys/cache/portal/test';
     }
 }

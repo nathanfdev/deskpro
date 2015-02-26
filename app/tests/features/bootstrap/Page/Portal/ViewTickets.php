@@ -29,49 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
  */
 
-namespace Application\AuthBundle\Handler;
+namespace DpBehat\Page\Portal;
 
-use Application\AuthBundle\Security\AgentImpersonateToken;
-use Orb\Auth\Adapter\SsoLoginActionInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
+use DpBehat\BasePortalContext;
+use DpBehat\Page\BasePage;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
-class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler implements ContainerAwareInterface
+class ViewTickets extends BasePage
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
+    protected $path = '/tickets';
 
-    /**
-     * {@inheritdoc}
-     */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token)
+    public function clickTicket($id)
     {
-        if ($token instanceof AgentImpersonateToken) {
-            return $this->httpUtils->createRedirectResponse($request, '/');
-        }
-
-        if (
-            $token->hasAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH)
-            && $token->getAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH)
-        ) {
-            $token->setAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH, false);
-
-            return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_refresh.html.twig');
-        }
-
-        return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
-    }
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
     }
 }

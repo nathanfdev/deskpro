@@ -1,5 +1,5 @@
 Feature: Portal Router
-  In order to manage mode and make sure users arent going to language urls
+  In order to manage mode and make sure users arent going to language urls in a single-language site
   As a developer
   I need a router that can match urls and redirect invalid ones
 

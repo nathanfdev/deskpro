@@ -36,9 +36,25 @@ namespace Application\LanguageBundle\Routing;
 use Application\AppBundle\Helper\IsProxyRequestHelper;
 use Application\PortalBundle\Mode\PortalMode;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RouterInterface;
 
 class PortalRequestInfo
 {
+    public static $special_routes = array(
+        'saml_sls',
+        'saml_metadata',
+        'portal_agent_login',
+        'user_saml_sls',
+        'saml_sls',
+        'user_saml_metadata',
+        'saml_metadata',
+        'portal_logout',
+        'portal_login_usersource_sso',
+        'portal_login_callback',
+        'portal_login_authenticate',
+        'portal_login_submit'
+    );
+
     /**
      * @var Request
      */
@@ -49,10 +65,26 @@ class PortalRequestInfo
      */
     private $mode;
 
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
     public function __construct(Request $request, PortalMode $mode = null)
     {
         $this->request = $request;
         $this->mode = $mode;
+        // recommended you also call ->setRouter with the router service
+    }
+
+    /**
+     * If a router is set on the object, it can do a better job at finding isSpecial() info
+     *
+     * @param RouterInterface $router
+     */
+    public function setRouter(RouterInterface $router = null)
+    {
+        $this->router = $router;
     }
 
     public function getLanguageUrlCode()
@@ -94,6 +126,16 @@ class PortalRequestInfo
 
         if ('/_' === substr($pathinfo, 0, 2)) {
             return true;
+        }
+
+        // if we have a router, get the route name and compare it with the list of special routes
+        if ($router = $this->router) {
+            $params = $router->match($this->getRoutablePath());
+            if (isset($params['_route'])) {
+                $route_name = $params['_route'];
+
+                return in_array($route_name, self::$special_routes);
+            }
         }
 
 

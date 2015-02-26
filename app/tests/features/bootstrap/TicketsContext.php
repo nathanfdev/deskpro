@@ -29,49 +29,75 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
  */
 
-namespace Application\AuthBundle\Handler;
+namespace DpBehat;
 
-use Application\AuthBundle\Security\AgentImpersonateToken;
-use Orb\Auth\Adapter\SsoLoginActionInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
 
-class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler implements ContainerAwareInterface
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
+use Behat\Behat\Tester\Exception\PendingException;
+
+class TicketsContext extends BasePortalContext
 {
     /**
-     * @var ContainerInterface
+     * @var Ticket
      */
-    protected $container;
+    private $last_ticket;
 
     /**
-     * {@inheritdoc}
+     * @When I go to the tickets page
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token)
+    public function iGoToTheTicketsPage()
     {
-        if ($token instanceof AgentImpersonateToken) {
-            return $this->httpUtils->createRedirectResponse($request, '/');
-        }
-
-        if (
-            $token->hasAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH)
-            && $token->getAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH)
-        ) {
-            $token->setAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH, false);
-
-            return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_refresh.html.twig');
-        }
-
-        return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
+        $this->getPage('View Tickets')->open();
     }
 
-    public function setContainer(ContainerInterface $container = null)
+    /**
+     * @Then I should see my tickets
+     */
+    public function iShouldSeeMyTickets()
     {
-        $this->container = $container;
     }
+
+    /**
+     * @Then I should see my ticket
+     */
+    public function iShouldSeeMyTicket()
+    {
+    }
+
+    /**
+     * @Given :who has/have a ticket
+     */
+    public function hasATicket($who)
+    {
+        if ($who === 'I') {
+            $who = 'user';
+        }
+
+        $ticket = $this->getContainer()->get('ticket_manager')->createTicket();
+        $person = $this->getContainer()->get('user_details')->getWho($who);
+
+        $ticket->setPerson($person);
+        $ticket->setSubject('subject');
+
+        $msg = new TicketMessage();
+        $msg->setPerson($person);
+        $msg->setMessageText('message');
+        $ticket->addMessage($msg);
+
+        $this->persistAndFlush($ticket);
+
+        $this->last_ticket = $ticket;
+    }
+
+    /**
+     * @Given I view my ticket
+     */
+    public function iTryToVisitThatTicket()
+    {
+        $this->getPage('Ticket')->open(array('id' => $this->last_ticket->getId()));
+    }
+
 }

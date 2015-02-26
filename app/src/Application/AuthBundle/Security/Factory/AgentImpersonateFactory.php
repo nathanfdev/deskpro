@@ -48,9 +48,17 @@ class AgentImpersonateFactory extends AbstractFactory
         'failure_path_parameter' => '_failure_path',
     );
 
+    protected $defaultSuccessHandlerOptions = array(
+        'always_use_default_target_path' => true,
+        'default_target_path' => '/',
+        'login_path' => '/login',
+        'target_path_parameter' => '_target_path',
+        'use_referer' => false,
+    );
+
     public function getPosition()
     {
-        return 'form';
+        return 'pre_auth';
     }
 
     public function getKey()
@@ -83,17 +91,5 @@ class AgentImpersonateFactory extends AbstractFactory
     protected function getListenerId()
     {
         return 'dp_security.form_login.listener';
-    }
-
-    protected function createEntryPoint($container, $id, $config, $defaultEntryPoint)
-    {
-        $entryPointId = 'security.authentication.dp_form_entry_point.'.$id;
-        $container
-            ->setDefinition($entryPointId, new DefinitionDecorator('security.authentication.form_entry_point'))
-            ->addArgument(new Reference('security.http_utils'))
-            ->addArgument($config['login_path'])
-            ->addArgument($config['use_forward']);
-
-        return $entryPointId;
     }
 }

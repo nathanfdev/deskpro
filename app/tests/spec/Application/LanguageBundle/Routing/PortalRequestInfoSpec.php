@@ -38,13 +38,18 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Application\LanguageBundle\Routing\PortalRequestInfo;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Matcher\Dumper\MatcherDumperInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @mixin \Application\LanguageBundle\Routing\PortalRequestInfo
  */
 class PortalRequestInfoSpec extends ObjectBehavior
 {
-    function let(Request $request)
+    function let(
+        Request $request,
+        RouterInterface $router
+    )
     {
         $this->beConstructedWith($request);
     }
@@ -168,5 +173,35 @@ class PortalRequestInfoSpec extends ObjectBehavior
 
         $request->getPathInfo()->willReturn('/downloads');
         $this->isSpecialPath()->shouldReturn(false);
+    }
+
+    function it_uses_the_router_to_see_if_a_url_is_of_a_special_route(
+        Request $request,
+        RouterInterface $router
+    )
+    {
+        $special_routes = array(
+            'saml_sls',
+            'saml_metadata',
+            'portal_agent_login',
+            'user_saml_sls',
+            'saml_sls',
+            'user_saml_metadata',
+            'saml_metadata',
+            'portal_logout',
+            'portal_login_usersource_sso',
+            'portal_login_callback',
+            'portal_login_authenticate',
+            'portal_login_submit'
+        );
+
+        $this->setRouter($router);
+
+        foreach ($special_routes as $route) {
+            $request->getPathInfo()->willReturn('irrelevent in this test case');
+            $router->match(Argument::any())->willReturn(array('_route' => $route));
+
+            $this->isSpecialPath()->shouldReturn(true);
+        }
     }
 }

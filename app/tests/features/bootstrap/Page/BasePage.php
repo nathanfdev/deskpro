@@ -29,49 +29,36 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
  */
 
-namespace Application\AuthBundle\Handler;
+namespace DpBehat\Page;
 
-use Application\AuthBundle\Security\AgentImpersonateToken;
-use Orb\Auth\Adapter\SsoLoginActionInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
 
-class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler implements ContainerAwareInterface
+use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
+
+class BasePage extends Page
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token)
+    protected function verifyUrl(array $urlParameters = array())
     {
-        if ($token instanceof AgentImpersonateToken) {
-            return $this->httpUtils->createRedirectResponse($request, '/');
+        // we need to override this to allow for not using a hostname at all in the session (it uses localhost)
+
+        if ($this->removeHostAndScheme($this->getSession()->getCurrentUrl()) === $this->getUrl($urlParameters)) {
+            return;
         }
 
-        if (
-            $token->hasAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH)
-            && $token->getAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH)
-        ) {
-            $token->setAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH, false);
-
-            return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_refresh.html.twig');
-        }
-
-        return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
+        parent::verifyUrl($urlParameters);
     }
 
-    public function setContainer(ContainerInterface $container = null)
+    private function removeHostAndScheme($url)
     {
-        $this->container = $container;
+        $url_info = parse_url($url);
+
+        $uri = $url_info['path'];
+
+        if (isset($url_info['query'])) {
+            $uri .= '?' . $url_info['query'];
+        }
+
+        return $uri;
     }
 }

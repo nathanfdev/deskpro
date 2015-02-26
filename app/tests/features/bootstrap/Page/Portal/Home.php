@@ -29,54 +29,21 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
  */
 
-namespace DpBehat;
+namespace DpBehat\Page\Portal;
 
-use Behat\Symfony2Extension\Context\KernelAwareContext as KernelAwareContextInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpKernel\KernelInterface;
+use DpBehat\Page\BasePage;
 
-abstract class KernelAwareContext implements KernelAwareContextInterface
+class Home extends BasePage
 {
-    /**
-     * @var KernelInterface
-     */
-    private $kernel;
+    protected $path = '/';
+    protected $parameters = array('base_url' => '/');
 
-    /**
-     * Sets Kernel instance.
-     *
-     * @param KernelInterface $kernel
-     */
-    public function setKernel(KernelInterface $kernel)
+    public function sidebarLogin($username, $password)
     {
-        $this->kernel = $kernel;
-    }
+        $this->open();
 
-    public function get($service_id)
-    {
-        return $this->getContainer()->get($service_id);
-    }
-
-    /**
-     * Returns HttpKernel instance.
-     *
-     * @return KernelInterface
-     */
-    public function getKernel()
-    {
-        return $this->kernel;
-    }
-
-    /**
-     * Returns HttpKernel service container.
-     *
-     * @return ContainerInterface
-     */
-    public function getContainer()
-    {
-        return $this->kernel->getContainer();
+        return $this->getElement('SidebarLogin')->login($username, $password);
     }
 }

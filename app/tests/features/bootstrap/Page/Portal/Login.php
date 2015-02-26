@@ -29,49 +29,31 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
  */
 
-namespace Application\AuthBundle\Handler;
+namespace DpBehat\Page\Portal;
 
-use Application\AuthBundle\Security\AgentImpersonateToken;
-use Orb\Auth\Adapter\SsoLoginActionInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
+use DpBehat\BasePortalContext;
+use DpBehat\Page\BasePage;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
-class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler implements ContainerAwareInterface
+class Login extends BasePage
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
+    protected $path = '/login';
+    protected $parameters = array('base_url' => '/');
+    protected $elements = array(
+        'Login Form' => 'form#login'
+    );
 
-    /**
-     * {@inheritdoc}
-     */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token)
+    public function login($username, $password)
     {
-        if ($token instanceof AgentImpersonateToken) {
-            return $this->httpUtils->createRedirectResponse($request, '/');
-        }
+        $this->open();
 
-        if (
-            $token->hasAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH)
-            && $token->getAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH)
-        ) {
-            $token->setAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH, false);
+        $login_form = $this->getElement('Login Form');
 
-            return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_refresh.html.twig');
-        }
+        $this->fillField('username', $username);
+        $this->fillField('password', $password);
 
-        return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
-    }
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
+        return $this->pressButton('Log In');
     }
 }

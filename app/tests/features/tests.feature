@@ -17,3 +17,22 @@ Feature: tests
     Given I have access to dataset_manager
     When I install the fresh data set
     Then I should be able to load an admin user
+
+  Scenario: Data sets are NOT reinstalled if already installed
+    Given I have already installed the fresh data set
+    And I have not tagged this scenario with "reinstall"
+    When I attempt to reinstall the fresh data set
+    Then the database will not be installed
+
+  @reinstall
+  Scenario: Data sets are reinstalled (wiped db with a clean install) if its tagged
+    Given I have already installed the fresh data set
+    And I have tagged this scenario with "reinstall"
+    When I attempt to reinstall the fresh data set
+    Then the database will be reinstalled
+
+  Scenario: If its a different data set to be installed, then the tags don't matter
+    Given I have already installed the fresh data set
+    And I have not tagged this scenario with "reinstall"
+    When I install the empty data set
+    Then the database will be installed

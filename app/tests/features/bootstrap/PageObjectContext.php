@@ -32,46 +32,27 @@
  * @subpackage
  */
 
-namespace Application\AuthBundle\Handler;
+namespace DpBehat;
 
-use Application\AuthBundle\Security\AgentImpersonateToken;
-use Orb\Auth\Adapter\SsoLoginActionInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
+use Application\DeskPRO\Brand\BrandStack;
+use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
+use Application\DeskPRO\Languages\LangPackInfo;
+use Application\LanguageBundle\Language\LanguageManager;
+use Application\LanguageBundle\Language\LanguageStack;
+use Application\PortalBundle\Mode\PortalModeFactory;
+use Application\PortalBundle\Mode\PortalModeStorage;
+use Behat\Behat\Context\Context;
+use Behat\Behat\Tester\Exception\PendingException;
+use Behat\Gherkin\Node\TableNode;
+use Doctrine\ORM\EntityManager;
 
-class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler implements ContainerAwareInterface
+class PageObjectContext extends BasePortalContext
 {
     /**
-     * @var ContainerInterface
+     * @Given I am on the :page page
      */
-    protected $container;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token)
+    public function iAmOnThePage($page)
     {
-        if ($token instanceof AgentImpersonateToken) {
-            return $this->httpUtils->createRedirectResponse($request, '/');
-        }
-
-        if (
-            $token->hasAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH)
-            && $token->getAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH)
-        ) {
-            $token->setAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH, false);
-
-            return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_refresh.html.twig');
-        }
-
-        return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
-    }
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
+        throw new PendingException();
     }
 }

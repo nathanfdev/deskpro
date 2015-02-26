@@ -1,13 +1,30 @@
+# The following are caught by our security system, and therefore do not need to have default controllers set on them
+portal_logout:
+    path: /logout
+
+portal_login_submit:
+    path: /login/authenticate-password
+
+portal_login_authenticate:
+    path: /login/authenticate/{usersource_id}
+
+portal_login_callback:
+    path: /login/authenticate-callback/{usersource_id}
+
+portal_login_usersource_sso:
+    path: /login/usersource-sso/{usersource_id}
+
+# saml specific
+# only temporarily here, until other interfaces stop relying on the routes of UserBundle
 saml_sls:
     path: /saml/sls/{usersource_id}
 saml_metadata:
     path: /saml/metadata/{usersource_id}.xml
-
-portal_agent_login:
-    path: /impersonate/agent-login/{code}
-
-  # only temporarily here, until other interfaces stop relying on the routes of UserBundle
 user_saml_sls:
     path: /saml/sls/{usersource_id}
 user_saml_metadata:
     path: /saml/metadata/{usersource_id}.xml
+
+# impersonation route
+portal_agent_login:
+    path: /impersonate/agent-login/{code}

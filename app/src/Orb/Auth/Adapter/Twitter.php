@@ -142,7 +142,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
         $client = $access_token->getHttpClient($this->getOauthConfig());
         $client->setUri('https://api.twitter.com/1.1/account/verify_credentials.json');
         $client->setMethod(\Zend\Http\Request::METHOD_GET);
-        $client->setOptions(array('sslverifypeer' => false));
+        $client->setOptions(array('sslverifypeer' => false, 'adapter' => 'Zend\Http\Client\Adapter\Curl'));
         $response = $client->send();
 
         if ($this->logger) {
@@ -191,7 +191,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
         if (!$has_set_http_client) {
             $has_set_http_client = true;
             $httpClient = new \Zend\Http\Client(null, array(
-                'adapter' => 'Zend\Http\Client\Adapter\Socket',
+                'adapter' => 'Zend\Http\Client\Adapter\Curl',
                 'sslverifypeer' => false
             ));
             OAuth::setHttpClient($httpClient);
