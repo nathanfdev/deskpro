@@ -34,7 +34,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
-use DeskPRO\Bundle\AppBundle\Service\ContentSlugManager;
+use DeskPRO\Bundle\AppBundle\Content\ContentSlugManager;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\EventSubscriber;

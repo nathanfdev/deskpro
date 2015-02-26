@@ -1112,9 +1112,9 @@
         <metrics loc="41" ncloc="10" classes="1" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
       </file>
     </package>
-    <package name="DeskPRO\Bundle\AppBundle\Service">
+    <package name="DeskPRO\Bundle\AppBundle\Content">
       <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/Service/ContentSlugManager.php">
-        <class name="ContentSlugManager" namespace="DeskPRO\Bundle\AppBundle\Service">
+        <class name="ContentSlugManager" namespace="DeskPRO\Bundle\AppBundle\Content">
           <metrics methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="52" coveredstatements="0" elements="61" coveredelements="0"/>
         </class>
         <line num="58" type="method" name="__construct" crap="2" count="0"/>

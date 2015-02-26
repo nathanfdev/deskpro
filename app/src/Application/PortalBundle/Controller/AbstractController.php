@@ -280,7 +280,7 @@ class AbstractController extends BaseController
      */
     protected function getTicketsViewService()
     {
-        return $this->get('view.tickets');
+        return $this->get('tickets.view');
     }
 
     /**

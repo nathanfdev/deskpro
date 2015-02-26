@@ -44,12 +44,19 @@ class AppExtension extends Extension
     public function load(array $config, ContainerBuilder $container)
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.yml');
-        $loader->load('helpers.yml');
-        $loader->load('view_services.yml');
-        $loader->load('data_services.yml');
-        $loader->load('event_listeners.yml');
 
+        $loader->load('data_services.yml');
+        $loader->load('email.yml');
+        $loader->load('event_listeners.yml');
+        $loader->load('helpers.yml');
+        $loader->load('services.yml');
+        $loader->load('tickets.yml');
+
+        $this->applyBackwardsCompatibilityRequirements($container);
+    }
+
+    protected function applyBackwardsCompatibilityRequirements(ContainerBuilder $container)
+    {
         $container->setAlias('deskpro.blob_storage', 'blob.storage');
     }
 }

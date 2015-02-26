@@ -34,7 +34,7 @@
 
 namespace Application\PortalBundle\Request;
 
-use DeskPRO\Bundle\AppBundle\Service\ContentSlugManager;
+use DeskPRO\Bundle\AppBundle\Content\ContentSlugManager;
 use Application\DeskPRO\ORM\EntityManager;
 use Application\PortalBundle\HttpKernel\Exception\PermanentRedirectException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;

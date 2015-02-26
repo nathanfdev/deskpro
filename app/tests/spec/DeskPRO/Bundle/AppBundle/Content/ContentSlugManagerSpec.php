@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\DeskPRO\Bundle\AppBundle\Service;
+namespace spec\DeskPRO\Bundle\AppBundle\Content;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\NewsSlugHistory;

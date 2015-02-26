@@ -32,7 +32,7 @@
  * @subpackage
  */
 
-namespace DeskPRO\Bundle\AppBundle\Service;
+namespace DeskPRO\Bundle\AppBundle\Content;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ContentAbstract;

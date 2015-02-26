@@ -136,7 +136,7 @@ $container->setDefinition('doctrine_listener.content_slug', $definition);
 // a service to set the correct slug on a content object
 // NOTE: this is duplicated in the InstallExtension so that the install process can use it
 $definition = new Definition();
-$definition->setClass('DeskPRO\Bundle\AppBundle\Service\ContentSlugManager');
+$definition->setClass('DeskPRO\Bundle\AppBundle\Content\ContentSlugManager');
 $definition->setArguments(array(new Reference('service_container')));
 $container->setDefinition('content_slug_manager', $definition);
 

@@ -32,7 +32,7 @@
  * @subpackage
  */
 
-namespace DeskPRO\Bundle\AppBundle\Mailer;
+namespace DeskPRO\Bundle\AppBundle\Email;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
@@ -59,7 +59,7 @@ class NewMailer
     );
 
         $this->sendMessage(
-            'AppBundle:Mail:reset-password.html.twig',
+            'AppBundle:Email:reset-password.html.twig',
             $context,
             $from,
             $person->getPrimaryEmail()->email
@@ -75,7 +75,7 @@ class NewMailer
         $from = $this->getDefaultOutgoingEmailAddress();
 
         $this->sendMessage(
-            'AppBundle:Mail:login-alert.html.twig',
+            'AppBundle:Email:login-alert.html.twig',
             $context,
             $from,
             $person->getPrimaryEmail()->email
