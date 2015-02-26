@@ -1,1 +1,0 @@
-exports.mytest = "MY STRING";
