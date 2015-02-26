@@ -34,7 +34,7 @@
 
 namespace Application\FormBundle\Hierarchy;
 
-use Application\AppBundle\Hierarchy\HierarchyNode as BaseNode;
+use DeskPRO\Component\Hierarchy\HierarchyNode as BaseNode;
 
 /**
  * A HierarchyNode is iteratable, and countable, because each can have an arbitray number of children.

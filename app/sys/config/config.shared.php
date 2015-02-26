@@ -14,7 +14,7 @@ $container->setParameter('locale', 'en');
 
 // app secret (NOTE; see intall/config.php, as this is copy/pasted to that file)
 $definition = new Definition();
-$definition->setClass('Application\AppBundle\AppSecret\AppSecret');
+$definition->setClass('DeskPRO\Bundle\AppBundle\AppSecret\AppSecret');
 $container->setDefinition('app_secret', $definition);
 
 // settings
@@ -45,7 +45,7 @@ $container->setDefinition('swiftmailer.mailer', $definition);
 ############################################################################
 
 $definition = new Definition();
-$definition->setClass('Application\AppBundle\EventListener\SecurityHeadersResponseListener');
+$definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\SecurityHeadersResponseListener');
 $definition->addTag('kernel.event_subscriber');
 $container->setDefinition('listener.security_headers', $definition);
 
@@ -129,14 +129,14 @@ $container->setDefinition('dp.doctrine.entity_listener_resolver', $definition);
 // slug listener (sets slugs on content)
 // NOTE: this is duplicated in the InstallExtension so that the install process can use it
 $definition = new Definition();
-$definition->setClass('Application\AppBundle\EventListener\DoctrineContentSlugListener');
+$definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\DoctrineContentSlugListener');
 $definition->setArguments(array(new Reference('content_slug_manager')));
 $definition->addTag('doctrine.event_subscriber');
 $container->setDefinition('doctrine_listener.content_slug', $definition);
 // a service to set the correct slug on a content object
 // NOTE: this is duplicated in the InstallExtension so that the install process can use it
 $definition = new Definition();
-$definition->setClass('Application\AppBundle\Service\ContentSlugManager');
+$definition->setClass('DeskPRO\Bundle\AppBundle\Service\ContentSlugManager');
 $definition->setArguments(array(new Reference('service_container')));
 $container->setDefinition('content_slug_manager', $definition);
 

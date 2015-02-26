@@ -34,7 +34,7 @@
 
 namespace Application\FormBundle\Form\Type;
 
-use Application\AppBundle\Hierarchy\HierarchyNode;
+use DeskPRO\Component\Hierarchy\HierarchyNode;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;

@@ -29,7 +29,7 @@ $container->setParameter('templating.engine.twig.class', 'Application\\DeskPRO\\
 
 // app secret
 $definition = new Definition();
-$definition->setClass('Application\AppBundle\AppSecret\AppSecret');
+$definition->setClass('DeskPRO\Bundle\AppBundle\AppSecret\AppSecret');
 $container->setDefinition('app_secret', $definition);
 
 // twig.helpers.deskpro_templating

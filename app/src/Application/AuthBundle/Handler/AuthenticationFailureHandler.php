@@ -34,7 +34,7 @@
 
 namespace Application\AuthBundle\Handler;
 
-use Application\AppBundle\Mailer\NewMailer;
+use DeskPRO\Bundle\AppBundle\Mailer\NewMailer;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Doctrine\DBAL\Driver\Connection;
 use Psr\Log\LoggerInterface;

@@ -6,7 +6,7 @@
     </testsuites>
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true" processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">../src/Application/AppBundle/</directory>
+            <directory suffix=".php">../src/DeskPRO/Bundle/AppBundle/</directory>
             <directory suffix=".php">../src/Application/PortalBundle/</directory>
             <directory suffix=".php">../src/Application/AuthBundle/</directory>
             <directory suffix=".php">../src/Application/LanguageBundle/</directory>

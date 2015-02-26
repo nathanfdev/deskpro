@@ -220,7 +220,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \Application\AppBundle\DataService\PersonDataService
+     * @return \DeskPRO\Bundle\AppBundle\DataService\PersonDataService
      */
     public function getPersonDataService()
     {
@@ -228,7 +228,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \Application\AppBundle\DataService\RatingsDataService
+     * @return \DeskPRO\Bundle\AppBundle\DataService\RatingsDataService
      */
     public function getRatingDataService()
     {
@@ -236,7 +236,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \Application\AppBundle\DataService\DownloadsDataService
+     * @return \DeskPRO\Bundle\AppBundle\DataService\DownloadsDataService
      */
     public function getDownloadsDataService()
     {
@@ -244,7 +244,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \Application\AppBundle\DataService\NewsDataService
+     * @return \DeskPRO\Bundle\AppBundle\DataService\NewsDataService
      */
     public function getNewsDataService()
     {
@@ -252,7 +252,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \Application\AppBundle\DataService\FeedbackDataService
+     * @return \DeskPRO\Bundle\AppBundle\DataService\FeedbackDataService
      */
     public function getFeedbackDataService()
     {
@@ -260,7 +260,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \Application\AppBundle\DataService\ArticlesDataService
+     * @return \DeskPRO\Bundle\AppBundle\DataService\ArticlesDataService
      */
     protected function getArticlesDataService()
     {
@@ -268,7 +268,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \Application\AppBundle\DataService\TicketsDataService
+     * @return \DeskPRO\Bundle\AppBundle\DataService\TicketsDataService
      */
     protected function getTicketsDataService()
     {
@@ -276,7 +276,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \Application\AppBundle\DataService\TicketViewService
+     * @return \DeskPRO\Bundle\AppBundle\DataService\TicketViewService
      */
     protected function getTicketsViewService()
     {

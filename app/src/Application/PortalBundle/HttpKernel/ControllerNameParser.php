@@ -40,7 +40,7 @@ use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser as BaseParser;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Application\DeskPRO\Cache\ConvenientCache;
-use Application\AppBundle\Helper\ArbitraryHasher;
+use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 
 class ControllerNameParser extends BaseParser
 {

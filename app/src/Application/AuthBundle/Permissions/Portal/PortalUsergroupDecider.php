@@ -34,7 +34,7 @@
 
 namespace Application\AuthBundle\Permissions\Portal;
 
-use Application\AppBundle\Helper\ArbitraryHasher;
+use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\DBAL\Connection;

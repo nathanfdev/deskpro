@@ -34,11 +34,11 @@
 
 namespace Application\FormBundle\Hierarchy;
 
-use Application\AppBundle\DataService\DepartmentDataService;
-use Application\AppBundle\DataService\FeedbackDataService;
-use Application\AppBundle\Helper\ArbitraryHasher;
-use Application\AppBundle\Hierarchy\Formatter\FlatListFormatter;
-use Application\AppBundle\Hierarchy\Formatter\ParentListFormatter;
+use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
+use DeskPRO\Bundle\AppBundle\DataService\FeedbackDataService;
+use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
+use DeskPRO\Component\Hierarchy\Formatter\FlatListFormatter;
+use DeskPRO\Component\Hierarchy\Formatter\ParentListFormatter;
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\CustomDefAbstract;
@@ -71,7 +71,7 @@ class HierarchyGenerator
     private $em;
 
     /**
-     * @var \Application\AppBundle\DataService\DepartmentDataService
+     * @var \DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService
      */
     private $department_data_service;
 

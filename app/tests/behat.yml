@@ -40,7 +40,7 @@ default:
                 addUncoveredFilesFromWhitelist: true
                 include:
                     directories:
-                        '../src/Application/AppBundle':
+                        '../src/DeskPRO/Bundle/AppBundle':
                             suffix: .php
                         '../src/Application/PortalBundle':
                             suffix: .php

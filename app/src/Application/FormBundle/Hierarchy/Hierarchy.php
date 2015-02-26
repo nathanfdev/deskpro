@@ -34,8 +34,8 @@
 
 namespace Application\FormBundle\Hierarchy;
 
-use Application\AppBundle\Hierarchy\Hierarchy as BaseHierarchy;
-use Application\AppBundle\Hierarchy\HierarchyFormatterInterface;
+use DeskPRO\Component\Hierarchy\Hierarchy as BaseHierarchy;
+use DeskPRO\Component\Hierarchy\HierarchyFormatterInterface;
 use Application\FormBundle\Form\ChoiceList\HierarchyChoiceList;
 use Doctrine\Common\Collections\ArrayCollection;
 

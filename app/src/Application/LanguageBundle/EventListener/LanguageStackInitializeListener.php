@@ -33,7 +33,7 @@
 
 namespace Application\LanguageBundle\EventListener;
 
-use Application\AppBundle\Helper\IsProxyRequestHelper;
+use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
 use Application\LanguageBundle\Language\LanguageManager;
 use Application\LanguageBundle\Routing\UrlMatcher;
 use Psr\Log\LoggerInterface;

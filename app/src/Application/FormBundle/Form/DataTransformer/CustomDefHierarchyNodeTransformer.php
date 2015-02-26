@@ -34,7 +34,7 @@
 
 namespace Application\FormBundle\Form\DataTransformer;
 
-use Application\AppBundle\Hierarchy\HierarchyNode;
+use DeskPRO\Component\Hierarchy\HierarchyNode;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceListInterface;

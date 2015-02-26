@@ -34,7 +34,7 @@
 
 namespace Application\AuthBundle\Security\Firewall;
 
-use Application\AppBundle\EventListener\RedirectProtectionListener;
+use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
 use Application\AuthBundle\Security\AgentImpersonateToken;
 use Application\AuthBundle\Security\DpFormLoginToken;
 use Application\DeskPRO\Auth\LoginProcessor;

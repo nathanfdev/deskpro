@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <coverage generated="1424208980">
   <project timestamp="1424208980">
-    <package name="Application\AppBundle">
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/AppBundle.php">
-        <class name="AppBundle" namespace="Application\AppBundle">
+    <package name="DeskPRO\Bundle\AppBundle">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/AppBundle.php">
+        <class name="AppBundle" namespace="DeskPRO\Bundle\AppBundle">
           <metrics methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="12" coveredelements="0"/>
         </class>
         <line num="46" type="method" name="getContainerExtension" crap="2" count="0"/>
@@ -21,9 +21,9 @@
         <metrics loc="72" ncloc="41" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="12" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AppBundle\AppSecret">
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/AppSecret/AppSecret.php">
-        <class name="AppSecret" namespace="Application\AppBundle\AppSecret">
+    <package name="DeskPRO\Bundle\AppBundle\AppSecret">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/AppSecret/AppSecret.php">
+        <class name="AppSecret" namespace="DeskPRO\Bundle\AppBundle\AppSecret">
           <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" elements="2" coveredelements="0"/>
         </class>
         <line num="40" type="method" name="getAppSecret" crap="2" count="0"/>
@@ -31,9 +31,9 @@
         <metrics loc="44" ncloc="13" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" elements="2" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AppBundle\DataService">
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/DataService/AbstractDataService.php">
-        <class name="AbstractDataService" namespace="Application\AppBundle\DataService">
+    <package name="DeskPRO\Bundle\AppBundle\DataService">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/DataService/AbstractDataService.php">
+        <class name="AbstractDataService" namespace="DeskPRO\Bundle\AppBundle\DataService">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="0" elements="12" coveredelements="0"/>
         </class>
         <line num="64" type="method" name="generateAndCache" crap="2" count="0"/>
@@ -50,8 +50,8 @@
         <line num="91" type="stmt" count="0"/>
         <metrics loc="93" ncloc="38" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="0" elements="12" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/DataService/ArticlesDataService.php">
-        <class name="ArticlesDataService" namespace="Application\AppBundle\DataService">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/DataService/ArticlesDataService.php">
+        <class name="ArticlesDataService" namespace="DeskPRO\Bundle\AppBundle\DataService">
           <metrics methods="11" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="66" coveredstatements="0" elements="77" coveredelements="0"/>
         </class>
         <line num="56" type="method" name="__construct" crap="2" count="0"/>
@@ -134,8 +134,8 @@
         <line num="242" type="stmt" count="0"/>
         <metrics loc="244" ncloc="157" classes="1" methods="11" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="67" coveredstatements="0" elements="78" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/DataService/DepartmentDataService.php">
-        <class name="DepartmentDataService" namespace="Application\AppBundle\DataService">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/DataService/DepartmentDataService.php">
+        <class name="DepartmentDataService" namespace="DeskPRO\Bundle\AppBundle\DataService">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="0" elements="21" coveredelements="0"/>
         </class>
         <line num="54" type="method" name="__construct" crap="2" count="0"/>
@@ -162,8 +162,8 @@
         <line num="86" type="stmt" count="0"/>
         <metrics loc="88" ncloc="49" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="19" coveredstatements="0" elements="22" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/DataService/DownloadsDataService.php">
-        <class name="DownloadsDataService" namespace="Application\AppBundle\DataService">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/DataService/DownloadsDataService.php">
+        <class name="DownloadsDataService" namespace="DeskPRO\Bundle\AppBundle\DataService">
           <metrics methods="11" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="65" coveredstatements="0" elements="76" coveredelements="0"/>
         </class>
         <line num="56" type="method" name="__construct" crap="2" count="0"/>
@@ -245,8 +245,8 @@
         <line num="240" type="stmt" count="0"/>
         <metrics loc="242" ncloc="155" classes="1" methods="11" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="66" coveredstatements="0" elements="77" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/DataService/FeedbackDataService.php">
-        <class name="FeedbackDataService" namespace="Application\AppBundle\DataService">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/DataService/FeedbackDataService.php">
+        <class name="FeedbackDataService" namespace="DeskPRO\Bundle\AppBundle\DataService">
           <metrics methods="11" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="75" coveredstatements="0" elements="86" coveredelements="0"/>
         </class>
         <line num="60" type="method" name="__construct" crap="2" count="0"/>
@@ -338,8 +338,8 @@
         <line num="242" type="stmt" count="0"/>
         <metrics loc="244" ncloc="154" classes="1" methods="11" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="76" coveredstatements="0" elements="87" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/DataService/NewsDataService.php">
-        <class name="NewsDataService" namespace="Application\AppBundle\DataService">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/DataService/NewsDataService.php">
+        <class name="NewsDataService" namespace="DeskPRO\Bundle\AppBundle\DataService">
           <metrics methods="11" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="65" coveredstatements="0" elements="76" coveredelements="0"/>
         </class>
         <line num="57" type="method" name="__construct" crap="2" count="0"/>
@@ -421,8 +421,8 @@
         <line num="242" type="stmt" count="0"/>
         <metrics loc="244" ncloc="157" classes="1" methods="11" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="66" coveredstatements="0" elements="77" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/DataService/PersonDataService.php">
-        <class name="PersonDataService" namespace="Application\AppBundle\DataService">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/DataService/PersonDataService.php">
+        <class name="PersonDataService" namespace="DeskPRO\Bundle\AppBundle\DataService">
           <metrics methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="0" elements="14" coveredelements="0"/>
         </class>
         <line num="48" type="method" name="__construct" crap="2" count="0"/>
@@ -441,8 +441,8 @@
         <line num="89" type="stmt" count="0"/>
         <metrics loc="91" ncloc="42" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="0" elements="14" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/DataService/RatingsDataService.php">
-        <class name="RatingsDataService" namespace="Application\AppBundle\DataService">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/DataService/RatingsDataService.php">
+        <class name="RatingsDataService" namespace="DeskPRO\Bundle\AppBundle\DataService">
           <metrics methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="0" elements="16" coveredelements="0"/>
         </class>
         <line num="48" type="method" name="__construct" crap="2" count="0"/>
@@ -464,8 +464,8 @@
         <line num="85" type="stmt" count="0"/>
         <metrics loc="87" ncloc="42" classes="1" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="13" coveredstatements="0" elements="17" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/DataService/TicketViewService.php">
-        <class name="TicketViewService" namespace="Application\AppBundle\DataService">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/DataService/TicketViewService.php">
+        <class name="TicketViewService" namespace="DeskPRO\Bundle\AppBundle\DataService">
           <metrics methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="88" coveredstatements="0" elements="91" coveredelements="0"/>
         </class>
         <line num="62" type="method" name="__construct" crap="2" count="0"/>
@@ -561,8 +561,8 @@
         <line num="176" type="stmt" count="0"/>
         <metrics loc="178" ncloc="124" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="88" coveredstatements="0" elements="91" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/DataService/TicketsDataService.php">
-        <class name="TicketsDataService" namespace="Application\AppBundle\DataService">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/DataService/TicketsDataService.php">
+        <class name="TicketsDataService" namespace="DeskPRO\Bundle\AppBundle\DataService">
           <metrics methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="81" coveredstatements="0" elements="86" coveredelements="0"/>
         </class>
         <line num="58" type="method" name="__construct" crap="2" count="0"/>
@@ -655,9 +655,9 @@
         <metrics loc="225" ncloc="156" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="82" coveredstatements="0" elements="87" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AppBundle\DependencyInjection">
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/DependencyInjection/AppExtension.php">
-        <class name="AppExtension" namespace="Application\AppBundle\DependencyInjection">
+    <package name="DeskPRO\Bundle\AppBundle\DependencyInjection">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/DependencyInjection/AppExtension.php">
+        <class name="AppExtension" namespace="DeskPRO\Bundle\AppBundle\DependencyInjection">
           <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="0" elements="9" coveredelements="0"/>
         </class>
         <line num="44" type="method" name="load" crap="2" count="0"/>
@@ -672,9 +672,9 @@
         <metrics loc="55" ncloc="24" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="0" elements="9" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AppBundle\DependencyInjection\Compiler">
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/DependencyInjection/Compiler/AppSecretPass.php">
-        <class name="AppSecretPass" namespace="Application\AppBundle\DependencyInjection\Compiler">
+    <package name="DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/DependencyInjection/Compiler/AppSecretPass.php">
+        <class name="AppSecretPass" namespace="DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler">
           <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="21" coveredstatements="0" elements="22" coveredelements="0"/>
         </class>
         <line num="44" type="method" name="process" crap="90" count="0"/>
@@ -702,9 +702,9 @@
         <metrics loc="74" ncloc="43" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="21" coveredstatements="0" elements="22" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AppBundle\EventListener">
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/EventListener/DoctrineContentSlugListener.php">
-        <class name="DoctrineContentSlugListener" namespace="Application\AppBundle\EventListener">
+    <package name="DeskPRO\Bundle\AppBundle\EventListener">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/EventListener/DoctrineContentSlugListener.php">
+        <class name="DoctrineContentSlugListener" namespace="DeskPRO\Bundle\AppBundle\EventListener">
           <metrics methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="35" coveredstatements="0" elements="41" coveredelements="0"/>
         </class>
         <line num="59" type="method" name="__construct" crap="2" count="0"/>
@@ -750,8 +750,8 @@
         <line num="126" type="stmt" count="0"/>
         <metrics loc="128" ncloc="85" classes="1" methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="35" coveredstatements="0" elements="41" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/EventListener/RedirectProtectionListener.php">
-        <class name="RedirectProtectionListener" namespace="Application\AppBundle\EventListener">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/EventListener/RedirectProtectionListener.php">
+        <class name="RedirectProtectionListener" namespace="DeskPRO\Bundle\AppBundle\EventListener">
           <metrics methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="32" coveredstatements="0" elements="36" coveredelements="0"/>
         </class>
         <line num="66" type="method" name="__construct" crap="2" count="0"/>
@@ -792,8 +792,8 @@
         <line num="127" type="stmt" count="0"/>
         <metrics loc="129" ncloc="79" classes="1" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="32" coveredstatements="0" elements="36" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/EventListener/SecurityHeadersResponseListener.php">
-        <class name="SecurityHeadersResponseListener" namespace="Application\AppBundle\EventListener">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/EventListener/SecurityHeadersResponseListener.php">
+        <class name="SecurityHeadersResponseListener" namespace="DeskPRO\Bundle\AppBundle\EventListener">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="0" elements="10" coveredelements="0"/>
         </class>
         <line num="43" type="method" name="onResponse" crap="2" count="0"/>
@@ -809,9 +809,9 @@
         <metrics loc="61" ncloc="30" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="0" elements="10" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AppBundle\Helper">
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/Helper/ArbitraryHasher.php">
-        <class name="ArbitraryHasher" namespace="Application\AppBundle\Helper">
+    <package name="DeskPRO\Bundle\AppBundle\Helper">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/Helper/ArbitraryHasher.php">
+        <class name="ArbitraryHasher" namespace="DeskPRO\Bundle\AppBundle\Helper">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="22" coveredstatements="0" elements="24" coveredelements="0"/>
         </class>
         <line num="26" type="method" name="generateHash" crap="6" count="0"/>
@@ -840,8 +840,8 @@
         <line num="70" type="stmt" count="0"/>
         <metrics loc="72" ncloc="54" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="22" coveredstatements="0" elements="24" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/Helper/UrlHostChecker.php">
-        <class name="UrlHostChecker" namespace="Application\AppBundle\Helper">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/Helper/UrlHostChecker.php">
+        <class name="UrlHostChecker" namespace="DeskPRO\Bundle\AppBundle\Helper">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="0" elements="20" coveredelements="0"/>
         </class>
         <line num="7" type="method" name="isMatch" crap="72" count="0"/>
@@ -867,9 +867,9 @@
         <metrics loc="45" ncloc="39" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="0" elements="20" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AppBundle\Hierarchy\Formatter">
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/Hierarchy/Formatter/AbstractFormatter.php">
-        <class name="AbstractFormatter" namespace="Application\AppBundle\Hierarchy\Formatter">
+    <package name="DeskPRO\Bundle\AppBundle\Hierarchy\Formatter">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/Hierarchy/Formatter/AbstractFormatter.php">
+        <class name="AbstractFormatter" namespace="DeskPRO\Bundle\AppBundle\Hierarchy\Formatter">
           <metrics methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="0" elements="8" coveredelements="0"/>
         </class>
         <line num="52" type="method" name="__construct" crap="2" count="0"/>
@@ -882,8 +882,8 @@
         <line num="64" type="stmt" count="0"/>
         <metrics loc="66" ncloc="29" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="0" elements="8" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/Hierarchy/Formatter/DashesFormatter.php">
-        <class name="DashesFormatter" namespace="Application\AppBundle\Hierarchy\Formatter">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/Hierarchy/Formatter/DashesFormatter.php">
+        <class name="DashesFormatter" namespace="DeskPRO\Bundle\AppBundle\Hierarchy\Formatter">
           <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="0" elements="3" coveredelements="0"/>
         </class>
         <line num="45" type="method" name="format" crap="6" count="0"/>
@@ -891,24 +891,24 @@
         <line num="49" type="stmt" count="0"/>
         <metrics loc="51" ncloc="17" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="0" elements="3" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/Hierarchy/Formatter/DebugFormatter.php">
-        <class name="DebugFormatter" namespace="Application\AppBundle\Hierarchy\Formatter">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/Hierarchy/Formatter/DebugFormatter.php">
+        <class name="DebugFormatter" namespace="DeskPRO\Bundle\AppBundle\Hierarchy\Formatter">
           <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" elements="2" coveredelements="0"/>
         </class>
         <line num="45" type="method" name="format" crap="2" count="0"/>
         <line num="47" type="stmt" count="0"/>
         <metrics loc="49" ncloc="15" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" elements="2" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/Hierarchy/Formatter/FlatListFormatter.php">
-        <class name="FlatListFormatter" namespace="Application\AppBundle\Hierarchy\Formatter">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/Hierarchy/Formatter/FlatListFormatter.php">
+        <class name="FlatListFormatter" namespace="DeskPRO\Bundle\AppBundle\Hierarchy\Formatter">
           <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" elements="2" coveredelements="0"/>
         </class>
         <line num="45" type="method" name="format" crap="2" count="0"/>
         <line num="47" type="stmt" count="0"/>
         <metrics loc="49" ncloc="15" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" elements="2" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/Hierarchy/Formatter/ParentListFormatter.php">
-        <class name="ParentListFormatter" namespace="Application\AppBundle\Hierarchy\Formatter">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/Hierarchy/Formatter/ParentListFormatter.php">
+        <class name="ParentListFormatter" namespace="DeskPRO\Bundle\AppBundle\Hierarchy\Formatter">
           <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="0" elements="6" coveredelements="0"/>
         </class>
         <line num="45" type="method" name="format" crap="6" count="0"/>
@@ -920,9 +920,9 @@
         <metrics loc="55" ncloc="21" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="0" elements="6" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AppBundle\Hierarchy">
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/Hierarchy/Hierarchy.php">
-        <class name="Hierarchy" namespace="Application\AppBundle\Hierarchy">
+    <package name="DeskPRO\Bundle\AppBundle\Hierarchy">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/Hierarchy/Hierarchy.php">
+        <class name="Hierarchy" namespace="DeskPRO\Bundle\AppBundle\Hierarchy">
           <metrics methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="21" coveredstatements="0" elements="30" coveredelements="0"/>
         </class>
         <line num="67" type="method" name="__construct" crap="12" count="0"/>
@@ -964,8 +964,8 @@
         <line num="170" type="stmt" count="0"/>
         <metrics loc="172" ncloc="84" classes="1" methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="28" coveredstatements="0" elements="37" coveredelements="0"/>
       </file>
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/Hierarchy/HierarchyNode.php">
-        <class name="HierarchyNode" namespace="Application\AppBundle\Hierarchy">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/Hierarchy/HierarchyNode.php">
+        <class name="HierarchyNode" namespace="DeskPRO\Bundle\AppBundle\Hierarchy">
           <metrics methods="17" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="51" coveredstatements="0" elements="68" coveredelements="0"/>
         </class>
         <line num="77" type="method" name="__construct" crap="2" count="0"/>
@@ -1040,12 +1040,12 @@
         <metrics loc="235" ncloc="144" classes="1" methods="17" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="52" coveredstatements="0" elements="69" coveredelements="0"/>
       </file>
     </package>
-    <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/Hierarchy/HierarchyFormatterInterface.php">
+    <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/Hierarchy/HierarchyFormatterInterface.php">
       <metrics loc="47" ncloc="10" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
     </file>
-    <package name="Application\AppBundle\Mailer">
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/Mailer/NewMailer.php">
-        <class name="NewMailer" namespace="Application\AppBundle\Mailer">
+    <package name="DeskPRO\Bundle\AppBundle\Mailer">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/Mailer/NewMailer.php">
+        <class name="NewMailer" namespace="DeskPRO\Bundle\AppBundle\Mailer">
           <metrics methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="45" coveredstatements="0" elements="53" coveredelements="0"/>
         </class>
         <line num="47" type="method" name="__construct" crap="2" count="0"/>
@@ -1104,17 +1104,17 @@
         <metrics loc="144" ncloc="98" classes="1" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="45" coveredstatements="0" elements="53" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AppBundle\Model">
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/Model/TicketView.php">
-        <class name="TicketView" namespace="Application\AppBundle\Model">
+    <package name="DeskPRO\Bundle\AppBundle\Model">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/Model/TicketView.php">
+        <class name="TicketView" namespace="DeskPRO\Bundle\AppBundle\Model">
           <metrics methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
         </class>
         <metrics loc="41" ncloc="10" classes="1" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
       </file>
     </package>
-    <package name="Application\AppBundle\Service">
-      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/Application/AppBundle/Service/ContentSlugManager.php">
-        <class name="ContentSlugManager" namespace="Application\AppBundle\Service">
+    <package name="DeskPRO\Bundle\AppBundle\Service">
+      <file name="/Users/tickner/src/deskpro/deskPRO/app/src/DeskPRO/Bundle/AppBundle/Service/ContentSlugManager.php">
+        <class name="ContentSlugManager" namespace="DeskPRO\Bundle\AppBundle\Service">
           <metrics methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="52" coveredstatements="0" elements="61" coveredelements="0"/>
         </class>
         <line num="58" type="method" name="__construct" crap="2" count="0"/>
