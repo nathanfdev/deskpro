@@ -269,4 +269,14 @@ class Date extends HandlerAbstract
 
         return array();
     }
+
+	public function getSearchCapabilities()
+	{
+		return array('before', 'after', 'between');
+	}
+
+	public function getSearchType()
+	{
+		return 'date';
+	}
 }
