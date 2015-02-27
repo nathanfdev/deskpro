@@ -256,7 +256,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
 
         $result = trim($result);
         if (strpos($result, ' ')) {
-            list($status, ) = explode(' ', $result, 2);
+            list($status,) = explode(' ', $result, 2);
         } else {
             $status = $result;
         }

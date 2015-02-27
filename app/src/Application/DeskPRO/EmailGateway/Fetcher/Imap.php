@@ -232,13 +232,13 @@ class Imap extends AbstractFetcher
 
         $EOL = "\n";
         if (strpos($raw_message->content, $EOL.$EOL)) {
-            list($headers, ) = explode($EOL.$EOL, $raw_message->content, 2);
+            list($headers,) = explode($EOL.$EOL, $raw_message->content, 2);
         } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers, ) = explode("\r\n\r\n", $raw_message->content, 2);
+            list($headers,) = explode("\r\n\r\n", $raw_message->content, 2);
         } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers, ) = explode("\n\n", $raw_message->content, 2);
+            list($headers,) = explode("\n\n", $raw_message->content, 2);
         } else {
-            @list($headers, ) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers,) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
         }
 
         $raw_message->headers = $headers;

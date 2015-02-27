@@ -31,8 +31,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Security\EventListener;
 
-use Application\DeskPRO\Auth\AuthenticationManager;
 use Application\DeskPRO\Auth\AuthInterfaceSettings;
+use Application\DeskPRO\Auth\AuthenticationManager;
 use DeskPRO\Bundle\AppBundle\Security\Handler\LogoutHandler;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

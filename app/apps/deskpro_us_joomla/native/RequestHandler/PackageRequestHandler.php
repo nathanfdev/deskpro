@@ -35,9 +35,9 @@ namespace deskpro_us_joomla\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
-use deskpro_us_joomla\Usersource\Auth\Joomla;
 use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
+use deskpro_us_joomla\Usersource\Auth\Joomla;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {

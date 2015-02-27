@@ -99,8 +99,8 @@ class APITest extends \DpIntegrationTestCase
             'fields' => array(
                 'duedate'   => $duedate->format('Y-m-d'),
                 'issuetype' => array('id' => 10100),
-                'project'   => array('id' => 10200),
-                'summary'   => $summary,
+                'project'                 => array('id' => 10200),
+                'summary'                               => $summary,
             ),
         );
 

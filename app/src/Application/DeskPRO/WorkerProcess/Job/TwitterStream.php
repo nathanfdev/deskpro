@@ -415,7 +415,7 @@ class TwitterStream extends AbstractJob
                                 'auth'          => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
                                 'date_created'  => date('Y-m-d H:i:s'),
                                 'data'          => serialize(array('action' => 'removed', 'account_id' => $account->id)),
-                                'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray',
+                                'handler_class'                             => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray',
                             ));
                         }
                     }

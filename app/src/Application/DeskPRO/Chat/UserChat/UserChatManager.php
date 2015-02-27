@@ -446,9 +446,9 @@ class UserChatManager
      * Change the department of a chat.
      *
      *
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
-     * @param \Application\DeskPRO\Entity\Department|null  $dep
-     * @param \Application\DeskPRO\Entity\Person           $who
+     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param  \Application\DeskPRO\Entity\Department|null  $dep
+     * @param  \Application\DeskPRO\Entity\Person           $who
      * @throws \Exception
      *
      * @return
@@ -486,7 +486,7 @@ class UserChatManager
             $cm->fromArray(array(
                 'channel'                                                             => 'chat.depchange',
                 'data'                                                                => array_merge($convo->getInfo(), array('old_department_id' => $old_dep_id)),
-                'created_by_client'                                                   => $this->getCurrentClientId(),
+                'created_by_client'                                                                                                               => $this->getCurrentClientId(),
             ));
 
             $this->em->persist($cm);
@@ -543,7 +543,7 @@ class UserChatManager
             $cm->fromArray(array(
                 'channel'                                                        => 'chat.reassigned',
                 'data'                                                           => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id, 'new_agent_name' => $agent->display_name_user)),
-                'created_by_client'                                              => $this->getCurrentClientId(),
+                'created_by_client'                                                                                                     => $this->getCurrentClientId(),
             ));
 
             $this->em->persist($cm);
@@ -618,7 +618,7 @@ class UserChatManager
             $cm->fromArray(array(
                 'channel'                                                        => 'chat.unassigned',
                 'data'                                                           => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id)),
-                'created_by_client'                                              => $this->getCurrentClientId(),
+                'created_by_client'                                                                                                     => $this->getCurrentClientId(),
             ));
             $this->em->persist($cm);
         }
@@ -628,7 +628,7 @@ class UserChatManager
      * Mark an agent as timed out and unassign the chat.
      *
      *
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
      * @throws \Exception
      */
     public function agentTimeout(ChatConversation $convo, Person $person)
@@ -783,7 +783,7 @@ class UserChatManager
      * The user ended the chat.
      *
      *
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
      * @throws \Exception
      */
     public function endChatUser(ChatConversation $convo, $ended_by = null)
@@ -1080,7 +1080,7 @@ class UserChatManager
             $cm->fromArray(array(
                 'channel'                    => $convo->getChannelId('usertyping'),
                 'data'                       => array('preview' => $preview_string),
-                'created_by_client'          => $this->getCurrentClientId(),
+                'created_by_client'                             => $this->getCurrentClientId(),
             ));
             $this->em->persist($cm);
 
@@ -1121,7 +1121,7 @@ class UserChatManager
             $cm->fromArray(array(
                 'channel'                        => $convo->getChannelId('ack_messages'),
                 'data'                           => array('message_ids' => $message_ids),
-                'created_by_client'              => $this->getCurrentClientId(),
+                'created_by_client'                                     => $this->getCurrentClientId(),
             ));
             $this->em->persist($cm);
 

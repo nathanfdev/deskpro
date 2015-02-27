@@ -42,14 +42,14 @@ $collection->create('serve_blob_sizefit', array(
 $collection->create('serve_blob_app_asset', array(
     'path'         => '/file.php/apps/{app_name}/{type}/{path}',
     'requirements' => array('app_name' => '[a-zA-Z0-9\-\_\.]+', 'type' => '(app|js|css|html|res)', 'path' => '.*+'),
-    'controller'   => '(see: serve_file.php)',
+    'controller'                       => '(see: serve_file.php)',
 ));
 
 $collection->create('serve_person_picture', array(
     'path'          => '/file.php/avatar/{person_id}',
     'controller'    => '(see: serve_file.php)',
     'defaults'      => array('size'      => 0),
-    'requirements'  => array('person_id' => '\\d+'),
+    'requirements'                       => array('person_id' => '\\d+'),
 ));
 
 $collection->create('serve_person_picture_size', array(
@@ -99,7 +99,7 @@ $collection->create('data_interface_data', array(
     'path'          => '/data/interface-data.{_format}',
     'controller'    => 'DeskPRO:Data:interfaceData',
     'defaults'      => array('_format' => 'js'),
-    'requirements'  => array('_format' => 'js'),
+    'requirements'                     => array('_format' => 'js'),
 ));
 
 $collection->create('dp3_redirect_files_php', array(

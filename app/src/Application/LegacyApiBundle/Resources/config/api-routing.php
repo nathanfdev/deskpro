@@ -149,245 +149,245 @@ $collection->create('api_tickets_ticket', array(
     'path'          => '/tickets/{ticket_id}',
     'controller'    => 'LegacyApiBundle:Ticket:getTicket',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_tickets_ticket_post', array(
     'path'          => '/tickets/{ticket_id}',
     'controller'    => 'LegacyApiBundle:Ticket:postTicket',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_tickets_ticket_delete', array(
     'path'          => '/tickets/{ticket_id}',
     'controller'    => 'LegacyApiBundle:Ticket:deleteTicket',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                            => array('DELETE'),
 ));
 
 $collection->create('api_tickets_ticket_logs', array(
     'path'          => '/tickets/{ticket_id}/logs',
     'controller'    => 'LegacyApiBundle:Ticket:getTicketLogs',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_tickets_ticket_messages', array(
     'path'          => '/tickets/{ticket_id}/messages',
     'controller'    => 'LegacyApiBundle:Ticket:getTicketMessages',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_tickets_ticket_messages_post', array(
     'path'          => '/tickets/{ticket_id}/messages',
     'controller'    => 'LegacyApiBundle:Ticket:replyTicket',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_tickets_ticket_message', array(
     'path'          => '/tickets/{ticket_id}/messages/{message_id}',
     'controller'    => 'LegacyApiBundle:Ticket:getTicketMessage',
     'requirements'  => array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_tickets_ticket_message_details', array(
     'path'          => '/tickets/{ticket_id}/messages/{message_id}/details',
     'controller'    => 'LegacyApiBundle:Ticket:getTicketMessageDetails',
     'requirements'  => array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_tickets_ticket_undelete', array(
     'path'          => '/tickets/{ticket_id}/undelete',
     'controller'    => 'LegacyApiBundle:Ticket:undeleteTicket',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_tickets_ticket_split', array(
     'path'          => '/tickets/{ticket_id}/split',
     'controller'    => 'LegacyApiBundle:Ticket:splitTicket',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_tickets_ticket_claim', array(
     'path'          => '/tickets/{ticket_id}/claim',
     'controller'    => 'LegacyApiBundle:Ticket:claimTicket',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_tickets_ticket_merge', array(
     'path'          => '/tickets/{ticket_id}/merge/{merge_ticket_id}',
     'controller'    => 'LegacyApiBundle:Ticket:mergeTicket',
     'requirements'  => array('ticket_id' => '\\d+', 'merge_ticket_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_tickets_ticket_spam', array(
     'path'          => '/tickets/{ticket_id}/spam',
     'controller'    => 'LegacyApiBundle:Ticket:spamTicket',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_tickets_ticket_unspam', array(
     'path'          => '/tickets/{ticket_id}/unspam',
     'controller'    => 'LegacyApiBundle:Ticket:unspamTicket',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_tickets_ticket_lock', array(
     'path'          => '/tickets/{ticket_id}/lock',
     'controller'    => 'LegacyApiBundle:Ticket:lockTicket',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_tickets_ticket_unlock', array(
     'path'          => '/tickets/{ticket_id}/unlock',
     'controller'    => 'LegacyApiBundle:Ticket:unlockTicket',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_tickets_ticket_tasks', array(
     'path'          => '/tickets/{ticket_id}/tasks',
     'controller'    => 'LegacyApiBundle:Ticket:getTicketTasks',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_tickets_ticket_tasks_post', array(
     'path'          => '/tickets/{ticket_id}/tasks',
     'controller'    => 'LegacyApiBundle:Ticket:postTicketTasks',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_tickets_ticket_billing_charges', array(
     'path'          => '/tickets/{ticket_id}/billing-charges',
     'controller'    => 'LegacyApiBundle:Ticket:getTicketBillingCharges',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_tickets_ticket_billing_charges_post', array(
     'path'          => '/tickets/{ticket_id}/billing-charges',
     'controller'    => 'LegacyApiBundle:Ticket:postTicketBillingCharges',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_tickets_ticket_billing_charge', array(
     'path'          => '/tickets/{ticket_id}/billing-charges/{charge_id}',
     'controller'    => 'LegacyApiBundle:Ticket:getTicketBillingCharge',
     'requirements'  => array('ticket_id' => '\\d+', 'charge_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_tickets_ticket_billing_charge_delete', array(
     'path'          => '/tickets/{ticket_id}/billing-charges/{charge_id}',
     'controller'    => 'LegacyApiBundle:Ticket:deleteTicketBillingCharge',
     'requirements'  => array('ticket_id' => '\\d+', 'charge_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                            => array('DELETE'),
 ));
 
 $collection->create('api_tickets_ticket_slas', array(
     'path'          => '/tickets/{ticket_id}/slas',
     'controller'    => 'LegacyApiBundle:Ticket:getTicketSlas',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_tickets_ticket_slas_post', array(
     'path'          => '/tickets/{ticket_id}/slas',
     'controller'    => 'LegacyApiBundle:Ticket:postTicketSlas',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_tickets_ticket_sla', array(
     'path'          => '/tickets/{ticket_id}/slas/{ticket_sla_id}',
     'controller'    => 'LegacyApiBundle:Ticket:getTicketSla',
     'requirements'  => array('ticket_id' => '\\d+', 'ticket_sla_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_tickets_ticket_sla_delete', array(
     'path'          => '/tickets/{ticket_id}/slas/{ticket_sla_id}',
     'controller'    => 'LegacyApiBundle:Ticket:deleteTicketSla',
     'requirements'  => array('ticket_id' => '\\d+', 'ticket_sla_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                            => array('DELETE'),
 ));
 
 $collection->create('api_tickets_ticket_participants', array(
     'path'          => '/tickets/{ticket_id}/participants',
     'controller'    => 'LegacyApiBundle:Ticket:getParticipants',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_tickets_ticket_participants_post', array(
     'path'          => '/tickets/{ticket_id}/participants',
     'controller'    => 'LegacyApiBundle:Ticket:postParticipants',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_tickets_ticket_participant', array(
     'path'          => '/tickets/{ticket_id}/participants/{person_id}',
     'controller'    => 'LegacyApiBundle:Ticket:getParticipant',
     'requirements'  => array('ticket_id' => '\\d+', 'person_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_tickets_ticket_participant_delete', array(
     'path'          => '/tickets/{ticket_id}/participants/{person_id}',
     'controller'    => 'LegacyApiBundle:Ticket:deleteParticipant',
     'requirements'  => array('ticket_id' => '\\d+', 'person_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                            => array('DELETE'),
 ));
 
 $collection->create('api_tickets_ticket_labels', array(
     'path'          => '/tickets/{ticket_id}/labels',
     'controller'    => 'LegacyApiBundle:Ticket:getLabels',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_tickets_ticket_labels_post', array(
     'path'          => '/tickets/{ticket_id}/labels',
     'controller'    => 'LegacyApiBundle:Ticket:postLabels',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_tickets_ticket_label', array(
     'path'          => '/tickets/{ticket_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:Ticket:getLabel',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_tickets_ticket_label_delete', array(
     'path'          => '/tickets/{ticket_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:Ticket:deleteLabel',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                            => array('DELETE'),
 ));
 
 $collection->create('api_tickets_update_dates', array(
     'path'          => '/tickets/{ticket_id}/update_dates',
     'controller'    => 'LegacyApiBundle:Ticket:updateTicketDates',
     'requirements'  => array('ticket_id' => '\\d+'),
-    'methods'       => array('PUT'),
+    'methods'                            => array('PUT'),
 ));
 
 $collection->create('api_tickets_fields', array(
@@ -436,7 +436,7 @@ $collection->create('api_tickets_sla', array(
     'path'          => '/tickets/slas/{sla_id}',
     'controller'    => 'LegacyApiBundle:Ticket:getSla',
     'requirements'  => array('sla_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                         => array('GET'),
 ));
 
 $collection->create('api_textsnippets_list', array(
@@ -449,28 +449,28 @@ $collection->create('api_textsnippets_new', array(
     'path'        => '/text-snippets/{typename}',
     'controller'  => 'LegacyApiBundle:TextSnippets:saveSnippet',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('POST'),
+    'methods'                   => array('POST'),
 ));
 
 $collection->create('api_textsnippets_edit', array(
     'path'          => '/text-snippets/{typename}/{id}',
     'controller'    => 'LegacyApiBundle:TextSnippets:saveSnippet',
     'requirements'  => array('id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                     => array('POST'),
 ));
 
 $collection->create('api_textsnippets_del', array(
     'path'          => '/text-snippets/{typename}/{id}',
     'controller'    => 'LegacyApiBundle:TextSnippets:deleteSnippet',
     'requirements'  => array('id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                     => array('DELETE'),
 ));
 
 $collection->create('api_textsnippets_get', array(
     'path'          => '/text-snippets/{typename}/{id}',
     'controller'    => 'LegacyApiBundle:TextSnippets:getSnippet',
     'requirements'  => array('id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                     => array('GET'),
 ));
 
 $collection->create('api_textsnippets_cats_list', array(
@@ -483,35 +483,35 @@ $collection->create('api_textsnippets_cats_new', array(
     'path'        => '/text-snippets/{typename}/categories',
     'controller'  => 'LegacyApiBundle:TextSnippets:saveCategory',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('POST'),
+    'methods'                   => array('POST'),
 ));
 
 $collection->create('api_textsnippets_cats_edit', array(
     'path'          => '/text-snippets/{typename}/categories/{id}',
     'controller'    => 'LegacyApiBundle:TextSnippets:saveCategory',
     'requirements'  => array('id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                     => array('POST'),
 ));
 
 $collection->create('api_textsnippets_cats_get', array(
     'path'          => '/text-snippets/{typename}/categories/{id}',
     'controller'    => 'LegacyApiBundle:TextSnippets:getCategory',
     'requirements'  => array('id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                     => array('GET'),
 ));
 
 $collection->create('api_textsnippets_cats_del', array(
     'path'          => '/text-snippets/{typename}/categories/{id}',
     'controller'    => 'LegacyApiBundle:TextSnippets:deleteCategory',
     'requirements'  => array('id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                     => array('DELETE'),
 ));
 
 $collection->create('api_open_tickets_newticketmessage', array(
     'path'          => '/open/tickets/new-ticket-message',
     'controller'    => 'LegacyApiBundle:OpenTicket:newTicketMessage',
     'requirements'  => array('sla_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                         => array('POST'),
 ));
 
 $collection->create('api_tickets', array(
@@ -542,7 +542,7 @@ $collection->create('api_tickets_filter', array(
     'path'          => '/tickets/filters/{filter_id}',
     'controller'    => 'LegacyApiBundle:TicketSearch:getFilter',
     'requirements'  => array('filter_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people', array(
@@ -567,238 +567,238 @@ $collection->create('api_people_person', array(
     'path'          => '/people/{person_id}',
     'controller'    => 'LegacyApiBundle:Person:getPerson',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people_person_post', array(
     'path'          => '/people/{person_id}',
     'controller'    => 'LegacyApiBundle:Person:postPerson',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_people_person_delete', array(
     'path'          => '/people/{person_id}',
     'controller'    => 'LegacyApiBundle:Person:deletePerson',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                            => array('DELETE'),
 ));
 
 $collection->create('api_people_person_merge', array(
     'path'          => '/people/{person_id}/merge/{other_person_id}',
     'controller'    => 'LegacyApiBundle:Person:mergePerson',
     'requirements'  => array('person_id' => '\\d+', 'other_person_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_people_person_logintoken', array(
     'path'          => '/people/{person_id}/login-token',
     'controller'    => 'LegacyApiBundle:Person:getLoginToken',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people_person_picture', array(
     'path'          => '/people/{person_id}/picture',
     'controller'    => 'LegacyApiBundle:Person:getPersonPicture',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people_person_picture_post', array(
     'path'          => '/people/{person_id}/picture',
     'controller'    => 'LegacyApiBundle:Person:postPersonPicture',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_people_person_picture_delete', array(
     'path'          => '/people/{person_id}/picture',
     'controller'    => 'LegacyApiBundle:Person:deletePersonPicture',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                            => array('DELETE'),
 ));
 
 $collection->create('api_people_person_emails', array(
     'path'          => '/people/{person_id}/emails',
     'controller'    => 'LegacyApiBundle:Person:getPersonEmails',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people_person_emails_post', array(
     'path'          => '/people/{person_id}/emails',
     'controller'    => 'LegacyApiBundle:Person:postPersonEmails',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_people_person_email', array(
     'path'          => '/people/{person_id}/emails/{email_id}',
     'controller'    => 'LegacyApiBundle:Person:getPersonEmail',
     'requirements'  => array('person_id' => '\\d+', 'email_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people_person_email_post', array(
     'path'          => '/people/{person_id}/emails/{email_id}',
     'controller'    => 'LegacyApiBundle:Person:postPersonEmail',
     'requirements'  => array('person_id' => '\\d+', 'email_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_people_person_email_delete', array(
     'path'          => '/people/{person_id}/emails/{email_id}',
     'controller'    => 'LegacyApiBundle:Person:deletePersonEmail',
     'requirements'  => array('person_id' => '\\d+', 'email_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                            => array('DELETE'),
 ));
 
 $collection->create('api_people_person_vcard', array(
     'path'          => '/people/{person_id}/vcard',
     'controller'    => 'LegacyApiBundle:Person:getPersonVcard',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people_person_tickets', array(
     'path'          => '/people/{person_id}/tickets',
     'controller'    => 'LegacyApiBundle:Person:getPersonTickets',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people_person_chats', array(
     'path'          => '/people/{person_id}/chats',
     'controller'    => 'LegacyApiBundle:Person:getPersonChats',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people_person_activity_stream', array(
     'path'          => '/people/{person_id}/activity-stream',
     'controller'    => 'LegacyApiBundle:Person:getPersonActivityStream',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people_person_reset_password', array(
     'path'          => '/people/{person_id}/reset-password',
     'controller'    => 'LegacyApiBundle:Person:resetPassword',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_people_person_clear_session', array(
     'path'          => '/people/{person_id}/clear-session',
     'controller'    => 'LegacyApiBundle:Person:clearSession',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_people_person_notes', array(
     'path'          => '/people/{person_id}/notes',
     'controller'    => 'LegacyApiBundle:Person:getPersonNotes',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people_person_notes_post', array(
     'path'          => '/people/{person_id}/notes',
     'controller'    => 'LegacyApiBundle:Person:postPersonNotes',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_people_person_billing_charges', array(
     'path'          => '/people/{person_id}/billing-charges',
     'controller'    => 'LegacyApiBundle:Person:getPersonBillingCharges',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people_person_contact_details', array(
     'path'          => '/people/{person_id}/contact-details',
     'controller'    => 'LegacyApiBundle:Person:getPersonContactDetails',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people_person_contact_details_post', array(
     'path'          => '/people/{person_id}/contact-details',
     'controller'    => 'LegacyApiBundle:Person:postPersonContactDetails',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_people_person_contact_detail', array(
     'path'          => '/people/{person_id}/contact-details/{contact_id}',
     'controller'    => 'LegacyApiBundle:Person:getPersonContactDetail',
     'requirements'  => array('person_id' => '\\d+', 'contact_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people_person_contact_detail_delete', array(
     'path'          => '/people/{person_id}/contact-details/{contact_id}',
     'controller'    => 'LegacyApiBundle:Person:deletePersonContactDetail',
     'requirements'  => array('person_id' => '\\d+', 'contact_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                            => array('DELETE'),
 ));
 
 $collection->create('api_people_person_groups', array(
     'path'          => '/people/{person_id}/groups',
     'controller'    => 'LegacyApiBundle:Person:getPersonGroups',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people_person_groups_post', array(
     'path'          => '/people/{person_id}/groups',
     'controller'    => 'LegacyApiBundle:Person:postPersonGroups',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_people_person_group', array(
     'path'          => '/people/{person_id}/groups/{usergroup_id}',
     'controller'    => 'LegacyApiBundle:Person:getPersonGroup',
     'requirements'  => array('person_id' => '\\d+', 'usergroup_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people_person_group_delete', array(
     'path'          => '/people/{person_id}/groups/{usergroup_id}',
     'controller'    => 'LegacyApiBundle:Person:deletePersonGroup',
     'requirements'  => array('person_id' => '\\d+', 'usergroup_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                            => array('DELETE'),
 ));
 
 $collection->create('api_people_person_labels', array(
     'path'          => '/people/{person_id}/labels',
     'controller'    => 'LegacyApiBundle:Person:getPersonLabels',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people_person_labels_post', array(
     'path'          => '/people/{person_id}/labels',
     'controller'    => 'LegacyApiBundle:Person:postPersonLabels',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('api_people_person_label', array(
     'path'          => '/people/{person_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:Person:getPersonLabel',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                            => array('GET'),
 ));
 
 $collection->create('api_people_person_label_delete', array(
     'path'          => '/people/{person_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:Person:deletePersonLabel',
     'requirements'  => array('person_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                            => array('DELETE'),
 ));
 
 $collection->create('api_people_fields', array(
@@ -847,14 +847,14 @@ $collection->create('api_agents_delete', array(
     'path'        => '/agents/{id}/delete',
     'controller'  => 'LegacyApiBundle:Agents:deleteAgent',
     'defaults'    => array('mode' => 'delete'),
-    'methods'     => array('DELETE'),
+    'methods'                     => array('DELETE'),
 ));
 
 $collection->create('api_agents_deletetouse', array(
     'path'        => '/agents/{id}/delete/to-user',
     'controller'  => 'LegacyApiBundle:Agents:deleteAgent',
     'defaults'    => array('mode' => 'user'),
-    'methods'     => array('DELETE'),
+    'methods'                     => array('DELETE'),
 ));
 
 $collection->create('api_agents_save', array(
@@ -885,7 +885,7 @@ $collection->create('api_agents_create', array(
     'path'        => '/agents',
     'controller'  => 'LegacyApiBundle:Agents:saveAgent',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('PUT'),
+    'methods'                   => array('PUT'),
 ));
 
 $collection->create('api_agents_create_bulk', array(
@@ -928,7 +928,7 @@ $collection->create('api_agent_teams_create', array(
     'path'        => '/agent_teams',
     'controller'  => 'LegacyApiBundle:AgentTeams:saveTeam',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('PUT'),
+    'methods'                   => array('PUT'),
 ));
 
 $collection->create('api_agent_teams_delete', array(
@@ -959,7 +959,7 @@ $collection->create('api_agentgroups_create', array(
     'path'        => '/agent_groups',
     'controller'  => 'LegacyApiBundle:AgentGroups:saveGroup',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('PUT'),
+    'methods'                   => array('PUT'),
 ));
 
 $collection->create('api_agentgroups_del', array(
@@ -972,14 +972,14 @@ $collection->create('api_agentgroups_enable', array(
     'path'        => '/agent_groups/{id}/enable',
     'controller'  => 'LegacyApiBundle:AgentGroups:toggleGroup',
     'defaults'    => array('is_enabled' => true),
-    'methods'     => array('POST'),
+    'methods'                           => array('POST'),
 ));
 
 $collection->create('api_agentgroups_disable', array(
     'path'        => '/agent_groups/{id}/disable',
     'controller'  => 'LegacyApiBundle:AgentGroups:toggleGroup',
     'defaults'    => array('is_enabled' => false),
-    'methods'     => array('POST'),
+    'methods'                           => array('POST'),
 ));
 
 $collection->create('api_agentgroups_getperms', array(
@@ -1017,203 +1017,203 @@ $collection->create('api_organizations_organization', array(
     'path'          => '/organizations/{organization_id}',
     'controller'    => 'LegacyApiBundle:Organization:getOrganization',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                                  => array('GET'),
 ));
 
 $collection->create('api_organizations_organization_post', array(
     'path'          => '/organizations/{organization_id}',
     'controller'    => 'LegacyApiBundle:Organization:postOrganization',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                                  => array('POST'),
 ));
 
 $collection->create('api_organizations_organization_delete', array(
     'path'          => '/organizations/{organization_id}',
     'controller'    => 'LegacyApiBundle:Organization:deleteOrganization',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                                  => array('DELETE'),
 ));
 
 $collection->create('api_organizations_organization_picture', array(
     'path'          => '/organizations/{organization_id}/picture',
     'controller'    => 'LegacyApiBundle:Organization:getOrganizationPicture',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                                  => array('GET'),
 ));
 
 $collection->create('api_organizations_organization_picture_post', array(
     'path'          => '/organizations/{organization_id}/picture',
     'controller'    => 'LegacyApiBundle:Organization:postOrganizationPicture',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                                  => array('POST'),
 ));
 
 $collection->create('api_organizations_organization_picture_delete', array(
     'path'          => '/organizations/{organization_id}/picture',
     'controller'    => 'LegacyApiBundle:Organization:deleteOrganizationPicture',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                                  => array('DELETE'),
 ));
 
 $collection->create('api_organizations_organization_activity_stream', array(
     'path'          => '/organizations/{organization_id}/activity-stream',
     'controller'    => 'LegacyApiBundle:Organization:getOrganizationActivityStream',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                                  => array('GET'),
 ));
 
 $collection->create('api_organizations_organization_members', array(
     'path'          => '/organizations/{organization_id}/members',
     'controller'    => 'LegacyApiBundle:Organization:getOrganizationMembers',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                                  => array('GET'),
 ));
 
 $collection->create('api_organizations_organization_tickets', array(
     'path'          => '/organizations/{organization_id}/tickets',
     'controller'    => 'LegacyApiBundle:Organization:getOrganizationTickets',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                                  => array('GET'),
 ));
 
 $collection->create('api_organizations_organization_chats', array(
     'path'          => '/organizations/{organization_id}/chats',
     'controller'    => 'LegacyApiBundle:Organization:getOrganizationChats',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                                  => array('GET'),
 ));
 
 $collection->create('api_organizations_organization_billing_charges', array(
     'path'          => '/organizations/{organization_id}/billing-charges',
     'controller'    => 'LegacyApiBundle:Organization:getOrganizationBillingCharges',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                                  => array('GET'),
 ));
 
 $collection->create('api_organizations_organization_email_domains', array(
     'path'          => '/organizations/{organization_id}/email-domains',
     'controller'    => 'LegacyApiBundle:Organization:getOrganizationEmailDomains',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                                  => array('GET'),
 ));
 
 $collection->create('api_organizations_organization_email_domains_post', array(
     'path'          => '/organizations/{organization_id}/email-domains',
     'controller'    => 'LegacyApiBundle:Organization:postOrganizationEmailDomains',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                                  => array('POST'),
 ));
 
 $collection->create('api_organizations_organization_email_domain', array(
     'path'          => '/organizations/{organization_id}/email-domains/{domain}',
     'controller'    => 'LegacyApiBundle:Organization:getOrganizationEmailDomain',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                                  => array('GET'),
 ));
 
 $collection->create('api_organizations_organization_email_domain_move_users', array(
     'path'          => '/organizations/{organization_id}/email-domains/{domain}/move-users',
     'controller'    => 'LegacyApiBundle:Organization:postOrganizationEmailDomainMoveUsers',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                                  => array('POST'),
 ));
 
 $collection->create('api_organizations_organization_email_domain_move_taken_users', array(
     'path'          => '/organizations/{organization_id}/email-domains/{domain}/move-taken-users',
     'controller'    => 'LegacyApiBundle:Organization:postOrganizationEmailDomainMoveTakenUsers',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                                  => array('POST'),
 ));
 
 $collection->create('api_organizations_organization_email_domain_delete', array(
     'path'          => '/organizations/{organization_id}/email-domains/{domain}',
     'controller'    => 'LegacyApiBundle:Organization:deleteOrganizationEmailDomain',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                                  => array('DELETE'),
 ));
 
 $collection->create('api_organizations_organization_contact_details', array(
     'path'          => '/organizations/{organization_id}/contact-details',
     'controller'    => 'LegacyApiBundle:Organization:getOrganizationContactDetails',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                                  => array('GET'),
 ));
 
 $collection->create('api_organizations_organization_contact_details_post', array(
     'path'          => '/organizations/{organization_id}/contact-details',
     'controller'    => 'LegacyApiBundle:Organization:postOrganizationContactDetails',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                                  => array('POST'),
 ));
 
 $collection->create('api_organizations_organization_contact_detail', array(
     'path'          => '/organizations/{organization_id}/contact-details/{contact_id}',
     'controller'    => 'LegacyApiBundle:Organization:getOrganizationContactDetail',
     'requirements'  => array('organization_id' => '\\d+', 'contact_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                                  => array('GET'),
 ));
 
 $collection->create('api_organizations_organization_contact_detail_delete', array(
     'path'          => '/organizations/{organization_id}/contact-details/{contact_id}',
     'controller'    => 'LegacyApiBundle:Organization:deleteOrganizationContactDetail',
     'requirements'  => array('organization_id' => '\\d+', 'contact_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                                  => array('DELETE'),
 ));
 
 $collection->create('api_organizations_organization_groups', array(
     'path'          => '/organizations/{organization_id}/groups',
     'controller'    => 'LegacyApiBundle:Organization:getOrganizationGroups',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                                  => array('GET'),
 ));
 
 $collection->create('api_organizations_organization_groups_post', array(
     'path'          => '/organizations/{organization_id}/groups',
     'controller'    => 'LegacyApiBundle:Organization:postOrganizationGroups',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                                  => array('POST'),
 ));
 
 $collection->create('api_organizations_organization_group', array(
     'path'          => '/organizations/{organization_id}/groups/{usergroup_id}',
     'controller'    => 'LegacyApiBundle:Organization:getOrganizationGroup',
     'requirements'  => array('organization_id' => '\\d+', 'usergroup_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                                  => array('GET'),
 ));
 
 $collection->create('api_organizations_organization_group_delete', array(
     'path'          => '/organizations/{organization_id}/groups/{usergroup_id}',
     'controller'    => 'LegacyApiBundle:Organization:deleteOrganizationGroup',
     'requirements'  => array('organization_id' => '\\d+', 'usergroup_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                                  => array('DELETE'),
 ));
 
 $collection->create('api_organizations_organization_labels', array(
     'path'          => '/organizations/{organization_id}/labels',
     'controller'    => 'LegacyApiBundle:Organization:getOrganizationLabels',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                                  => array('GET'),
 ));
 
 $collection->create('api_organizations_organization_labels_post', array(
     'path'          => '/organizations/{organization_id}/labels',
     'controller'    => 'LegacyApiBundle:Organization:postOrganizationLabels',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                                  => array('POST'),
 ));
 
 $collection->create('api_organizations_organization_label', array(
     'path'          => '/organizations/{organization_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:Organization:getOrganizationLabel',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                                  => array('GET'),
 ));
 
 $collection->create('api_organizations_organization_label_delete', array(
     'path'          => '/organizations/{organization_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:Organization:deleteOrganizationLabel',
     'requirements'  => array('organization_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                                  => array('DELETE'),
 ));
 
 $collection->create('api_organizations_fields', array(
@@ -1238,98 +1238,98 @@ $collection->create('api_chats_chat', array(
     'path'          => '/chats/{chat_id}',
     'controller'    => 'LegacyApiBundle:Chat:getChat',
     'requirements'  => array('chat_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_chats_chat_post', array(
     'path'          => '/chats/{chat_id}',
     'controller'    => 'LegacyApiBundle:Chat:postChat',
     'requirements'  => array('chat_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                          => array('POST'),
 ));
 
 $collection->create('api_chats_chat_leave', array(
     'path'          => '/chats/{chat_id}/leave',
     'controller'    => 'LegacyApiBundle:Chat:leaveChat',
     'requirements'  => array('chat_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                          => array('POST'),
 ));
 
 $collection->create('api_chats_chat_end', array(
     'path'          => '/chats/{chat_id}/end',
     'controller'    => 'LegacyApiBundle:Chat:endChat',
     'requirements'  => array('chat_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                          => array('POST'),
 ));
 
 $collection->create('api_chats_chat_messages', array(
     'path'          => '/chats/{chat_id}/messages',
     'controller'    => 'LegacyApiBundle:Chat:getMessages',
     'requirements'  => array('chat_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_chats_chat_messages_post', array(
     'path'          => '/chats/{chat_id}/messages',
     'controller'    => 'LegacyApiBundle:Chat:newMessage',
     'requirements'  => array('chat_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                          => array('POST'),
 ));
 
 $collection->create('api_chats_chat_participants', array(
     'path'          => '/chats/{chat_id}/participants',
     'controller'    => 'LegacyApiBundle:Chat:getParticipants',
     'requirements'  => array('chat_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_chats_chat_participants_post', array(
     'path'          => '/chats/{chat_id}/participants',
     'controller'    => 'LegacyApiBundle:Chat:postParticipants',
     'requirements'  => array('chat_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                          => array('POST'),
 ));
 
 $collection->create('api_chats_chat_participant', array(
     'path'          => '/chats/{chat_id}/participants/{person_id}',
     'controller'    => 'LegacyApiBundle:Chat:getParticipant',
     'requirements'  => array('chat_id' => '\\d+', 'person_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_chats_chat_participant_delete', array(
     'path'          => '/chats/{chat_id}/participants/{person_id}',
     'controller'    => 'LegacyApiBundle:Chat:deleteParticipant',
     'requirements'  => array('chat_id' => '\\d+', 'person_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                          => array('DELETE'),
 ));
 
 $collection->create('api_chats_chat_labels', array(
     'path'          => '/chats/{chat_id}/labels',
     'controller'    => 'LegacyApiBundle:Chat:getChatLabels',
     'requirements'  => array('chat_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_chats_chat_labels_post', array(
     'path'          => '/chats/{chat_id}/labels',
     'controller'    => 'LegacyApiBundle:Chat:postChatLabels',
     'requirements'  => array('chat_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                          => array('POST'),
 ));
 
 $collection->create('api_chats_chat_label', array(
     'path'          => '/chats/{chat_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:Chat:getChatLabel',
     'requirements'  => array('chat_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_chats_chat_label_delete', array(
     'path'          => '/chats/{chat_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:Chat:deleteChatLabel',
     'requirements'  => array('chat_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                          => array('DELETE'),
 ));
 
 $collection->create('api_downloads', array(
@@ -1348,84 +1348,84 @@ $collection->create('api_downloads_download', array(
     'path'          => '/downloads/{download_id}',
     'controller'    => 'LegacyApiBundle:Download:getDownload',
     'requirements'  => array('download_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_downloads_download_post', array(
     'path'          => '/downloads/{download_id}',
     'controller'    => 'LegacyApiBundle:Download:postDownload',
     'requirements'  => array('download_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                              => array('POST'),
 ));
 
 $collection->create('api_downloads_download_delete', array(
     'path'          => '/downloads/{download_id}',
     'controller'    => 'LegacyApiBundle:Download:deleteDownload',
     'requirements'  => array('download_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                              => array('DELETE'),
 ));
 
 $collection->create('api_downloads_download_comments', array(
     'path'          => '/downloads/{download_id}/comments',
     'controller'    => 'LegacyApiBundle:Download:getDownloadComments',
     'requirements'  => array('download_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_downloads_download_comments_new', array(
     'path'          => '/downloads/{download_id}/comments',
     'controller'    => 'LegacyApiBundle:Download:newDownloadComment',
     'requirements'  => array('download_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                              => array('POST'),
 ));
 
 $collection->create('api_downloads_download_comments_comment', array(
     'path'          => '/downloads/{download_id}/comments/{comment_id}',
     'controller'    => 'LegacyApiBundle:Download:getDownloadComment',
     'requirements'  => array('download_id' => '\\d+', 'comment_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_downloads_download_comments_comment_post', array(
     'path'          => '/downloads/{download_id}/comments/{comment_id}',
     'controller'    => 'LegacyApiBundle:Download:postDownloadComment',
     'requirements'  => array('download_id' => '\\d+', 'comment_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                              => array('POST'),
 ));
 
 $collection->create('api_downloads_download_comments_comment_delete', array(
     'path'          => '/downloads/{download_id}/comments/{comment_id}',
     'controller'    => 'LegacyApiBundle:Download:deleteDownloadComment',
     'requirements'  => array('download_id' => '\\d+', 'comment_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                              => array('DELETE'),
 ));
 
 $collection->create('api_downloads_download_labels', array(
     'path'          => '/downloads/{download_id}/labels',
     'controller'    => 'LegacyApiBundle:Download:getDownloadLabels',
     'requirements'  => array('download_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_downloads_download_labels_post', array(
     'path'          => '/downloads/{download_id}/labels',
     'controller'    => 'LegacyApiBundle:Download:postDownloadLabels',
     'requirements'  => array('download_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                              => array('POST'),
 ));
 
 $collection->create('api_downloads_download_label', array(
     'path'          => '/downloads/{download_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:Download:getDownloadLabel',
     'requirements'  => array('download_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_downloads_download_label_delete', array(
     'path'          => '/downloads/{download_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:Download:deleteDownloadLabel',
     'requirements'  => array('download_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                              => array('DELETE'),
 ));
 
 $collection->create('api_downloads_validating_comments', array(
@@ -1450,56 +1450,56 @@ $collection->create('api_downloads_category', array(
     'path'          => '/downloads/categories/{category_id}',
     'controller'    => 'LegacyApiBundle:Download:getCategory',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_downloads_category_post', array(
     'path'          => '/downloads/categories/{category_id}',
     'controller'    => 'LegacyApiBundle:Download:postCategory',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                              => array('POST'),
 ));
 
 $collection->create('api_downloads_category_delete', array(
     'path'          => '/downloads/categories/{category_id}',
     'controller'    => 'LegacyApiBundle:Download:deleteCategory',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                              => array('DELETE'),
 ));
 
 $collection->create('api_downloads_category_downloads', array(
     'path'          => '/downloads/categories/{category_id}/downloads',
     'controller'    => 'LegacyApiBundle:Download:getCategoryDownloads',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_downloads_category_groups', array(
     'path'          => '/downloads/categories/{category_id}/groups',
     'controller'    => 'LegacyApiBundle:Download:getCategoryGroups',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_downloads_category_groups_post', array(
     'path'          => '/downloads/categories/{category_id}/groups',
     'controller'    => 'LegacyApiBundle:Download:postCategoryGroups',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                              => array('POST'),
 ));
 
 $collection->create('api_downloads_category_group', array(
     'path'          => '/downloads/categories/{category_id}/groups/{group_id}',
     'controller'    => 'LegacyApiBundle:Download:getCategoryGroup',
     'requirements'  => array('category_id' => '\\d+', 'group_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_downloads_category_group_delete', array(
     'path'          => '/downloads/categories/{category_id}/groups/{group_id}',
     'controller'    => 'LegacyApiBundle:Download:deleteCategoryGroup',
     'requirements'  => array('category_id' => '\\d+', 'group_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                              => array('DELETE'),
 ));
 
 $collection->create('api_news', array(
@@ -1518,84 +1518,84 @@ $collection->create('api_news_news', array(
     'path'          => '/news/{news_id}',
     'controller'    => 'LegacyApiBundle:News:getNews',
     'requirements'  => array('news_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_news_news_post', array(
     'path'          => '/news/{news_id}',
     'controller'    => 'LegacyApiBundle:News:postNews',
     'requirements'  => array('news_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                          => array('POST'),
 ));
 
 $collection->create('api_news_news_delete', array(
     'path'          => '/news/{news_id}',
     'controller'    => 'LegacyApiBundle:News:deleteNews',
     'requirements'  => array('news_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                          => array('DELETE'),
 ));
 
 $collection->create('api_news_news_comments', array(
     'path'          => '/news/{news_id}/comments',
     'controller'    => 'LegacyApiBundle:News:getNewsComments',
     'requirements'  => array('news_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_news_news_comments_new', array(
     'path'          => '/news/{news_id}/comments',
     'controller'    => 'LegacyApiBundle:News:newNewsComment',
     'requirements'  => array('news_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                          => array('POST'),
 ));
 
 $collection->create('api_news_news_comments_comment', array(
     'path'          => '/news/{news_id}/comments/{comment_id}',
     'controller'    => 'LegacyApiBundle:News:getNewsComment',
     'requirements'  => array('news_id' => '\\d+', 'comment_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_news_news_comments_comment_post', array(
     'path'          => '/news/{news_id}/comments/{comment_id}',
     'controller'    => 'LegacyApiBundle:News:postNewsComment',
     'requirements'  => array('news_id' => '\\d+', 'comment_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                          => array('POST'),
 ));
 
 $collection->create('api_news_news_comments_comment_delete', array(
     'path'          => '/news/{news_id}/comments/{comment_id}',
     'controller'    => 'LegacyApiBundle:News:deleteNewsComment',
     'requirements'  => array('news_id' => '\\d+', 'comment_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                          => array('DELETE'),
 ));
 
 $collection->create('api_news_news_labels', array(
     'path'          => '/news/{news_id}/labels',
     'controller'    => 'LegacyApiBundle:News:getNewsLabels',
     'requirements'  => array('news_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_news_news_labels_post', array(
     'path'          => '/news/{news_id}/labels',
     'controller'    => 'LegacyApiBundle:News:postNewsLabels',
     'requirements'  => array('news_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                          => array('POST'),
 ));
 
 $collection->create('api_news_news_label', array(
     'path'          => '/news/{news_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:News:getNewsLabel',
     'requirements'  => array('news_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_news_news_label_delete', array(
     'path'          => '/news/{news_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:News:deleteNewsLabel',
     'requirements'  => array('news_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                          => array('DELETE'),
 ));
 
 $collection->create('api_news_validating_comments', array(
@@ -1620,56 +1620,56 @@ $collection->create('api_news_category', array(
     'path'          => '/news/categories/{category_id}',
     'controller'    => 'LegacyApiBundle:News:getCategory',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_news_category_post', array(
     'path'          => '/news/categories/{category_id}',
     'controller'    => 'LegacyApiBundle:News:postCategory',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                              => array('POST'),
 ));
 
 $collection->create('api_news_category_delete', array(
     'path'          => '/news/categories/{category_id}',
     'controller'    => 'LegacyApiBundle:News:deleteCategory',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                              => array('DELETE'),
 ));
 
 $collection->create('api_news_category_news', array(
     'path'          => '/news/categories/{category_id}/news',
     'controller'    => 'LegacyApiBundle:News:getCategoryNews',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_news_category_groups', array(
     'path'          => '/news/categories/{category_id}/groups',
     'controller'    => 'LegacyApiBundle:News:getCategoryGroups',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_news_category_groups_post', array(
     'path'          => '/news/categories/{category_id}/groups',
     'controller'    => 'LegacyApiBundle:News:postCategoryGroups',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                              => array('POST'),
 ));
 
 $collection->create('api_news_category_group', array(
     'path'          => '/news/categories/{category_id}/groups/{group_id}',
     'controller'    => 'LegacyApiBundle:News:getCategoryGroup',
     'requirements'  => array('category_id' => '\\d+', 'group_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_news_category_group_delete', array(
     'path'          => '/news/categories/{category_id}/groups/{group_id}',
     'controller'    => 'LegacyApiBundle:News:deleteCategoryGroup',
     'requirements'  => array('category_id' => '\\d+', 'group_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                              => array('DELETE'),
 ));
 
 $collection->create('api_kb', array(
@@ -1688,119 +1688,119 @@ $collection->create('api_kb_article', array(
     'path'          => '/kb/{article_id}',
     'controller'    => 'LegacyApiBundle:Kb:getArticle',
     'requirements'  => array('article_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                             => array('GET'),
 ));
 
 $collection->create('api_kb_article_post', array(
     'path'          => '/kb/{article_id}',
     'controller'    => 'LegacyApiBundle:Kb:postArticle',
     'requirements'  => array('article_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                             => array('POST'),
 ));
 
 $collection->create('api_kb_article_delete', array(
     'path'          => '/kb/{article_id}',
     'controller'    => 'LegacyApiBundle:Kb:deleteArticle',
     'requirements'  => array('article_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                             => array('DELETE'),
 ));
 
 $collection->create('api_kb_article_votes', array(
     'path'          => '/kb/{article_id}/votes',
     'controller'    => 'LegacyApiBundle:Kb:getArticleVotes',
     'requirements'  => array('article_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                             => array('GET'),
 ));
 
 $collection->create('api_kb_article_comments', array(
     'path'          => '/kb/{article_id}/comments',
     'controller'    => 'LegacyApiBundle:Kb:getArticleComments',
     'requirements'  => array('article_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                             => array('GET'),
 ));
 
 $collection->create('api_kb_article_comments_new', array(
     'path'          => '/kb/{article_id}/comments',
     'controller'    => 'LegacyApiBundle:Kb:newArticleComment',
     'requirements'  => array('article_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                             => array('POST'),
 ));
 
 $collection->create('api_kb_article_comments_comment', array(
     'path'          => '/kb/{article_id}/comments/{comment_id}',
     'controller'    => 'LegacyApiBundle:Kb:getArticleComment',
     'requirements'  => array('article_id' => '\\d+', 'comment_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                             => array('GET'),
 ));
 
 $collection->create('api_kb_article_comments_comment_post', array(
     'path'          => '/kb/{article_id}/comments/{comment_id}',
     'controller'    => 'LegacyApiBundle:Kb:postArticleComment',
     'requirements'  => array('article_id' => '\\d+', 'comment_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                             => array('POST'),
 ));
 
 $collection->create('api_kb_article_comments_comment_delete', array(
     'path'          => '/kb/{article_id}/comments/{comment_id}',
     'controller'    => 'LegacyApiBundle:Kb:deleteArticleComment',
     'requirements'  => array('article_id' => '\\d+', 'comment_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                             => array('DELETE'),
 ));
 
 $collection->create('api_kb_article_attachments', array(
     'path'          => '/kb/{article_id}/attachments',
     'controller'    => 'LegacyApiBundle:Kb:getArticleAttachments',
     'requirements'  => array('article_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                             => array('GET'),
 ));
 
 $collection->create('api_kb_article_attachments_post', array(
     'path'          => '/kb/{article_id}/attachments',
     'controller'    => 'LegacyApiBundle:Kb:newArticleAttachment',
     'requirements'  => array('article_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                             => array('POST'),
 ));
 
 $collection->create('api_kb_article_attachment', array(
     'path'          => '/kb/{article_id}/attachments/{attachment_id}',
     'controller'    => 'LegacyApiBundle:Kb:getArticleAttachment',
     'requirements'  => array('article_id' => '\\d+', 'attachment_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                             => array('GET'),
 ));
 
 $collection->create('api_kb_article_attachment_delete', array(
     'path'          => '/kb/{article_id}/attachments/{attachment_id}',
     'controller'    => 'LegacyApiBundle:Kb:deleteArticleAttachment',
     'requirements'  => array('article_id' => '\\d+', 'attachment_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                             => array('DELETE'),
 ));
 
 $collection->create('api_kb_article_labels', array(
     'path'          => '/kb/{article_id}/labels',
     'controller'    => 'LegacyApiBundle:Kb:getArticleLabels',
     'requirements'  => array('article_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                             => array('GET'),
 ));
 
 $collection->create('api_kb_article_labels_post', array(
     'path'          => '/kb/{article_id}/labels',
     'controller'    => 'LegacyApiBundle:Kb:postArticleLabels',
     'requirements'  => array('article_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                             => array('POST'),
 ));
 
 $collection->create('api_kb_article_label', array(
     'path'          => '/kb/{article_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:Kb:getArticleLabel',
     'requirements'  => array('article_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                             => array('GET'),
 ));
 
 $collection->create('api_kb_article_label_delete', array(
     'path'          => '/kb/{article_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:Kb:deleteArticleLabel',
     'requirements'  => array('article_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                             => array('DELETE'),
 ));
 
 $collection->create('api_kb_validating_comments', array(
@@ -1825,56 +1825,56 @@ $collection->create('api_kb_category', array(
     'path'          => '/kb/categories/{category_id}',
     'controller'    => 'LegacyApiBundle:Kb:getCategory',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_kb_category_post', array(
     'path'          => '/kb/categories/{category_id}',
     'controller'    => 'LegacyApiBundle:Kb:postCategory',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                              => array('POST'),
 ));
 
 $collection->create('api_kb_category_delete', array(
     'path'          => '/kb/categories/{category_id}',
     'controller'    => 'LegacyApiBundle:Kb:deleteCategory',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                              => array('DELETE'),
 ));
 
 $collection->create('api_kb_category_articles', array(
     'path'          => '/kb/categories/{category_id}/articles',
     'controller'    => 'LegacyApiBundle:Kb:getCategoryArticles',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_kb_category_groups', array(
     'path'          => '/kb/categories/{category_id}/groups',
     'controller'    => 'LegacyApiBundle:Kb:getCategoryGroups',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_kb_category_groups_post', array(
     'path'          => '/kb/categories/{category_id}/groups',
     'controller'    => 'LegacyApiBundle:Kb:postCategoryGroups',
     'requirements'  => array('category_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                              => array('POST'),
 ));
 
 $collection->create('api_kb_category_group', array(
     'path'          => '/kb/categories/{category_id}/groups/{group_id}',
     'controller'    => 'LegacyApiBundle:Kb:getCategoryGroup',
     'requirements'  => array('category_id' => '\\d+', 'group_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_kb_category_group_delete', array(
     'path'          => '/kb/categories/{category_id}/groups/{group_id}',
     'controller'    => 'LegacyApiBundle:Kb:deleteCategoryGroup',
     'requirements'  => array('category_id' => '\\d+', 'group_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                              => array('DELETE'),
 ));
 
 $collection->create('api_kb_fields', array(
@@ -1905,126 +1905,126 @@ $collection->create('api_feedback_feedback', array(
     'path'          => '/feedback/{feedback_id}',
     'controller'    => 'LegacyApiBundle:Feedback:getFeedback',
     'requirements'  => array('feedback_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_feedback_feedback_post', array(
     'path'          => '/feedback/{feedback_id}',
     'controller'    => 'LegacyApiBundle:Feedback:postFeedback',
     'requirements'  => array('feedback_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                              => array('POST'),
 ));
 
 $collection->create('api_feedback_feedback_delete', array(
     'path'          => '/feedback/{feedback_id}',
     'controller'    => 'LegacyApiBundle:Feedback:deleteFeedback',
     'requirements'  => array('feedback_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                              => array('DELETE'),
 ));
 
 $collection->create('api_feedback_feedback_votes', array(
     'path'          => '/feedback/{feedback_id}/votes',
     'controller'    => 'LegacyApiBundle:Feedback:getFeedbackVotes',
     'requirements'  => array('feedback_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_feedback_feedback_comments', array(
     'path'          => '/feedback/{feedback_id}/comments',
     'controller'    => 'LegacyApiBundle:Feedback:getFeedbackComments',
     'requirements'  => array('feedback_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_feedback_feedback_comments_new', array(
     'path'          => '/feedback/{feedback_id}/comments',
     'controller'    => 'LegacyApiBundle:Feedback:newFeedbackComment',
     'requirements'  => array('feedback_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                              => array('POST'),
 ));
 
 $collection->create('api_feedback_feedback_comments_comment', array(
     'path'          => '/feedback/{feedback_id}/comments/{comment_id}',
     'controller'    => 'LegacyApiBundle:Feedback:getFeedbackComment',
     'requirements'  => array('feedback_id' => '\\d+', 'comment_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_feedback_feedback_comments_comment_post', array(
     'path'          => '/feedback/{feedback_id}/comments/{comment_id}',
     'controller'    => 'LegacyApiBundle:Feedback:postFeedbackComment',
     'requirements'  => array('feedback_id' => '\\d+', 'comment_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                              => array('POST'),
 ));
 
 $collection->create('api_feedback_feedback_comments_comment_delete', array(
     'path'          => '/feedback/{feedback_id}/comments/{comment_id}',
     'controller'    => 'LegacyApiBundle:Feedback:deleteFeedbackComment',
     'requirements'  => array('feedback_id' => '\\d+', 'comment_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                              => array('DELETE'),
 ));
 
 $collection->create('api_feedback_feedback_merge', array(
     'path'          => '/feedback/{feedback_id}/merge/{other_feedback_id}',
     'controller'    => 'LegacyApiBundle:Feedback:mergeFeedback',
     'requirements'  => array('feedback_id' => '\\d+', 'other_feedback_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                              => array('POST'),
 ));
 
 $collection->create('api_feedback_feedback_attachments', array(
     'path'          => '/feedback/{feedback_id}/attachments',
     'controller'    => 'LegacyApiBundle:Feedback:getFeedbackAttachments',
     'requirements'  => array('feedback_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_feedback_feedback_attachments_post', array(
     'path'          => '/feedback/{feedback_id}/attachments',
     'controller'    => 'LegacyApiBundle:Feedback:newFeedbackAttachment',
     'requirements'  => array('feedback_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                              => array('POST'),
 ));
 
 $collection->create('api_feedback_feedback_attachment', array(
     'path'          => '/feedback/{feedback_id}/attachments/{attachment_id}',
     'controller'    => 'LegacyApiBundle:Feedback:getFeedbackAttachment',
     'requirements'  => array('feedback_id' => '\\d+', 'attachment_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_feedback_feedback_attachment_delete', array(
     'path'          => '/feedback/{feedback_id}/attachments/{attachment_id}',
     'controller'    => 'LegacyApiBundle:Feedback:deleteFeedbackAttachment',
     'requirements'  => array('feedback_id' => '\\d+', 'attachment_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                              => array('DELETE'),
 ));
 
 $collection->create('api_feedback_feedback_labels', array(
     'path'          => '/feedback/{feedback_id}/labels',
     'controller'    => 'LegacyApiBundle:Feedback:getFeedbackLabels',
     'requirements'  => array('feedback_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_feedback_feedback_labels_post', array(
     'path'          => '/feedback/{feedback_id}/labels',
     'controller'    => 'LegacyApiBundle:Feedback:postFeedbackLabels',
     'requirements'  => array('feedback_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                              => array('POST'),
 ));
 
 $collection->create('api_feedback_feedback_label', array(
     'path'          => '/feedback/{feedback_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:Feedback:getFeedbackLabel',
     'requirements'  => array('feedback_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_feedback_feedback_label_delete', array(
     'path'          => '/feedback/{feedback_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:Feedback:deleteFeedbackLabel',
     'requirements'  => array('feedback_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                              => array('DELETE'),
 ));
 
 $collection->create('api_feedback_validating_comments', array(
@@ -2067,98 +2067,98 @@ $collection->create('api_tasks_task', array(
     'path'          => '/tasks/{task_id}',
     'controller'    => 'LegacyApiBundle:Task:getTask',
     'requirements'  => array('task_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_tasks_task_post', array(
     'path'          => '/tasks/{task_id}',
     'controller'    => 'LegacyApiBundle:Task:postTask',
     'requirements'  => array('task_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                          => array('POST'),
 ));
 
 $collection->create('api_tasks_task_delete', array(
     'path'          => '/tasks/{task_id}',
     'controller'    => 'LegacyApiBundle:Task:deleteTask',
     'requirements'  => array('task_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                          => array('DELETE'),
 ));
 
 $collection->create('api_tasks_task_associations', array(
     'path'          => '/tasks/{task_id}/associations',
     'controller'    => 'LegacyApiBundle:Task:getTaskAssociations',
     'requirements'  => array('task_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_tasks_task_associations_post', array(
     'path'          => '/tasks/{task_id}/associations',
     'controller'    => 'LegacyApiBundle:Task:postTaskAssociations',
     'requirements'  => array('task_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                          => array('POST'),
 ));
 
 $collection->create('api_tasks_task_associated_item', array(
     'path'          => '/tasks/{task_id}/associations/{assoc_id}',
     'controller'    => 'LegacyApiBundle:Task:getTaskAssociation',
     'requirements'  => array('task_id' => '\\d+', 'assoc_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_tasks_task_comments', array(
     'path'          => '/tasks/{task_id}/comments',
     'controller'    => 'LegacyApiBundle:Task:getTaskComments',
     'requirements'  => array('task_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_tasks_task_comments_post', array(
     'path'          => '/tasks/{task_id}/comments',
     'controller'    => 'LegacyApiBundle:Task:postTaskComments',
     'requirements'  => array('task_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                          => array('POST'),
 ));
 
 $collection->create('api_tasks_task_comment', array(
     'path'          => '/tasks/{task_id}/comments/{comment_id}',
     'controller'    => 'LegacyApiBundle:Task:getTaskComment',
     'requirements'  => array('task_id' => '\\d+', 'comment_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_tasks_task_associated_item_delete', array(
     'path'          => '/tasks/{task_id}/comments/{comment_id}',
     'controller'    => 'LegacyApiBundle:Task:deleteTaskComment',
     'requirements'  => array('task_id' => '\\d+', 'comment_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                          => array('DELETE'),
 ));
 
 $collection->create('api_tasks_task_labels', array(
     'path'          => '/tasks/{task_id}/labels',
     'controller'    => 'LegacyApiBundle:Task:getTaskLabels',
     'requirements'  => array('task_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_tasks_task_labels_post', array(
     'path'          => '/tasks/{task_id}/labels',
     'controller'    => 'LegacyApiBundle:Task:postTaskLabels',
     'requirements'  => array('task_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                          => array('POST'),
 ));
 
 $collection->create('api_tasks_task_label', array(
     'path'          => '/tasks/{task_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:Task:getTaskLabel',
     'requirements'  => array('task_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_tasks_task_label_delete', array(
     'path'          => '/tasks/{task_id}/labels/{label}',
     'controller'    => 'LegacyApiBundle:Task:deleteTaskLabel',
     'requirements'  => array('task_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                          => array('DELETE'),
 ));
 
 $collection->create('api_glossary', array(
@@ -2183,35 +2183,35 @@ $collection->create('api_glossary_word', array(
     'path'          => '/glossary/{word_id}',
     'controller'    => 'LegacyApiBundle:Glossary:getWord',
     'requirements'  => array('word_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                          => array('GET'),
 ));
 
 $collection->create('api_glossary_word_delete', array(
     'path'          => '/glossary/{word_id}',
     'controller'    => 'LegacyApiBundle:Glossary:deleteWord',
     'requirements'  => array('word_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                          => array('DELETE'),
 ));
 
 $collection->create('api_glossary_definition', array(
     'path'          => '/glossary/definitions/{definition_id}',
     'controller'    => 'LegacyApiBundle:Glossary:getDefinition',
     'requirements'  => array('definition_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                                => array('GET'),
 ));
 
 $collection->create('api_glossary_definition_post', array(
     'path'          => '/glossary/definitions/{definition_id}',
     'controller'    => 'LegacyApiBundle:Glossary:postDefinition',
     'requirements'  => array('definition_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                                => array('POST'),
 ));
 
 $collection->create('api_glossary_definition_delete', array(
     'path'          => '/glossary/definitions/{definition_id}',
     'controller'    => 'LegacyApiBundle:Glossary:deleteDefinition',
     'requirements'  => array('definition_id' => '\\d+'),
-    'methods'       => array('DELETE'),
+    'methods'                                => array('DELETE'),
 ));
 
 $collection->create('api_dismiss_activity', array(
@@ -2224,7 +2224,7 @@ $collection->create('api_get_activity', array(
     'path'          => '/activity/{since}',
     'controller'    => 'LegacyApiBundle:Activity:getActivity',
     'requirements'  => array('since' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                        => array('GET'),
 ));
 
 ########################################################################################################################
@@ -2294,7 +2294,7 @@ $collection->create('api_roundrobins_triggers', array(
     'path'        => '/round_robin/triggers/{id}',
     'controller'  => 'LegacyApiBundle:RoundRobin:checkTriggers',
     'defaults'    => array('id' => null),
-    'methods'     => array('GET'),
+    'methods'                   => array('GET'),
 ));
 
 $collection->create('api_roundrobins_get', array(
@@ -2651,7 +2651,7 @@ $collection->create('api_ticket_deps_create', array(
     'path'        => '/ticket_deps',
     'controller'  => 'LegacyApiBundle:TicketDeps:save',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('PUT'),
+    'methods'                   => array('PUT'),
 ));
 
 $collection->create('api_ticket_deps_order', array(
@@ -2698,35 +2698,35 @@ $collection->create('api_ticket_layout_get', array(
     'path'         => '/ticket_layouts/{dep_id}',
     'controller'   => 'LegacyApiBundle:TicketLayouts:get',
     'requirements' => array('dep_id' => '\\d+'),
-    'methods'      => array('GET'),
+    'methods'                        => array('GET'),
 ));
 
 $collection->create('api_ticket_layout_getdefault', array(
     'path'         => '/ticket_layouts/default',
     'controller'   => 'LegacyApiBundle:TicketLayouts:get',
     'defaults'     => array('dep_id' => '0'),
-    'methods'      => array('GET'),
+    'methods'                        => array('GET'),
 ));
 
 $collection->create('api_ticket_layout_save', array(
     'path'         => '/ticket_layouts/{dep_id}',
     'controller'   => 'LegacyApiBundle:TicketLayouts:save',
     'requirements' => array('dep_id' => '\\d+'),
-    'methods'      => array('POST'),
+    'methods'                        => array('POST'),
 ));
 
 $collection->create('api_ticket_layout_delete', array(
     'path'         => '/ticket_layouts/{dep_id}',
     'controller'   => 'LegacyApiBundle:TicketLayouts:delete',
     'requirements' => array('dep_id' => '\\d+'),
-    'methods'      => array('DELETE'),
+    'methods'                        => array('DELETE'),
 ));
 
 $collection->create('api_ticket_layout_savedefault', array(
     'path'        => '/ticket_layouts/default',
     'controller'  => 'LegacyApiBundle:TicketLayouts:save',
     'defaults'    => array('dep_id' => '0'),
-    'methods'     => array('POST'),
+    'methods'                       => array('POST'),
 ));
 
 $collection->create('api_ticket_layout_stats', array(
@@ -2889,7 +2889,7 @@ $collection->create('api_ticket_slascreate', array(
     'path'        => '/ticket_slas',
     'controller'  => 'LegacyApiBundle:TicketSlas:save',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('PUT'),
+    'methods'                   => array('PUT'),
 ));
 
 $collection->create('api_ticket_slasget', array(
@@ -2928,28 +2928,28 @@ $collection->create('api_ticket_fields_get', array(
     'path'         => '/ticket_fields/{id}',
     'controller'   => 'LegacyApiBundle:TicketFields:getCustomField',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('GET'),
+    'methods'                    => array('GET'),
 ));
 
 $collection->create('api_ticket_fields_create', array(
     'path'       => '/ticket_fields',
     'controller' => 'LegacyApiBundle:TicketFields:saveCustomField',
     'defaults'   => array('id' => '0'),
-    'methods'    => array('PUT'),
+    'methods'                  => array('PUT'),
 ));
 
 $collection->create('api_ticket_fields_save', array(
     'path'         => '/ticket_fields/{id}',
     'controller'   => 'LegacyApiBundle:TicketFields:saveCustomField',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('POST'),
+    'methods'                    => array('POST'),
 ));
 
 $collection->create('api_ticket_fields_delete', array(
     'path'         => '/ticket_fields/{id}',
     'controller'   => 'LegacyApiBundle:TicketFields:deleteCustomField',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('DELETE'),
+    'methods'                    => array('DELETE'),
 ));
 
 $collection->create('api_ticket_fields', array(
@@ -2980,8 +2980,8 @@ $collection->create(
     'api_channel_sms_account_get', array(
         'path'         => '/channel/sms/account/{id}',
         'requirements' => array('id' => '\d+'),
-        'controller'   => 'LegacyApiBundle:ChannelSms:get',
-        'methods'      => array('GET'),
+        'controller'                 => 'LegacyApiBundle:ChannelSms:get',
+        'methods'                    => array('GET'),
     )
 );
 
@@ -2989,8 +2989,8 @@ $collection->create(
     'api_channel_sms_account_delete', array(
         'path'         => '/channel/sms/account/{id}',
         'requirements' => array('id' => '\d+'),
-        'controller'   => 'LegacyApiBundle:ChannelSms:delete',
-        'methods'      => array('DELETE'),
+        'controller'                 => 'LegacyApiBundle:ChannelSms:delete',
+        'methods'                    => array('DELETE'),
     )
 );
 
@@ -3050,8 +3050,8 @@ $collection->create(
     'api_channel_facebook_page_get', array(
         'path'         => '/channel/facebook/page/{id}',
         'requirements' => array('id' => '\d+'),
-        'controller'   => 'LegacyApiBundle:ChannelFacebook:get',
-        'methods'      => array('GET'),
+        'controller'                 => 'LegacyApiBundle:ChannelFacebook:get',
+        'methods'                    => array('GET'),
     )
 );
 
@@ -3059,8 +3059,8 @@ $collection->create(
     'api_channel_facebook_page_delete', array(
         'path'         => '/channel/facebook/page/{id}',
         'requirements' => array('id' => '\d+'),
-        'controller'   => 'LegacyApiBundle:ChannelFacebook:delete',
-        'methods'      => array('DELETE'),
+        'controller'                 => 'LegacyApiBundle:ChannelFacebook:delete',
+        'methods'                    => array('DELETE'),
     )
 );
 
@@ -3098,7 +3098,7 @@ $collection->create('api_emailaccounts_create', array(
     'path'        => '/email_accounts',
     'controller'  => 'LegacyApiBundle:EmailAccounts:save',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('PUT'),
+    'methods'                   => array('PUT'),
 ));
 
 $collection->create('api_emailaccounts_test', array(
@@ -3151,42 +3151,42 @@ $collection->create('api_emailstatus_source_get', array(
     'path'         => '/email_status/sources/{id}',
     'controller'   => 'LegacyApiBundle:EmailStatus:getSourceInfo',
     'requirements' => array('id' => '\d+'),
-    'methods'      => array('GET'),
+    'methods'                    => array('GET'),
 ));
 
 $collection->create('api_emailstatus_source_get_summary', array(
     'path'         => '/email_status/sources/{id}/summary',
     'controller'   => 'LegacyApiBundle:EmailStatus:getSourceSummary',
     'requirements' => array('id' => '\d+'),
-    'methods'      => array('GET'),
+    'methods'                    => array('GET'),
 ));
 
 $collection->create('api_emailstatus_source_get_rendered', array(
     'path'         => '/email_status/sources/{id}/rendered',
     'controller'   => 'LegacyApiBundle:EmailStatus:getSourceRendered',
     'requirements' => array('id' => '\d+'),
-    'methods'      => array('GET'),
+    'methods'                    => array('GET'),
 ));
 
 $collection->create('api_emailstatus_source_reprocess', array(
     'path'         => '/email_status/sources/{id}/reprocess',
     'controller'   => 'LegacyApiBundle:EmailStatus:reprocessEmailSource',
     'requirements' => array('id' => '\d+'),
-    'methods'      => array('POST'),
+    'methods'                    => array('POST'),
 ));
 
 $collection->create('api_emailstatus_source_massactions', array(
     'path'         => '/email_status/sources/mass-actions/{action}',
     'controller'   => 'LegacyApiBundle:EmailStatus:emailSourceMassActions',
     'requirements' => array('action' => '[a-z]+'),
-    'methods'      => array('POST'),
+    'methods'                        => array('POST'),
 ));
 
 $collection->create('api_emailstatus_source_delete', array(
     'path'         => '/email_status/sources/{id}',
     'controller'   => 'LegacyApiBundle:EmailStatus:deleteEmailSource',
     'requirements' => array('id' => '\d+'),
-    'methods'      => array('DELETE'),
+    'methods'                    => array('DELETE'),
 ));
 
 $collection->create('api_emailstatus_sendmaillist', array(
@@ -3199,28 +3199,28 @@ $collection->create('api_emailstatus_sendmail_massactions', array(
     'path'         => '/email_status/sendmail/mass-actions/{action}',
     'controller'   => 'LegacyApiBundle:EmailStatus:sendmailMassActions',
     'requirements' => array('action' => '[a-z]+'),
-    'methods'      => array('POST'),
+    'methods'                        => array('POST'),
 ));
 
 $collection->create('api_emailstatus_sendmail_delete', array(
     'path'         => '/email_status/sendmail/{id}',
     'controller'   => 'LegacyApiBundle:EmailStatus:deleteSendmail',
     'requirements' => array('id' => '\d+'),
-    'methods'      => array('DELETE'),
+    'methods'                    => array('DELETE'),
 ));
 
 $collection->create('api_emailstatus_sendmail_resend', array(
     'path'         => '/email_status/sendmail/{id}/resend',
     'controller'   => 'LegacyApiBundle:EmailStatus:resendSendmail',
     'requirements' => array('id' => '\d+'),
-    'methods'      => array('POST'),
+    'methods'                    => array('POST'),
 ));
 
 $collection->create('api_emailstatus_sendmail_get', array(
     'path'         => '/email_status/sendmail/{id}',
     'controller'   => 'LegacyApiBundle:EmailStatus:getSendmailInfo',
     'requirements' => array('id' => '\d+'),
-    'methods'      => array('GET'),
+    'methods'                    => array('GET'),
 ));
 
 ########################################################################################################################
@@ -3237,7 +3237,7 @@ $collection->create('api_auditlog_detail', array(
     'path'         => '/audit_log/{id}',
     'controller'   => 'LegacyApiBundle:AuditLog:getDetail',
     'requirements' => array('id' => '\d+'),
-    'methods'      => array('GET'),
+    'methods'                    => array('GET'),
 ));
 
 ########################################################################################################################
@@ -3260,21 +3260,21 @@ $collection->create('api_ticket_triggers_getspecial', array(
     'path'         => '/ticket_triggers/{special_type}/{id}',
     'controller'   => 'LegacyApiBundle:TicketTriggers:get',
     'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
-    'methods'      => array('GET'),
+    'methods'                              => array('GET'),
 ));
 
 $collection->create('api_ticket_triggers_updatespecial', array(
     'path'         => '/ticket_triggers/{special_type}/{id}',
     'controller'   => 'LegacyApiBundle:TicketTriggers:save',
     'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
-    'methods'      => array('POST'),
+    'methods'                              => array('POST'),
 ));
 
 $collection->create('api_ticket_triggers', array(
     'path'         => '/ticket_triggers/{type}',
     'controller'   => 'LegacyApiBundle:TicketTriggers:list',
     'requirements' => array('type' => '(all|newticket|newreply|update)'),
-    'methods'      => array('GET'),
+    'methods'                      => array('GET'),
 ));
 
 $collection->create('api_ticket_triggers_updateorder', array(
@@ -3287,60 +3287,60 @@ $collection->create('api_ticket_triggers_create', array(
     'path'        => '/ticket_triggers',
     'controller'  => 'LegacyApiBundle:TicketTriggers:save',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('PUT'),
+    'methods'                   => array('PUT'),
 ));
 
 $collection->create('api_ticket_triggers_get', array(
     'path'         => '/ticket_triggers/{id}',
     'controller'   => 'LegacyApiBundle:TicketTriggers:get',
     'requirements' => array('id' => '\d+'),
-    'methods'      => array('GET'),
+    'methods'                    => array('GET'),
 ));
 
 $collection->create('api_ticket_triggers_update', array(
     'path'         => '/ticket_triggers/{id}',
     'controller'   => 'LegacyApiBundle:TicketTriggers:save',
     'requirements' => array('id' => '\d+'),
-    'methods'      => array('POST'),
+    'methods'                    => array('POST'),
 ));
 
 $collection->create('api_ticket_triggers_delete', array(
     'path'         => '/ticket_triggers/{id}',
     'controller'   => 'LegacyApiBundle:TicketTriggers:delete',
     'requirements' => array('id' => '\d+'),
-    'methods'      => array('DELETE'),
+    'methods'                    => array('DELETE'),
 ));
 
 $collection->create('api_ticket_triggers_enabletriggergroup', array(
     'path'         => '/ticket_triggers/{special_type}/enable',
     'defaults'     => array('is_enabled' => true),
-    'controller'   => 'LegacyApiBundle:TicketTriggers:toggleTriggerGroup',
-    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
-    'methods'      => array('POST'),
+    'controller'                         => 'LegacyApiBundle:TicketTriggers:toggleTriggerGroup',
+    'requirements'                       => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
+    'methods'                                                    => array('POST'),
 ));
 
 $collection->create('api_ticket_triggers_disabletriggergroup', array(
     'path'         => '/ticket_triggers/{special_type}/disable',
     'defaults'     => array('is_enabled' => false),
-    'controller'   => 'LegacyApiBundle:TicketTriggers:toggleTriggerGroup',
-    'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
-    'methods'      => array('POST'),
+    'controller'                         => 'LegacyApiBundle:TicketTriggers:toggleTriggerGroup',
+    'requirements'                       => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
+    'methods'                                                    => array('POST'),
 ));
 
 $collection->create('api_ticket_triggers_enabletrigger', array(
     'path'         => '/ticket_triggers/{id}/enable',
     'defaults'     => array('is_enabled' => true),
-    'controller'   => 'LegacyApiBundle:TicketTriggers:toggleTrigger',
-    'requirements' => array('id' => '\d+'),
-    'methods'      => array('POST'),
+    'controller'                         => 'LegacyApiBundle:TicketTriggers:toggleTrigger',
+    'requirements'                       => array('id' => '\d+'),
+    'methods'                                          => array('POST'),
 ));
 
 $collection->create('api_ticket_triggers_disabletrigger', array(
     'path'         => '/ticket_triggers/{id}/disable',
     'defaults'     => array('is_enabled' => false),
-    'controller'   => 'LegacyApiBundle:TicketTriggers:toggleTrigger',
-    'requirements' => array('id' => '\d+'),
-    'methods'      => array('POST'),
+    'controller'                         => 'LegacyApiBundle:TicketTriggers:toggleTrigger',
+    'requirements'                       => array('id' => '\d+'),
+    'methods'                                          => array('POST'),
 ));
 
 ########################################################################################################################
@@ -3363,7 +3363,7 @@ $collection->create('api_ticket_escalations_create', array(
     'path'        => '/ticket_escalations',
     'controller'  => 'LegacyApiBundle:TicketEscalations:save',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('PUT'),
+    'methods'                   => array('PUT'),
 ));
 
 $collection->create('api_ticket_escalations_get', array(
@@ -3387,15 +3387,15 @@ $collection->create('api_ticket_escalations_delete', array(
 $collection->create('api_ticket_escalations_enable', array(
     'path'        => '/ticket_escalations/{id}/enable',
     'defaults'    => array('is_enabled' => true),
-    'controller'  => 'LegacyApiBundle:TicketEscalations:toggleEscalation',
-    'methods'     => array('POST'),
+    'controller'                        => 'LegacyApiBundle:TicketEscalations:toggleEscalation',
+    'methods'                           => array('POST'),
 ));
 
 $collection->create('api_ticket_escalations_disable', array(
     'path'        => '/ticket_escalations/{id}/disable',
     'defaults'    => array('is_enabled' => false),
-    'controller'  => 'LegacyApiBundle:TicketEscalations:toggleEscalation',
-    'methods'     => array('POST'),
+    'controller'                        => 'LegacyApiBundle:TicketEscalations:toggleEscalation',
+    'methods'                           => array('POST'),
 ));
 
 ########################################################################################################################
@@ -3411,8 +3411,8 @@ $collection->create('api_ticket_filters', array(
 $collection->create('api_ticket_filters_create', array(
     'path'         => '/ticket_filters',
     'defaults'     => array('id' => '0'),
-    'controller'   => 'LegacyApiBundle:TicketFilters:save',
-    'methods'      => array('PUT'),
+    'controller'                 => 'LegacyApiBundle:TicketFilters:save',
+    'methods'                    => array('PUT'),
 ));
 
 $collection->create('api_ticket_filters_savedisplayorder', array(
@@ -3424,22 +3424,22 @@ $collection->create('api_ticket_filters_savedisplayorder', array(
 $collection->create('api_ticket_filters_get', array(
     'path'         => '/ticket_filters/{id}',
     'requirements' => array('id' => '\\d+'),
-    'controller'   => 'LegacyApiBundle:TicketFilters:get',
-    'methods'      => array('GET'),
+    'controller'                 => 'LegacyApiBundle:TicketFilters:get',
+    'methods'                    => array('GET'),
 ));
 
 $collection->create('api_ticket_filters_save', array(
     'path'         => '/ticket_filters/{id}',
     'requirements' => array('id' => '\\d+'),
-    'controller'   => 'LegacyApiBundle:TicketFilters:save',
-    'methods'      => array('POST'),
+    'controller'                 => 'LegacyApiBundle:TicketFilters:save',
+    'methods'                    => array('POST'),
 ));
 
 $collection->create('api_ticket_filters_delete', array(
     'path'         => '/ticket_filters/{id}',
     'requirements' => array('id' => '\\d+'),
-    'controller'   => 'LegacyApiBundle:TicketFilters:remove',
-    'methods'      => array('DELETE'),
+    'controller'                 => 'LegacyApiBundle:TicketFilters:remove',
+    'methods'                    => array('DELETE'),
 ));
 
 ########################################################################################################################
@@ -3455,8 +3455,8 @@ $collection->create('api_ticket_macros', array(
 $collection->create('api_ticket_macros_create', array(
     'path'         => '/ticket_macros',
     'defaults'     => array('id' => '0'),
-    'controller'   => 'LegacyApiBundle:TicketMacros:save',
-    'methods'      => array('PUT'),
+    'controller'                 => 'LegacyApiBundle:TicketMacros:save',
+    'methods'                    => array('PUT'),
 ));
 
 $collection->create('api_ticket_macros_get', array(
@@ -3503,7 +3503,7 @@ $collection->create('api_feedback_statuses_create', array(
     'path'        => '/feedback_statuses',
     'controller'  => 'LegacyApiBundle:FeedbackStatuses:save',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('PUT'),
+    'methods'                   => array('PUT'),
 ));
 
 $collection->create('api_feedback_statuses_save', array(
@@ -3544,7 +3544,7 @@ $collection->create('api_feedback_types_create', array(
     'path'        => '/feedback_types',
     'controller'  => 'LegacyApiBundle:FeedbackTypes:save',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('PUT'),
+    'methods'                   => array('PUT'),
 ));
 
 $collection->create('api_feedback_types_save', array(
@@ -3585,7 +3585,7 @@ $collection->create('api_feedback_categories_create', array(
     'path'        => '/feedback_categories',
     'controller'  => 'LegacyApiBundle:FeedbackCategories:save',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('PUT'),
+    'methods'                   => array('PUT'),
 ));
 
 $collection->create('api_feedback_categories_save', array(
@@ -3636,7 +3636,7 @@ $collection->create('api_twitter_accounts_create', array(
     'path'        => '/twitter_accounts',
     'controller'  => 'LegacyApiBundle:TwitterAccounts:save',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('PUT'),
+    'methods'                   => array('PUT'),
 ));
 
 $collection->create('api_twitter_accounts_save', array(
@@ -3881,28 +3881,28 @@ $collection->create('api_chat_fields_get', array(
     'path'         => '/chat_fields/{id}',
     'controller'   => 'LegacyApiBundle:ChatFields:getCustomField',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('GET'),
+    'methods'                    => array('GET'),
 ));
 
 $collection->create('api_chat_fields_create', array(
     'path'       => '/chat_fields',
     'controller' => 'LegacyApiBundle:ChatFields:saveCustomField',
     'defaults'   => array('id' => '0'),
-    'methods'    => array('PUT'),
+    'methods'                  => array('PUT'),
 ));
 
 $collection->create('api_chat_fields_delete', array(
     'path'         => '/chat_fields/{id}',
     'controller'   => 'LegacyApiBundle:ChatFields:deleteCustomField',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('DELETE'),
+    'methods'                    => array('DELETE'),
 ));
 
 $collection->create('api_chat_fields_save', array(
     'path'         => '/chat_fields/{id}',
     'controller'   => 'LegacyApiBundle:ChatFields:saveCustomField',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('POST'),
+    'methods'                    => array('POST'),
 ));
 
 $collection->create('api_chat_fields', array(
@@ -3953,7 +3953,7 @@ $collection->create('api_chat_deps_create', array(
     'path'        => '/chat_deps',
     'controller'  => 'LegacyApiBundle:ChatDeps:save',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('PUT'),
+    'methods'                   => array('PUT'),
 ));
 
 $collection->create('api_chat_deps_order', array(
@@ -3994,7 +3994,7 @@ $collection->create('api_api_keys_create', array(
     'path'        => '/api_keys',
     'controller'  => 'LegacyApiBundle:ApiKeys:save',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('PUT'),
+    'methods'                   => array('PUT'),
 ));
 
 $collection->create('api_api_keys_get', array(
@@ -4057,28 +4057,28 @@ $collection->create('api_user_fields_get', array(
     'path'         => '/user_fields/{id}',
     'controller'   => 'LegacyApiBundle:UserFields:getCustomField',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('GET'),
+    'methods'                    => array('GET'),
 ));
 
 $collection->create('api_user_fields_create', array(
     'path'       => '/user_fields',
     'controller' => 'LegacyApiBundle:UserFields:saveCustomField',
     'defaults'   => array('id' => '0'),
-    'methods'    => array('PUT'),
+    'methods'                  => array('PUT'),
 ));
 
 $collection->create('api_user_fields_save', array(
     'path'         => '/user_fields/{id}',
     'controller'   => 'LegacyApiBundle:UserFields:saveCustomField',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('POST'),
+    'methods'                    => array('POST'),
 ));
 
 $collection->create('api_user_fields_delete', array(
     'path'         => '/user_fields/{id}',
     'controller'   => 'LegacyApiBundle:UserFields:deleteCustomField',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('DELETE'),
+    'methods'                    => array('DELETE'),
 ));
 
 $collection->create('api_user_fields', array(
@@ -4113,36 +4113,36 @@ $collection->create('api_custom_fields_children', array(
     'path'         => '/custom_fields/{id}/children',
     'controller'   => 'LegacyApiBundle:CustomFields:children',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('GET'),
+    'methods'                    => array('GET'),
 ));
 
 $collection->create('api_custom_fields_children', array(
     'path'         => '/custom_fields/{id}/children',
     'controller'   => 'LegacyApiBundle:CustomFields:addChild',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('POST'),
+    'methods'                    => array('POST'),
 ));
 
 $collection->create('api_custom_fields_get', array(
     'path'         => '/custom_fields/{id}',
     'controller'   => 'LegacyApiBundle:CustomFields:get',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('GET'),
+    'methods'                    => array('GET'),
 ));
 
 $collection->create('api_custom_fields_save', array(
     'path'         => '/custom_fields/{id}',
     'controller'   => 'LegacyApiBundle:CustomFields:save',
     'requirements' => array('id' => '\\d+'),
-    'defaults'     => array('id' => 0),
-    'methods'      => array('PUT', 'POST'),
+    'defaults'                   => array('id' => 0),
+    'methods'                                  => array('PUT', 'POST'),
 ));
 
 $collection->create('api_custom_fields_delete', array(
     'path'         => '/custom_fields/{id}',
     'controller'   => 'LegacyApiBundle:CustomFields:delete',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('DELETE'),
+    'methods'                    => array('DELETE'),
 ));
 
 $collection->create('api_custom_fields_update_order', array(
@@ -4159,28 +4159,28 @@ $collection->create('api_org_fields_get', array(
     'path'         => '/org_fields/{id}',
     'controller'   => 'LegacyApiBundle:OrgFields:getCustomField',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('GET'),
+    'methods'                    => array('GET'),
 ));
 
 $collection->create('api_org_fields_create', array(
     'path'       => '/org_fields',
     'controller' => 'LegacyApiBundle:OrgFields:saveCustomField',
     'defaults'   => array('id' => '0'),
-    'methods'    => array('PUT'),
+    'methods'                  => array('PUT'),
 ));
 
 $collection->create('api_org_fields_save', array(
     'path'         => '/org_fields/{id}',
     'controller'   => 'LegacyApiBundle:OrgFields:saveCustomField',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('POST'),
+    'methods'                    => array('POST'),
 ));
 
 $collection->create('api_org_fields_delete', array(
     'path'         => '/org_fields/{id}',
     'controller'   => 'LegacyApiBundle:OrgFields:deleteCustomField',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('DELETE'),
+    'methods'                    => array('DELETE'),
 ));
 
 $collection->create('api_org_fields', array(
@@ -4227,14 +4227,14 @@ $collection->create('api_banning_ip_create', array(
     'path'        => '/banning_ip',
     'controller'  => 'LegacyApiBundle:Banning:saveIp',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('PUT'),
+    'methods'                   => array('PUT'),
 ));
 
 $collection->create('api_banning_email_create', array(
     'path'        => '/banning_email',
     'controller'  => 'LegacyApiBundle:Banning:saveEmail',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('PUT'),
+    'methods'                   => array('PUT'),
 ));
 
 $collection->create('api_banning_ip_get', array(
@@ -4295,42 +4295,42 @@ $collection->create('api_user_groups_list', array(
     'path'        => '/user_groups',
     'controller'  => 'LegacyApiBundle:Usergroups:list',
     'defaults'    => array('type' => 'user'),
-    'methods'     => array('GET'),
+    'methods'                     => array('GET'),
 ));
 
 $collection->create('api_usergroups_non_sys_list', array(
     'path'        => '/non_sys_usergroups',
     'controller'  => 'LegacyApiBundle:Usergroups:list',
     'defaults'    => array('type' => 'non_sys_user'),
-    'methods'     => array('GET'),
+    'methods'                     => array('GET'),
 ));
 
 $collection->create('api_user_groups_get', array(
     'path'         => '/user_groups/{id}',
     'controller'   => 'LegacyApiBundle:Usergroups:get',
     'requirements' => array('id' => '(\\d+|[a-z0-9_\.\-]+)'),
-    'methods'      => array('GET'),
+    'methods'                    => array('GET'),
 ));
 
 $collection->create('api_user_groups_delete', array(
     'path'         => '/user_groups/{id}',
     'controller'   => 'LegacyApiBundle:Usergroups:delete',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('DELETE'),
+    'methods'                    => array('DELETE'),
 ));
 
 $collection->create('api_user_groups_create', array(
     'path'       => '/user_groups',
     'controller' => 'LegacyApiBundle:Usergroups:save',
     'defaults'   => array('id' => '0'),
-    'methods'    => array('PUT'),
+    'methods'                  => array('PUT'),
 ));
 
 $collection->create('api_user_groups_save', array(
     'path'         => '/user_groups/{id}',
     'controller'   => 'LegacyApiBundle:Usergroups:save',
     'requirements' => array('id' => '(\\d+|[a-z0-9_\.\-]+)'),
-    'methods'      => array('POST'),
+    'methods'                    => array('POST'),
 ));
 
 ########################################################################################################################
@@ -4397,7 +4397,7 @@ $collection->create('api_user_rules_create', array(
     'path'        => '/user_rules',
     'controller'  => 'LegacyApiBundle:UserRules:save',
     'defaults'    => array('id' => '0'),
-    'methods'     => array('PUT'),
+    'methods'                   => array('PUT'),
 ));
 
 $collection->create('api_user_rules_get', array(
@@ -4432,8 +4432,8 @@ $collection->create('api_login_logs', array(
     'path'         => '/login_logs/{agent_id}',
     'controller'   => 'LegacyApiBundle:LoginLogs:list',
     'requirements' => array('agent_id' => '\\d+'),
-    'defaults'     => array('agent_id' => '0'),
-    'methods'      => array('GET'),
+    'defaults'                         => array('agent_id' => '0'),
+    'methods'                                              => array('GET'),
 ));
 
 ########################################################################################################################
@@ -4509,16 +4509,16 @@ $collection->create('api_langs_getphrase_all', array(
     'path'         => '/langs/phrases/{phrase_id}',
     'controller'   => 'LegacyApiBundle:Languages:getPhrase',
     'requirements' => array('phrase_id' => '[a-zA-Z0-9\-_\.]+'),
-    'defaults'     => array('for_lang'  => '-1'),
-    'methods'      => array('GET'),
+    'defaults'                          => array('for_lang'  => '-1'),
+    'methods'                                                => array('GET'),
 ));
 
 $collection->create('api_langs_getphrase', array(
     'path'         => '/langs/phrases/{phrase_id}/{for_lang}',
     'controller'   => 'LegacyApiBundle:Languages:getPhrase',
     'defaults'     => array('for_lang'  => '-1'),
-    'requirements' => array('phrase_id' => '[a-zA-Z0-9\-_\.]+', 'for_lang' => '\d+|[a-z]+'),
-    'methods'      => array('GET'),
+    'requirements'                      => array('phrase_id' => '[a-zA-Z0-9\-_\.]+', 'for_lang' => '\d+|[a-z]+'),
+    'methods'                                                => array('GET'),
 ));
 
 $collection->create('api_langs_savephrase', array(
@@ -4646,42 +4646,42 @@ $collection->create('api_reports_builder_get', array(
     'path'         => '/reports/builder/{id}',
     'controller'   => 'LegacyApiBundle:ReportsBuilder:get',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('GET'),
+    'methods'                    => array('GET'),
 ));
 
 $collection->create('api_reports_builder_delete', array(
     'path'         => '/reports/builder/{id}',
     'controller'   => 'LegacyApiBundle:ReportsBuilder:delete',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('DELETE'),
+    'methods'                    => array('DELETE'),
 ));
 
 $collection->create('api_reports_builder_create', array(
     'path'       => '/reports/builder',
     'controller' => 'LegacyApiBundle:ReportsBuilder:save',
     'defaults'   => array('id' => '0'),
-    'methods'    => array('PUT'),
+    'methods'                  => array('PUT'),
 ));
 
 $collection->create('api_reports_builder_save', array(
     'path'         => '/reports/builder/{id}',
     'controller'   => 'LegacyApiBundle:ReportsBuilder:save',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('POST'),
+    'methods'                    => array('POST'),
 ));
 
 $collection->create('api_reports_builder_clone', array(
     'path'         => '/reports/builder/clone/{id}',
     'controller'   => 'LegacyApiBundle:ReportsBuilder:clone',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('POST'),
+    'methods'                    => array('POST'),
 ));
 
 $collection->create('api_reports_builder_test', array(
     'path'         => '/reports/builder/test/{id}',
     'controller'   => 'LegacyApiBundle:ReportsBuilder:test',
     'requirements' => array('id' => '\\d+'),
-    'methods'      => array('POST'),
+    'methods'                    => array('POST'),
 ));
 
 $collection->create('api_reports_builder_parse', array(
@@ -4704,7 +4704,7 @@ $collection->create('api_reports_agent_activity_list', array(
     'path'        => '/reports/agent-activity/{agent_or_team_id}/{date}',
     'controller'  => 'LegacyApiBundle:ReportsAgentActivity:list',
     'defaults'    => array('agent_or_team_id' => 'all', 'date' => ''),
-    'methods'     => array('GET'),
+    'methods'                                 => array('GET'),
 ));
 
 ########################################################################################################################
@@ -4715,7 +4715,7 @@ $collection->create('api_reports_agent_hours_list', array(
     'path'        => '/reports/agent-hours/{date1}/{date2}',
     'controller'  => 'LegacyApiBundle:ReportsAgentHours:list',
     'defaults'    => array('date1' => '', 'date2' => ''),
-    'methods'     => array('GET'),
+    'methods'                      => array('GET'),
 ));
 
 ########################################################################################################################
@@ -4726,14 +4726,14 @@ $collection->create('api_reports_ticket_satisfaction_list', array(
     'path'        => '/reports/ticket-satisfaction/{page}',
     'controller'  => 'LegacyApiBundle:ReportsTicketSatisfaction:list',
     'defaults'    => array('page' => '0'),
-    'methods'     => array('GET'),
+    'methods'                     => array('GET'),
 ));
 
 $collection->create('api_reports_ticket_satisfaction_summary', array(
     'path'        => '/reports/ticket-satisfaction/summary/{date}',
     'controller'  => 'LegacyApiBundle:ReportsTicketSatisfaction:summary',
     'defaults'    => array('date' => ''),
-    'methods'     => array('GET'),
+    'methods'                     => array('GET'),
 ));
 
 ########################################################################################################################
@@ -4760,7 +4760,7 @@ $collection->create('api_plugins_package_getinstaller', array(
     'path'         => '/plugins/packages/{name}/installer',
     'controller'   => 'LegacyApiBundle:Plugins:getPackageInstaller',
     'requirements' => array('name' => '[a-z0-9\._]+'),
-    'methods'      => array('GET'),
+    'methods'                      => array('GET'),
 ));
 
 ########################################################################################################################
@@ -4869,7 +4869,7 @@ $collection->create('api_apps_package_exec', array(
     'path'         => '/apps/packages/{name}/{action}',
     'controller'   => 'LegacyApiBundle:Apps:execPackage',
     'defaults'     => array('action' => 'default'),
-    'methods'      => array('GET', 'POST', 'PUT', 'DELETE'),
+    'methods'                        => array('GET', 'POST', 'PUT', 'DELETE'),
     'requirements' => array('name' => '[a-zA-Z0-9_\-\.]+'),
 ));
 
@@ -4877,7 +4877,7 @@ $collection->create('api_apps_instance_exec', array(
     'path'         => '/apps/instances/{id}/{action}',
     'controller'   => 'LegacyApiBundle:Apps:execInstance',
     'defaults'     => array('action' => 'default'),
-    'methods'      => array('GET', 'POST', 'PUT', 'DELETE'),
+    'methods'                        => array('GET', 'POST', 'PUT', 'DELETE'),
     'requirements' => array('id' => '\d+'),
 ));
 

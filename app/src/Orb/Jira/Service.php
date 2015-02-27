@@ -102,7 +102,7 @@ class Service
      *
      * @param String $error The Error Message
      *
-     * @throws \Exception if the debug mode is off
+     * @throws \Exception    if the debug mode is off
      * @return \JIRA\Service
      *
      */

@@ -142,8 +142,8 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
             'joinTable'    => array(
                 'name'                                                      => 'agent_team_members',
                 'joinColumns'                                               => array(array( 'name' => 'team_id' )),
-                'inverseJoinColumns'                                        => array(array( 'name' => 'person_id' )),
-                'onDelete'                                                  => 'cascade',
+                'inverseJoinColumns'                                                               => array(array( 'name' => 'person_id' )),
+                'onDelete'                                                                                                => 'cascade',
             ),
             'orderBy' => array( 'name' => 'ASC'),
         ));

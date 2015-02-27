@@ -54,16 +54,16 @@ class LabelDefManager
      */
     public static $types = array(
         'articles'             => array('table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'),
-        'deals'                => array('table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'),
-        'downloads'            => array('table' => 'labels_downloads',          'entity' => 'DeskPRO:LabelDownload'),
-        'feedback'             => array('table' => 'labels_feedback',           'entity' => 'DeskPRO:LabelFeedback'),
-        'chat'                 => array('table' => 'labels_chat_conversations', 'entity' => 'DeskPRO:LabelChatConversation'),
-        'news'                 => array('table' => 'labels_news',               'entity' => 'DeskPRO:LabelNews'),
-        'organizations'        => array('table' => 'labels_organizations',      'entity' => 'DeskPRO:LabelOrganization'),
-        'people'               => array('table' => 'labels_people',             'entity' => 'DeskPRO:LabelPeople'),
-        'tasks'                => array('table' => 'labels_tasks',              'entity' => 'DeskPRO:LabelTask'),
-        'tickets'              => array('table' => 'labels_tickets',            'entity' => 'DeskPRO:LabelTicket'),
-        'kb'                   => array('table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'),
+        'deals'                                 => array('table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'),
+        'downloads'                                              => array('table' => 'labels_downloads',          'entity' => 'DeskPRO:LabelDownload'),
+        'feedback'                                                                => array('table' => 'labels_feedback',           'entity' => 'DeskPRO:LabelFeedback'),
+        'chat'                                                                                     => array('table' => 'labels_chat_conversations', 'entity' => 'DeskPRO:LabelChatConversation'),
+        'news'                                                                                                      => array('table' => 'labels_news',               'entity' => 'DeskPRO:LabelNews'),
+        'organizations'                                                                                                              => array('table' => 'labels_organizations',      'entity' => 'DeskPRO:LabelOrganization'),
+        'people'                                                                                                                                      => array('table' => 'labels_people',             'entity' => 'DeskPRO:LabelPeople'),
+        'tasks'                                                                                                                                                        => array('table' => 'labels_tasks',              'entity' => 'DeskPRO:LabelTask'),
+        'tickets'                                                                                                                                                                       => array('table' => 'labels_tickets',            'entity' => 'DeskPRO:LabelTicket'),
+        'kb'                                                                                                                                                                                             => array('table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'),
     );
 
     /**

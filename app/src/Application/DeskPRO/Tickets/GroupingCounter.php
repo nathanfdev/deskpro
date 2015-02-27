@@ -565,7 +565,7 @@ class GroupingCounter
                             $name = $r['first_name'];
                         } elseif ($r['email']) {
                             $email        = $r['email'];
-                            list($name, ) = explode('@', $email, 2);
+                            list($name,)  = explode('@', $email, 2);
 
                             $name = str_replace('_', ' ', $name);
                             $name = str_replace('.', ' ', $name);

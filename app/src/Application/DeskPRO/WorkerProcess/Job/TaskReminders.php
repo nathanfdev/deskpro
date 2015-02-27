@@ -135,8 +135,8 @@ class TaskReminders extends AbstractJob
                     $cm->fromArray(array(
                         'channel'           => 'agent-notify.tasks',
                         'data'              => array('row' => $tpl_line),
-                        'for_person'        => $agent,
-                        'created_by_client' => 'sys',
+                        'for_person'                       => $agent,
+                        'created_by_client'                => 'sys',
                     ));
                     App::getOrm()->persist($cm);
                     App::getOrm()->flush();

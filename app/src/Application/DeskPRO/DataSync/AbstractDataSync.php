@@ -135,7 +135,7 @@ abstract class AbstractDataSync
      * Syncs the base data to the live data.
      *
      * @throws \Exception
-     * @return array Array with counts of manipulation types: install, update, delete
+     * @return array      Array with counts of manipulation types: install, update, delete
      *
      */
     public function syncBaseToLive()

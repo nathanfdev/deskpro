@@ -35,8 +35,8 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use libphonenumber\PhoneNumberUtil;
 use Orb\Util\PhoneNumbers;
+use libphonenumber\PhoneNumberUtil;
 
 /**
  * A Phone Number that is registered somewhere in the system (people can have many phone numbers).

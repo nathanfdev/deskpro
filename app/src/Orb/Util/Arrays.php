@@ -1834,7 +1834,6 @@ class Arrays
         $new = array();
 
         foreach ($array as $k => $v) {
-
             // May be empty array
             if (!$v) {
                 continue;

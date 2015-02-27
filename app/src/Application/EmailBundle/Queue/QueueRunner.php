@@ -305,7 +305,7 @@ class QueueRunner
 
     /**
      * @throws \Exception
-     * @return array Array of id=>status of records to process
+     * @return array      Array of id=>status of records to process
      *
      */
     private function reserveBatch()

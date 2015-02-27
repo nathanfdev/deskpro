@@ -899,11 +899,11 @@ class KbController extends AbstractController
             'showing_to'    => $showing_to,
 
             'search_form'                         => array('terms' => $result_cache['criteria']['terms']),
-            'cache'                               => $result_cache,
-            'terms_summary'                       => $result_cache['extra']['summary'],
-            'category'                            => $category,
-            'cat_usergroups'                      => $cat_usergroups,
-            'cat_structure_data'                  => $cat_structure_data,
+            'cache'                                                => $result_cache,
+            'terms_summary'                                        => $result_cache['extra']['summary'],
+            'category'                                             => $category,
+            'cat_usergroups'                                       => $cat_usergroups,
+            'cat_structure_data'                                   => $cat_structure_data,
 
             'article_categories' => $article_categories,
         ));

@@ -72,7 +72,7 @@ class NewFeedbackType extends AbstractType
         if (!$options['person'] || $options['person'] instanceof PersonGuest) {
             $builder->add('name', 'text', array(
                 'constraints'   => new Length(array('min' => 2)),
-                'property_path' => 'person.name',
+                'property_path'                           => 'person.name',
             ));
             $builder->add('email', 'deskpro_person_email', array(
                 'label'         => false,

@@ -34,8 +34,8 @@
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\BanEmail;
+use Application\DeskPRO\Entity\Person;
 use Orb\Validator\StringEmail;
 
 class EmailAddressValidator

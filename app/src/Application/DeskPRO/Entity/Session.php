@@ -274,7 +274,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
             return;
         }
 
-        list($session_id, ) = explode('-', $sess_code, 2);
+        list($session_id,) = explode('-', $sess_code, 2);
 
         $session_id = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
 

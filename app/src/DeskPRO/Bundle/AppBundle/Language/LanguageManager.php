@@ -31,8 +31,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Language;
 
-use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Translate\Translate;
 
 class LanguageManager

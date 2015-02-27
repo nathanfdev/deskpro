@@ -31,8 +31,8 @@
 
 namespace Orb\Log\Filter;
 
-use Orb\Log\Logger;
 use Orb\Log\LogItem;
+use Orb\Log\Logger;
 
 /**
  * This filter fitlers out log events whose priority is below a certain level.

@@ -64,7 +64,7 @@ class get_messages extends LoaderAbstract
                 echo "no session";
                 exit;
             }
-            list($session_id, ) = explode('-', $agent_session_id, 2);
+            list($session_id,)  = explode('-', $agent_session_id, 2);
             $session_id         = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
 
             $agent_session = $this->getPdoRead()->query("

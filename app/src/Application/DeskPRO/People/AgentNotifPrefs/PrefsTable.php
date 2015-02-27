@@ -244,7 +244,7 @@ class PrefsTable
 
             $row = array(
                 'filter' => array('id' => $f->id, 'sys_name' => $f->sys_name, 'title' => $f->title),
-                'cols'   => array(),
+                'cols'                 => array(),
             );
 
             $values = $this->prefs->getFilterSubsForFilter($type, $f);
@@ -308,7 +308,7 @@ class PrefsTable
 
             $row = array(
                 'filter' => array('id' => $f->id, 'sys_name' => null, 'title' => $f->title),
-                'cols'   => array(),
+                'cols'                 => array(),
             );
 
             $values = $this->prefs->getFilterSubsForFilter($type, $f);

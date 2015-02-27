@@ -261,7 +261,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'name'    => 'news',
                 'indexes' => array(
                     'date_published_idx'                               => array('columns' => array(0 => 'date_published')),
-                    'status_idx'                                       => array('columns' => array('status')),
+                    'status_idx'                                                                     => array('columns' => array('status')),
                 ),
             )
         );

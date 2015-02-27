@@ -59,7 +59,7 @@ class PortalLoader implements \Twig_LoaderInterface
      * @param string $name The name of the template to load
      *
      * @throws Twig_Error_Loader When $name is not found
-     * @return string The template source code
+     * @return string            The template source code
      *
      */
     public function getSource($name)
@@ -81,7 +81,7 @@ class PortalLoader implements \Twig_LoaderInterface
      * @param string $name The name of the template to load
      *
      * @throws Twig_Error_Loader When $name is not found
-     * @return string The cache key
+     * @return string            The cache key
      *
      */
     public function getCacheKey($name)
@@ -98,7 +98,7 @@ class PortalLoader implements \Twig_LoaderInterface
      * @param timestamp $time The last modification time of the cached template
      *
      * @throws Twig_Error_Loader When $name is not found
-     * @return bool true if the template is fresh, false otherwise
+     * @return bool              true if the template is fresh, false otherwise
      *
      */
     public function isFresh($name, $time)

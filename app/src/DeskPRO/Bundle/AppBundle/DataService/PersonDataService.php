@@ -31,8 +31,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepo;
+use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
 
 class PersonDataService extends AbstractDataService

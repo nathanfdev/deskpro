@@ -33,11 +33,11 @@
 
 namespace Application\DeskPRO\Email\EmailAccount;
 
+use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Application\DeskPRO\EmailGateway\TicketGatewayProcessor;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\FetcherStorageFactory;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Application\DeskPRO\Email\EmailAccount\Repository\EmailAccountRepository;
-use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
-use Application\DeskPRO\EmailGateway\TicketGatewayProcessor;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Exception\MissingConfigurationException;

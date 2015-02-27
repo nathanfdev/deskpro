@@ -79,7 +79,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
      *
      * @param Request $request A Request instance
      *
-     * @throws AuthenticationException if the authentication fails
+     * @throws AuthenticationException      if the authentication fails
      * @return TokenInterface|Response|null The authenticated token, null if full authentication is not possible, or a Response
      *
      */

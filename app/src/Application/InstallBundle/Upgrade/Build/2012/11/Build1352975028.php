@@ -56,8 +56,8 @@ class Build1352975028 extends AbstractBuild
             'work_start'         => 32400,
             'work_end'           => 61200,
             'work_days'          => serialize(array(1 => true, 2 => true, 3 => true, 4 => true, 5 => true)),
-            'work_timezone'      => App::getSetting('core.default_timezone'),
-            'work_holidays'      => serialize(array()),
+            'work_timezone'                           => App::getSetting('core.default_timezone'),
+            'work_holidays'                           => serialize(array()),
             'apply_all'          => 1,
             'allow_agent_manual' => 0,
         ));

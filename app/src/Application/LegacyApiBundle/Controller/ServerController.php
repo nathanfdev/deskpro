@@ -33,12 +33,12 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Log\ErrorLog\ErrorLogReader;
-use Application\DeskPRO\Server\ApcStatus;
-use Application\DeskPRO\Server\CronStatus;
 use Application\DeskPRO\ServerFileCheck\ServerFileCheck;
 use Application\DeskPRO\ServerMysqlInfo\ServerMysqlInfo;
 use Application\DeskPRO\ServerMysqlSortOrder\ServerMysqlSortOrder;
 use Application\DeskPRO\ServerReportFile\ServerReportFile;
+use Application\DeskPRO\Server\ApcStatus;
+use Application\DeskPRO\Server\CronStatus;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 
 class ServerController extends AbstractController implements ProtectedControllerInterface

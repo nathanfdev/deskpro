@@ -56,11 +56,11 @@ class PersonChangePasswordType extends AbstractType
         $builder->add('new_password', 'repeated', array(
             'first_name'     => 'password',
             'first_options'  => array('label' => 'New Password'),
-            'second_name'    => 'confirm',
-            'second_options' => array('label' => 'Confirm'),
-            'type'           => 'password',
-            'required'       => true,
-            'constraints'    => array(
+            'second_name'                     => 'confirm',
+            'second_options'                  => array('label' => 'Confirm'),
+            'type'                                             => 'password',
+            'required'                                         => true,
+            'constraints'                                      => array(
                 new NotBlank(),
             ),
             'mapped' => false,

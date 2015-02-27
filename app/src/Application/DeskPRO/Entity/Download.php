@@ -428,7 +428,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
                 'name'    => 'downloads',
                 'indexes' => array(
                     'date_published_idx'                               => array('columns' => array(0 => 'date_published')),
-                    'status_idx'                                       => array('columns' => array('status')),
+                    'status_idx'                                                                     => array('columns' => array('status')),
                 ),
             )
         );
@@ -566,7 +566,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
             array(
                 'fieldName'                => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelDownload',
                 'cascade'                  => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'download',
-                'orphanRemoval'            => true,
+                'orphanRemoval'                       => true,
             )
         );
         $metadata->mapManyToOne(

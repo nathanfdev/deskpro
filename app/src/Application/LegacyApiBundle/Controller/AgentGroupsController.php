@@ -300,7 +300,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
             $this->enablePermsForGroupOnArray($ug, $perms);
             $group_data[] = array(
                 'group'               => array('id' => $ug->id, 'title' => $ug->title),
-                'perms'               => $perms,
+                'perms'                             => $perms,
             );
         }
 

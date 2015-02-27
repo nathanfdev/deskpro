@@ -31,8 +31,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Brand;
 
-use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\EntityRepository\Brand;
+use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 
 /**

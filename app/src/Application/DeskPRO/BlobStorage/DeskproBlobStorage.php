@@ -279,7 +279,7 @@ class DeskproBlobStorage implements Loggable
      * @param array  $props
      *
      * @throws \RuntimeException
-     * @return int The blob ID that was created
+     * @return int               The blob ID that was created
      *
      */
     public function createBlobRowFromFile($source_path, $filename, $content_type, array $props = null)

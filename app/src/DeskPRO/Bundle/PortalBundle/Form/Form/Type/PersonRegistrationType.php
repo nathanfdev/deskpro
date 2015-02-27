@@ -84,12 +84,12 @@ class PersonRegistrationType extends AbstractType
         $builder->add('password', 'repeated', array(
             'first_name'     => 'password',
             'first_options'  => array('label' => 'Password'),
-            'second_name'    => 'confirm',
-            'second_options' => array('label' => 'Confirm'),
-            'type'           => 'password',
-            'mapped'         => false,
-            'required'       => true,
-            'constraints'    => array(
+            'second_name'                     => 'confirm',
+            'second_options'                  => array('label' => 'Confirm'),
+            'type'                                             => 'password',
+            'mapped'                                           => false,
+            'required'                                         => true,
+            'constraints'                                      => array(
                 new NotBlank(),
             ),
         ));

@@ -31,11 +31,11 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\EmailGateway\Runner;
 use Application\DeskPRO\Email\EmailSource\Finder as EmailSourceFinder;
 use Application\DeskPRO\Email\EmailSource\FinderFilter as EmailSourceFinderFilter;
 use Application\DeskPRO\Email\SendmailSource\Finder as SendmailSourceFinder;
 use Application\DeskPRO\Email\SendmailSource\FinderFilter as SendmailSourceFinderFilter;
-use Application\DeskPRO\EmailGateway\Runner;
 use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Strings;

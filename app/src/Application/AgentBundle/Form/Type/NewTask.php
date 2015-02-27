@@ -52,7 +52,7 @@ class NewTask extends AbstractType
 
         $builder->add('visibility', 'choice', array(
             'choices'            => array(0 => 'Public', 2 => 'Private'),
-            'required'           => true,
+            'required'                      => true,
         ));
         $builder->add('assigned_agent_team', 'entity', array(
             'class'       => 'Application\DeskPRO\Entity\AgentTeam',

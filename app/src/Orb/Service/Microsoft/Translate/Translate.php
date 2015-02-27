@@ -209,7 +209,7 @@ class Translate
      * @param string|string $text A string or array of strings to detect
      *
      * @throws \InvalidArgumentException
-     * @return string|array The lang or array of lang IDs
+     * @return string|array              The lang or array of lang IDs
      *
      */
     public function detect($text)
@@ -480,7 +480,7 @@ class Translate
         }
 
         if (strpos($locale, '_')) {
-            list($top, ) = explode('_', $locale, 2);
+            list($top,) = explode('_', $locale, 2);
             // Try again with just the first part
             return $this->getNearestTranslateLocale($top);
         }

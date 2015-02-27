@@ -466,7 +466,7 @@ class LegacyTermsTransformer
      * @param array $legacy_terms
      *
      * @throws \InvalidArgumentException
-     * @return FilterTerms Returns an array of replacement terms (usually only one, but possibly multiple if there is a non-exact match)
+     * @return FilterTerms               Returns an array of replacement terms (usually only one, but possibly multiple if there is a non-exact match)
      *
      */
     public function toFilterTerms(array $legacy_terms)

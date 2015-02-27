@@ -167,7 +167,7 @@ $container->loadFromExtension(
                 'default' => array(
                     'mappings' => array(
                         'DeskPRO'     => array('type' => 'staticphp'),
-                        'EmailBundle' => array('type' => 'staticphp'),
+                        'EmailBundle'                 => array('type' => 'staticphp'),
                     ),
                     'class_metadata_factory_name' => 'Orb\\Doctrine\\ORM\\Mapping\\StaticClassMetadataFactory',
                 ),
@@ -177,7 +177,7 @@ $container->loadFromExtension(
             'default_connection' => 'default',
             'connections'        => array(
                 'default' => array('host' => 'from_user_config.db', 'logging' => true),
-                'read'    => array('host' => 'from_user_config.db_read', 'logging' => true),
+                'read'                    => array('host' => 'from_user_config.db_read', 'logging' => true),
             ),
         ),
     )

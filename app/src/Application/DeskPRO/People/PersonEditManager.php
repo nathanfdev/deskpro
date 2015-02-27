@@ -84,8 +84,8 @@ class PersonEditManager implements PersonContextInterface
      * $prefs is an array(pref=>true, pref=>true)
      *
      *
-     * @param \Application\DeskPRO\Entity\Person $person
-     * @param array                              $prefs
+     * @param  \Application\DeskPRO\Entity\Person $person
+     * @param  array                              $prefs
      * @throws \Exception
      */
     public function saveNotificationPreferences(Person $person, array $prefs)
@@ -153,8 +153,8 @@ class PersonEditManager implements PersonContextInterface
      * $subs is array(filter_id => array(type=>true, type=>true, type=>true)
      *
      *
-     * @param \Application\DeskPRO\Entity\Person $person
-     * @param array                              $subs
+     * @param  \Application\DeskPRO\Entity\Person $person
+     * @param  array                              $subs
      * @throws \Exception
      *
      * @return array

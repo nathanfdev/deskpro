@@ -46,7 +46,7 @@ class Pop3AccountType extends AbstractType
         $builder->add('secure_mode', 'choice',   array(
             'required'                     => false,
             'choices'                      => array('ssl' => 'ssl', 'tls' => 'tls'),
-            'empty_value'                  => true,
+            'empty_value'                                 => true,
         ));
     }
 

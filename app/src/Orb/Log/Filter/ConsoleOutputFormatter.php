@@ -31,8 +31,8 @@
 
 namespace Orb\Log\Filter;
 
-use Orb\Log\Logger;
 use Orb\Log\LogItem;
+use Orb\Log\Logger;
 
 /**
  * This wraps the message in console outputer formatting tags depending on its

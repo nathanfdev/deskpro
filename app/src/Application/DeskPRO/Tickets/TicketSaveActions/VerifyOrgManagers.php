@@ -33,8 +33,8 @@
 
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\EntityRepository\Organization as OrganizationRepository;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 class VerifyOrgManagers implements TicketSaveActionInterface

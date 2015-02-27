@@ -55,7 +55,7 @@ class TicketMessageTranslated extends AbstractEntityRepository
             // Also get generic ones. eg if we specified en_US but there might be ones as 'en'
             foreach (array_values($lang_code) as $c) {
                 if (strpos($c, '_')) {
-                    list($x, )   = explode('_', $c, 2);
+                    list($x,)    = explode('_', $c, 2);
                     $lang_code[] = $x;
                 }
             }
@@ -107,7 +107,7 @@ class TicketMessageTranslated extends AbstractEntityRepository
             // Also get generic ones. eg if we specified en_US but there might be ones as 'en'
             foreach (array_values($lang_code) as $c) {
                 if (strpos($c, '_')) {
-                    list($x, )   = explode('_', $c, 2);
+                    list($x,)    = explode('_', $c, 2);
                     $lang_code[] = $x;
                 }
             }

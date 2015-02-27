@@ -205,7 +205,7 @@ class Web
 
         if ($content_type) {
             if (strpos($content_type, ';')) {
-                list($content_type, ) = explode(';', $content_type, 2);
+                list($content_type,) = explode(';', $content_type, 2);
             }
 
             return strtolower(trim($content_type));

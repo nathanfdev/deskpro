@@ -191,7 +191,7 @@ class SitemapGenerator
         foreach ($cats as $cat) {
             $items[] = array(
                 'loc'        => $this->router->generate('user_articles', array('slug' => $cat->getUrlSlug())),
-                'changefreq' => 'daily',
+                'changefreq'                                                          => 'daily',
             );
         }
 
@@ -209,7 +209,7 @@ class SitemapGenerator
         foreach ($articles as $a) {
             $items[] = array(
                 'loc'        => $this->router->generate('user_articles_article', array('slug' => $a->getUrlSlug())),
-                'changefreq' => 'weekly',
+                'changefreq'                                                                  => 'weekly',
             );
         }
 
@@ -242,7 +242,7 @@ class SitemapGenerator
         foreach ($cats as $cat) {
             $items[] = array(
                 'loc'        => $this->router->generate('user_news', array('slug' => $cat->getUrlSlug())),
-                'changefreq' => 'daily',
+                'changefreq'                                                      => 'daily',
             );
         }
 
@@ -260,7 +260,7 @@ class SitemapGenerator
             foreach ($news as $n) {
                 $items[] = array(
                     'loc'        => $this->router->generate('user_news_view', array('slug' => $n->getUrlSlug())),
-                    'changefreq' => 'weekly',
+                    'changefreq'                                                           => 'weekly',
                 );
             }
         }
@@ -294,7 +294,7 @@ class SitemapGenerator
         foreach ($cats as $cat) {
             $items[] = array(
                 'loc'        => $this->router->generate('user_downloads', array('slug' => $cat->getUrlSlug())),
-                'changefreq' => 'daily',
+                'changefreq'                                                           => 'daily',
             );
         }
 
@@ -311,7 +311,7 @@ class SitemapGenerator
         foreach ($downloads as $d) {
             $items[] = array(
                 'loc'        => $this->router->generate('user_downloads_file', array('slug' => $d->getUrlSlug())),
-                'changefreq' => 'weekly',
+                'changefreq'                                                                => 'weekly',
             );
         }
 
@@ -344,7 +344,7 @@ class SitemapGenerator
         foreach ($cats as $cat) {
             $items[] = array(
                 'loc'        => $this->router->generate('user_feedback', array('slug' => $cat->getUrlSlug())),
-                'changefreq' => 'daily',
+                'changefreq'                                                          => 'daily',
             );
         }
 
@@ -361,7 +361,7 @@ class SitemapGenerator
         foreach ($feedback as $f) {
             $items[] = array(
                 'loc'        => $this->router->generate('user_feedback_view', array('slug' => $f->getUrlSlug())),
-                'changefreq' => 'weekly',
+                'changefreq'                                                               => 'weekly',
             );
         }
 

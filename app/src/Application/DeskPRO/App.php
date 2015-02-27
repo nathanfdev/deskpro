@@ -458,7 +458,7 @@ class App
      * Read a config array from a standardly named config file.
      *
      *
-     * @param string $name
+     * @param  string                                      $name
      * @throws \RuntimeException|\UnexpectedValueException
      *
      * @return array

@@ -61,7 +61,7 @@ class Util
         if ($full_name && strpos($full_name, ' ') !== false) {
             list($first_name, $last_name) = explode(' ', $full_name, 2);
         } elseif ($email_address) {
-            list($email_name, ) = explode('@', $email_address, 2);
+            list($email_name,) = explode('@', $email_address, 2);
             if (strpos($email_name, '.') !== false) {
                 list($first_name, $last_name) = explode('.', $email_name, 2);
                 $first_name                   = ucfirst($first_name);
@@ -74,7 +74,7 @@ class Util
             if ($full_name) {
                 $first_name = $full_name;
             } elseif ($email_address) {
-                list($email_name, ) = explode('@', $email_address, 2);
+                list($email_name,)  = explode('@', $email_address, 2);
                 $first_name         = ucfirst($email_name);
             }
         }

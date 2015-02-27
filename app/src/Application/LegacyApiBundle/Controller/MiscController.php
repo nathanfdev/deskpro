@@ -33,8 +33,8 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
-use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\EntityRepository\LoginLog;
+use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\LoginLogs\LoginLogs;
 use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;

@@ -99,7 +99,7 @@ class ChatTranscripts extends AbstractJob
                     'is_user_hidden'  => 0,
                     'is_html'         => 0,
                     'metadata'        => serialize(array('phrase_id' => 'transcript_sent', 'email' => $email)),
-                    'date_created'    => date('Y-m-d H:i:s'),
+                    'date_created'                                   => date('Y-m-d H:i:s'),
                 ));
             }
 

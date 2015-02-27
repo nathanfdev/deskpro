@@ -31,8 +31,8 @@
 
 namespace Application\DeskPRO\People;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\PasswordHistory as PasswordHistoryRepos;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Settings\PasswordPolicy;
 use Orb\Util\Strings;
 

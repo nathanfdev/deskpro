@@ -76,9 +76,9 @@ class TriggerData extends AbstractDefaultData
         #-----
 
         foreach (array(
-            'newticket' => 'DeskPRO:emails_agent:ticket-new.html.twig',
-            'newreply'  => 'DeskPRO:emails_agent:ticket-reply.html.twig',
-            'update'    => 'DeskPRO:emails_agent:ticket-update.html.twig',
+            'newticket'     => 'DeskPRO:emails_agent:ticket-new.html.twig',
+            'newreply'      => 'DeskPRO:emails_agent:ticket-reply.html.twig',
+            'update'        => 'DeskPRO:emails_agent:ticket-update.html.twig',
         ) as $event_trigger => $template_name) {
             $trigger                = new TicketTrigger();
             $trigger->event_trigger = $event_trigger;

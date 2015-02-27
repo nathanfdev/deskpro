@@ -199,7 +199,7 @@ class ActionsCollection
      * Remove an action type from the collection, and return it.
      *
      *
-     * @param string $name
+     * @param  string                    $name
      * @throws \InvalidArgumentException When action doesnt exist
      *
      * @return Application\DeskPRO\Tickets\TicketActions\ActionInterface

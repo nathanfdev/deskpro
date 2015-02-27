@@ -31,8 +31,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
-use Application\DeskPRO\Entity\Rating;
 use Application\DeskPRO\EntityRepository\Rating as RatingRepo;
+use Application\DeskPRO\Entity\Rating;
 use Doctrine\ORM\EntityManager;
 
 class RatingsDataService extends AbstractDataService

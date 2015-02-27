@@ -221,7 +221,7 @@ class MiscController extends AbstractController
                 'lang_codes'                   => $lang_codes,
                 'lang_names'                   => $lang_names,
                 'translate_ticket_message_url' => $this->generateUrl('agent_apps_run', array('app_id' => $app_id, 'action' => 'translate-ticket-message')),
-                'translate_text_url'           => $this->generateUrl('agent_apps_run', array('app_id' => $app_id, 'action' => 'translate-text')),
+                'translate_text_url'                                                                  => $this->generateUrl('agent_apps_run', array('app_id' => $app_id, 'action' => 'translate-text')),
             );
 
             $js[] = "window.DESKPRO_TRANSLATE_SERVICE = ".json_encode($info).";";

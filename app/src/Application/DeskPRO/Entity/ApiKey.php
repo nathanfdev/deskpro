@@ -200,7 +200,7 @@ class ApiKey extends DomainObject
             'mappedBy'                   => 'key',
             'inversedBy'                 => null,
             'orderBy'                    => array('id' => 'DESC'),
-            'cascade'                    => array('persist', 'remove'), // doesn't work
+            'cascade'                                  => array('persist', 'remove'), // doesn't work
         ));
     }
 }

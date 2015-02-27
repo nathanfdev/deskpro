@@ -13,9 +13,9 @@ use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Proxy\ProxyFactory;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\FilterCollection;
 use Doctrine\ORM\Query\ResultSetMapping;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\UnitOfWork;
 use Exception;
 

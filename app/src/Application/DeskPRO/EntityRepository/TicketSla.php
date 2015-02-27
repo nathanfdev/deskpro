@@ -193,8 +193,8 @@ class TicketSla extends AbstractEntityRepository
             if ($data) {
                 $output[$title] = array(
                     'ok'      => array('title' => 'OK', 'count' => 0, 'id' => 'ok', 'color' => '#abf3ae'),
-                    'warning' => array('title' => 'Warning', 'count' => 0, 'id' => 'warning', 'color' => '#F7BC1F'),
-                    'fail'    => array('title' => 'Failed', 'count' => 0, 'id' => 'count', 'color' => '#de5949'),
+                    'warning'                  => array('title' => 'Warning', 'count' => 0, 'id' => 'warning', 'color' => '#F7BC1F'),
+                    'fail'                                      => array('title' => 'Failed', 'count' => 0, 'id' => 'count', 'color' => '#de5949'),
                 );
                 foreach ($data as $status => $count) {
                     $output[$title][$status]['count'] = $count;

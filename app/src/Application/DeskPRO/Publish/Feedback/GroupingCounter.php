@@ -129,7 +129,7 @@ class GroupingCounter
         $status_hierarchy = function () {
             $titles = array(
                 'new'    => array('title' => 'New'),
-                'active' => array('title' => 'Active', 'children' => array()),
+                'active'                  => array('title' => 'Active', 'children' => array()),
                 'closed' => array('title' => 'Closed', 'children' => array()),
                 'hidden' => array('title' => 'Hidden'),
             );

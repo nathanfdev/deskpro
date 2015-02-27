@@ -700,7 +700,6 @@ class Strings
         $values = array();
 
         foreach ($str as $line) {
-
             // No line
             if (!$line) {
                 continue;
@@ -1228,7 +1227,6 @@ class Strings
      */
     public static function trimHtml($string)
     {
-
         // Dont attempt to run on very large strings
         // the regex can be slow
         if (strlen($string) > 716800) {
@@ -2535,7 +2533,6 @@ class Strings
         static $skip_iconv = false;
 
         if (!$skip_iconv && function_exists('iconv')) {
-
             // depending on how iconv is compiled on the host
             // then //ignore might do nothing and the return value
             // will be false.

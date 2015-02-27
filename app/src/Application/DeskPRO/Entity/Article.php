@@ -531,14 +531,14 @@ class Article extends ContentAbstract implements HighlightableModelInterface
             array(
                 'fieldName'                => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataArticle',
                 'cascade'                  => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'article',
-                'orphanRemoval'            => true, 'dpApi'            => true,
+                'orphanRemoval'                       => true, 'dpApi'                       => true,
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName'                => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelArticle',
                 'cascade'                  => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'article',
-                'orphanRemoval'            => true,
+                'orphanRemoval'                       => true,
             )
         );
         $metadata->mapManyToOne(

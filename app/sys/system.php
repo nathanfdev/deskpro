@@ -267,7 +267,6 @@ abstract class AbstractKernel extends BaseKernel
 
                 return $response;
             } else {
-
                 #------------------------------
                 # Max agent checks
                 #------------------------------

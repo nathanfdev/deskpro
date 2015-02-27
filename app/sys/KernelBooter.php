@@ -292,7 +292,6 @@ class KernelBooter
                 $response->send();
                 $kernel->terminate($request, $response);
             } catch (DBALException $e) {
-
                 // note: this try catch block is directly copied from old portal code in this booter, but we added code=0
                 if ($e->getCode() == '0' || $e->getCode() == '2002' || $e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
                     // This will show an error page if already installed, so the redirect to install wont happen

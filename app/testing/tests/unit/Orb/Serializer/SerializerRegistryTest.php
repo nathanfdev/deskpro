@@ -31,8 +31,8 @@
 
 namespace DpUnitTests\Orb\Serializer;
 
-use Orb\Serializer\Serializer\ArraySerializer;
 use Orb\Serializer\SerializerRegistry;
+use Orb\Serializer\Serializer\ArraySerializer;
 
 class SerializerRegistryTest extends \DpUnitTestCase
 {

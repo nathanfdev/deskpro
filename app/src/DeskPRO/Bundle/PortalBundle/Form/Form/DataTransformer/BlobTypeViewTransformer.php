@@ -31,8 +31,8 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
 
-use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\EntityRepository\Blob as BlobRepo;
+use Application\DeskPRO\Entity\Blob;
 use Symfony\Component\Form\DataTransformerInterface;
 
 /**

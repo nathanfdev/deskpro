@@ -513,7 +513,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
             'name'    => 'feedback',
             'indexes' => array(
                 'date_published_idx'                                => array('columns' => array( 0 => 'date_published' )),
-                'status_idx'                                        => array('columns' => array('status')),
+                'status_idx'                                                                       => array('columns' => array('status')),
             ),
         ));
         $metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
@@ -620,7 +620,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 'fieldName'                              => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
                 'mappedBy'                               => null, 'inversedBy' => null,
                 'joinColumns'                            => array(0 => array('name' => 'category_id', 'referencedColumnName' => 'id')),
-                'dpApi'                                  => true,
+                'dpApi'                                                             => true,
             )
         );
         $metadata->mapOneToMany(
@@ -639,14 +639,14 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
             array(
                 'fieldName'                => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelFeedback',
                 'cascade'                  => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback',
-                'orphanRemoval'            => true,
+                'orphanRemoval'                       => true,
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName'                => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataFeedback',
                 'cascade'                  => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback',
-                'orphanRemoval'            => true, 'dpApi'            => true,
+                'orphanRemoval'                       => true, 'dpApi'                       => true,
             )
         );
         $metadata->mapManyToOne(
@@ -675,7 +675,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
             array(
                 'fieldName'            => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackAttachment',
                 'cascade'              => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback',
-                'dpApi'                => true, 'dpApiDeep'            => true, 'dpApiPrimary'            => true,
+                'dpApi'                           => true, 'dpApiDeep'                       => true, 'dpApiPrimary'                       => true,
             )
         );
         $metadata->mapOneToMany(array(

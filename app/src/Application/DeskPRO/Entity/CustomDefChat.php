@@ -221,8 +221,8 @@ class CustomDefChat extends CustomDefAbstract
                  'fieldName'               => 'children',
                  'targetEntity'            => 'Application\\DeskPRO\\Entity\\CustomDefChat',
                  'cascade'                 => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
-                 'mappedBy'                => 'parent',
-                 'orderBy'                 => array('display_order' => 'ASC'),
+                 'mappedBy'                           => 'parent',
+                 'orderBy'                            => array('display_order' => 'ASC'),
             )
         );
         $metadata->mapManyToOne(

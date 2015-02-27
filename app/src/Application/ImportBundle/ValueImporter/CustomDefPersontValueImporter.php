@@ -37,7 +37,7 @@ use Application\ImportBundle\Value\CustomDefValue;
 
 class CustomDefPersontValueImporter extends AbstractCustomDefValueImporter
 {
-//    /** @var string */
+    //    /** @var string */
 //    protected $mapped_column = 'person_id';
 //    /** @var string */
 //    protected $mapper_class = 'custom_def_person';

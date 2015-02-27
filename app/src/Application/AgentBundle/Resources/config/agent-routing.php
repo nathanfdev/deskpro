@@ -131,14 +131,14 @@ $collection->create('agent_dpnews_view', array(
     'path'         => '/misc/view-dp-news/{id}',
     'controller'   => 'AgentBundle:Misc:viewDpNews',
     'requirements' => array('id' => '\d+'),
-    'methods'      => array('GET'),
+    'methods'                    => array('GET'),
 ));
 
 $collection->create('agent_dpnews_dismiss', array(
     'path'         => '/misc/view-dp-news/{id}/dismiss',
     'controller'   => 'AgentBundle:Misc:dismissDpNews',
     'requirements' => array('id' => '\d+'),
-    'methods'      => array('POST'),
+    'methods'                    => array('POST'),
 ));
 
 $collection->create('agent_redirect_out', array(
@@ -209,7 +209,7 @@ $collection->create('agent_login_authenticate', array(
     'path'          => '/login/authenticate/{usersource_id}',
     'controller'    => 'AgentBundle:Login:authenticate',
     'defaults'      => array('usersource_id' => 0),
-    'requirements'  => array('usersource_id' => '\\d+'),
+    'requirements'                           => array('usersource_id' => '\\d+'),
 ));
 
 $collection->create('agent_login_callback', array(
@@ -365,7 +365,7 @@ $collection->create('agent_people_view', array(
     'path'          => '/people/{person_id}',
     'controller'    => 'AgentBundle:Person:view',
     'requirements'  => array('person_id'     => '\\d+'),
-    'options'       => array('fragment_name' => 'p'),
+    'options'                                => array('fragment_name' => 'p'),
 ));
 
 $collection->create('agent_people_view_basicjson', array(
@@ -516,7 +516,7 @@ $collection->create('agent_peoplesearch_customfilter', array(
     'path'        => '/people-search/search/{letter}',
     'controller'  => 'AgentBundle:PeopleSearch:search',
     'defaults'    => array('letter'        => '*'),
-    'options'     => array('fragment_name' => 'people', 'fragment_type' => 'list'),
+    'options'                              => array('fragment_name' => 'people', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_peoplesearch_getpage', array(
@@ -558,7 +558,7 @@ $collection->create('agent_org_view', array(
     'path'          => '/organizations/{organization_id}',
     'controller'    => 'AgentBundle:Organization:view',
     'requirements'  => array('organization_id' => '\\d+'),
-    'options'       => array('fragment_name'   => 'o'),
+    'options'                                  => array('fragment_name'   => 'o'),
 ));
 
 $collection->create('agent_org_new', array(
@@ -745,7 +745,7 @@ $collection->create('agent_ticketsearch_runfilter', array(
     'path'          => '/ticket-search/filter/{filter_id}',
     'controller'    => 'AgentBundle:TicketSearch:runFilter',
     'requirements'  => array('filter_id'     => '\\d+'),
-    'options'       => array('fragment_name' => 'filter', 'fragment_type' => 'list'),
+    'options'                                => array('fragment_name' => 'filter', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_ticketsearch_getsubgroupcounts', array(
@@ -763,8 +763,8 @@ $collection->create('agent_ticketsearch_runsla', array(
     'path'          => '/ticket-search/sla/{sla_id}/{sla_status}',
     'controller'    => 'AgentBundle:TicketSearch:runSla',
     'defaults'      => array('sla_status'    => ''),
-    'requirements'  => array('sla_id'        => '\\d+'),
-    'options'       => array('fragment_name' => 'sla', 'fragment_type' => 'list'),
+    'requirements'                           => array('sla_id'        => '\\d+'),
+    'options'                                                         => array('fragment_name' => 'sla', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_ticketsearch_ajax_get_macro', array(
@@ -859,7 +859,7 @@ $collection->create('agent_ticket_view', array(
     'path'          => '/tickets/{ticket_id}',
     'controller'    => 'AgentBundle:Ticket:view',
     'requirements'  => array('ticket_id'     => '\\d+'),
-    'options'       => array('fragment_name' => 't'),
+    'options'                                => array('fragment_name' => 't'),
 ));
 
 $collection->create('agent_ticket_loadlogs', array(
@@ -914,7 +914,7 @@ $collection->create('agent_ticket_split', array(
     'path'          => '/tickets/{ticket_id}/split/{message_id}',
     'controller'    => 'AgentBundle:Ticket:split',
     'defaults'      => array('message_id' => 0),
-    'requirements'  => array('ticket_id'  => '\\d+'),
+    'requirements'                        => array('ticket_id'  => '\\d+'),
 ));
 
 $collection->create('agent_ticket_split_save', array(
@@ -939,7 +939,7 @@ $collection->create('agent_ticket_fwd_send', array(
     'path'          => '/tickets/{ticket_id}/forward/{message_id}/send',
     'controller'    => 'AgentBundle:Ticket:forwardSend',
     'requirements'  => array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
-    'methods'       => array('POST'),
+    'methods'                            => array('POST'),
 ));
 
 $collection->create('agent_ticket_merge', array(
@@ -1051,7 +1051,7 @@ $collection->create('agent_ticket_message_window', array(
     'path'          => '/tickets/{ticket_id}/message-details/{message_id}/window/{type}',
     'controller'    => 'AgentBundle:Ticket:viewMessageWindow',
     'defaults'      => array('type'      => 'normal'),
-    'requirements'  => array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
+    'requirements'                       => array('ticket_id' => '\\d+', 'message_id' => '\\d+'),
 ));
 
 $collection->create('agent_ticket_message_ajax_getquote', array(
@@ -1141,62 +1141,62 @@ $collection->create('agent_twitter_mine_list', array(
     'path'          => '/twitter/mine/{account_id}/{group}/{group_value}',
     'controller'    => 'AgentBundle:TwitterStatus:listMine',
     'defaults'      => array('group'         => '', 'group_value' => ''),
-    'requirements'  => array('account_id'    => '\\d+'),
-    'options'       => array('fragment_name' => 'tw-own', 'fragment_type' => 'list'),
+    'requirements'                           => array('account_id'    => '\\d+'),
+    'options'                                                         => array('fragment_name' => 'tw-own', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_twitter_team_list', array(
     'path'          => '/twitter/team/{account_id}/{group}/{group_value}',
     'controller'    => 'AgentBundle:TwitterStatus:listTeam',
     'defaults'      => array('group'         => '', 'group_value' => ''),
-    'requirements'  => array('account_id'    => '\\d+'),
-    'options'       => array('fragment_name' => 'tw-team', 'fragment_type' => 'list'),
+    'requirements'                           => array('account_id'    => '\\d+'),
+    'options'                                                         => array('fragment_name' => 'tw-team', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_twitter_unassigned_list', array(
     'path'          => '/twitter/unassigned/{account_id}/{group}/{group_value}',
     'controller'    => 'AgentBundle:TwitterStatus:listUnassigned',
     'defaults'      => array('group'         => '', 'group_value' => ''),
-    'requirements'  => array('account_id'    => '\\d+'),
-    'options'       => array('fragment_name' => 'tw-unassigned', 'fragment_type' => 'list'),
+    'requirements'                           => array('account_id'    => '\\d+'),
+    'options'                                                         => array('fragment_name' => 'tw-unassigned', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_twitter_all_list', array(
     'path'          => '/twitter/all/{account_id}/{group}/{group_value}',
     'controller'    => 'AgentBundle:TwitterStatus:listAll',
     'defaults'      => array('group'         => '', 'group_value' => ''),
-    'requirements'  => array('account_id'    => '\\d+'),
-    'options'       => array('fragment_name' => 'tw-all', 'fragment_type' => 'list'),
+    'requirements'                           => array('account_id'    => '\\d+'),
+    'options'                                                         => array('fragment_name' => 'tw-all', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_twitter_sent_list', array(
     'path'          => '/twitter/sent/{account_id}/{group}/{group_value}',
     'controller'    => 'AgentBundle:TwitterStatus:listSent',
     'defaults'      => array('group'         => '', 'group_value' => ''),
-    'requirements'  => array('account_id'    => '\\d+'),
-    'options'       => array('fragment_name' => 'tw-sent', 'fragment_type' => 'list'),
+    'requirements'                           => array('account_id'    => '\\d+'),
+    'options'                                                         => array('fragment_name' => 'tw-sent', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_twitter_timeline_list', array(
     'path'          => '/twitter/timeline/{account_id}/{group}/{group_value}',
     'controller'    => 'AgentBundle:TwitterStatus:listTimeline',
     'defaults'      => array('group'         => '', 'group_value' => ''),
-    'requirements'  => array('account_id'    => '\\d+'),
-    'options'       => array('fragment_name' => 'tw-timeline', 'fragment_type' => 'list'),
+    'requirements'                           => array('account_id'    => '\\d+'),
+    'options'                                                         => array('fragment_name' => 'tw-timeline', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_twitter_followers_list', array(
     'path'          => '/twitter/followers/{account_id}',
     'controller'    => 'AgentBundle:TwitterUser:listFollowers',
     'requirements'  => array('account_id'    => '\\d+'),
-    'options'       => array('fragment_name' => 'tw-followers', 'fragment_type' => 'list'),
+    'options'                                => array('fragment_name' => 'tw-followers', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_twitter_followers_list_new', array(
     'path'          => '/twitter/followers/{account_id}/new',
     'controller'    => 'AgentBundle:TwitterUser:listNewFollowers',
     'requirements'  => array('account_id' => '\\d+'),
-    'options'       => array(
+    'options'                             => array(
         'fragment_name'  => 'tw-newfollowers',
         'fragment_type'  => 'list',
     ),
@@ -1206,7 +1206,7 @@ $collection->create('agent_twitter_following_list', array(
     'path'          => '/twitter/following/{account_id}',
     'controller'    => 'AgentBundle:TwitterUser:listFollowing',
     'requirements'  => array('account_id'    => '\\d+'),
-    'options'       => array('fragment_name' => 'tw-following', 'fragment_type' => 'list'),
+    'options'                                => array('fragment_name' => 'tw-following', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_twitter_status_ajaxmasssave', array(
@@ -1277,7 +1277,7 @@ $collection->create('agent_twitter_user', array(
     'path'          => '/twitter/user/{user_id}',
     'controller'    => 'AgentBundle:TwitterUser:view',
     'requirements'  => array('user_id'       => '\\d+'),
-    'options'       => array('fragment_name' => 'twitter'),
+    'options'                                => array('fragment_name' => 'twitter'),
 ));
 
 $collection->create('agent_twitter_user_statuses', array(
@@ -1359,7 +1359,7 @@ $collection->create('agent_twitter_run_search', array(
     'path'          => '/twitter/{account_id}/search/{search_id}',
     'controller'    => 'AgentBundle:Twitter:runSearch',
     'requirements'  => array('account_id'    => '\\d+', 'search_id' => '\\d+'),
-    'options'       => array('fragment_name' => 'searches', 'fragment_type' => 'list'),
+    'options'                                => array('fragment_name' => 'searches', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_twitter_search_delete', array(
@@ -1401,7 +1401,7 @@ $collection->create('agent_task_list', array(
     'path'        => '/tasks/list/{search_type}/{search_category}',
     'controller'  => 'AgentBundle:Task:taskList',
     'defaults'    => array('search_type'   => null, 'search_category' => null),
-    'options'     => array('fragment_name' => 'tasks', 'fragment_type' => 'list'),
+    'options'                              => array('fragment_name' => 'tasks', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_task_ajax_labels_save', array(
@@ -1425,21 +1425,21 @@ $collection->create('agent_task_ics_all_tasks', array(
     'path'         => '/tasks/{id}-{authcode}/all.ics',
     'controller'   => 'AgentBundle:Task:iCal',
     'defaults'     => array('filter'   => 'all'),
-    'requirements' => array('authcode' => '.*', 'id' => '^\\d+$' ),
+    'requirements'                     => array('authcode' => '.*', 'id' => '^\\d+$' ),
 ));
 
 $collection->create('agent_task_ics_assigned_tasks', array(
     'path'         => '/tasks/{id}-{authcode}/assigned.ics',
     'controller'   => 'AgentBundle:Task:iCal',
     'defaults'     => array('filter'   => 'assigned'),
-    'requirements' => array('authcode' => '.*', 'id' => '^\\d+$'),
+    'requirements'                     => array('authcode' => '.*', 'id' => '^\\d+$'),
 ));
 
 $collection->create('agent_task_ics_delegated_tasks', array(
     'path'         => '/tasks/{id}-{authcode}/delegated.ics',
     'controller'   => 'AgentBundle:Task:iCal',
     'defaults'     => array('filter'   => 'delegated'),
-    'requirements' => array('authcode' => '.*', 'id' => '^\\d+$'),
+    'requirements'                     => array('authcode' => '.*', 'id' => '^\\d+$'),
 ));
 
 $collection->create('agent_publish_getsectiondata', array(
@@ -1625,7 +1625,7 @@ $collection->create('agent_kb_article', array(
     'path'          => '/kb/article/{article_id}',
     'controller'    => 'AgentBundle:Kb:viewArticle',
     'requirements'  => array('article_id'    => '\\d+'),
-    'options'       => array('fragment_name' => 'a'),
+    'options'                                => array('fragment_name' => 'a'),
 ));
 
 $collection->create('agent_kb_ajaxsavecustomfields', array(
@@ -1699,7 +1699,7 @@ $collection->create('agent_kb_list', array(
     'path'        => '/kb/list/{category_id}',
     'controller'  => 'AgentBundle:Kb:list',
     'defaults'    => array('category_id'   => '0'),
-    'options'     => array('fragment_name' => 'knowledgebase', 'fragment_type' => 'list'),
+    'options'                              => array('fragment_name' => 'knowledgebase', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_kb_cat', array(
@@ -1741,14 +1741,14 @@ $collection->create('agent_news_list', array(
     'path'        => '/news/list/{category_id}',
     'controller'  => 'AgentBundle:News:list',
     'defaults'    => array('category_id'   => '0'),
-    'options'     => array('fragment_name' => 'news', 'fragment_type' => 'list'),
+    'options'                              => array('fragment_name' => 'news', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_news_view', array(
     'path'          => '/news/post/{news_id}',
     'controller'    => 'AgentBundle:News:view',
     'requirements'  => array('news_id'       => '\\d+'),
-    'options'       => array('fragment_name' => 'n'),
+    'options'                                => array('fragment_name' => 'n'),
 ));
 
 $collection->create('agent_news_revisionstab', array(
@@ -1794,14 +1794,14 @@ $collection->create('agent_downloads_list', array(
     'path'        => '/downloads/list/{category_id}',
     'controller'  => 'AgentBundle:Downloads:list',
     'defaults'    => array('category_id'   => '0'),
-    'options'     => array('fragment_name' => 'downloads', 'fragment_type' => 'list'),
+    'options'                              => array('fragment_name' => 'downloads', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_downloads_view', array(
     'path'          => '/downloads/file/{download_id}',
     'controller'    => 'AgentBundle:Downloads:view',
     'requirements'  => array('download_id'   => '\\d+'),
-    'options'       => array('fragment_name' => 'd'),
+    'options'                                => array('fragment_name' => 'd'),
 ));
 
 $collection->create('agent_downloads_info', array(
@@ -1865,7 +1865,7 @@ $collection->create('agent_feedback_label', array(
     'path'         => '/feedback/label/{label}',
     'controller'   => 'AgentBundle:Feedback:labelList',
     'options'      => array('fragment_name' => 'label', 'fragment_type' => 'list'),
-    'requirements' => array('label'         => '.*'),
+    'requirements'                          => array('label'         => '.*'),
 ));
 
 $collection->create('agent_feedback_filter', array(
@@ -2053,14 +2053,14 @@ $collection->create('agent_userchat_list_new', array(
     'path'        => '/chat/list-new/{department_id}',
     'controller'  => 'AgentBundle:UserChat:listNewChats',
     'defaults'    => array('department_id' => '-1'),
-    'options'     => array('fragment_name' => 'new', 'fragment_type' => 'list'),
+    'options'                              => array('fragment_name' => 'new', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_userchat_list_active', array(
     'path'        => '/chat/list-active/{agent_id}',
     'controller'  => 'AgentBundle:UserChat:listActiveChats',
     'defaults'    => array('agent_id'      => '-1'),
-    'options'     => array('fragment_name' => 'active', 'fragment_type' => 'list'),
+    'options'                              => array('fragment_name' => 'active', 'fragment_type' => 'list'),
 ));
 
 $collection->create('agent_userchat_send_messageview', array(
@@ -2122,7 +2122,7 @@ $collection->create('agent_usertrack_view', array(
     'path'          => '/user-track/{visitor_id}',
     'controller'    => 'AgentBundle:UserTrack:view',
     'requirements'  => array('visitor_id' => '\\d+'),
-    'methods'       => array('GET'),
+    'methods'                             => array('GET'),
 ));
 
 $collection->create('agent_mediamanager', array(
@@ -2188,8 +2188,8 @@ $collection->create('agent_textsnippets_delcat', array(
 $collection->create('agent_apps_run', array(
     'path'          => '/apps/{app_id}/{action}',
     'defaults'      => array('action' => 'default'),
-    'controller'    => 'AgentBundle:Apps:run',
-    'requirements'  => array('app_id' => '\\d+'),
+    'controller'                      => 'AgentBundle:Apps:run',
+    'requirements'                    => array('app_id' => '\\d+'),
 ));
 
 $collection->create('agent_label_definitions_list', array(

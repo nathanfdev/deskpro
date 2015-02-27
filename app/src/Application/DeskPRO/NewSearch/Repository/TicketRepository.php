@@ -23,7 +23,7 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
      */
     protected $highlightFields = array(
         'subject'  => array('fragment_size' => 100),
-        'messages' => array('fragment_size' => 100, 'number_of_fragments' => 1),
+        'messages'                          => array('fragment_size' => 100, 'number_of_fragments' => 1),
     );
 
     /**

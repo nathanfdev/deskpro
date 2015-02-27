@@ -332,7 +332,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
             return;
         }
 
-        list($vis_id, ) = explode('-', $vis_code, 2);
+        list($vis_id,) = explode('-', $vis_code, 2);
 
         return $vis_id;
     }

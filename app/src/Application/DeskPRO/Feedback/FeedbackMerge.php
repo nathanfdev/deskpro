@@ -66,9 +66,9 @@ class FeedbackMerge implements PersonContextInterface
 
     /**
      *
-     * @param \Application\DeskPRO\Entity\Person   $person_performer
-     * @param \Application\DeskPRO\Entity\Feedback $feedback         The base feedback, this is the one that will still exist at the end
-     * @param \Application\DeskPRO\Entity\Feedback $other_feedback   The other feedback, the one that will be merged into $feedback and then deleted
+     * @param  \Application\DeskPRO\Entity\Person   $person_performer
+     * @param  \Application\DeskPRO\Entity\Feedback $feedback         The base feedback, this is the one that will still exist at the end
+     * @param  \Application\DeskPRO\Entity\Feedback $other_feedback   The other feedback, the one that will be merged into $feedback and then deleted
      * @throws \InvalidArgumentException
      */
     public function __construct(Person $person_performer, Feedback $feedback, Feedback $other_feedback)

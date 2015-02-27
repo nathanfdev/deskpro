@@ -72,8 +72,8 @@ class DPTest extends \DpIntegrationTestCase
             'fields' => array(
                 'duedate'   => $this->data['duedate']->format('Y-m-d'),
                 'issuetype' => array('id' => 10100),
-                'project'   => array('id' => 10200),
-                'summary'   => $this->data['summary'],
+                'project'                 => array('id' => 10200),
+                'summary'                               => $this->data['summary'],
             ),
         );
 
@@ -134,8 +134,8 @@ class DPTest extends \DpIntegrationTestCase
             'fields' => array(
                 'duedate'   => $this->data['duedate']->format('Y-m-d'),
                 'issuetype' => array('id' => 10100),
-                'project'   => array('id' => 10200),
-                'summary'   => $this->data['summary'],
+                'project'                 => array('id' => 10200),
+                'summary'                               => $this->data['summary'],
             ),
         );
         $response = $this->js()->createIssueJson(json_encode($issue));

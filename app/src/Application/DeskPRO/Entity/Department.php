@@ -569,7 +569,7 @@ class Department extends DomainObject implements HasPhraseName
                  'targetEntity'                          => 'Application\\DeskPRO\\Entity\\Department',
                  'mappedBy'                              => 'parent',
                  'orderBy'                               => array('display_order' => 'ASC'),
-                 'indexBy'                               => 'id',
+                 'indexBy'                                                        => 'id',
             )
         );
 

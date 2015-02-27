@@ -31,8 +31,8 @@
 
 namespace Application\DeskPRO\EmailGateway;
 
-use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\Entity\EmailSource;
 use Orb\Log\Logger;
 

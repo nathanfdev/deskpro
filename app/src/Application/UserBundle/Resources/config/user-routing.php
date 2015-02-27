@@ -136,14 +136,14 @@ $collection->create('portal_login_authenticate', array(
     'path'          => '/login/authenticate/{usersource_id}',
     'controller'    => 'UserBundle:Login:authenticate',
     'defaults'      => array('usersource_id' => 0),
-    'requirements'  => array('usersource_id' => '\\d+'),
+    'requirements'                           => array('usersource_id' => '\\d+'),
 ));
 
 $collection->create('user_login_authenticate', array(
     'path'          => '/login/authenticate/{usersource_id}',
     'controller'    => 'UserBundle:Login:authenticate',
     'defaults'      => array('usersource_id' => 0),
-    'requirements'  => array('usersource_id' => '\\d+'),
+    'requirements'                           => array('usersource_id' => '\\d+'),
 ));
 
 $collection->create('portal_login_callback', array(
@@ -247,7 +247,7 @@ $collection->create('user_search_labels', array(
     'path'          => '/search/labels/{type}/{label}',
     'controller'    => 'UserBundle:Search:labelSearch',
     'defaults'      => array('label' => '', 'type' => 'all'),
-    'requirements'  => array('label' => '.*'),
+    'requirements'                   => array('label' => '.*'),
 ));
 
 $collection->create('user_search_omnisearch', array(
@@ -376,7 +376,7 @@ $collection->create('user_articles', array(
     'path'          => '/kb/{slug}',
     'controller'    => 'UserBundle:Articles:browse',
     'defaults'      => array('slug' => ''),
-    'requirements'  => array('slug' => '(\\d+(\\-.*?)?)?'),
+    'requirements'                  => array('slug' => '(\\d+(\\-.*?)?)?'),
 ));
 
 $collection->create('user_articles_article', array(
@@ -415,7 +415,7 @@ $collection->create('user_downloads', array(
     'path'          => '/downloads/{slug}',
     'controller'    => 'UserBundle:Downloads:browse',
     'defaults'      => array('slug' => ''),
-    'requirements'  => array('slug' => '(\\d+(\\-.*?)?)?'),
+    'requirements'                  => array('slug' => '(\\d+(\\-.*?)?)?'),
 ));
 
 $collection->create('user_downloads_file', array(
@@ -438,14 +438,14 @@ $collection->create('user_news_home', array(
     'path'          => '/news.{_format}',
     'controller'    => 'UserBundle:News:browse',
     'defaults'      => array('slug'    => '', 'page' => 1,        '_format' => 'html'),
-    'requirements'  => array('_format' => '(html|rss)'),
+    'requirements'                     => array('_format' => '(html|rss)'),
 ));
 
 $collection->create('user_news', array(
     'path'          => '/news/{slug}.{_format}',
     'controller'    => 'UserBundle:News:browse',
     'defaults'      => array('slug' => '', 'page' => 1,        '_format' => 'html'),
-    'requirements'  => array(
+    'requirements'                  => array(
         'slug'     => '(\\d+(\\-.*?)?)?',
         'page'     => '\\d+',
         '_format'  => '(html|rss)',

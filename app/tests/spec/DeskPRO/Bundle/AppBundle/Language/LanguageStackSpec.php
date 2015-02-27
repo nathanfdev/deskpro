@@ -31,8 +31,8 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\Language;
 
-use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\DeskPRO\Translate\SystemLanguage;

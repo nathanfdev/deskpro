@@ -76,7 +76,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
      * @param TokenInterface $token The TokenInterface instance to authenticate
      *
      * @throws AuthenticationException if the authentication fails
-     * @return TokenInterface An authenticated TokenInterface instance, never null
+     * @return TokenInterface          An authenticated TokenInterface instance, never null
      *
      */
     public function authenticate(TokenInterface $token)

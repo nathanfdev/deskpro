@@ -447,7 +447,6 @@ if ($img > 0) {
         $yscale  = $ysize / ($ngrid * $dydat); // pixels per data unit
 
         for ($i = 0; list($xval, $yval) = each($data); $i++) {
-
             // vertical columns
             $ymax = $vmargin + $ysize;
             $ymin = $ymax - (int) ($yval * $yscale);
@@ -529,7 +528,6 @@ if ($img > 0) {
 
         //count the labels:
         for ($i = 1; $i <= $n; $i++) {
-
             //calculate the percents:
             $perc[$i]    = $value[$i] / $total;
             $percstr[$i] = (string) number_format($perc[$i] * 100, 2)."%";

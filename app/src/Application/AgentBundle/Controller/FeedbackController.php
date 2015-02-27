@@ -576,7 +576,7 @@ class FeedbackController extends AbstractController
         $top_result_helper = FeedbackResults::newFromRequest($this, array(
             'specific_terms' => array(
                 'category'                 => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
-                'status'                   => array('type' => 'status', 'op' => 'not', 'status' => 'hidden'),
+                'status'                                   => array('type' => 'status', 'op' => 'not', 'status' => 'hidden'),
             ),
         ));
 
@@ -584,7 +584,7 @@ class FeedbackController extends AbstractController
             $result_helper = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
                     'category'                 => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
-                    'status'                   => array('type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')),
+                    'status'                                   => array('type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')),
                 ),
             ));
         } else {
@@ -682,14 +682,14 @@ class FeedbackController extends AbstractController
             $top_result_helper       = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
                     'status'                 => array('type' => 'status', 'op' => 'is', 'status' => $status),
-                    'v_status'               => array('type' => 'hidden_status', 'op' => 'is', 'hidden_status' => $v_status),
+                    'v_status'                               => array('type' => 'hidden_status', 'op' => 'is', 'hidden_status' => $v_status),
                 ),
             ));
         } else {
             $top_result_helper = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
                     'status'                 => array('type' => 'status', 'op' => 'is', 'status' => $status),
-                    'v_status'               => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
+                    'v_status'                               => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
                 ),
             ));
         }
@@ -698,8 +698,8 @@ class FeedbackController extends AbstractController
             $result_helper = FeedbackResults::newFromRequest($this, array(
                 'specific_terms' => array(
                     'status'                                 => array('type' => 'status', 'op' => 'is', 'status' => $status),
-                    'category'                               => array('type' => 'category', 'op' => 'is', 'category' => $this->in->getString('subgroup')),
-                    'v_status'                               => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
+                    'category'                                               => array('type' => 'category', 'op' => 'is', 'category' => $this->in->getString('subgroup')),
+                    'v_status'                                                               => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating'),
                 ),
             ));
         } else {

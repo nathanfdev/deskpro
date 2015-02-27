@@ -31,8 +31,8 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\EntityRepository\TaskQueue;
+use Application\DeskPRO\Entity\TmpData;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 
 class CsvExportController extends AbstractController implements ProtectedControllerInterface

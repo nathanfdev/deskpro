@@ -42,7 +42,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  */
 class TaskAssociatedTicket extends TaskAssociation
 {
-  /**
+    /**
    * @var Application\DeskPRO\Entity\Ticket
    */
   protected $ticket;

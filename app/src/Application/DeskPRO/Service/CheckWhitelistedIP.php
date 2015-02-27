@@ -28,9 +28,9 @@
 namespace Application\DeskPRO\Service;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\EntityRepository\WhiteListedIp;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
-use Application\DeskPRO\EntityRepository\WhiteListedIp;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**

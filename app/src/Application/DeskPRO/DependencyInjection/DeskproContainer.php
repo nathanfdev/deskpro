@@ -120,7 +120,7 @@ class DeskproContainer extends Container
      * This returns a reference to a system service.
      *
      *
-     * @param string $id
+     * @param  string                    $id
      * @throws \InvalidArgumentException
      *
      * @return mixed
@@ -183,8 +183,8 @@ class DeskproContainer extends Container
      * This calls a system factory and returns a new instance of some kind of object.
      *
      *
-     * @param string $id
-     * @param array  $options
+     * @param  string                    $id
+     * @param  array                     $options
      * @throws \InvalidArgumentException
      *
      * @return mixed

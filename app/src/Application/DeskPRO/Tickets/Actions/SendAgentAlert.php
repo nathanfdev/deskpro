@@ -185,13 +185,13 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 
         $alert_data = array(
             '@fetch_types'       => array('ticket' => 'DeskPRO:Ticket', 'performer' => 'DeskPRO:Person', 'log_items' => 'DeskPRO:TicketLog'),
-            'ticket'             => $ticket->getId(),
-            'performer'          => $vars['performer'] ? $vars['performer']->id : 0,
-            'is_new_ticket'      => $vars['is_new_ticket'],
-            'is_new_agent_reply' => $vars['is_new_agent_reply'],
-            'is_new_agent_note'  => $vars['is_new_agent_note'],
-            'is_new_user_reply'  => $vars['is_new_user_reply'],
-            'log_items'          => $log_ids,
+            'ticket'                               => $ticket->getId(),
+            'performer'                            => $vars['performer'] ? $vars['performer']->id : 0,
+            'is_new_ticket'                        => $vars['is_new_ticket'],
+            'is_new_agent_reply'                   => $vars['is_new_agent_reply'],
+            'is_new_agent_note'                    => $vars['is_new_agent_note'],
+            'is_new_user_reply'                    => $vars['is_new_user_reply'],
+            'log_items'                            => $log_ids,
         );
 
         $sent_count = 0;

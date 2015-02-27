@@ -31,8 +31,8 @@
 
 namespace DeskPRO\Bundle\PortalBundle\HttpCache;
 
-use FOS\HttpCache\SymfonyCache\UserContextSubscriber;
 use FOS\HttpCacheBundle\SymfonyCache\EventDispatchingHttpCache;
+use FOS\HttpCache\SymfonyCache\UserContextSubscriber;
 
 class PortalHttpCache extends EventDispatchingHttpCache
 {

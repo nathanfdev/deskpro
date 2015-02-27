@@ -2,10 +2,10 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\Content;
 
-use Application\DeskPRO\Entity\News;
-use Application\DeskPRO\Entity\NewsSlugHistory;
 use Application\DeskPRO\EntityRepository\News as NewsRepo;
 use Application\DeskPRO\EntityRepository\NewsSlugHistory as NewsSlugHistoryRepo;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsSlugHistory;
 use Doctrine\ORM\EntityManager;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\DependencyInjection\ContainerInterface;

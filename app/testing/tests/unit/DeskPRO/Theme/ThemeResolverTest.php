@@ -38,7 +38,7 @@ use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
  */
 class ThemeResolverTest extends \DpUnitTestCase
 {
-//  added "container" dependency to this class - broke tests - lot of work to rewrite, so leaving commentd for now
+    //  added "container" dependency to this class - broke tests - lot of work to rewrite, so leaving commentd for now
 //
 //	public function testThemeControllerException()
 //	{

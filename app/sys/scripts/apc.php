@@ -1174,7 +1174,6 @@ EOB;
     }
 
     if ($list) {
-
         // sort list
         //
         switch ($MYREQUEST['SORT2']) {
@@ -1322,7 +1321,6 @@ EOB;
     }
 
     if ($list) {
-
         // sort list
         //
         switch ($MYREQUEST['SORT2']) {

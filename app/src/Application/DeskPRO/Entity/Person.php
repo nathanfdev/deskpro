@@ -913,10 +913,9 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         } elseif ($this['first_name']) {
             return $this['first_name'];
         } elseif ($this['primary_email']) {
-
             // try to get a nice name from the email address
             $email        = $this['primary_email']['email'];
-            list($name, ) = explode('@', $email, 2);
+            list($name,)  = explode('@', $email, 2);
 
             $name = str_replace('_', ' ', $name);
             $name = str_replace('.', ' ', $name);
@@ -2875,14 +2874,14 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             'is_disabled'     => $this->is_disabled,
             'date_last_login' => $this->date_last_login ? $this->date_last_login->format('Y-m-d H:i:s') : null,
             'primary_email'   => array('id' => $this->primary_email ? $this->primary_email->id : null, 'email' => $this->primary_email ? $this->primary_email->email : null),
-            'picture_url'     => $this->getPictureUrl(),
-            'picture_url_80'  => $this->getPictureUrl(80),
-            'picture_url_64'  => $this->getPictureUrl(64),
-            'picture_url_50'  => $this->getPictureUrl(50),
-            'picture_url_45'  => $this->getPictureUrl(45),
-            'picture_url_32'  => $this->getPictureUrl(32),
-            'picture_url_22'  => $this->getPictureUrl(22),
-            'picture_url_16'  => $this->getPictureUrl(16),
+            'picture_url'                   => $this->getPictureUrl(),
+            'picture_url_80'                => $this->getPictureUrl(80),
+            'picture_url_64'                => $this->getPictureUrl(64),
+            'picture_url_50'                => $this->getPictureUrl(50),
+            'picture_url_45'                => $this->getPictureUrl(45),
+            'picture_url_32'                => $this->getPictureUrl(32),
+            'picture_url_22'                => $this->getPictureUrl(22),
+            'picture_url_16'                => $this->getPictureUrl(16),
         );
 
         return $agent_data;
@@ -2933,8 +2932,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             'name'    => 'people',
             'indexes' => array(
                 'is_agent_idx'     => array( 'columns' => array( 0 => 'is_agent')),
-                'was_agent_idx'    => array( 'columns' => array( 0 => 'was_agent')),
-                'is_confirmed_idx' => array( 'columns' => array( 0 => 'is_confirmed')),
+                'was_agent_idx'                                    => array( 'columns' => array( 0 => 'was_agent')),
+                'is_confirmed_idx'                                                                 => array( 'columns' => array( 0 => 'is_confirmed')),
             ),
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
@@ -3028,7 +3027,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             'joinTable'    => array(
                 'name'               => 'agent_team_members',
                 'joinColumns'        => array(array( 'name' => 'person_id' )),
-                'inverseJoinColumns' => array(array( 'name' => 'team_id' )),
+                'inverseJoinColumns'                        => array(array( 'name' => 'team_id' )),
             ),
         ));
 

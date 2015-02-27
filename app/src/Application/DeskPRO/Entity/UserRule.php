@@ -199,9 +199,9 @@ class UserRule extends DomainObject
                  'fieldName'    => 'add_organization',
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
                  'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
-                 'mappedBy'     => null,
-                 'inversedBy'   => null,
-                 'joinColumns'  => array(
+                 'mappedBy'                => null,
+                 'inversedBy'              => null,
+                 'joinColumns'             => array(
                      0 => array(
                          'name'                 => 'add_organization_id',
                          'referencedColumnName' => 'id',

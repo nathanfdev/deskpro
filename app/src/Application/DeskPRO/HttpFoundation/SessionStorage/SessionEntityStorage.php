@@ -245,7 +245,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      * @param string $id A session ID
      *
      * @throws \RuntimeException If the session cannot be destroyed
-     * @return bool true, if the session was destroyed, otherwise an exception is thrown
+     * @return bool              true, if the session was destroyed, otherwise an exception is thrown
      *
      */
     public function destroy($id)
@@ -273,7 +273,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      * @param int $lifetime The lifetime of a session in seconds
      *
      * @throws \RuntimeException If any old sessions cannot be cleaned
-     * @return bool true
+     * @return bool              true
      *
      */
     public function gc($lifetime)
@@ -287,7 +287,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      * @param string $id A session ID
      *
      * @throws \RuntimeException If the session cannot be read
-     * @return string The session data if the session was read or created, otherwise an exception is thrown
+     * @return string            The session data if the session was read or created, otherwise an exception is thrown
      *
      */
     public function read($id)
@@ -314,7 +314,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
      * @param string $data A serialized chunk of session data
      *
      * @throws \RuntimeException If the session data cannot be written
-     * @return bool true, if the session was written, otherwise an exception is thrown
+     * @return bool              true, if the session was written, otherwise an exception is thrown
      *
      */
     public function write($id, $data)
@@ -436,7 +436,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         }
 
         $id                = $this->getId();
-        list($entity_id, ) = explode('-', $id, 2);
+        list($entity_id,)  = explode('-', $id, 2);
         $entity_id         = Util::baseDecode($entity_id, 'base36');
 
         return $entity_id;
@@ -468,7 +468,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             return;
         }
 
-        list($session_id, ) = explode('-', $sess_code, 2);
+        list($session_id,) = explode('-', $sess_code, 2);
 
         $alphabet = str_split('0123456789abcdefghijklmnopqrstuvwxyz');
         $base     = sizeof($alphabet);

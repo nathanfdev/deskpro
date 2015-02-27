@@ -36,9 +36,9 @@ use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\DeskPRO\Monolog\Logger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Escalations\EscalationExecutor;
-use Application\DeskPRO\Tickets\Escalations\EscalationsRunner;
 use Application\DeskPRO\Tickets\Escalations\EscalationTicketMatcher;
 use Application\DeskPRO\Tickets\Escalations\EscalationTicketMatcherTest;
+use Application\DeskPRO\Tickets\Escalations\EscalationsRunner;
 
 /**
  * Executes escalations.

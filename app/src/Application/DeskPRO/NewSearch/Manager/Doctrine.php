@@ -172,7 +172,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                          'download'     => 'downloads',
                          'feedback'     => 'feedback',
                          'news'         => 'news',
-                     ) as $type => $table) {
+                     ) as $type         => $table) {
                 $ids = $this->container->getDbRead()->fetchAllCol("
                     SELECT id
                     FROM $table

@@ -37,7 +37,7 @@ use Psr\Log\LoggerInterface;
  */
 abstract class AbstractCustomDefValueImporter extends AbstractValueImporter
 {
-//    /** @var string */
+    //    /** @var string */
 //    protected $data_table;
 //    /** @var string */
 //    protected $mapped_column;

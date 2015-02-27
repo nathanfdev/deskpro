@@ -1227,7 +1227,6 @@ class serve_file extends LoaderAbstract
 
         // Only shrink if it doesn't fit inside the box.
         if ($no_fit || $is_fit) {
-
             // If the image has a w/h of 1, then scaling with
             // fit will result in a dim of 0 when Imagine tries to scale
             if ($width < 2) {

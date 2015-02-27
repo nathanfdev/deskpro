@@ -109,7 +109,7 @@ $container->loadFromExtension('framework', array(
         'assets_base_urls' => 'CONFIG_HTTP',
     ),
     'validation' => array('enabled' => true),
-    'form'       => array('enabled' => true),
+    'form'                          => array('enabled' => true),
 ));
 
 // Monolog default logging, turn off unless specifically enabled (eg in some _dev configs)

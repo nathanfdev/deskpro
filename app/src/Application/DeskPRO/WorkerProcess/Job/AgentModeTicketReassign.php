@@ -76,7 +76,7 @@ class AgentModeTicketReassign extends AbstractJob
                             'ticket_id'    => $id,
                             'action_type'  => 'free',
                             'details'      => serialize(array('message' => 'Unassigned deleted agent')),
-                            'date_created' => date('Y-m-d H:i:s'),
+                            'date_created'                              => date('Y-m-d H:i:s'),
                         );
                     }
 
@@ -114,7 +114,7 @@ class AgentModeTicketReassign extends AbstractJob
                             'ticket_id'    => $id,
                             'action_type'  => 'free',
                             'details'      => serialize(array('message' => 'Unassigned agent that was converted to a user')),
-                            'date_created' => date('Y-m-d H:i:s'),
+                            'date_created'                              => date('Y-m-d H:i:s'),
                         );
                     }
 

@@ -59,8 +59,8 @@ class EditAgentType extends AbstractType
 
         $builder->add('zones', 'choice', array(
             'choices'  => array('admin' => 'admin', 'reports' => 'reports'),
-            'multiple' => true,
-            'required' => false,
+            'multiple'                  => true,
+            'required'                  => false,
         ));
 
         $builder->add('teams', 'entity', array(

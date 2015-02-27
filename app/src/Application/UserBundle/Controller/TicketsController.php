@@ -107,7 +107,6 @@ class TicketsController extends AbstractController
             ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person));
         } else {
             if ($this->person->organization && $this->person->organization_manager) {
-
                 // Managers can always see their org tickets, so dont show them
                 // tickets if they are of their own org because those will be on the org page
                 $tickets = $this->em->createQuery("

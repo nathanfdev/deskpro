@@ -78,7 +78,7 @@ class AgentImpersonateProvider implements AuthenticationProviderInterface
      * @param AgentImpersonateToken $token The TokenInterface instance to authenticate
      *
      * @throws AuthenticationException if the authentication fails
-     * @return AgentImpersonateToken An authenticated TokenInterface instance, never null
+     * @return AgentImpersonateToken   An authenticated TokenInterface instance, never null
      *
      */
     public function authenticate(TokenInterface $token)

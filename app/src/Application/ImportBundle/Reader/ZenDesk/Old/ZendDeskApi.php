@@ -351,7 +351,7 @@ class ZendDeskApi extends Zendesk
                     /** @var $r \Orb\Service\Zendesk\ApiResponse */
                     $r = $info['response'];
 
-                    list($ticket_id, ) = explode('-', $key);
+                    list($ticket_id,) = explode('-', $key);
 
                     $big_audits[$ticket_id] = array_merge($big_audits[$ticket_id], $r->get('audits'));
                 }
