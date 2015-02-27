@@ -56,9 +56,9 @@ class TaskReminders extends AbstractJob
             $send_time = '09:00';
         }
 
-        list ($hour, $min) = explode(':', $send_time);
-        $hour = (int)$hour;
-        $min  = (int)$min;
+        list($hour, $min) = explode(':', $send_time);
+        $hour = (int) $hour;
+        $min  = (int) $min;
 
         #------------------------------
         # Figure out which agents the current time is for
@@ -69,8 +69,8 @@ class TaskReminders extends AbstractJob
             /** @var $agent \Application\DeskPRO\Entity\Person */
 
             $t = $agent->getDateTime();
-            $hour_now = (int)$t->format('G');
-            $min_now  = (int)$t->format('i');
+            $hour_now = (int) $t->format('G');
+            $min_now  = (int) $t->format('i');
 
             if ($hour_now == $hour && $min_now >= $min) {
                 $this->getLogger()->logInfo(sprintf(
@@ -93,7 +93,6 @@ class TaskReminders extends AbstractJob
         $alerts = 0;
 
         foreach ($for_agents as $agent) {
-
             $agent->loadHelper('Agent');
             $team_ids = $agent->Agent->getTeamIds();
             if (!$team_ids) {
@@ -101,7 +100,7 @@ class TaskReminders extends AbstractJob
             }
 
             $today = $agent->getDateTime();
-            $today->setTime(0,0,0);
+            $today->setTime(0, 0, 0);
 
             $today_end = $agent->getDateTime();
             $today_end->setTime(23, 59, 59);
@@ -132,7 +131,7 @@ class TaskReminders extends AbstractJob
                 if (in_array($agent->id, $online_ids) && $agent->getPref('agent_notif.task_due.alert')) {
                     $tpl_line = App::getTemplating()->render('AgentBundle:Task:notify-row-reminder.html.twig', array(
                         'task' => $task,
-                        'person' => $agent
+                        'person' => $agent,
                     ));
 
                     $cm = new \Application\DeskPRO\Entity\ClientMessage();
@@ -140,7 +139,7 @@ class TaskReminders extends AbstractJob
                         'channel' => 'agent-notify.tasks',
                         'data' => array('row' => $tpl_line),
                         'for_person'        => $agent,
-                        'created_by_client' => 'sys'
+                        'created_by_client' => 'sys',
                     ));
                     App::getOrm()->persist($cm);
                     App::getOrm()->flush();
@@ -156,7 +155,7 @@ class TaskReminders extends AbstractJob
                     $message = App::getMailer()->createMessage();
                     $message->setTemplate('DeskPRO:emails_agent:task-due-reminder.html.twig', array(
                         'task' => $task,
-                        'person' => $agent
+                        'person' => $agent,
                     ));
                     $message->setToPerson($agent);
                     $message->setFrom($from_email, App::getSetting('core.deskpro_name'));
@@ -168,7 +167,7 @@ class TaskReminders extends AbstractJob
                 App::getDb()->insert('task_reminder_logs', array(
                     'task_id'   => $task->getId(),
                     'person_id' => $agent->getId(),
-                    'date_sent' => date('Y-m-d H:i:s')
+                    'date_sent' => date('Y-m-d H:i:s'),
                 ));
             }
         }

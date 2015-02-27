@@ -1,0 +1,155 @@
+<?php
+/**************************************************************************\
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at http://www.deskpro.com/license                           |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage
+ */
+
+namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
+
+use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
+use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
+use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
+use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
+
+class PortalController extends AbstractController
+{
+    /**
+     * @Tag(name="home", esi=true)
+     * @TagHttpCache()
+     */
+    public function homeAction(TagRequest $tag_request)
+    {
+        return $this->renderThemeView('Theme:Portal:Tag/home.html.twig');
+    }
+
+    /**
+     * @Tag(name="page_top", esi=true)
+     * @TagHttpCache()
+     */
+    public function topBarAction(TagRequest $tag_request)
+    {
+        /** @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager $language_manager */
+        $language_manager = $this->get('language_manager');
+
+        return $this->renderThemeView(
+            'Theme:Portal:Tag/top_bar.html.twig',
+            array(
+                'enabled_languages' => $language_manager->getEnabledLanguages(),
+                'current_language' => $language_manager->getLanguageStack()->getActive(),
+                'is_multi_language' => $language_manager->isMultiLanguagePortal(),
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="page_search_box", esi=true)
+     * @TagHttpCache()
+     */
+    public function topSearchAction(TagRequest $tag_request)
+    {
+        return $this->renderThemeView('Theme:Portal:Tag/top_search.html.twig');
+    }
+
+    /**
+     * @Tag(name="page_tabs", esi=true)
+     * @TagHttpCache()
+     */
+    public function topTabsAction(TagRequest $tag_request)
+    {
+        $path_parts = explode('/', ltrim($tag_request->getPathInfo(), '/'));
+
+        $tabs = $this->get('tabs_helper')->getTabsDisplay();
+
+        return $this->renderThemeView(
+            'Theme:Portal:Tag/top_tabs.html.twig',
+            array(
+                'url_starts_with' => isset($path_parts[0]) ? $path_parts[0] : null,
+                'tabs' => $tabs,
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="sidebar", esi=true)
+     * @TagHttpCache()
+     */
+    public function sidebarAction(TagRequest $tag_request)
+    {
+        return $this->renderThemeView('Theme:Portal:Tag/sidebar.html.twig');
+    }
+
+    /**
+     * @Tag(name="user_sidebar", esi=true, always_guest_inline=true)
+     */
+    public function userSidebarAction(TagRequest $tag_request)
+    {
+        if (!$user = $this->getUser()) {
+            $auth_manager = $this->get('dp_authentication_manager.user');
+
+            return $this->renderThemeView(
+                'Theme:Portal:Tag/sidebar_login.html.twig',
+                array(
+                    'login_text_button_usersources' => $auth_manager->getLoginTextButtonUsersources(),
+                    'login_icon_usersources' => $auth_manager->getLoginIconUsersources(),
+                    'show_forgot_password' => $auth_manager->isForgotPasswordVisible(),
+                    'show_remember_me' => $auth_manager->isRememberMeEnabled(),
+                    'show_login_form' => $auth_manager->isLoginFormVisible(),
+                    'show_auth' => $auth_manager->isAuthVisible(),
+                )
+            );
+        }
+
+        return $this->renderThemeView(
+            'Theme:Portal:Tag/sidebar_user.html.twig',
+            array(
+                'user' => $user,
+                'ticket_count' => $this->getTicketsDataService()->getTicketCount($user),
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="small_user_info", esi=true, always_guest_inline=true)
+     */
+    public function smallUserInfoAction(TagRequest $tag_request)
+    {
+        $user = $this->getUser();
+
+        return $this->renderThemeView(
+            'Theme:Portal:Tag/small_user_info.html.twig',
+            array(
+                'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
+                'ticket_count' => $user ? $this->getTicketsDataService()->getTicketCount($user) : 0,
+                'user' => $user,
+            )
+        );
+    }
+}

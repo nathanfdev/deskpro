@@ -66,18 +66,16 @@ class KbViewsHour extends AbstractTableOverviewStat
         $this->date_end   = $date_end;
     }
 
-
     /**
      * @return string[]
      */
     public function getTitles()
     {
-        $titles = array_combine(range(1, 23), range(1,23));
+        $titles = array_combine(range(1, 23), range(1, 23));
         $titles['0'] = '0';
 
         return $titles;
     }
-
 
     /**
      * @return int[]

@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Search\Searcher;
 
-
 /**
  * Interface for 'ContentSearcher'
  *

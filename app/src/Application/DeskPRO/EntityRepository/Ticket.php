@@ -117,7 +117,6 @@ class Ticket extends AbstractEntityRepository
         return $rec;
     }
 
-
     /**
      * Find a ticket ID and if it cant be found, try to find it through deleted records.
      *
@@ -143,7 +142,6 @@ class Ticket extends AbstractEntityRepository
 
         return $this->resolveDeletedTicket($del_ticket);
     }
-
 
     /**
      * Find a ticket ref and if it cant be found, try to find it through deleted records.
@@ -190,15 +188,18 @@ class Ticket extends AbstractEntityRepository
             $other_tickets = $this->getByIds($new_ticket_ids);
             if (count($other_tickets)) {
                 $ret = array();
-                foreach ($tickets as $t) { $ret[$t->getId()] = $t; }
-                foreach ($other_tickets as $t) { $ret[$t->getId()] = $t; }
+                foreach ($tickets as $t) {
+                    $ret[$t->getId()] = $t;
+                }
+                foreach ($other_tickets as $t) {
+                    $ret[$t->getId()] = $t;
+                }
                 $tickets = array_values($ret);
             }
         }
 
         return $tickets;
     }
-
 
     /**
      * @param \Application\DeskPRO\Entity\TicketDeleted $del_ticket
@@ -223,7 +224,6 @@ class Ticket extends AbstractEntityRepository
         return $ticket;
     }
 
-
     /**
      * Get tickets by specific ids
      *
@@ -243,7 +243,9 @@ class Ticket extends AbstractEntityRepository
             return false;
         });
 
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
         $tickets = $this->getEntityManager()->createQuery("
             SELECT t
@@ -263,7 +265,9 @@ class Ticket extends AbstractEntityRepository
      */
     public function getTicketsResultsFromIds(array $ids)
     {
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
 
         // Must be numerically indexed
         $ids = array_values($ids);
@@ -319,7 +323,6 @@ class Ticket extends AbstractEntityRepository
 +				) DESC
             ',
             array($ids), array(Connection::PARAM_INT_ARRAY));
-
         } elseif ($sort_by == 'status') {
             $ids = App::getDb()->fetchAllCol("
                 SELECT id
@@ -410,7 +413,7 @@ class Ticket extends AbstractEntityRepository
     public function countTicketsForPerson(Entity\Person $person, $status = null)
     {
         if ($status) {
-            $status = (array)$status;
+            $status = (array) $status;
             foreach ($status as &$s) {
                 $s = "'$s'";
             }
@@ -421,15 +424,15 @@ class Ticket extends AbstractEntityRepository
             $count = App::getDb()->fetchColumn("
                 SELECT COUNT(*)
                 FROM tickets
-                WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+                WHERE tickets.person_id = ? ".($status ? " AND tickets.status IN ($status) " : '')."
             ", array($person->id));
         } else {
             $count = App::getDb()->fetchColumn("
                 SELECT SUM(count)
                 FROM (
-                    SELECT COUNT(*) AS count FROM tickets WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+                    SELECT COUNT(*) AS count FROM tickets WHERE tickets.person_id = ? ".($status ? " AND tickets.status IN ($status) " : '')."
                     UNION
-                    SELECT COUNT(*) AS count FROM tickets_participants WHERE tickets_participants.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+                    SELECT COUNT(*) AS count FROM tickets_participants WHERE tickets_participants.person_id = ? ".($status ? " AND tickets.status IN ($status) " : '')."
                 ) a
             ", array($person->id, $person->id));
         }
@@ -449,7 +452,7 @@ class Ticket extends AbstractEntityRepository
     public function getCountInfoForPerson(Entity\Person $person, $status = null)
     {
         if ($status) {
-            $status = (array)$status;
+            $status = (array) $status;
             foreach ($status as &$s) {
                 $s = "'$s'";
             }
@@ -469,7 +472,7 @@ class Ticket extends AbstractEntityRepository
                     FROM tickets
                     LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
                     WHERE
-                        tickets.organization_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+                        tickets.organization_id = ? ".($status ? " AND tickets.status IN ($status) " : '')."
                         AND tickets.department_id IN (".implode(',', $allowed_ids).")
                 ", array($person->getOrganizationId()));
             }
@@ -490,7 +493,7 @@ class Ticket extends AbstractEntityRepository
             FROM DeskPRO:Ticket t INDEX BY t.id
             WHERE t.organization = ?1
             ORDER BY t.id DESC
-        ")->setParameters(array(1=>$org))->setMaxResults($limit)->execute();
+        ")->setParameters(array(1 => $org))->setMaxResults($limit)->execute();
 
         return $tickets;
     }
@@ -519,7 +522,7 @@ class Ticket extends AbstractEntityRepository
             SELECT t
             FROM DeskPRO:Ticket t INDEX BY t.id
             WHERE t.id IN (?1)
-        ")->setParameters(array(1=>$ids))->setMaxResults($num)->execute();
+        ")->setParameters(array(1 => $ids))->setMaxResults($num)->execute();
 
         $tickets = \Orb\Util\Arrays::orderIdArray($ids, $tickets);
 
@@ -536,7 +539,7 @@ class Ticket extends AbstractEntityRepository
     public function countTicketsForOrganization(Entity\Organization $org, $status = null)
     {
         if ($status) {
-            $status = (array)$status;
+            $status = (array) $status;
             foreach ($status as &$s) {
                 $s = "'$s'";
             }
@@ -546,7 +549,7 @@ class Ticket extends AbstractEntityRepository
         $count = App::getDb()->fetchColumn("
             SELECT COUNT(*)
             FROM tickets
-            WHERE organization_id = ? " . ($status ? " AND status IN ($status) " : '') . "
+            WHERE organization_id = ? ".($status ? " AND status IN ($status) " : '')."
         ", array($org['id']));
 
         return $count;
@@ -580,7 +583,7 @@ class Ticket extends AbstractEntityRepository
             FROM DeskPRO:Ticket t
             WHERE t.person = ?1 AND t.status IN(?2)
             ORDER BY t.id DESC
-        ")->setMaxResults($max)->execute(array(1=> $person, 2=> $status));
+        ")->setMaxResults($max)->execute(array(1 => $person, 2 => $status));
 
         return $tickets;
     }
@@ -623,13 +626,13 @@ class Ticket extends AbstractEntityRepository
             return false;
         }
 
-        $timesnip = date_create('-' . $secs_ago . ' seconds');
+        $timesnip = date_create('-'.$secs_ago.' seconds');
 
         $check = $this->getEntityManager()->createQuery("
             SELECT t
             FROM DeskPRO:Ticket t
             WHERE t.ticket_hash = ?1 AND t.date_created > ?2
-        ")->setParameters(array(1=> $ticket['ticket_hash'], 2=>$timesnip))->getResult();
+        ")->setParameters(array(1 => $ticket['ticket_hash'], 2 => $timesnip))->getResult();
         if (count($check)) {
             $check = array_shift($check);
         }
@@ -668,7 +671,7 @@ class Ticket extends AbstractEntityRepository
             $validating_email = $validating_email->getId();
         }
 
-        $validating_email = (int)$validating_email;
+        $validating_email = (int) $validating_email;
 
         return $this->getEntityManager()->getConnection()->fetchAllCol("
             SELECT id
@@ -684,7 +687,7 @@ class Ticket extends AbstractEntityRepository
             $email = $email->getId();
         }
 
-        $email = (int)$email;
+        $email = (int) $email;
 
         if ($for_validation) {
             return $this->getEntityManager()->getConnection()->fetchAllCol("
@@ -818,7 +821,7 @@ class Ticket extends AbstractEntityRepository
      */
     public function unlockOfflineAgentsTickets($offlineOffset = 120)
     {
-        $cut_ts = strtotime(- (int) $offlineOffset . ' seconds');
+        $cut_ts = strtotime(- (int) $offlineOffset.' seconds');
         $datecut = date('Y-m-d H:i:s', $cut_ts);
 
         $db = App::$container->getDb();
@@ -879,7 +882,7 @@ class Ticket extends AbstractEntityRepository
 
         $db = App::$container->getDb();
 
-        $cut_ts = strtotime(- (int) $offset . ' seconds');
+        $cut_ts = strtotime(- (int) $offset.' seconds');
         $datecut = date('Y-m-d H:i:s', $cut_ts);
 
         $ticket_ids = $db->fetchAllCol("
@@ -917,8 +920,8 @@ class Ticket extends AbstractEntityRepository
                         'ticket_id'       => $id,
                         'is_locked'       => false,
                         'locked_by'       => null,
-                        'via_person'      => null
-                    ))
+                        'via_person'      => null,
+                    )),
                 );
             }
 

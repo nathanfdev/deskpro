@@ -56,7 +56,6 @@ class ChangeObject implements ChangeInterface
      */
     private $is_same = false;
 
-
     /**
      * @param string $field_id
      * @param mixed  $old

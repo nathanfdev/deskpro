@@ -42,5 +42,4 @@ use Application\DeskPRO\ORM\Unprivate\UnprivateProxyFactory;
  */
 class ProxyFactory extends UnprivateProxyFactory
 {
-
 }

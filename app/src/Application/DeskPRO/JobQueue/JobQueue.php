@@ -55,7 +55,6 @@ class JobQueue
         $this->scheduler = $scheduler;
     }
 
-
     /**
      * Allows adding a job with just the job type and payload
      *
@@ -67,7 +66,6 @@ class JobQueue
     {
         $this->addJob(new Job($type, $data), $nextTry);
     }
-
 
     /**
      * allows adding a job directly
@@ -90,7 +88,6 @@ class JobQueue
         $this->saveJob($job);
     }
 
-
     /**
      * This will usually be run if the isReady() check returns false. Responsible for ensuring this job will attempt
      * to run sometime in the future.
@@ -103,13 +100,11 @@ class JobQueue
         $this->saveJob($job);
     }
 
-
     public function retry(Job $job, \DateTime $when)
     {
         $job->retry($when);
         $this->saveJob($job);
     }
-
 
     /**
      * Determines if the job is ready to run now
@@ -122,7 +117,6 @@ class JobQueue
         return $this->scheduler->isReady($job);
     }
 
-
     /**
      * Useful proxy if you only have the job ID
      *
@@ -134,7 +128,6 @@ class JobQueue
         return $this->isReady($this->getJob($id));
     }
 
-
     /**
      * Useful proxy if you only have the job ID
      *
@@ -145,7 +138,6 @@ class JobQueue
         $this->reschedule($this->getJob($id));
     }
 
-
     /**
      * Useful proxy if you only have the job ID
      *
@@ -155,7 +147,6 @@ class JobQueue
     {
         $this->retry($this->getJob($id), $when);
     }
-
 
     /**
      * Save a Job
@@ -168,7 +159,6 @@ class JobQueue
         $this->em->persist($job);
         $this->em->flush($job);
     }
-
 
     /**
      * Get a Job directly from the database (refreshes)

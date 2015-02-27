@@ -47,16 +47,15 @@ class PersonEmail extends AbstractEntityRepository
                 SELECT e
                 FROM DeskPRO:PersonEmail e
                 WHERE e.email = ?1
-            ")->setLockMode(LockMode::PESSIMISTIC_READ)->setParameters(array(1=> $email_address))->setMaxResults(1)->getOneOrNullResult();
+            ")->setLockMode(LockMode::PESSIMISTIC_READ)->setParameters(array(1 => $email_address))->setMaxResults(1)->getOneOrNullResult();
         } else {
             return $this->getEntityManager()->createQuery("
                 SELECT e
                 FROM DeskPRO:PersonEmail e
                 WHERE e.email = ?1
-            ")->setParameters(array(1=> $email_address))->setMaxResults(1)->getOneOrNullResult();
+            ")->setParameters(array(1 => $email_address))->setMaxResults(1)->getOneOrNullResult();
         }
     }
-
 
     /**
      * Count the number of email addresses at one or more arrays.
@@ -96,7 +95,6 @@ class PersonEmail extends AbstractEntityRepository
 
         return $results;
     }
-
 
     /**
      * Count the number of email addresses at one or more emails where the user belongs to a company

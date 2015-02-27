@@ -241,8 +241,6 @@ class ContentTypes
         '323'      => 'text/h323',
     );
 
-
-
     /**
      * Get an array of file extensions.
      *
@@ -253,8 +251,6 @@ class ContentTypes
         return array_keys(self::$ext_to_contenttype);
     }
 
-
-
     /**
      * Get an array of ext=>contenttype
      *
@@ -264,8 +260,6 @@ class ContentTypes
     {
         return self::$ext_to_contenttype;
     }
-
-
 
     /**
      * Get the contenttype for a given extension.
@@ -286,8 +280,6 @@ class ContentTypes
         return self::$ext_to_contenttype[$ext];
     }
 
-
-
     /**
      * Get the contenttype for a given filename or path.
      *
@@ -307,8 +299,6 @@ class ContentTypes
 
         return self::getContentTypeFromExtension($ext);
     }
-
-
 
     /**
      * Search for a suitable file extension for a given contenttype.
@@ -354,7 +344,6 @@ class ContentTypes
         return $found_keys;
     }
 
-
     /**
      * Get an array of image types
      *
@@ -371,7 +360,6 @@ class ContentTypes
         );
     }
 
-
     /**
      * Check to see if a content type is an image type
      *
@@ -382,7 +370,6 @@ class ContentTypes
     {
         return in_array($content_type, self::getImageContentTypes());
     }
-
 
     /**
      * @static
@@ -414,8 +401,6 @@ class ContentTypes
 
         return false;
     }
-
-
 
     /**
      * Checks a filename to see if its a file that hsould be displaeyd inline (images, mostly).

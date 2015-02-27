@@ -45,12 +45,10 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
      */
     private $settings;
 
-
     public function __construct(array $settings = array())
     {
         $this->setArray($settings);
     }
-
 
     public function toArray()
     {
@@ -80,7 +78,6 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
         return new \ArrayIterator($this->settings);
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -88,7 +85,6 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
     {
         return $this->has($offset);
     }
-
 
     /**
      * {@inheritdoc}
@@ -98,7 +94,6 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
         return $this->get($offset);
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -106,7 +101,6 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
     {
         throw new \LogicException('cannot set a setting in this way. instead, change the underlying source of the setting and get a fresh settings bag by forcing a reload of settings on the settings resolver');
     }
-
 
     /**
      * {@inheritdoc}
@@ -118,7 +112,6 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
         );
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -126,7 +119,6 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
     {
         return serialize($this->settings);
     }
-
 
     /**
      * {@inheritdoc}
@@ -136,7 +128,6 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
         return unserialize($serialized);
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -144,7 +135,6 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
     {
         return count($this->settings);
     }
-
 
     /**
      * Seperating setting names by dots "." is popular. We can use grouping to subset a settings bag and get the
@@ -168,7 +158,7 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
     {
         $ret = array();
 
-        $group_dot = $group . '.';
+        $group_dot = $group.'.';
         $len       = strlen($group_dot);
 
         foreach ($this->settings as $k => $v) {

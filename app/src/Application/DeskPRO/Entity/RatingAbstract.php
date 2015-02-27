@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
 
 /**
  * Basic ratings

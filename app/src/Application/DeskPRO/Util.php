@@ -33,6 +33,7 @@
  */
 
 namespace Application\DeskPRO;
+
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
@@ -43,7 +44,9 @@ use Orb\Util\Strings;
  */
 class Util
 {
-    final private function __construct() { /* This class is never instantiated */ }
+    final private function __construct()
+    { /* This class is never instantiated */
+    }
 
     /**
      * Create a new object
@@ -54,10 +57,12 @@ class Util
      */
     public static function simpleObjectFactory($classname_spec, array $options = null)
     {
-        if ($options === null) $options = array();
+        if ($options === null) {
+            $options = array();
+        }
 
         // A static factory like SomeClass::getSomeObject(options)
-        if (is_array($classname_spec) OR strpos($classname_spec, '::')) {
+        if (is_array($classname_spec) or strpos($classname_spec, '::')) {
             $obj = call_user_func($classname_spec, $options);
         } else {
             $obj = new $classname_spec($options);
@@ -65,7 +70,6 @@ class Util
 
         return $obj;
     }
-
 
     /**
      * Fixes quirky handling of UTF8 errors in native json_encode.
@@ -97,7 +101,6 @@ class Util
         }
     }
 
-
     /**
      * Tries to build an array of person data using an arbitrary array.
      * This is used in the default usersource handlers and scraper handlers.
@@ -110,7 +113,7 @@ class Util
         $person_data = array(
             'standard_fields' => array(),
             'emails' => array(),
-            'fields' => array()
+            'fields' => array(),
         );
 
         $keymap = array(
@@ -138,7 +141,7 @@ class Util
         $emailkeymap = array(
             'email', 'emails', 'email_address', 'emailaddress',
             'email_addresses', 'emailaddresses',
-            'mail'
+            'mail',
         );
 
         $scraper_emails = array();
@@ -182,7 +185,7 @@ class Util
             'seconds' => 1,
             'minutes' => 2,
             'hours' => 3,
-            'days' => 4
+            'days' => 4,
         );
         $max_unit_val = $max_unit && isset($max_unit_list[$max_unit]) ? $max_unit_list[$max_unit] : end($max_unit_list);
 
@@ -227,7 +230,6 @@ class Util
         return implode(', ', $parts);
     }
 
-
     /**
      * @param  string $format PHP date format
      * @return string The momentjs format
@@ -249,7 +251,7 @@ class Util
             'e' => 'zz', 'O' => 'ZZ', 'P' => 'Z',
             'c' => 'YYYY-MM-DDTHH:mm:ss.SSSZZ', 'r' => 'ddd, D MMM YYYY HH:mm:ss ZZ',
             'U' => 'X',
-            '^' => 'DD' // custom for jS below
+            '^' => 'DD', // custom for jS below
         );
 
         // There is no separate ordinal symbol with momentjs like with PHP
@@ -260,22 +262,22 @@ class Util
         $new_format = array();
         $escaping   = false;
 
-        for($i = 0; $i < $format_len; $i++) {
+        for ($i = 0; $i < $format_len; $i++) {
             $char = $format[$i];
-            if($char === '\\') {
+            if ($char === '\\') {
                 $i++;
-                if($escaping) {
+                if ($escaping) {
                     $new_format[] = $format[$i];
                 } else {
-                    $new_format[] = '\'' . $format[$i];
+                    $new_format[] = '\''.$format[$i];
                 }
                 $escaping = true;
             } else {
-                if($escaping) {
+                if ($escaping) {
                     $new_format[] = "'";
                     $escaping = false;
                 }
-                if(isset($php_sym[$char])) {
+                if (isset($php_sym[$char])) {
                     $new_format[] = $php_sym[$char];
                 } else {
                     $new_format[] = $char;

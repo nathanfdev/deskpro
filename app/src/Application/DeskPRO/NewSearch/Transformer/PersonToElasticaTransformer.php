@@ -41,7 +41,7 @@ class PersonToElasticaTransformer implements ModelToElasticaTransformerInterface
         foreach ($object->phone_numbers as $p) {
             $pn = $p->getPhoneNumber();
             if ($pn) {
-                $phones[] = "+" . $pn->getCountryCode() . " " . preg_replace('#[^0-9]#', '', $pn->getNationalNumber());
+                $phones[] = "+".$pn->getCountryCode()." ".preg_replace('#[^0-9]#', '', $pn->getNationalNumber());
             }
         }
 

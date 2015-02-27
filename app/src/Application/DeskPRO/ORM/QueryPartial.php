@@ -45,7 +45,9 @@ class QueryPartial
     /** @var int|null  */
     protected $max_results = null;
 
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public function setOrderBy($order_by, $order_dir)
     {

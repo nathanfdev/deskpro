@@ -60,7 +60,6 @@ class UsersourceUpgrader
      */
     private $options;
 
-
     /**
      * @param DeskproContainer $container
      * @param array            $us_info
@@ -73,7 +72,6 @@ class UsersourceUpgrader
         $this->type    = $us_info['source_type'];
         $this->options = unserialize($us_info['options']);
     }
-
 
     /**
      * Upgrade the usersource
@@ -126,7 +124,6 @@ class UsersourceUpgrader
         }
     }
 
-
     /**
      * @param  string      $package_name
      * @param  array       $app_settings
@@ -151,7 +148,6 @@ class UsersourceUpgrader
         return $app;
     }
 
-
     /**
      * @param string      $adapter_class
      * @param array       $adapter_settings
@@ -162,10 +158,9 @@ class UsersourceUpgrader
         $this->container->getDb()->update('usersources', array(
             'source_type' => $adapter_class,
             'options'     => json_encode($adapter_settings),
-            'app_id'      => $app ? $app->id : null
+            'app_id'      => $app ? $app->id : null,
         ), array('id' => $this->us_info['id']));
     }
-
 
     /**
      * Upgrade an ActiveDirectory source
@@ -192,7 +187,6 @@ class UsersourceUpgrader
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
     }
 
-
     /**
      * Upgrade a custom DB source
      */
@@ -211,7 +205,7 @@ class UsersourceUpgrader
                 'port'     => null,
                 'dbname'   => '',
                 'user'     => $o->get('db_username', ''),
-                'password' => $o->get('db_password', '')
+                'password' => $o->get('db_password', ''),
             ),
             'table'            => $o->get('table', ''),
             'field_id'         => $o->get('field_id', ''),
@@ -260,7 +254,6 @@ class UsersourceUpgrader
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
     }
 
-
     /**
      * @param  string $dsn
      * @return array
@@ -286,8 +279,10 @@ class UsersourceUpgrader
 
         $parts = explode(';', $info);
         foreach ($parts as $p) {
-            if (strpos($p, '=') === false) continue;
-            list ($name, $value) = explode('=', $p, 2);
+            if (strpos($p, '=') === false) {
+                continue;
+            }
+            list($name, $value) = explode('=', $p, 2);
             $name = trim($name);
             $value = trim($value);
 
@@ -296,7 +291,6 @@ class UsersourceUpgrader
 
         return $params;
     }
-
 
     /**
      * Upgrade an ezC source
@@ -313,7 +307,6 @@ class UsersourceUpgrader
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
     }
 
-
     /**
      * Upgrade a Facebook source
      */
@@ -329,7 +322,6 @@ class UsersourceUpgrader
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
     }
 
-
     /**
      * Upgrade a Google source
      */
@@ -344,7 +336,6 @@ class UsersourceUpgrader
         $app = $this->createApp($app_package_name, $app_settings);
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
     }
-
 
     /**
      * Upgrade an LDAP source
@@ -369,7 +360,6 @@ class UsersourceUpgrader
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
     }
 
-
     /**
      * Upgrade a phpBB2 or phpBB3 source
      */
@@ -389,7 +379,6 @@ class UsersourceUpgrader
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
     }
 
-
     /**
      * Upgrade a twitter source
      */
@@ -404,7 +393,6 @@ class UsersourceUpgrader
         $app = $this->createApp($app_package_name, $app_settings);
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
     }
-
 
     /**
      * Upgrade a XF source
@@ -436,7 +424,6 @@ class UsersourceUpgrader
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
     }
 
-
     /**
      * Upgrade a Joomla source
      */
@@ -465,7 +452,7 @@ class UsersourceUpgrader
             'url'      => $this->container->getSetting('Magento.url'),
             'api_user' => $this->container->getSetting('Magento.api_user'),
             'api_key'  => $this->container->getSetting('Magento.api_key'),
-            'sso_js'   => !empty($this->options['sso_js']) && $this->options['sso_js'] ? true : false
+            'sso_js'   => !empty($this->options['sso_js']) && $this->options['sso_js'] ? true : false,
         );
 
         // Should already have a magento app from previous upgrade step

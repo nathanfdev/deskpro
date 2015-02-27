@@ -45,7 +45,6 @@ class VerifyOrgManagers implements TicketSaveActionInterface
      */
     private $org_repos;
 
-
     /**
      * @param OrganizationRepository $org_repos
      */
@@ -53,7 +52,6 @@ class VerifyOrgManagers implements TicketSaveActionInterface
     {
         $this->org_repos = $org_repos;
     }
-
 
     /**
      * @param  Ticket                                     $ticket
@@ -71,12 +69,11 @@ class VerifyOrgManagers implements TicketSaveActionInterface
 
         if ($ticket->organization) {
             $managers = $this->org_repos->getManagers($ticket->organization);
-            foreach ($managers AS $manager) {
+            foreach ($managers as $manager) {
                 if ($manager->getPref('org.manager_auto_add')) {
                     $ticket->addParticipantPerson($manager);
                 }
             }
         }
     }
-
 }

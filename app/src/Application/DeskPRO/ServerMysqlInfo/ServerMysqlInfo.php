@@ -66,7 +66,7 @@ class ServerMysqlInfo
     {
         $schema_diff = Util::getUpdateSchemaSql();
         if ($schema_diff) {
-            $schema_diff = implode(";\n", $schema_diff) . ";";
+            $schema_diff = implode(";\n", $schema_diff).";";
         } else {
             $schema_diff = null;
         }

@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\People\ActivityLogger\ActionType;
 
-
 class NewCommentFeedback extends NewCommentAbstract
 {
     public function getDetails()

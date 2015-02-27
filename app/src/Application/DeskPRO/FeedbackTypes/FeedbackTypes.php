@@ -67,7 +67,6 @@ class FeedbackTypes
         $this->feedback_types = $this->em->getRepository('DeskPRO:FeedbackCategory')->getAll();
     }
 
-
     /**
      * Resets this repository so the next time data is requested form it, it will
      * be queried again.
@@ -97,7 +96,6 @@ class FeedbackTypes
     public function getNonAgentUserGroups($feedback_type)
     {
         if (is_int($feedback_type)) {
-
             $feedback_type = $this->getById($feedback_type);
         }
 
@@ -113,7 +111,6 @@ class FeedbackTypes
     public function getAgentUserGroups($feedback_type)
     {
         if (is_int($feedback_type)) {
-
             $feedback_type = $this->getById($feedback_type);
         }
 
@@ -162,9 +159,7 @@ class FeedbackTypes
         $feedback_types = $this->em->getRepository('DeskPRO:FeedbackCategory')->getByIds($newOrders);
 
         foreach ($newOrders as $id) {
-
             if (!isset($feedback_types[$id])) {
-
                 continue;
             }
 

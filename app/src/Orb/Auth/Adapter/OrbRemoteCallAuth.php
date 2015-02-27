@@ -116,8 +116,6 @@ class OrbRemoteCallAuth implements AdapterInterface
         $this->service_url = $service_url;
     }
 
-
-
     /**
      * Set the form data we'll pass to the remote provider.
      *
@@ -135,7 +133,7 @@ class OrbRemoteCallAuth implements AdapterInterface
      */
     public function setWithUserinfo($yes_or_no)
     {
-        $this->with_userinfo = (int)((bool)$yes_or_no);
+        $this->with_userinfo = (int) ((bool) $yes_or_no);
     }
 
     /**
@@ -156,7 +154,7 @@ class OrbRemoteCallAuth implements AdapterInterface
             $http->setParameterGet('orba_with_userinfo', 1);
         }
 
-        foreach ($this->form_data as $k=>$v) {
+        foreach ($this->form_data as $k => $v) {
             $http->setParameterPost('orba_data['.$k.']', $v);
         }
 
@@ -194,7 +192,9 @@ class OrbRemoteCallAuth implements AdapterInterface
      */
     public function getHttpClient()
     {
-        if ($this->http !== null) return $this->http;
+        if ($this->http !== null) {
+            return $this->http;
+        }
 
         $this->http = new \Zend\Http\Client();
 

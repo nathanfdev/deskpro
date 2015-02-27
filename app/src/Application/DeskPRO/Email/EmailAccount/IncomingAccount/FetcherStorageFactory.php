@@ -87,7 +87,6 @@ class FetcherStorageFactory
         );
     }
 
-
     /**
      * @param  Office365Config $config
      * @return Pop3Storage

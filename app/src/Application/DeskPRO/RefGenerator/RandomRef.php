@@ -63,7 +63,7 @@ class RandomRef implements RefGeneratorInterface
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM `$table` WHERE `$field` = ? LIMIT 1");
 
         do {
-            $ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU);
+            $ref = Strings::random(4, Strings::CHARS_ALPHA_IU).'-'.Strings::random(4, Strings::CHARS_NUM).'-'.Strings::random(4, Strings::CHARS_ALPHA_IU);
 
             $stmt->execute(array($ref));
             $count = $stmt->fetchColumn();

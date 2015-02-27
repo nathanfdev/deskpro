@@ -42,8 +42,8 @@ class UrlPackage extends BaseUrlPackage
     public function __construct($baseUrls = array(), $version = null, $format = null)
     {
         $real = array();
-        foreach ((array)$baseUrls as $burl) {
-            if (!$burl OR $burl == 'CONFIG_HTTP' OR $burl == 'CONFIG_SSL') {
+        foreach ((array) $baseUrls as $burl) {
+            if (!$burl or $burl == 'CONFIG_HTTP' or $burl == 'CONFIG_SSL') {
                 $type = $burl;
                 $burl = false;
                 if (!$type) {
@@ -59,9 +59,9 @@ class UrlPackage extends BaseUrlPackage
                 }
             }
 
-            if (!$burl AND App::has('request')) {
+            if (!$burl and App::has('request')) {
                 $request = App::get('request');
-                $burl = $request->getBasePath() . '/web';
+                $burl = $request->getBasePath().'/web';
             }
 
             if ($burl) {

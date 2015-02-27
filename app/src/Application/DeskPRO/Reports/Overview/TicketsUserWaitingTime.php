@@ -53,7 +53,6 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
         $this->grouping_field = $grouping_field;
     }
 
-
     /**
      * @return string[]
      */
@@ -79,7 +78,6 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
         return $titles;
     }
 
-
     /**
      * @return string[]
      */
@@ -98,7 +96,6 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
 
         return $this->grouping_field->getTitles($collect);
     }
-
 
     /**
      * @return int[]
@@ -154,7 +151,6 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
                 WHERE tickets.status IN ('awaiting_agent') AND tickets.is_hold = 0
                 GROUP BY time_group
             ";
-
 
             $this->logger->logDebug("[TicketsUserWaitingTime] $sql");
             $this->logger->startTimer('TicketsUserWaitingTime');

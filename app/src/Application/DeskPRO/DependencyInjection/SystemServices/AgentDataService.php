@@ -492,6 +492,7 @@ class AgentDataService
         }
 
         $this->preloadTeamMap();
+
         return isset($this->agent_to_teams[$agent_id][$team_id]);
     }
 

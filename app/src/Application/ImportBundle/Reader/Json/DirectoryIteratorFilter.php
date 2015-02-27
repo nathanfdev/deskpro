@@ -76,7 +76,7 @@ class DirectoryIteratorFilter extends \RecursiveFilterIterator
         }
 
         // Already done
-        if ($this->exclude_done && file_exists($current->getPath() . '.done')) {
+        if ($this->exclude_done && file_exists($current->getPath().'.done')) {
             return false;
         }
 

@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\People\PersonMerge\Property;
 
-
 use Application\DeskPRO\Entity\Person;
 
 /**

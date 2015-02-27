@@ -27,7 +27,7 @@
 
 namespace Application\DeskPRO\Entity\EventListener;
 
-use Application\ApiBundle\Request\RequestAuth;
+use Application\LegacyApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\LogEvent;

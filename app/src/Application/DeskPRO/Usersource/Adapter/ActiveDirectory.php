@@ -56,7 +56,6 @@ class ActiveDirectory extends AbstractAdapter
         );
     }
 
-
     /**
      * @return \Orb\Auth\Adapter\ActiveDirectory
      */
@@ -66,14 +65,12 @@ class ActiveDirectory extends AbstractAdapter
 
         if (App::getConfig('debug.enable_usersource_log') && $adapter instanceof \Orb\Log\Loggable) {
             $logger = new \Orb\Log\Logger();
-            $logger->addWriter(new \Orb\Log\Writer\Stream(dp_get_log_dir() . '/usersource_log.log'));
+            $logger->addWriter(new \Orb\Log\Writer\Stream(dp_get_log_dir().'/usersource_log.log'));
             $adapter->setLogger($logger);
         }
 
         return $adapter;
     }
-
-
 
     /**
      * Find a user identity just by an email address.
@@ -89,7 +86,9 @@ class ActiveDirectory extends AbstractAdapter
         /** @var \Orb\Auth\Adapter\ActiveDirectory $adapter */
         $adapter = $usersource->getAdapter()->getAuthAdapter();
 
-        if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput: $id_input");
+        if ($adapter->getLogger()) {
+            $adapter->getLogger()->logDebug("findIdentityByInput: $id_input");
+        }
 
         $adapter->setFormData(array(
             'username' => $id_input,
@@ -103,14 +102,17 @@ class ActiveDirectory extends AbstractAdapter
                 $rec_arr = $adapter->findRecordViaUsername($id_input);
             }
         } catch (\Exception $e) {
-            if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");
+            if ($adapter->getLogger()) {
+                $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");
+            }
             throw $e;
         }
 
         $raw_info = array();
         if ($rec_arr && isset($rec_arr['dn'])) {
-
-            if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findRecordViaEmail result: " . print_r($rec_arr,1));
+            if ($adapter->getLogger()) {
+                $adapter->getLogger()->logDebug("findRecordViaEmail result: ".print_r($rec_arr, 1));
+            }
 
             $raw_info = $rec_arr;
 
@@ -134,7 +136,8 @@ class ActiveDirectory extends AbstractAdapter
                 $auth->setUsername('__bogus__');
                 $auth->setPassword('__bogus__');
                 $auth->authenticate();
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
 
             /** @var $ldap \Zend\Ldap\Ldap */
             $ldap = $auth->getLdap();
@@ -142,9 +145,13 @@ class ActiveDirectory extends AbstractAdapter
             /** @var $rec \Zend\Ldap\Node */
             $rec = $ldap->getNode($rec_arr['dn']);
 
-            if ($adapter->getLogger()) $adapter->getLogger()->logDebug("getNode result: " . print_r($rec,1));
+            if ($adapter->getLogger()) {
+                $adapter->getLogger()->logDebug("getNode result: ".print_r($rec, 1));
+            }
         } else {
-            if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findRecordViaEmail result: null");
+            if ($adapter->getLogger()) {
+                $adapter->getLogger()->logDebug("findRecordViaEmail result: null");
+            }
         }
 
         if ($rec) {
@@ -164,7 +171,7 @@ class ActiveDirectory extends AbstractAdapter
             }
 
             if (isset($raw_info['first_name']) && isset($raw_info['last_name'])) {
-                $raw_info['name'] = $raw_info['first_name'] . ' ' . $raw_info['last_name'];
+                $raw_info['name'] = $raw_info['first_name'].' '.$raw_info['last_name'];
             } elseif ($rec->getAttribute('name')) {
                 $raw_info['name'] = $rec->getAttribute('name', 0);
             } elseif ($rec->getAttribute('cn')) {
@@ -180,7 +187,7 @@ class ActiveDirectory extends AbstractAdapter
             if ($rec->getAttribute('jpegPhoto')) {
                 $raw_info['picture_data'] = $rec->getAttribute('jpegPhoto', 0);
             } elseif ($rec->getAttribute('thumbnailPhoto')) {
-                $raw_info['picture_data'] =$rec->getAttribute('thumbnailPhoto', 0);
+                $raw_info['picture_data'] = $rec->getAttribute('thumbnailPhoto', 0);
             }
 
             if ($rec->getAttribute('telephoneNumber')) {
@@ -189,7 +196,9 @@ class ActiveDirectory extends AbstractAdapter
         }
 
         if ($raw_info) {
-            if ($adapter->getLogger()) $adapter->getLogger()->logDebug("RESULT: " . print_r($raw_info,1));
+            if ($adapter->getLogger()) {
+                $adapter->getLogger()->logDebug("RESULT: ".print_r($raw_info, 1));
+            }
 
             $identity = new Identity($raw_info['identity'], $raw_info);
 
@@ -206,7 +215,7 @@ class ActiveDirectory extends AbstractAdapter
     {
         return array(
             UsersourceInfo::CAPABILITY_FORM_LOGIN,
-            UsersourceInfo::CAPABILITY_FIND_IDENTITY
+            UsersourceInfo::CAPABILITY_FIND_IDENTITY,
         );
     }
 }

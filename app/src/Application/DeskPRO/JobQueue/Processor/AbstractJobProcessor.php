@@ -64,13 +64,11 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
     public function execute(array $job)
     {
         try {
-
             $this->touchJob($job);
 
             try {
                 $data = $this->getData($job);
             } catch (OptionsResolverException $e) {
-
                 // reject this because the payload data is invalid
                 $this->markRejected(
                     $job,
@@ -80,17 +78,13 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 );
 
                 return;
-
             }
 
             if ($this->process($data, $job)) {
                 $this->runSuccessHandler($job);
             }
-
         } catch (\Exception $e) {
-
             $this->runExceptionHandler($job, $e);
-
         }
     }
 
@@ -194,7 +188,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 'completed_status' => Job::STATUS_COMPLETE,
                 'status_code'      => $status_code,
                 'date_touch'       => new \DateTime(),
-                'job_id'           => $job['id']
+                'job_id'           => $job['id'],
             ),
             array(
                 'log_summary'      => 'string',
@@ -202,7 +196,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 'completed_status' => 'string',
                 'status_code'      => 'string',
                 'date_touch'       => 'datetime',
-                'job_id'           => 'integer'
+                'job_id'           => 'integer',
             )
         );
     }
@@ -234,7 +228,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 'completed_status' => Job::STATUS_REJECTED,
                 'status_code'      => $status_code,
                 'date_touch'       => new \DateTime(),
-                'job_id'           => $job['id']
+                'job_id'           => $job['id'],
             ),
             array(
                 'log_summary'      => 'string',
@@ -242,7 +236,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 'completed_status' => 'string',
                 'status_code'      => 'string',
                 'date_touch'       => 'datetime',
-                'job_id'           => 'integer'
+                'job_id'           => 'integer',
             )
         );
     }
@@ -275,7 +269,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 'error_status'   => Job::STATUS_ERROR,
                 'status_code'   => $status_code,
                 'date_touch'    => new \DateTime(),
-                'job_id'        => $job['id']
+                'job_id'        => $job['id'],
             ),
             array(
                 'log_summary'   => 'string',
@@ -283,7 +277,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 'error_status'   => 'string',
                 'status_code'   => 'string',
                 'date_touch'    => 'datetime',
-                'job_id'        => 'integer'
+                'job_id'        => 'integer',
             )
         );
     }
@@ -315,13 +309,13 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
                 'date_now' => new \DateTime(),
                 'date_retry' => $retry_date,
                 'waiting_status' => Job::STATUS_WAITING,
-                'job_id'   => $job['id']
+                'job_id'   => $job['id'],
             ),
             array(
                 'date_now' => 'datetime',
                 'date_retry' => 'datetime',
                 'waiting_status' => 'string',
-                'job_id'   => 'integer'
+                'job_id'   => 'integer',
             )
         );
     }
@@ -343,11 +337,11 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
             ',
             array(
                 'date_now' => new \DateTime(),
-                'job_id' => $job['id']
+                'job_id' => $job['id'],
             ),
             array(
                 'date_now' => 'datetime',
-                'job_id' => 'integer'
+                'job_id' => 'integer',
             )
         );
     }

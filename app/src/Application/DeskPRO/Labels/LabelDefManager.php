@@ -76,7 +76,6 @@ class LabelDefManager
         $this->db = $em->getConnection();
     }
 
-
     /**
      * Get an array of labels and their usage counts, ordered by $order_by
      *
@@ -106,7 +105,6 @@ class LabelDefManager
         return $ret;
     }
 
-
     /**
      * Get defined labels
      *
@@ -127,7 +125,10 @@ class LabelDefManager
         }
 
         $types = array_map(function ($t) {
-            if ($t == 'chat') $t = 'chat_conversations';
+            if ($t == 'chat') {
+                $t = 'chat_conversations';
+            }
+
             return $t;
         }, $types);
 
@@ -147,10 +148,10 @@ class LabelDefManager
         }
 
         foreach ($types as $t) {
-            $parts[] = 'SELECT DISTINCT(label) FROM ' . $this->db->quoteIdentifier('labels_' . $t);
+            $parts[] = 'SELECT DISTINCT(label) FROM '.$this->db->quoteIdentifier('labels_'.$t);
         }
 
-        $q = '(' . implode(') UNION (', $parts) . ')';
+        $q = '('.implode(') UNION (', $parts).')';
         $labels = $this->db->fetchAllCol($q, $params, $qtypes);
 
         return $labels;
@@ -160,7 +161,6 @@ class LabelDefManager
     {
         return $this->db->fetchAll('SELECT * FROM label_defs');
     }
-
 
     /**
      * @return array
@@ -185,7 +185,7 @@ class LabelDefManager
             $parts[] = "SELECT DISTINCT(label) AS label, '$t' AS label_type FROM labels_$t";
         }
 
-        $q = '(' . implode(') UNION (', $parts) . ')';
+        $q = '('.implode(') UNION (', $parts).')';
         foreach ($this->db->fetchAll($q) as $x) {
             if (!isset($x['label'])) {
                 $ret[$x['label']] = array();
@@ -196,7 +196,6 @@ class LabelDefManager
 
         return $ret;
     }
-
 
     /**
      * Get counts for all labels used for a type
@@ -211,7 +210,7 @@ class LabelDefManager
         if (!$types) {
             $types = array_keys(self::$types);
         } else {
-            $types = (array)$types;
+            $types = (array) $types;
         }
 
         foreach ($types as $t) {
@@ -220,7 +219,7 @@ class LabelDefManager
         }
 
         if (count($query) > 1) {
-            $query = "(" . implode(") UNION (", $query) . ")";
+            $query = "(".implode(") UNION (", $query).")";
         } else {
             $query = $query[0];
         }
@@ -230,13 +229,14 @@ class LabelDefManager
         $label_counts = array();
 
         foreach ($count_res as $r) {
-            if (!isset($label_counts[$r['label']])) $label_counts[$r['label']] = 0;
+            if (!isset($label_counts[$r['label']])) {
+                $label_counts[$r['label']] = 0;
+            }
             $label_counts[$r['label']] += $r['count'];
         }
 
         return $label_counts;
     }
-
 
     /**
      * Count usages of a label
@@ -252,7 +252,7 @@ class LabelDefManager
         if (!$types) {
             $types = array_keys(self::$types);
         } else {
-            $types = (array)$types;
+            $types = (array) $types;
         }
 
         foreach ($types as $t) {
@@ -263,7 +263,7 @@ class LabelDefManager
         }
 
         if (count($query) > 1) {
-            $query = "(" . implode(") UNION (", $query) . ")";
+            $query = "(".implode(") UNION (", $query).")";
         } else {
             $query = $query[0];
         }
@@ -278,7 +278,6 @@ class LabelDefManager
         return $count;
     }
 
-
     /**
      * Create a new label definition
      *
@@ -290,7 +289,7 @@ class LabelDefManager
         if (!$types) {
             $types = array_keys(self::$types);
         } else {
-            $types = (array)$types;
+            $types = (array) $types;
         }
 
         $this->db->beginTransaction();
@@ -310,7 +309,6 @@ class LabelDefManager
         }
     }
 
-
     /**
      * Delete a label definition, and all its usages.
      *
@@ -322,7 +320,7 @@ class LabelDefManager
         if (!$types) {
             $types = array_keys(self::$types);
         } else {
-            $types = (array)$types;
+            $types = (array) $types;
         }
 
         $this->db->beginTransaction();
@@ -344,7 +342,6 @@ class LabelDefManager
         return true;
     }
 
-
     /**
      * Rename a label
      *
@@ -357,7 +354,7 @@ class LabelDefManager
         if (!$types) {
             $types = array_keys(self::$types);
         } else {
-            $types = (array)$types;
+            $types = (array) $types;
         }
 
         $this->db->beginTransaction();
@@ -441,17 +438,29 @@ class LabelDefManager
                     }
 
                     $terms_new = $r['terms'];
-                    if ($t == 'tickets') $terms_new = $replace_label_arr($terms_new, array('ticket_label', 'label'));
-                    if ($t == 'persons') $terms_new = $replace_label_arr($terms_new, array('person_label'));
-                    if ($t == 'organizations') $terms_new = $replace_label_arr($terms_new, array('org_label'));
+                    if ($t == 'tickets') {
+                        $terms_new = $replace_label_arr($terms_new, array('ticket_label', 'label'));
+                    }
+                    if ($t == 'persons') {
+                        $terms_new = $replace_label_arr($terms_new, array('person_label'));
+                    }
+                    if ($t == 'organizations') {
+                        $terms_new = $replace_label_arr($terms_new, array('org_label'));
+                    }
                     if ($terms_new != $r['terms']) {
                         $changes['terms'] = $terms_new;
                     }
 
                     $terms_any_new = $r['terms_any'];
-                    if ($t == 'tickets') $terms_any_new = $replace_label_arr($terms_any_new, array('ticket_label', 'label'));
-                    if ($t == 'persons') $terms_any_new = $replace_label_arr($terms_any_new, array('person_label'));
-                    if ($t == 'organizations') $terms_any_new = $replace_label_arr($terms_any_new, array('org_label'));
+                    if ($t == 'tickets') {
+                        $terms_any_new = $replace_label_arr($terms_any_new, array('ticket_label', 'label'));
+                    }
+                    if ($t == 'persons') {
+                        $terms_any_new = $replace_label_arr($terms_any_new, array('person_label'));
+                    }
+                    if ($t == 'organizations') {
+                        $terms_any_new = $replace_label_arr($terms_any_new, array('org_label'));
+                    }
                     if ($terms_any_new != $r['terms']) {
                         $changes['terms_any'] = $terms_any_new;
                     }
@@ -470,12 +479,17 @@ class LabelDefManager
                         OR terms LIKE '%\"person_label\"%'
                 ");
                 foreach ($filters as $r) {
-
                     $changes = array();
                     $terms_new = $r['terms'];
-                    if ($t == 'tickets') $terms_new = $replace_label_arr($terms_new, array('ticket_label', 'label'));
-                    if ($t == 'persons') $terms_new = $replace_label_arr($terms_new, array('person_label'));
-                    if ($t == 'organizations') $terms_new = $replace_label_arr($terms_new, array('org_label'));
+                    if ($t == 'tickets') {
+                        $terms_new = $replace_label_arr($terms_new, array('ticket_label', 'label'));
+                    }
+                    if ($t == 'persons') {
+                        $terms_new = $replace_label_arr($terms_new, array('person_label'));
+                    }
+                    if ($t == 'organizations') {
+                        $terms_new = $replace_label_arr($terms_new, array('org_label'));
+                    }
                     if ($terms_new != $r['terms']) {
                         $changes['terms'] = $terms_new;
                     }

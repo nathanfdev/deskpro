@@ -16,6 +16,7 @@ require_once DP_ROOT.'/src/Orb/Util/ClassLoader.php';
 $loader = new \Orb\Util\ClassLoader();
 
 $loader->registerNamespaces(array(
+    'DeskPRO'            => DP_ROOT.'/src',
     'Application'        => DP_ROOT.'/src',
     'Cloud'              => DP_ROOT.'/src',
     'Bundle'             => DP_ROOT.'/src',

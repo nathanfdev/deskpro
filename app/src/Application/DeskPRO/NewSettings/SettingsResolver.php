@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\NewSettings;
 
-
 use Application\DeskPRO\Cache\CacheAdapterInterface;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\Brand;
@@ -67,7 +66,6 @@ class SettingsResolver
      */
     private $brandSettingsLoader;
 
-
     public function __construct(array $loaders, CacheAdapterInterface $cache, SettingsLoaderInterface $brandSettingsLoader)
     {
         $this->loaders = $loaders;
@@ -80,7 +78,6 @@ class SettingsResolver
     {
         return $this->loaders;
     }
-
 
     /**
      * @param  bool        $force
@@ -130,7 +127,7 @@ class SettingsResolver
             $brand_id = 0;
         }
 
-        $cacheKey = static::CACHE_KEY_BRAND_PREFIX . '.brand' . $brand_id;
+        $cacheKey = static::CACHE_KEY_BRAND_PREFIX.'.brand'.$brand_id;
 
         if ($force) {
             $this->cache->delete($cacheKey);
@@ -151,7 +148,6 @@ class SettingsResolver
             }
         );
     }
-
 
     /**
      * @param  bool        $force
@@ -186,7 +182,6 @@ class SettingsResolver
             }
         );
     }
-
 
     public function setVirtual($setting, $callable)
     {

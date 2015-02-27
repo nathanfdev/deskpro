@@ -72,7 +72,7 @@ class ContextualChoiceType extends ChoiceType
         $resolver
             ->setRequired(array('context'))
             ->setDefaults(array(
-                'allow_edit' => isset($options['allow_edit']) ? $options['allow_edit'] : false
+                'allow_edit' => isset($options['allow_edit']) ? $options['allow_edit'] : false,
             ))
         ;
     }
@@ -133,7 +133,6 @@ class ContextualChoiceType extends ChoiceType
         $editable = $form->getConfig()->getOption('allow_edit');
 
         if ($editable && !empty($data['custom_choice'])) {
-
             /** @var EntityChoiceList $choices */
             $choices = $form->get('value')->getConfig()->getOption('choice_list')->getChoices();
             $this->handleCustomChoice($form, $choices, $data);

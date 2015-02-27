@@ -60,7 +60,6 @@ class GeoIpPhp extends AbstractGeoIp
         }
     }
 
-
     /**
      * Add a database file
      *
@@ -71,7 +70,6 @@ class GeoIpPhp extends AbstractGeoIp
     {
         $this->dbs[$type] = $path;
     }
-
 
     /**
      * @param  string $type
@@ -86,7 +84,6 @@ class GeoIpPhp extends AbstractGeoIp
         return $this->db_handles[$type];
     }
 
-
     /**
      * @param  string $type
      * @return bool
@@ -95,7 +92,6 @@ class GeoIpPhp extends AbstractGeoIp
     {
         return isset($this->dbs[$type]);
     }
-
 
     /**
      * @param  string $host
@@ -132,7 +128,6 @@ class GeoIpPhp extends AbstractGeoIp
                         $rec[$prop] = null;
                     }
                 }
-
             } elseif ($this->hasDb(\GEOIP_COUNTRY_EDITION)) {
                 $db = $this->getDbHandle(\GEOIP_COUNTRY_EDITION);
 
@@ -160,7 +155,7 @@ class GeoIpPhp extends AbstractGeoIp
 
         $this->last = array(
             $host,
-            $rec
+            $rec,
         );
 
         if ($what === null) {

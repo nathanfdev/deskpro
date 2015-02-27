@@ -63,7 +63,6 @@ abstract class AbstractBuild
      */
     abstract public function updateSourcePhrases($section, $category, $source_file = null);
 
-
     /**
      * @return \Orb\Log\Logger
      */
@@ -76,7 +75,6 @@ abstract class AbstractBuild
         return $this->logger;
     }
 
-
     /**
      * @param \Orb\Log\Logger $logger
      */
@@ -84,7 +82,6 @@ abstract class AbstractBuild
     {
         $this->logger = $logger;
     }
-
 
     /**
      * @return LangPackInfo
@@ -98,7 +95,6 @@ abstract class AbstractBuild
         return $this->langinfo;
     }
 
-
     /**
      * @param LangPackInfo $langinfo
      */
@@ -106,7 +102,6 @@ abstract class AbstractBuild
     {
         $this->langinfo = $langinfo;
     }
-
 
     /**
      * Returns a diff of changed, added and removed phrase IDs
@@ -118,15 +113,15 @@ abstract class AbstractBuild
      */
     public function writeLangFile($id, $section, $category, array $phrases)
     {
-        $dir = $this->getLangPackInfo()->getLangDir() . '/' . $id . '/' . $section;
+        $dir = $this->getLangPackInfo()->getLangDir().'/'.$id.'/'.$section;
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
 
-        $file = $dir . '/' . $category . '.php';
+        $file = $dir.'/'.$category.'.php';
 
         if (file_exists($file)) {
-            $exist = include($file);
+            $exist = include $file;
             unlink($file);
         } else {
             $exist = array();
@@ -135,11 +130,10 @@ abstract class AbstractBuild
         $diff = array(
             'changed' => array(),
             'added'   => array(),
-            'removed' => array()
+            'removed' => array(),
         );
 
         foreach ($phrases as $phrase_id => $string) {
-
             if (!isset($exist[$phrase_id])) {
                 $diff['added'][] = $phrase_id;
             } elseif (trim($exist[$phrase_id]) != trim($string)) {
@@ -167,11 +161,10 @@ abstract class AbstractBuild
         file_put_contents($file, $php);
         chmod($file, 0644);
 
-        $this->getLogger()->logInfo('Wrote file: ' . $file);
+        $this->getLogger()->logInfo('Wrote file: '.$file);
 
         return $diff;
     }
-
 
     /**
      * Build all languages
@@ -193,7 +186,6 @@ abstract class AbstractBuild
         return $diff;
     }
 
-
     /**
      * Build a language
      *
@@ -205,7 +197,7 @@ abstract class AbstractBuild
         $diff = array(
             'changed' => array(),
             'added'   => array(),
-            'removed' => array()
+            'removed' => array(),
         );
 
         foreach ($this->getLangPackInfo()->getDefaultSections() as $section) {
@@ -223,7 +215,6 @@ abstract class AbstractBuild
         return $diff;
     }
 
-
     /**
      * Updates all sources for all sections and categories
      */
@@ -238,7 +229,6 @@ abstract class AbstractBuild
         }
     }
 
-
     /**
      * Clears out a lang from the filesystem.
      *
@@ -246,7 +236,7 @@ abstract class AbstractBuild
      */
     public function clearLang($id)
     {
-        $dir = $this->getLangPackInfo()->getLangDir() . '/' . $id;
+        $dir = $this->getLangPackInfo()->getLangDir().'/'.$id;
 
         // Nothing to do
         if (!is_dir($dir)) {

@@ -61,7 +61,6 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
         $this->consumer_secret = $consumer_secret;
     }
 
-
     /**
      * @param \Orb\Log\Logger $logger
      */
@@ -70,7 +69,6 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
         $this->logger = $logger;
     }
 
-
     /**
      * @return \Orb\Log\Logger
      */
@@ -78,7 +76,6 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
     {
         return $this->logger;
     }
-
 
     /**
      * Initialize the auth process by setting state, and returning a redirect result.
@@ -112,8 +109,6 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
 
         return $result;
     }
-
-
 
     /**
      * Process the callback and return a final result.
@@ -151,7 +146,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
 
         $account_data = @json_decode($response->getBody(), true);
 
-        if (!$account_data OR !isset($account_data['id'])) {
+        if (!$account_data or !isset($account_data['id'])) {
             if ($this->logger) {
                 $this->logger->log("[Twitter] authenticateCallback failed_verify_credentials", 'DEBUG');
             }
@@ -192,7 +187,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
             $has_set_http_client = true;
             $httpClient = new \Zend\Http\Client(null, array(
                 'adapter' => 'Zend\Http\Client\Adapter\Curl',
-                'sslverifypeer' => false
+                'sslverifypeer' => false,
             ));
             OAuth::setHttpClient($httpClient);
         }
@@ -206,8 +201,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
             'callbackUrl'    => $this->getCallbackUrl(),
             'siteUrl'        => 'https://api.twitter.com/oauth',
             'consumerKey'    => $this->consumer_key,
-            'consumerSecret' => $this->consumer_secret
+            'consumerSecret' => $this->consumer_secret,
         );
     }
-
 }

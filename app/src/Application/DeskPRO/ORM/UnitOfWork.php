@@ -87,7 +87,6 @@ class UnitOfWork extends DoctrineUnitOfWork
         $this->enable_preload_set[$classname] = 1;
     }
 
-
     /**
      * Marks a repository as prelaoded
      *
@@ -100,7 +99,6 @@ class UnitOfWork extends DoctrineUnitOfWork
 
         $this->loaded_sets[$classname] = true;
     }
-
 
     /**
      * Load the full set of a particular entity

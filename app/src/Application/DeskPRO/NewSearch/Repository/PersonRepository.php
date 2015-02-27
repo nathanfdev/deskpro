@@ -17,7 +17,7 @@ class PersonRepository extends AbstractRepository implements WithLabelsInterface
      */
     protected $highlightFields = array(
         'name'   => array('fragment_size' => 100),
-        'emails' => array('fragment_size' => 100, 'number_of_fragments' => 1)
+        'emails' => array('fragment_size' => 100, 'number_of_fragments' => 1),
     );
 
     /**

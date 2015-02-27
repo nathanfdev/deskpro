@@ -40,7 +40,6 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\OptionsArray;
-use Orb\Util\Util;
 use Orb\Util\WorkHoursSet;
 
 /**
@@ -64,7 +63,6 @@ class CheckWorkingHours extends AbstractTriggerTerm
 
         return $options;
     }
-
 
     /**
      * {@inheritDoc}
@@ -102,7 +100,7 @@ class CheckWorkingHours extends AbstractTriggerTerm
             $working_hours->get('holidays', array())
         );
 
-        $context->getLogger()->debug('[CheckWorkingHours] Config: ' . Arrays::implodeTemplate($working_hours->all(), '{KEY}: {VAL}, '));
+        $context->getLogger()->debug('[CheckWorkingHours] Config: '.Arrays::implodeTemplate($working_hours->all(), '{KEY}: {VAL}, '));
 
         try {
             $tz = new \DateTimeZone($working_hours->get('timezone', 'UTC'));

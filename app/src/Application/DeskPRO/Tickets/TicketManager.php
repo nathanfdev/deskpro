@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\Tickets;
 
-use Application\ApiBundle\Request\RequestAuth;
+use Application\LegacyApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Person;
@@ -87,7 +87,6 @@ class TicketManager
      */
     private $auto_vars = array();
 
-
     /**
      * @param DeskproContainer $container
      */
@@ -125,7 +124,6 @@ class TicketManager
         $this->setAutoContextVar('custom_field_manager', $container->getCustomFieldManager());
     }
 
-
     /**
      * Clears auto context vars
      */
@@ -133,7 +131,6 @@ class TicketManager
     {
         $this->auto_vars = array();
     }
-
 
     /**
      * Adds an array of vars to auto context vars
@@ -145,7 +142,6 @@ class TicketManager
         $this->auto_vars = array_merge($this->auto_vars, $vars);
     }
 
-
     /**
      * Gets array of currently set context vars
      *
@@ -155,7 +151,6 @@ class TicketManager
     {
         return $this->auto_vars;
     }
-
 
     /**
      * Set an auto context var
@@ -168,7 +163,6 @@ class TicketManager
         $this->auto_vars[$k] = $v;
     }
 
-
     /**
      * Unset an auto context var
      * @param string $k
@@ -177,7 +171,6 @@ class TicketManager
     {
         unset($this->auto_vars[$k]);
     }
-
 
     /**
      * Create a new ticket object. When you are ready to persist it, call saveTicket().
@@ -196,7 +189,7 @@ class TicketManager
             $ticket->ref = $ref_gen->generateReference('DeskPRO:Ticket');
         } catch (\Exception $e) {
             KernelErrorHandler::logException($e);
-            $ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
+            $ref = Strings::random(4, Strings::CHARS_ALPHA_IU).'-'.Strings::random(4, Strings::CHARS_NUM).'-'.Strings::random(4, Strings::CHARS_ALPHA_IU).'-'.date('ymd');
             $ticket->ref = $ref;
         }
 
@@ -204,7 +197,6 @@ class TicketManager
 
         return $ticket;
     }
-
 
     /**
      * Finds a ticket and returns it.
@@ -226,7 +218,6 @@ class TicketManager
         return $ticket;
     }
 
-
     /**
      * Disables auto-ticket processing on the ticket. This means you should save the ticket
      * via $this->saveTicket().
@@ -241,7 +232,6 @@ class TicketManager
         $ticket->disableAutoTicketProcess();
     }
 
-
     /**
      * Re-enables auto-ticket processing on the ticket.
      *
@@ -254,7 +244,6 @@ class TicketManager
     {
         $ticket->enableAutoTicketProcess();
     }
-
 
     /**
      * @param  Ticket                   $ticket
@@ -318,7 +307,7 @@ class TicketManager
         foreach ($this->save_actions as $action) {
             $context->getLogger()->info(sprintf("[TicketManager:saveaction] %s", Util::getBaseClassname($action)));
             if ($action instanceof TicketSaveActions\ErrorCheckedInterface) {
-                try{
+                try {
                     $action->processTicket($ticket, $context);
                 } catch (\Exception $e) {
                     KernelErrorHandler::logException($e);
@@ -340,7 +329,7 @@ class TicketManager
         foreach ($this->post_save_actions as $action) {
             $context->getLogger()->info(sprintf("[TicketManager:postsaveaction] %s", Util::getBaseClassname($action)));
             if ($action instanceof TicketSaveActions\ErrorCheckedInterface) {
-                try{
+                try {
                     $action->processTicket($ticket, $context);
                 } catch (\Exception $e) {
                     KernelErrorHandler::logException($e);
@@ -358,7 +347,7 @@ class TicketManager
 
             $agent_alert_action = new SendAgentAlert(array(
                 'agent_ids'   => array('notify_list'),
-                'ticket_logs' => $logs
+                'ticket_logs' => $logs,
             ));
             $agent_alert_action->setContainer($this->container);
             $agent_alert_action->applyAction($ticket, $context);
@@ -372,8 +361,8 @@ class TicketManager
                 'data' => serialize(array(
                     'ticket_id'      => $ticket->getId(),
                     'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
-                    'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null
-                ))
+                    'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
+                )),
             ));
         }
 
@@ -386,8 +375,8 @@ class TicketManager
                     'ticket_id'       => $ticket->getId(),
                     'is_locked'       => $ticket->getIsLocked(),
                     'locked_by'       => $ticket->locked_by_agent ? $ticket->locked_by_agent->id : null,
-                    'via_person'      => $context->getPersonContext() ? $context->getPersonContext()->getId() : null
-                ))
+                    'via_person'      => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
+                )),
             ));
         }
 
@@ -418,7 +407,7 @@ class TicketManager
                 try {
                     $blob = $this->blob_storage->createBlobRecordFromString(
                         $log_text,
-                        'ticket-manager.' . date('Y-m-d.H-i-s') . '.' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '.log',
+                        'ticket-manager.'.date('Y-m-d.H-i-s').'.'.Strings::random(4, Strings::CHARS_ALPHA_IU).'.log',
                         'plain/text',
                         array('tag' => 'logs.ticket_proc_log')
                     );
@@ -432,7 +421,7 @@ class TicketManager
                         $this->db->insert('ticket_proc_log', array(
                             'ticket_id'    => $ticket->id,
                             'blob_id'      => $blob->id,
-                            'date_created' => date('Y-m-d H:i:s')
+                            'date_created' => date('Y-m-d H:i:s'),
                         ));
                     } catch (\Exception $e) {
                         KernelErrorHandler::logException($e);
@@ -444,7 +433,6 @@ class TicketManager
         $ticket->resetStateChangeRecorder();
         $ticket->__dp_last_process_save = $ticket->getStateChangeRecorder()->getStateVersion();
     }
-
 
     /**
      * @param  Person                   $agent
@@ -486,7 +474,6 @@ class TicketManager
         return $context;
     }
 
-
     /**
      * @param  Person                   $user
      * @param $event_type
@@ -520,7 +507,6 @@ class TicketManager
         return $context;
     }
 
-
     /**
      * @param  string                   $event_type
      * @param  string                   $event_method
@@ -537,24 +523,23 @@ class TicketManager
         return $context;
     }
 
+    /**
+     * @param  AppInstance     $app
+     * @param  string          $event_method
+     * @param  array           $event_method_options
+     * @return ExecutorContext
+     */
+    public function createAppExecutorContext(AppInstance $app, $event_method = 'general', array $event_method_options = array())
+    {
+        $context = new ExecutorContext($this->createNewLogger());
+        $context->getVars()->setArray($this->auto_vars);
+        $context->setEventType('update');
+        $context->setEventMethod($app->package->name.'.'.$app->id.'.'.$event_method, $event_method_options);
+
+        return $context;
+    }
 
     /**
-	 * @param AppInstance $app
-	 * @param string $event_method
-	 * @param array $event_method_options
-	 * @return ExecutorContext
-	 */
-	public function createAppExecutorContext(AppInstance $app, $event_method = 'general', array $event_method_options = array())
-	{
-		$context = new ExecutorContext($this->createNewLogger());
-		$context->getVars()->setArray($this->auto_vars);
-		$context->setEventType('update');
-		$context->setEventMethod($app->package->name . '.' . $app->id . '.' . $event_method, $event_method_options);
-		return $context;
-	}
-
-
-	/**
      * @return Logger
      */
     protected function createNewLogger()
@@ -564,7 +549,7 @@ class TicketManager
 
         if ($logfile = dp_get_config('debug.enable_ticket_log')) {
             if ($logfile === true || $logfile === 1 || $logfile === '1' || $logfile === "true") {
-                $logfile = dp_get_log_dir() . '/ticket.log';
+                $logfile = dp_get_log_dir().'/ticket.log';
             }
             $stream = new StreamHandler($logfile);
             $logger->pushHandler($stream);

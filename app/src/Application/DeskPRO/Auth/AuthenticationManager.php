@@ -325,23 +325,23 @@ class AuthenticationManager
         return $this->isDeskPROEnabled();
     }
 
-	public function isDeskPROEnabled($interface = null)
+    public function isDeskPROEnabled($interface = null)
     {
-		if (null === $interface) { // if we have a usersource that doesn't have an app (which always means the DeskPRO usersource)
+        if (null === $interface) { // if we have a usersource that doesn't have an app (which always means the DeskPRO usersource)
         foreach ($this->usersourcesForInterface as $usersource) {
             if ($usersource->app === null) {
                 return true;
             }
         }
 
-        return false;
+            return false;
+        }
+
+        // clone the auth manager except make it for the specific interface, not the default
+        $authManager = $this->cloneForInterface($interface);
+
+        return $authManager->isDeskPROEnabled();
     }
-
-		// clone the auth manager except make it for the specific interface, not the default
-		$authManager = $this->cloneForInterface($interface);
-
-		return $authManager->isDeskPROEnabled();
-	}
 
     /*********************************************
     #------------------------------

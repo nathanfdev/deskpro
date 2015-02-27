@@ -586,7 +586,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         );
         $metadata->mapOneToMany(array(
             'fieldName' => 'slug_history', 'targetEntity' => 'Application\DeskPRO\Entity\DownloadSlugHistory',
-            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'download'
+            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'download',
         ));
 
         $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');

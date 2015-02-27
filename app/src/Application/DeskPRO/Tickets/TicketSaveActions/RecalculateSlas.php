@@ -53,8 +53,6 @@ class RecalculateSlas implements TicketSaveActionInterface, ErrorCheckedInterfac
      */
     private $action_applicator;
 
-
-
     /**
      * @param EntityManager             $em
      * @param ActionApplicatorInterface $action_applicator
@@ -64,7 +62,6 @@ class RecalculateSlas implements TicketSaveActionInterface, ErrorCheckedInterfac
         $this->em = $em;
         $this->action_applicator = $action_applicator;
     }
-
 
     /**
      * @param  Ticket                   $ticket

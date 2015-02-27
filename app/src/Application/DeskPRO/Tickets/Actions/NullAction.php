@@ -42,7 +42,6 @@ class NullAction extends AbstractAction implements ActionInterface, MacroActionI
 {
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-
     }
 
     public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
@@ -52,6 +51,5 @@ class NullAction extends AbstractAction implements ActionInterface, MacroActionI
 
     public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
-
     }
 }

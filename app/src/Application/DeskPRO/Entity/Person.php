@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
-use Application\FormBundle\Collection\CustomDataCollection;
+use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -644,7 +644,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
     public function getCustomDataCollection()
     {
-        return $this->cdc = ($this->cdc ? : new CustomDataCollection($this->custom_data ? $this->custom_data : new ArrayCollection(), $this));
+        return $this->cdc = ($this->cdc ?: new CustomDataCollection($this->custom_data ? $this->custom_data : new ArrayCollection(), $this));
     }
 
     /**
@@ -896,8 +896,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getDisplayName($id_fallback = true)
     {
-        if ($this['first_name'] AND $this['last_name']) {
-            return $this['first_name'] . ' ' . $this['last_name'];
+        if ($this['first_name'] and $this['last_name']) {
+            return $this['first_name'].' '.$this['last_name'];
         } elseif ($this['name']) {
             return $this['name'];
         } elseif ($this['last_name']) {
@@ -979,11 +979,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $name = @htmlspecialchars($this->getDisplayName(), ENT_QUOTES, 'UTF-8');
 
         $display = array();
-        $display[] = '<span class="contact-name">' . $name . '</span>';
+        $display[] = '<span class="contact-name">'.$name.'</span>';
 
         if ($this->getPrimaryEmailAddress() && $name != $this->getPrimaryEmailAddress()) {
             $email = @htmlspecialchars("<{$this->getPrimaryEmailAddress()}>", ENT_QUOTES, 'UTF-8');
-            $display[] = '<span class="contact-email">' . $email . '</span>';
+            $display[] = '<span class="contact-email">'.$email.'</span>';
         }
 
         return implode(' ', $display);
@@ -2903,10 +2903,10 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->setPrimaryTable(array(
             'name' => 'people',
             'indexes' => array(
-                'is_agent_idx' => array( 'columns' => array( 0 => 'is_agent', ), ),
-                'was_agent_idx' => array( 'columns' => array( 0 => 'was_agent', ), ),
-                'is_confirmed_idx' => array( 'columns' => array( 0 => 'is_confirmed', ), ),
-            )
+                'is_agent_idx' => array( 'columns' => array( 0 => 'is_agent')),
+                'was_agent_idx' => array( 'columns' => array( 0 => 'was_agent')),
+                'is_confirmed_idx' => array( 'columns' => array( 0 => 'is_confirmed')),
+            ),
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 
@@ -2921,7 +2921,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
                 $metadata->addEntityListener(
                     $event,
                     'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener',
-                    'on' . ucfirst($event)
+                    'on'.ucfirst($event)
                 );
             }
         }

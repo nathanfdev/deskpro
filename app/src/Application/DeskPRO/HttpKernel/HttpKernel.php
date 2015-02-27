@@ -74,7 +74,6 @@ class HttpKernel extends BaseHttpKernel
      */
     protected $requestStack;
 
-
     /**
      * @param EventDispatcherInterface    $dispatcher
      * @param ContainerInterface          $container
@@ -92,7 +91,6 @@ class HttpKernel extends BaseHttpKernel
             $container->addScope(new Scope('request'));
         }
     }
-
 
     /**
      * @param  Request    $request
@@ -133,7 +131,6 @@ class HttpKernel extends BaseHttpKernel
         }
     }
 
-
     /**
      * [Copied from BaseHttpKernel]
      *
@@ -144,7 +141,6 @@ class HttpKernel extends BaseHttpKernel
     {
         $this->dispatcher->dispatch(KernelEvents::TERMINATE, new PostResponseEvent($this, $request, $response));
     }
-
 
     /**
      * Custom DeskPRO code. Same as BaseHttpKernel except we run pre/post methods, and also add in handling for newrelic
@@ -177,17 +173,17 @@ class HttpKernel extends BaseHttpKernel
         $controller = $event->getController();
 
         if (isset($controller[0]) && $controller[0]) {
-            dp_pagelog_set('page_id', get_class($controller[0]) . '::' . $controller[1]);
+            dp_pagelog_set('page_id', get_class($controller[0]).'::'.$controller[1]);
         }
 
         // controller arguments
         $arguments = $this->resolver->getArguments($request, $controller);
 
-        if (isset($controller[0]) AND $controller[0] instanceof \Application\DeskPRO\HttpKernel\Controller\Controller) {
+        if (isset($controller[0]) and $controller[0] instanceof \Application\DeskPRO\HttpKernel\Controller\Controller) {
             //==BEGIN:MONITORING==
             if (extension_loaded('newrelic')) {
                 $ctrl_name = preg_replace('#^Application\\\\(.*?)(?:Bundle)?\\\\Controller\\\\(.*?)Controller$#', '$1:$2', get_class($controller[0]));
-                $ctrl_name .= ':' . preg_replace('#Action$#', '', $controller[1]);
+                $ctrl_name .= ':'.preg_replace('#Action$#', '', $controller[1]);
                 newrelic_name_transaction($ctrl_name);
 
                 $args_str = array();
@@ -201,12 +197,15 @@ class HttpKernel extends BaseHttpKernel
                     } elseif (is_array($a)) {
                         $single_array = true;
                         foreach ($a as $suba) {
-                            if (!is_scalar($suba)) { $single_array = false; break; }
+                            if (!is_scalar($suba)) {
+                                $single_array = false;
+                                break;
+                            }
                         }
                         if ($single_array) {
-                            $args_str[] = '[' . implode(', ', $a) . ']';
+                            $args_str[] = '['.implode(', ', $a).']';
                         } else {
-                            $args_str[] = '[array:' . count($a) . ']';
+                            $args_str[] = '[array:'.count($a).']';
                         }
                     } elseif (is_object($a)) {
                         $args_str[] = get_class($a);
@@ -224,7 +223,7 @@ class HttpKernel extends BaseHttpKernel
                 'request' => $request,
                 'controller' => $controller[0],
                 'action' => $controller[1],
-                'arguments' => $arguments
+                'arguments' => $arguments,
             ));
             $controller[0]->DeskPRO_onControllerPreAction($event);
             $response = null;
@@ -257,7 +256,7 @@ class HttpKernel extends BaseHttpKernel
                 'controller' => $controller[0],
                 'action' => $controller[1],
                 'arguments' => $arguments,
-                'response' => $response
+                'response' => $response,
             ));
 
             $controller[0]->DeskPRO_onControllerPostAction($event);
@@ -296,7 +295,6 @@ class HttpKernel extends BaseHttpKernel
         return $this->filterResponse($response, $request, $type);
     }
 
-
     /**
      * [Copied from BaseHttpKernel]
      *
@@ -316,7 +314,6 @@ class HttpKernel extends BaseHttpKernel
         return $event->getResponse();
     }
 
-
     /**
      * [Copied from BaseHttpKernel]
      *
@@ -328,7 +325,6 @@ class HttpKernel extends BaseHttpKernel
         $this->dispatcher->dispatch(KernelEvents::FINISH_REQUEST, new FinishRequestEvent($this, $request, $type));
         $this->requestStack->pop();
     }
-
 
     /**
      * [Copied from BaseHttpKernel]
@@ -378,7 +374,6 @@ class HttpKernel extends BaseHttpKernel
             return $response;
         }
     }
-
 
     /**
      * [Copied from BaseHttpKernel]

@@ -69,7 +69,6 @@ class UserRules
         $this->user_rules = $this->em->getRepository('DeskPRO:UserRule')->getAllUserRules();
     }
 
-
     /**
      * Resets this repository so the next time data is requested form it, it will
      * be queried again.
@@ -103,18 +102,15 @@ class UserRules
         $resultData = array();
 
         if ($user_rule) {
-
             $data['id']             = $user_rule->id;
             $data['email_patterns'] = $user_rule->email_patterns;
             $data['run_order']      = $user_rule->run_order;
 
             if (is_array($data['email_patterns'])) {
-
                 $data['email_patterns'] = implode("\n", $user_rule->email_patterns);
             }
 
             if ($user_rule->add_usergroup) {
-
                 $data['usergroup']['id']    = $user_rule->add_usergroup->id;
                 $data['usergroup']['title'] = $user_rule->add_usergroup->title;
             }
@@ -174,11 +170,11 @@ class UserRules
 
     public function applyRuleToUsers(UserRule $user_rule, $page)
     {
-		$per_page = 250;
+        $per_page = 250;
         $page = (int) $page;
-		$offset = $page * $per_page;
+        $offset = $page * $per_page;
 
-		$num_pages = ceil(App::getDb()->fetchColumn("
+        $num_pages = ceil(App::getDb()->fetchColumn("
 			SELECT COUNT(*)
 			FROM people_emails
 			WHERE is_validated = 1
@@ -205,24 +201,22 @@ class UserRules
             }
 
             if ($user_rule->isEmailMatch($email)) {
-
                 $did_user[$user_id] = true;
 
                 if ($user_rule->add_organization) {
                     App::getDb()->update(
                         'people',
                         array(
-                             'organization_id' => $user_rule->add_organization->id
+                             'organization_id' => $user_rule->add_organization->id,
                         ),
                         array('id' => $user_id)
                     );
                 }
 
                 if ($user_rule->add_usergroup) {
-
                     $batch[] = array(
                         'person_id'    => $user_id,
-                        'usergroup_id' => $user_rule->add_usergroup->id
+                        'usergroup_id' => $user_rule->add_usergroup->id,
                     );
                 }
             }
@@ -235,8 +229,8 @@ class UserRules
         return array(
             'completed' => false,
             'success'   => true,
-			'page'      => $page+1,
-			'num_pages' => $num_pages
+            'page'      => $page+1,
+            'num_pages' => $num_pages,
         );
     }
 }

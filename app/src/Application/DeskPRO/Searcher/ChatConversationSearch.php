@@ -58,7 +58,6 @@ class ChatConversationSearch extends SearcherAbstract
     /** @var array */
     protected $joins = array();
 
-
     /**
      * Run the search and return an array of matching ID's.
      *
@@ -106,7 +105,6 @@ class ChatConversationSearch extends SearcherAbstract
         $parts = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
-
         #------------------------------
         # Add joins
         #------------------------------
@@ -116,7 +114,7 @@ class ChatConversationSearch extends SearcherAbstract
         }
 
         if (is_array($order_by)) {
-            list ($order_join, $order_by) = $order_by;
+            list($order_join, $order_by) = $order_by;
 
             $sql .= " $order_join ";
         }
@@ -125,20 +123,20 @@ class ChatConversationSearch extends SearcherAbstract
         # Add wheres
         #------------------------------
 
-        if(!$this->person->hasPerm('agent_chat.view_unassigned')) {
+        if (!$this->person->hasPerm('agent_chat.view_unassigned')) {
             $parts['wheres'][] = 'chat_conversations.agent_id IS NOT NULL';
         }
 
-        if(!$this->person->hasPerm('agent_chat.view_others')) {
-            $parts['wheres'][] = '(chat_conversations.agent_id IS NULL OR chat_conversations.agent_id = ' . $this->getPersonContext()->getId() . ')';
+        if (!$this->person->hasPerm('agent_chat.view_others')) {
+            $parts['wheres'][] = '(chat_conversations.agent_id IS NULL OR chat_conversations.agent_id = '.$this->getPersonContext()->getId().')';
         }
 
-        if($this->person->getAgentPermissions()->getDisallowedDepartments('chat')) {
-            $parts['wheres'][] = '(department_id IS NULL OR department_id NOT IN('.implode(',',$this->person->getAgentPermissions()->getDisallowedDepartments('chat')).'))';
+        if ($this->person->getAgentPermissions()->getDisallowedDepartments('chat')) {
+            $parts['wheres'][] = '(department_id IS NULL OR department_id NOT IN('.implode(',', $this->person->getAgentPermissions()->getDisallowedDepartments('chat')).'))';
         }
 
         if (!$this->person->hasPerm('agent_chat.view_others')) {
-            $parts['where'][] = 'agent_id = ' . $this->person['id'];
+            $parts['where'][] = 'agent_id = '.$this->person['id'];
         }
 
         $sql .= "WHERE chat_conversations.is_agent = 0 ";
@@ -148,8 +146,8 @@ class ChatConversationSearch extends SearcherAbstract
             $sql .= implode(" AND ", $parts['wheres']);
         }
 
-        if($this->groupBy) {
-            $sql .= ' GROUP BY ' . $this->groupBy;
+        if ($this->groupBy) {
+            $sql .= ' GROUP BY '.$this->groupBy;
         }
 
         $sql .= $order_by;
@@ -157,18 +155,16 @@ class ChatConversationSearch extends SearcherAbstract
         $start = $this->limit['start'];
         $limit = $this->limit['limit'];
 
-        if($limit !== null) {
+        if ($limit !== null) {
             $sql .= " LIMIT $limit";
         }
 
-        if($start !== null) {
+        if ($start !== null) {
             $sql .= " OFFSET $start";
         }
 
         return $sql;
     }
-
-
 
     /**
      * Get the ORDER BY clause based on order info set.
@@ -185,7 +181,7 @@ class ChatConversationSearch extends SearcherAbstract
         list($type, $dir) = $this->order_by;
 
         $dir = strtoupper($dir);
-        if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
+        if ($dir != self::ORDER_ASC and $dir != self::ORDER_DESC) {
             $dir = self::ORDER_DESC;
         }
 
@@ -197,8 +193,6 @@ class ChatConversationSearch extends SearcherAbstract
 
         return $order_by;
     }
-
-
 
     /**
      * Get the SQL parts we need in the query.
@@ -246,13 +240,13 @@ class ChatConversationSearch extends SearcherAbstract
                         }
 
                         if ($not_id) {
-                            $wheres[] = "chat_conversations.agent_id != " . $not_id;
+                            $wheres[] = "chat_conversations.agent_id != ".$not_id;
                         }
                     }
                     break;
                 case self::TERM_DEPARTMENT_ID:
                     $children = array();
-                    foreach ((array)$choice as $did) {
+                    foreach ((array) $choice as $did) {
                         $children[] = $did;
                         $children = array_merge($children, App::getDataService('Department')->getIdsInTree($did, true));
                     }
@@ -260,7 +254,7 @@ class ChatConversationSearch extends SearcherAbstract
                     break;
 
                 case self::TERM_DEPARTMENT_ID_SPECIFIC:
-                    $choice = (array)$choice;
+                    $choice = (array) $choice;
                     $children[] = array_pop($choice);
                     $wheres[] = $this->_choiceMatch('chat_conversations.department_id', $op, $children, true);
                     break;
@@ -275,13 +269,13 @@ class ChatConversationSearch extends SearcherAbstract
                     break;
 
                 case self::TERM_PERSON:
-                    $choice = (array)$choice;
+                    $choice = (array) $choice;
                     $people = App::getEntityRepository('DeskPRO:Person')->getByIds($choice);
 
                     $person_ids = array();
                     $emails = array();
                     $db = App::getDbRead('search.filter.chat');
-                    foreach ($people AS $person) {
+                    foreach ($people as $person) {
                         if ($person instanceof \Application\DeskPRO\Entity\Person) {
                             $person_ids[] = $db->quote($person->id);
                             $emails[] = $db->quote($person->getPrimaryEmailAddress());
@@ -289,12 +283,12 @@ class ChatConversationSearch extends SearcherAbstract
                     }
 
                     if ($person_ids && $emails) {
-                        $wheres[] = '(chat_conversations.person_id IN (' . implode(',', $person_ids)
-                            . ') OR chat_conversations.person_email IN (' . implode(',', $emails) . '))';
+                        $wheres[] = '(chat_conversations.person_id IN ('.implode(',', $person_ids)
+                            .') OR chat_conversations.person_email IN ('.implode(',', $emails).'))';
                     } elseif ($person_ids) {
-                        $wheres[] = 'chat_conversations.person_id IN (' . implode(',', $person_ids) . ')';
-                    }  else if ($emails) {
-                        $wheres[] = 'chat_conversations.person_email IN (' . implode(',', $emails) . ')';
+                        $wheres[] = 'chat_conversations.person_id IN ('.implode(',', $person_ids).')';
+                    } elseif ($emails) {
+                        $wheres[] = 'chat_conversations.person_email IN ('.implode(',', $emails).')';
                     }
                     break;
 
@@ -326,7 +320,7 @@ class ChatConversationSearch extends SearcherAbstract
 
                     $choices_in = array();
                     if (is_array($choice)) {
-                        foreach ((array)$choice as $c) {
+                        foreach ((array) $choice as $c) {
                             $choices_in[] = $db->quote($c);
                         }
                         $choices_in = implode(',', $choices_in);
@@ -336,7 +330,7 @@ class ChatConversationSearch extends SearcherAbstract
                     switch ($op) {
                         case self::OP_IS:
                             $joins[] = "labels_chat_conversations AS $join_name ON ($join_name.chat_id = chat_conversations.id)";
-                            $wheres[] = "$join_name.label = " . $db->quote($choice);
+                            $wheres[] = "$join_name.label = ".$db->quote($choice);
                             break;
                         case self::OP_NOT:
                             $joins[] = "labels_chat_conversations AS $join_name ON ($join_name.chat_id = chat_conversations.id AND $join_name.label = '.$db->quote($choice).')";
@@ -358,8 +352,7 @@ class ChatConversationSearch extends SearcherAbstract
 
         return array(
             'joins' => $joins,
-            'wheres' => $wheres
+            'wheres' => $wheres,
         );
     }
-
 }

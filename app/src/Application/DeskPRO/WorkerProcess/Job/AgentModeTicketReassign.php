@@ -59,7 +59,6 @@ class AgentModeTicketReassign extends AbstractJob
         $agent_ids = $db->fetchAllCol("SELECT id FROM people WHERE is_agent = 1 AND is_deleted = 1");
 
         if ($max && $agent_ids) {
-
             $ticket_ids = $db->fetchAllCol("
                 SELECT id
                 FROM tickets
@@ -80,7 +79,7 @@ class AgentModeTicketReassign extends AbstractJob
                             'ticket_id'    => $id,
                             'action_type'  => 'free',
                             'details'      => serialize(array('message' => 'Unassigned deleted agent')),
-                            'date_created' => date('Y-m-d H:i:s')
+                            'date_created' => date('Y-m-d H:i:s'),
                         );
                     }
 
@@ -98,7 +97,6 @@ class AgentModeTicketReassign extends AbstractJob
         $agent_ids = $db->fetchAllCol("SELECT id FROM people WHERE was_agent = 1 AND is_agent = 0");
 
         if ($max && $agent_ids) {
-
             $ticket_ids = $db->fetchAllCol("
                 SELECT id
                 FROM tickets
@@ -119,7 +117,7 @@ class AgentModeTicketReassign extends AbstractJob
                             'ticket_id'    => $id,
                             'action_type'  => 'free',
                             'details'      => serialize(array('message' => 'Unassigned agent that was converted to a user')),
-                            'date_created' => date('Y-m-d H:i:s')
+                            'date_created' => date('Y-m-d H:i:s'),
                         );
                     }
 

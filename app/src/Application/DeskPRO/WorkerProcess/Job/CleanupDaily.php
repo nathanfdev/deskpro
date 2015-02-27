@@ -162,15 +162,17 @@ class CleanupDaily extends AbstractJob
         $cleanup_list = array();
 
         $tmpdir = dp_get_tmp_dir();
-        $tmpdir_swift = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'swiftmailer-cache';
+        $tmpdir_swift = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'swiftmailer-cache';
 
         if (is_dir($tmpdir) && is_readable($tmpdir)) {
             $dir = dir($tmpdir);
 
             while ($f = $dir->read()) {
-                if ($f == '.' || $f == '..') continue;
+                if ($f == '.' || $f == '..') {
+                    continue;
+                }
 
-                $f_path  = $dir->path . DIRECTORY_SEPARATOR . $f;
+                $f_path  = $dir->path.DIRECTORY_SEPARATOR.$f;
                 $mtime   = @filemtime($f_path);
 
                 if (!$mtime || $mtime < $min_time) {
@@ -188,7 +190,7 @@ class CleanupDaily extends AbstractJob
                     $do_cleanup = true;
 
                 // Unzipped distros created during upgrade
-                } elseif (is_dir($f_path) && is_file($f_path . DIRECTORY_SEPARATOR . 'config.new.php') && $mtime < strtotime('-1 day')) {
+                } elseif (is_dir($f_path) && is_file($f_path.DIRECTORY_SEPARATOR.'config.new.php') && $mtime < strtotime('-1 day')) {
                     $do_cleanup = true;
                 }
 
@@ -205,9 +207,11 @@ class CleanupDaily extends AbstractJob
 
             // Swiftmailer may write to the fs sometimes
             while ($f = $dir->read()) {
-                if ($f == '.' || $f == '..' || strlen($f) != 32) continue;
+                if ($f == '.' || $f == '..' || strlen($f) != 32) {
+                    continue;
+                }
 
-                $f_path  = $dir->path . DIRECTORY_SEPARATOR . $f;
+                $f_path  = $dir->path.DIRECTORY_SEPARATOR.$f;
                 $mtime   = @filemtime($f_path);
 
                 if (!$mtime || $mtime > strtotime('-4 days') || !is_dir($f_path)) {
@@ -227,10 +231,11 @@ class CleanupDaily extends AbstractJob
                 try {
                     $file_util->remove($f);
                     $x++;
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
 
-            $this->logStatus("Cleaned up $x of " . count($cleanup_list) . " old files");
+            $this->logStatus("Cleaned up $x of ".count($cleanup_list)." old files");
         }
 
         #------------------------------
@@ -249,7 +254,9 @@ class CleanupDaily extends AbstractJob
         foreach ($q->getResult() as $entry) {
             /** @var $entry TmpData */
             $file = $entry->getData('file');
-            if (!file_exists($file)) continue;
+            if (!file_exists($file)) {
+                continue;
+            }
 
             unlink($file);
             App::getOrm()->remove($entry);

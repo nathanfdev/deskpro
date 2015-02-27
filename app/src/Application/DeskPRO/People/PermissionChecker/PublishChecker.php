@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\People\PermissionChecker;
 
-
 class PublishChecker extends AbstractChecker
 {
     /**
@@ -67,7 +66,6 @@ class PublishChecker extends AbstractChecker
 
         return false;
     }
-
 
     /**
      * @param $content

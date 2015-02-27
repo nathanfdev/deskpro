@@ -353,15 +353,13 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         $history = null;
         if ($new_slug !== $this->slug && $this->slug) {
-
             // if the slug exists in history already, we don't want to add it again
             $object_slug = $this->slug;
-            if (!$this->slug_history->exists(function($key, $history) use ($object_slug) {
+            if (!$this->slug_history->exists(function ($key, $history) use ($object_slug) {
                 return $object_slug === $history->getSlug();
             })) {
                 $history = $this->addSlugHistory($this->slug);
             }
-
         }
         $this->setModelField('slug', $new_slug);
 
@@ -461,7 +459,8 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     public function markRatingChangedNegatively()
-    {// 2 to override the -1 when the positive rating was added
+    {
+        // 2 to override the -1 when the positive rating was added
         $this['total_rating'] = $this->total_rating - 2;
     }
 

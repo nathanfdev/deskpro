@@ -74,7 +74,6 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
      */
     protected $enable_exact_subject = false;
 
-
     /**
      * Enable bounce mode if the message is or is suspected ot be a bounced message.
      * This will look for PTAC/TAC 'headers' in the body text.
@@ -102,7 +101,6 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
     {
         $this->enable_exact_subject = true;
     }
-
 
     /**
      * @param int $time_cutoff Max age of a ticket before the subject match wont work
@@ -168,7 +166,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         $ticket_ids = array();
 
         if ($this->enable_exact_subject) {
-            $this->getLogger()->logDebug('[SubjectMatchDetector] (Standard) Trying to find exact subject: ' . $subject);
+            $this->getLogger()->logDebug('[SubjectMatchDetector] (Standard) Trying to find exact subject: '.$subject);
             $ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
                 SELECT id
                 FROM tickets
@@ -194,7 +192,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 
                 $last_subject = $subject_re;
 
-                $this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: " . $subject_re);
+                $this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: ".$subject_re);
 
                 // Now lets try to find it...
                 $ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("

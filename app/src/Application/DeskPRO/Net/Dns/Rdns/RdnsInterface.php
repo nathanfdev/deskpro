@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Net\Dns\Rdns;
 interface RdnsInterface
 {
     /**
-     * @param string $ip
+     * @param  string            $ip
      * @return string|null
      * @throws \RuntimeException
      */

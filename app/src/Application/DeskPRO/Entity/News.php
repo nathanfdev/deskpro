@@ -286,7 +286,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
         $metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'dpApi' => true ));
         $metadata->mapOneToMany(array(
             'fieldName' => 'slug_history', 'targetEntity' => 'Application\DeskPRO\Entity\NewsSlugHistory',
-            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'news'
+            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'news',
         ));
     }
 }

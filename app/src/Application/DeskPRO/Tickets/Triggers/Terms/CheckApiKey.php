@@ -56,7 +56,6 @@ class CheckApiKey extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

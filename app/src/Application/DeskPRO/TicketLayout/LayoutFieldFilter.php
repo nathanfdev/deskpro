@@ -49,7 +49,6 @@ class LayoutFieldFilter
      */
     private $user_fields;
 
-
     /**
      * @param TicketFieldManager $ticket_fields
      * @param PersonFieldManager $user_fields
@@ -59,7 +58,6 @@ class LayoutFieldFilter
         $this->ticket_fields = $ticket_fields;
         $this->user_fields = $user_fields;
     }
-
 
     /**
      * @param  LayoutField $field

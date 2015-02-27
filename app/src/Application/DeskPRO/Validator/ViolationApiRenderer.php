@@ -46,13 +46,11 @@ class ViolationApiRenderer
      */
     private $aliases = array();
 
-
     public function __construct()
     {
         // Default aliases
         $this->addClassCodeName('Application\\DeskPRO\\Entity', 'Entity');
     }
-
 
     /**
      * Adds a codename for a class (or namespace).
@@ -64,7 +62,6 @@ class ViolationApiRenderer
     {
         $this->aliases[$classname] = $codename;
     }
-
 
     /**
      * Gets the codename for a class.
@@ -88,7 +85,7 @@ class ViolationApiRenderer
 
         if ($alias) {
             if ($ends) {
-                $alias .= '\\' . implode('\\', $ends);
+                $alias .= '\\'.implode('\\', $ends);
             }
         } else {
             $alias = $classname;
@@ -96,7 +93,6 @@ class ViolationApiRenderer
 
         return str_replace('\\', '.', $alias);
     }
-
 
     /**
      * @param  ConstraintViolation $err
@@ -141,7 +137,6 @@ class ViolationApiRenderer
         );
     }
 
-
     /**
      * Renders a list of validation errors
      *
@@ -158,12 +153,11 @@ class ViolationApiRenderer
         foreach ($list as $err) {
             $err_info = $this->renderViolation($err);
             $info['errors'][] = $err_info;
-            $info['error_codes'][] = $err_info['prop'] . '.' . $err_info['code'];
+            $info['error_codes'][] = $err_info['prop'].'.'.$err_info['code'];
         }
 
         return $info;
     }
-
 
     /**
      * Renders multiple violations into a single list. Ideal if you have different components using different validators, but you need
@@ -183,18 +177,17 @@ class ViolationApiRenderer
             $info = $this->renderViolationList($list);
 
             foreach ($info['errors'] as $err) {
-                $err['prop'] = $prefix . '.' . $err['prop'];
+                $err['prop'] = $prefix.'.'.$err['prop'];
                 $mega_list['errors'][] = $err;
             }
 
             foreach ($info['error_codes'] as $err_code) {
-                $mega_list['error_codes'] = $prefix . '.' . $err_code;
+                $mega_list['error_codes'] = $prefix.'.'.$err_code;
             }
         }
 
         return $mega_list;
     }
-
 
     /**
      * @param  FormError $err
@@ -202,10 +195,8 @@ class ViolationApiRenderer
      */
     public function renderFormError(FormError $err)
     {
-
         $code = null;
-        $message = $err->getMessage();;
-
+        $message = $err->getMessage();
         if (preg_match('#^\[([a-zA-Z0-9\-_\.]+)\](.*)$#', $message, $m)) {
             $message = trim($m[2]);
 
@@ -223,7 +214,6 @@ class ViolationApiRenderer
             'message'   => $message,
         );
     }
-
 
     /**
      * Renders a list of errors from a form
@@ -262,7 +252,7 @@ class ViolationApiRenderer
             $err_info['prop_path'] = $path;
 
             $info['errors'][]      = $err_info;
-            $info['error_codes'][] = $err_info['prop'] . '.' . $err_info['code'];
+            $info['error_codes'][] = $err_info['prop'].'.'.$err_info['code'];
         }
 
         foreach ($form->all() as $sub_form) {

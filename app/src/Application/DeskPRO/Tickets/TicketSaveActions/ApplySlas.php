@@ -57,7 +57,6 @@ class ApplySlas implements TicketSaveActionInterface
      */
     private $cm_sender;
 
-
     /**
      * @param array                  $slas
      * @param EntityManager          $em
@@ -69,7 +68,6 @@ class ApplySlas implements TicketSaveActionInterface
         $this->em        = $em;
         $this->cm_sender = $cm_sender;
     }
-
 
     /**
      * @param  Ticket                   $ticket

@@ -56,7 +56,6 @@ class CheckPriority extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

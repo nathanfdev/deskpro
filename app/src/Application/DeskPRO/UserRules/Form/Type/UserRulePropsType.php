@@ -62,7 +62,7 @@ class UserRulePropsType extends AbstractType
                      return $er->createQueryBuilder('u')->where(
                          'u.is_agent_group = 0 AND u.sys_name IS NULL'
                      );
-                 }
+                 },
             )
         );
     }

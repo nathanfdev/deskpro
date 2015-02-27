@@ -1,0 +1,74 @@
+services:
+
+  visitor_identification.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\VisitorIdentificationListener
+    arguments: [@visitor_identification_provider, @logger]
+    tags:
+      - { name: kernel.event_subscriber }
+
+
+  brand_detector.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\BrandDetectionListener
+    arguments: [@brand_stack, @settings_resolver, @brand_repository, @default_brand, @portal_mode_storage, @logger]
+    tags:
+      - { name: kernel.event_subscriber }
+
+
+  portal_mode.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\PortalModeListener
+    arguments: [@portal_mode_factory, @portal_mode_storage, @logger]
+    tags:
+      - { name: kernel.event_subscriber }
+
+
+  original_uri.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\OriginalUriListener
+    tags:
+      - { name: kernel.event_subscriber }
+
+  redirect_to_url_exception.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\RedirectToUrlExceptionListener
+    arguments: [@logger]
+    tags:
+      - { name: kernel.event_subscriber }
+
+  redirect_permanent_exception.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\PermanentRedirectExceptionListener
+    arguments: [@router, @logger]
+    tags:
+      - { name: kernel.event_subscriber }
+
+
+  controller_name_converter:
+      class: DeskPRO\Bundle\PortalBundle\HttpKernel\ControllerNameParser
+      tags: [{name: monolog.logger, channel: request}]
+      arguments: [@kernel, @brand_stack]
+
+
+  tag_options.listener:
+      class: DeskPRO\Bundle\PortalBundle\EventListener\TagOptionsListener
+      arguments: [@annotation_reader, @service_container]
+      tags:
+        - { name: kernel.event_subscriber }
+
+
+# Not kernel listeners, but tagged to be called by other listeners
+  param_converter.deskpro_slug:
+      class: DeskPRO\Bundle\PortalBundle\Request\DeskproSlugConverter
+      arguments: [@doctrine.orm.default_entity_manager, @content_slug_manager]
+      tags:
+        - { name: request.param_converter, priority: -1, converter: deskpro_slug }
+
+
+  param_converter.tag_request:
+    class: DeskPRO\Bundle\PortalBundle\Request\TagRequestConverter
+    arguments: [@brand_stack]
+    tags:
+      - { name: request.param_converter, priority: 1, converter: tag_request }
+
+
+  data_collector.portal:
+    class: DeskPRO\Bundle\PortalBundle\DataCollector\PortalCollector
+    arguments: [@brand_stack, @language_stack, @portal_mode_storage]
+    tags:
+      - { name: data_collector, template: "PortalBundle:Collector:portal.html.twig", id: "portal" }

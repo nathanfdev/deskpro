@@ -54,7 +54,6 @@ class UrgencySetAction extends AbstractAction implements PermissionableAction
         $this->allow_lower = $allow_lower;
     }
 
-
     /**
      * Apply the property to the ticket
      *
@@ -66,7 +65,6 @@ class UrgencySetAction extends AbstractAction implements PermissionableAction
             $ticket['urgency'] = $this->num;
         }
     }
-
 
     /**
      * {@inheritDoc}
@@ -80,7 +78,6 @@ class UrgencySetAction extends AbstractAction implements PermissionableAction
         return true;
     }
 
-
     /**
      * Get an array of actions that would be performed on the ticket
      *
@@ -93,10 +90,9 @@ class UrgencySetAction extends AbstractAction implements PermissionableAction
         }
 
         return array(
-            array('action' => 'urgency', 'urgency' => $this->num)
+            array('action' => 'urgency', 'urgency' => $this->num),
         );
     }
-
 
     /**
      * Get the number modifier
@@ -108,7 +104,6 @@ class UrgencySetAction extends AbstractAction implements PermissionableAction
         return $this->num;
     }
 
-
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
@@ -117,7 +112,6 @@ class UrgencySetAction extends AbstractAction implements PermissionableAction
     {
         return $other_action;
     }
-
 
     /**
      * @return string

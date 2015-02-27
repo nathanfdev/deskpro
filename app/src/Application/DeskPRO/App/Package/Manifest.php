@@ -99,11 +99,11 @@ class Manifest
     /**
      * @var array
      */
-	private $trigger_events = array();
+    private $trigger_events = array();
 
-	/**
-	 * @var array
-	 */
+    /**
+     * @var array
+     */
     private $settings_def = array();
 
     /**
@@ -219,22 +219,22 @@ class Manifest
     }
 
     /**
-	 * @return array
-	 */
-	public function getTriggerEvents()
-	{
-		return $this->trigger_events;
-	}
+     * @return array
+     */
+    public function getTriggerEvents()
+    {
+        return $this->trigger_events;
+    }
 
-	/**
-	 * @param array $trigger_events
-	 */
-	public function setTriggerEvents(array $trigger_events)
-	{
-		$this->trigger_events = $trigger_events;
-	}
+    /**
+     * @param array $trigger_events
+     */
+    public function setTriggerEvents(array $trigger_events)
+    {
+        $this->trigger_events = $trigger_events;
+    }
 
-	/**
+    /**
      * @param array $settings_def
      */
     public function setSettingsDef($settings_def)

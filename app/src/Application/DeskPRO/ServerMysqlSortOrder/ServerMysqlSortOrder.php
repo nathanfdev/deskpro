@@ -78,9 +78,8 @@ class ServerMysqlSortOrder
 
         foreach (
             array(
-                'db_collation'
+                'db_collation',
             ) as $s) {
-
             $export_settings[$s] = $this->$s;
         }
 
@@ -107,7 +106,6 @@ class ServerMysqlSortOrder
     public function save()
     {
         if ($this->isCollationValid($this->db_collation)) {
-
             // notice this is 'db_collation_change', not 'db_collation'
 
             $this->settings->setSetting('core.db_collation_change', $this->db_collation);
@@ -142,7 +140,7 @@ class ServerMysqlSortOrder
             'utf8_esperanto_ci'        => 'Esperanto',
             'utf8_hungarian_ci'        => 'Hungarian',
             'utf8_sinhala_ci'          => 'Sinhalese',
-            'utf8_general_mysql500_ci' => 'General Purpose (MySQL 5.0)'
+            'utf8_general_mysql500_ci' => 'General Purpose (MySQL 5.0)',
         );
 
         natcasesort($collations);
@@ -174,22 +172,19 @@ class ServerMysqlSortOrder
         $collation = null;
 
         if ($this->settings->get('core.db_collation_change')) {
-
             $status    = 'pending';
             $collation = $this->settings->get('core.db_collation_change');
         }
 
-        if (file_exists(dp_get_tmp_dir() . '/db-collation-status.txt')) {
-
-            $line = @file_get_contents(dp_get_tmp_dir() . '/db-collation-status.txt');
+        if (file_exists(dp_get_tmp_dir().'/db-collation-status.txt')) {
+            $line = @file_get_contents(dp_get_tmp_dir().'/db-collation-status.txt');
 
             if ($line && preg_match('/^\[(\d+)\|([a-z0-9_]+)]([a-z0-9_]+):(.*)$/si', $line, $match)) {
-
                 $status    = $match[3];
                 $collation = $match[2];
                 $data      = array(
                     'time'    => $match[1],
-                    'message' => $match[4]
+                    'message' => $match[4],
                 );
             }
         }
@@ -201,11 +196,11 @@ class ServerMysqlSortOrder
                 break;
 
             case 'progress':
-                $message = 'Converting table ' . $data['message'] . '...';
+                $message = 'Converting table '.$data['message'].'...';
                 break;
 
             case 'error':
-                $message = 'An error occurred: ' . $data['message'];
+                $message = 'An error occurred: '.$data['message'];
                 break;
 
             default:

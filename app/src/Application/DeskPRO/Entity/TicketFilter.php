@@ -195,8 +195,6 @@ class TicketFilter extends DomainObject
         $this->_results = null;
     }
 
-
-
     /**
      * Get the searcher for this.
      *
@@ -237,7 +235,6 @@ class TicketFilter extends DomainObject
         }
 
         foreach ($this->terms as $term) {
-
             if (in_array($term['type'], $force_term_types)) {
                 continue;
             }
@@ -266,7 +263,6 @@ class TicketFilter extends DomainObject
 
         return $searcher;
     }
-
 
     /**
      * @return string
@@ -320,7 +316,6 @@ class TicketFilter extends DomainObject
         return $this->title;
     }
 
-
     /**
      * Gets the actual value in the title field.
      *
@@ -330,7 +325,6 @@ class TicketFilter extends DomainObject
     {
         return $this->title;
     }
-
 
     /**
      * Get an array of criteria phrases.
@@ -342,7 +336,6 @@ class TicketFilter extends DomainObject
         return $this->getSearcher()->getSummary();
     }
 
-
     /**
      * Explain criteria in the filter. Ex: Agent is Unassigned, Category is None
      *
@@ -353,10 +346,11 @@ class TicketFilter extends DomainObject
         return implode(', ', $this->getSummaryParts());
     }
 
-
     public function getResults(Person $person = null)
     {
-        if ($this->_results !== null) return $this->_results;
+        if ($this->_results !== null) {
+            return $this->_results;
+        }
 
         $searcher = $this->getSearcher();
 
@@ -385,7 +379,7 @@ class TicketFilter extends DomainObject
             'archive_archived',
             'archive_validating',
             'archive_spam',
-            'archive_deleted'
+            'archive_deleted',
         );
     }
 
@@ -396,9 +390,8 @@ class TicketFilter extends DomainObject
 
     public function __toString()
     {
-        return (string)$this->id;
+        return (string) $this->id;
     }
-
 
     /**
      * {@inheritDoc}
@@ -410,7 +403,6 @@ class TicketFilter extends DomainObject
         return $data;
     }
 
-
     ############################################################################
     # Validation Metadata
     ############################################################################
@@ -419,7 +411,6 @@ class TicketFilter extends DomainObject
     {
         $metadata->addPropertyConstraint('title', new NotBlank());
     }
-
 
     ############################################################################
     # Doctrine Metadata
@@ -434,7 +425,7 @@ class TicketFilter extends DomainObject
 
         $metadata->setPrimaryTable(array(
             'name' => 'ticket_filters',
-            'uniqueConstraints' => array( 'sys_name_unique' => array('columns' => array('sys_name')))
+            'uniqueConstraints' => array( 'sys_name_unique' => array('columns' => array('sys_name'))),
         ));
 
         $metadata->mapField(array(
@@ -505,7 +496,7 @@ class TicketFilter extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-            ))
+            )),
         ));
         $metadata->mapManyToOne(array(
             'fieldName'    => 'agent_team',
@@ -516,7 +507,7 @@ class TicketFilter extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-            ))
+            )),
         ));
     }
 }

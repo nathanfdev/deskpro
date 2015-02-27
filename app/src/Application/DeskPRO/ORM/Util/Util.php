@@ -44,9 +44,9 @@ use Doctrine\ORM\Tools\SchemaTool;
  */
 class Util
 {
-    private function __construct() { /* Static class, no instances */ }
-
-
+    private function __construct()
+    { /* Static class, no instances */
+    }
 
     /**
      * Checks to see if $collection is a valid PersistentCollection, and if it's
@@ -57,7 +57,7 @@ class Util
      */
     public static function isCollectionInitialized($collection)
     {
-        if ($collection instanceof PersistentCollection AND $collection->isInitialized()) {
+        if ($collection instanceof PersistentCollection and $collection->isInitialized()) {
             return true;
         }
 

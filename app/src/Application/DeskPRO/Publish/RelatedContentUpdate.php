@@ -61,7 +61,7 @@ class RelatedContentUpdate
             'object_type' => $this->type,
             'object_id' => $this->entity->id,
             'rel_object_type' => $type,
-            'rel_object_id' => $id
+            'rel_object_id' => $id,
         ));
     }
 
@@ -78,7 +78,7 @@ class RelatedContentUpdate
             $this->type,
             $this->entity->id,
             $type,
-            $id
+            $id,
         );
 
         $this->db->executeUpdate("

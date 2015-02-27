@@ -41,7 +41,7 @@ namespace Orb\Mail\KeyCache;
  */
 class DiskKeyCache implements \Swift_KeyCache
 {
-/** Signal to place pointer at start of file */
+    /** Signal to place pointer at start of file */
     const POSITION_START = 0;
 
     /** Signal to place pointer at end of file */
@@ -103,7 +103,7 @@ class DiskKeyCache implements \Swift_KeyCache
                 $fp = $this->_getHandle($nsKey, $itemKey, self::POSITION_END);
                 break;
             default:
-                throw new \Swift_SwiftException('Invalid mode [' . $mode . '] used to set nsKey='.$nsKey . ', itemKey=' . $itemKey);
+                throw new \Swift_SwiftException('Invalid mode ['.$mode.'] used to set nsKey='.$nsKey.', itemKey='.$itemKey);
                 break;
         }
         fwrite($fp, $string);
@@ -130,7 +130,7 @@ class DiskKeyCache implements \Swift_KeyCache
                 $fp = $this->_getHandle($nsKey, $itemKey, self::POSITION_END);
                 break;
             default:
-                throw new \Swift_SwiftException('Invalid mode [' . $mode . '] used to set nsKey=' . $nsKey . ', itemKey=' . $itemKey);
+                throw new \Swift_SwiftException('Invalid mode ['.$mode.'] used to set nsKey='.$nsKey.', itemKey='.$itemKey);
                 break;
         }
         while (false !== $bytes = $os->read(8192)) {
@@ -207,7 +207,7 @@ class DiskKeyCache implements \Swift_KeyCache
      */
     public function hasKey($nsKey, $itemKey)
     {
-        return is_file($this->_path . '/' . $nsKey . '/' . $itemKey);
+        return is_file($this->_path.'/'.$nsKey.'/'.$itemKey);
     }
 
     /**
@@ -219,7 +219,7 @@ class DiskKeyCache implements \Swift_KeyCache
     {
         if ($this->hasKey($nsKey, $itemKey)) {
             $this->_freeHandle($nsKey, $itemKey);
-            unlink($this->_path . '/' . $nsKey . '/' . $itemKey);
+            unlink($this->_path.'/'.$nsKey.'/'.$itemKey);
         }
     }
 
@@ -230,12 +230,12 @@ class DiskKeyCache implements \Swift_KeyCache
     public function clearAll($nsKey)
     {
         if (array_key_exists($nsKey, $this->_keys)) {
-            foreach ($this->_keys[$nsKey] as $itemKey=>$null) {
+            foreach ($this->_keys[$nsKey] as $itemKey => $null) {
                 $this->clearKey($nsKey, $itemKey);
             }
 
-            if (is_dir($this->_path . '/' . $nsKey)) {
-                rmdir($this->_path . '/' . $nsKey);
+            if (is_dir($this->_path.'/'.$nsKey)) {
+                rmdir($this->_path.'/'.$nsKey);
             }
 
             unset($this->_keys[$nsKey]);
@@ -251,10 +251,10 @@ class DiskKeyCache implements \Swift_KeyCache
      */
     private function _prepareCache($nsKey)
     {
-        $cacheDir = $this->_path . '/' . $nsKey;
+        $cacheDir = $this->_path.'/'.$nsKey;
         if (!is_dir($cacheDir)) {
             if (!mkdir($cacheDir)) {
-                throw new \Swift_IoException('Failed to create cache directory ' . $cacheDir);
+                throw new \Swift_IoException('Failed to create cache directory '.$cacheDir);
             }
             $this->_keys[$nsKey] = array();
         }
@@ -272,7 +272,7 @@ class DiskKeyCache implements \Swift_KeyCache
     {
         if (!isset($this->_keys[$nsKey][$itemKey])) {
             $openMode = $this->hasKey($nsKey, $itemKey) ? 'r+b' : 'w+b';
-            $fp = fopen($this->_path . '/' . $nsKey . '/' . $itemKey, $openMode);
+            $fp = fopen($this->_path.'/'.$nsKey.'/'.$itemKey, $openMode);
             $this->_keys[$nsKey][$itemKey] = $fp;
         }
 
@@ -301,7 +301,7 @@ class DiskKeyCache implements \Swift_KeyCache
      */
     public function __destruct()
     {
-        foreach ($this->_keys as $nsKey=>$null) {
+        foreach ($this->_keys as $nsKey => $null) {
             $this->clearAll($nsKey);
         }
     }

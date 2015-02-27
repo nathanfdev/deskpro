@@ -73,7 +73,6 @@ class FilterChangeSet
         $this->field_versions   = $field_versions;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\TicketFilter[]
      */
@@ -81,7 +80,6 @@ class FilterChangeSet
     {
         return $this->affected_filters;
     }
-
 
     /**
      * @return \Application\DeskPRO\Tickets\Filters\FilterChange[]
@@ -107,7 +105,6 @@ class FilterChangeSet
         return $this->state_id;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\Ticket
      */
@@ -115,7 +112,6 @@ class FilterChangeSet
     {
         return $this->ticket;
     }
-
 
     /**
      * Get an array of client messages to send to clients about lists updating.

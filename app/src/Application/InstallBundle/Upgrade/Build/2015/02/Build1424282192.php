@@ -48,7 +48,9 @@ class Build1424282192 extends AbstractBuild
 
         $this->out("Moving queued messags in sendmail_queue to new sendmail_sources");
         while (($msg = $this->_getNext()) !== null) {
-            if ($msg == -1) continue;
+            if ($msg == -1) {
+                continue;
+            }
             $swift_message = $msg['message'];
             unset($msg['message']);
             try {
@@ -84,6 +86,7 @@ class Build1424282192 extends AbstractBuild
         if (!$blob) {
             $rec['@error'] = 'missing blob';
             $this->_saveDataBackup($rec);
+
             return -1;
         }
 
@@ -92,6 +95,7 @@ class Build1424282192 extends AbstractBuild
         } catch (\Exception $e) {
             $rec['@error'] = $e->getMessage();
             $this->_saveDataBackup($rec);
+
             return -1;
         }
 
@@ -99,6 +103,7 @@ class Build1424282192 extends AbstractBuild
         if (!$message) {
             $rec['@error'] = "failed to deserialize";
             $this->_saveDataBackup($rec, $source);
+
             return 1;
         }
 
@@ -109,11 +114,11 @@ class Build1424282192 extends AbstractBuild
 
     private function _saveDataBackup(array $info, $bin_data = null)
     {
-        $name = "sendmail_queue." . $info['id'];
+        $name = "sendmail_queue.".$info['id'];
         file_put_contents(dp_get_backup_dir().'/'.$name, json_encode($info));
 
         if ($bin_data) {
-            file_put_contents(dp_get_backup_dir() . '/' . $name . ".dat", $bin_data);
+            file_put_contents(dp_get_backup_dir().'/'.$name.".dat", $bin_data);
         }
     }
 }

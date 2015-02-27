@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-
 class TicketAttachment extends AbstractEntityRepository
 {
     /**

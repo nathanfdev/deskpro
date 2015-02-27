@@ -67,7 +67,6 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -84,7 +83,7 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
         $password = $renderer->renderTicketTemplate($this->getActionOption('password') ?: '', $ticket, $context);
 
         $http_client = new HttpClient($url, array(
-            'timeout' => $timeout
+            'timeout' => $timeout,
         ));
 
         if ($headers) {
@@ -116,7 +115,6 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
         }
 
         try {
-
             $response = $http_client->send($request);
             $data = array(
                 'url' => $url,
@@ -125,10 +123,8 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
                 'content' => $response->getBody(true),
             );
             $ticket->getStateChangeRecorder()->recordData('webhook', $data);
-
         } catch (\Exception $e) {
-
-            KernelErrorHandler::logException($e, false, 'webhook_' . md5($this->getActionOption('url')));
+            KernelErrorHandler::logException($e, false, 'webhook_'.md5($this->getActionOption('url')));
             $data = array(
                 'url' => $url,
                 'reason' => $e->getMessage(),

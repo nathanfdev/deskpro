@@ -47,9 +47,8 @@ class AddSlaAction extends AbstractAction
 
     public function __construct($sla_id)
     {
-        $this->sla_ids = (array)$sla_id;
+        $this->sla_ids = (array) $sla_id;
     }
-
 
     /**
      * Apply the property to the ticket
@@ -62,14 +61,13 @@ class AddSlaAction extends AbstractAction
             return;
         }
 
-        foreach ($this->sla_ids AS $sla_id) {
+        foreach ($this->sla_ids as $sla_id) {
             $sla = App::getEntityRepository('DeskPRO:Sla')->find($sla_id);
             if ($sla) {
                 $ticket->addSla($sla);
             }
         }
     }
-
 
     /**
      * Get an array of actions that would be performed on the ticket
@@ -79,10 +77,9 @@ class AddSlaAction extends AbstractAction
     public function getApplyActions(Ticket $ticket)
     {
         return array(
-            array('action' => 'add_sla', 'sla_ids' => $this->sla_ids)
+            array('action' => 'add_sla', 'sla_ids' => $this->sla_ids),
         );
     }
-
 
     /**
      * @return array
@@ -91,7 +88,6 @@ class AddSlaAction extends AbstractAction
     {
         return $this->sla_ids;
     }
-
 
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
@@ -105,7 +101,6 @@ class AddSlaAction extends AbstractAction
         return $this;
     }
 
-
     /**
      * @return string
      */
@@ -115,7 +110,7 @@ class AddSlaAction extends AbstractAction
         $slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($this->sla_ids);
 
         $titles = array();
-        foreach ($slas AS $sla) {
+        foreach ($slas as $sla) {
             $titles[$sla->id] = $as_html ? htmlspecialchars($sla->title) : $sla->title;
         }
 

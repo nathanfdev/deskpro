@@ -34,7 +34,6 @@
 
 namespace Orb\Data;
 
-
 class Countries
 {
     /**
@@ -280,7 +279,7 @@ class Countries
         'YE' => 'Yemen',
         'YU' => 'Yugoslavia',
         'ZM' => 'Zambia',
-        'ZW' => 'Zimbabwe'
+        'ZW' => 'Zimbabwe',
     );
 
     /**
@@ -800,7 +799,7 @@ class Countries
         'yemen' => 'YE',
         'yugoslavia' => 'YU',
         'zambia' => 'ZM',
-        'zimbabwe' => 'ZW'
+        'zimbabwe' => 'ZW',
     );
 
     /**
@@ -1212,7 +1211,6 @@ class Countries
         return self::$name_to_code[$country];
     }
 
-
     /**
      * Get an array of country codes that use the Euro.
      *
@@ -1240,7 +1238,6 @@ class Countries
         );
     }
 
-
     /**
      * Get country calling code options suitable for a select box.
      *
@@ -1257,10 +1254,10 @@ class Countries
                 $common = array(
                     'Canada', 'China', 'France',
                     'Germany', 'India', 'Japan',
-                    'Russia', 'United Kingdom', 'United States'
+                    'Russia', 'United Kingdom', 'United States',
                 );
             } else {
-                $common = (array)$add_common;
+                $common = (array) $add_common;
             }
 
             foreach ($common as $name) {
@@ -1282,7 +1279,6 @@ class Countries
         return $options;
     }
 
-
     /**
      * Check if a country uses the euro.
      *
@@ -1294,7 +1290,6 @@ class Countries
         return in_array(strtoupper($country_code), self::getEuroCountries());
     }
 
-
     /**
      * @return array
      */
@@ -1302,7 +1297,6 @@ class Countries
     {
         return self::$us_states;
     }
-
 
     /**
      * @param  string $state

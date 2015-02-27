@@ -51,7 +51,7 @@ class KbSubscriptions extends AbstractJob
 
         App::getDb()->replace('settings', array(
             'name'  => 'user.kb_subscriptions_last',
-            'value' => time()
+            'value' => time(),
         ));
 
         if (!App::getSetting('user.kb_subscriptions')) {
@@ -114,7 +114,6 @@ class KbSubscriptions extends AbstractJob
         $article_subs = array();
 
         if ($category_ids) {
-
             // Users can be subscribed to a category higher-up,
             // so for each article need to include subs for the whole path
             $add_ids = array();
@@ -156,7 +155,9 @@ class KbSubscriptions extends AbstractJob
                     $path[] = $cat->getId();
 
                     if (Arrays::isIn($path, $cids)) {
-                        if (!isset($user_to_articles[$person_id])) $user_to_articles[$person_id] = array();
+                        if (!isset($user_to_articles[$person_id])) {
+                            $user_to_articles[$person_id] = array();
+                        }
                         $user_to_articles[$person_id][$article->getId()] = $article;
                     }
                 }
@@ -165,9 +166,13 @@ class KbSubscriptions extends AbstractJob
 
         foreach ($article_subs as $person_id => $aids) {
             foreach ($aids as $aid) {
-                if (!isset($updated[$aid])) continue;
+                if (!isset($updated[$aid])) {
+                    continue;
+                }
 
-                if (!isset($user_to_articles[$person_id])) $user_to_articles[$person_id] = array();
+                if (!isset($user_to_articles[$person_id])) {
+                    $user_to_articles[$person_id] = array();
+                }
                 $user_to_articles[$person_id][$aid] = $updated[$aid];
             }
         }
@@ -195,7 +200,6 @@ class KbSubscriptions extends AbstractJob
         $user_to_articles = array();
 
         foreach ($all_user_to_articles as $person_id => $articles) {
-
             $person_ugs = isset($user_groupmembers[$person_id]) ? $user_groupmembers[$person_id] : array();
             $person_ugs[] = 1; // Everyone
 
@@ -210,7 +214,9 @@ class KbSubscriptions extends AbstractJob
                 }
 
                 if ($add) {
-                    if (!isset($user_to_articles[$person_id])) $user_to_articles[$person_id] = array();
+                    if (!isset($user_to_articles[$person_id])) {
+                        $user_to_articles[$person_id] = array();
+                    }
                     $user_to_articles[$person_id][$article->getId()] = $article;
                 }
             }
@@ -223,9 +229,10 @@ class KbSubscriptions extends AbstractJob
         #------------------------------
 
         foreach ($user_to_articles as $person_id => $articles) {
-
             $person = App::getOrm()->find('DeskPRO:Person', $person_id);
-            if (!$person) continue;
+            if (!$person) {
+                continue;
+            }
 
             $new_articles     = array();
             $updated_articles = array();
@@ -244,7 +251,7 @@ class KbSubscriptions extends AbstractJob
                 'person'           => $person,
                 'new_articles'     => $new_articles,
                 'updated_articles' => $updated_articles,
-                'unsub_auth'       => \Orb\Util\Util::generateStaticSecurityToken(App::getSetting('core.app_secret') . $person->getId() . $person->secret_string)
+                'unsub_auth'       => \Orb\Util\Util::generateStaticSecurityToken(App::getSetting('core.app_secret').$person->getId().$person->secret_string),
             ));
 
             App::getMailer()->send($message);
@@ -254,7 +261,7 @@ class KbSubscriptions extends AbstractJob
         }
 
         if ($user_to_articles) {
-            $this->logStatus("Send " . count($user_to_articles) . " notifications");
+            $this->logStatus("Send ".count($user_to_articles)." notifications");
         }
     }
 }

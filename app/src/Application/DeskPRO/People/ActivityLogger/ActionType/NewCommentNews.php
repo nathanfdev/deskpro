@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\People\ActivityLogger\ActionType;
 
-
 class NewCommentNews extends NewCommentAbstract
 {
     public function getDetails()

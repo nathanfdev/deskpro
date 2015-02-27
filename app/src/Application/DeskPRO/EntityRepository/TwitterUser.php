@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-
 class TwitterUser extends AbstractEntityRepository
 {
     public function getByScreenName($name, $pull_from_api = false)
@@ -62,5 +61,4 @@ class TwitterUser extends AbstractEntityRepository
 
         return $user;
     }
-
 }

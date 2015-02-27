@@ -65,7 +65,7 @@ class TwitterAccount extends AbstractEntityRepository
 
         $output = $this->getAll();
         $account_ids = $person->getTwitterAccountIds();
-        foreach ($output AS $key => $value) {
+        foreach ($output as $key => $value) {
             if (!in_array($key, $account_ids)) {
                 unset($output[$key]);
             }

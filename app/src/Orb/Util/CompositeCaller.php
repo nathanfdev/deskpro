@@ -50,7 +50,6 @@ class CompositeCaller
      */
     private $_tag_to_objects = array();
 
-
     /**
      * Add an object to the composite collection
      *
@@ -71,7 +70,6 @@ class CompositeCaller
         }
     }
 
-
     /**
      * Count number of objects
      *
@@ -91,7 +89,6 @@ class CompositeCaller
         return count($this->_objects);
     }
 
-
     /**
      * Get objects
      *
@@ -110,7 +107,6 @@ class CompositeCaller
 
         return $this->_objects;
     }
-
 
     /**
      * Remove an object
@@ -133,7 +129,6 @@ class CompositeCaller
         }
     }
 
-
     /**
      * Remove all objects with a certain tag
      *
@@ -154,7 +149,6 @@ class CompositeCaller
 
         $this->_tag_to_objects = array();
     }
-
 
     /**
      * Call a method on all objects

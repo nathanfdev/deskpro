@@ -62,7 +62,6 @@ class DeskPRO extends AbstractAdapter implements IdentityFinderInterface, Entity
         $this->em = $em;
     }
 
-
     /**
      * @return EntityManager
      */
@@ -70,7 +69,6 @@ class DeskPRO extends AbstractAdapter implements IdentityFinderInterface, Entity
     {
         return $this->em ?: App::getContainer()->getEm();
     }
-
 
     public function findIdentityByInput($input)
     {
@@ -98,7 +96,7 @@ class DeskPRO extends AbstractAdapter implements IdentityFinderInterface, Entity
     {
         return array(
             UsersourceInfo::CAPABILITY_FORM_LOGIN,
-            UsersourceInfo::CAPABILITY_FIND_IDENTITY
+            UsersourceInfo::CAPABILITY_FIND_IDENTITY,
         );
     }
 

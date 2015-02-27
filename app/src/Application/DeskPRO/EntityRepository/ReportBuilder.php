@@ -66,8 +66,7 @@ class ReportBuilder extends AbstractEntityRepository
         \Application\DeskPRO\Entity\ReportBuilder $report,
         \Application\DeskPRO\Entity\Person $person = null,
         array $params = array()
-    )
-    {
+    ) {
         if (!$person) {
             $person = App::getCurrentPerson();
         }
@@ -99,7 +98,7 @@ class ReportBuilder extends AbstractEntityRepository
     public function getFavoritesSimplified(array $favorites)
     {
         $output = array();
-        foreach ($favorites AS $fav) {
+        foreach ($favorites as $fav) {
             $output[] = array('id' => $fav->report_builder->id, 'params' => $fav->params);
         }
 
@@ -122,7 +121,7 @@ class ReportBuilder extends AbstractEntityRepository
         $builtIn = array();
         $categories = $this->getBuiltInCategories();
 
-        foreach ($reports AS $report) {
+        foreach ($reports as $report) {
             if ($report->is_custom) {
                 $custom[] = $report;
             } else {
@@ -136,7 +135,7 @@ class ReportBuilder extends AbstractEntityRepository
         }
 
         $builtInOrdered = array();
-        foreach ($categories AS $categoryId => $categoryName) {
+        foreach ($categories as $categoryId => $categoryName) {
             if (isset($builtIn[$categoryId])) {
                 $builtInOrdered[$categoryName] = $builtIn[$categoryId];
             }
@@ -144,10 +143,9 @@ class ReportBuilder extends AbstractEntityRepository
 
         return array(
             'custom' => $custom,
-            'builtIn' => $builtInOrdered
+            'builtIn' => $builtInOrdered,
         );
     }
-
 
     /**
      * @return array
@@ -157,7 +155,7 @@ class ReportBuilder extends AbstractEntityRepository
         $reports = $this->getAllReports();
         $custom = array();
 
-        foreach ($reports AS $report) {
+        foreach ($reports as $report) {
             if ($report->is_custom) {
                 $custom[] = $report->toApiData();
             }
@@ -165,7 +163,6 @@ class ReportBuilder extends AbstractEntityRepository
 
         return $custom;
     }
-
 
     /**
      * @return array
@@ -176,8 +173,9 @@ class ReportBuilder extends AbstractEntityRepository
         $builtIn    = array();
         $categories = $this->getBuiltInCategories();
 
-        foreach ($reports AS $report) {
-            if (!$report->is_custom) { {
+        foreach ($reports as $report) {
+            if (!$report->is_custom) {
+                {
                     if (isset($categories[$report->category])) {
                         $categoryId = $report->category;
                     } else {
@@ -190,7 +188,7 @@ class ReportBuilder extends AbstractEntityRepository
 
         $builtInOrdered = array();
 
-        foreach ($categories AS $categoryId => $categoryName) {
+        foreach ($categories as $categoryId => $categoryName) {
             if (isset($builtIn[$categoryId])) {
                 $builtInOrdered[$categoryName] = $builtIn[$categoryId];
             }
@@ -216,7 +214,7 @@ class ReportBuilder extends AbstractEntityRepository
             'downloads' => 'Downloads',
             'feedback' => 'Feedback',
             'tasks' => 'Tasks',
-            'twitter' => 'Twitter'
+            'twitter' => 'Twitter',
         );
     }
 
@@ -225,7 +223,7 @@ class ReportBuilder extends AbstractEntityRepository
      */
     public function canManageBuiltInReports()
     {
-        return (bool)App::getConfig('debug.dev');
+        return (bool) App::getConfig('debug.dev');
     }
 
     public function getReportGroupParams()
@@ -255,7 +253,7 @@ class ReportBuilder extends AbstractEntityRepository
                     'day_month_created' => array('day of month created', 'ALIAS(DAYOFMONTH(%s.date_created), \'Day of Month Created\')'),
                     'month_created' => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
                     'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
-                    'date_created' => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')')
+                    'date_created' => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')'),
                 ),
                 'chats' => array(
                     'department' => array('department', '%s.department'),
@@ -268,7 +266,7 @@ class ReportBuilder extends AbstractEntityRepository
                     'month_created' => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
                     'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
                     'date_created' => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')'),
-                    'none' => array('nothing', 'NULL')
+                    'none' => array('nothing', 'NULL'),
                 ),
                 'articles' => array(
                     'person' => array('person', '%s.person'),
@@ -278,7 +276,7 @@ class ReportBuilder extends AbstractEntityRepository
                     'month_created' => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
                     'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
                     'date_created' => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')'),
-                    'none' => array('nothing', 'NULL')
+                    'none' => array('nothing', 'NULL'),
                 ),
                 'article_comments' => array(
                     'hour_created' => array('hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'),
@@ -287,7 +285,7 @@ class ReportBuilder extends AbstractEntityRepository
                     'month_created' => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
                     'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
                     'date_created' => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')'),
-                    'none' => array('nothing', 'NULL')
+                    'none' => array('nothing', 'NULL'),
                 ),
                 'feedback' => array(
                     'type' => array('type', 'ALIAS(%s.category, \'Type\')'),
@@ -300,7 +298,7 @@ class ReportBuilder extends AbstractEntityRepository
                     'month_created' => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
                     'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
                     'date_created' => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')'),
-                    'none' => array('nothing', 'NULL')
+                    'none' => array('nothing', 'NULL'),
                 ),
                 'feedback_comments' => array(
                     'hour_created' => array('hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'),
@@ -309,8 +307,8 @@ class ReportBuilder extends AbstractEntityRepository
                     'month_created' => array('month created', 'ALIAS(MONTHNAME(%s.date_created), \'Month Created\')'),
                     'year_created' => array('year created', 'ALIAS(YEAR(%s.date_created), \'Year Created\')'),
                     'date_created' => array('date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')'),
-                    'none' => array('nothing', 'NULL')
-                )
+                    'none' => array('nothing', 'NULL'),
+                ),
             ),
             'dates' => array(
                 'today' => array('today', '%TODAY%'),
@@ -326,7 +324,7 @@ class ReportBuilder extends AbstractEntityRepository
                 'past_hour' => array('in the past hour', '%PAST_HOUR%'),
                 'past_7_days' => array('in the past 7 days', '%PAST_7_DAYS%'),
                 'past_30_days' => array('in the past 30 days', '%PAST_30_DAYS%'),
-                'ever' => array('any time', '%EVER%')
+                'ever' => array('any time', '%EVER%'),
             ),
             'statuses' => array(
                 'tickets' => array(
@@ -335,8 +333,8 @@ class ReportBuilder extends AbstractEntityRepository
                     'unresolved' => array('unresolved', '%s.status IN (\'awaiting_user\', \'awaiting_agent\')'),
                     'resolved' => array('resolved', '%s.status IN (\'resolved\', \'archived\')'),
                     'hidden' => array('hidden', '%s.status = \'hidden\''),
-                    'any' => array('with any status', '1')
-                )
+                    'any' => array('with any status', '1'),
+                ),
             ),
             'orders' => array(
                 'tickets' => array(
@@ -348,32 +346,32 @@ class ReportBuilder extends AbstractEntityRepository
                     'last_user_reply_asc' => array('last user reply (ascending)', '%s.date_last_user_reply ASC'),
                     'last_user_reply_desc' => array('last user reply (descending)', '%s.date_last_user_reply DESC'),
                     'total_waiting_asc' => array('total waiting time (ascending)', '%s.total_user_waiting ASC'),
-                    'total_waiting_desc' => array('total waiting time (descending)', '%s.total_user_waiting DESC')
-                )
-            )
+                    'total_waiting_desc' => array('total waiting time (descending)', '%s.total_user_waiting DESC'),
+                ),
+            ),
         );
 
         $fields = $this->getEntityManager()->getRepository('DeskPRO:CustomDefTicket')->getTopFields();
-        foreach ($fields AS $field) {
+        foreach ($fields as $field) {
             $escaped = addslashes($field->title);
-            $return['fields']['tickets']['ticketfield' . $field->id] = array(
-                $field->title, 'ALIAS(%s.custom_data[' . $field->id . '], \'' . $escaped . '\')'
+            $return['fields']['tickets']['ticketfield'.$field->id] = array(
+                $field->title, 'ALIAS(%s.custom_data['.$field->id.'], \''.$escaped.'\')',
             );
         }
 
         $fields = $this->getEntityManager()->getRepository('DeskPRO:CustomDefPerson')->getTopFields();
-        foreach ($fields AS $field) {
+        foreach ($fields as $field) {
             $escaped = addslashes($field->title);
-            $return['fields']['tickets']['personfield' . $field->id] = array(
-                "creator's " . $field->title, 'ALIAS(%s.person.custom_data[' . $field->id . '], \'' . $escaped . '\')'
+            $return['fields']['tickets']['personfield'.$field->id] = array(
+                "creator's ".$field->title, 'ALIAS(%s.person.custom_data['.$field->id.'], \''.$escaped.'\')',
             );
         }
 
         $fields = $this->getEntityManager()->getRepository('DeskPRO:CustomDefOrganization')->getTopFields();
-        foreach ($fields AS $field) {
+        foreach ($fields as $field) {
             $escaped = addslashes($field->title);
-            $return['fields']['tickets']['orgfield' . $field->id] = array(
-                "organizations's " . $field->title, 'ALIAS(%s.organization.custom_data[' . $field->id . '], \'' . $escaped . '\')'
+            $return['fields']['tickets']['orgfield'.$field->id] = array(
+                "organizations's ".$field->title, 'ALIAS(%s.organization.custom_data['.$field->id.'], \''.$escaped.'\')',
             );
         }
 

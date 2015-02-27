@@ -33,12 +33,7 @@
  */
 namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\People\PrefNoticeSet;
-use DeskPRO\Kernel\KernelErrorHandler;
-use Orb\Util\Strings;
 
 class ContentPreviewController extends AbstractController
 {
@@ -47,7 +42,7 @@ class ContentPreviewController extends AbstractController
         $article = $this->getDoctrine()->getManager()->getRepository('DeskPRO:Article')->find($id);
 
         return $this->render('AgentBundle:ContentPreview:preview-article.html.twig', array(
-            'article' => $article
+            'article' => $article,
         ));
     }
 

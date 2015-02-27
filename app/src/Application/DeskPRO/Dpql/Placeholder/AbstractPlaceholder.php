@@ -67,7 +67,7 @@ abstract class AbstractPlaceholder
         'THIS_YEAR' => 'ThisYear',
         'TODAY' => 'Today',
         'TOMORROW' => 'Tomorrow',
-        'YESTERDAY' => 'Yesterday'
+        'YESTERDAY' => 'Yesterday',
     );
 
     /**
@@ -110,8 +110,7 @@ abstract class AbstractPlaceholder
      */
     public function prepareWithIntervals(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = array()
-    )
-    {
+    ) {
         return $this->prepare($statement, $section, $stack, $select, $result);
     }
 
@@ -146,8 +145,7 @@ abstract class AbstractPlaceholder
     public function prepareComparison(
         AbstractPart $lhs, $comparison, Display $statement, $section, array $stack,
         Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = array()
-    )
-    {
+    ) {
         return false;
     }
 
@@ -158,7 +156,7 @@ abstract class AbstractPlaceholder
      */
     protected function _toDpql()
     {
-        return '%' . strtoupper($this->_name) . '%';
+        return '%'.strtoupper($this->_name).'%';
     }
 
     /**
@@ -174,7 +172,7 @@ abstract class AbstractPlaceholder
     {
         $name = strtoupper($name);
         if (isset(self::$_placeholderMap[$name])) {
-            $map = __NAMESPACE__ . '\\' . self::$_placeholderMap[$name];
+            $map = __NAMESPACE__.'\\'.self::$_placeholderMap[$name];
 
             return new $map($name);
         } else {

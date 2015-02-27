@@ -106,7 +106,7 @@ class DeskPROSmsSender extends SmsSender
             'provider_params' => $provider->getParams(),
             'to_number'       => $to_number,
             'from_number'     => $from_number,
-            'message'         => $message->getRawMessage()
+            'message'         => $message->getRawMessage(),
         );
         $job = new Job(
             OutgoingSmsProcessor::JOB_TYPE,

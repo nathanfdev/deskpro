@@ -40,7 +40,6 @@ use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\People\PrefNoticeSet;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Strings;
-use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -587,7 +586,7 @@ class MainController extends AbstractController
     public function getPersonTicketsAction(Request $request)
     {
         if (!$person = $this->em->find('DeskPRO:Person', $request->get('person_id'))) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $sort = 'date_created';

@@ -146,7 +146,6 @@ class Department extends DomainObject implements HasPhraseName
         return $dep;
     }
 
-
     /**
      *
      */

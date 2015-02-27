@@ -100,7 +100,7 @@ class GlobalVariables extends BaseGlobalVariables
             if (defined('DPC_IS_CLOUD')) {
                 // Always use https cloud.deskpro.com for css,
                 // it'll always work regardless of how you mess with URLs and ssl certs
-                $group_vars['static_path'] = 'https://cloud.deskpro.com/web' . DPC_SITE_BUILD_NUM;
+                $group_vars['static_path'] = 'https://cloud.deskpro.com/web'.DPC_SITE_BUILD_NUM;
             } else {
                 // External blob storage means we need ot use a full URL for assets
                 if (!App::getConfig('static_path') && App::getContainer()->getBlobStorage()->getPreferredAdapterId() == 's3') {
@@ -108,7 +108,7 @@ class GlobalVariables extends BaseGlobalVariables
                     $url = str_replace('index.php', '', $url);
                     $url = trim($url, '/');
 
-                    $group_vars['static_path'] = $url . '/web';
+                    $group_vars['static_path'] = $url.'/web';
                 } else {
                     // A custom defined static URL
                     if (App::getConfig('static_path')) {
@@ -116,7 +116,7 @@ class GlobalVariables extends BaseGlobalVariables
 
                     // Default static path relative to current
                     } else {
-                        $group_vars['static_path'] = rtrim('../..' . (App::getConfig('static_path') ?: '/web/'), '/');
+                        $group_vars['static_path'] = rtrim('../..'.(App::getConfig('static_path') ?: '/web/'), '/');
                     }
                 }
             }
@@ -309,7 +309,7 @@ class GlobalVariables extends BaseGlobalVariables
         }
 
         if ($ent = \Orb\Util\Strings::extractRegexMatch('#^(.*?)Data$#', $name, 1)) {
-            return App::getContainer()->getSystemService(ucfirst($ent) . 'Data');
+            return App::getContainer()->getSystemService(ucfirst($ent).'Data');
         }
 
         return null;
@@ -354,6 +354,7 @@ class GlobalVariables extends BaseGlobalVariables
     public function getReturnUrl()
     {
         $request = App::getRequest();
+
         return $request->getReturnParam() ?: $request->getRequestUri();
     }
 
@@ -408,13 +409,13 @@ class GlobalVariables extends BaseGlobalVariables
     public function getFullAssetUrl()
     {
         if (defined('DPC_SITE_DOMAIN')) {
-            return '//' . DPC_SITE_DOMAIN . '/web/';
+            return '//'.DPC_SITE_DOMAIN.'/web/';
         } else {
             $asset_url = dp_get_config('assets_full_url');
             if (!$asset_url) {
                 $asset_url = $this->container->getSetting('core.deskpro_url');
                 $asset_url = trim(str_replace('/index.php', '', $asset_url), '/');
-                $asset_url .= (dp_get_config('static_path') ?: '/web') . '/';
+                $asset_url .= (dp_get_config('static_path') ?: '/web').'/';
             }
             $asset_url = preg_replace('#^https?://#', '//', $asset_url);
 
@@ -425,9 +426,9 @@ class GlobalVariables extends BaseGlobalVariables
     public function getFullWidgetUrl()
     {
         if (defined('DPC_SITE_DOMAIN')) {
-            return '//' . DPC_SITE_DOMAIN . '/';
+            return '//'.DPC_SITE_DOMAIN.'/';
         } else {
-            $helpdesk_url = trim(str_replace('/index.php', '', $this->container->getSetting('core.deskpro_url')), '/') . '/';
+            $helpdesk_url = trim(str_replace('/index.php', '', $this->container->getSetting('core.deskpro_url')), '/').'/';
             $deskpro_url  = $helpdesk_url;
 
             if (!$this->container->getSetting('core.rewrite_urls')) {

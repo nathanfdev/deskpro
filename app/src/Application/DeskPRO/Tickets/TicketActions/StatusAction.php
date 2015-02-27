@@ -62,7 +62,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     {
         if (!in_array($status, array(
             'awaiting_agent', 'awaiting_user', 'resolved', 'archived',
-            'hidden.spam', 'hidden.validating', 'hidden.deleted'
+            'hidden.spam', 'hidden.validating', 'hidden.deleted',
         ))) {
             throw new \InvalidArgumentException("Invalid status `$status`");
         }
@@ -105,7 +105,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     public function apply(Ticket $ticket)
     {
         if (strpos($this->status, '.') !== false) {
-            list ($status, $hidden_status) = explode('.', $this->status, 2);
+            list($status, $hidden_status) = explode('.', $this->status, 2);
         } else {
             $status = $this->status;
             $hidden_status = null;
@@ -151,7 +151,6 @@ class StatusAction extends AbstractAction implements PermissionableAction
         }
     }
 
-
     /**
      * Get an array of actions that would be performed on the ticket
      *
@@ -164,10 +163,9 @@ class StatusAction extends AbstractAction implements PermissionableAction
         }
 
         return array(
-            array('action' => 'status', 'status' => $this->status)
+            array('action' => 'status', 'status' => $this->status),
         );
     }
-
 
     /**
      * Get the full status (stauts.hidden_status)
@@ -179,7 +177,6 @@ class StatusAction extends AbstractAction implements PermissionableAction
         return $this->status;
     }
 
-
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
@@ -189,7 +186,6 @@ class StatusAction extends AbstractAction implements PermissionableAction
         return $other_action;
     }
 
-
     /**
      * @return string
      */
@@ -197,6 +193,6 @@ class StatusAction extends AbstractAction implements PermissionableAction
     {
         $tr = App::getTranslator();
 
-        return $tr->phrase('admin.tickets.set_status_to_x', array('status' => $tr->phrase('agent.tickets.status_' . str_replace('.', '_', $this->status))));
+        return $tr->phrase('admin.tickets.set_status_to_x', array('status' => $tr->phrase('agent.tickets.status_'.str_replace('.', '_', $this->status))));
     }
 }

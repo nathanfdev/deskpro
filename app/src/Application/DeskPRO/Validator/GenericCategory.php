@@ -76,7 +76,7 @@ class GenericCategory extends AbstractPersonContextValidator
         parent::init();
 
         $this->allow_none        = $this->getOption('allow_none', true);
-        $this->whitelist         = (array)$this->getOption('whitelist', array());
+        $this->whitelist         = (array) $this->getOption('whitelist', array());
         $this->repository        = $this->getOption('category_repository');
         $this->perms_loader_name = $this->getOption('perms_loader_name');
     }

@@ -33,6 +33,7 @@
  */
 
 namespace Application\DeskPRO\HttpKernel\Controller;
+
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\Util;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -72,7 +73,6 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      */
     public $request_type = HttpKernelInterface::MASTER_REQUEST;
 
-
     public function __construct(ContainerInterface $container)
     {
         $this->setContainer($container);
@@ -82,7 +82,6 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
         $this->init();
     }
 
-
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
@@ -91,16 +90,12 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
         return $this->container;
     }
 
-
     /**
      * An empty callback function
      */
     protected function init()
     {
-
     }
-
-
 
     public function DeskPRO_onControllerPreAction($event)
     {
@@ -121,10 +116,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      */
     public function preAction($action, $arguments = null)
     {
-
     }
-
-
 
     public function DeskPRO_onControllerPostAction($event)
     {
@@ -133,7 +125,6 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
             $event->setResponse($ret);
         }
     }
-
 
     /**
      * @param  \Exception                                 $e
@@ -144,7 +135,6 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
     {
         throw $e;
     }
-
 
     /**
      * Called by the HttpKernel after an action has been executed.
@@ -157,10 +147,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      */
     public function postAction($response)
     {
-
     }
-
-
 
     /**
      * Redirect to a named route.
@@ -176,8 +163,6 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 
         return $this->redirect($url, $status);
     }
-
-
 
     /**
      * Create a regular html response
@@ -197,8 +182,6 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
         return $response;
     }
 
-
-
     /**
      * Create a JSON response.
      *
@@ -208,8 +191,8 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      */
     public function createJsonResponse($content, $status_code = 200)
     {
-//		$response = $this->container->get('response');
-        $response = new \Application\ApiBundle\HttpFoundation\JsonResponse();
+        //		$response = $this->container->get('response');
+        $response = new \Application\LegacyApiBundle\HttpFoundation\JsonResponse();
 
         // Because IE will sometimes prompt to download json when using iframe transport for ajax if we dont do this
         if ($this->request->isXmlHttpRequest() || isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
@@ -228,8 +211,6 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 
         return $response;
     }
-
-
 
     /**
      * Create a JSONP response.
@@ -270,8 +251,6 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 
         return $response;
     }
-
-
 
     /**
      * Render a template and create a JSON response with it.

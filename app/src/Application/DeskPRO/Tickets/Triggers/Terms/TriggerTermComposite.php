@@ -53,7 +53,6 @@ class TriggerTermComposite implements TriggerTermInterface, \Countable
      */
     private $op = 'AND';
 
-
     /**
      * @param TriggerTermInterface[] $terms
      * @param string                 $op
@@ -63,7 +62,6 @@ class TriggerTermComposite implements TriggerTermInterface, \Countable
         $this->setAll($terms);
         $this->setOperator($op);
     }
-
 
     /**
      * Change the logic operator between AND/OR ('all must match' versus 'any match')
@@ -75,7 +73,6 @@ class TriggerTermComposite implements TriggerTermInterface, \Countable
         $this->op = (strtoupper($op) == self::OP_AND ? self::OP_AND : self::OP_OR);
     }
 
-
     /**
      * @return string
      */
@@ -84,7 +81,6 @@ class TriggerTermComposite implements TriggerTermInterface, \Countable
         return $this->op;
     }
 
-
     /**
      * @param TriggerTermInterface $term
      */
@@ -92,7 +88,6 @@ class TriggerTermComposite implements TriggerTermInterface, \Countable
     {
         $this->terms[] = $term;
     }
-
 
     /**
      * @param TriggerTermInterface[] $terms
@@ -105,7 +100,6 @@ class TriggerTermComposite implements TriggerTermInterface, \Countable
         }
     }
 
-
     /**
      * @return TriggerTermInterface[]
      */
@@ -113,7 +107,6 @@ class TriggerTermComposite implements TriggerTermInterface, \Countable
     {
         return $this->terms;
     }
-
 
     /**
      * {@inheritDoc}
@@ -123,31 +116,48 @@ class TriggerTermComposite implements TriggerTermInterface, \Countable
         $logger = $context->getLogger();
 
         if (!$this->terms) {
-            if ($logger) $logger->debug('[Term:Composite] Empty term set => true');
+            if ($logger) {
+                $logger->debug('[Term:Composite] Empty term set => true');
+            }
+
             return true;
         }
 
         if ($this->op == self::OP_AND) {
-            if ($logger) $logger->debug('[Term:Composite] AND operator');
+            if ($logger) {
+                $logger->debug('[Term:Composite] AND operator');
+            }
             foreach ($this->terms as $k => $t) {
                 if (!$t->isTriggerMatch($ticket, $context)) {
-                    if ($logger) $logger->debug(sprintf('[Term:%s:%d] => false', Util::getBaseClassname($t), $k));
+                    if ($logger) {
+                        $logger->debug(sprintf('[Term:%s:%d] => false', Util::getBaseClassname($t), $k));
+                    }
+
                     return false;
                 } else {
-                    if ($logger) $logger->debug(sprintf('[Term:%s:%d] => true', Util::getBaseClassname($t), $k));
+                    if ($logger) {
+                        $logger->debug(sprintf('[Term:%s:%d] => true', Util::getBaseClassname($t), $k));
+                    }
                 }
             }
 
             return true;
         } else {
-            if ($logger) $logger->debug('[Term:Composite] OR operator');
+            if ($logger) {
+                $logger->debug('[Term:Composite] OR operator');
+            }
 
             foreach ($this->terms as $k => $t) {
                 if ($t->isTriggerMatch($ticket, $context)) {
-                    if ($logger) $logger->debug(sprintf('[Term:%s:%d] => true', Util::getBaseClassname($t), $k));
+                    if ($logger) {
+                        $logger->debug(sprintf('[Term:%s:%d] => true', Util::getBaseClassname($t), $k));
+                    }
+
                     return true;
                 } else {
-                    if ($logger) $logger->debug(sprintf('[Term:%s:%d] => false', Util::getBaseClassname($t), $k));
+                    if ($logger) {
+                        $logger->debug(sprintf('[Term:%s:%d] => false', Util::getBaseClassname($t), $k));
+                    }
                 }
             }
 

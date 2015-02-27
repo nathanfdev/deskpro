@@ -60,7 +60,6 @@ class AgentTeamConstraint extends Constraint
      */
     public $checkRepos  = true;
 
-
     /**
      * {@inheritDoc}
      */

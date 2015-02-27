@@ -56,7 +56,6 @@ class FlagAction extends AbstractAction implements PersonContextInterface, Execu
         $this->flag = $flag;
     }
 
-
     public function setPersonContext(Person $person)
     {
         $this->person_context = $person;
@@ -66,7 +65,6 @@ class FlagAction extends AbstractAction implements PersonContextInterface, Execu
     {
         $this->execution_context = $context;
     }
-
 
     /**
      * Apply the property to the ticket
@@ -87,14 +85,13 @@ class FlagAction extends AbstractAction implements PersonContextInterface, Execu
         // Otherwise its a macro, flag for the performer
         } else {
             // Invalid context
-            if (!$this->person_context OR !$this->person_context['is_agent']) {
+            if (!$this->person_context or !$this->person_context['is_agent']) {
                 return;
             }
 
             $ticket->setFlagForPerson($this->person_context, $flag);
         }
     }
-
 
     /**
      * Get an array of actions that would be performed on the ticket
@@ -104,10 +101,9 @@ class FlagAction extends AbstractAction implements PersonContextInterface, Execu
     public function getApplyActions(Ticket $ticket)
     {
         return array(
-            array('action' => 'flag', 'color' => $this->flag)
+            array('action' => 'flag', 'color' => $this->flag),
         );
     }
-
 
     /**
      * Get the flag color
@@ -119,7 +115,6 @@ class FlagAction extends AbstractAction implements PersonContextInterface, Execu
         return $this->flag;
     }
 
-
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
@@ -128,7 +123,6 @@ class FlagAction extends AbstractAction implements PersonContextInterface, Execu
     {
         return $other_action;
     }
-
 
     /**
      * @return string

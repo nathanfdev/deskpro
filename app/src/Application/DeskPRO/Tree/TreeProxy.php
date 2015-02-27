@@ -74,7 +74,6 @@ class TreeProxy implements \ArrayAccess
         return $ret;
     }
 
-
     /**
      * @param mixed    $obj
      * @param callback $filter Any callback that adheres to function($obj, $key)
@@ -85,7 +84,6 @@ class TreeProxy implements \ArrayAccess
         $this->__filter = $filter;
     }
 
-
     /**
      * @return mixed
      */
@@ -93,7 +91,6 @@ class TreeProxy implements \ArrayAccess
     {
         return $this->__obj;
     }
-
 
     /**
      * Get the children that pas the filter, with each child itself being wrapped with the same filter.
@@ -130,7 +127,6 @@ class TreeProxy implements \ArrayAccess
 
         return $this->__child_cache;
     }
-
 
     ####################################################################################################################
     # Implementations of magic methods

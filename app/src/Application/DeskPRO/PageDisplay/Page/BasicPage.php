@@ -81,7 +81,6 @@ class BasicPage
      */
     protected $page_displays = array();
 
-
     /**
      * @param  \Application\DeskPRO\Entity\PageDisplayAbstract $page_display
      * @return void

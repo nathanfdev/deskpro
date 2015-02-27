@@ -63,7 +63,6 @@ class PrefsPersister
         $this->db     = $em->getConnection();
     }
 
-
     /**
      * @param  Prefs      $prefs
      * @throws \Exception
@@ -72,7 +71,6 @@ class PrefsPersister
     {
         $filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
         $filters = Arrays::keyFromData($filters, 'id');
-
 
         #------------------------------
         # Create sub records
@@ -95,16 +93,20 @@ class PrefsPersister
             $sub = $fn_get_sub($filter_id);
 
             foreach ($subs as $name => $v) {
-                if (!$v) continue;
-                $sub->{'email_' . $name} = true;
+                if (!$v) {
+                    continue;
+                }
+                $sub->{'email_'.$name} = true;
             }
         }
         foreach ($prefs->getFilterSubs('alert') as $filter_id => $subs) {
             $sub = $fn_get_sub($filter_id);
 
             foreach ($subs as $name => $v) {
-                if (!$v) continue;
-                $sub->{'alert_' . $name} = true;
+                if (!$v) {
+                    continue;
+                }
+                $sub->{'alert_'.$name} = true;
             }
         }
 
@@ -121,12 +123,14 @@ class PrefsPersister
              'feedback',
              'publish',
              'crm',
-             'account'
+             'account',
         ) as $app_name) {
             foreach (array('email', 'alert') as $type) {
                 $subs = $prefs->getAppSubs($type, $app_name);
                 foreach ($subs as $name => $v) {
-                    if (!$v) continue;
+                    if (!$v) {
+                        continue;
+                    }
                     $pref_records[] = array(
                         'person_id' => $this->person->id,
                         'name'      => "agent_notif.{$name}.$type",
@@ -181,7 +185,6 @@ class PrefsPersister
             }
 
             $this->db->commit();
-
         } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;

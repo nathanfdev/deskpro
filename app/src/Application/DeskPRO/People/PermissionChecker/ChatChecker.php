@@ -99,7 +99,6 @@ class ChatChecker extends AbstractChecker
         return true;
     }
 
-
     /**
      * @param  \Application\DeskPRO\Entity\ChatConversation $convo
      * @return bool

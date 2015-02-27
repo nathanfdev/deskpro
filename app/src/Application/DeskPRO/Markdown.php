@@ -33,6 +33,7 @@
  */
 
 namespace Application\DeskPRO;
+
 use Orb\Util\Strings;
 use Orb\Util\Util as OrbUtil;
 
@@ -68,7 +69,7 @@ class Markdown extends \Markdown_Parser
         $m = null;
         if (preg_match_all('#!\[attach(.*?)\]#', $text, $m)) {
             foreach ($m[0] as $match) {
-                $token = ":attach-token-" . md5(microtime() . OrbUtil::requestUniqueId()) . ":";
+                $token = ":attach-token-".md5(microtime().OrbUtil::requestUniqueId()).":";
                 $this->attach_tokens[$token] = $match;
             }
         }

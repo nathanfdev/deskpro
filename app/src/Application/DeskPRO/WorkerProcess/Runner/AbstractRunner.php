@@ -75,7 +75,6 @@ abstract class AbstractRunner
      */
     protected $halt_job_loop = false;
 
-
     /**
      * @param $callback
      */
@@ -84,7 +83,6 @@ abstract class AbstractRunner
         $this->post_job_callback = $callback;
     }
 
-
     /**
      * Signals that the job should break, even if there are still jobs to process.
      */
@@ -92,7 +90,6 @@ abstract class AbstractRunner
     {
         $this->halt_job_loop = true;
     }
-
 
     /**
      * Sets the options array to pass to jobs when they are run
@@ -103,7 +100,6 @@ abstract class AbstractRunner
     {
         $this->job_options = $options;
     }
-
 
     /**
      * Run an array of jobs
@@ -120,8 +116,6 @@ abstract class AbstractRunner
             }
         }
     }
-
-
 
     /**
      *
@@ -141,7 +135,7 @@ abstract class AbstractRunner
         $GLOBALS['DP_CRON_LOGGER'] = $logger;
 
         if ($worker_job->getIsCrashed()) {
-            $logger->log("ERROR: Job appears to have crashed during the last run! The last run was started at " . $worker_job->last_start_date->format('Y-m-d H:i:s'), Logger::ERR, array('flag' => 'job_crash'));
+            $logger->log("ERROR: Job appears to have crashed during the last run! The last run was started at ".$worker_job->last_start_date->format('Y-m-d H:i:s'), Logger::ERR, array('flag' => 'job_crash'));
         }
 
         $mtime_start = microtime(true);
@@ -163,7 +157,8 @@ abstract class AbstractRunner
                     $logger->log("(Rolling back open transaction)", Logger::DEBUG);
                     App::getDb()->rollback();
                 }
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         $mtime_end = microtime(true);
@@ -191,8 +186,6 @@ abstract class AbstractRunner
         unset($GLOBALS['DP_CRON_LOGGER']);
     }
 
-
-
     /**
      * Get the job
      *
@@ -212,8 +205,6 @@ abstract class AbstractRunner
         return $job;
     }
 
-
-
     /**
      * Get a logger for a specific job to log its status/debug messages
      *
@@ -222,8 +213,8 @@ abstract class AbstractRunner
      */
     public function getLoggerForWorkerJob(Entity\WorkerJob $worker_job)
     {
-        $logger_session = $worker_job['id'] . '.' . microtime(true);
-        $logger = App::createNewLogger('worker_job.' . $worker_job->id, $logger_session);
+        $logger_session = $worker_job['id'].'.'.microtime(true);
+        $logger = App::createNewLogger('worker_job.'.$worker_job->id, $logger_session);
 
         $this->_initLogger($logger, $worker_job);
         if ($this->_init_logger_callback) {

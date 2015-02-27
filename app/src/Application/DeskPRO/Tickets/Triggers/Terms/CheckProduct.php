@@ -56,7 +56,6 @@ class CheckProduct extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

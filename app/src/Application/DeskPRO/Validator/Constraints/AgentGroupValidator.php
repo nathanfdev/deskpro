@@ -46,7 +46,6 @@ class AgentGroupValidator extends ConstraintValidator
      */
     private $usergroup_data;
 
-
     /**
      * @param UsergroupDataService $usergroup_data
      */
@@ -54,7 +53,6 @@ class AgentGroupValidator extends ConstraintValidator
     {
         $this->usergroup_data = $usergroup_data;
     }
-
 
     /**
      * @param mixed      $value
@@ -82,7 +80,6 @@ class AgentGroupValidator extends ConstraintValidator
             }
         }
     }
-
 
     /**
      * @return string

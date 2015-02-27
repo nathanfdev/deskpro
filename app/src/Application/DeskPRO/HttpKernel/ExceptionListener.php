@@ -54,7 +54,9 @@ class ExceptionListener
 
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        if ($this->handling_exception === true) return;
+        if ($this->handling_exception === true) {
+            return;
+        }
         $this->handling_exception = true;
 
         $exception = $event->getException();
@@ -101,7 +103,7 @@ class ExceptionListener
             return;
         }
 
-        $log_file = dp_get_log_dir() . '/request_errors.log';
+        $log_file = dp_get_log_dir().'/request_errors.log';
 
         $url = '';
         if (defined('DP_REQUEST_URL')) {
@@ -111,7 +113,8 @@ class ExceptionListener
             if (class_exists('Application\\DeskPRO\\App', false)) {
                 try {
                     $url = App::getRequest()->getUri();
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
         }
 
@@ -119,6 +122,6 @@ class ExceptionListener
         $lines = sprintf("Type: %s\nException: %s %s\n%s", get_class($e), $e->getCode(), $e->getMessage(), KernelErrorHandler::formatBacktrace($e->getTrace()));
         $lines = Strings::modifyLines($lines, "\t");
 
-        @file_put_contents($log_file, $top . "\n" . $lines, \FILE_APPEND);
+        @file_put_contents($log_file, $top."\n".$lines, \FILE_APPEND);
     }
 }

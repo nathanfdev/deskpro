@@ -49,7 +49,7 @@ class EmailPreProcessor extends AbstractPreProcessor
         }
 
         if (strpos($source, '{% extends') === false && strpos($source, '<dp:subject>') !== false) {
-            $source = $this->getPrepend() . $source;
+            $source = $this->getPrepend().$source;
         } else {
             $source = preg_replace('#<dp:subject>\s*</dp:subject>#is', '', $source);
         }
@@ -81,7 +81,7 @@ class EmailPreProcessor extends AbstractPreProcessor
         }, $source);
 
         if ($sets) {
-            $source = '{% block email_pre %}'.implode("\n", $sets).'{% endblock %}' . $source;
+            $source = '{% block email_pre %}'.implode("\n", $sets).'{% endblock %}'.$source;
         }
 
         return $source;
@@ -231,7 +231,7 @@ class EmailPreProcessor extends AbstractPreProcessor
         static $id = 0;
         $id++;
 
-        return 'set_' . time() . '_' . $id;
+        return 'set_'.time().'_'.$id;
     }
 
     /**

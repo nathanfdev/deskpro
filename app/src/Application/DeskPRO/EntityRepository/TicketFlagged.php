@@ -56,7 +56,10 @@ class TicketFlagged extends AbstractEntityRepository
     {
         $ids = Arrays::flattenToIndex($tickets, 'id');
 
-        if (!$ids) return array();
+        if (!$ids) {
+            return array();
+        }
+
         return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
             SELECT ticket_id, color
             FROM tickets_flagged
@@ -68,13 +71,13 @@ class TicketFlagged extends AbstractEntityRepository
     {
         $assigned_perm_part = "tickets.agent_id = {$person['id']}";
         if ($person->getAgentTeamIds()) {
-            $assigned_perm_part = "($assigned_perm_part OR tickets.agent_team_id IN (" . implode(',', $person->getAgentTeamIds()) . "))";
+            $assigned_perm_part = "($assigned_perm_part OR tickets.agent_team_id IN (".implode(',', $person->getAgentTeamIds())."))";
         }
 
         $where_perm = array();
 
         if ($person->getDisallowedDepartments()) {
-            $where_perm[] = "(tickets.department_id NOT IN (" . implode(',', $person->getDisallowedDepartments()) . ") OR tickets.department_id IS NULL OR $assigned_perm_part)";
+            $where_perm[] = "(tickets.department_id NOT IN (".implode(',', $person->getDisallowedDepartments()).") OR tickets.department_id IS NULL OR $assigned_perm_part)";
         }
 
         if (!$person->hasPerm('agent_tickets.view_unassigned')) {
@@ -85,17 +88,17 @@ class TicketFlagged extends AbstractEntityRepository
             $part = array();
             $part[] = "tickets.agent_id = {$person['id']}";
             if ($person->getAgentTeamIds()) {
-                $part[] = "tickets.agent_team_id IN (" . implode(',', $person->getAgentTeamIds()) . ")";
+                $part[] = "tickets.agent_team_id IN (".implode(',', $person->getAgentTeamIds()).")";
             }
             if ($person->hasPerm('agent_tickets.view_unassigned')) {
                 $part[] = 'tickets.agent_id IS NULL';
             }
 
-            $where_perm[] = '(' . implode(' OR ', $part) . ')';
+            $where_perm[] = '('.implode(' OR ', $part).')';
         }
 
         if ($where_perm) {
-            $where_perm = '(' . implode(' AND ', $where_perm) . ')';
+            $where_perm = '('.implode(' AND ', $where_perm).')';
         } else {
             $where_perm = '1';
         }

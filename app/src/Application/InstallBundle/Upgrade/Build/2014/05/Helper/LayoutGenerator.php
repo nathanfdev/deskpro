@@ -45,7 +45,6 @@ class LayoutGenerator
      */
     private $container;
 
-
     /**
      * @param DeskproContainer $container
      */

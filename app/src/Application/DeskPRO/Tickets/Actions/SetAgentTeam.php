@@ -57,7 +57,6 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
         return $options;
     }
 
-
     /**
      * @param $set_team_id
      * @param  ExecutorContextInterface                   $context
@@ -92,7 +91,6 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
         return $team;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -108,7 +106,6 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
 
         $ticket->agent_team = $team;
     }
-
 
     /**
      * {@inheritDoc}
@@ -132,7 +129,6 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
 
         return false;
     }
-
 
     /**
      * {@inheritDoc}

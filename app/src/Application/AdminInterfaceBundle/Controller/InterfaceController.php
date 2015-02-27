@@ -201,7 +201,6 @@ class InterfaceController extends AbstractController
         }
     }
 
-
     /**
      * @param $code
      * @return BinaryFileResponse
@@ -209,13 +208,13 @@ class InterfaceController extends AbstractController
     public function downloadExportFileAction($code)
     {
         if (!$data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $file = $data->getData('file');
 
         if (!file_exists($file)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $response = new BinaryFileResponse($file);

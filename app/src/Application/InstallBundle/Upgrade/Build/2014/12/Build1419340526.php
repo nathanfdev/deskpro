@@ -40,7 +40,7 @@ class Build1419340526 extends AbstractBuild
     {
         $name = 'core_tickets.work_hours';
         $this->out("Fix old format of $name");
-		$v = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array($name));
+        $v = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array($name));
 
         if ($v) {
             $v = @unserialize($v);

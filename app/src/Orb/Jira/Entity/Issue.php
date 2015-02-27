@@ -84,7 +84,7 @@ class Issue extends Entity
             return false;
         }
 
-        $this->_id	= $params['id'];
+        $this->_id    = $params['id'];
 
         $this->setKey($params['key']);
 

@@ -21,7 +21,7 @@ class Priority extends Entity
             return false;
         }
 
-        $this->_id		= $params['id'];
-        $this->_name	= $params['name'];
+        $this->_id        = $params['id'];
+        $this->_name    = $params['name'];
     }
 }

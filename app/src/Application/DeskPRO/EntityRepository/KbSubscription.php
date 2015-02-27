@@ -36,5 +36,4 @@ namespace Application\DeskPRO\EntityRepository;
 
 class KbSubscription extends AbstractEntityRepository
 {
-
 }

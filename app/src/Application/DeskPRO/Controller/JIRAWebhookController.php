@@ -33,10 +33,8 @@
 
 namespace Application\DeskPRO\Controller;
 
-use Application\DeskPRO\Entity\JiraIssue;
 use Application\DeskPRO\JIRA\WebhookHandler;
 use Application\DeskPRO\Service\JIRA;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,19 +43,19 @@ class JIRAWebhookController extends AbstractController
 {
     /**
      * JIRA webhook endpoint
-     * @param Request $request
+     * @param  Request  $request
      * @return Response
      */
-	public function handleAction(Request $request)
+    public function handleAction(Request $request)
     {
         $response = new Response();
         $content = $request->getContent();
 
-	    /** @var JIRA $js */
-	    $js = $this->get(JIRA::NAME);
-	    if (!$js->isEnabled()) {
-		    return $response;
-	    }
+        /** @var JIRA $js */
+        $js = $this->get(JIRA::NAME);
+        if (!$js->isEnabled()) {
+            return $response;
+        }
 
         if (!$json = json_decode($content, 1)) {
             return $response;

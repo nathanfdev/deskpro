@@ -34,17 +34,17 @@
 
 namespace DpBehat;
 
-use Application\DeskPRO\Brand\BrandStack;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
 use Application\DeskPRO\Languages\LangPackInfo;
-use Application\LanguageBundle\Language\LanguageManager;
-use Application\LanguageBundle\Language\LanguageStack;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Application\LanguageBundle\Routing\Router;
+use DeskPRO\Bundle\PortalBundle\Routing\PortalRouter;
 
 class RouterContext extends BasePortalContext
 {
@@ -94,7 +94,7 @@ class RouterContext extends BasePortalContext
 
 
     /**
-     * @return Router
+     * @return PortalRouter
      */
     public function getRouter()
     {

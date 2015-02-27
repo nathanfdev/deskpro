@@ -44,7 +44,6 @@ abstract class ActionTypeAbstract implements PersonContextInterface
      */
     protected $person;
 
-
     /**
      * @param  \Application\DeskPRO\Entity\Person $person
      * @return void
@@ -54,7 +53,6 @@ abstract class ActionTypeAbstract implements PersonContextInterface
         $this->person;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\Person
      */
@@ -62,7 +60,6 @@ abstract class ActionTypeAbstract implements PersonContextInterface
     {
         return $this->person;
     }
-
 
     /**
      * Get a plain array of details that'll be stored in the databaes

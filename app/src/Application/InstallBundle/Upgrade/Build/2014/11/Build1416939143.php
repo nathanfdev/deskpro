@@ -39,6 +39,6 @@ class Build1416939143 extends AbstractBuild
     public function run()
     {
         $this->out("Add email_sources.object_info");
-		$this->execMutateSql("ALTER TABLE email_sources ADD object_info LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)'");
+        $this->execMutateSql("ALTER TABLE email_sources ADD object_info LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)'");
     }
 }

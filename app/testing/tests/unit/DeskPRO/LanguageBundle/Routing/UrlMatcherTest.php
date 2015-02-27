@@ -34,7 +34,7 @@
 
 namespace DpUnitTests\DeskPRO\LanguageBundle\Routing;
 
-use Application\LanguageBundle\Routing\UrlMatcher;
+use DeskPRO\Bundle\PortalBundle\Routing\UrlMatcher;
 
 class UrlMatcherTest extends \DpUnitTestCase
 {

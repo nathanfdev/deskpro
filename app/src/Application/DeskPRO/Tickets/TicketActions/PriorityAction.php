@@ -48,7 +48,6 @@ class PriorityAction extends AbstractAction implements PermissionableAction
         $this->priority_id = $priority;
     }
 
-
     /**
      * Apply the property to the ticket
      *
@@ -58,7 +57,6 @@ class PriorityAction extends AbstractAction implements PermissionableAction
     {
         $ticket['priority_id'] = $this->priority_id;
     }
-
 
     /**
      * {@inheritDoc}
@@ -76,7 +74,6 @@ class PriorityAction extends AbstractAction implements PermissionableAction
         return true;
     }
 
-
     /**
      * Get an array of actions that would be performed on the ticket
      *
@@ -89,10 +86,9 @@ class PriorityAction extends AbstractAction implements PermissionableAction
         }
 
         return array(
-            array('action' => 'priority', 'priority_id' => $this->priority_id)
+            array('action' => 'priority', 'priority_id' => $this->priority_id),
         );
     }
-
 
     /**
      * Get the priority id
@@ -104,7 +100,6 @@ class PriorityAction extends AbstractAction implements PermissionableAction
         return $this->priority_id;
     }
 
-
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
@@ -113,7 +108,6 @@ class PriorityAction extends AbstractAction implements PermissionableAction
     {
         return $other_action;
     }
-
 
     /**
      * @return string

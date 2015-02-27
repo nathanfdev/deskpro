@@ -241,7 +241,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
                 'app_title'     => $app->title,
                 'package_name'  => $app->package->name,
                 'package_title' => $app->package->title,
-                'message'       => $recordMsg
+                'message'       => $recordMsg,
             )
         );
     }

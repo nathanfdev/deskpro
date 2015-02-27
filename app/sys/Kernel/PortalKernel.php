@@ -67,13 +67,9 @@ class PortalKernel extends Kernel
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),
             new \Application\AgentBundle\AgentBundle(),
-            new \Application\PortalBundle\PortalBundle(),
-            new \Application\LanguageBundle\LanguageBundle(),
-            new \Application\AuthBundle\AuthBundle(),
-            new \Application\FormBundle\FormBundle(),
-            new \Application\AppBundle\AppBundle(),
-            new \Application\PersonBundle\PersonBundle(),
-            new \Application\TicketBundle\TicketBundle()
+
+            new \DeskPRO\Bundle\AppBundle\AppBundle(),
+            new \DeskPRO\Bundle\PortalBundle\PortalBundle(),
         );
 
         if ('dev' === $this->getEnvironment()
@@ -108,7 +104,7 @@ class PortalKernel extends Kernel
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(DP_ROOT . '/sys/config/portal_config_' . $this->getEnvironment() . '.yml');
+        $loader->load(DP_ROOT . '/sys/config/portal/portal_config_' . $this->getEnvironment() . '.yml');
     }
 
 

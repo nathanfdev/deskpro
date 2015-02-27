@@ -40,7 +40,7 @@ class Userinfo extends Template
 {
     protected function init()
     {
-        $this->setOption('tpl', 'UserBundle:Portal:userinfo-' . $this->section . '.html.twig');
+        $this->setOption('tpl', 'UserBundle:Portal:userinfo-'.$this->section.'.html.twig');
     }
 
     public function getVars()

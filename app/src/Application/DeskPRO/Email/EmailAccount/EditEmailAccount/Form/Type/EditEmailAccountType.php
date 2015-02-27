@@ -53,16 +53,15 @@ class EditEmailAccountType extends AbstractType
                 'imap' => 'imap',
                 'exchange' => 'exchange',
                 'office365' => 'office365',
-                'noop' => 'noop'
+                'noop' => 'noop',
             ),
-            'required' => true
+            'required' => true,
         ));
         $builder->add('in_gmail_account',       new IncomingAccount\GmailAccountType());
         $builder->add('in_pop3_account',        new IncomingAccount\Pop3AccountType());
         $builder->add('in_imap_account',        new IncomingAccount\ImapAccountType());
         $builder->add('in_exchange_account',    new IncomingAccount\ExchangeAccountType());
         $builder->add('in_office365_account',   new IncomingAccount\Office365AccountType());
-
 
         $builder->add('outgoing_type', 'choice', array(
             'choices'  => array(
@@ -72,7 +71,7 @@ class EditEmailAccountType extends AbstractType
                 'exchange' => 'exchange',
                 'office365' => 'office365',
             ),
-            'required' => true
+            'required' => true,
         ));
         $builder->add('out_gmail_account',      new OutgoingAccount\GmailAccountType());
         $builder->add('out_smtp_account',       new OutgoingAccount\SmtpAccountType());

@@ -36,7 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\Entity\Template as TemplateEntity;
-use Application\PortalBundle\Theme\ThemeInterface;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
 
 class Template extends AbstractEntityRepository
 {
@@ -54,7 +54,6 @@ class Template extends AbstractEntityRepository
         return $this->findOneBy(array('name' => $name));
     }
 
-
     /**
      * @param             $template_name
      * @param  null       $style
@@ -64,18 +63,18 @@ class Template extends AbstractEntityRepository
     public function getTemplateForStyle($template_name, $style = null)
     {
         try {
-            if ($style === null OR $style === 0) {
+            if ($style === null or $style === 0) {
                 $q = $this->getEntityManager()->createQuery("
                     SELECT t
                     FROM DeskPRO:Template t
                     WHERE t.style IS NULL AND t.name = ?1
-                ")->setParameters(array(1=>$template_name));
+                ")->setParameters(array(1 => $template_name));
             } else {
                 $q = $this->getEntityManager()->createQuery("
                     SELECT t
                     FROM DeskPRO:Template t
                     WHERE t.style = ?1 AND t.name = ?2
-                ")->setParameters(array(1=>$style, 2=>$template_name));
+                ")->setParameters(array(1 => $style, 2 => $template_name));
             }
 
             $r = $q->getSingleResult();
@@ -85,7 +84,6 @@ class Template extends AbstractEntityRepository
             return null;
         }
     }
-
 
     /**
      * @param $style
@@ -107,7 +105,6 @@ class Template extends AbstractEntityRepository
         return array();
     }
 
-
     /**
      * @param                      $name
      * @param  BrandEntity         $brand
@@ -119,12 +116,11 @@ class Template extends AbstractEntityRepository
         $loaded = $this->getLoadedTemplatesForBrand($brand);
         $theme_id = $theme->getId();
         if (isset($loaded[$theme_id])) {
-            return isset($loaded[$theme_id][(string)$name]) ? $loaded[$theme_id][(string)$name] : null;
+            return isset($loaded[$theme_id][(string) $name]) ? $loaded[$theme_id][(string) $name] : null;
         }
 
         return null;
     }
-
 
     public function getLoadedTemplatesForBrand(BrandEntity $brand)
     {
@@ -135,12 +131,11 @@ class Template extends AbstractEntityRepository
         return $this->loadedTemplates[$brand->id];
     }
 
-
     protected function loadTemplates(BrandEntity $brand)
     {
         $found_brand_templates = $this->findBy(
             array(
-                'brand'    => $brand
+                'brand'    => $brand,
             )
         );
 

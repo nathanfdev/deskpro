@@ -51,7 +51,6 @@ class Router extends \Symfony\Bundle\FrameworkBundle\Routing\Router
         return $this->getGenerator()->generateUrl($name, $parameters);
     }
 
-
     /**
      * Read the ID in a slug: 123-some-title will return 123
      *
@@ -68,6 +67,6 @@ class Router extends \Symfony\Bundle\FrameworkBundle\Routing\Router
             return 0;
         }
 
-        return (int)$id;
+        return (int) $id;
     }
 }

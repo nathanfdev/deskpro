@@ -35,7 +35,6 @@
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\Entity\EmailAccount;
-
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount;
 use Orb\Util\Arrays;
@@ -140,7 +139,9 @@ class Build1400056713 extends AbstractBuild
         }
 
         $max_id = $db->fetchColumn("SELECT id FROM email_accounts ORDER BY id DESC LIMIT 1");
-        if (!$max_id) $max_id = 0;
+        if (!$max_id) {
+            $max_id = 0;
+        }
         $max_id++;
         $db->exec("ALTER TABLE email_accounts AUTO_INCREMENT = $max_id");
 
@@ -151,7 +152,6 @@ class Build1400056713 extends AbstractBuild
             $em->flush();
         }
     }
-
 
     /**
      * @param  array        $gateway
@@ -233,11 +233,10 @@ class Build1400056713 extends AbstractBuild
             $account->setOption('custom_email_address', $account->other_addresses[0]);
         }
 
-        $account->is_enabled = (bool)$gateway['is_enabled'];
+        $account->is_enabled = (bool) $gateway['is_enabled'];
 
         return $account;
     }
-
 
     /**
      * @param  array                                                                                $tr

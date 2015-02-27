@@ -35,7 +35,7 @@
 namespace DpUnitTests\AuthBundle\Permissions\Portal;
 
 
-use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 
 class PortalPermissionsManagerTest extends \DpUnitTestCase
 {

@@ -407,7 +407,9 @@ class SendmailSource implements NotifyPropertyChanged
      */
     public function setToEmails(array $to_emails = null)
     {
-        if (empty($to_emails)) $to_emails = null;
+        if (empty($to_emails)) {
+            $to_emails = null;
+        }
         $this->to_emails = $to_emails;
     }
 
@@ -424,7 +426,9 @@ class SendmailSource implements NotifyPropertyChanged
      */
     public function setCcEmails($cc_emails)
     {
-        if (empty($cc_emails)) $cc_emails = null;
+        if (empty($cc_emails)) {
+            $cc_emails = null;
+        }
         $this->cc_emails = $cc_emails;
     }
 
@@ -441,7 +445,9 @@ class SendmailSource implements NotifyPropertyChanged
      */
     public function setBccEmails($bcc_emails)
     {
-        if (empty($bcc_emails)) $bcc_emails = null;
+        if (empty($bcc_emails)) {
+            $bcc_emails = null;
+        }
         $this->bcc_emails = $bcc_emails;
     }
 
@@ -767,8 +773,8 @@ class SendmailSource implements NotifyPropertyChanged
                 'date_created_idx' => array('columns' => array('date_created')),
             ),
             'uniqueConstraints' => array(
-                'ref_idx' => array('columns' => array('ref'))
-            )
+                'ref_idx' => array('columns' => array('ref')),
+            ),
         ));
 
         $metadata->mapField(array(
@@ -924,7 +930,7 @@ class SendmailSource implements NotifyPropertyChanged
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-            ))
+            )),
         ));
         $metadata->mapManyToOne(array(
             'fieldName'    => 'log_blob',
@@ -936,13 +942,22 @@ class SendmailSource implements NotifyPropertyChanged
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'set null',
-            ))
+            )),
         ));
     }
 
-    public function __getPropValue__($k)     { return $this->$k; }
-    public function __setPropValue__($k, $v) { $this->$k = $v; }
-    public function __hasRunLoad__()         { return true; }
+    public function __getPropValue__($k)
+    {
+        return $this->$k;
+    }
+    public function __setPropValue__($k, $v)
+    {
+        $this->$k = $v;
+    }
+    public function __hasRunLoad__()
+    {
+        return true;
+    }
 
     /** @var PropertyChangedListener[] */
     private $_listeners = array();

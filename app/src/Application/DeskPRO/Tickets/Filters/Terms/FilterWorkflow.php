@@ -55,7 +55,6 @@ class FilterWorkflow extends AbstractFilterTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

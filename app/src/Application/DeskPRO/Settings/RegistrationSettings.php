@@ -94,7 +94,6 @@ class RegistrationSettings
      */
     public $email_validation_ticket_email;
 
-
     /**
      * @param Settings      $settings
      * @param EntityManager $em
@@ -115,18 +114,17 @@ class RegistrationSettings
         $this->resetSettings();
     }
 
-
     /**
      * Resets settings based on stored values.
      */
     public function resetSettings()
     {
-        $this->reg_enabled            = (bool)$this->settings->get('core.reg_enabled');
-        $this->reg_required           = (bool)$this->settings->get('core.reg_required');
-        $this->email_validation       = (bool)$this->settings->get('core.email_validation');
-        $this->agent_validation       = (bool)$this->settings->get('core.agent_validation');
-        $this->existing_account_login = (bool)$this->settings->get('core.existing_account_login');
-        $this->everyone_group_enabled = (bool)$this->everyone_group->is_enabled;
+        $this->reg_enabled            = (bool) $this->settings->get('core.reg_enabled');
+        $this->reg_required           = (bool) $this->settings->get('core.reg_required');
+        $this->email_validation       = (bool) $this->settings->get('core.email_validation');
+        $this->agent_validation       = (bool) $this->settings->get('core.agent_validation');
+        $this->existing_account_login = (bool) $this->settings->get('core.existing_account_login');
+        $this->everyone_group_enabled = (bool) $this->everyone_group->is_enabled;
 
         if ($this->email_validation_trigger && $this->email_validation_trigger->is_enabled) {
             if (in_array('email', $this->email_validation_trigger->by_user_mode)) {
@@ -137,7 +135,6 @@ class RegistrationSettings
             }
         }
     }
-
 
     /**
      * @return array
@@ -159,7 +156,6 @@ class RegistrationSettings
         return $export_settings;
     }
 
-
     /**
      * @param array $set_settings
      */
@@ -172,7 +168,6 @@ class RegistrationSettings
         }
     }
 
-
     /**
      * Persists settings
      */
@@ -180,9 +175,9 @@ class RegistrationSettings
     {
         if ($this->reg_enabled) {
             $this->settings->setSetting('core.reg_enabled', 1);
-            $this->settings->setSetting('core.reg_required', (int)$this->reg_required);
-            $this->settings->setSetting('core.email_validation', (int)$this->email_validation);
-            $this->settings->setSetting('core.agent_validation', (int)$this->agent_validation);
+            $this->settings->setSetting('core.reg_required', (int) $this->reg_required);
+            $this->settings->setSetting('core.email_validation', (int) $this->email_validation);
+            $this->settings->setSetting('core.agent_validation', (int) $this->agent_validation);
         } else {
             $this->settings->setSetting('core.reg_enabled', 0);
             $this->settings->setSetting('core.reg_required', 0);
@@ -190,10 +185,9 @@ class RegistrationSettings
             $this->settings->setSetting('core.agent_validation', 0);
         }
 
-        $this->settings->setSetting("core.existing_account_login", (int)$this->existing_account_login);
+        $this->settings->setSetting("core.existing_account_login", (int) $this->existing_account_login);
 
         if (!$this->email_validation_trigger) {
-
         }
 
         if (!$this->email_validation_ticket_email && !$this->email_validation_ticket_web) {
@@ -220,7 +214,7 @@ class RegistrationSettings
             $this->email_validation_trigger->by_user_mode = $mode;
         }
 
-        $this->everyone_group->is_enabled = (bool)$this->everyone_group_enabled;
+        $this->everyone_group->is_enabled = (bool) $this->everyone_group_enabled;
         $this->em->persist($this->everyone_group);
 
         if ($this->email_validation_trigger) {
@@ -229,7 +223,6 @@ class RegistrationSettings
 
         $this->em->flush();
     }
-
 
     /**
      * @return TicketTrigger

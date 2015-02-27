@@ -95,5 +95,4 @@ class SerializerRegistry implements SerializerInterface
     {
         $this->serializers[] = $serializer;
     }
-
 }

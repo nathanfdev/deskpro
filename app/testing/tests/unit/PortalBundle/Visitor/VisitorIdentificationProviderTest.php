@@ -34,7 +34,7 @@
 
 namespace DpUnitTests\PortalBundle\Visitor;
 
-use Application\PortalBundle\Visitor\VisitorIdentificationProvider;
+use DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider;
 use Psr\Log\NullLogger;
 
 class VisitorIdentificationProviderTest extends \DpUnitTestCase

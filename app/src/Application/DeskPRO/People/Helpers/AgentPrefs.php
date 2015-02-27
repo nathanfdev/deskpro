@@ -87,14 +87,16 @@ class AgentPrefs implements \Orb\Helper\ShortCallableInterface
             }
         }
         if ($this->preload_prefixes) {
-            if ($this->preload_ids) $sql .= ' OR ';
+            if ($this->preload_ids) {
+                $sql .= ' OR ';
+            }
 
             $x = 0;
             $parts = array();
             foreach ($this->preload_prefixes as $prefix) {
-                $qname = 'p' . $x;
+                $qname = 'p'.$x;
                 $parts[] = 'pref.name LIKE :'.$qname;
-                $params[$qname] = $prefix . '%';
+                $params[$qname] = $prefix.'%';
                 $this->loaded_pref_prefixes[] = $prefix;
             }
 

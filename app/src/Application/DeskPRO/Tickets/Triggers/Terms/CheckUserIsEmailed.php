@@ -57,7 +57,6 @@ class CheckUserIsEmailed extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -90,11 +89,17 @@ class CheckUserIsEmailed extends AbstractTriggerTerm
 
         $op = $this->getTermOperator();
         if ($did_send) {
-            if ($op == 'is') return true;
-            else return false;
+            if ($op == 'is') {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            if ($op == 'not') return true;
-            else return false;
+            if ($op == 'not') {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 }

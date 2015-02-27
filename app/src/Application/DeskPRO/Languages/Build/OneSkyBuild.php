@@ -71,7 +71,6 @@ class OneSkyBuild extends AbstractBuild
         $this->secret_key = $secret_key;
     }
 
-
     /**
      * Enable secure API usage over HTTPS
      */
@@ -79,7 +78,6 @@ class OneSkyBuild extends AbstractBuild
     {
         $this->api_url = self::API_SECURE_URL;
     }
-
 
     /**
      * Set a specific API url
@@ -91,7 +89,6 @@ class OneSkyBuild extends AbstractBuild
         $this->api_url = $url;
     }
 
-
     /**
      * Get the API url
      *
@@ -101,7 +98,6 @@ class OneSkyBuild extends AbstractBuild
     {
         return $this->api_url;
     }
-
 
     /**
      * @param  string                       $id
@@ -115,7 +111,7 @@ class OneSkyBuild extends AbstractBuild
         $locale = $this->getLangPackInfo()->getLangInfo($id, 'locale');
 
         $platform_id = $this->getPlatformId($section);
-        $tag = $category . '.php';
+        $tag = $category.'.php';
 
         try {
             $words = $this->restGet('string/download', array(
@@ -126,20 +122,19 @@ class OneSkyBuild extends AbstractBuild
             ));
 
             if (isset($words['response']) && isset($words['error'])) {
-                throw new \Exception("Error: " . $words['error'], strpos($words['error'], 'does not exist') !== false ? 404 : 200);
+                throw new \Exception("Error: ".$words['error'], strpos($words['error'], 'does not exist') !== false ? 404 : 200);
             }
 
             if ($words && is_array($words)) {
                 foreach ($words as &$v) {
                     $v = str_replace(
-                        array('&lt;' ,'&gt;', '&quot;', '&amp;'),
-                        array('<' ,'>', '"', '&'),
+                        array('&lt;', '&gt;', '&quot;', '&amp;'),
+                        array('<', '>', '"', '&'),
                         $v
                     );
                 }
                 unset($v);
             }
-
         } catch (\Exception $e) {
             if ($e->getCode() == 404) {
                 $this->getLogger()->logInfo("$id is missing $section.$category");
@@ -152,7 +147,6 @@ class OneSkyBuild extends AbstractBuild
 
         return $words;
     }
-
 
     /**
      * Update the tracked project on OneSky with the phrases from the source file
@@ -169,12 +163,12 @@ class OneSkyBuild extends AbstractBuild
         $platform_id  = $this->getPlatformId($section);
 
         if (!$source_file) {
-            $source_file = $this->getLangPackInfo()->getLangDir() . '/default/'.$section.'/'.$category.'.php';
+            $source_file = $this->getLangPackInfo()->getLangDir().'/default/'.$section.'/'.$category.'.php';
         }
 
         if (!file_exists($source_file)) {
-            $this->getLogger()->logDebug("$section.$category invalid source file: " . $source_file);
-            throw new \InvalidArgumentException("Source file does not exist: " . $source_file);
+            $this->getLogger()->logDebug("$section.$category invalid source file: ".$source_file);
+            throw new \InvalidArgumentException("Source file does not exist: ".$source_file);
         }
 
         $this->getLogger()->logDebug("$section.$category source file: $source_file");
@@ -185,13 +179,13 @@ class OneSkyBuild extends AbstractBuild
         # Generate post data for source phrases
         #-------------------------
 
-        $phrases = include($source_file);
+        $phrases = include $source_file;
         $source_phrases = array();
 
         foreach ($phrases as $phrase_id => $phrasetext) {
             $source_phrases[] = array(
                 'string' => $phrasetext,
-                'string-key' => $phrase_id
+                'string-key' => $phrase_id,
             );
         }
 
@@ -223,7 +217,7 @@ class OneSkyBuild extends AbstractBuild
             }
 
             if ($delete_phrase_ids) {
-                $this->getLogger()->logDebug("$section.$category removing old phrases: " . implode(', ', $delete_phrase_ids));
+                $this->getLogger()->logDebug("$section.$category removing old phrases: ".implode(', ', $delete_phrase_ids));
 
                 $post_data = array();
                 $post_data['platform-id'] = $platform_id;
@@ -231,7 +225,7 @@ class OneSkyBuild extends AbstractBuild
 
                 foreach ($delete_phrase_ids as $phrase_id) {
                     $post_data['to-delete'][] = array(
-                        'string-key' => $phrase_id
+                        'string-key' => $phrase_id,
                     );
                 }
 
@@ -242,7 +236,6 @@ class OneSkyBuild extends AbstractBuild
         return $input_result;
     }
 
-
     /**
      * @param  string            $path
      * @return array
@@ -252,7 +245,7 @@ class OneSkyBuild extends AbstractBuild
     {
         $vars['api-key']   = $this->api_key;
         $vars['timestamp'] = time();
-        $vars['dev-hash']  = md5($vars['timestamp'] . $this->secret_key);
+        $vars['dev-hash']  = md5($vars['timestamp'].$this->secret_key);
 
         $request = $this->getHttpClient()->get($path);
         $request->getQuery()->merge($vars);
@@ -275,13 +268,12 @@ class OneSkyBuild extends AbstractBuild
         $vars = array();
         $vars['api-key']   = $this->api_key;
         $vars['timestamp'] = time();
-        $vars['dev-hash']  = md5($vars['timestamp'] . $this->secret_key);
+        $vars['dev-hash']  = md5($vars['timestamp'].$this->secret_key);
 
         $request = $this->getHttpClient()->post($path);
         $request->getQuery()->merge($vars);
 
         if ($post_vars) {
-
             if ($path == 'string/input') {
                 $post_vars['input'] = json_encode($post_vars['input']);
             }
@@ -300,7 +292,6 @@ class OneSkyBuild extends AbstractBuild
 
         return $data;
     }
-
 
     /**
      * Get the OneSky platform ID for the section.
@@ -330,7 +321,7 @@ class OneSkyBuild extends AbstractBuild
         }
 
         $this->http_client = new HttpClient($this->api_url, array(
-            'ssl.certificate_authority' => false
+            'ssl.certificate_authority' => false,
         ));
 
         return $this->http_client;

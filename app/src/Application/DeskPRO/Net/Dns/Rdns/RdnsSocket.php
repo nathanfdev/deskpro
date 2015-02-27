@@ -48,7 +48,7 @@ class RdnsSocket implements RdnsInterface
 
     /**
      * @param string $dns_server
-     * @param int $timeout
+     * @param int    $timeout
      */
     public function __construct($dns_server, $timeout = 3)
     {
@@ -89,7 +89,7 @@ class RdnsSocket implements RdnsInterface
     }
 
     /**
-     * @param string $ip
+     * @param  string            $ip
      * @return string|null
      * @throws \RuntimeException
      */
@@ -102,35 +102,35 @@ class RdnsSocket implements RdnsInterface
      * TODO: add support for ipv6 addresses
      *
      * @see http://www.php.net/manual/en/function.gethostbyaddr.php#46869
-     * @param string $ip
-     * @param string $dns_server
-     * @param int $timeout
+     * @param  string      $ip
+     * @param  string      $dns_server
+     * @param  int         $timeout
      * @return string|null
      */
     public static function rdnsLookup($ip, $dns_server, $timeout = 3)
     {
-        $data = rand( 10, 77 ) . "\1\0\0\1\0\0\0\0\0\0";
+        $data = rand(10, 77)."\1\0\0\1\0\0\0\0\0\0";
 
         $bitso = array("","\1","\2","\3" );
-        foreach( array_reverse( explode( '.', $ip ) ) as $bit ) {
-            $l=strlen($bit);
+        foreach (array_reverse(explode('.', $ip)) as $bit) {
+            $l = strlen($bit);
 
             if (!isset($bitso[$l])) {
                 return null;
             }
 
-            $data.="{$bitso[$l]}".$bit;
+            $data .= "{$bitso[$l]}".$bit;
         }
 
         $data .= "\7in-addr\4arpa\0\0\x0C\0\1";
 
         $errno = $errstr = 0;
-        $fp = @fsockopen( "udp://{$dns_server}", 53, $errno, $errstr, $timeout );
+        $fp = @fsockopen("udp://{$dns_server}", 53, $errno, $errstr, $timeout);
         if (!$fp || !is_resource($fp)) {
             throw new \RuntimeException($errstr, $errno);
         }
 
-        if(function_exists( 'socket_set_timeout' )) {
+        if (function_exists('socket_set_timeout')) {
             socket_set_timeout($fp, $timeout);
         } elseif (function_exists('stream_set_timeout')) {
             stream_set_timeout($fp, $timeout);
@@ -169,7 +169,7 @@ class RdnsSocket implements RdnsInterface
             }
 
             // add segment to our host
-            $host .= substr($response, $pos + 1, $len[1]) . '.';
+            $host .= substr($response, $pos + 1, $len[1]).'.';
 
             // move pointer on to the next segment
             $pos += $len[1] + 1;

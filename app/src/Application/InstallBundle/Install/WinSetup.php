@@ -43,7 +43,7 @@ $find = '/\\$DP_CONFIG\\[\'php_path\'\\] = \'.*\';/';
 
 // replace with PHP path
 $php = $argv['1'];
-$replace = '$DP_CONFIG[\'php_path\'] = \'' . $php . '\';';
+$replace = '$DP_CONFIG[\'php_path\'] = \''.$php.'\';';
 
 // open, replace, write config
 $config = file_get_contents("config.php");

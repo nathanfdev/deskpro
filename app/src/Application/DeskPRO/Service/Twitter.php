@@ -211,7 +211,7 @@ class Twitter
                 try {
                     $reply_result = $api->get_statusesShow(array(
                         'id' => $data->in_reply_to_status_id_str,
-                        'include_entities' => true
+                        'include_entities' => true,
                     ));
 
                     if (!empty($reply_result->id_str)) {
@@ -408,7 +408,7 @@ class Twitter
 
         return array(
             'text' => $text,
-            'replacements' => $replacements
+            'replacements' => $replacements,
         );
     }
 
@@ -442,7 +442,7 @@ class Twitter
                     $split_text = "...$split_text";
                 }
 
-                $text_parts[] = $prefix . $split_text;
+                $text_parts[] = $prefix.$split_text;
                 break;
             } else {
                 $test_text = substr($split_text, 0, $part_max_length - 3); // -3 for the appended ...
@@ -450,16 +450,16 @@ class Twitter
                 if ($last_space !== false && $last_space >= 0) {
                     // have a space
                     $text_parts[] = $prefix
-                        . ($text_parts ? '...' : '')
-                        . substr($split_text, 0, $last_space)
-                        . '...';
+                        .($text_parts ? '...' : '')
+                        .substr($split_text, 0, $last_space)
+                        .'...';
                     $split_text = ltrim(substr($split_text, $last_space + 1));
                 } else {
                     // no space - include whole thing
                     $text_parts[] = $prefix
-                        . ($text_parts ? '...' : '')
-                        . $test_text
-                        . '...';
+                        .($text_parts ? '...' : '')
+                        .$test_text
+                        .'...';
                     $split_text = ltrim(substr($split_text, strlen($test_text)));
                 }
             }
@@ -470,7 +470,7 @@ class Twitter
             }
         } while (strlen($split_text));
 
-        foreach ($text_parts AS &$text_part) {
+        foreach ($text_parts as &$text_part) {
             $text_part = preg_replace_callback('/\x1A(\d+)\x1A+/', function ($match) use ($replaced) {
                 return isset($replaced['replacements'][$match[1]])
                     ? $replaced['replacements'][$match[1]]
@@ -519,7 +519,7 @@ class Twitter
                             $long_text = 'Read my long message: ';
                         }
                         $long_text .= App::getRouter()->generate('user_long_tweet_view', array(
-                            'long_id' => $long_status->id
+                            'long_id' => $long_status->id,
                         ), true);
 
                         $text_parts = array($long_text);
@@ -545,8 +545,8 @@ class Twitter
                         $long_status = $this->_addLongStatus($text, false, $to_user);
 
                         $long_text = "I have sent you a long, private message. Sign in to see it. "
-                            . App::getRouter()->generate('user_long_tweet_view', array(
-                                'long_id' => $long_status->id
+                            .App::getRouter()->generate('user_long_tweet_view', array(
+                                'long_id' => $long_status->id,
                             ), true);
                         $text_parts = array($long_text);
                     }
@@ -565,8 +565,8 @@ class Twitter
                         $long_status = $this->_addLongStatus($text, false, $to_user);
 
                         $long_text = "@$to_user->screen_name I have sent you a private message. Sign in to see it. "
-                            . App::getRouter()->generate('user_long_tweet_view', array(
-                                'long_id' => $long_status->id
+                            .App::getRouter()->generate('user_long_tweet_view', array(
+                                'long_id' => $long_status->id,
                             ), true);
                         $text_parts = array($long_text);
                     }
@@ -578,14 +578,14 @@ class Twitter
             }
         } catch (\EpiTwitterException $e) {
             $error = $this->getTwitterError($e);
-        }  catch (\EpiOAuthException $e) {
+        } catch (\EpiOAuthException $e) {
             $error = $this->getTwitterError($e);
         }
 
         return array(
             'success' => !$error && !empty($new_account_statuses),
             'error' => $error,
-            'new_account_statuses' => $new_account_statuses
+            'new_account_statuses' => $new_account_statuses,
         );
     }
 
@@ -623,13 +623,13 @@ class Twitter
             }
         } catch (\EpiTwitterException $e) {
             $error = $this->getTwitterError($e);
-        }  catch (\EpiOAuthException $e) {
+        } catch (\EpiOAuthException $e) {
             $error = $this->getTwitterError($e);
         }
 
         return array(
             'success' => !$error,
-            'error' => $error
+            'error' => $error,
         );
     }
 
@@ -667,14 +667,14 @@ class Twitter
                 }
             } catch (\EpiTwitterException $e) {
                 $error = $this->getTwitterError($e);
-            }  catch (\EpiOAuthException $e) {
+            } catch (\EpiOAuthException $e) {
                 $error = $this->getTwitterError($e);
             }
         }
 
         return array(
             'success' => !$error,
-            'error' => $error
+            'error' => $error,
         );
     }
 
@@ -688,7 +688,7 @@ class Twitter
             if ($account_status->status->getRecipientId() != $account->getUserId()) {
                 return array(
                     'success' => false,
-                    'error' => 'Direct messages may not be deleted after they have been sent.'
+                    'error' => 'Direct messages may not be deleted after they have been sent.',
                 );
             }
         } else {
@@ -722,13 +722,13 @@ class Twitter
             }
         } catch (\EpiTwitterException $e) {
             $error = $this->getTwitterError($e);
-        }  catch (\EpiOAuthException $e) {
+        } catch (\EpiOAuthException $e) {
             $error = $this->getTwitterError($e);
         }
 
         return array(
             'success' => !$error,
-            'error' => $error
+            'error' => $error,
         );
     }
 
@@ -749,7 +749,7 @@ class Twitter
                 }
             } catch (\EpiTwitterException $e) {
                 // likely already in the state that we want, so set it to that
-            }  catch (\EpiOAuthException $e) {
+            } catch (\EpiOAuthException $e) {
                 $error = $this->getTwitterError($e);
             }
         }
@@ -767,7 +767,7 @@ class Twitter
 
         return array(
             'success' => !$error,
-            'error' => $error
+            'error' => $error,
         );
     }
 
@@ -793,9 +793,9 @@ class Twitter
 
         $new_account_statuses = array();
 
-        foreach ($text_parts AS $part) {
+        foreach ($text_parts as $part) {
             $params = array(
-                'status' => $part
+                'status' => $part,
             );
             if ($reply && !$reply->status->recipient) {
                 // only if not a DM
@@ -841,11 +841,11 @@ class Twitter
 
         $new_account_statuses = array();
 
-        foreach ($text_parts AS $part) {
+        foreach ($text_parts as $part) {
             try {
                 $response = $api->post_direct_messagesNew(array(
                     'user_id' => $user_id,
-                    'text' => $part
+                    'text' => $part,
                 ));
                 if (!empty($response->error)) {
                     $error = $response->error;
@@ -890,7 +890,7 @@ class Twitter
             'channel' => 'agent.tweet-added',
             'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
             'date_created' => date('Y-m-d H:i:s'),
-            'data' => serialize($this->_getCmBaseData($account_status))
+            'data' => serialize($this->_getCmBaseData($account_status)),
         ));
     }
 
@@ -902,20 +902,20 @@ class Twitter
             'channel' => 'agent.tweet-updated',
             'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
             'date_created' => date('Y-m-d H:i:s'),
-            'data' => serialize($data)
+            'data' => serialize($data),
         ));
     }
 
     protected function _getCmBaseData(TwitterAccountStatus $account_status)
     {
         $tweet_html = App::getTemplating()->render('AgentBundle:TwitterStatus:list-row.html.twig', array(
-            'account_status' => $account_status
+            'account_status' => $account_status,
         ));
 
         if ($account_status->agent) {
-            $assignment = 'agent:' . $account_status->agent->id;
+            $assignment = 'agent:'.$account_status->agent->id;
         } elseif ($account_status->agent_team) {
-            $assignment = 'agent_team:' . $account_status->agent_team->id;
+            $assignment = 'agent_team:'.$account_status->agent_team->id;
         } else {
             $assignment = '';
         }
@@ -932,7 +932,7 @@ class Twitter
             'agent_id' => $account_status->agent ? $account_status->agent->id : 0,
             'agent_team_id' => $account_status->agent_team ? $account_status->agent_team->id : 0,
             'tweet_html' => $tweet_html,
-            'trigger_user_id' => App::getCurrentPerson() ? App::getCurrentPerson()->getId() : 0
+            'trigger_user_id' => App::getCurrentPerson() ? App::getCurrentPerson()->getId() : 0,
         );
     }
 
@@ -940,7 +940,7 @@ class Twitter
     {
         $json = @json_decode($e->getMessage());
         if ($json && !empty($json->errors[0]->message)) {
-            return "Twitter error message: " . $json->errors[0]->message;
+            return "Twitter error message: ".$json->errors[0]->message;
         } else {
             return $e->getMessage();
         }

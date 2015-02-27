@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;

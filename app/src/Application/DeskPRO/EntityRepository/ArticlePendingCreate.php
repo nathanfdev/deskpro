@@ -51,7 +51,6 @@ class ArticlePendingCreate extends AbstractEntityRepository
         return $pending_articles;
     }
 
-
     public function getByIds(array $ids, $keep_order = false)
     {
         $ids = Arrays::castToType($ids, 'int');

@@ -66,7 +66,6 @@ class ChangeSplitTo implements ChangeInterface, NonStateTrackingInterface
         $this->message_ids   = $message_ids;
     }
 
-
     /**
      * @return string
      */
@@ -74,7 +73,6 @@ class ChangeSplitTo implements ChangeInterface, NonStateTrackingInterface
     {
         return $this->field_id;
     }
-
 
     /**
      * @return array
@@ -84,7 +82,6 @@ class ChangeSplitTo implements ChangeInterface, NonStateTrackingInterface
         return null;
     }
 
-
     /**
      * @return array
      */
@@ -93,7 +90,7 @@ class ChangeSplitTo implements ChangeInterface, NonStateTrackingInterface
         return array(
             'field_id'      => $this->field_id,
             'new_ticket_id' => $this->new_ticket_id,
-            'message_ids'   => $this->message_ids
+            'message_ids'   => $this->message_ids,
         );
     }
 

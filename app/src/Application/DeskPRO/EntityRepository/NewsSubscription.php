@@ -36,5 +36,4 @@ namespace Application\DeskPRO\EntityRepository;
 
 class NewsSubscription extends AbstractEntityRepository
 {
-
 }

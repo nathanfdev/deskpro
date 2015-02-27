@@ -60,7 +60,6 @@ class CheckOrgLabel extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

@@ -72,7 +72,6 @@ class JobScheduler
         // ex: $job->depends_on_job = $this->em->getRepository('DeskPRO:Job')->find(26);
     }
 
-
     /**
      * Before we execute ANY job, the scheduler is asked via this method if the Job is ready to be run. If not, it
      * will be rescheduled. Return TRUE if it is safe to run now, and false otherwise.

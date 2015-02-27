@@ -192,7 +192,9 @@ class TicketLog extends AbstractEntityRepository
 
             foreach ($type_map as $t => $types) {
                 if (in_array($log->action_type, $types)) {
-                    if (!isset($counts[$t])) $counts[$t] = 0;
+                    if (!isset($counts[$t])) {
+                        $counts[$t] = 0;
+                    }
                     $counts[$t]++;
                 }
             }
@@ -217,7 +219,7 @@ class TicketLog extends AbstractEntityRepository
             $params['types'] = $options['types'];
         }
 
-        if(!empty($options['date_range'])) {
+        if (!empty($options['date_range'])) {
             $qb->andWhere('log.date_created BETWEEN :date_start AND :date_end');
             $params['date_start'] = $options['date_range']['start'];
             $params['date_end']   = $options['date_range']['end'];

@@ -148,7 +148,6 @@ class TicketResultsDisplay implements PersonContextInterface
         $this->people_ids = $people_ids;
     }
 
-
     /**
      * @return int
      */
@@ -156,7 +155,6 @@ class TicketResultsDisplay implements PersonContextInterface
     {
         return $this->ticket_count;
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\Ticket[]
@@ -166,13 +164,14 @@ class TicketResultsDisplay implements PersonContextInterface
         return $this->tickets;
     }
 
-
     /**
      * @return array
      */
     public function getAllLabels()
     {
-        if ($this->all_labels !== null) return $this->all_labels;
+        if ($this->all_labels !== null) {
+            return $this->all_labels;
+        }
 
         if (!$this->ticket_count) {
             $this->all_labels = array();
@@ -191,13 +190,14 @@ class TicketResultsDisplay implements PersonContextInterface
         return $this->all_labels;
     }
 
-
     /**
      * @return array
      */
     public function getAllUserFieldData()
     {
-        if ($this->all_user_field_data !== null) return $this->all_user_field_data;
+        if ($this->all_user_field_data !== null) {
+            return $this->all_user_field_data;
+        }
         $data = $this->em->createQuery("
             SELECT d, def, root_def
             FROM DeskPRO:CustomDataPerson AS d
@@ -219,7 +219,6 @@ class TicketResultsDisplay implements PersonContextInterface
         return $this->all_user_field_data;
     }
 
-
     /**
      * @param  Ticket $ticket
      * @return array
@@ -231,13 +230,14 @@ class TicketResultsDisplay implements PersonContextInterface
         return isset($this->all_user_field_data[$person->getId()]) ? $this->all_user_field_data[$person->getId()] : array();
     }
 
-
     /**
      * @return array
      */
     public function getAllTicketFieldData()
     {
-        if ($this->all_ticket_field_data !== null) return $this->all_ticket_field_data;
+        if ($this->all_ticket_field_data !== null) {
+            return $this->all_ticket_field_data;
+        }
         $data = $this->em->createQuery("
             SELECT d, def, root_def
             FROM DeskPRO:CustomDataTicket AS d
@@ -259,7 +259,6 @@ class TicketResultsDisplay implements PersonContextInterface
         return $this->all_ticket_field_data;
     }
 
-
     /**
      * @param  Ticket $ticket
      * @return array
@@ -270,7 +269,6 @@ class TicketResultsDisplay implements PersonContextInterface
 
         return isset($this->all_ticket_field_data[$ticket->id]) ? $this->all_ticket_field_data[$ticket->id] : array();
     }
-
 
     /**
      * Get an array of labels applied to a ticket
@@ -284,7 +282,6 @@ class TicketResultsDisplay implements PersonContextInterface
 
         return empty($this->all_labels[$ticket->id]) ? array() : $this->all_labels[$ticket->id];
     }
-
 
     /**
      * Check if a ticket has labels
@@ -304,7 +301,9 @@ class TicketResultsDisplay implements PersonContextInterface
      */
     public function getAllTicketSlas()
     {
-        if ($this->all_ticket_slas !== null) return $this->all_ticket_slas;
+        if ($this->all_ticket_slas !== null) {
+            return $this->all_ticket_slas;
+        }
 
         if (!$this->ticket_count) {
             $this->all_ticket_slas = array();
@@ -324,7 +323,6 @@ class TicketResultsDisplay implements PersonContextInterface
 
         return $this->all_ticket_slas;
     }
-
 
     /**
      * Get an array of labels applied to a ticket
@@ -372,9 +370,8 @@ class TicketResultsDisplay implements PersonContextInterface
             return null;
         }
 
-        return new \DateTime('@' . min($times));
+        return new \DateTime('@'.min($times));
     }
-
 
     /**
      * @param  \Application\DeskPRO\Entity\Ticket $ticket
@@ -389,7 +386,6 @@ class TicketResultsDisplay implements PersonContextInterface
         return $this->people[$ticket->person->getId()];
     }
 
-
     /**
      * @param  \Application\DeskPRO\Entity\Ticket $ticket
      * @return \Application\DeskPRO\Entity\Person
@@ -402,7 +398,6 @@ class TicketResultsDisplay implements PersonContextInterface
 
         return $this->people[$ticket->agent->getId()];
     }
-
 
     /**
      * @param  \Application\DeskPRO\Entity\Ticket $ticket
@@ -421,14 +416,15 @@ class TicketResultsDisplay implements PersonContextInterface
         return $this->dep_names[$ticket->department->getId()];
     }
 
-
     /**
      * Gets array of previews for each ticket
      * @return array
      */
     public function getAllTicketPreviews()
     {
-        if ($this->all_previews !== null) return $this->all_previews;
+        if ($this->all_previews !== null) {
+            return $this->all_previews;
+        }
 
         if (!$this->ticket_ids) {
             $this->all_previews = array();
@@ -481,7 +477,7 @@ class TicketResultsDisplay implements PersonContextInterface
             $m['date_created'] = \DateTime::createFromFormat('Y-m-d H:i:s', $m['date_created']);
 
             if ($m['first_name'] && $m['last_name']) {
-                $m['display_name'] = $m['first_name'] . ' ' . $m['last_name'];
+                $m['display_name'] = $m['first_name'].' '.$m['last_name'];
             } elseif ($m['name']) {
                 $m['display_name'] = $m['name'];
             } elseif ($m['last_name']) {
@@ -564,8 +560,7 @@ class TicketResultsDisplay implements PersonContextInterface
             $this->person_flagged = App::getDb()->fetchAllKeyValue("
                 SELECT ticket_id, color
                 FROM tickets_flagged
-                WHERE person_id = ? AND ticket_id IN (?)"
-            , array($this->person_context->getId(), $this->ticket_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+                WHERE person_id = ? AND ticket_id IN (?)", array($this->person_context->getId(), $this->ticket_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
         }
 
         $ticket_id = is_object($ticket) ? $ticket->getId() : $ticket;

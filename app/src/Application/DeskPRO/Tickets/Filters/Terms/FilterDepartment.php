@@ -55,7 +55,6 @@ class FilterDepartment extends AbstractFilterTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

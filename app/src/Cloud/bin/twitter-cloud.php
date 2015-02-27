@@ -107,11 +107,10 @@ define('CLOUD_DB_NAME', '');
  *
  * Global logging is useful for debugging, but can get pretty big.
  */
-define('PID_FILE', __DIR__  .'/twitter-cloud.pid');
-define('CONTROL_FILE', __DIR__ . '/twitter-cloud-control.txt');
+define('PID_FILE', __DIR__.'/twitter-cloud.pid');
+define('CONTROL_FILE', __DIR__.'/twitter-cloud-control.txt');
 define('GLOBAL_LOGGING', true);
-define('GLOBAL_LOG_FILE', __DIR__ . '/twitter-cloud.log');
-
+define('GLOBAL_LOG_FILE', __DIR__.'/twitter-cloud.log');
 
 /*****************************************************************************/
 
@@ -121,9 +120,11 @@ setlocale(LC_CTYPE, 'C');
 date_default_timezone_set('UTC');
 ini_set('default_charset', 'UTF-8');
 set_time_limit(0);
-define('DP_ROOT', realpath(__DIR__ . '/../../../'));
-define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../../'));
-if (!defined('DP_CONFIG_FILE')) define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
+define('DP_ROOT', realpath(__DIR__.'/../../../'));
+define('DP_WEB_ROOT', realpath(__DIR__.'/../../../../'));
+if (!defined('DP_CONFIG_FILE')) {
+    define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
+}
 require_once DP_ROOT.'/sys/load_config.php';
 dp_load_config();
 
@@ -140,7 +141,7 @@ $db_conf = array(
     'user' => CLOUD_DB_USER,
     'password' => CLOUD_DB_PASSWORD,
     'dbname' => CLOUD_DB_NAME,
-    'driver' => 'pdo_mysql'
+    'driver' => 'pdo_mysql',
 );
 
 $pid_file = PID_FILE;
@@ -166,7 +167,7 @@ $check_runner_active = function (&$pid = null) use ($is_windows) {
             if ($is_windows) {
                 $running = false;
                 exec('start "tasklist" /B tasklist.exe', $processes);
-                foreach ($processes AS $process_line) {
+                foreach ($processes as $process_line) {
                     if (preg_match('/^.*\s(\d+)\s/U', $process_line, $match)) {
                         if ($pid == intval($match[1])) {
                             $running = true;
@@ -266,7 +267,6 @@ class CloudSiteStream extends \UserstreamPhirehose
         return $this->log_callback;
     }
 
-
     /**
      * @param \Closure|null $callback
      */
@@ -327,7 +327,7 @@ class CloudSiteStream extends \UserstreamPhirehose
             if (!empty($status->control)) {
                 $fp = @fopen(CONTROL_FILE, 'a');
                 if ($fp) {
-                    @fwrite($fp, getmypid() . ':' . $status->control_uri . "\n");
+                    @fwrite($fp, getmypid().':'.$status->control_uri."\n");
                     @fclose($fp);
                 }
 
@@ -366,7 +366,7 @@ class CloudSiteStream extends \UserstreamPhirehose
                 'user_id' => $for_user_id,
                 'event' => $event,
                 'data' => serialize($status),
-                'date_created' => gmdate('Y-m-d H:i:s')
+                'date_created' => gmdate('Y-m-d H:i:s'),
             );
 
             if ($this->write_callback) {
@@ -409,7 +409,6 @@ class CloudUserStream extends \UserstreamPhirehose
 
     protected $log_callback;
 
-
     /**
      * Suppress Phirehose @error_log output.
      *
@@ -451,7 +450,6 @@ class CloudUserStream extends \UserstreamPhirehose
     {
         return $this->user_id;
     }
-
 
     /**
      * @param \Closure|null $callback
@@ -538,7 +536,7 @@ class CloudUserStream extends \UserstreamPhirehose
                 'user_id' => $this->user_id,
                 'event' => $event,
                 'data' => serialize($status),
-                'date_created' => gmdate('Y-m-d H:i:s')
+                'date_created' => gmdate('Y-m-d H:i:s'),
             );
 
             if ($this->write_callback) {
@@ -559,10 +557,11 @@ class EpiSiteStreamTwitter extends EpiTwitter
 {
     public function siteStreamRequest($method, $endpoint, $params = null)
     {
-        $url = 'https://sitestream.twitter.com' . $endpoint;
-        $resp= new EpiTwitterJson(call_user_func(array($this, 'httpRequest'), $method, $url, $params, $this->isMultipart($params)), $this->debug);
-        if(!$this->isAsynchronous)
-          $resp->response;
+        $url = 'https://sitestream.twitter.com'.$endpoint;
+        $resp = new EpiTwitterJson(call_user_func(array($this, 'httpRequest'), $method, $url, $params, $this->isMultipart($params)), $this->debug);
+        if (!$this->isAsynchronous) {
+            $resp->response;
+        }
 
         return $resp;
     }
@@ -582,7 +581,7 @@ if (!empty($argv[1])) {
     $user_ids = $argv;
     unset($argv[0]);
     $user_ids = array_map(function ($i) { return strval($i + 0); }, $user_ids);
-    foreach ($user_ids AS $k => $id) {
+    foreach ($user_ids as $k => $id) {
         if (!$id) {
             unset($user_ids[$k]);
         }
@@ -593,7 +592,7 @@ if (!empty($argv[1])) {
         exit(1);
     }
 
-    $log_status("[Site Stream] Processor starting with PID " . getmypid() . " for users: " . implode(',', $user_ids) . ".");
+    $log_status("[Site Stream] Processor starting with PID ".getmypid()." for users: ".implode(',', $user_ids).".");
 
     if (TWITTER_SITE_STREAM) {
         $consumer = new CloudSiteStream(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_TOKEN_SECRET);
@@ -633,7 +632,7 @@ if (!empty($argv[1])) {
         $my_pid = getmypid();
 
         if ($consumer instanceof CloudUserStream) {
-            $message_prefix = "[User Stream, PID $my_pid, User " . $consumer->getUserId() . "]";
+            $message_prefix = "[User Stream, PID $my_pid, User ".$consumer->getUserId()."]";
         } else {
             $message_prefix = "[Site Stream, PID $my_pid]";
         }
@@ -646,7 +645,7 @@ if (!empty($argv[1])) {
         );
         $log_status("{ $log");
         if (trim($status)) {
-            $log_status("\t\t" . trim($status), false);
+            $log_status("\t\t".trim($status), false);
         }
 
         gc_collect_cycles();
@@ -675,7 +674,7 @@ if (!empty($argv[1])) {
             $db = null;
 
             if (!$user) {
-                $log_status("$message_prefix User ID " . $consumer->getUserId() . " is not longer being retrieved. Terminating.");
+                $log_status("$message_prefix User ID ".$consumer->getUserId()." is not longer being retrieved. Terminating.");
                 exit;
             }
         }
@@ -688,9 +687,9 @@ if (!empty($argv[1])) {
     try {
         $consumer->consume();
     } catch (PhirehoseConnectLimitExceeded $e) {
-        $log_status("[Site Stream, PID $my_pid] Connection limit exceeded: " . $e->getMessage() . ". Likely no permission.");
+        $log_status("[Site Stream, PID $my_pid] Connection limit exceeded: ".$e->getMessage().". Likely no permission.");
     } catch (Exception $e) {
-        $log_status("[Site Stream, PID $my_pid] General processor exception: " . $e->getMessage() . " at " . $e->getFile() . ':' . $e->getLine());
+        $log_status("[Site Stream, PID $my_pid] General processor exception: ".$e->getMessage()." at ".$e->getFile().':'.$e->getLine());
     }
 
     $log_status("[Site Stream, PID $my_pid] Exiting Normally.");
@@ -723,17 +722,17 @@ if ($runner_active) {
 file_put_contents(PID_FILE, getmypid());
 file_put_contents(CONTROL_FILE, '');
 
-$log_status("[Runner, PID $my_pid] Starting with PID " . getmypid() . ".");
+$log_status("[Runner, PID $my_pid] Starting with PID ".getmypid().".");
 
 if (function_exists('pcntl_signal')) {
-    declare(ticks = 1);
+    declare (ticks = 1);
     pcntl_signal(SIGTERM,  function () { exit; });
 }
 
 register_shutdown_function(function () use ($log_status, $my_pid) {
     global $children;
 
-    foreach ($children AS $process) {
+    foreach ($children as $process) {
         $info = proc_get_status($process);
         @proc_terminate($process);
         $log_status("[Runner, PID $my_pid] Terminated child PID $info[pid] during normal shutdown.");
@@ -757,7 +756,7 @@ $rest_api = new EpiSiteStreamTwitter(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECR
 while (true) {
     if ($timer % 30 == 0 && $timer > 0) {
         $running_pids = array();
-        foreach ($children AS $k => $process) {
+        foreach ($children as $k => $process) {
             $info = proc_get_status($process);
             if (!$info['running']) {
                 @proc_close($process);
@@ -780,7 +779,7 @@ while (true) {
             LEFT JOIN cloud_twitter_associations AS associations ON (stream.user_id = associations.user_id)
             ORDER BY stream.id
         ");
-        foreach ($updates AS $update) {
+        foreach ($updates as $update) {
             if ($update['account_id']) {
                 $db->executeUpdate("
                     INSERT INTO `$update[db]`.twitter_stream
@@ -805,7 +804,7 @@ while (true) {
         }
 
         if ($kill) {
-            foreach ($children AS $process) {
+            foreach ($children as $process) {
                 @proc_terminate($process);
             }
 
@@ -820,13 +819,13 @@ while (true) {
                 GROUP BY user_id
             ");
             $associations = array();
-            foreach ($results AS $result) {
+            foreach ($results as $result) {
                 $associations[$result['user_id']] = $result['total'];
             }
         }
 
         $control_stream_map = array();
-        foreach (explode("\n", file_get_contents(CONTROL_FILE)) AS $line) {
+        foreach (explode("\n", file_get_contents(CONTROL_FILE)) as $line) {
             $line = trim($line);
             if ($line) {
                 list($process_pid, $stream) = explode(':', $line);
@@ -834,7 +833,7 @@ while (true) {
             }
         }
 
-        foreach ($db->fetchAll('SELECT * FROM cloud_twitter_messages ORDER BY id') AS $message) {
+        foreach ($db->fetchAll('SELECT * FROM cloud_twitter_messages ORDER BY id') as $message) {
             if ($message['message_type'] == 'add') {
                 $data = @unserialize($message['data']);
                 if ($data) {
@@ -860,7 +859,7 @@ while (true) {
             } elseif ($message['message_type'] == 'remove') {
                 $db->delete('cloud_twitter_associations', array(
                     'db' => $message['db'],
-                    'user_id' => $message['user_id']
+                    'user_id' => $message['user_id'],
                 ));
 
                 if (isset($associations[$message['user_id']])) {
@@ -884,8 +883,8 @@ while (true) {
         }
 
         if ($remove) {
-            foreach ($remove AS $user_id) {
-                foreach ($child_user_map AS $child_pid => &$user_ids) {
+            foreach ($remove as $user_id) {
+                foreach ($child_user_map as $child_pid => &$user_ids) {
                     $key = array_search($user_ids, $user_id);
                     if ($key !== false) {
                         unset($user_ids[$key]);
@@ -893,17 +892,18 @@ while (true) {
                             $control = $control_stream_map[$child_pid];
                             try {
                                 $rest_api->siteStreamRequest('POST', "$control/remove_user.json", array(
-                                    'user_id' => $user_id
+                                    'user_id' => $user_id,
                                 ));
                             } catch (\EpiTwitterException $e) {
-                            } catch (\EpiOAuthException $e) {}
+                            } catch (\EpiOAuthException $e) {
+                            }
                         }
                     }
                 }
             }
         }
 
-        foreach ($child_user_map AS $child_pid => $user_ids) {
+        foreach ($child_user_map as $child_pid => $user_ids) {
             if (!isset($children[$child_pid])) {
                 $add = array_merge($add, $user_ids);
                 $add = array_unique($add);
@@ -911,7 +911,7 @@ while (true) {
             }
         }
 
-        foreach ($add AS $k => $v) {
+        foreach ($add as $k => $v) {
             if (!$v) {
                 unset($add[$k]);
             }
@@ -920,7 +920,7 @@ while (true) {
         if ($add) {
             if (TWITTER_SITE_STREAM) {
                 // site stream implementation
-                foreach ($child_user_map AS $child_pid => $user_ids) {
+                foreach ($child_user_map as $child_pid => $user_ids) {
                     while (count($user_ids) < 1000 && $add) {
                         $slice_size = min(1000 - count($user_ids), 100);
                         $user_ids = array_slice($add, 0, $slice_size);
@@ -930,10 +930,11 @@ while (true) {
                         $control = $control_stream_map[$child_pid];
                         try {
                             $rest_api->siteStreamRequest('POST', "$control/add_user.json", array(
-                                'user_id' => implode(',', $user_ids)
+                                'user_id' => implode(',', $user_ids),
                             ));
                         } catch (\EpiTwitterException $e) {
-                        } catch (\EpiOAuthException $e) {}
+                        } catch (\EpiOAuthException $e) {
+                        }
                         break;
                     }
 
@@ -947,11 +948,11 @@ while (true) {
                     $user_ids = array_slice($add, 0, 100);
                     $add = array_slice($add, 100);
 
-                    $log_status("[Runner, PID $my_pid] Starting new processor for users " . implode(', ', $user_ids) . ".");
+                    $log_status("[Runner, PID $my_pid] Starting new processor for users ".implode(', ', $user_ids).".");
 
                     $pipes = array();
                     // windows doesn't like the arguments being quoted for some reason...
-                    $process = proc_open("$php_path " . basename(__FILE__) . " " . implode(' ', $user_ids), array(), $pipes, __DIR__);
+                    $process = proc_open("$php_path ".basename(__FILE__)." ".implode(' ', $user_ids), array(), $pipes, __DIR__);
                     $info = proc_get_status($process);
                     $children[$info['pid']] = $process;
                     $child_user_map[$info['pid']] = $user_ids;
@@ -960,14 +961,14 @@ while (true) {
                 }
             } else {
                 // user stream implementation
-                foreach ($add AS $user_id) {
+                foreach ($add as $user_id) {
                     if ($timer > 0) {
                         $log_status("[Runner, PID $my_pid] Starting new processor for user $user_id.");
                     }
 
                     $pipes = array();
                     // windows doesn't like the arguments being quoted for some reason...
-                    $process = proc_open("$php_path " . basename(__FILE__) . " $user_id", array(), $pipes, __DIR__);
+                    $process = proc_open("$php_path ".basename(__FILE__)." $user_id", array(), $pipes, __DIR__);
                     $info = proc_get_status($process);
                     $children[$info['pid']] = $process;
                     $child_user_map[$info['pid']] = array($user_id);

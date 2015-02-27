@@ -79,7 +79,7 @@ class Cache extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Default time to compare is "new DateTime('now')", but you can provide a date
      *
-     * @param \DateTime $now
+     * @param  \DateTime $now
      * @return bool
      */
     public function isExpired(\DateTime $now = null)

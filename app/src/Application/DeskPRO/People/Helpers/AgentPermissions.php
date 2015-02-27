@@ -68,9 +68,10 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
     // so the caller gets this, and can use it as an array.
     // So if the caller gets it through a another array access, it means
     // we support $whatever['thishelper']['thisobject'];
-    public function _getthis() { return $this; }
-
-
+    public function _getthis()
+    {
+        return $this;
+    }
 
     /**
      * Check if the user is allowed to use a particular department
@@ -86,8 +87,6 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 
         return in_array($dep, $this->getAllowedDepartments($context));
     }
-
-
 
     /**
      * Get an array of departments the user isn't allowed to see

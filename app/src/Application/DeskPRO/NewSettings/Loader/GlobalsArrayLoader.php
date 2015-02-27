@@ -55,7 +55,6 @@ class GlobalsArrayLoader implements SettingsLoaderInterface
      */
     private $cache;
 
-
     public function __construct(CacheAdapterInterface $cache)
     {
         $this->cacheKey = static::CACHE_KEY;

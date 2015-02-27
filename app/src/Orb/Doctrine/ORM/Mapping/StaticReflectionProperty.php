@@ -17,7 +17,7 @@
 | this software and supporting our customers. By providing the source code |
 | we preserve our customers' ability to modify, audit and learn from our   |
 | work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
+|cat  another decade.                                                          |
 |                                                                          |
 | Like the work you see? Think you could make it better? We are always     |
 | looking for great developers to join us: http://www.deskpro.com/jobs/    |

@@ -69,7 +69,7 @@ class TemplateCacheCacheWarmer extends \Symfony\Bundle\TwigBundle\CacheWarmer\Te
             $path = str_replace('/', ':', $path);
 
             // Top-level templates, like AddThis::widget.html.twig
-            if (substr_count($path, ':') === 1){
+            if (substr_count($path, ':') === 1) {
                 $path = str_replace(':', '::', $path);
             }
 

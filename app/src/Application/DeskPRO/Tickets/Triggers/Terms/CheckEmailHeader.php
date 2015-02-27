@@ -58,7 +58,6 @@ class CheckEmailHeader extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

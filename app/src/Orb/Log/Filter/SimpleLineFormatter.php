@@ -33,9 +33,8 @@
  */
 
 namespace Orb\Log\Filter;
+
 use \Orb\Log\LogItem;
-
-
 
 /**
  * This formats the 'line' value of an item with other properties. This gives
@@ -64,7 +63,9 @@ class SimpleLineFormatter extends \Orb\Filter\AbstractFilter
 
     public function filter($log_item)
     {
-        if (!$log_item) return null;
+        if (!$log_item) {
+            return null;
+        }
 
         $message_line = $this->_format;
 

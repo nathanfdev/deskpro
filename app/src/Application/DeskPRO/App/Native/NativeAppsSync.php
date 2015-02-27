@@ -70,7 +70,6 @@ class NativeAppsSync
      */
     private $exception_handler = false;
 
-
     /**
      * @param DeskproContainer $container
      * @param AppManager       $manager
@@ -90,7 +89,6 @@ class NativeAppsSync
         $this->logger = $logger;
     }
 
-
     /**
      * Sets an exception handler to run on problems during sync or upgrades.
      */
@@ -98,7 +96,6 @@ class NativeAppsSync
     {
         $this->exception_handler = $exception_handler;
     }
-
 
     /**
      * Updates apps already installed
@@ -111,7 +108,6 @@ class NativeAppsSync
             }
         }
     }
-
 
     /**
      * @param  AppPackage                                $package
@@ -163,7 +159,6 @@ class NativeAppsSync
         }
     }
 
-
     /**
      * Syncs new apps from the filesystem
      */
@@ -174,7 +169,6 @@ class NativeAppsSync
         }
     }
 
-
     /**
      * @param string $path
      */
@@ -184,6 +178,7 @@ class NativeAppsSync
 
         if (!is_dir($path)) {
             $this->logger->debug("(no dir)");
+
             return;
         }
 

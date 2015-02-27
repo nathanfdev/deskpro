@@ -41,7 +41,6 @@ class ResultSet
      */
     private $results;
 
-
     /**
      * @param array $results
      * @param int   $total
@@ -57,7 +56,6 @@ class ResultSet
         }
     }
 
-
     /**
      * @return mixed
      */
@@ -66,7 +64,6 @@ class ResultSet
         return $this->total;
     }
 
-
     /**
      * @return mixed
      */
@@ -74,7 +71,6 @@ class ResultSet
     {
         return $this->results;
     }
-
 
     /**
      * @return array

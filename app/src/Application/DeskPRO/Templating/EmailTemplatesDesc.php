@@ -52,7 +52,7 @@ class EmailTemplatesDesc
             $manifest_path = DP_ROOT.'/src/Application/DeskPRO/Resources/views/config/email-tpls.php';
         }
 
-        $this->manifest = require($manifest_path);
+        $this->manifest = require $manifest_path;
     }
 
     /**
@@ -62,7 +62,6 @@ class EmailTemplatesDesc
     {
         return $this->manifest;
     }
-
 
     /**
      * @param  Translate $tr
@@ -79,7 +78,6 @@ class EmailTemplatesDesc
         return $ret;
     }
 
-
     /**
      * @param  array     $tpl
      * @param  Translate $tr
@@ -87,8 +85,8 @@ class EmailTemplatesDesc
      */
     public function getTplDisplayInfo(array $tpl, Translate $tr)
     {
-        $title_id = $this->_getTplPhraseId($tpl['name']) . '_title';
-        $desc_id  = $this->_getTplPhraseId($tpl['name']) . '_desc';
+        $title_id = $this->_getTplPhraseId($tpl['name']).'_title';
+        $desc_id  = $this->_getTplPhraseId($tpl['name']).'_desc';
 
         $show_name = $tpl['name'];
         $show_name = str_replace('DeskPRO:', '', $show_name);
@@ -101,7 +99,6 @@ class EmailTemplatesDesc
 
         return $tpl;
     }
-
 
     /**
      * Gets a list of tempaltes grouped by type and group, with translated titles and descriptions.
@@ -123,14 +120,14 @@ class EmailTemplatesDesc
                 $ret[$type] = array(
                     'typeId' => $type,
                     'title'  => $tr->phrase("adm.email_templates.$type"),
-                    'groups' => array()
+                    'groups' => array(),
                 );
             }
             if (!isset($ret[$type]['groups'][$group])) {
                 $ret[$type]['groups'][$group] = array(
                     'groupId'   => $group,
                     'title'     => $tr->phrase("adm.email_templates.{$type}_{$group}"),
-                    'templates' => array()
+                    'templates' => array(),
                 );
             }
 
@@ -139,7 +136,6 @@ class EmailTemplatesDesc
 
         return $ret;
     }
-
 
     /**
      * @param  string $name
@@ -153,6 +149,6 @@ class EmailTemplatesDesc
         $name = str_replace('-twig', '', $name);
         $name = str_replace('-html', '', $name);
 
-        return 'adm.email_templates.' . $name;
+        return 'adm.email_templates.'.$name;
     }
 }

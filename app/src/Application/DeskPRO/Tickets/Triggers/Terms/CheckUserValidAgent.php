@@ -53,7 +53,6 @@ class CheckUserValidAgent extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -64,11 +63,17 @@ class CheckUserValidAgent extends AbstractTriggerTerm
         $is_valid = $person->is_agent_confirmed;
 
         if ($is_valid) {
-            if ($this->getTermOperator() == 'is') return true;
-            else return false;
+            if ($this->getTermOperator() == 'is') {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            if ($this->getTermOperator() == 'is') return false;
-            else return true;
+            if ($this->getTermOperator() == 'is') {
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 }

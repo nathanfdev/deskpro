@@ -62,7 +62,6 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
         return $options;
     }
 
-
     /**
      * @param  string $status
      * @return bool
@@ -71,12 +70,11 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
     {
         static $valid_statuses = array(
             'awaiting_agent', 'awaiting_user', 'resolved', 'archived',
-            'hidden.spam', 'hidden.deleted', 'hidden.temp', 'hidden.validating'
+            'hidden.spam', 'hidden.deleted', 'hidden.temp', 'hidden.validating',
         );
 
         return in_array($status, $valid_statuses);
     }
-
 
     /**
      * {@inheritDoc}
@@ -92,7 +90,6 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
         $context->getLogger()->debug("[SetStatus] Setting status $set_status");
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -105,7 +102,6 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
 
         return false;
     }
-
 
     /**
      * {@inheritDoc}

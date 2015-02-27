@@ -93,7 +93,6 @@ class TicketViewController extends AbstractController
                     if ($ticket) {
                         // If they arent a user they can register now
                         if ($ticket && $this->person->isGuest()) {
-
                             if ($this->container->getDataService('Language')->isMultiLang()) {
                                 if (
                                     $ticket->person->getRealLanguage()
@@ -164,7 +163,6 @@ class TicketViewController extends AbstractController
                             // If they came here through the access code but arent on the ticket,
                             // then we need to add them so they can see it
                             if ($this->in->getBool('join')) {
-
                                 $part = $ticket->addParticipantPerson($this->person);
                                 if ($part) {
                                     $this->em->persist($part);
@@ -247,11 +245,10 @@ class TicketViewController extends AbstractController
         }
         $vars['new_custom_fields'] = $new_custom_fields->createView();
 
-        if($is_pdf) {
+        if ($is_pdf) {
             $content_html = $this->renderView('DeskPRO:pdf_user:view_ticket.html.twig', $vars);
 
-            $mpdf = new \mPDF_mPDF
-            (
+            $mpdf = new \mPDF_mPDF(
                 'utf-8', // Language/Character set
                 'A4', // Size
                 '8', // Default Font Size
@@ -273,7 +270,7 @@ class TicketViewController extends AbstractController
 
             $response = new Response();
 
-            if($this->in->getBool('html')) {
+            if ($this->in->getBool('html')) {
                 $response->setContent($content_html);
             } else {
                 $response->setContent($pdf);
@@ -302,7 +299,6 @@ class TicketViewController extends AbstractController
 
         $tpl = 'UserBundle:TicketView:view.html.twig';
         if ($this->in->getBool('edit')) {
-
             $newticket = new \Application\DeskPRO\Tickets\EditTicket\EditTicket(
                 $ticket
             );
@@ -310,7 +306,7 @@ class TicketViewController extends AbstractController
             $form = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
             $layouts = $this->container->getTicketLayoutManager()->getUserLayouts();
-            $ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $layouts->compileJsObj() . ";";
+            $ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = ".$layouts->compileJsObj().";";
 
             $default_page = $this->container->getTicketLayoutManager()->getUserLayouts()->getLayout($ticket->department ? $ticket->department->id : 0);
             $default_page = LayoutDisplay::createFromLayout($default_page, LayoutDisplay::EDIT_TICKET, $ticket);
@@ -330,7 +326,6 @@ class TicketViewController extends AbstractController
             $error_fields = array();
 
             if ($this->in->getBool('process')) {
-
                 $newticket->setLayout($default_page);
 
                 $validator = new \Application\UserBundle\Validator\NewTicketValidator();

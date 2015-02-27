@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-
 /**
  * Standard base for storing display information, such as fields or widgets on a page.
  *

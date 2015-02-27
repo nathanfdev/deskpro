@@ -72,7 +72,7 @@ class Build1400056735 extends AbstractBuild
         $gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: array();
 
         $mappings = array(
-            'gateway_address_to_email_account' => $gateway_addr_map
+            'gateway_address_to_email_account' => $gateway_addr_map,
         );
 
         $this->action_converter = new TriggerActionConverter($mappings);
@@ -91,13 +91,17 @@ class Build1400056735 extends AbstractBuild
 
         $sla_people = array();
         foreach (($this->getUpgradeData('201404', 'sla_people') ?: array()) as $rec) {
-            if (!isset($sla_people[$rec['sla_id']])) $sla_people[$rec['sla_id']] = array();
+            if (!isset($sla_people[$rec['sla_id']])) {
+                $sla_people[$rec['sla_id']] = array();
+            }
             $sla_people[$rec['sla_id']][] = $rec['person_id'];
         }
 
         $sla_orgs = array();
         foreach (($this->getUpgradeData('201404', 'sla_organizations') ?: array()) as $rec) {
-            if (!isset($sla_orgs[$rec['sla_id']])) $sla_orgs[$rec['sla_id']] = array();
+            if (!isset($sla_orgs[$rec['sla_id']])) {
+                $sla_orgs[$rec['sla_id']] = array();
+            }
             $sla_orgs[$rec['sla_id']][] = $rec['organization_id'];
         }
 
@@ -135,7 +139,6 @@ class Build1400056735 extends AbstractBuild
 
         $this->container->getEm()->flush();
     }
-
 
     /**
      * @param  array $old_sla
@@ -246,7 +249,7 @@ class Build1400056735 extends AbstractBuild
         #------------------------------
 
         if (!empty($old_sla['@warn_trigger']['event_trigger_options'])) {
-            list ($time, $unit) = explode(' ', $old_sla['@warn_trigger']['event_trigger_options']['time']);
+            list($time, $unit) = explode(' ', $old_sla['@warn_trigger']['event_trigger_options']['time']);
             $sla->warn_time = $time ?: 1;
             $sla->warn_time_unit = $unit ?: 'hours';
         } else {
@@ -255,7 +258,7 @@ class Build1400056735 extends AbstractBuild
         }
 
         if (!empty($old_sla['@fail_trigger']['event_trigger_options'])) {
-            list ($time, $unit) = explode(' ', $old_sla['@fail_trigger']['event_trigger_options']['time']);
+            list($time, $unit) = explode(' ', $old_sla['@fail_trigger']['event_trigger_options']['time']);
             $sla->fail_time = $time ?: 1;
             $sla->fail_time_unit = $unit ?: 'hours';
         } else {
@@ -300,7 +303,6 @@ class Build1400056735 extends AbstractBuild
         return $sla;
     }
 
-
     /**
      * @param  array               $old_trigger
      * @param  bool                $is_incomplete
@@ -336,7 +338,6 @@ class Build1400056735 extends AbstractBuild
 
         return $actions_set;
     }
-
 
     /**
      * @param  array        $old_trigger

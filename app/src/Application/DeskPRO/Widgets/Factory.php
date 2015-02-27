@@ -34,7 +34,6 @@ namespace Application\DeskPRO\Widgets;
  * @subpackage Widgets
  */
 
-
 class Factory
 {
     public static function createHandlersForWidgets($widgets, $context, array $options = array())

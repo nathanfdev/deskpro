@@ -34,8 +34,6 @@
 
 namespace Application\InstallBundle\Data\DefaultData;
 
-
-
 class BrandData extends AbstractDefaultData
 {
     public function runInstallViaUpgrade()
@@ -43,22 +41,18 @@ class BrandData extends AbstractDefaultData
         $this->installDefaultBrand();
     }
 
-
     public function runInstall()
     {
         $this->installDefaultBrand();
     }
 
-
     public function runReset()
     {
     }
 
-
     public function runSync()
     {
     }
-
 
     private function installDefaultBrand()
     {

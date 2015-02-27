@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Facebook;
 
-
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\FacebookApp;
 use Application\DeskPRO\Entity\FacebookPage;
@@ -79,7 +78,6 @@ class FacebookApi
         }
     }
 
-
     public function getClient()
     {
         if ($this->facebook) {
@@ -93,7 +91,7 @@ class FacebookApi
                 '/oauth/access_token', array(
                     'client_id' => $this->app_id,
                     'client_secret' => $this->app_secret,
-                    'grant_type' => 'client_credentials'
+                    'grant_type' => 'client_credentials',
                 )
             );
 
@@ -102,7 +100,6 @@ class FacebookApi
 
         return $this->facebook;
     }
-
 
     /**
      * The short-term token needs to be extended here for use/storage on server
@@ -119,7 +116,7 @@ class FacebookApi
                 'grant_type'        => 'fb_exchange_token',
                 'client_id'         => $this->app_id,
                 'client_secret'     => $this->app_secret,
-                'fb_exchange_token' => $page->user_token
+                'fb_exchange_token' => $page->user_token,
             )
         );
 
@@ -149,7 +146,7 @@ class FacebookApi
 
         $output = $this->sendGetRequest(
             '/me/accounts', array(
-                'access_token' => $page->user_token
+                'access_token' => $page->user_token,
             )
         );
 
@@ -172,7 +169,7 @@ class FacebookApi
             array(
                 'app_id' => $this->app_id,
                 'access_token' => $token,
-                'message' => $message
+                'message' => $message,
             )
         );
 
@@ -181,12 +178,11 @@ class FacebookApi
 
     public function subscribeToFeed(FacebookPage $page)
     {
-
         $output = $this->sendPostRequest(
             sprintf('/%s/tabs', $page->graph_id),
             array(
                 'app_id' => $page->app->app_id,
-                'access_token' => $page->page_token
+                'access_token' => $page->page_token,
             )
         );
 
@@ -198,7 +194,7 @@ class FacebookApi
                         'api_channel_facebook_incoming', array(), UrlGeneratorInterface::ABSOLUTE_URL
                     ),
                 'verify_token' => $page->verify_token,
-                'access_token' => $this->app_token
+                'access_token' => $this->app_token,
             );
             $output = $this->sendPostRequest(
                 sprintf('/%s/subscriptions', $page->app->app_id),
@@ -208,7 +204,6 @@ class FacebookApi
 
         return true;
     }
-
 
     private function sendGetRequest($uri, array $params)
     {
@@ -232,7 +227,6 @@ class FacebookApi
 
         return $output;
     }
-
 
     private function sendPostRequest($uri, array $params)
     {

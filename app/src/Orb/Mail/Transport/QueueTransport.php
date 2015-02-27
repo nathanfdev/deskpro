@@ -49,9 +49,16 @@ class QueueTransport implements \Swift_Transport
         $this->_event_dispatcher = $event_dispatcher;
     }
 
-    public function isStarted() { return true; }
-    public function start() { }
-    public function stop() { }
+    public function isStarted()
+    {
+        return true;
+    }
+    public function start()
+    {
+    }
+    public function stop()
+    {
+    }
 
     public function send(\Swift_Mime_Message $message, &$failedRecipients = null)
     {
@@ -77,7 +84,7 @@ class QueueTransport implements \Swift_Transport
             'date_next_attempt'   => date('Y-m-d H:i:s'),
             'priority'            => 10,
             'log'                 => '',
-            'status'              => 'pending'
+            'status'              => 'pending',
         );
 
         if ($message instanceof \Orb\Mail\Message) {

@@ -78,7 +78,6 @@ class DepartmentAction extends AbstractAction implements PermissionableAction
         $ticket['department_id'] = $dep_id;
     }
 
-
     /**
      * Get an array of actions that would be performed on the ticket
      *
@@ -91,10 +90,9 @@ class DepartmentAction extends AbstractAction implements PermissionableAction
         }
 
         return array(
-            array('action' => 'department', 'department_id' => $this->department_id)
+            array('action' => 'department', 'department_id' => $this->department_id),
         );
     }
-
 
     /**
      * Get the department id
@@ -106,7 +104,6 @@ class DepartmentAction extends AbstractAction implements PermissionableAction
         return $this->department_id;
     }
 
-
     /**
      * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
@@ -115,7 +112,6 @@ class DepartmentAction extends AbstractAction implements PermissionableAction
     {
         return $other_action;
     }
-
 
     /**
      * @return string

@@ -1,0 +1,10 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block inner_content %}
+    {{ page.download_breadcrumbs({category: file.category})|raw }}
+    {{ page.download()|raw }}
+    {{ page.downloads_ratings()|raw }}
+    {{ page.downloads_comments()|raw }}
+    {% include 'Theme:Common:comments_new_form.html.twig' with { new_comment_form: new_comment_form } %}
+    {{ page.related_content()|raw }}
+{% endblock inner_content %}

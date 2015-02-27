@@ -63,7 +63,6 @@ class JobWorker
      */
     private $queue;
 
-
     public function __construct(Connection $connection, JobRouter $jobRouter, JobQueue $queue)
     {
         $this->connection = $connection;
@@ -75,7 +74,6 @@ class JobWorker
         // create the JobRouter for this worker instance
         $this->jobRouter = $jobRouter;
     }
-
 
     /**
      * Goto work, starts the loop. Continues until max_time, or no jobs found.
@@ -154,13 +152,13 @@ class JobWorker
                 'this_worker_id'  => $this->workerId,
                 'reserved_status' => Job::STATUS_RESERVED,
                 'waiting_status'  => Job::STATUS_WAITING,
-                'date_now'        => new \DateTime()
+                'date_now'        => new \DateTime(),
             ),
             array(
                 'this_worker_id'  => 'string',
                 'reserved_status' => 'string',
                 'waiting_status'  => 'string',
-                'date_now'        => 'datetime'
+                'date_now'        => 'datetime',
             )
         );
 
@@ -176,7 +174,7 @@ class JobWorker
             ',
             array(
                 'reserved_status' => Job::STATUS_RESERVED,
-                'this_worker_id'  => $this->workerId
+                'this_worker_id'  => $this->workerId,
             ),
             array(
                 'reserved_status' => 'string',
@@ -194,7 +192,6 @@ class JobWorker
     protected function executeJob($job)
     {
         if ($this->looksLikeAJobArray($job)) {
-
             if (!$this->queue->isReadyByJobId($job['id'])) {
                 $this->queue->rescheduleByJobId($job['id']);
 
@@ -241,12 +238,12 @@ class JobWorker
                 array(
                     'processing_status' => Job::STATUS_PROCESSING,
                     'date_now'          => new \DateTime(),
-                    'job_id'            => $job['id']
+                    'job_id'            => $job['id'],
                 ),
                 array(
                     'processing_status' => 'string',
                     'date_now'          => 'datetime',
-                    'job_id'            => 'integer'
+                    'job_id'            => 'integer',
                 )
             );
         }
@@ -265,10 +262,10 @@ class JobWorker
             WHERE id = :job_id
             ',
             array(
-                'job_id' => $id
+                'job_id' => $id,
             ),
             array(
-                'job_id' => 'integer'
+                'job_id' => 'integer',
             )
         );
     }

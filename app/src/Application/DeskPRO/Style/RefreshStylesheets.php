@@ -63,7 +63,7 @@ class RefreshStylesheets
             $container->getDb()->update('styles', array(
                 'css_blob_id' => null,
                 'css_blob_rtl_id' => null,
-                'css_updated' => date('Y-m-d H:i:s')
+                'css_updated' => date('Y-m-d H:i:s'),
             ), array('id' => $style->getId()));
         }
     }

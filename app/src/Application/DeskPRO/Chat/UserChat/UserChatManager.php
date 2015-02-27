@@ -142,14 +142,15 @@ class UserChatManager
                 }
             }
 
-			// Spam trap
-			$traps = array(@$chat_options['full_name'], @$chat_options['email_address']);
-			$traps = Arrays::func($traps, 'trim');
-			$traps = Arrays::removeEmptyString($traps);
-			if (count($traps) || @$chat_options['email_address2'] != "yes") {
-				$error_code = 'person_disabled';
-				return null;
-			}
+            // Spam trap
+            $traps = array(@$chat_options['full_name'], @$chat_options['email_address']);
+            $traps = Arrays::func($traps, 'trim');
+            $traps = Arrays::removeEmptyString($traps);
+            if (count($traps) || @$chat_options['email_address2'] != "yes") {
+                $error_code = 'person_disabled';
+
+                return null;
+            }
 
             $chat_options['name']  = empty($chat_options['name']) ? '' : $chat_options['name'];
             $chat_options['email'] = empty($chat_options['email']) ? '' : $chat_options['email'];

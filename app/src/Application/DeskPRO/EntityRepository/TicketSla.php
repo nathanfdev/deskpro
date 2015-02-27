@@ -56,7 +56,7 @@ class TicketSla extends AbstractEntityRepository
         $where_perm = array();
 
         if ($person_context->getDisallowedDepartments()) {
-            $where_perm[] = "tickets.department_id NOT IN (" . implode(',', $person_context->getDisallowedDepartments()) . ")";
+            $where_perm[] = "tickets.department_id NOT IN (".implode(',', $person_context->getDisallowedDepartments()).")";
         }
 
         if (!$person_context->hasPerm('agent_tickets.view_unassigned')) {
@@ -67,21 +67,21 @@ class TicketSla extends AbstractEntityRepository
             $part = array();
             $part[] = "tickets.agent_id = {$person_context['id']}";
             if ($person_context->getAgentTeamIds()) {
-                $part[] = "tickets.agent_team_id IN (" . implode(',', $person_context->getAgentTeamIds()) . ")";
+                $part[] = "tickets.agent_team_id IN (".implode(',', $person_context->getAgentTeamIds()).")";
             }
 
-            $where_perm[] = '(' . implode(' OR ', $part) . ')';
+            $where_perm[] = '('.implode(' OR ', $part).')';
         }
 
         if (!$where_perm) {
             $where_perm[] = '1';
         }
 
-        $where = '((' . implode(' AND ', $where_perm) . ') OR (';
+        $where = '(('.implode(' AND ', $where_perm).') OR (';
 
         $where .= "tickets.agent_id = {$person_context['id']} OR ";
         if ($person_context->getAgentTeamIds()) {
-            $where .= "tickets.agent_team_id IN (" . implode(',', $person_context->getAgentTeamIds()) . ") OR ";
+            $where .= "tickets.agent_team_id IN (".implode(',', $person_context->getAgentTeamIds()).") OR ";
         }
 
         $where .= "tickets_participants_perm.person_id IS NOT NULL))";
@@ -93,7 +93,7 @@ class TicketSla extends AbstractEntityRepository
 
             case 'team':
                 if ($person_context->getAgentTeamIds()) {
-                    $where .= " AND tickets.agent_team_id IN (" . implode(',', $person_context->getAgentTeamIds()) . ")";
+                    $where .= " AND tickets.agent_team_id IN (".implode(',', $person_context->getAgentTeamIds()).")";
                 } else {
                     $where .= " AND 0";
                 }
@@ -104,11 +104,11 @@ class TicketSla extends AbstractEntityRepository
         $where .= " AND ((slas.sla_type = 'waiting_time' AND tickets.status = 'awaiting_agent') OR (slas.sla_type = 'first_response' AND tickets.status = 'awaiting_agent') OR (slas.sla_type = 'resolution' AND tickets.status IN ('awaiting_agent', 'awaiting_user')))";
 
         $ids = array();
-        foreach ($slas AS $sla) {
+        foreach ($slas as $sla) {
             $ids[] = $sla->id;
         }
 
-        $where .= " AND ticket_slas.sla_id IN (" . implode(',', $ids) . ')';
+        $where .= " AND ticket_slas.sla_id IN (".implode(',', $ids).')';
 
         $results = $this->getEntityManager()->getConnection()->fetchAll("
             SELECT ticket_slas.sla_id, ticket_slas.sla_status, COUNT(*) AS count
@@ -121,10 +121,10 @@ class TicketSla extends AbstractEntityRepository
         ");
 
         $output = array();
-        foreach ($ids AS $id) {
+        foreach ($ids as $id) {
             $output[$id] = array('ok' => 0, 'warning' => 0, 'fail' => 0);
         }
-        foreach ($results AS $result) {
+        foreach ($results as $result) {
             $output[$result['sla_id']][$result['sla_status']] = $result['count'];
         }
 
@@ -162,9 +162,9 @@ class TicketSla extends AbstractEntityRepository
 
         if ($startAdjust) {
             if ($startAdjust > 0) {
-                $dt->modify('-' . $startAdjust . ' days');
+                $dt->modify('-'.$startAdjust.' days');
             } else {
-                $dt->modify('-' . (7 + $startAdjust) . ' days');
+                $dt->modify('-'.(7 + $startAdjust).' days');
             }
         }
 
@@ -180,11 +180,11 @@ class TicketSla extends AbstractEntityRepository
             'yesterday' => array($yesterday, $today - 1),
             'this_week' => $week_start,
             'this_month' => gmmktime(0, 0, 0, $month, 1, $year),
-            'this_year' => gmmktime(0, 0, 0, 1, 1, $year)
+            'this_year' => gmmktime(0, 0, 0, 1, 1, $year),
         );
 
         $output = array();
-        foreach ($graphs AS $title => $start) {
+        foreach ($graphs as $title => $start) {
             if (is_array($start)) {
                 list($start, $end) = $start;
             } else {
@@ -197,7 +197,7 @@ class TicketSla extends AbstractEntityRepository
                     'warning' => array('title' => 'Warning', 'count' => 0, 'id' => 'warning', 'color' => '#F7BC1F'),
                     'fail' => array('title' => 'Failed', 'count' => 0, 'id' => 'count', 'color' => '#de5949'),
                 );
-                foreach ($data AS $status => $count) {
+                foreach ($data as $status => $count) {
                     $output[$title][$status]['count'] = $count;
                 }
 

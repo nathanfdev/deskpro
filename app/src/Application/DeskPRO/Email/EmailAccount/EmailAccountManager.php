@@ -213,7 +213,7 @@ class EmailAccountManager
     }
 
     /**
-     * @param \Swift_Mime_Message $message
+     * @param  \Swift_Mime_Message                      $message
      * @return \Application\DeskPRO\Entity\EmailAccount
      */
     public function findAccountForSwiftmailerMessage(\Swift_Mime_Message $message)
@@ -240,7 +240,6 @@ class EmailAccountManager
 
         return $this->getDefaultOutAccountWithFallback();
     }
-
 
     /**
      * @param  array $accounts
@@ -355,7 +354,7 @@ class EmailAccountManager
     }
 
     /**
-     * @param Ticket $ticket
+     * @param  Ticket       $ticket
      * @return EmailAccount
      */
     public function getAccountForTicket(Ticket $ticket)
@@ -366,7 +365,6 @@ class EmailAccountManager
 
         return $this->getPrimaryTicketAccountWithFallback();
     }
-
 
     /**
      * Count how many outgoing email accounts are defined

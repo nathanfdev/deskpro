@@ -87,19 +87,17 @@ class TicketLayout extends DomainObject
         $this->date_updated = new \DateTime();
     }
 
-
     /**
      * @throws \RuntimeException
      */
     public function setDepartment(Department $dep = null)
     {
-        if ($this->id){
+        if ($this->id) {
             throw new \RuntimeException("You cannot change the department once it has been set.");
         } else {
             $this->department = $dep;
         }
     }
-
 
     /**
      * Enable the layout
@@ -109,7 +107,6 @@ class TicketLayout extends DomainObject
         $this['is_enabled'] = true;
     }
 
-
     /**
      * Disable the layout
      */
@@ -117,7 +114,6 @@ class TicketLayout extends DomainObject
     {
         $this['is_enabled'] = true;
     }
-
 
     ############################################################################
     # Doctrine Metadata
@@ -130,7 +126,7 @@ class TicketLayout extends DomainObject
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
         $metadata->setPrimaryTable(array(
-            'name' => 'ticket_layouts'
+            'name' => 'ticket_layouts',
         ));
 
         $metadata->mapField(array(
@@ -138,7 +134,7 @@ class TicketLayout extends DomainObject
             'fieldName'  => 'id',
             'type'       => 'integer',
             'nullable'   => false,
-            'id'         => true
+            'id'         => true,
         ));
         $metadata->mapField(array(
             'columnName' => 'is_enabled',
@@ -150,19 +146,19 @@ class TicketLayout extends DomainObject
             'columnName' => 'user_layout',
             'fieldName'  => 'user_layout',
             'type'       => 'dp_json_obj',
-            'nullable'   => false
+            'nullable'   => false,
         ));
         $metadata->mapField(array(
             'columnName' => 'agent_layout',
             'fieldName'  => 'agent_layout',
             'type'       => 'dp_json_obj',
-            'nullable'   => false
+            'nullable'   => false,
         ));
         $metadata->mapField(array(
             'columnName' => 'date_updated',
             'fieldName'  => 'date_updated',
             'type'       => 'datetime',
-            'nullable'   => false
+            'nullable'   => false,
         ));
 
         $metadata->mapManyToOne(array(
@@ -173,7 +169,7 @@ class TicketLayout extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-            ))
+            )),
         ));
     }
 }

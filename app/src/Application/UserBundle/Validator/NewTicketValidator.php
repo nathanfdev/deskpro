@@ -87,7 +87,6 @@ class NewTicketValidator extends AbstractValidator
         $this->edit_mode = true;
     }
 
-
     /**
      * @param Layout $layout
      */
@@ -151,7 +150,6 @@ class NewTicketValidator extends AbstractValidator
             if (isset($this->display_fields['department']) && !$department_validator->isValid($department_id)) {
                 $this->addError('ticket.department_id.invalid');
             } else {
-
                 if ($this->widget_mode) {
                     $layout = new Layout();
                     $layout->add(new LayoutField('user_name'));
@@ -299,7 +297,7 @@ class NewTicketValidator extends AbstractValidator
                 if (App::getSetting('core.use_product')) {
                     $validator = new \Application\DeskPRO\Validator\GenericCategory(array(
                         'category_repository' => App::getEntityRepository('DeskPRO:Product'),
-                        'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_prod_user_required')
+                        'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_prod_user_required'),
                     ));
                     if (!$validator->isValid($this->newticket->ticket->product_id)) {
                         $this->addError('ticket.product_id.invalid');
@@ -311,7 +309,7 @@ class NewTicketValidator extends AbstractValidator
                 if (App::getSetting('core.use_ticket_category')) {
                     $validator = new \Application\DeskPRO\Validator\GenericCategory(array(
                         'category_repository' => App::getEntityRepository('DeskPRO:TicketCategory'),
-                        'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_cat_user_required')
+                        'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_cat_user_required'),
                     ));
                     if (!$validator->isValid($this->newticket->ticket->category_id)) {
                         $this->addError('ticket.category_id.invalid');
@@ -322,7 +320,7 @@ class NewTicketValidator extends AbstractValidator
             case 'priority':
                 if (App::getSetting('core.use_ticket_priority')) {
                     $validator = new \Application\DeskPRO\Validator\TicketPriority(array(
-                        'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_pri_user_required')
+                        'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_pri_user_required'),
                     ));
                     if (!$validator->isValid($this->newticket->ticket->priority_id)) {
                         $this->addError('ticket.priority_id.invalid');
@@ -335,7 +333,7 @@ class NewTicketValidator extends AbstractValidator
                 if ($field && $field->is_enabled) {
                     $errors = $field->getHandler()->validateFormData($this->newticket->custom_ticket_fields);
                     foreach ($errors as $code) {
-                        $this->addError('ticket.' . $code);
+                        $this->addError('ticket.'.$code);
                     }
                 }
                 break;
@@ -345,7 +343,7 @@ class NewTicketValidator extends AbstractValidator
                 if ($field && $field->is_enabled) {
                     $errors = $field->getHandler()->validateFormData($this->newticket->custom_user_fields);
                     foreach ($errors as $code) {
-                        $this->addError('person.' . $code);
+                        $this->addError('person.'.$code);
                     }
                 }
                 break;

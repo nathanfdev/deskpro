@@ -34,7 +34,6 @@
 
 namespace Application\InstallBundle\Data\DefaultData;
 
-
 use Application\DeskPRO\Templating\Templates\TemplateSet;
 
 class TemplateData extends AbstractDefaultData

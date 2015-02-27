@@ -34,12 +34,11 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-
 class CustomDefAbstract extends AbstractEntityRepository
 {
     public static function getCacheId($id)
     {
-        $str = 'customdef' . md5(get_called_class()) . '_' . $id;
+        $str = 'customdef'.md5(get_called_class()).'_'.$id;
 
         return $str;
     }

@@ -65,7 +65,6 @@ class CheckDayOfWeek extends AbstractTriggerTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -103,16 +102,22 @@ class CheckDayOfWeek extends AbstractTriggerTerm
         if (!is_array($days)) {
             $days = array($days);
         }
-        $days = array_map(function ($d) { return (int)$d; }, $days);
+        $days = array_map(function ($d) { return (int) $d; }, $days);
 
-        $is_match = in_array((int)$now->format('N'), $days);
+        $is_match = in_array((int) $now->format('N'), $days);
 
         if ($is_match) {
-            if ($op == 'is') return true;
-            else return false;
+            if ($op == 'is') {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            if ($op == 'is') return false;
-            else return false;
+            if ($op == 'is') {
+                return false;
+            } else {
+                return false;
+            }
         }
     }
 }

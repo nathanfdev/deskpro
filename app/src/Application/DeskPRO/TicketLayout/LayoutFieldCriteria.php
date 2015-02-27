@@ -53,7 +53,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
      */
     private $terms = array();
 
-
     /**
      * @param \Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface[] $terms
      * @param string                                                              $mode
@@ -69,7 +68,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         }
     }
 
-
     /**
      * @param TicketLayoutTermInterface $term
      */
@@ -77,7 +75,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
     {
         $this->terms[] = $term;
     }
-
 
     /**
      * @return \Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface[]
@@ -87,7 +84,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         return $this->terms;
     }
 
-
     /**
      * @return string
      */
@@ -95,7 +91,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
     {
         return $this->mode;
     }
-
 
     /**
      * @param string $mode
@@ -105,7 +100,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         $mode = strtoupper($mode);
         $this->mode = ($mode == self::CRIT_ALL ? self::CRIT_ALL : self::CRIT_ANY);
     }
-
 
     /**
      * @param  Ticket $ticket
@@ -132,7 +126,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         }
     }
 
-
     /**
      * @param  array $data
      * @return bool
@@ -157,7 +150,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
             return false;
         }
     }
-
 
     /**
      * {@inheritDoc}
@@ -200,7 +192,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         return $js;
     }
 
-
     /**
      * @return array
      */
@@ -216,13 +207,12 @@ class LayoutFieldCriteria implements \Serializable, \Countable
             $data['terms'][] = array(
                 'type'    => $t->getTermType(),
                 'op'      => $t->getTermOperator(),
-                'options' => $t->getTermOptions()
+                'options' => $t->getTermOptions(),
             );
         }
 
         return $data;
     }
-
 
     /**
      * @return string
@@ -231,7 +221,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
     {
         return json_encode($this->exportToArray());
     }
-
 
     /**
      * @param array $data
@@ -247,7 +236,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         }
     }
 
-
     /**
      * @return string
      */
@@ -255,7 +243,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
     {
         return $this->exportToJson();
     }
-
 
     /**
      * @param string $data

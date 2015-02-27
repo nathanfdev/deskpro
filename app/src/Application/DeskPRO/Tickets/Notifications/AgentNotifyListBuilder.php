@@ -91,7 +91,6 @@ class AgentNotifyListBuilder implements PersonContextInterface
         $this->logger = new NullLogger();
     }
 
-
     /**
      * Sets the person context. This is the person who is firing this notification event.
      * We will not notify the person of their own action.
@@ -103,7 +102,6 @@ class AgentNotifyListBuilder implements PersonContextInterface
         $this->person_context = $person;
     }
 
-
     /**
      * @param Logger $logger
      */
@@ -112,15 +110,13 @@ class AgentNotifyListBuilder implements PersonContextInterface
         $this->logger = $logger;
     }
 
-
     /**
      * @param string $message
      */
     private function logMessage($message)
     {
-        $this->logger->info("[AgentNotifyListBuilder] " . $message);
+        $this->logger->info("[AgentNotifyListBuilder] ".$message);
     }
-
 
     /**
      * Generate the notify list.
@@ -135,7 +131,6 @@ class AgentNotifyListBuilder implements PersonContextInterface
 
             return array();
         }
-
 
         #------------------------------
         # Sort out which kind of notification we need to send
@@ -236,7 +231,6 @@ class AgentNotifyListBuilder implements PersonContextInterface
         return $notify_list;
     }
 
-
     /**
      * @param array        $notify_list
      * @param Person       $agent
@@ -250,7 +244,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
             $notify_list[$agent->id] = array(
                 'agent'       => $agent,
                 'filter_subs' => array(),
-                'types'       => array()
+                'types'       => array(),
             );
         }
         if (!isset($notify_list[$agent->id]['filter_subs'][$filter->id])) {
@@ -258,7 +252,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
                 'filter'     => $filter,
                 'is_new'     => false,
                 'is_update'  => false,
-                'types'      => array()
+                'types'      => array(),
             );
         }
 
@@ -269,7 +263,6 @@ class AgentNotifyListBuilder implements PersonContextInterface
         $notify_list[$agent->id]['types'] = array_merge($notify_list[$agent->id]['types'], $notify_types);
         $notify_list[$agent->id]['types'] = array_unique($notify_list[$agent->id]['types']);
     }
-
 
     /**
      * @param  array                    $event_types
@@ -309,7 +302,6 @@ class AgentNotifyListBuilder implements PersonContextInterface
 
         return $types;
     }
-
 
     /**
      * @param  array                    $event_types

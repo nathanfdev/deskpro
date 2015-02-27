@@ -108,7 +108,10 @@ abstract class HandlerAbstract
                 }
             };
 
-            if ($sa === $sb) return 0;
+            if ($sa === $sb) {
+                return 0;
+            }
+
             return $sa < $sb ? -1 : 1;
         });
 

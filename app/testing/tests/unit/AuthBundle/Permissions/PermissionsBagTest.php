@@ -36,7 +36,7 @@ namespace DpUnitTests\AuthBundle\Permissions;
 
 
 
-use Application\AuthBundle\Permissions\PermissionsBag;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
 
 class PermissionsBagTest extends \DpUnitTestCase
 {

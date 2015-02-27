@@ -86,7 +86,7 @@ class ChatTranscripts extends AbstractJob
 
                 $vars = array(
                     'convo' => $chat,
-                    'convo_messages' => $convo_messages
+                    'convo_messages' => $convo_messages,
                 );
 
                 $message = App::getMailer()->createMessage();
@@ -110,6 +110,6 @@ class ChatTranscripts extends AbstractJob
             $chat = null;
         }
 
-        $this->logger->log("Sent " . count($chat_ids) . " chat transcripts", Logger::INFO);
+        $this->logger->log("Sent ".count($chat_ids)." chat transcripts", Logger::INFO);
     }
 }

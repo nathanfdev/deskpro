@@ -47,7 +47,9 @@ class AbstractCategoryRepository extends AbstractEntityRepository
      */
     public function getCategoryHelper()
     {
-        if ($this->_cat_helper !== null) return $this->_cat_helper;
+        if ($this->_cat_helper !== null) {
+            return $this->_cat_helper;
+        }
 
         $this->_cat_helper = new CategoryHierarchy(
             $this->getEntityManager(),
@@ -64,7 +66,6 @@ class AbstractCategoryRepository extends AbstractEntityRepository
     {
         return null;
     }
-
 
     /**
      * Runs through the hierarchy to reset 'depth' and 'root' values,

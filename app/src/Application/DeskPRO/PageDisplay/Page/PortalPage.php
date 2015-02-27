@@ -135,7 +135,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
 
     protected function _loadSection($section)
     {
-        if ($this->lazy_loader AND !isset($this->page_displays[$section])) {
+        if ($this->lazy_loader and !isset($this->page_displays[$section])) {
             $lazy_loader = $this->lazy_loader;
             $page_display = $lazy_loader($section, $this);
             if ($page_display) {
@@ -182,7 +182,6 @@ class PortalPage extends BasicPage implements PersonContextInterface
         foreach ($data as $item) {
             $this->page_display_items[$section][] = $this->_createPortalItem($section, $item);
         }
-
     }
 
     /**
@@ -223,7 +222,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
         if ($sections == 'all') {
             $sections = array_keys($this->page_displays);
         } else {
-            $sections = (array)$sections;
+            $sections = (array) $sections;
         }
 
         $assets = array();
@@ -250,7 +249,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
         if ($sections == 'all') {
             $sections = array_keys($this->page_displays);
         } else {
-            $sections = (array)$sections;
+            $sections = (array) $sections;
         }
 
         $assets = array();
@@ -334,26 +333,28 @@ class PortalPage extends BasicPage implements PersonContextInterface
             }
 
             if ($cache_info) {
-
                 if (!is_array($cache_info)) {
                     $cache_info = array();
                 }
 
-                if (empty($cache_info['lifetime'])) $cache_info['lifetime'] = false;
-                if (empty($cache_info['tags'])) $cache_info['tags'] = array();
+                if (empty($cache_info['lifetime'])) {
+                    $cache_info['lifetime'] = false;
+                }
+                if (empty($cache_info['tags'])) {
+                    $cache_info['tags'] = array();
+                }
 
-                $cache_id = "block.portal_{$section}_" . str_replace('\\', '', get_class($item));
+                $cache_id = "block.portal_{$section}_".str_replace('\\', '', get_class($item));
                 $cache_lifetime = null;
 
-                if (!isset($cache_info['user_indifferent']) OR !$cache_info['user_indifferent']) {
-                    $cache_id .= '_' . $this->person_context->getUsergroupSetKey();
+                if (!isset($cache_info['user_indifferent']) or !$cache_info['user_indifferent']) {
+                    $cache_id .= '_'.$this->person_context->getUsergroupSetKey();
                 }
 
                 if (($block_html = $cache->fetch($cache_id)) === false || $this->is_admin_mode) {
                     $block_html = $item->getHtml();
                     $cache->save($cache_id, $block_html, $cache_info['lifetime']);
                 }
-
             } else {
                 $block_html = $item->getHtml();
             }
@@ -365,7 +366,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
             if ($block_html) {
                 $pid = $item->getOption('pid');
                 $type = strtolower(\Orb\Util\Util::getBaseClassname($item));
-                $block_html = "<div class=\"dp-p dp-{$type} dp-pid-{$pid}" . ($item->getOption('is_enabled') ? '' : ' dp-p-disabled disabled') . "\" data-dp-pid=\"{$pid}\">{$block_html}</div>";
+                $block_html = "<div class=\"dp-p dp-{$type} dp-pid-{$pid}".($item->getOption('is_enabled') ? '' : ' dp-p-disabled disabled')."\" data-dp-pid=\"{$pid}\">{$block_html}</div>";
                 $html[] = $block_html;
             }
         }

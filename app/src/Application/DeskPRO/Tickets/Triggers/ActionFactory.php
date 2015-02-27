@@ -58,7 +58,7 @@ class ActionFactory
             $class_name = substr($type, 1);
         } else {
             if (preg_match('#^Set(User|Ticket|Org)(Contextual)?Field(\d+)$#', $type, $m)) {
-                $class_type = 'Set' . $m[1] . $m[2] . 'Field';
+                $class_type = 'Set'.$m[1].$m[2].'Field';
                 $options['field_id'] = $m[3];
             } else {
                 $class_type = $type;
@@ -76,7 +76,7 @@ class ActionFactory
         if ($term instanceof AppActionInterface && $term instanceof AbstractAction && $construct_options) {
             $id = Strings::extractRegexMatch('#(\d+)$#', $construct_options['type']);
             if ($id) {
-                $term->getMetaData()->set('app_id', (int)$id);
+                $term->getMetaData()->set('app_id', (int) $id);
             }
         }
 

@@ -34,7 +34,7 @@
 
 namespace DpUnitTests\DeskPRO\Theme;
 
-use Application\PortalBundle\Theme\ThemeResolver;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 
 /**
  * NOTE: this test suite depends on the real "Base" theme
@@ -47,8 +47,8 @@ class ThemeResolverTest extends \DpUnitTestCase
 //	{
 //		$theme_resolver = new ThemeResolver();
 //
-//		$theme = \Mockery::mock('Application\PortalBundle\Theme\ThemeInterface');
-//		$theme->shouldReceive('getNamespace')->andReturn('Application\PortalBundle\Themes\Base');
+//		$theme = \Mockery::mock('DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface');
+//		$theme->shouldReceive('getNamespace')->andReturn('DeskPRO\Bundle\PortalBundle\Themes\Base');
 //		$theme->shouldReceive('getParent')->andReturn(null);
 //
 //		$this->setExpectedException('\RuntimeException');
@@ -59,34 +59,34 @@ class ThemeResolverTest extends \DpUnitTestCase
 //	{
 //		$theme_resolver = new ThemeResolver();
 //
-//		$theme = \Mockery::mock('Application\PortalBundle\Theme\ThemeInterface');
+//		$theme = \Mockery::mock('DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface');
 //		$theme->shouldReceive('getNamespace')->andReturn(
-//			'Application\PortalBundle\Themes\Base'
+//			'DeskPRO\Bundle\PortalBundle\Themes\Base'
 //		);
 //
 //		$result = $theme_resolver->controller($theme, 'Theme:Portal:index');
 //
-//		$this->assertEquals('Application\PortalBundle\Themes\Base\Controller\PortalController::indexAction', $result);
+//		$this->assertEquals('DeskPRO\Bundle\PortalBundle\Themes\Base\Controller\PortalController::indexAction', $result);
 //	}
 //
 //	public function testControllerInheritsFromParentTheme()
 //	{
 //		$theme_resolver = new ThemeResolver();
 //
-//		$parent_theme = \Mockery::mock('Application\PortalBundle\Theme\ThemeInterface');
+//		$parent_theme = \Mockery::mock('DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface');
 //		$parent_theme->shouldReceive('getNamespace')->andReturn(
-//			'Application\PortalBundle\Themes\Base'
+//			'DeskPRO\Bundle\PortalBundle\Themes\Base'
 //		);
 //
-//		$theme_child = \Mockery::mock('Application\PortalBundle\Theme\ThemeInterface');
+//		$theme_child = \Mockery::mock('DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface');
 //		$theme_child->shouldReceive('getNamespace')->andReturn(
-//			'Application\PortalBundle\Themes\NonExistantNamespace'
+//			'DeskPRO\Bundle\PortalBundle\Themes\NonExistantNamespace'
 //		);
 //		$theme_child->shouldReceive('getParent')->andReturn($parent_theme);
 //
 //		$result = $theme_resolver->controller($theme_child, 'Theme:Portal:index');
 //
 //		// we expect what the parent theme would provide, even tho we ask the child, because the child ctrl does not exist
-//		$this->assertEquals('Application\PortalBundle\Themes\Base\Controller\PortalController::indexAction', $result);
+//		$this->assertEquals('DeskPRO\Bundle\PortalBundle\Themes\Base\Controller\PortalController::indexAction', $result);
 //	}
 }

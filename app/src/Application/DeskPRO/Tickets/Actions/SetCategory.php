@@ -57,7 +57,6 @@ class SetCategory extends AbstractContainerAwareAction implements ActionInterfac
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -76,7 +75,6 @@ class SetCategory extends AbstractContainerAwareAction implements ActionInterfac
 
         $ticket->category = $cat;
     }
-
 
     /**
      * {@inheritDoc}
@@ -99,7 +97,6 @@ class SetCategory extends AbstractContainerAwareAction implements ActionInterfac
 
         return false;
     }
-
 
     /**
      * {@inheritDoc}

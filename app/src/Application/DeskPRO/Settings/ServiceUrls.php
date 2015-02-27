@@ -49,7 +49,7 @@ class ServiceUrls
      */
     public function loadPack($file)
     {
-        $pack_urls = require($file);
+        $pack_urls = require $file;
         if (!$pack_urls) {
             $pack_urls = array();
         }

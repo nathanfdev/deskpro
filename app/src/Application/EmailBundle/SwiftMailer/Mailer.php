@@ -55,18 +55,18 @@ class Mailer extends \Swift_Mailer implements StorageTransportInterface
     private $logger = null;
 
     /**
-     * @param \Swift_Transport $transport
+     * @param \Swift_Transport        $transport
      * @param MessageFactoryInterface $message_factory
-     * @param LoggerInterface $logger
+     * @param LoggerInterface         $logger
      */
     public function __construct(\Swift_Transport $transport, MessageFactoryInterface $message_factory, LoggerInterface $logger = null)
     {
         $this->logger = $logger ?: new NullLogger();
 
-        $tmpdir = dp_get_tmp_dir() . '/swiftmailer-cache';
-        if (!is_dir(dp_get_tmp_dir() . '/swiftmailer-cache')) {
+        $tmpdir = dp_get_tmp_dir().'/swiftmailer-cache';
+        if (!is_dir(dp_get_tmp_dir().'/swiftmailer-cache')) {
             if (!@mkdir($tmpdir, 0777, true)) {
-                $tmpdir = sys_get_temp_dir() . '/dp-swiftmailer-cache';
+                $tmpdir = sys_get_temp_dir().'/dp-swiftmailer-cache';
                 if (!is_dir($tmpdir)) {
                     @mkdir($tmpdir, 0777, true);
                 }
@@ -99,9 +99,9 @@ class Mailer extends \Swift_Mailer implements StorageTransportInterface
      */
     private function preprocessMessage(Swift_Mime_Message $message)
     {
-        $ref = Numbers::roundToMultiple(time(), 5) . '-' . Strings::random(40, Strings::CHARS_ALPHANUM_IU);
+        $ref = Numbers::roundToMultiple(time(), 5).'-'.Strings::random(40, Strings::CHARS_ALPHANUM_IU);
         $message->getHeaders()->addTextHeader('X-DeskPRO-MessageRef', $ref);
-        $message->setId($ref . '@deskpro-message');
+        $message->setId($ref.'@deskpro-message');
 
         $this->logger->debug(sprintf("Preprocessing: %s", $message->getId()));
 
@@ -116,8 +116,8 @@ class Mailer extends \Swift_Mailer implements StorageTransportInterface
     /**
      * Queue the message so it is sent by the queue processor.
      *
-     * @param Swift_Mime_Message $message
-     * @param \DateTime          $send_date  When to send the message. If not specified, it will be sent the next time the processor is run.
+     * @param  Swift_Mime_Message $message
+     * @param  \DateTime          $send_date When to send the message. If not specified, it will be sent the next time the processor is run.
      * @return int
      */
     public function queueMessage(Swift_Mime_Message $message, \DateTime $send_date = null)
@@ -133,11 +133,10 @@ class Mailer extends \Swift_Mailer implements StorageTransportInterface
         return $tr->queueMessage($message, $send_date);
     }
 
-
     /**
      * Save the message to the DB.
      *
-     * @param Swift_Mime_Message $message
+     * @param  Swift_Mime_Message $message
      * @return int
      */
     public function insertMessage(Swift_Mime_Message $message)
@@ -153,10 +152,9 @@ class Mailer extends \Swift_Mailer implements StorageTransportInterface
         return $tr->insertMessage($message);
     }
 
-
     /**
-     * @param Swift_Mime_Message $message
-     * @param null $failedRecipients
+     * @param  Swift_Mime_Message $message
+     * @param  null               $failedRecipients
      * @return int
      */
     public function send(Swift_Mime_Message $message, &$failedRecipients = null)
@@ -166,9 +164,8 @@ class Mailer extends \Swift_Mailer implements StorageTransportInterface
         return parent::send($message, $failedRecipients);
     }
 
-
     /**
-     * @param string $service
+     * @param  string                                               $service
      * @return \Application\EmailBundle\SwiftMailer\Message\Message
      */
     public function createMessage($service = 'message')

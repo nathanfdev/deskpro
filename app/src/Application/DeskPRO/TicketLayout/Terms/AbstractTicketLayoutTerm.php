@@ -53,7 +53,6 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
      */
     protected $options;
 
-
     /**
      * @param string $op
      * @param array  $options
@@ -63,7 +62,6 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
         $this->op      = $op;
         $this->options = $options;
     }
-
 
     /**
      * Gets the type name of the criteria
@@ -75,7 +73,6 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
         return Util::getBaseClassname($this);
     }
 
-
     /**
      * Gets criteria operator (is, is not, etc).
      *
@@ -85,7 +82,6 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
     {
         return $this->op;
     }
-
 
     /**
      * Get's an array of options
@@ -106,7 +102,7 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
     public function isTicketMatch(Ticket $ticket)
     {
         // Cant be abstract in older versions of php see https://bugs.php.net/bug.php?id=43200
-        throw new NotImplementedException;
+        throw new NotImplementedException();
     }
 
     /**
@@ -118,6 +114,6 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
     public function compileJsCheck()
     {
         // Cant be abstract in older versions of php see https://bugs.php.net/bug.php?id=43200
-        throw new NotImplementedException;
+        throw new NotImplementedException();
     }
 }

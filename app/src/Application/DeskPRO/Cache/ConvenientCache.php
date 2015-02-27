@@ -82,7 +82,7 @@ class ConvenientCache implements CacheAdapterInterface
      *
      * @param             $key
      * @param  null       $default
-     * @param  array      $params if $default is a callable, $params will be passed as arguments
+     * @param  array      $params  if $default is a callable, $params will be passed as arguments
      * @return mixed|null
      */
     public function get($key, $default = null, array $params = array())

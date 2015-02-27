@@ -53,15 +53,21 @@ class CheckUserOrgManager extends AbstractTriggerTerm
         if (!$person->organization) {
             $is_manager = false;
         } else {
-            $is_manager = (bool)$person->organization_manager;
+            $is_manager = (bool) $person->organization_manager;
         }
 
         if ($is_manager) {
-            if ($op == 'is') return true;
-            else return false;
+            if ($op == 'is') {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            if ($op == 'is') return false;
-            else return true;
+            if ($op == 'is') {
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 }

@@ -34,11 +34,11 @@
 
 namespace DpBehat;
 
-use Application\DeskPRO\Brand\BrandStack;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
 use Application\DeskPRO\Languages\LangPackInfo;
-use Application\LanguageBundle\Language\LanguageManager;
-use Application\LanguageBundle\Language\LanguageStack;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
@@ -48,7 +48,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 class LanguageContext extends BasePortalContext
 {
     /**
-     * @var LanguageManager
+     * @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager
      */
     private $language_manager;
     /**
@@ -138,7 +138,7 @@ class LanguageContext extends BasePortalContext
     }
 
     /**
-     * @return LanguageManager
+     * @return \DeskPRO\Bundle\AppBundle\Language\LanguageManager
      */
     public function getLanguageManager()
     {

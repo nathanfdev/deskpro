@@ -45,7 +45,7 @@ class AgentActivity
         'changed_department', 'changed_organization', 'changed_person',
         'message_created', 'message_removed', 'changed_priority',
         'changed_workflow', 'changed_urgency', 'changed_product',
-        'changed_status', 'changed_custom_field'
+        'changed_status', 'changed_custom_field',
     );
 
     /**
@@ -64,7 +64,6 @@ class AgentActivity
         $this->person = App::getCurrentPerson();
     }
 
-
     /**
      * @return mixed
      */
@@ -72,7 +71,6 @@ class AgentActivity
     {
         return $this->em->getRepository('DeskPRO:Person')->getAgents();
     }
-
 
     /**
      * @return mixed
@@ -82,7 +80,6 @@ class AgentActivity
         return $this->em->getRepository('DeskPRO:AgentTeam')->getTeams();
     }
 
-
     /**
      * @param  string string $agent_or_team_id
      * @param  string string $date
@@ -90,7 +87,7 @@ class AgentActivity
      */
     public function getVarsForHtmlView($agent_or_team_id = 'all', $date = '')
     {
-        if($date == '') {
+        if ($date == '') {
             $dt = $this->person->getDateTime();
             $dt->setTime(0, 0, 0);
             $date = $dt->format('Y-m-d');
@@ -180,7 +177,6 @@ class AgentActivity
         return $vars;
     }
 
-
     /**
      * @param  string $agent
      * @param $date
@@ -206,7 +202,7 @@ class AgentActivity
         foreach ($messages as $message) {
             $date   = $this->mysqlDateToPhpDate($message['date_created']);
             $hour   = $date->format('G');
-            $minute = (int)$date->format('i');
+            $minute = (int) $date->format('i');
 
             if (!isset($counts_hourly[$hour])) {
                 $counts_hourly[$hour] = array();
@@ -226,12 +222,12 @@ class AgentActivity
         $counts = array();
 
         foreach ($counts_hourly as $hour => $stats) {
-            $hour          = '_' . $hour;
+            $hour          = '_'.$hour;
             $counts[$hour] = array();
 
             foreach ($stats as $convo_id => $stat) {
                 $convo  = $this->em->getRepository('DeskPRO:ChatConversation')->find($convo_id);
-                $minute = '_' . $stat['last'];
+                $minute = '_'.$stat['last'];
 
                 if (!isset($counts[$hour][$minute])) {
                     $counts[$hour][$minute] = array();
@@ -240,14 +236,13 @@ class AgentActivity
                 $counts[$hour][$minute][] = array(
                     'type'         => 'chat',
                     'count'        => $stat['count'],
-                    'conversation' => $convo
+                    'conversation' => $convo,
                 );
             }
         }
 
         return $counts;
     }
-
 
     /**
      * @param  string $agent
@@ -265,22 +260,21 @@ class AgentActivity
         foreach ($logs as $log) {
             $date   = $this->mysqlDateToPhpDate($log['date_created']->format('Y-m-d H:i:s'));
             $hour   = $date->format('G');
-            $minute = (int)$date->format('i');
+            $minute = (int) $date->format('i');
 
-            if (!isset($counts_hourly['_' . $hour])) {
-                $counts_hourly['_' . $hour] = array();
+            if (!isset($counts_hourly['_'.$hour])) {
+                $counts_hourly['_'.$hour] = array();
             }
 
-            if (!isset($counts_hourly['_' . $hour]['_' . $minute])) {
-                $counts_hourly['_' . $hour]['_' . $minute] = array();
+            if (!isset($counts_hourly['_'.$hour]['_'.$minute])) {
+                $counts_hourly['_'.$hour]['_'.$minute] = array();
             }
 
-            $counts_hourly['_' . $hour]['_' . $minute][] = array('type' => 'ticket', 'data' => $log);
+            $counts_hourly['_'.$hour]['_'.$minute][] = array('type' => 'ticket', 'data' => $log);
         }
 
         return $counts_hourly;
     }
-
 
     /**
      * @param  string $agent
@@ -295,7 +289,7 @@ class AgentActivity
         foreach ($items as $item) {
             $item_lc = strtolower($item);
 
-            $revisions = $this->em->getRepository('DeskPRO:' . $item . 'Revision')->getRevisionsForAgent(
+            $revisions = $this->em->getRepository('DeskPRO:'.$item.'Revision')->getRevisionsForAgent(
                 $agent,
                 array('date_range' => $this->createMysqlDateRangeForUser($date))
             );
@@ -303,23 +297,22 @@ class AgentActivity
             foreach ($revisions as $revision) {
                 $date_created = $this->mysqlDateToPhpDate($revision['date_created']->format('Y-m-d H:i:s'));
                 $hour         = $date_created->format('G');
-                $minute       = (int)$date_created->format('i');
+                $minute       = (int) $date_created->format('i');
 
                 if (!isset($counts_hourly[$item_lc])) {
                     $counts_hourly[$item_lc] = array();
                 }
 
-                if (!isset($counts_hourly['_' . $hour]['_' . $minute])) {
-                    $counts_hourly['_' . $hour]['_' . $minute] = array();
+                if (!isset($counts_hourly['_'.$hour]['_'.$minute])) {
+                    $counts_hourly['_'.$hour]['_'.$minute] = array();
                 }
 
-                $counts_hourly['_' . $hour]['_' . $minute][] = array('type' => $item_lc, 'data' => $revision);
+                $counts_hourly['_'.$hour]['_'.$minute][] = array('type' => $item_lc, 'data' => $revision);
             }
         }
 
         return $counts_hourly;
     }
-
 
     /**
      * @param  string    $mysql_date
@@ -332,7 +325,6 @@ class AgentActivity
 
         return $dt;
     }
-
 
     /**
      * @param  string    $date_str
@@ -358,7 +350,6 @@ class AgentActivity
         return $dt;
     }
 
-
     /***
      * @param  \DateTime $date
      * @return array
@@ -382,7 +373,7 @@ class AgentActivity
         // Package using MySQL date format.
         $date_range = array(
             'start' => $start_date->format('Y-m-d H:i:s'),
-            'end'   => $end_date->format('Y-m-d H:i:s')
+            'end'   => $end_date->format('Y-m-d H:i:s'),
         );
 
         return $date_range;

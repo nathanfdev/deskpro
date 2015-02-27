@@ -70,7 +70,6 @@ class Zendesk
      */
     protected $listeners = array();
 
-
     /**
      * Get your $api_key from Settings > Channels > API.
      * If you use your password instead of a token, prefix it with password:. Ex: $api_key = "password:secretpassword".
@@ -99,14 +98,13 @@ class Zendesk
 
         // Not a URL, assume we got just a domain
         if (!preg_match('#^https?://#', $zendesk_url)) {
-            $zendesk_url = 'https://' . $zendesk_url . '/api/v2';
+            $zendesk_url = 'https://'.$zendesk_url.'/api/v2';
         } else {
             $zendesk_url = rtrim($zendesk_url, '/');
         }
 
         $this->zendesk_url = $zendesk_url;
     }
-
 
     /**
      * @return string
@@ -116,7 +114,6 @@ class Zendesk
         return $this->zendesk_url;
     }
 
-
     /**
      * @return string
      */
@@ -124,7 +121,6 @@ class Zendesk
     {
         return $this->user_id;
     }
-
 
     /**
      * @return string
@@ -137,7 +133,6 @@ class Zendesk
 
         return preg_replace('#^token:#', '', $this->api_key);
     }
-
 
     /**
      * Add a callback function to listen to events. Mainly useful for logging.
@@ -152,15 +147,13 @@ class Zendesk
         $this->listeners[] = $callback;
     }
 
-
     /**
      * @param int $timeout
      */
     public function setTimeout($timeout)
     {
-        $this->timeout = (int)$timeout;
+        $this->timeout = (int) $timeout;
     }
-
 
     /**
      * @param  string $id
@@ -168,9 +161,8 @@ class Zendesk
      */
     public function getUrlForEndpoint($id)
     {
-        return $this->zendesk_url . '/' . $id . '.json';
+        return $this->zendesk_url.'/'.$id.'.json';
     }
-
 
     /**
      * Send a GET request
@@ -184,7 +176,6 @@ class Zendesk
     {
         return $this->sendRequest($id, self::GET, null, $query_data);
     }
-
 
     /**
      * @param  array $requests Array of array($id, $query_data) to be called async
@@ -251,7 +242,6 @@ class Zendesk
         return $request_ev;
     }
 
-
     /**
      * Just like sendGet except this will attempt to build a complete collection
      * by re-calling the 'next_page' and appending results.
@@ -275,7 +265,7 @@ class Zendesk
 
             if ($res->isError()) {
                 throw new ApiException(
-                    "Could not complete: " . $res->getErrorDescription(),
+                    "Could not complete: ".$res->getErrorDescription(),
                     ApiException::API_ERROR,
                     $res->getErrorCode(),
                     $res->getRaw()
@@ -292,7 +282,6 @@ class Zendesk
         return $result;
     }
 
-
     /**
      * Send a DELETE request
      *
@@ -305,7 +294,6 @@ class Zendesk
     {
         return $this->sendRequest($id, self::DELETE, null);
     }
-
 
     /**
      * Send a PUT request
@@ -322,7 +310,6 @@ class Zendesk
         return $this->sendRequest($id, self::PUT, $call_data);
     }
 
-
     /**
      * Send a GET request
      *
@@ -337,7 +324,6 @@ class Zendesk
     {
         return $this->sendRequest($id, self::POST, $call_data);
     }
-
 
     /**
      * Send an API request
@@ -356,7 +342,7 @@ class Zendesk
             'id'         => $id,
             'action'     => $action,
             'call_data'  => $call_data,
-            'query_data' => $query_data
+            'query_data' => $query_data,
         );
 
         $ev_data = $this->_callListeners('preInit', $ev_data);
@@ -387,7 +373,7 @@ class Zendesk
         }
 
         if ($query_string) {
-            $url .= '?' . $query_string;
+            $url .= '?'.$query_string;
         }
 
         $ch = curl_init();
@@ -400,13 +386,13 @@ class Zendesk
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
 
-        switch($action){
+        switch ($action) {
             case self::POST:
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $call_json);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                     'Content-Type: application/json',
-                    'Content-Length: ' . strlen($call_json))
+                    'Content-Length: '.strlen($call_json), )
                 );
 
                 break;

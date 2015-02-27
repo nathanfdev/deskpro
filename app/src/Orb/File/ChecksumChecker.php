@@ -58,7 +58,6 @@ class ChecksumChecker
      */
     protected $file_list = null;
 
-
     public function __construct($base_dir)
     {
         $this->base_dir = $base_dir;
@@ -68,7 +67,6 @@ class ChecksumChecker
         $this->finder->in($this->base_dir);
         $this->finder->ignoreVCS(true);
     }
-
 
     /**
      * Instead of recursively scanning and finding files, you can optionally
@@ -81,7 +79,6 @@ class ChecksumChecker
         $this->file_list = $files;
     }
 
-
     /**
      * Ignore a filename
      *
@@ -92,7 +89,6 @@ class ChecksumChecker
         $this->finder->notName($file);
     }
 
-
     /**
      * Ignore a directory
      *
@@ -102,7 +98,6 @@ class ChecksumChecker
     {
         $this->finder->exclude($dir);
     }
-
 
     /**
      * Go through and load checks
@@ -129,7 +124,6 @@ class ChecksumChecker
         }
     }
 
-
     /**
      * @param  string $file_contents
      * @return string
@@ -151,7 +145,6 @@ class ChecksumChecker
         return $file_contents;
     }
 
-
     /**
      * @return int
      */
@@ -159,7 +152,6 @@ class ChecksumChecker
     {
         return count($this->checksums);
     }
-
 
     /**
      * Get an array of filename => checksum for all found files
@@ -175,7 +167,6 @@ class ChecksumChecker
         return $this->checksums;
     }
 
-
     /**
      * Get an array of files
      *
@@ -185,7 +176,6 @@ class ChecksumChecker
     {
         return array_keys($this->checksums);
     }
-
 
     /**
      * Compare newly generated checksums (generated right now) with those in an array
@@ -199,7 +189,7 @@ class ChecksumChecker
         $results = array(
             'added' => array(),
             'removed' => array(),
-            'changed' => array()
+            'changed' => array(),
         );
 
         foreach ($this->checksums as $path => $checksum) {
@@ -214,7 +204,6 @@ class ChecksumChecker
 
         return $results;
     }
-
 
     /**
      * Same as compare() except it fetches checksums from a file
@@ -237,13 +226,12 @@ class ChecksumChecker
         return $this->compare($checksums);
     }
 
-
     /**
      * @param $file
      */
     public function dumpToFile($file)
     {
-        $php = '<?php return ' . var_export($this->getChecksums(), true) . ";\n";
+        $php = '<?php return '.var_export($this->getChecksums(), true).";\n";
         file_put_contents($file, $php);
     }
 
@@ -255,7 +243,7 @@ class ChecksumChecker
         if ($this->file_list) {
             $array = array();
             foreach ($this->file_list as $f) {
-                $array[] = new \SplFileInfo($this->base_dir . $f);
+                $array[] = new \SplFileInfo($this->base_dir.$f);
             }
 
             return new \ArrayIterator($array);

@@ -34,7 +34,6 @@
 
 namespace Orb\Doctrine\Common\Cache;
 
-
 /**
  * The SQLite cache driver stores cache info in an sqlite db, either in the
  * filesystem or memory.
@@ -148,7 +147,7 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
         }
         if (!$this->_db) {
             $params = array(
-                'driver' => 'pdo_sqlite'
+                'driver' => 'pdo_sqlite',
             );
 
             if ($this->_dbfile == 'MEMORY') {
@@ -172,7 +171,7 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
                 $this->_db->exec("CREATE TABLE {$this->_cache_name} (id TEXT PRIMARY KEY, data BLOB)");
             }
         } else {
-            if (!$this->_no_expire && mt_rand(1,10) <= 3) {
+            if (!$this->_no_expire && mt_rand(1, 10) <= 3) {
                 $this->_db->executeUpdate("DELETE FROM {$this->_cache_name} WHERE expire < ? AND expire != 0", array(time()));
             }
         }
@@ -195,7 +194,7 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
         }
 
         if ($this->_cached_ids_mode) {
-            $this->_cached_ids = array_combine($keys, array_fill(0,count($keys), true));
+            $this->_cached_ids = array_combine($keys, array_fill(0, count($keys), true));
         }
 
         return $keys;
@@ -229,7 +228,7 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
 
         $exists = $this->getDbConnection()->fetchColumn("SELECT id FROM {$this->_cache_name} WHERE id = ? AND (expire = 0 OR expire > ?)", array($id, time()));
 
-        return (bool)$exists;
+        return (bool) $exists;
     }
 
     protected function doSave($id, $data, $lifeTime = 0)

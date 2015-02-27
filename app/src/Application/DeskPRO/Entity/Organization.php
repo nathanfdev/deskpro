@@ -43,7 +43,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Numbers;
 
-
 /**
  * An organization is a grouping we put similar people into (eg companies).
  *
@@ -212,7 +211,6 @@ class Organization extends DomainObject implements HighlightableModelInterface
         return $this;
     }
 
-
     /**
      * Find an existing data record for a field id.
      *
@@ -249,7 +247,6 @@ class Organization extends DomainObject implements HighlightableModelInterface
         $em->persist($contact_data);
         $this->_onPropertyChanged('contact_data', $this->contact_data, $this->contact_data);
     }
-
 
     /**
      * @param  null  $type
@@ -305,7 +302,9 @@ class Organization extends DomainObject implements HighlightableModelInterface
         $is_new = false;
 
         if (!$custom_data) {
-            if ($value === null) return null;
+            if ($value === null) {
+                return null;
+            }
 
             $is_new = true;
 
@@ -346,7 +345,6 @@ class Organization extends DomainObject implements HighlightableModelInterface
         $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
     }
 
-
     /**
      * Render a custom field
      */
@@ -379,7 +377,6 @@ class Organization extends DomainObject implements HighlightableModelInterface
         return false;
     }
 
-
     /**
      * Gets a display array for a specific field
      * @param $field_id
@@ -405,7 +402,6 @@ class Organization extends DomainObject implements HighlightableModelInterface
         return $custom_fields;
     }
 
-
     /**
      * Gets the URL to a picture for the org. If there is no picture for the org, a default one
      * will be rendered. Use hasPicture if you need to know if a picture exists
@@ -415,7 +411,7 @@ class Organization extends DomainObject implements HighlightableModelInterface
     public function getPictureUrl($size = 80, $secure = null)
     {
         // Null means detect
-        if ($secure === null AND App::isWebRequest()) {
+        if ($secure === null and App::isWebRequest()) {
             $request = App::getRequest();
             if ($request->isSecure()) {
                 $secure = true;
@@ -427,7 +423,7 @@ class Organization extends DomainObject implements HighlightableModelInterface
             $url = App::get('router')->generate('serve_blob_sizefit', array(
                 'blob_auth_id' => $this->picture_blob->getAuthId(),
                 'filename' => $this->picture_blob->getFilenameSafe(),
-                's' => $size
+                's' => $size,
             ), true);
         }
 
@@ -445,8 +441,6 @@ class Organization extends DomainObject implements HighlightableModelInterface
         return $url;
     }
 
-
-
     /**
      * Cehck if the company has a picture uploaded
      *
@@ -463,7 +457,7 @@ class Organization extends DomainObject implements HighlightableModelInterface
 
     public function hasSla(Sla $sla)
     {
-        foreach ($this->slas AS $org_sla) {
+        foreach ($this->slas as $org_sla) {
             if ($org_sla->id == $sla->id) {
                 return true;
             }
@@ -471,7 +465,6 @@ class Organization extends DomainObject implements HighlightableModelInterface
 
         return false;
     }
-
 
     /**
      * Add a label
@@ -498,19 +491,17 @@ class Organization extends DomainObject implements HighlightableModelInterface
         return $this->name;
     }
 
-
-
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);
         if ($deep) {
             $data['labels'] = array();
-            foreach ($this->labels AS $label) {
+            foreach ($this->labels as $label) {
                 $data['labels'][] = $label['label'];
             }
 
             $data['email_domains'] = array();
-            foreach ($this->email_domains AS $domain) {
+            foreach ($this->email_domains as $domain) {
                 $data['email_domains'][] = $domain->domain;
             }
 
@@ -564,21 +555,21 @@ class Organization extends DomainObject implements HighlightableModelInterface
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Organization';
-        $metadata->setPrimaryTable(array( 'name' => 'organizations', ));
+        $metadata->setPrimaryTable(array( 'name' => 'organizations'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
-        $metadata->mapField(array( 'fieldName' => 'summary', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'summary', ));
-        $metadata->mapField(array( 'fieldName' => 'importance', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'importance', ));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
+        $metadata->mapField(array( 'fieldName' => 'summary', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'summary'));
+        $metadata->mapField(array( 'fieldName' => 'importance', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'importance'));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'picture_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'picture_blob_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataOrganization', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true, 'dpApi' => true));
-        $metadata->mapManyToMany(array( 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'indexBy' => 'id', 'joinTable' => array( 'name' => 'organization2usergroups', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'dpApi' => true ));
-        $metadata->mapManyToMany(array( 'fieldName' => 'auto_cc_people', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array( 'name' => 'organizations_auto_cc', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelOrganization', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationContactData', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true, 'indexBy' => 'id', 'dpApi' => true ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'email_domains', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationEmailDomain', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'twitter_users', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationTwitterUser', 'mappedBy' => 'organization',  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'picture_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'picture_blob_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
+        $metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataOrganization', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'organization', 'orphanRemoval' => true, 'dpApi' => true));
+        $metadata->mapManyToMany(array( 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'indexBy' => 'id', 'joinTable' => array( 'name' => 'organization2usergroups', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'inverseJoinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))), 'dpApi' => true ));
+        $metadata->mapManyToMany(array( 'fieldName' => 'auto_cc_people', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array( 'name' => 'organizations_auto_cc', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)))));
+        $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelOrganization', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'organization', 'orphanRemoval' => true ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationContactData', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'organization', 'orphanRemoval' => true, 'indexBy' => 'id', 'dpApi' => true ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'email_domains', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationEmailDomain', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'organization'));
+        $metadata->mapOneToMany(array( 'fieldName' => 'twitter_users', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationTwitterUser', 'mappedBy' => 'organization'));
     }
 }

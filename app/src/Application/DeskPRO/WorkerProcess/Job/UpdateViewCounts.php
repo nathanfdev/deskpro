@@ -90,7 +90,7 @@ class UpdateViewCounts extends AbstractJob
         }
 
         if ($update_objects) {
-            $this->logStatus("Updated " . count($update_objects) . " view counts");
+            $this->logStatus("Updated ".count($update_objects)." view counts");
         }
 
         App::get('deskpro.core.settings')->setSetting('core.last_viewcount_update', $time);

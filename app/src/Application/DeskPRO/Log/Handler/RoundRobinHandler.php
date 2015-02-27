@@ -27,7 +27,6 @@
 
 namespace Application\DeskPRO\Log\Handler;
 
-
 use Application\DeskPRO\Entity\LogRoundRobin;
 
 class RoundRobinHandler extends DBHandler

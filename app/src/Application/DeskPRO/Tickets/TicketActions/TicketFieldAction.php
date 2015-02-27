@@ -64,7 +64,6 @@ class TicketFieldAction extends AbstractAction implements PermissionableAction
         $this->set_value     = $set_value;
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\CustomDefTicket
      */
@@ -73,7 +72,6 @@ class TicketFieldAction extends AbstractAction implements PermissionableAction
         return $this->field_def;
     }
 
-
     /**
      * @return mixed
      */
@@ -81,7 +79,6 @@ class TicketFieldAction extends AbstractAction implements PermissionableAction
     {
         return $this->set_value;
     }
-
 
     /**
      * Apply the property to the ticket
@@ -92,7 +89,6 @@ class TicketFieldAction extends AbstractAction implements PermissionableAction
     {
         $this->field_manager->saveFormToObject($this->set_value['custom_fields'], $ticket, true);
     }
-
 
     /**
      * {@inheritDoc}
@@ -106,7 +102,6 @@ class TicketFieldAction extends AbstractAction implements PermissionableAction
         return true;
     }
 
-
     /**
      * Get an array of actions that would be performed on the ticket
      *
@@ -115,7 +110,7 @@ class TicketFieldAction extends AbstractAction implements PermissionableAction
     public function getApplyActions(Ticket $ticket)
     {
         return array(
-            array('action' => 'ticket_field', 'ticket_field_id' => $this->field_def->id, 'value' => $this->set_value)
+            array('action' => 'ticket_field', 'ticket_field_id' => $this->field_def->id, 'value' => $this->set_value),
         );
     }
 
@@ -128,7 +123,6 @@ class TicketFieldAction extends AbstractAction implements PermissionableAction
         return $other_action;
     }
 
-
     /**
      * @return string
      */
@@ -138,9 +132,9 @@ class TicketFieldAction extends AbstractAction implements PermissionableAction
         $title = $this->field_def->title;
         $value = $this->set_value;
 
-        $value = isset($value['custom_fields']['field_' . $this->field_def->getId()]) ? $value['custom_fields']['field_' . $this->field_def->getId()] : '';
+        $value = isset($value['custom_fields']['field_'.$this->field_def->getId()]) ? $value['custom_fields']['field_'.$this->field_def->getId()] : '';
         if ($this->field_def->getTypeName() == 'choice') {
-            $value_ids = (array)$value;
+            $value_ids = (array) $value;
             $value = array();
             $titles = $this->field_def->getAllChildTitles();
             foreach ($value_ids as $id) {
@@ -154,12 +148,11 @@ class TicketFieldAction extends AbstractAction implements PermissionableAction
         return $tr->phrase('agent.tickets.set_x_to_y_action', array('title' => $title, 'value' => $value));
     }
 
-
     /**
      * @return string
      */
     public function getActionName()
     {
-        return get_class($this) . '[' . $this->field_def->getId() . ']';
+        return get_class($this).'['.$this->field_def->getId().']';
     }
 }

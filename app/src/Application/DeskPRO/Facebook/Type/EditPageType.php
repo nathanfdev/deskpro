@@ -60,7 +60,6 @@ class EditPageType extends AbstractType
         $builder->add('is_tested', 'hidden', array('required' => false));
     }
 
-
     /**
      * @param OptionsResolverInterface $resolver
      */
@@ -73,7 +72,6 @@ class EditPageType extends AbstractType
             )
         );
     }
-
 
     /**
      * @return string

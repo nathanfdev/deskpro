@@ -58,7 +58,7 @@ class Article extends AbstractContentType
         $data = array();
         $data['id'] = $article['id'];
         $data['content_type'] = 'article';
-        $data['content'] = $article['title'] . "\n" . $article['content'] . "\n";
+        $data['content'] = $article['title']."\n".$article['content']."\n";
 
         foreach ($article->getLabelManager()->getLabelsArray() as $label) {
             $label = MysqlAdapter::encodeLabel($label);
@@ -69,7 +69,7 @@ class Article extends AbstractContentType
         foreach ($article->categories as $c) {
             $k = 'category_id';
             if ($x++) {
-                $k .= '_' . $x;
+                $k .= '_'.$x;
             }
 
             $data[$k] = $c->id;

@@ -1,0 +1,375 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block inner_content %}
+<article class="ticket-page">
+
+    <header>
+        <h1>
+            {{ ticket_view.ticket.subject }}
+            <a href="#" class="ticket-status">{{ ticket_status(ticket_view.ticket) }}</a>
+        </h1>
+        <span class="ticket-reference">
+            Ticket reference: {{ ticket_view.ticket.public_id }}
+        </span>
+        {% if is_granted('TICKET_EDIT', ticket_view.ticket) %}
+        <span class="ticket-reference">
+            <a href="{{ path('portal_tickets_edit', { id: ticket_view.ticket.id }) }}">
+                EDIT TICKET
+            </a>
+        </span>
+        {% endif %}
+    </header>
+
+    <div class="container">
+
+        <div class="ticket-agents">
+
+            <div class="agent">
+                <span class="agent-avatar"
+                      style="background: url({{ ticket_view.ticket.agent ? person_picture_url(ticket_view.ticket.agent) : asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover;"></span>
+
+                <div class="agent-info">
+                    <span class="agent-meta">Assigned Agent:</span>
+                    <span class="agent-name">
+                        {% if ticket_view.ticket.agent %}
+                            {{ ticket_view.ticket.agent.display_name_user }}
+                        {% else %}
+                            {{ phrase('user.tickets.unassigned') }}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+
+
+            <div class="agent">
+                <span class="agent-avatar"
+                      style="background: url({{ person_picture_url(ticket_view.ticket.person) }}) no-repeat; background-size: cover;"></span>
+
+                <div class="agent-info">
+                    <span class="agent-meta">Opened by:</span>
+                    <span class="agent-name">{{ ticket_view.ticket.person.display_name_user }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        {% if ticket_view.ticket.userParticipants|length %}
+        <div class="agent-extras">
+
+
+            <span class="grey">Also CC'ed:</span>
+
+            {% for person in ticket_view.ticket.userParticipants %}
+                <div class="agent">
+                    <span class="agent-meta">{{ person.display_name_user }}</span>
+                    <span class="agent-avatar agent-avatar-tiny agent-avatar-blank">
+                        <a href="#" class="remove-agent"></a>
+                    </span>
+                </div>
+            {% endfor %}
+
+
+
+        </div>
+        {% endif %}
+
+    </div>
+    <!-- End Container -->
+
+    <hr>
+
+    <div class="container">
+        <table>
+
+            <tr>
+                <td>Date Opened</td>
+                <td>{{ ticket_view.ticket.date_created|date('F j, Y') }}</td>
+            </tr>
+
+            {# see the TicketViewService in AppBundle's data services #}
+            {% for attr,val in ticket_view.attribute_list %}
+            <tr>
+                <td>{{ attr }}</td>
+                <td>{{ val }}</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+    <hr>
+
+    <div class="ticket-timeline">
+
+        {% for msg in ticket_view.ticket.messages %}
+            <div class="item reply">
+                    <span class="badge"
+                          style="background: url({{ person_picture_url(msg.person, 50) }}) no-repeat; background-size: cover"></span>
+
+                <h1>{{ msg.person.display_name_user }} <span>wrote:</span></h1>
+
+                <div class="comment agent-reply">
+                    {{ msg.message }}
+                    {% if msg.attachments|length > 0 %}
+                        <h3>Attachements:</h3>
+                        {% for attachment in msg.attachments %}
+                            <a href="{{ attachment.blob.downloadUrl }}" class="attachement">
+                                {% if attachment.blob.is_image %}
+                                    <img src="{{ attachment.blob.thumbnailUrl }}" alt="{{ attachment.blob.filename }}">
+                                {% endif %}
+                                {{ attachment.blob.filename }}
+                                <span class="attachement-size">{{ attachment.blob.filesize }} bytes </span>
+                            </a><br>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+
+<br>
+
+
+
+
+
+    {% embed 'Theme:Form:ticket_reply.html.twig' %}{% endembed %}
+
+
+
+
+
+
+    <hr style="margin-top:700px;margin-bottom:20px;" />
+
+
+
+
+
+
+    <div class="ticket-timeline">
+
+
+    <div class="item">
+        <span class="badge"><img src="{{ asset('web/portal/base/img/icon-ticket_view.ticket.png') }}"></span>
+
+        <h1><strong>Ticket opened</strong> by Dennis Schipper</h1>
+        <span class="event-happened-at">4 days ago.</span>
+    </div>
+
+
+    <div class="item reply">
+        <span class="badge" style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover"></span>
+
+        <h1>Dennis Schipper <span>(dennis@designfordetails.com) wrote:</span></h1>
+
+        <div class="comment agent-reply">
+            <p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical
+                Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at
+                Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a
+                Lorem Ipsum passage, and going through the cites of the word in classical literature.</p>
+
+            <p>Discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus
+                Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise
+                on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem
+                ipsum dolor sit amet..", comes from a line in section 1.10.32.</p>
+
+            <h3>Attachements:</h3>
+            <a href="#" class="attachement"><img src="{{ asset('web/portal/base/img/attachement.png') }}" alt="ALT TEXT">Screen Shot 2014-09-30 at
+                6.14.15 PM.png <span class="attachement-size">240kb</span></a><br>
+            <a href="#" class="attachement"><span class="file-type file-type-pdf"><i
+                        class="fa fa-file-pdf-o"></i></span>fixed_bug_list.docx <span
+                    class="attachement-size">240kb</span></a><br>
+            <a href="#" class="attachement"><span class="file-type file-type-download"><i class="fa fa-play"></i></span>video_file_with_something_or_other.avi
+                <span class="attachement-size">240kb</span></a>
+        </div>
+    </div>
+
+
+    <div class="item reply">
+        <span class="badge" style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover"></span>
+
+        <h1>Dennis Schipper <span>(dennis@designfordetails.com) wrote:</span></h1>
+
+        <div class="comment user-reply">
+            <p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical
+                Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at
+                Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a
+                Lorem Ipsum passage, and going through the cites of the word in classical literature.</p>
+
+            <p>Discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus
+                Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise
+                on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem
+                ipsum dolor sit amet..", comes from a line in section 1.10.32.</p>
+        </div>
+    </div>
+
+
+    <div class="item reply">
+        <span class="badge" style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover"></span>
+
+        <h1>Christopher Padfield <span> posted 2 days ago:</span></h1>
+
+        <div class="comment agent-reply">
+            <p>RVM has an extremely flexible gem management system called Named Gem Sets. RVM's 'gemsets' make managing
+                gems across multiple versions of Ruby a non-issue. RVM lets you add a small text file to your
+                application's repository.</p>
+
+            <p>
+                Best Regards,<br>
+                Christopher Padfield<br>
+                <a href="#">http://www.deskpro.com</a>
+            </p>
+
+            <p class="post-rating not-rated"><a href="#">Rate this post</a></p>
+        </div>
+    </div>
+
+
+    <div class="item reply">
+        <span class="badge" style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover"></span>
+
+        <h1>Christopher Padfield <span> posted 2 days ago:</span></h1>
+
+        <div class="comment agent-reply">
+            <p>RVM has an extremely flexible gem management system called Named Gem Sets. RVM's 'gemsets' make managing
+                gems across multiple versions of Ruby a non-issue. RVM lets you add a small text file to your
+                application's repository.</p>
+
+            <p>
+                Best Regards,<br>
+                Christopher Padfield<br>
+                <a href="#">http://www.deskpro.com</a>
+            </p>
+
+            <p class="post-rating">This post marked <span class="unhelpful">Unhelpful <span
+                        class="face">:(</span></span> by Dennis Schipper</p>
+        </div>
+    </div>
+
+
+    <div class="item">
+        <span class="badge"><img src="./img/icon-ticket_view.ticket.png"></span>
+
+        <h1><strong>Ticket marked as resolved</strong> by Christopher Padfield</h1>
+        <span class="event-happened-at">24 hours ago.</span>
+    </div>
+
+
+    <div class="item">
+        <span class="badge"><img src="./img/icon-ticket_view.ticket.png"></span>
+
+        <h1><strong>Ticket re-opened</strong> by Dennis Schipper</h1>
+        <span class="event-happened-at">22 hours ago.</span>
+    </div>
+
+
+    <div class="item reply">
+        <span class="badge" style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover"></span>
+
+        <h1>Dennis Schipper <span>(dennis@designfordetails.com) wrote:</span></h1>
+
+        <div class="comment user-reply">
+            <p>Nope, didn't fix it.</p>
+        </div>
+    </div>
+
+
+    <div class="item reply">
+        <span class="badge" style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover"></span>
+
+        <h1>Christopher Padfield <span> posted 2 days ago:</span></h1>
+
+        <div class="comment agent-reply">
+            <p>RVM has an extremely flexible gem management system called Named Gem Sets. RVM's 'gemsets' make managing
+                gems across multiple versions of Ruby a non-issue. RVM lets you add a small text file to your
+                application's repository.</p>
+
+            <p>
+                Best Regards,<br>
+                Christopher Padfield<br>
+                <a href="#">http://www.deskpro.com</a>
+            </p>
+
+            <p class="post-rating">This post marked <span class="helpful">Helpful <span class="face">:)</span></span> by
+                Dennis Schipper</p>
+        </div>
+    </div>
+
+
+    <div class="item reply">
+        <span class="badge" style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover"></span>
+
+        <h1>Christopher Padfield <span> posted 2 days ago:</span></h1>
+
+        <div class="comment agent-reply">
+            <p>RVM has an extremely flexible gem management system called Named Gem Sets. RVM's 'gemsets' make managing
+                gems across multiple versions of Ruby a non-issue. RVM lets you add a small text file to your
+                application's repository.</p>
+
+            <p>
+                Best Regards,<br>
+                Christopher Padfield<br>
+                <a href="#">http://www.deskpro.com</a>
+            </p>
+
+
+            <div class="post-satisfaction">
+                <h1>Christopher Padfield <span class="agent-avatar agent-avatar-tiny"
+                        style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover"></span> helped you
+                    with your ticket_view.ticket.</h1>
+
+                <h2>How would you rate the support you received?</h2>
+
+                <div class="pick-satisfaction">
+                    <a href="#" class="great">
+                        <span>:)</span>
+                        It was great
+                    </a>
+
+                    <a href="#" class="ok">
+                        <span>:|</span>
+                        It was OK
+                    </a>
+
+                    <a href="#" class="cant-get-no">
+                        <span>:(</span>
+                        It was not good
+                    </a>
+                </div>
+
+                <form>
+                    <textarea placeholder="Optionaly leave a message here with your rating."></textarea>
+                    <button class="submit">Submit Feedback</button>
+                    <button class="cancel">Cancel</button>
+                </form>
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <div class="item reply">
+        <span class="badge" style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover"></span>
+
+        <a href="#" class="button button-reply">Add a Reply</a>
+        <a href="#" class="button button-resolved">Mark as Resolved</a>
+
+        <hr>
+
+        <form>
+            <textarea placeholder="Type your message here."></textarea>
+
+            <div class="buttons">
+                <button class="button submit">Submit Reply</button>
+                <button class="button cancel">Cancel</button>
+            </div>
+        </form>
+
+    </div>
+
+
+    </div>
+    <!-- End ticket-timeline -->
+{% endblock inner_content %}

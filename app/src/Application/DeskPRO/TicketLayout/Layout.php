@@ -45,7 +45,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
      */
     private $fields = array();
 
-
     /**
      * @param array $fields
      */
@@ -56,7 +55,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
             $this->add($f);
         }
     }
-
 
     /**
      * @param LayoutField $field
@@ -93,7 +91,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         }
     }
 
-
     /**
      * @param LayoutField $field
      */
@@ -107,7 +104,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         Arrays::unshiftAssoc($this->fields, $id, $field);
     }
 
-
     /**
      * @param  string $id
      * @return bool
@@ -116,7 +112,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
     {
         return isset($this->fields[$id]);
     }
-
 
     /**
      * @param  string      $id
@@ -131,7 +126,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         return $this->fields[$id];
     }
 
-
     /**
      * @return int
      */
@@ -139,7 +133,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
     {
         return count($this->fields);
     }
-
 
     /**
      * @return LayoutField[]
@@ -149,7 +142,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         return $this->fields;
     }
 
-
     /**
      * @param string $id
      */
@@ -158,7 +150,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         unset($this->fields[$id]);
     }
 
-
     /**
      * @return \ArrayIterator
      */
@@ -166,7 +157,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
     {
         return new \ArrayIterator($this->fields);
     }
-
 
     /**
      * @return string
@@ -187,17 +177,17 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
             $bit_js = "\t\t{\n";
             $bit_js .= "\t\t\tid:                    '{$field->getId()}',\n";
             $bit_js .= "\t\t\tfield_type:            '{$field->getFieldType()}',\n";
-            $bit_js .= "\t\t\tfield_id:              " . ($field->getFieldId() ? "'{$field->getFieldId()}'" : 'null') . ",\n";
-            $bit_js .= "\t\t\tisVisibleOnNew:        " . ($field->isVisibleOnNew() ? 'true' : 'false') . ",\n";
-            $bit_js .= "\t\t\tisVisibleOnView:       " . ($field->isVisibleOnView() ? 'true' : 'false') . ",\n";
-            $bit_js .= "\t\t\tisVisibleOnViewAlways: " . ($field->isVisibleOnViewAlways() ? 'true' : 'false') . ",\n";
-            $bit_js .= "\t\t\tisVisibleOnEdit:       " . ($field->isVisibleOnEdit() ? 'true' : 'false') . ",\n";
+            $bit_js .= "\t\t\tfield_id:              ".($field->getFieldId() ? "'{$field->getFieldId()}'" : 'null').",\n";
+            $bit_js .= "\t\t\tisVisibleOnNew:        ".($field->isVisibleOnNew() ? 'true' : 'false').",\n";
+            $bit_js .= "\t\t\tisVisibleOnView:       ".($field->isVisibleOnView() ? 'true' : 'false').",\n";
+            $bit_js .= "\t\t\tisVisibleOnViewAlways: ".($field->isVisibleOnViewAlways() ? 'true' : 'false').",\n";
+            $bit_js .= "\t\t\tisVisibleOnEdit:       ".($field->isVisibleOnEdit() ? 'true' : 'false').",\n";
             $bit_js .= "\t\t\tcheckFn:               $check_fn\n";
             $bit_js .= "\t\t}";
             $fields_js[] = $bit_js;
         }
 
-        $js .= implode(",\n", $fields_js) . "\n\t];\n\n";
+        $js .= implode(",\n", $fields_js)."\n\t];\n\n";
 
         $js .= "\treturn {\n";
         $js .= "\t\tgetMatchingFields: function (ticket) {\n";
@@ -215,7 +205,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         return $js;
     }
 
-
     /**
      * @return array
      */
@@ -232,7 +221,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         return $data;
     }
 
-
     /**
      * @return string
      */
@@ -240,7 +228,6 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
     {
         return json_encode($this->exportToArray());
     }
-
 
     /**
      * @param array $data

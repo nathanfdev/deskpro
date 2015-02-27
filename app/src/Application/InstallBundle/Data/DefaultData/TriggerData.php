@@ -94,7 +94,9 @@ class TriggerData extends AbstractDefaultData
                 'from_name' => 'performer',
             )));
 
-            if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
+            if (!isset($ignore[$trigger->sys_name])) {
+                $this->getEm()->persist($trigger);
+            }
         }
 
         #-----
@@ -114,7 +116,9 @@ class TriggerData extends AbstractDefaultData
             'from_name'   => 'performer',
         )));
 
-        if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
+        if (!isset($ignore[$trigger->sys_name])) {
+            $this->getEm()->persist($trigger);
+        }
 
         #-----
         # newticket: Send user auto-reply
@@ -139,7 +143,9 @@ class TriggerData extends AbstractDefaultData
             'from_name' => 'helpdesk_name',
         )));
 
-        if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
+        if (!isset($ignore[$trigger->sys_name])) {
+            $this->getEm()->persist($trigger);
+        }
 
         #-----
         # newreply: Send user auto-reply
@@ -164,7 +170,9 @@ class TriggerData extends AbstractDefaultData
             'from_name' => 'helpdesk_name',
         )));
 
-        if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
+        if (!isset($ignore[$trigger->sys_name])) {
+            $this->getEm()->persist($trigger);
+        }
 
         #-----
         # newreply: Send user new reply from agent
@@ -189,7 +197,9 @@ class TriggerData extends AbstractDefaultData
             'from_name' => 'performer',
         )));
 
-        if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
+        if (!isset($ignore[$trigger->sys_name])) {
+            $this->getEm()->persist($trigger);
+        }
 
         #-----
         # newreply: when agent replies via email, assign them if they havent set
@@ -211,7 +221,9 @@ class TriggerData extends AbstractDefaultData
 
         $trigger->actions->addAction(new SetAgent(array('agent_id' => -1)));
 
-        if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
+        if (!isset($ignore[$trigger->sys_name])) {
+            $this->getEm()->persist($trigger);
+        }
 
         #-----
         # newticket: set require validation
@@ -232,7 +244,9 @@ class TriggerData extends AbstractDefaultData
         $trigger->terms->addTerm($set);
 
         $trigger->actions->addAction(new SetRequireValidation(array('require_validation' => true)));
-        if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
+        if (!isset($ignore[$trigger->sys_name])) {
+            $this->getEm()->persist($trigger);
+        }
 
         #-----
         # newticket: check validation
@@ -260,7 +274,9 @@ class TriggerData extends AbstractDefaultData
         )));
         $trigger->actions->addAction(new ModStopTriggers());
 
-        if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
+        if (!isset($ignore[$trigger->sys_name])) {
+            $this->getEm()->persist($trigger);
+        }
 
         #-----
         # newticket: check agent validation
@@ -283,7 +299,9 @@ class TriggerData extends AbstractDefaultData
         $trigger->actions->addAction(new SetStatus(array('status' => 'hidden.validating')));
         $trigger->actions->addAction(new ModStopTriggers());
 
-        if (!isset($ignore[$trigger->sys_name])) $this->getEm()->persist($trigger);
+        if (!isset($ignore[$trigger->sys_name])) {
+            $this->getEm()->persist($trigger);
+        }
 
         $this->getEm()->flush();
     }

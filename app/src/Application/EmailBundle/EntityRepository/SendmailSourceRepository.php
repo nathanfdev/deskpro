@@ -38,5 +38,4 @@ use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 
 class SendmailSourceRepository extends AbstractEntityRepository
 {
-
 }

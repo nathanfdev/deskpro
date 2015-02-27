@@ -94,9 +94,9 @@ class Xenforo extends DbTable
             case 'XenForo_Authentication_Core':
             case 'XenForo_Authentication_Default':
                 if ($data['hashFunc'] == 'sha256') {
-                    $hash = hash('sha256', hash('sha256', $password_input) . $data['salt']);
+                    $hash = hash('sha256', hash('sha256', $password_input).$data['salt']);
                 } else {
-                    $hash = sha1(sha1($password_input) . $data['salt']);
+                    $hash = sha1(sha1($password_input).$data['salt']);
                 }
 
                 return $data['hash'] === $hash;
@@ -107,7 +107,7 @@ class Xenforo extends DbTable
                 return $hasher->CheckPassword($password_input, $data['hash']);
 
             case 'XenForo_Authentication_IPBoard':
-                $hash = md5(md5($data['salt']) . md5($password_input));
+                $hash = md5(md5($data['salt']).md5($password_input));
 
                 return $data['hash'] === $hash;
 
@@ -117,7 +117,7 @@ class Xenforo extends DbTable
                 return $hasher->CheckPassword($password_input, $data['hash']);
 
             case 'XenForo_Authentication_vBulletin':
-                $hash = md5(md5($password_input) . $data['salt']);
+                $hash = md5(md5($password_input).$data['salt']);
 
                 return $data['hash'] === $hash;
 

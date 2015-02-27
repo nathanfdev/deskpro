@@ -55,7 +55,6 @@ class FilterAgent extends AbstractFilterTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */

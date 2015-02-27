@@ -1,0 +1,8 @@
+{% if category_children|length > 0 %}
+    {% for category in category_children %}
+        <a href="{{ path('portal_kb_browse', { slug: category.slug }) }}">
+            {{ category.title }}
+        </a>
+        {% if not loop.last %}, {% endif %}
+    {% endfor %}
+{% endif %}
