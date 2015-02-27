@@ -103,7 +103,7 @@ class PortalKernel extends Kernel
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(DP_ROOT . '/sys/config/portal_config_' . $this->getEnvironment() . '.yml');
+        $loader->load(DP_ROOT . '/sys/config/portal/portal_config_' . $this->getEnvironment() . '.yml');
     }
 
 
