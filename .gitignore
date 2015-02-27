@@ -12,6 +12,8 @@
 *.sublime*
 /running_tests.trigger
 
+/dev/scratch
+
 # vendors and build files
 /app/vendor
 /web/node_modules
