@@ -10,12 +10,7 @@ code_coverage:
     show_uncovered_files: true
     whitelist:
       - ../src/DeskPRO/Bundle/AppBundle
-      - ../src/Application/PortalBundle
-      - ../src/Application/AuthBundle
-      - ../src/Application/LanguageBundle
-      - ../src/Application/FormsBundle
-      - ../src/Application/PersonBundle
-      - ../src/Application/TicketBundle
+      - ../src/DeskPRO/Bundle/PortalBundle
     blacklist:
       - ../vendor
       - ../vendor-src

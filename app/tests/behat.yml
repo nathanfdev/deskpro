@@ -42,17 +42,7 @@ default:
                     directories:
                         '../src/DeskPRO/Bundle/AppBundle':
                             suffix: .php
-                        '../src/Application/PortalBundle':
-                            suffix: .php
-                        '../src/Application/AuthBundle':
-                            suffix: .php
-                        '../src/Application/LanguageBundle':
-                            suffix: .php
-                        '../src/Application/FormsBundle':
-                            suffix: .php
-                        '../src/Application/PersonBundle':
-                            suffix: .php
-                        '../src/Application/TicketBundle':
+                        '../src/DeskPRO/Bundle/PortalBundle':
                             suffix: .php
                 exclude:
                     directories:

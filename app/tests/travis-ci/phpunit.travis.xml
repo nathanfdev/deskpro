@@ -11,12 +11,7 @@
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true" processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">../../src/DeskPRO/Bundle/AppBundle/</directory>
-            <directory suffix=".php">../../src/Application/PortalBundle/</directory>
-            <directory suffix=".php">../../src/Application/AuthBundle/</directory>
-            <directory suffix=".php">../../src/Application/LanguageBundle/</directory>
-            <directory suffix=".php">../../src/Application/FormsBundle/</directory>
-            <directory suffix=".php">../../src/Application/PersonBundle/</directory>
-            <directory suffix=".php">../../src/Application/TicketBundle/</directory>
+            <directory suffix=".php">../../src/DeskPRO/Bundle/PortalBundle/</directory>
             <directory suffix=".php">../../src/Application/DeskPRO/Brand/</directory>
             <directory suffix=".php">../../src/Application/DeskPRO/Cache/</directory>
             <directory suffix=".php">../../src/Application/DeskPRO/NewSettings/</directory>
