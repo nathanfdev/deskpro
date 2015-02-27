@@ -36,8 +36,8 @@ namespace DpUnitTests\FormBundle\TicketLayout;
 
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
-use Application\FormBundle\FormFields;
-use Application\FormBundle\TicketLayout\TicketLayoutDiffer;
+use DeskPRO\Bundle\PortalBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer;
 
 class TicketLayoutDifferTest extends \DpUnitTestCase
 {

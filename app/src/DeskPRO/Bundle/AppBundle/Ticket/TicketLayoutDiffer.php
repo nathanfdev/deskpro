@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,63 +29,60 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\TicketLayout\Terms;
+namespace DeskPRO\Bundle\AppBundle\Ticket;
 
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\PortalBundle\Form\FormFields;
+use Application\DeskPRO\TicketLayout\Layout;
+use Application\DeskPRO\TicketLayout\LayoutField;
 
-class CheckWorkflow extends AbstractTicketLayoutTerm
+/**
+ * A utility that TicketType uses to find the differences between various layouts so that it can consturct itself
+ * and then reconstruct itself based on incoming data.
+ */
+class TicketLayoutDiffer
 {
     /**
-     * {@inheritDoc}
+     * Given we have established an $initial_layout, and we want to change to $destination_layout, what are
+     * the fields that I should remove? (note: doesnt address adding new fields, see findFieldsToAdd())
+     * ie. what were the excess Fields in the initial layout?
+     *
+     * @param  Layout        $initial_layout
+     * @param  Layout        $destination_layout
+     * @return LayoutField[]
      */
-    public function isTicketMatch(Ticket $ticket)
+    public function findFieldsToRemove(Layout $initial_layout, Layout $destination_layout)
     {
-        $have_id = $ticket->workflow ? $ticket->workflow->getId() : 0;
-        $is_match = in_array($have_id, $this->options['workflow_ids']);
+        $fields_to_remove = array();
 
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
+        foreach ($initial_layout->all() as $field) {
+            if (!$destination_layout->has($field->getId())) {
+                $fields_to_remove[] = $field;
+            }
         }
 
-        return $is_match;
+        return $fields_to_remove;
     }
 
     /**
-     * @param  array $data
-     * @return bool
+     * Given the $initial_layout, what would we need to add to it to get it to be the $destination_layout?
+     * ie. What Fields are missing in our initial layout?
+     *
+     * @param  Layout        $initial_layout
+     * @param  Layout        $destination_layout
+     * @return LayoutField[]
      */
-    public function isSubmittedDataMatch(array $data)
+    public function findFieldsToAdd(Layout $initial_layout, Layout $destination_layout)
     {
-        $have_id = isset($data[FormFields::WORKFLOW]) ? $data[FormFields::WORKFLOW] : 0;
-        $is_match = in_array($have_id, $this->options['workflow_ids']);
+        $fields_to_add = array();
 
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
+        foreach ($destination_layout->all() as $field) {
+            if (!$initial_layout->has($field->getId())) {
+                $fields_to_add[] = $field;
+            }
         }
 
-        return $is_match;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function compileJsCheck()
-    {
-        $js_ids = array();
-        foreach ((array) $this->options['workflow_ids'] as $id) {
-            $js_ids[] = (int) $id;
-        }
-        $js_ids = "[".implode(',', $js_ids)."]";
-        $op = $this->op == self::OP_NOT ? '===' : '!==';
-
-        $js = <<<JS
-function (ticket) { return $js_ids.indexOf(ticket.getWorkflowId()) $op -1; }
-JS;
-
-        return $js;
+        return $fields_to_add;
     }
 }

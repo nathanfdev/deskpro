@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,63 +29,13 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\TicketLayout\Terms;
+namespace DeskPRO\Bundle\PortalBundle\Form\Form\ChoiceList;
 
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\PortalBundle\Form\FormFields;
+use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList;
 
-class CheckWorkflow extends AbstractTicketLayoutTerm
+class HierarchyChoiceList extends ChoiceList
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function isTicketMatch(Ticket $ticket)
-    {
-        $have_id = $ticket->workflow ? $ticket->workflow->getId() : 0;
-        $is_match = in_array($have_id, $this->options['workflow_ids']);
-
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
-        }
-
-        return $is_match;
-    }
-
-    /**
-     * @param  array $data
-     * @return bool
-     */
-    public function isSubmittedDataMatch(array $data)
-    {
-        $have_id = isset($data[FormFields::WORKFLOW]) ? $data[FormFields::WORKFLOW] : 0;
-        $is_match = in_array($have_id, $this->options['workflow_ids']);
-
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
-        }
-
-        return $is_match;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function compileJsCheck()
-    {
-        $js_ids = array();
-        foreach ((array) $this->options['workflow_ids'] as $id) {
-            $js_ids[] = (int) $id;
-        }
-        $js_ids = "[".implode(',', $js_ids)."]";
-        $op = $this->op == self::OP_NOT ? '===' : '!==';
-
-        $js = <<<JS
-function (ticket) { return $js_ids.indexOf(ticket.getWorkflowId()) $op -1; }
-JS;
-
-        return $js;
-    }
 }

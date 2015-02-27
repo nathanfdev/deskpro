@@ -66,13 +66,13 @@ class PortalKernel extends Kernel
 
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\AgentBundle\AgentBundle(),
+
+            new \DeskPRO\Bundle\AppBundle\AppBundle(),
             new \DeskPRO\Bundle\PortalBundle\PortalBundle(),
+
             new \Application\LanguageBundle\LanguageBundle(),
             new \Application\AuthBundle\AuthBundle(),
-            new \Application\FormBundle\FormBundle(),
-            new \DeskPRO\Bundle\AppBundle\AppBundle(),
             new \Application\PersonBundle\PersonBundle(),
-            new \Application\TicketBundle\TicketBundle()
         );
 
         if ('dev' === $this->getEnvironment()

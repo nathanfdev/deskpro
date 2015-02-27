@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,63 +29,57 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\TicketLayout\Terms;
+namespace DeskPRO\Bundle\PortalBundle\Form\Hierarchy;
 
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\PortalBundle\Form\FormFields;
+use DeskPRO\Component\Hierarchy\HierarchyNode as BaseNode;
 
-class CheckWorkflow extends AbstractTicketLayoutTerm
+/**
+ * A HierarchyNode is iteratable, and countable, because each can have an arbitray number of children.
+ */
+class HierarchyNode extends BaseNode
 {
     /**
-     * {@inheritDoc}
+     * Recursively get a choices array for a form ChoiceList (only leaf values can be selected, the others are opt groups)
+     *
+     * @return array
      */
-    public function isTicketMatch(Ticket $ticket)
+    public function getChoices()
     {
-        $have_id = $ticket->workflow ? $ticket->workflow->getId() : 0;
-        $is_match = in_array($have_id, $this->options['workflow_ids']);
+        $choices = array();
 
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
+        /** @var HierarchyNode $node */
+        foreach ($this as $node) {
+            $nodeId = $this->hierarchy->getNodeId($node);
+            $choices[$nodeId] = $node;
+            foreach ($node->getChoices() as $id => $nid) {
+                $choices[$id] = $nid;
+            }
         }
 
-        return $is_match;
+        return $choices;
     }
 
     /**
-     * @param  array $data
-     * @return bool
+     * Recursively get a labels array for a form ChoiceList (only leaf values can be selected, the others are opt groups)
+     *
+     * @return array
      */
-    public function isSubmittedDataMatch(array $data)
+    public function getLabels()
     {
-        $have_id = isset($data[FormFields::WORKFLOW]) ? $data[FormFields::WORKFLOW] : 0;
-        $is_match = in_array($have_id, $this->options['workflow_ids']);
+        $labels = array();
 
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
+        /** @var HierarchyNode $node */
+        foreach ($this as $node) {
+            $nodeId = $this->hierarchy->getNodeId($node);
+            $labels[$nodeId] = (string) $node;
+            foreach ($node->getLabels() as $id => $nl) {
+                $labels[$id] = $nl;
+            }
         }
 
-        return $is_match;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function compileJsCheck()
-    {
-        $js_ids = array();
-        foreach ((array) $this->options['workflow_ids'] as $id) {
-            $js_ids[] = (int) $id;
-        }
-        $js_ids = "[".implode(',', $js_ids)."]";
-        $op = $this->op == self::OP_NOT ? '===' : '!==';
-
-        $js = <<<JS
-function (ticket) { return $js_ids.indexOf(ticket.getWorkflowId()) $op -1; }
-JS;
-
-        return $js;
+        return $labels;
     }
 }

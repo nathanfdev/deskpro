@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,63 +29,59 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\TicketLayout\Terms;
+namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\PortalBundle\Form\FormFields;
+use DeskPRO\Bundle\PortalBundle\Form\Form\FormFieldManager;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class CheckWorkflow extends AbstractTicketLayoutTerm
+class CustomFeedbackType extends AbstractType
 {
     /**
-     * {@inheritDoc}
+     * @var FormFieldManager
      */
-    public function isTicketMatch(Ticket $ticket)
+    private $field_manager;
+
+    public function __construct(FormFieldManager $field_manager)
     {
-        $have_id = $ticket->workflow ? $ticket->workflow->getId() : 0;
-        $is_match = in_array($have_id, $this->options['workflow_ids']);
-
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
-        }
-
-        return $is_match;
+        $this->field_manager = $field_manager;
     }
 
-    /**
-     * @param  array $data
-     * @return bool
-     */
-    public function isSubmittedDataMatch(array $data)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $have_id = isset($data[FormFields::WORKFLOW]) ? $data[FormFields::WORKFLOW] : 0;
-        $is_match = in_array($have_id, $this->options['workflow_ids']);
+        $field_defs = $this->field_manager->getFeedbackFields();
 
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
+        foreach ($field_defs as $field_def) {
+            $builder->add(
+                'custom_feedback_def_'.$field_def->getId(),
+                'deskpro_custom_data_feedback',
+                array(
+                    'custom_data_field' => $field_def,
+                    'property_path' => sprintf('[%s]', $field_def->getId()),
+                    'agent_interface' => $options['agent_interface'],
+                    'label' => false,
+                )
+            );
         }
-
-        return $is_match;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function compileJsCheck()
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $js_ids = array();
-        foreach ((array) $this->options['workflow_ids'] as $id) {
-            $js_ids[] = (int) $id;
-        }
-        $js_ids = "[".implode(',', $js_ids)."]";
-        $op = $this->op == self::OP_NOT ? '===' : '!==';
+        $resolver->setDefaults(
+            array(
+                'data_class' => 'Application\FormBundle\Collection\CustomDataCollection',
+                'agent_interface' => false,
+                'label' => false,
+            )
+        );
+    }
 
-        $js = <<<JS
-function (ticket) { return $js_ids.indexOf(ticket.getWorkflowId()) $op -1; }
-JS;
-
-        return $js;
+    public function getName()
+    {
+        return 'custom_feedback_fields';
     }
 }

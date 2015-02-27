@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,63 +29,39 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\TicketLayout\Terms;
+namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\PortalBundle\Form\FormFields;
+use DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class CheckWorkflow extends AbstractTicketLayoutTerm
+class DepartmentType extends AbstractType
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function isTicketMatch(Ticket $ticket)
+    public function getName()
     {
-        $have_id = $ticket->workflow ? $ticket->workflow->getId() : 0;
-        $is_match = in_array($have_id, $this->options['workflow_ids']);
-
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
-        }
-
-        return $is_match;
+        return 'deskpro_department';
     }
 
-    /**
-     * @param  array $data
-     * @return bool
-     */
-    public function isSubmittedDataMatch(array $data)
+    public function getParent()
     {
-        $have_id = isset($data[FormFields::WORKFLOW]) ? $data[FormFields::WORKFLOW] : 0;
-        $is_match = in_array($have_id, $this->options['workflow_ids']);
-
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
-        }
-
-        return $is_match;
+        return 'entity_hierarchy';
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function compileJsCheck()
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $js_ids = array();
-        foreach ((array) $this->options['workflow_ids'] as $id) {
-            $js_ids[] = (int) $id;
-        }
-        $js_ids = "[".implode(',', $js_ids)."]";
-        $op = $this->op == self::OP_NOT ? '===' : '!==';
+        $resolver->setDefaults(array(
+            'choice_list' => function (Options $options) {
+                /** @var \DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator $hierarchy_generator */
+                $hierarchy_generator = $options['hierarchy_generator'];
 
-        $js = <<<JS
-function (ticket) { return $js_ids.indexOf(ticket.getWorkflowId()) $op -1; }
-JS;
+                return $hierarchy_generator->generateTicketDepartmentsHierarchy($options['person'])->getChoiceList();
+            },
+        ));
 
-        return $js;
+        $resolver->setRequired(array('person'));
     }
 }

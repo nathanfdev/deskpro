@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,63 +29,52 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\TicketLayout\Terms;
+namespace DeskPRO\Bundle\AppBundle\Ticket;
 
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\PortalBundle\Form\FormFields;
+use Application\DeskPRO\Entity\Department;
+use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\Entity\TicketLayout;
 
-class CheckWorkflow extends AbstractTicketLayoutTerm
+class TicketLayoutFactory
 {
     /**
-     * {@inheritDoc}
+     * @var \Doctrine\ORM\EntityManager
      */
-    public function isTicketMatch(Ticket $ticket)
+    private $entity_manager;
+
+    public function __construct(EntityManager $entity_manager)
     {
-        $have_id = $ticket->workflow ? $ticket->workflow->getId() : 0;
-        $is_match = in_array($have_id, $this->options['workflow_ids']);
-
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
-        }
-
-        return $is_match;
+        $this->entity_manager = $entity_manager;
     }
 
     /**
-     * @param  array $data
-     * @return bool
+     * Used in the TicketType form type to detect the layout it should use, given the selected dept (or null for initial layout)
+     *
+     * @param  Department|int $department the department entity or its ID
+     * @return TicketLayout
      */
-    public function isSubmittedDataMatch(array $data)
+    public function getLayoutForTicketForm($department = null)
     {
-        $have_id = isset($data[FormFields::WORKFLOW]) ? $data[FormFields::WORKFLOW] : 0;
-        $is_match = in_array($have_id, $this->options['workflow_ids']);
-
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
+        if ($department) {
+            if ($department_entity = $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department = :department')
+                ->setParameter('department', $department)
+                ->getOneOrNullResult()) {
+                return $department_entity;
+            }
         }
 
-        return $is_match;
+        return $this->getInitialLayout();
     }
 
     /**
-     * {@inheritDoc}
+     * @return TicketLayout
      */
-    public function compileJsCheck()
+    public function getInitialLayout()
     {
-        $js_ids = array();
-        foreach ((array) $this->options['workflow_ids'] as $id) {
-            $js_ids[] = (int) $id;
-        }
-        $js_ids = "[".implode(',', $js_ids)."]";
-        $op = $this->op == self::OP_NOT ? '===' : '!==';
-
-        $js = <<<JS
-function (ticket) { return $js_ids.indexOf(ticket.getWorkflowId()) $op -1; }
-JS;
-
-        return $js;
+        return $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department IS NULL')
+            ->getOneOrNullResult();
     }
 }

@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,63 +29,61 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\TicketLayout\Terms;
+namespace DeskPRO\Bundle\PortalBundle\Form\Captcha;
 
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\PortalBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
-class CheckWorkflow extends AbstractTicketLayoutTerm
+class CaptchaDecider
 {
     /**
-     * {@inheritDoc}
+     * @var BrandStack
      */
-    public function isTicketMatch(Ticket $ticket)
-    {
-        $have_id = $ticket->workflow ? $ticket->workflow->getId() : 0;
-        $is_match = in_array($have_id, $this->options['workflow_ids']);
-
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
-        }
-
-        return $is_match;
-    }
+    private $brand_stack;
 
     /**
-     * @param  array $data
-     * @return bool
+     * @var AuthorizationChecker
      */
-    public function isSubmittedDataMatch(array $data)
+    private $authorization_checker;
+
+    public function __construct(BrandStack $brand_stack, AuthorizationChecker $authorization_checker)
     {
-        $have_id = isset($data[FormFields::WORKFLOW]) ? $data[FormFields::WORKFLOW] : 0;
-        $is_match = in_array($have_id, $this->options['workflow_ids']);
-
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
-        }
-
-        return $is_match;
+        $this->brand_stack = $brand_stack;
+        $this->authorization_checker = $authorization_checker;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function compileJsCheck()
+    public function shouldRequireContentCaptchaForCurrentUser()
     {
-        $js_ids = array();
-        foreach ((array) $this->options['workflow_ids'] as $id) {
-            $js_ids[] = (int) $id;
+        if ($this->authorization_checker->isGranted('ROLE_USER')) {
+            return false;
         }
-        $js_ids = "[".implode(',', $js_ids)."]";
-        $op = $this->op == self::OP_NOT ? '===' : '!==';
 
-        $js = <<<JS
-function (ticket) { return $js_ids.indexOf(ticket.getWorkflowId()) $op -1; }
-JS;
+        return $this->getBrandSetting('user.publish_captcha');
+    }
 
-        return $js;
+    public function shouldRequireRegistrationCaptchaForCurrentUser()
+    {
+        if ($this->authorization_checker->isGranted('ROLE_USER')) {
+            return false;
+        }
+
+        return $this->getBrandSetting('user.register_captcha');
+    }
+
+    public function shouldRequireTicketCaptchaForCurrentUser()
+    {
+        if ($this->authorization_checker->isGranted('ROLE_USER')) {
+            return false;
+        }
+
+        return $this->getBrandSetting('user.register_captcha');
+    }
+
+    public function getBrandSetting($setting, $default = null)
+    {
+        return $this->brand_stack->getActive()->getSetting($setting, $default);
     }
 }

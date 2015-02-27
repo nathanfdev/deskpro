@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,63 +29,51 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\TicketLayout\Terms;
+namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\PortalBundle\Form\FormFields;
+use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\HierarchyNodeTransformer;
+use DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class CheckWorkflow extends AbstractTicketLayoutTerm
+class EntityHeirarchyType extends AbstractType
 {
     /**
-     * {@inheritDoc}
+     * @var HierarchyGenerator
      */
-    public function isTicketMatch(Ticket $ticket)
+    private $hierarchy_generator;
+
+    public function __construct(HierarchyGenerator $hierarchy_generator)
     {
-        $have_id = $ticket->workflow ? $ticket->workflow->getId() : 0;
-        $is_match = in_array($have_id, $this->options['workflow_ids']);
-
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
-        }
-
-        return $is_match;
+        $this->hierarchy_generator = $hierarchy_generator;
     }
 
-    /**
-     * @param  array $data
-     * @return bool
-     */
-    public function isSubmittedDataMatch(array $data)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $have_id = isset($data[FormFields::WORKFLOW]) ? $data[FormFields::WORKFLOW] : 0;
-        $is_match = in_array($have_id, $this->options['workflow_ids']);
-
-        if ($this->op == self::OP_NOT) {
-            $is_match = !$is_match;
-        }
-
-        return $is_match;
+        $builder->addModelTransformer(new HierarchyNodeTransformer($options['choice_list'], $options['expanded']));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function compileJsCheck()
+    public function getName()
     {
-        $js_ids = array();
-        foreach ((array) $this->options['workflow_ids'] as $id) {
-            $js_ids[] = (int) $id;
-        }
-        $js_ids = "[".implode(',', $js_ids)."]";
-        $op = $this->op == self::OP_NOT ? '===' : '!==';
+        return 'entity_hierarchy';
+    }
 
-        $js = <<<JS
-function (ticket) { return $js_ids.indexOf(ticket.getWorkflowId()) $op -1; }
-JS;
+    public function getParent()
+    {
+        return 'choice';
+    }
 
-        return $js;
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'hierarchy_generator' => $this->hierarchy_generator,
+        ));
+
+        $resolver->setRequired('choice_list');
     }
 }
