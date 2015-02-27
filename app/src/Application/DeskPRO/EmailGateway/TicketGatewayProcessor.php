@@ -322,7 +322,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                     $email_to = $this->account->address;
                 }
 
-                $from_address = $this->container->getMailer()->getEmailAccountForTicket($ticket)->address;
+                $from_address = $this->container->getEmailAccountManager()->getAccountForTicket($ticket)->getUseEmailAddress();
 
                 // user is disabled so can't create/reply to tickets
                 if (!$this->reader->isFromRobot()) {
