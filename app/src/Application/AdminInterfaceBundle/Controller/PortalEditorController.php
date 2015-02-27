@@ -33,7 +33,7 @@
 
 namespace Application\AdminInterfaceBundle\Controller;
 
-use Application\ApiBundle\Request\RequestAuth;
+use Application\LegacyApiBundle\Request\RequestAuth;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Chat\UserChat\ChatAvailableCheck;
 use Application\DeskPRO\Entity\Template;
@@ -53,7 +53,7 @@ class PortalEditorController extends AbstractController
             return $r;
         }
 
-        // This is copying the api token logic that is in the ApiBundle
+        // This is copying the api token logic that is in the LegacyApiBundle
         // This is a legacy controller that otherwise doesn't use the same logic.
 
         $request_auth = new RequestAuth($this->em, $this->getRequest());

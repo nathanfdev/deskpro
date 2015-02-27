@@ -111,7 +111,7 @@ class CacheCleaner
             DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/config/admin-interface-routing.php',
             DP_ROOT.'/src/Application/ReportsInterfaceBundle/Resources/config/reports-interface-routing.php',
             DP_ROOT.'/src/Application/AgentBundle/Resources/config/agent-routing.php',
-            DP_ROOT.'/src/Application/ApiBundle/Resources/config/api-routing.php',
+            DP_ROOT.'/src/Application/LegacyApiBundle/Resources/config/api-routing.php',
             DP_ROOT.'/src/Application/UserBundle/Resources/config/user-routing.php',
             DP_ROOT.'/src/Application/InstallBundle/Resources/config/install-routing.php',
             DP_ROOT.'/src/Application/DeskPRO/Resources/config/dp-routing.php',

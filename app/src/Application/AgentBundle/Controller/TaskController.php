@@ -35,7 +35,7 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Application\ApiBundle\Controller\TasksController;
+use Application\LegacyApiBundle\Controller\TasksController;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\TaskComment;

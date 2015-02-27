@@ -29,7 +29,7 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage ApiBundle
+ * @subpackage LegacyApiBundle
  */
 
 namespace Application\AdminInterfaceBundle\Controller;

@@ -350,13 +350,13 @@ class DpKernel extends AbstractKernel
             new \Application\AgentBundle\AgentBundle(),
             new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),
             new \Application\UserBundle\UserBundle(),
-            new \Application\ApiBundle\ApiBundle(),
+            new \Application\LegacyApiBundle\LegacyApiBundle(),
             new \Application\ImportBundle\ImportBundle(),
         );
 
         if (defined('DPC_IS_CLOUD')) {
             $bundles = array_merge($bundles, array(
-                new \Cloud\ApiBundle\CloudApiBundle(),
+                new \Cloud\LegacyApiBundle\CloudLegacyApiBundle(),
                 new \Cloud\AdminInterfaceBundle\CloudAdminInterfaceBundle(),
             ));
         }

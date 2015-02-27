@@ -24,7 +24,7 @@ $col = $loader->import(DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/
 $col->addPrefix('/admin');
 $collection->addCollection($col);
 
-$col = $loader->import(DP_ROOT.'/src/Application/ApiBundle/Resources/config/api-routing.php');
+$col = $loader->import(DP_ROOT.'/src/Application/LegacyApiBundle/Resources/config/api-routing.php');
 $col->addPrefix('/api');
 $collection->addCollection($col);
 
@@ -33,7 +33,7 @@ $col->addPrefix('/reports');
 $collection->addCollection($col);
 
 if (defined('DPC_IS_CLOUD')) {
-    $col = $loader->import(DP_ROOT.'/src/Cloud/ApiBundle/Resources/config/api-routing.php');
+    $col = $loader->import(DP_ROOT.'/src/Cloud/LegacyApiBundle/Resources/config/api-routing.php');
     $col->addPrefix('/api');
     $collection->addCollection($col);
 }

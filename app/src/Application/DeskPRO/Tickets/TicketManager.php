@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\Tickets;
 
-use Application\ApiBundle\Request\RequestAuth;
+use Application\LegacyApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Person;
