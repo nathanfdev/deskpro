@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
-use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\ArrayToStringTransformer;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Person\PersonFactory;
-use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\ArrayToStringTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -67,8 +64,8 @@ class CcType extends AbstractType
 
     public function onPreData(FormEvent $event)
     {
-        /** @var \Application\DeskPRO\Entity\Ticket $ticket */
-        $form = $event->getForm();
+        /* @var \Application\DeskPRO\Entity\Ticket $ticket */
+        $form   = $event->getForm();
         $config = $form->getConfig();
         $ticket = $config->getOption('ticket');
 
@@ -82,13 +79,13 @@ class CcType extends AbstractType
 
     public function onPostSubmit(FormEvent $event)
     {
-        /** @var \Application\DeskPRO\Entity\Ticket $ticket */
-        $form = $event->getForm();
+        /* @var \Application\DeskPRO\Entity\Ticket $ticket */
+        $form   = $event->getForm();
         $config = $form->getConfig();
         $ticket = $config->getOption('ticket');
 
         $participants = array();
-        $cc_emails = $form->getData();
+        $cc_emails    = $form->getData();
         foreach ($cc_emails as $email) {
             $email = trim($email);
 
@@ -104,7 +101,7 @@ class CcType extends AbstractType
             if ($email = trim($email)) {
                 // TODO: rethink this "context" approach, because it makes no sense to make one unless creating a person...
                 $new_person_context = new CreatePersonContext('gateway.person'); // used only if email makes new person
-                $participants[] = $this->person_factory->getOrCreatePersonByEmail($email, $new_person_context);
+                $participants[]     = $this->person_factory->getOrCreatePersonByEmail($email, $new_person_context);
             }
         }
 

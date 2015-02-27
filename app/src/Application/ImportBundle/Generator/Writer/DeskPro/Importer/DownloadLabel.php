@@ -32,10 +32,9 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro download labels importer
+ * DeskPro download labels importer.
  *
  * Class DownloadLabel
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 final class DownloadLabel extends AbstractImporter
 {
@@ -50,7 +49,7 @@ final class DownloadLabel extends AbstractImporter
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Download $entity
+     * @var Entity\Download
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
@@ -78,9 +77,10 @@ final class DownloadLabel extends AbstractImporter
     }
 
     /**
-     * Returns a new download label entity
+     * Returns a new download label entity.
      *
      * @param string $label
+     *
      * @return DeskPROEntity\LabelDownload
      */
     private function createDownloadLabel($label)
@@ -89,16 +89,18 @@ final class DownloadLabel extends AbstractImporter
         $entity->setLabel($label);
 
         $this->records->add($entity);
+
         return $entity;
     }
 
     /**
-     * Returns a collection of existing download label names
+     * Returns a collection of existing download label names.
      *
      * @param int $id
      *
-     * @return array
      * @throws Mapper\MapperException
+     * @return array
+     *
      */
     private function getExistingLabelsNames($id)
     {
@@ -113,10 +115,11 @@ final class DownloadLabel extends AbstractImporter
     }
 
     /**
-     * Returns the download label mapper
+     * Returns the download label mapper.
      *
-     * @return Mapper\DownloadLabel
      * @throws \Exception
+     * @return Mapper\DownloadLabel
+     *
      */
     private function getDownloadLabelMapper()
     {

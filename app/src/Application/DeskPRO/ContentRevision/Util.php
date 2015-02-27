@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage ContentRevision
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ContentRevision;

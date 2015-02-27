@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\UI;
@@ -112,7 +110,8 @@ class RuleBuilder
     /**
      * Read an array of terms based from the form, using structure defined.
      *
-     * @param  array $form
+     * @param array $form
+     *
      * @return array
      */
     public function readForm(array $form)

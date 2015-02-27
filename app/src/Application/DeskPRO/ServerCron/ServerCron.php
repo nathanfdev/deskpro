@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ServerCron;
@@ -43,13 +41,11 @@ class ServerCron
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     /**
      * @var int
      */
-
     protected $per_page = 100;
 
     public function __construct(EntityManager $em)
@@ -60,7 +56,6 @@ class ServerCron
     /**
      * @return array
      */
-
     public function getAllForApi()
     {
         $jobs = $this->em->getRepository('DeskPRO:WorkerJob')->getAll();
@@ -81,7 +76,6 @@ class ServerCron
     /**
      * @return array
      */
-
     public function getTimes()
     {
         $last_start = App::getContainer()->getSetting('core.last_cron_start');
@@ -119,7 +113,6 @@ class ServerCron
      *
      * @return array
      */
-
     public function getLogs($job_id = null, $priority = null, $page = 1)
     {
         $params = $this->initializeParams($job_id, $priority);
@@ -139,7 +132,6 @@ class ServerCron
      *
      * @return int
      */
-
     public function getPagesCount($job_id = null, $priority = null)
     {
         $params = $this->initializeParams($job_id, $priority);
@@ -154,7 +146,6 @@ class ServerCron
     /**
      * @return bool
      */
-
     public function clearAllLogs()
     {
         $this->em->getRepository('DeskPRO:WorkerJob')->clearAllLogs();
@@ -168,7 +159,6 @@ class ServerCron
      *
      * @return array
      */
-
     protected function initializeParams($job_id = null, $priority = null)
     {
         if (!$job_id) {

@@ -3,7 +3,7 @@
 namespace Application\DeskPRO\NewSearch\Manager;
 
 /**
- * Search Manager Interface
+ * Search Manager Interface.
  */
 interface SearchManagerInterface
 {

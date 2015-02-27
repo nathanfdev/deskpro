@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Templating
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Templating\Asset;
@@ -61,7 +58,7 @@ class UrlPackage extends BaseUrlPackage
 
             if (!$burl and App::has('request')) {
                 $request = App::get('request');
-                $burl = $request->getBasePath().'/web';
+                $burl    = $request->getBasePath().'/web';
             }
 
             if ($burl) {

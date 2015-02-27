@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Form\Model;
@@ -82,7 +79,7 @@ class SettingsProfile
     /** @var array */
     public $remove_emails;
 
-	public $primary_phone;
+    public $primary_phone;
 
     /**
      * @var \Application\DeskPRO\Entity\Person
@@ -104,10 +101,10 @@ class SettingsProfile
 
         // store the text, for the user to operate on, but keep track of the PhoneNumber object (or create a new one)
         // this is acting like a DataTransformer.
-	    $this->primary_phone = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
-	    if (!$this->primary_phone['region']) {
-		    $this->primary_phone['region'] = $defaultCountryCode;
-	    }
+        $this->primary_phone = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
+        if (!$this->primary_phone['region']) {
+            $this->primary_phone['region'] = $defaultCountryCode;
+        }
 
         $this->override_display_name = $person->override_display_name;
         $this->email                 = $person->getPrimaryEmailAddress();

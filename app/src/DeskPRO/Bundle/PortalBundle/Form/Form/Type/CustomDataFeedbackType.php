@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -64,7 +61,7 @@ class CustomDataFeedbackType extends AbstractType
 
     public function preDataEvent(FormEvent $event)
     {
-        $form = $event->getForm();
+        $form   = $event->getForm();
         $config = $form->getConfig();
 
         /** @var \Application\DeskPRO\Entity\CustomDataFeedback $custom_data */
@@ -76,12 +73,12 @@ class CustomDataFeedbackType extends AbstractType
 
         // we dont expose these feedback settings to admin right now, so we hardcode some defaults
         $options['required'] = true;
-        $options['help'] = false;
+        $options['help']     = false;
 
         if ($config->getOption('ignore_validation')) {
             $options = array_merge($options, array(
                 'validation_groups' => array(),
-                'constraints' => null,
+                'constraints'       => null,
             ));
         }
 
@@ -97,7 +94,7 @@ class CustomDataFeedbackType extends AbstractType
             $custom_data = new CustomDataFeedback();
             $event->setData($custom_data);
         }
-        $field = $config->getOption('custom_data_field');
+        $field              = $config->getOption('custom_data_field');
         $custom_data->field = $field;
     }
 
@@ -105,8 +102,8 @@ class CustomDataFeedbackType extends AbstractType
     {
         /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
         $custom_data = $event->getData();
-        $form = $event->getForm();
-        $config = $form->getConfig();
+        $form        = $event->getForm();
+        $config      = $form->getConfig();
 
         if ($custom_data->input === null) {
             $custom_data->input = '';
@@ -116,7 +113,7 @@ class CustomDataFeedbackType extends AbstractType
         }
 
         // if admin switched from multi select to single select, we need to fix the data object
-        $custom_data_field = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
+        $custom_data_field                      = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
         list($value_name, $form_type, $options) = $this->field_manager->getCustomFeedbackField($custom_data_field, $config->getOption('agent_interface'));
 
         if (array_key_exists('multiple', $options) && !$options['multiple']) {
@@ -127,7 +124,7 @@ class CustomDataFeedbackType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'   => 'Application\DeskPRO\Entity\CustomDataFeedback',
+            'data_class'        => 'Application\DeskPRO\Entity\CustomDataFeedback',
             'ignore_validation' => false,
         ));
         $resolver->setRequired(array(
@@ -136,7 +133,7 @@ class CustomDataFeedbackType extends AbstractType
         ));
         $resolver->setAllowedTypes(array(
             'custom_data_field' => 'Application\DeskPRO\Entity\CustomDefFeedback',
-            'agent_interface' => 'bool',
+            'agent_interface'   => 'bool',
         ));
     }
 

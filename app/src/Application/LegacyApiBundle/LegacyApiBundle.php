@@ -26,14 +26,12 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\LegacyApiBundle;
 
-use \Application\LegacyApiBundle\DependencyInjection\AuditWriterPass;
+use Application\LegacyApiBundle\DependencyInjection\AuditWriterPass;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -89,7 +88,7 @@ class SearchLog extends AbstractEntityRepository
             return $ret;
         }
 
-        return null;
+        return;
     }
 
     public function popularSearchTerms($limit = 100)

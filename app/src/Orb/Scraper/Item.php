@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Scraper
+ * Orb.
  */
 
 namespace Orb\Scraper;
 
 /**
- * An item returned by a scraper
+ * An item returned by a scraper.
  */
 class Item implements \Orb\Scraper\ItemInterface
 {
@@ -48,7 +45,7 @@ class Item implements \Orb\Scraper\ItemInterface
 
     public function __construct($identity, $identity_friendly, $data)
     {
-        $this->identity = $identity;
+        $this->identity          = $identity;
         $this->identity_friendly = $identity_friendly;
 
         if (!is_array($data)) {

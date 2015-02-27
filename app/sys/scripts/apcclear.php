@@ -1,4 +1,6 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 
 if (function_exists('apc_clear_cache')) {
     apc_clear_cache();
@@ -17,4 +19,4 @@ if (function_exists('apc_clear_cache')) {
 
 require_once DP_ROOT.'/sys/load_config.php';
 dp_load_config();
-@unlink(dp_get_tmp_dir() . '/apc-clear.trigger');
+@unlink(dp_get_tmp_dir().'/apc-clear.trigger');

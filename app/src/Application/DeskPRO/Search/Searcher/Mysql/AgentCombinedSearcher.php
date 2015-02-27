@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Search
  */
 
@@ -41,7 +40,7 @@ use Application\DeskPRO\Search\SearcherResult\Result;
 use Application\DeskPRO\Search\SearcherResult\ResultSet;
 
 /**
- * The combined searcher searches everything: articles, news, downloads, feedback
+ * The combined searcher searches everything: articles, news, downloads, feedback.
  */
 class AgentCombinedSearcher
 {
@@ -70,7 +69,7 @@ class AgentCombinedSearcher
 
         if ($limit_types) {
             $limit_types = "'".implode('\',\'', $limit_types)."'";
-            $where = "
+            $where       = "
                 object_type IN ($limit_types)
                 AND MATCH (content) AGAINST (? IN BOOLEAN MODE)
             ";
@@ -90,7 +89,7 @@ class AgentCombinedSearcher
             $total = App::getDbRead('search.searcher.combined')->fetchColumn($count_query, array($query_text));
         }
 
-        $start = ($page - 1) * $per_page;
+        $start        = ($page - 1) * $per_page;
         $select_query = "
             SELECT object_type, object_id, MATCH (content) AGAINST (?) AS _relevancy
             FROM content_search
@@ -104,7 +103,7 @@ class AgentCombinedSearcher
 
         foreach ($results_raw as $result_raw) {
             $result = Result::newFromArray(array(
-                'id' => $result_raw['object_id'],
+                'id'           => $result_raw['object_id'],
                 'content_type' => $result_raw['object_type'],
             ));
 

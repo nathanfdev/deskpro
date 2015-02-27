@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Queue
+ * Orb.
  */
 
 namespace Application\DeskPRO\Queue\Adapter;
@@ -38,12 +35,13 @@ use ZendQueue\Message;
 use ZendQueue\Queue;
 
 /**
- * Adapter to use the QueueItemEntity
+ * Adapter to use the QueueItemEntity.
  */
 class QueueItemEntity extends \ZendQueue\Adapter\AbstractAdapter
 {
     /**
-     * Plain database connection for raw queries
+     * Plain database connection for raw queries.
+     *
      * @var \Application\DeskPRO\DBAL\Connection
      */
     protected $db;
@@ -71,7 +69,8 @@ class QueueItemEntity extends \ZendQueue\Adapter\AbstractAdapter
     /**
      * Check to see if a queue exists.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function isExists($name)
@@ -84,7 +83,8 @@ class QueueItemEntity extends \ZendQueue\Adapter\AbstractAdapter
     }
 
     /**
-     * Get an array of queues
+     * Get an array of queues.
+     *
      * @return array
      */
     public function getQueues()
@@ -100,8 +100,9 @@ class QueueItemEntity extends \ZendQueue\Adapter\AbstractAdapter
      * Create a new queue. Always works because we dont create queue per-se; to create
      * a queue you just insert a job with the groupname name you want.
      *
-     * @param  string $name
-     * @param  int    $timeout
+     * @param string $name
+     * @param int    $timeout
+     *
      * @return bool
      */
     public function create($name, $timeout = null)
@@ -112,7 +113,7 @@ class QueueItemEntity extends \ZendQueue\Adapter\AbstractAdapter
     }
 
     /**
-     * Delete a queue and all jobs in it
+     * Delete a queue and all jobs in it.
      */
     public function delete($name)
     {
@@ -122,9 +123,10 @@ class QueueItemEntity extends \ZendQueue\Adapter\AbstractAdapter
     }
 
     /**
-     * Get how many jobs belong to a queue
+     * Get how many jobs belong to a queue.
      *
-     * @param  Queue\Queue $queue
+     * @param Queue\Queue $queue
+     *
      * @return int
      */
     public function count(Queue $queue = null)
@@ -135,8 +137,9 @@ class QueueItemEntity extends \ZendQueue\Adapter\AbstractAdapter
     /**
      * Put a job onto the queue.
      *
-     * @param  string      $message
-     * @param  Queue\Queue $queue
+     * @param string      $message
+     * @param Queue\Queue $queue
+     *
      * @return classname
      */
     public function send($message, Queue $queue = null)
@@ -186,9 +189,10 @@ class QueueItemEntity extends \ZendQueue\Adapter\AbstractAdapter
     /**
      * Reserve one or more jobs from the queue.
      *
-     * @param  int         $maxMessages
-     * @param  int         $timeout
-     * @param  Queue\Queue $queue
+     * @param int         $maxMessages
+     * @param int         $timeout
+     * @param Queue\Queue $queue
+     *
      * @return classname
      */
     public function receive($maxMessages = null, $timeout = null, Queue $queue = null)
@@ -243,7 +247,8 @@ class QueueItemEntity extends \ZendQueue\Adapter\AbstractAdapter
     }
 
     /**
-     * Delete a message from the queue
+     * Delete a message from the queue.
+     *
      * @param Message $message
      */
     public function deleteMessage(Message $message)

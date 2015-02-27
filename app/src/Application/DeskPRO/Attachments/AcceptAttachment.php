@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category DependencyInjection
  */
 
@@ -81,8 +80,10 @@ class AcceptAttachment
 
     /**
      * @param $id
-     * @return \Application\DeskPRO\Attachments\RestrictionSet
+     *
      * @throws \InvalidArgumentException
+     * @return \Application\DeskPRO\Attachments\RestrictionSet
+     *
      */
     public function getRestrictionSet($id)
     {
@@ -94,8 +95,9 @@ class AcceptAttachment
     }
 
     /**
-     * @param  \Symfony\Component\HttpFoundation\File\UploadedFile $file
+     * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
      * @param $restriction_set_id
+     *
      * @return array|null
      */
     public function getError(UploadedFile $file = null, $restriction_set_id = null)
@@ -183,7 +185,7 @@ class AcceptAttachment
         }
 
         if (!$error || !$error['error_code']) {
-            return null;
+            return;
         }
 
         if ($log_error) {
@@ -205,8 +207,9 @@ class AcceptAttachment
     }
 
     /**
-     * @param  \Symfony\Component\HttpFoundation\File\UploadedFile $file
-     * @param  bool                                                $is_temp
+     * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
+     * @param bool                                                $is_temp
+     *
      * @return \Application\DeskPRO\Entity\Blob
      */
     public function accept(UploadedFile $file, $is_temp = false)

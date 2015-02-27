@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Templating
  */
 
@@ -66,7 +65,7 @@ class UserTemplatingExtension extends \Twig_Extension
 
         $portal_page = $this->container->get('deskpro.user_portal_page');
         foreach ($portal_page->getJsAssets($section) as $asset) {
-            $url = $this->container->get('templating.helper.assets')->getUrl($asset);
+            $url    = $this->container->get('templating.helper.assets')->getUrl($asset);
             $html[] = '<script src="'.$url.'"></script>';
         }
 
@@ -79,7 +78,7 @@ class UserTemplatingExtension extends \Twig_Extension
 
         $portal_page = $this->container->get('deskpro.user_portal_page');
         foreach ($portal_page->getCssAssets($section) as $asset) {
-            $url = $this->container->get('templating.helper.assets')->getUrl($asset);
+            $url    = $this->container->get('templating.helper.assets')->getUrl($asset);
             $html[] = '<link rel="stylesheet" type="text/css" href="'.$url.'" />';
         }
 

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ServerReqs;
@@ -43,7 +41,6 @@ class ServerReqs
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     /** @var array */
@@ -54,13 +51,11 @@ class ServerReqs
     /**
      * @var \Application\InstallBundle\Install\ServerChecks
      */
-
     protected $server_check;
 
     /**
      * @var array
      */
-
     protected $checksTable = array();
 
     public function __construct(EntityManager $em)
@@ -85,7 +80,6 @@ class ServerReqs
     /**
      * @return array
      */
-
     public function getWebChecks()
     {
         return $this->web_checks;
@@ -94,15 +88,15 @@ class ServerReqs
     /**
      * @return array
      */
-
     public function getCliChecks()
     {
         return $this->cli_checks;
     }
 
     /**
-     * @param  array $errors
-     * @param  bool  $includeOptionals
+     * @param array $errors
+     * @param bool  $includeOptionals
+     *
      * @return array
      */
     protected function _generateMessages(array $errors, $includeOptionals = false)
@@ -284,7 +278,7 @@ class ServerReqs
     }
 
     /**
-     * optional extensions
+     * optional extensions.
      */
     protected function addOptionals()
     {

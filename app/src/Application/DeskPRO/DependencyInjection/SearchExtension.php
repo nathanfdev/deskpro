@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category DependencyInjection
  */
 
@@ -59,12 +58,12 @@ class SearchExtension extends Extension
 
     public function getXsdValidationBasePath()
     {
-        return null;
+        return;
     }
 
     public function getNamespace()
     {
-        return null;
+        return;
     }
 
     public function getAlias()

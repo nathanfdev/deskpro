@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Doctrine
+ * Orb.
  */
 
 namespace Orb\Doctrine\Common\Cache;
@@ -46,6 +43,7 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
 {
     /**
      * An array of saved connections. Allows us to reuse connections.
+     *
      * @var Doctrine\DBAL\Connection[]
      */
     protected static $named_connections = array();
@@ -56,13 +54,15 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
     protected $_dbfile;
 
     /**
-     * The cache name, aka the table in the database
+     * The cache name, aka the table in the database.
+     *
      * @var string
      */
     protected $_cache_name = 'doctrine_cache';
 
     /**
-     * Connection name which might have been created before
+     * Connection name which might have been created before.
+     *
      * @var string
      */
     protected $_connection_name = null;
@@ -73,14 +73,15 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
     protected $_db;
 
     /**
-     * No expiry mode
+     * No expiry mode.
      *
      * @var bool
      */
     protected $_no_expire = false;
 
     /**
-     * Fetch a full list of IDs the first time an ID containment check is made
+     * Fetch a full list of IDs the first time an ID containment check is made.
+     *
      * @var bool
      */
     protected $_cached_ids_mode = false;
@@ -124,13 +125,13 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
      */
     public function __construct($filepath, $cache_name = 'doctrine_cache', $connection_name = null)
     {
-        $this->_dbfile = $filepath;
-        $this->_cache_name = $cache_name;
+        $this->_dbfile          = $filepath;
+        $this->_cache_name      = $cache_name;
         $this->_connection_name = $connection_name;
     }
 
     /**
-     * Get the database connection
+     * Get the database connection.
      *
      * @return \Doctrine\DBAL\Connection
      */
@@ -203,10 +204,10 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
     protected function doFetch($id)
     {
         if ($this->_no_expire) {
-            $sql = "SELECT data FROM {$this->_cache_name} WHERE id = ?";
+            $sql    = "SELECT data FROM {$this->_cache_name} WHERE id = ?";
             $params = array($id);
         } else {
-            $sql = "SELECT data FROM {$this->_cache_name} WHERE id = ? AND (expire = 0 OR expire > ?)";
+            $sql    = "SELECT data FROM {$this->_cache_name} WHERE id = ? AND (expire = 0 OR expire > ?)";
             $params = array($id, time());
         }
 
@@ -267,6 +268,6 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
 
     protected function doGetStats()
     {
-        return null;
+        return;
     }
 }

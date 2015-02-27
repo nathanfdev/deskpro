@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Languages;
@@ -103,19 +101,21 @@ class LanguageInstaller
     }
 
     /**
-     * Install a new language pack
+     * Install a new language pack.
      *
-     * @param  \Application\DeskPRO\Languages\LanguagePack $pack
-     * @return \Application\DeskPRO\Entity\Language
+     * @param \Application\DeskPRO\Languages\LanguagePack $pack
+     *
      * @throws \Exception
+     * @return \Application\DeskPRO\Entity\Language
+     *
      */
     public function installPack(LanguagePack $pack)
     {
         $this->em->getConnection()->beginTransaction();
         try {
             if ($this->upgrade_language) {
-                $lang = $this->upgrade_language;
-                $lang->sys_name = $pack->sys_name;
+                $lang            = $this->upgrade_language;
+                $lang->sys_name  = $pack->sys_name;
                 $lang->lang_code = $pack->lang_code;
 
                 // Delete all phrases that arent customized
@@ -145,7 +145,7 @@ class LanguageInstaller
                     ', array($lang->getId(), $delete_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
                 }
             } else {
-                $lang = new Language();
+                $lang            = new Language();
                 $lang->title     = $pack->title;
                 $lang->locale    = $pack->locale;
                 $lang->sys_name  = $pack->sys_name;
@@ -155,7 +155,7 @@ class LanguageInstaller
                 $this->em->flush();
             }
 
-            $lang_id = $lang->getId();
+            $lang_id    = $lang->getId();
             $created_at = date('Y-m-d H:i:s');
 
             $insert_phrases = array();

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\SourceMapper;
@@ -73,14 +70,15 @@ class DatabaseSourceMapper implements SourceMapperInterface
      */
     public function __construct(Connection $db, DeskproBlobStorage $bs, EmailAccountManager $email_accounts, LogCollectorInterface $log_collector = null)
     {
-        $this->db = $db;
-        $this->bs = $bs;
-        $this->log_collector = $log_collector;
+        $this->db             = $db;
+        $this->bs             = $bs;
+        $this->log_collector  = $log_collector;
         $this->email_accounts = $email_accounts;
     }
 
     /**
      * @param $source_id
+     *
      * @return mixed
      */
     public function getSource($source_id)
@@ -89,9 +87,10 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * Get a resource for a source (the actual message data)
+     * Get a resource for a source (the actual message data).
      *
-     * @param  array    $source
+     * @param array $source
+     *
      * @return resource
      */
     public function getRowBlobHandle(array $source)
@@ -99,9 +98,10 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * @param  \Swift_Mime_Message $message
+     * @param \Swift_Mime_Message $message
      * @param $status
-     * @param  \DateTime           $queue_date
+     * @param \DateTime           $queue_date
+     *
      * @return array
      */
     public function createSourceForMessage(\Swift_Mime_Message $message, $status, \DateTime $queue_date = null)
@@ -141,8 +141,8 @@ class DatabaseSourceMapper implements SourceMapperInterface
 
         $header_subject = $message->getSubject() ?: '';
 
-        $header_from_raw = $message->getFrom();
-        $header_from = array();
+        $header_from_raw   = $message->getFrom();
+        $header_from       = array();
         $header_from_email = '';
 
         $account_id = null;
@@ -174,7 +174,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
                     if ($acc) {
                         $account_id = $acc->id;
                     } else {
-                        $acc = null;
+                        $acc        = null;
                         $account_id = null;
                     }
                 }
@@ -203,7 +203,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
         $date = date('Y-m-d H:i:s');
 
         $ref_header = $message->getHeaders()->get('X-DeskPRO-MessageRef');
-        $ref = null;
+        $ref        = null;
         if ($ref_header) {
             $ref = $ref_header->getFieldBody();
         }
@@ -264,13 +264,14 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * @param  array $source
-     * @param  null  $log_text
+     * @param array $source
+     * @param null  $log_text
+     *
      * @return array
      */
     public function markSourceComplete(array $source, $log_text = null)
     {
-        $new_source = $source;
+        $new_source                      = $source;
         $new_source['status']            = 'complete';
         $new_source['error_code']        = '';
         $new_source['date_next_attempt'] = null;
@@ -284,13 +285,14 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * @param  array $source
-     * @param  null  $log_text
+     * @param array $source
+     * @param null  $log_text
+     *
      * @return array
      */
     public function markSourceAborted(array $source, $log_text = null)
     {
-        $new_source = $source;
+        $new_source                      = $source;
         $new_source['status']            = 'aborted';
         $new_source['date_next_attempt'] = null;
         $new_source['date_status']       = date('Y-m-d H:i:s');
@@ -302,14 +304,15 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * @param  array     $source
-     * @param  null      $log_text
-     * @param  \DateTime $next_date
+     * @param array     $source
+     * @param null      $log_text
+     * @param \DateTime $next_date
+     *
      * @return mixed
      */
     public function markSourceRetry(array $source, $log_text = null, \DateTime $next_date = null)
     {
-        $new_source = $source;
+        $new_source           = $source;
         $new_source['status'] = 'retry';
 
         if (!$next_date) {
@@ -326,14 +329,15 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * @param  array  $source
-     * @param  string $error_code
-     * @param  null   $log_text
+     * @param array  $source
+     * @param string $error_code
+     * @param null   $log_text
+     *
      * @return mixed
      */
     public function markSourceError(array $source, $error_code, $log_text = null)
     {
-        $new_source = $source;
+        $new_source                      = $source;
         $new_source['status']            = 'error';
         $new_source['error_code']        = $error_code;
         $new_source['date_next_attempt'] = null;
@@ -346,13 +350,14 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * @param  array     $source
-     * @param  \DateTime $next_date
+     * @param array     $source
+     * @param \DateTime $next_date
+     *
      * @return mixed
      */
     public function setSourcePending(array $source, \DateTime $next_date = null)
     {
-        $new_source = $source;
+        $new_source           = $source;
         $new_source['status'] = 'pending';
 
         if (!$next_date) {
@@ -368,12 +373,13 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * @param  array $source
+     * @param array $source
+     *
      * @return mixed
      */
     public function setSourceProcessing(array $source)
     {
-        $new_source = $source;
+        $new_source                = $source;
         $new_source['status']      = 'processing';
         $new_source['exec_count']  = (isset($source['exec_count']) ? $source['exec_count'] : 0) + 1;
         $new_source['date_status'] = date('Y-m-d H:i:s');
@@ -384,8 +390,9 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * @param  array  $source
-     * @param  string $log_text
+     * @param array  $source
+     * @param string $log_text
+     *
      * @return array
      */
     public function setLogText(array $source, $log_text = '')
@@ -400,8 +407,9 @@ class DatabaseSourceMapper implements SourceMapperInterface
     }
 
     /**
-     * @param  array  $source
-     * @param  string $log_text
+     * @param array  $source
+     * @param string $log_text
+     *
      * @return bool
      */
     private function appendLogText(&$source, $log_text)
@@ -416,12 +424,12 @@ class DatabaseSourceMapper implements SourceMapperInterface
             return false;
         }
 
-        $exist_log = "";
+        $exist_log    = "";
         $old_log_blob = null;
         if (isset($source['log_blob_id'])) {
             try {
                 $old_log_blob = $this->db->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($source['log_blob_id']));
-                $exist_log = $this->bs->copyBlobRowToString($old_log_blob);
+                $exist_log    = $this->bs->copyBlobRowToString($old_log_blob);
             } catch (\Exception $e) {
             }
 
@@ -456,39 +464,39 @@ class DatabaseSourceMapper implements SourceMapperInterface
         $diff = array();
 
         static $valid_keys = array(
-            'id' => true,
-            'blob_id' => true,
-            'email_account_id' => true,
-            'log_blob_id' => true,
-            'ref' => true,
-            'context_type' => true,
-            'context_id' => true,
-            'context_info' => true,
-            'headers' => true,
-            'header_to' => true,
-            'header_from' => true,
-            'header_subject' => true,
-            'from_email' => true,
-            'to_emails' => true,
-            'cc_emails' => true,
-            'bcc_emails' => true,
-            'status' => true,
-            'date_status' => true,
-            'date_sent' => true,
+            'id'                => true,
+            'blob_id'           => true,
+            'email_account_id'  => true,
+            'log_blob_id'       => true,
+            'ref'               => true,
+            'context_type'      => true,
+            'context_id'        => true,
+            'context_info'      => true,
+            'headers'           => true,
+            'header_to'         => true,
+            'header_from'       => true,
+            'header_subject'    => true,
+            'from_email'        => true,
+            'to_emails'         => true,
+            'cc_emails'         => true,
+            'bcc_emails'        => true,
+            'status'            => true,
+            'date_status'       => true,
+            'date_sent'         => true,
             'date_next_attempt' => true,
-            'error_code' => true,
-            'date_created' => true,
-            'exec_count' => true,
+            'error_code'        => true,
+            'date_created'      => true,
+            'exec_count'        => true,
         );
 
         static $always_save = array(
-            'log_blob_id' => true,
-            'status' => true,
-            'date_status' => true,
-            'date_sent' => true,
+            'log_blob_id'       => true,
+            'status'            => true,
+            'date_status'       => true,
+            'date_sent'         => true,
             'date_next_attempt' => true,
-            'error_code' => true,
-            'exec_count' => true,
+            'error_code'        => true,
+            'exec_count'        => true,
         );
 
         foreach ($new as $k => $v) {

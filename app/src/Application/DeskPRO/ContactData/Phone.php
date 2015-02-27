@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ContactData;
@@ -38,7 +36,7 @@ use Application\DeskPRO\Entity\ContactDataAbstract;
 class Phone extends AbstractContactData
 {
     /**
-     * Apply form data to a contact record
+     * Apply form data to a contact record.
      *
      * @param array                                           $input
      * @param \Application\DeskPRO\Entity\ContactDataAbstract $contact_record
@@ -55,7 +53,7 @@ class Phone extends AbstractContactData
     }
 
     /**
-     * Return an array of values that are useful in a template
+     * Return an array of values that are useful in a template.
      *
      * @return array
      */
@@ -70,7 +68,7 @@ class Phone extends AbstractContactData
     }
 
     /**
-     * Return an array of values that are useful to the API
+     * Return an array of values that are useful to the API.
      *
      * @return array
      */

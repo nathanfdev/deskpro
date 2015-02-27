@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -73,7 +72,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
      */
     public function setPersonContext(Person $person)
     {
-        $this->person = $person;
+        $this->person    = $person;
         $this->person_id = $person->id;
     }
 
@@ -85,9 +84,10 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
     }
 
     /**
-     * Get a permission value
+     * Get a permission value.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return mixed
      */
     public function getPermission($name)
@@ -131,7 +131,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
     }
 
     /**
-     * Get an array of all effective permissions
+     * Get an array of all effective permissions.
      *
      * @return array
      */
@@ -147,7 +147,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
                         $overrides = App::getSystemService('PermissionsLoader')->getAgentOverridePermissions($this->person_id);
                         if ($overrides) {
                             $this->with_overrides = true;
-                            $perms = array_merge($perms, array(-1 => $overrides));
+                            $perms                = array_merge($perms, array(-1 => $overrides));
                         }
                     }
                 } else {
@@ -166,7 +166,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 
         if ($this->dynamic_perms === null) {
             $this->dynamic_perms = array();
-            $agent_groups = App::$container->getAgentGroups();
+            $agent_groups        = App::$container->getAgentGroups();
             foreach ($this->usergroup_ids as $ugid) {
                 if ($agent_groups->groupExists($ugid)) {
                     $g = $agent_groups->getGroup($ugid);
@@ -189,7 +189,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
     }
 
     /**
-     * Get an array of data we'll serialize
+     * Get an array of data we'll serialize.
      *
      * @return array
      */
@@ -199,7 +199,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
     }
 
     /**
-     * Initialize this object with an array of saved data
+     * Initialize this object with an array of saved data.
      *
      * @param array $data
      */

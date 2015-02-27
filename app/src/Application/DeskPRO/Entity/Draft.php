@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,8 +37,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * A draft of some sort of message
- *
+ * A draft of some sort of message.
  */
 class Draft extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -47,7 +45,6 @@ class Draft extends \Application\DeskPRO\Domain\DomainObject
      * The unique ID.
      *
      * @var int
-     *
      */
     protected $id = null;
 
@@ -83,7 +80,7 @@ class Draft extends \Application\DeskPRO\Domain\DomainObject
             'name'    => 'drafts',
             'indexes' => array(
                 'content_idx' => array('columns' => array('content_type', 'content_id')),
-                'date_idx' => array('columns' => array('date_created')),
+                'date_idx'    => array('columns' => array('date_created')),
             ),
             'uniqueConstraints' => array(
                 'person_content_idx' => array('columns' => array('person_id', 'content_type', 'content_id')),
@@ -97,7 +94,7 @@ class Draft extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'message', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message'));
         $metadata->mapField(array( 'fieldName' => 'message_html', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message_html'));
         $metadata->mapField(array( 'fieldName' => 'extras', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'extras'));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

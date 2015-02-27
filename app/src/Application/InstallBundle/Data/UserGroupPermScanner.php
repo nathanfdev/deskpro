@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AdminBundle
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Data;
@@ -64,7 +61,7 @@ class UserGroupPermScanner
     }
 
     /**
-     * Get the names of all the permissions
+     * Get the names of all the permissions.
      *
      * @return array
      */

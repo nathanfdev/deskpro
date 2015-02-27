@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -39,7 +36,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Orb\Util\Dates;
 
 /**
- * Will send daily task due reminders
+ * Will send daily task due reminders.
  */
 class TaskReminders extends AbstractJob
 {
@@ -57,8 +54,8 @@ class TaskReminders extends AbstractJob
         }
 
         list($hour, $min) = explode(':', $send_time);
-        $hour = (int) $hour;
-        $min  = (int) $min;
+        $hour             = (int) $hour;
+        $min              = (int) $min;
 
         #------------------------------
         # Figure out which agents the current time is for
@@ -66,9 +63,9 @@ class TaskReminders extends AbstractJob
 
         $for_agents = array();
         foreach (App::getDataService('Agent')->getAgents() as $agent) {
-            /** @var $agent \Application\DeskPRO\Entity\Person */
+            /* @var $agent \Application\DeskPRO\Entity\Person */
 
-            $t = $agent->getDateTime();
+            $t        = $agent->getDateTime();
             $hour_now = (int) $t->format('G');
             $min_now  = (int) $t->format('i');
 
@@ -89,8 +86,8 @@ class TaskReminders extends AbstractJob
         }
 
         $online_ids = App::getEntityRepository('DeskPRO:Session')->getAvailableAgentIds();
-        $emails = 0;
-        $alerts = 0;
+        $emails     = 0;
+        $alerts     = 0;
 
         foreach ($for_agents as $agent) {
             $agent->loadHelper('Agent');
@@ -105,7 +102,7 @@ class TaskReminders extends AbstractJob
             $today_end = $agent->getDateTime();
             $today_end->setTime(23, 59, 59);
 
-            $today_utc = Dates::convertToUtcDateTime($today);
+            $today_utc     = Dates::convertToUtcDateTime($today);
             $today_end_utc = Dates::convertToUtcDateTime($today_end);
 
             $task_ids = App::getDb()->fetchAllCol("
@@ -130,14 +127,14 @@ class TaskReminders extends AbstractJob
             foreach ($tasks as $task) {
                 if (in_array($agent->id, $online_ids) && $agent->getPref('agent_notif.task_due.alert')) {
                     $tpl_line = App::getTemplating()->render('AgentBundle:Task:notify-row-reminder.html.twig', array(
-                        'task' => $task,
+                        'task'   => $task,
                         'person' => $agent,
                     ));
 
                     $cm = new \Application\DeskPRO\Entity\ClientMessage();
                     $cm->fromArray(array(
-                        'channel' => 'agent-notify.tasks',
-                        'data' => array('row' => $tpl_line),
+                        'channel'           => 'agent-notify.tasks',
+                        'data'              => array('row' => $tpl_line),
                         'for_person'        => $agent,
                         'created_by_client' => 'sys',
                     ));
@@ -148,13 +145,13 @@ class TaskReminders extends AbstractJob
                 }
 
                 $email_accounts = App::$container->getEmailAccountManager();
-                $out = $email_accounts->getDefaultOutAccountWithFallback();
-                $from_email = $out->getUseEmailAddress();
+                $out            = $email_accounts->getDefaultOutAccountWithFallback();
+                $from_email     = $out->getUseEmailAddress();
 
                 if ($from_email && $agent->getPref('agent_notif.task_due.email')) {
                     $message = App::getMailer()->createMessage();
                     $message->setTemplate('DeskPRO:emails_agent:task-due-reminder.html.twig', array(
-                        'task' => $task,
+                        'task'   => $task,
                         'person' => $agent,
                     ));
                     $message->setToPerson($agent);

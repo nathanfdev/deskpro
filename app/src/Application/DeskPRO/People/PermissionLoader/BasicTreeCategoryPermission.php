@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -37,12 +36,13 @@ namespace Application\DeskPRO\People\PermissionLoader;
 use Application\DeskPRO\App;
 
 /**
- * A generic category loader
+ * A generic category loader.
  */
 abstract class BasicTreeCategoryPermission extends BasicCategoryPermission
 {
     /**
-     * An array of specific categories allowed by actual database records
+     * An array of specific categories allowed by actual database records.
+     *
      * @var array
      */
     protected $specific_cats = array();
@@ -50,11 +50,11 @@ abstract class BasicTreeCategoryPermission extends BasicCategoryPermission
     protected function init()
     {
         $this->specific_cats = App::getEntityRepository($this->getCategoryEntity())->getCategoriesForUsergroups($this->getUsergroupIds());
-        $full = App::getEntityRepository($this->getCategoryEntity())->getRootNodes();
+        $full                = App::getEntityRepository($this->getCategoryEntity())->getRootNodes();
 
         $this->_computeTree($full);
 
-        $all_ids = App::getEntityRepository($this->getCategoryEntity())->getIds();
+        $all_ids               = App::getEntityRepository($this->getCategoryEntity())->getIds();
         $this->disallowed_cats = array_diff($all_ids, $this->allowed_cats);
     }
 
@@ -83,20 +83,20 @@ abstract class BasicTreeCategoryPermission extends BasicCategoryPermission
     }
 
     /**
-     * Get an array of data we'll serialize
+     * Get an array of data we'll serialize.
      *
      * @return array
      */
     protected function serializeData()
     {
-        $data = parent::serializeData();
+        $data                  = parent::serializeData();
         $data['specific_cats'] = $this->specific_cats;
 
         return $data;
     }
 
     /**
-     * Initialize this object with an array of saved data
+     * Initialize this object with an array of saved data.
      *
      * @param array $data
      */

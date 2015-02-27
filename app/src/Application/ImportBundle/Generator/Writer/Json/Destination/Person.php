@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 
 /**
- * Person entity destination
+ * Person entity destination.
  *
  * Class Person
- * @package Application\ImportBundle\Generator\Writer\Json\Destination
  */
 final class Person implements DestinationInterface
 {

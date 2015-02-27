@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpBehat;
@@ -37,11 +34,11 @@ namespace DpBehat;
 use Behat\MinkExtension\Context\RawMinkContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext as KernelAwareContextInterface;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectAware;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpKernel\KernelInterface;
+use SensioLabs\Behat\PageObjectExtension\PageObject\Element;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Factory as PageObjectFactory;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-use SensioLabs\Behat\PageObjectExtension\PageObject\Element;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 abstract class BasePortalContext extends RawMinkContext implements KernelAwareContextInterface, PageObjectAware
 {
@@ -93,9 +90,9 @@ abstract class BasePortalContext extends RawMinkContext implements KernelAwareCo
     /**
      * @param string $name
      *
+     * @throws \RuntimeException
      * @return Page
      *
-     * @throws \RuntimeException
      */
     public function getPage($name)
     {
@@ -109,9 +106,9 @@ abstract class BasePortalContext extends RawMinkContext implements KernelAwareCo
     /**
      * @param string $name
      *
+     * @throws \RuntimeException
      * @return Element
      *
-     * @throws \RuntimeException
      */
     public function getElement($name)
     {
@@ -124,7 +121,6 @@ abstract class BasePortalContext extends RawMinkContext implements KernelAwareCo
 
     /**
      * @param PageObjectFactory $pageObjectFactory
-     * @return null
      */
     public function setPageObjectFactory(PageObjectFactory $pageObjectFactory)
     {

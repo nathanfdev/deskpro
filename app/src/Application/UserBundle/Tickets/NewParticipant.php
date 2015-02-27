@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Tickets;
@@ -67,14 +64,14 @@ class NewParticipant implements \ArrayAccess
             return;
         }
 
-        $ticket = $this->ticket;
+        $ticket      = $this->ticket;
         $part_person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($this->email);
 
         if (!$part_person) {
             $part_person = new Person();
             $part_person->addEmailAddressString($this->email);
             $part_person['first_name'] = $this->first_name;
-            $part_person['last_name'] = $this->last_name;
+            $part_person['last_name']  = $this->last_name;
         }
 
         if (!$part_person['first_name'] and $this->first_name) {

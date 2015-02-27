@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\PortalBundle\HttpKernel\Exception;
 
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use DeskPRO\Bundle\PortalBundle\HttpKernel\Exception\PermanentRedirectException;
+use PhpSpec\ObjectBehavior;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -43,7 +40,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class PermanentRedirectExceptionSpec extends ObjectBehavior
 {
-    function it_knows_route_details()
+    public function it_knows_route_details()
     {
         $this->beConstructedWith('list_articles', array('route' => 'params'));
 

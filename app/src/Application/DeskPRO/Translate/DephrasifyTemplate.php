@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Translate
  */
 
@@ -50,7 +49,8 @@ class DephrasifyTemplate
     }
 
     /**
-     * @param  string $string The raw twig template
+     * @param string $string The raw twig template
+     *
      * @return string
      */
     public function expand($string)
@@ -62,7 +62,7 @@ class DephrasifyTemplate
     }
 
     /**
-     * Expands sub-phrases that are sometimes found in other phrases:
+     * Expands sub-phrases that are sometimes found in other phrases:.
      *
      * "The quick brown {{phrase.fox}} jumped over the lazy dog"
      *
@@ -71,6 +71,7 @@ class DephrasifyTemplate
      * @see Translate::phrase()
      *
      * @param  $string
+     *
      * @return mixed
      */
     public function expandSubphrases($string)
@@ -87,16 +88,17 @@ class DephrasifyTemplate
             // use variables. So they're simple replacements
 
             $phrase_text = $this->translate->phrase($phrase);
-            $string = str_replace($match[0], $phrase_text, $string);
+            $string      = str_replace($match[0], $phrase_text, $string);
         }
 
         return $string;
     }
 
     /**
-     * Expands simple phrases
+     * Expands simple phrases.
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public function expandSimplePhrases($string)
@@ -107,7 +109,7 @@ class DephrasifyTemplate
         }
 
         foreach ($matches as $match) {
-            $phrase = $match[2];
+            $phrase      = $match[2];
             $phrase_text = $this->translate->phrase($phrase);
             $phrase_text = $this->expandSubphrases($phrase_text);
 
@@ -118,11 +120,12 @@ class DephrasifyTemplate
     }
 
     /**
-     * Tries to expand phrases with variables:
+     * Tries to expand phrases with variables:.
      *
      * {{ phrase('
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public function expandVariablePhrases($string)
@@ -133,8 +136,8 @@ class DephrasifyTemplate
         }
 
         foreach ($matches as $match) {
-            $line = $match[0];
-            $phrase = $match[2];
+            $line        = $match[0];
+            $phrase      = $match[2];
             $hash_string = "{ ".$match[4]." }";
             $phrase_text = $this->translate->phrase($phrase);
             $phrase_text = $this->expandSubphrases($phrase_text);
@@ -149,11 +152,11 @@ class DephrasifyTemplate
                 continue;
             }
 
-            $found_all = true;
+            $found_all    = true;
             $find_replace = array();
 
             foreach ($var_places as $var) {
-                $varname = $var[1];
+                $varname  = $var[1];
                 $val_expr = $this->_findVarInHashString($varname, $hash_string);
                 if ($val_expr === false) {
                     $found_all = false;
@@ -178,27 +181,28 @@ class DephrasifyTemplate
     }
 
     /**
-     * Tries to parse out the value of a key in a hash string
+     * Tries to parse out the value of a key in a hash string.
      *
      * @param  $varname
      * @param  $hash_string
+     *
      * @return null|string
      */
     protected function _findVarInHashString($varname, $hash_string)
     {
-        $m = null;
+        $m         = null;
         $varname_q = preg_quote($varname, '#');
 
         $key_string = Strings::extractRegexMatch("#(\'|\")$varname_q(\'|\")\s*:\s*#", $hash_string, 0);
 
         // Not found
         if (!$key_string) {
-            return null;
+            return;
         }
 
         $value_expr = null;
         if (!preg_match("#(\'|\")$varname_q(\'|\")\s*:\s*(((\'|\")(?P<quoted>.*?)(\'|\"))|((?P<expr>.*?)(\s|,|\})))#", $hash_string, $value_expr)) {
-            return null;
+            return;
         }
 
         if (isset($value_expr['quoted'])) {

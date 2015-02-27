@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\ReportsInterfaceBundle\Controller;
 
@@ -91,7 +89,7 @@ class InterfaceController extends AbstractController
         $views = array();
 
         foreach ($this->in->getCleanValueArray('views', 'string', 'discard') as $view_name) {
-            $id = $view_name;
+            $id        = $view_name;
             $view_name = preg_replace('#[^a-zA-Z0-9_\-/\.]#', '', $view_name);
             $view_name = str_replace('/', ':', $view_name);
             $view_name = str_replace('.html', '.html.twig', $view_name);

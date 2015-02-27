@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
@@ -98,7 +95,7 @@ class Kb extends PortalItemAbstract implements CacheableItem
         );
 
         $html = $this->renderView('UserBundle:Portal:kb-sidebar.html.twig', array(
-            'articles' => $articles,
+            'articles'    => $articles,
             'block_title' => $this->getOption('block_title'),
         ));
 

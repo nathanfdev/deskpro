@@ -27,14 +27,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\Command;
 
 use Application\EmailBundle\Entity\SendmailSource;
+use Monolog;
 use Orb\Util\Strings;
 use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
@@ -43,7 +42,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Monolog;
 
 class SendSourceCommand extends ContainerAwareCommand
 {

@@ -26,17 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Orb\Auth\Adapter;
 
 class PhpBb3 extends DbTable
 {
-    const OPT_TABLE_PREFIX = 'table_prefix';
+    const OPT_TABLE_PREFIX      = 'table_prefix';
     const OPT_CHECK_SERVICE_URL = 'check_service_url';
     const OPT_CHECK_SERVICE_KEY = 'check_service_key';
 

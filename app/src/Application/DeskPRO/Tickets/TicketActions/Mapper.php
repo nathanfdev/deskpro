@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -37,7 +34,7 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 use Orb\Util\Strings;
 
 /**
- * Maps a standard action name to an action class
+ * Maps a standard action name to an action class.
  */
 class Mapper
 {
@@ -67,7 +64,7 @@ class Mapper
             $class = ucfirst(Strings::dashToCamelCase($class));
         }
 
-        $action_class = $class.'Action';
+        $action_class   = $class.'Action';
         $modifier_class = $class.'Modifier';
         if (is_class($action_class)) {
             return $action_class;
@@ -75,6 +72,6 @@ class Mapper
             return $modifier_class;
         }
 
-        return null;
+        return;
     }
 }

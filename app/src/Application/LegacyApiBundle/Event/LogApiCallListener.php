@@ -29,9 +29,9 @@ namespace Application\LegacyApiBundle\Event;
 
 use Application\DeskPRO\HttpKernel\Event\PrePostEvent;
 use Application\DeskPRO\ORM\EntityManager;
+use Application\LegacyApiBundle\Request\RequestAuth;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Application\LegacyApiBundle\Request\RequestAuth;
 
 class LogApiCallListener
 {
@@ -45,7 +45,7 @@ class LogApiCallListener
 
     private function _do(PrePostEvent $event, $eventName, EventDispatcherInterface $dispatcher)
     {
-        /** @var $auth RequestAuth */
+        /* @var $auth RequestAuth */
         if (!$auth = $dispatcher->getContainer()->get('deskpro.api.request_auth')) {
             return;
         }
@@ -54,7 +54,7 @@ class LogApiCallListener
             return;
         }
 
-        /** @var Response $response */
+        /* @var Response $response */
         if (!$response = $event->get('response')) {
             return;
         }

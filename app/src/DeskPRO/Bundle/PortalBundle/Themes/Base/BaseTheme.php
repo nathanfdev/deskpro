@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base;
@@ -56,7 +53,7 @@ class BaseTheme extends AbstractTheme
      */
     public function getParentId()
     {
-        return null;
+        return;
     }
 
     /**

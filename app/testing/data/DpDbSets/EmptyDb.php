@@ -26,13 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DpDbSets;
-
 
 class EmptyDb extends AbstractDbSet
 {

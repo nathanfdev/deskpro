@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -91,7 +90,7 @@ class Logger extends BaseLogger
             throw new \LogicException("Saved messages has not been enabled.");
         }
 
-        $k = array_search($this->test_handler, $this->handlers, true);
+        $k                  = array_search($this->test_handler, $this->handlers, true);
         $this->test_handler = $this->_createTestHandler();
         $this->handlers[$k] = $this->test_handler;
     }
@@ -100,6 +99,7 @@ class Logger extends BaseLogger
      * Gets a string of all the logged messages.
      *
      * @throws \LogicException
+     *
      * @return string
      */
     public function getSavedMessages()
@@ -125,8 +125,9 @@ class Logger extends BaseLogger
     /**
      * Gets an array of raw records.
      *
-     * @return array
      * @throws \LogicException
+     * @return array
+     *
      */
     public function getSavedMessagesRaw()
     {
@@ -139,9 +140,11 @@ class Logger extends BaseLogger
 
     /**
      * @inheritdoc
-     * @param  int       $level
-     * @param  string    $message
-     * @param  array     $context
+     *
+     * @param int    $level
+     * @param string $message
+     * @param array  $context
+     *
      * @return bool|void
      */
     public function addRecord($level, $message, array $context = array())

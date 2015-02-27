@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
@@ -37,7 +35,7 @@ use Application\DeskPRO\App;
 use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
- * Fetches mail from a pop3 server
+ * Fetches mail from a pop3 server.
  */
 class Pop3 extends AbstractFetcher
 {
@@ -88,7 +86,7 @@ class Pop3 extends AbstractFetcher
     }
 
     /**
-     * Initiates the connection
+     * Initiates the connection.
      *
      * @return \Zend\Mail\Storage\Pop3
      */
@@ -193,7 +191,7 @@ class Pop3 extends AbstractFetcher
     }
 
     /**
-     * Get a list of message IDs
+     * Get a list of message IDs.
      */
     protected function _initMessageList($reload = false)
     {
@@ -277,7 +275,7 @@ class Pop3 extends AbstractFetcher
     }
 
     /**
-     * Reads the next message in the inbox
+     * Reads the next message in the inbox.
      *
      * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      */
@@ -293,7 +291,7 @@ class Pop3 extends AbstractFetcher
 
         $next = array_shift($this->message_list);
         if (!$next) {
-            return null;
+            return;
         }
 
         $message_size = $next['size'];
@@ -366,13 +364,13 @@ class Pop3 extends AbstractFetcher
 
         $EOL = "\n";
         if (strpos($raw_message->content, $EOL.$EOL)) {
-            list($headers,) = explode($EOL.$EOL, $raw_message->content, 2);
+            list($headers, ) = explode($EOL.$EOL, $raw_message->content, 2);
         } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers,) = explode("\r\n\r\n", $raw_message->content, 2);
+            list($headers, ) = explode("\r\n\r\n", $raw_message->content, 2);
         } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers,) = explode("\n\n", $raw_message->content, 2);
+            list($headers, ) = explode("\n\n", $raw_message->content, 2);
         } else {
-            @list($headers,) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers, ) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
         }
 
         $raw_message->headers = $headers;
@@ -423,10 +421,11 @@ class Pop3 extends AbstractFetcher
     }
 
     /**
-     * Tests the connection and returns the number of messages on success
+     * Tests the connection and returns the number of messages on success.
      *
-     * @return bool
      * @throws \Exception
+     * @return bool
+     *
      */
     public function test()
     {

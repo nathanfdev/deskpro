@@ -1,13 +1,13 @@
 <?php
 
-require_once dirname(__FILE__) .'/../../src/Application/DeskPRO/LowUtil/RemoteRequest.php';
+require_once dirname(__FILE__).'/../../src/Application/DeskPRO/LowUtil/RemoteRequest.php';
 
-if (!defined('DP_BUILD_TIME') && file_exists(dirname(__FILE__) .'/../../sys/config/build-time.php')) {
-    require_once dirname(__FILE__) .'/../../sys/config/build-time.php';
+if (!defined('DP_BUILD_TIME') && file_exists(dirname(__FILE__).'/../../sys/config/build-time.php')) {
+    require_once dirname(__FILE__).'/../../sys/config/build-time.php';
 }
 
-if (!defined('DP_BUILD_NUM') && file_exists(dirname(__FILE__) .'/../../sys/config/build-num.php')) {
-    require_once dirname(__FILE__) .'/../../sys/config/build-num.php';
+if (!defined('DP_BUILD_NUM') && file_exists(dirname(__FILE__).'/../../sys/config/build-num.php')) {
+    require_once dirname(__FILE__).'/../../sys/config/build-num.php';
 }
 
 #----------------------------------------
@@ -33,12 +33,12 @@ if (!$url) {
 }
 
 if (php_sapi_name() == 'cli') {
-    $url = 'Command: ' . implode(' ', $_SERVER['argv']);
+    $url = 'Command: '.implode(' ', $_SERVER['argv']);
 }
 
 $stats['url'] = $url;
 
-$stats['php_version'] = phpversion();
+$stats['php_version']      = phpversion();
 $stats['php_memory_limit'] = \Orb\Util\Env::getMemoryLimit();
 
 if (function_exists('apc_cache_info')) {
@@ -89,7 +89,7 @@ if (class_exists('PDO')) {
         $stats['php_has_pdo_mysql'] = 0;
     }
 } else {
-    $stats['php_has_pdo'] = 0;
+    $stats['php_has_pdo']       = 0;
     $stats['php_has_pdo_mysql'] = 0;
 }
 
@@ -127,7 +127,7 @@ if (strpos(strtoupper(PHP_OS), 'WIN') === 0) {
     $stats['server_os'] = PHP_OS;
 }
 
-$stats['server_uname'] = php_uname('s') . ' ' . php_uname('r') . ' ' . php_uname('v') . ' ' . php_uname('m');
+$stats['server_uname'] = php_uname('s').' '.php_uname('r').' '.php_uname('v').' '.php_uname('m');
 
 if (isset($_SERVER['SERVER_SOFTWARE'])) {
     if (strpos(strtoupper($_SERVER['SERVER_SOFTWARE']), 'APACHE') !== false) {
@@ -156,20 +156,20 @@ if (isset($_SERVER['SERVER_SOFTWARE'])) {
 #----------------------------------------
 
 $stats['error_info'] = array(
-    'summary' => $__fail_message
+    'summary' => $__fail_message,
 );
 
 if (isset($__license_code)) {
     $stats['error_info']['license_code'] = $__license_code;
-    $stats['license_id'] = 'nolic';
-    $stats['local_hash'] = md5($__license_code);
+    $stats['license_id']                 = 'nolic';
+    $stats['local_hash']                 = md5($__license_code);
 }
 if (isset($__install_key)) {
     $stats['error_info']['install_key'] = $__install_key;
 }
 
 $stats['error_type'] = 'php';
-$stats['local_hash'] = sha1($__fail_message . __FILE__ . php_uname());
+$stats['local_hash'] = sha1($__fail_message.__FILE__.php_uname());
 
 error_log($__fail_message);
 
@@ -180,4 +180,5 @@ try {
         'POST',
         15
     );
-} catch (\Exception $e) {}
+} catch (\Exception $e) {
+}

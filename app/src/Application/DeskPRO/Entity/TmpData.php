@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,8 +39,7 @@ use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
- * A general data store
- *
+ * A general data store.
  */
 class TmpData extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -51,21 +49,21 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
     protected $id = null;
 
     /**
-     * A string name to uniquely identify the record
+     * A string name to uniquely identify the record.
      *
      * @var string
      */
     protected $name = null;
 
     /**
-     * The authcode for the session to verify an id
+     * The authcode for the session to verify an id.
      *
      * @var string
      */
     protected $auth;
 
     /**
-     * Data
+     * Data.
      *
      * @var array
      */
@@ -82,8 +80,9 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
     protected $date_expire;
 
     /**
-     * @param  string                              $type
-     * @param  array                               $data
+     * @param string $type
+     * @param array  $data
+     *
      * @return \Application\DeskPRO\Entity\TmpData
      */
     public static function create($type, array $data = array(), $expire = '+1 week')
@@ -102,7 +101,7 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
 
     public function __construct()
     {
-        $this->auth         = Strings::random(15, Strings::CHARS_KEY);
+        $this->auth           = Strings::random(15, Strings::CHARS_KEY);
         $this['date_created'] = new \DateTime();
         $this['date_expire']  = new \DateTime('+1 week');
     }
@@ -116,7 +115,7 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get the type
+     * Get the type.
      *
      * @return string
      */
@@ -126,7 +125,7 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set the type
+     * Set the type.
      *
      * @param string $type
      */
@@ -136,7 +135,7 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get some data from the extra array
+     * Get some data from the extra array.
      */
     public function getData($key = null, $default = null)
     {
@@ -152,7 +151,6 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
      *
      * @param  $key
      * @param  $value
-     * @return void
      */
     public function setData($key, $value)
     {
@@ -175,22 +173,23 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Splits a code into its id and auth
+     * Splits a code into its id and auth.
      *
      * @param  $code
+     *
      * @return array
      */
     public static function getPartsFromCode($code)
     {
         $parts = explode('-', $code, 2);
         if (count($parts) != 2) {
-            return null;
+            return;
         }
 
         $parts[0] = Util::baseDecode($parts[0], Util::LETTERS_ALPHABET);
 
         return array(
-            'id' => $parts[0],
+            'id'   => $parts[0],
             'auth' => $parts[1],
         );
     }
@@ -204,9 +203,9 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TmpData';
         $metadata->setPrimaryTable(array(
-            'name' => 'tmp_data',
+            'name'    => 'tmp_data',
             'indexes' => array(
-                'name_idx' => array('columns' => array('name')),
+                'name_idx'        => array('columns' => array('name')),
                 'date_expire_idx' => array('columns' => array('date_expire')),
             ),
         ));

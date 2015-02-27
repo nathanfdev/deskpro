@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 
 class PortalExtension extends \Twig_Extension
 {
@@ -57,7 +54,7 @@ class PortalExtension extends \Twig_Extension
      */
     public function __construct(BrandStack $brand_stack, SettingsResolver $settings_resolver)
     {
-        $this->brand_stack = $brand_stack;
+        $this->brand_stack       = $brand_stack;
         $this->settings_resolver = $settings_resolver;
     }
 
@@ -98,7 +95,7 @@ class PortalExtension extends \Twig_Extension
     }
 
     /**
-     * Get URL to a persons profile picture
+     * Get URL to a persons profile picture.
      *
      * Use this twig func instead of calling an entity directly in twig for urls
      *
@@ -116,8 +113,9 @@ class PortalExtension extends \Twig_Extension
     }
 
     /**
-     * @param  string $tag_name
-     * @param  array  $arguments
+     * @param string $tag_name
+     * @param array  $arguments
+     *
      * @return string
      */
     public function processPortalTag($tag_name, $arguments = array())

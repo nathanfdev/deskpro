@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -64,7 +63,7 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
     }
 
     /**
-     * Gets the type name of the criteria
+     * Gets the type name of the criteria.
      *
      * @return string
      */
@@ -84,7 +83,7 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
     }
 
     /**
-     * Get's an array of options
+     * Get's an array of options.
      *
      * @return array
      */
@@ -96,7 +95,8 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
     /**
      * Used on the server-side to check if the term matches.
      *
-     * @param  Ticket $ticket
+     * @param Ticket $ticket
+     *
      * @return bool
      */
     public function isTicketMatch(Ticket $ticket)

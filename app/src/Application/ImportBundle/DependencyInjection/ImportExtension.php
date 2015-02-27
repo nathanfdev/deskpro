@@ -33,8 +33,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
- * Class ImportExtension
- * @package Application\ImportBundle\DependencyInjection
+ * Class ImportExtension.
  */
 class ImportExtension extends Extension
 {

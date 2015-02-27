@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports\Overview;
@@ -69,6 +66,7 @@ class TimeTitles
 
     /**
      * @param $values
+     *
      * @return array
      */
     public static function getValuesArray($values)
@@ -84,6 +82,7 @@ class TimeTitles
 
     /**
      * @param $time
+     *
      * @return string
      */
     public static function selectTimeGroup($time)
@@ -101,6 +100,7 @@ class TimeTitles
 
     /**
      * @param $field
+     *
      * @return string
      */
     public static function makeTimeFieldSelect($field)

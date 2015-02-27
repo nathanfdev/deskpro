@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -60,10 +59,12 @@ class GroupDbPersister
     }
 
     /**
-     * @param  Usergroup        $group
-     * @param  AgentPermissions $perms
-     * @return bool
+     * @param Usergroup        $group
+     * @param AgentPermissions $perms
+     *
      * @throws \Exception
+     * @return bool
+     *
      */
     public function savePerms(Usergroup $group, AgentPermissions $perms)
     {
@@ -108,17 +109,19 @@ class GroupDbPersister
     }
 
     /**
-     * @param  Person           $person
-     * @param  AgentPermissions $perms
-     * @return bool
+     * @param Person           $person
+     * @param AgentPermissions $perms
+     *
      * @throws \Exception
+     * @return bool
+     *
      */
     public function saveOverridePerms(Person $person, AgentPermissions $perms)
     {
         $current_perms = $this->db->fetchAllCol("SELECT name FROM permissions WHERE person_id = ?", array($person->id));
 
-        $group_perms = new GroupsDbLoader($person->usergroups ? $person->usergroups->toArray() : array(), $this->em);
-        $via_groups = array();
+        $group_perms  = new GroupsDbLoader($person->usergroups ? $person->usergroups->toArray() : array(), $this->em);
+        $via_groups   = array();
         $names_loader = new PermissionNamesLoader();
 
         foreach ($person->usergroups as $ug) {

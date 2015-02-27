@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
@@ -38,10 +35,10 @@ use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
+use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
 
 class FeedbackController extends AbstractController
 {
@@ -75,11 +72,11 @@ class FeedbackController extends AbstractController
     public function listAction(TagRequest $tag_request, array $options)
     {
         $filter = new FeedbackFilter(array(
-            'status' => $options['status'],
+            'status'            => $options['status'],
             'status_categories' => $options['status_categories'],
-            'types' => $options['types'],
-            'sort' => $options['sort'],
-            'sort_direction' => $options['sort_direction'],
+            'types'             => $options['types'],
+            'sort'              => $options['sort'],
+            'sort_direction'    => $options['sort_direction'],
         ));
 
         $pager = $this->getFeedbackDataService()->getItemsPager(
@@ -150,11 +147,11 @@ class FeedbackController extends AbstractController
         }
 
         $filter = new FeedbackFilter(array(
-            'status' => $options['status'],
+            'status'            => $options['status'],
             'status_categories' => $options['status_categories'],
-            'types' => $options['types'],
-            'sort' => $options['sort'],
-            'sort_direction' => $options['sort_direction'],
+            'types'             => $options['types'],
+            'sort'              => $options['sort'],
+            'sort_direction'    => $options['sort_direction'],
         ));
 
         $pager = $this->getFeedbackDataService()->getItemsPager(
@@ -218,7 +215,7 @@ class FeedbackController extends AbstractController
         $comments = $this->getFeedbackDataService()->getItemComments($item, $this->getUser());
 
         return $this->renderThemeView('Theme:Feedback:Tag/comments.html.twig', array(
-            'item' => $item,
+            'item'     => $item,
             'comments' => $comments,
         ));
     }
@@ -240,14 +237,14 @@ class FeedbackController extends AbstractController
      */
     public function ratingsAction(TagRequest $tag_request, array $options, Feedback $item = null)
     {
-        $item = $this->getFeedbackDataService()->getItem($options['item']);
+        $item   = $this->getFeedbackDataService()->getItem($options['item']);
         $rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser());
 
         return $this->renderThemeView(
             'Theme:Feedback:Tag/ratings.html.twig',
             array(
                 'rating' => $rating,
-                'item' => $item,
+                'item'   => $item,
             )
         );
     }

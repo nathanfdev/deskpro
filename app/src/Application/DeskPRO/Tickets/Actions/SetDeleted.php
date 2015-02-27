@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 /**
- * Delete the ticket
+ * Delete the ticket.
  */
 class SetDeleted extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
@@ -73,7 +72,7 @@ class SetDeleted extends AbstractAction implements ActionInterface, MacroActionI
             return array('delete');
         }
 
-        return null;
+        return;
     }
 
     /**

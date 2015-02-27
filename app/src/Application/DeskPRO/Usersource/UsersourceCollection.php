@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usersource;
@@ -39,7 +36,7 @@ use Application\DeskPRO\Entity\Usersource;
 /**
  * Used to filter results down to what you want
  * UsersourceManager returns instances of this offering you a flexible filtering API
- * Instead of doing direct queries for usersources, we can centralize and keep dynamic the logic of usersource selection
+ * Instead of doing direct queries for usersources, we can centralize and keep dynamic the logic of usersource selection.
  */
 class UsersourceCollection extends \ArrayObject
 {
@@ -62,9 +59,10 @@ class UsersourceCollection extends \ArrayObject
     }
 
     /**
-     * Limits to this ID only, still allowing other filters to fit your criteria
+     * Limits to this ID only, still allowing other filters to fit your criteria.
      *
-     * @param  int                  $id id
+     * @param int $id id
+     *
      * @return UsersourceCollection
      */
     public function mustHaveId($id)
@@ -135,7 +133,8 @@ class UsersourceCollection extends \ArrayObject
     }
 
     /**
-     * @param  array|string         $capability a string with a single capability, or an array of strings
+     * @param array|string $capability a string with a single capability, or an array of strings
+     *
      * @return UsersourceCollection with usersources that have at least one of the passed capabilities
      */
     public function withCapability($capability)

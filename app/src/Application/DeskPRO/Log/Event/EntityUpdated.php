@@ -61,10 +61,10 @@ class EntityUpdated extends Base
         $new = $this->change->getNew();
         $ret = array(
             'property' => $change->getField(),
-            'old' => null,
-            'new' => null,
-            'add' => array(),
-            'del' => array(),
+            'old'      => null,
+            'new'      => null,
+            'add'      => array(),
+            'del'      => array(),
         );
 
         switch (true) {
@@ -93,8 +93,10 @@ class EntityUpdated extends Base
     }
 
     /**
-     * todo should be processed in separate handler for each sort of subject
-     * @param  DomainObject $obj
+     * todo should be processed in separate handler for each sort of subject.
+     *
+     * @param DomainObject $obj
+     *
      * @return string
      */
     public function mapObject(DomainObject $obj = null)

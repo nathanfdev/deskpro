@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks issue(s) status(es)
+ * Checks issue(s) status(es).
  *
  * @option string[] labels
  */
@@ -62,9 +61,9 @@ class CheckJIRAIssueStatus extends AbstractTriggerTerm
     public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
     {
         $options = $this->getTermOptions();
-        $op = $this->getTermOperator();
+        $op      = $this->getTermOperator();
 
-        $all = (bool) $options->get('all');
+        $all    = (bool) $options->get('all');
         $status = $options->get('status');
 
         $changeData = array();

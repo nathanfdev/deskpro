@@ -26,28 +26,22 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpBehat\TestBundle\DataSet;
 
-
 interface DataSetInterface
 {
     /**
-     * The ID you call in code to install this dataset
+     * The ID you call in code to install this dataset.
      *
      * @return string
      */
     public function getId();
 
     /**
-     * Deletes current database and installs this set
-     *
-     * @return null
+     * Deletes current database and installs this set.
      */
     public function install();
 }

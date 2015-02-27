@@ -28,10 +28,9 @@
 namespace Application\ImportBundle;
 
 /**
- * Base collection
+ * Base collection.
  *
  * Class AbstractCollection
- * @package Application\ImportBundle
  */
 abstract class AbstractCollection implements \Iterator, \Countable
 {
@@ -89,7 +88,7 @@ abstract class AbstractCollection implements \Iterator, \Countable
     }
 
     /**
-     * To array
+     * To array.
      *
      * @return array
      */
@@ -99,7 +98,7 @@ abstract class AbstractCollection implements \Iterator, \Countable
     }
 
     /**
-     * Get and remove last element of the collection
+     * Get and remove last element of the collection.
      *
      * @return mixed|null
      */

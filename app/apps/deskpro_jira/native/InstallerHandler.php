@@ -26,27 +26,25 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace deskpro_jira;
 
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
-use Application\DeskPRO\JIRA\OAuthWrapper;
-use Application\DeskPRO\Service\JIRA;
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 
 class InstallerHandler extends AbstractInstallerHandler
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function processSettings(InstallerContext $context, array $settings)
-	{
-		$old = $context->getApp()->getSettings() ?: array();
-		return array_merge($old, $settings);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function processSettings(InstallerContext $context, array $settings)
+    {
+        $old = $context->getApp()->getSettings() ?: array();
+
+        return array_merge($old, $settings);
+    }
 }

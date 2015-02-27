@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,7 +39,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * A worker job is some task that needs to run regularly, or on a schedule.
- *
  */
 class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -65,21 +63,21 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
     protected $title = '';
 
     /**
-     * What it does
+     * What it does.
      *
      * @var string
      */
     protected $description = '';
 
     /**
-     * The PHP classname of the job executor
+     * The PHP classname of the job executor.
      *
      * @var string
      */
     protected $job_class;
 
     /**
-     * Options for the job
+     * Options for the job.
      *
      * @var array
      */
@@ -87,19 +85,18 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * The most feedbackl interval for this task to run.
-     *
      */
     protected $interval = 3600;
 
     /**
-     * The last time this job was run
+     * The last time this job was run.
      *
      * @var \DateTime
      */
     protected $last_run_date = null;
 
     /**
-     * The last time this job was started
+     * The last time this job was started.
      *
      * @var \DateTime
      */
@@ -136,7 +133,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Guess if the task has crashed or did crash
+     * Guess if the task has crashed or did crash.
      *
      * @param int $threshold
      *
@@ -176,7 +173,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get the date of the next run
+     * Get the date of the next run.
      *
      * @return \DateTime
      */
@@ -211,7 +208,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get interval in readable Enlgish
+     * Get interval in readable Enlgish.
      *
      * @return string
      */

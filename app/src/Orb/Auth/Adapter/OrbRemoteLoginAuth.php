@@ -26,16 +26,15 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
 namespace Orb\Auth\Adapter;
 
-use \Orb\Auth\StateHandler\StateHandlerInterface;
-use \Orb\Auth\Result;
+use Orb\Auth\Result;
+use Orb\Auth\StateHandler\StateHandlerInterface;
 
 /**
  * OrbRemoteLoginAuth is a simple protocol where the system redirects the user to a remote login
@@ -99,52 +98,60 @@ use \Orb\Auth\Result;
 abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInterface, CallbackInterface
 {
     const ERR_INVALID_TOKEN = -10;
-    const ERR_SERVICE_ERR = -11;
+    const ERR_SERVICE_ERR   = -11;
 
     /**
-     * The key to authenticate the request
+     * The key to authenticate the request.
+     *
      * @var string
      */
     protected $consumer_key = null;
 
     /**
-     * The URL to call to initiate the process
+     * The URL to call to initiate the process.
+     *
      * @var string
      */
     protected $initiate_url = null;
 
     /**
-     * The URL to redirect the user back to upon successful login
+     * The URL to redirect the user back to upon successful login.
+     *
      * @var string
      */
     protected $redirect_url = null;
 
     /**
-     * The URL we'll use to verify a users login and possibly fetch userinfo
+     * The URL we'll use to verify a users login and possibly fetch userinfo.
+     *
      * @var string
      */
     protected $verify_url = null;
 
     /**
-     * State handler to store session data
+     * State handler to store session data.
+     *
      * @var Orb\Auth\StateHandler\StateHandlerInterface;
      */
     protected $state;
 
     /**
-     * HTTP client
+     * HTTP client.
+     *
      * @var \Zend\Http\Client
      */
     protected $http;
 
     /**
      * Do we request userinfo as well?
+     *
      * @var int
      */
     protected $with_userinfo = 1;
 
     /**
-     * Data we got back when user returned from providers website
+     * Data we got back when user returned from providers website.
+     *
      * @var array
      */
     protected $got_data = array();
@@ -166,8 +173,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
     /**
      * Switches the adapter to the callback context using form data $data.
      *
-     * @param  array $data Form data or other callback data
-     * @return void
+     * @param array $data Form data or other callback data
      */
     public function setCallbackContext(array $got_data)
     {
@@ -175,7 +181,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
     }
 
     /**
-     * Set if we want userinfo or not
+     * Set if we want userinfo or not.
      *
      * @param bool $yes_or_no
      */
@@ -234,7 +240,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
         }
 
         $identity = new \Orb\Auth\Identity($data['identity'], isset($data['userinfo']) ? $data['userinfo'] : array());
-        $result = new Result(Result::SUCCESS, $identity);
+        $result   = new Result(Result::SUCCESS, $identity);
 
         return $result;
     }
@@ -316,8 +322,7 @@ abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInter
     /**
      * Switches the adapter to the callback context using form data $data.
      *
-     * @param  Orb\Auth\StateHandler\StateHandlerInterface $state The state handler
-     * @return void
+     * @param Orb\Auth\StateHandler\StateHandlerInterface $state The state handler
      */
     public function setStateHandler(StateHandlerInterface $state)
     {

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\People\PersonMerge;
@@ -38,7 +36,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 
 /**
- * Handles merging of one person into the other
+ * Handles merging of one person into the other.
  */
 class PersonMerge implements PersonContextInterface
 {
@@ -63,16 +61,17 @@ class PersonMerge implements PersonContextInterface
     protected $em;
 
     /**
+     *
+     * @param \Application\DeskPRO\Entity\Person   $person_performer
+     * @param \Application\DeskPRO\Entity\Person   $person           The base person, this is the one that will still exist at the end
+     * @param \Application\DeskPRO\Entity\Feedback $other_person     The other person, the one that will be merged into $person and then deleted
      * @throws \InvalidArgumentException
-     * @param  \Application\DeskPRO\Entity\Person   $person_performer
-     * @param  \Application\DeskPRO\Entity\Person   $person           The base person, this is the one that will still exist at the end
-     * @param  \Application\DeskPRO\Entity\Feedback $other_person     The other person, the one that will be merged into $person and then deleted
      */
     public function __construct(Person $person_performer, Person $person, Person $other_person)
     {
         $this->em = App::getOrm();
 
-        $this->person = $person;
+        $this->person       = $person;
         $this->other_person = $other_person;
         $this->setPersonContext($person_performer);
 

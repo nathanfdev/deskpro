@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\AdminInterfaceBundle\Controller;
@@ -41,15 +38,17 @@ use Symfony\Component\HttpFoundation\Request;
 class JiraController extends AbstractController
 {
     /**
-     * todo
-     * @param  Request                                                                                       $request
+     * todo.
+     *
+     * @param Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function tokenAction(Request $request)
     {
         $oauth = new OAuthWrapper($this->get(JIRA::NAME), $this->generateUrl('jira_token', array(), true));
 
-        $verifier = $request->get('oauth_verifier');
+        $verifier    = $request->get('oauth_verifier');
         $credentials = $request->getSession()->get('jira_oauth');
 
         if ($back = $request->get('back_url')) {

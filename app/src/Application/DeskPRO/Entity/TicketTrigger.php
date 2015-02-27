@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -233,7 +232,8 @@ class TicketTrigger extends DomainObject
     }
 
     /**
-     * @param  string $flag
+     * @param string $flag
+     *
      * @return bool
      */
     public function hasEventFlag($flag)
@@ -247,7 +247,7 @@ class TicketTrigger extends DomainObject
     public function addEventFlag($flag)
     {
         if (!in_array($flag, $this->event_flags)) {
-            $flags = $this->event_flags;
+            $flags   = $this->event_flags;
             $flags[] = $flag;
             $this->setModelField('event_flags', $flags);
         }
@@ -267,9 +267,13 @@ class TicketTrigger extends DomainObject
 
     protected function processActions()
     {
-        if (!$this->actions) return;
+        if (!$this->actions) {
+            return;
+        }
 
-        if (null !== $this->_has_delete_ticket_action && null !== $this->_has_stop_trigger_action) return;
+        if (null !== $this->_has_delete_ticket_action && null !== $this->_has_stop_trigger_action) {
+            return;
+        }
 
         foreach ($this->actions as $a) {
             if ($a instanceof ModStopTriggers) {
@@ -279,13 +283,14 @@ class TicketTrigger extends DomainObject
                 $this->_has_delete_ticket_action = true;
             }
 
-            if (null !== $this->_has_delete_ticket_action && null !== $this->_has_stop_trigger_action) break;
+            if (null !== $this->_has_delete_ticket_action && null !== $this->_has_stop_trigger_action) {
+                break;
+            }
         }
 
-        $this->_has_stop_trigger_action = (bool) $this->_has_stop_trigger_action;
+        $this->_has_stop_trigger_action  = (bool) $this->_has_stop_trigger_action;
         $this->_has_delete_ticket_action = (bool) $this->_has_delete_ticket_action;
     }
-
 
     /**
      * @return bool
@@ -293,12 +298,14 @@ class TicketTrigger extends DomainObject
     public function hasStopTriggersAction()
     {
         $this->processActions();
+
         return $this->_has_stop_trigger_action;
     }
 
     public function hasDeleteTicketAction()
     {
         $this->processActions();
+
         return $this->_has_delete_ticket_action;
     }
 
@@ -307,14 +314,14 @@ class TicketTrigger extends DomainObject
      */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
-        $data = parent::toApiData($primary, $deep, $visited);
-        $data['department']    = $this->department ? array('id' => $this->department->id, 'title' => $this->department->title, 'title_full' => $this->department->getFullTitle()) : null;
-        $data['email_account'] = $this->email_account ? array('id' => $this->email_account->id, 'address' => $this->email_account->address) : null;
-        $data['by_agent_mode'] = $this->by_agent_mode;
-        $data['by_user_mode']  = $this->by_user_mode;
-        $data['by_app_mode']   = $this->by_app_mode;
-        $data['terms']         = $this->terms->exportToArray();
-        $data['actions']       = $this->actions->exportToArray();
+        $data                             = parent::toApiData($primary, $deep, $visited);
+        $data['department']               = $this->department ? array('id' => $this->department->id, 'title' => $this->department->title, 'title_full' => $this->department->getFullTitle()) : null;
+        $data['email_account']            = $this->email_account ? array('id' => $this->email_account->id, 'address' => $this->email_account->address) : null;
+        $data['by_agent_mode']            = $this->by_agent_mode;
+        $data['by_user_mode']             = $this->by_user_mode;
+        $data['by_app_mode']              = $this->by_app_mode;
+        $data['terms']                    = $this->terms->exportToArray();
+        $data['actions']                  = $this->actions->exportToArray();
         $data['has_stop_triggers_action'] = $this->hasStopTriggersAction();
         $data['has_delete_ticket_action'] = $this->hasDeleteTicketAction();
 

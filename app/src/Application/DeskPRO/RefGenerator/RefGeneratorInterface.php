@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage RefGenerator
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\RefGenerator;
@@ -41,6 +38,7 @@ interface RefGeneratorInterface
      * Reference numbers must be at MOST 25 characters, and must be unique.
      *
      * @param  $object_type
+     *
      * @return string
      */
     public function generateReference($object_type);
@@ -49,7 +47,8 @@ interface RefGeneratorInterface
      * Check if a string is a valid ref format. This only checks
      * the format, no checking if it exists or anything like that.
      *
-     * @param  string $ref
+     * @param string $ref
+     *
      * @return bool
      */
     public function isRefMatch($ref);
@@ -62,9 +61,10 @@ interface RefGeneratorInterface
      * in the order they appear in the array. So if there is such thing as priority,
      * the first one should be the most likely match.
      *
-     * @param  string   $string
-     * @param  string   $ldelim The left delimeter that wraps the ref
-     * @param  string   $rdelim The right delimeter that wraps the ref
+     * @param string $string
+     * @param string $ldelim The left delimeter that wraps the ref
+     * @param string $rdelim The right delimeter that wraps the ref
+     *
      * @return string[]
      */
     public function extractRefs($string, $ldelim = '\b', $rdelim = '\b');

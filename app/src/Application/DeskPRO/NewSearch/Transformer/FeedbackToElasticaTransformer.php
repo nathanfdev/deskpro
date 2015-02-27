@@ -3,15 +3,15 @@
 namespace Application\DeskPRO\NewSearch\Transformer;
 
 use Application\DeskPRO\App;
-use Elastica\Document;
 use Application\DeskPRO\Entity\Feedback;
+use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
 
 class FeedbackToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Transform
+     * Transform.
      *
      * @param Feedback $object
      * @param array    $fields

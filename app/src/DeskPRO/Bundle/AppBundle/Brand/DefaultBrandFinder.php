@@ -26,21 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Brand
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Brand;
 
-use Application\DeskPRO\EntityRepository\Brand;
 use Application\DeskPRO\Entity\Brand as BrandEntity;
+use Application\DeskPRO\EntityRepository\Brand;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 
 /**
  * A serive that can quickly hand you the default brand (useful in cases here there is no request listener detecting
- * the active brand on the stack (CLI)
+ * the active brand on the stack (CLI).
  */
 class DefaultBrandFinder
 {

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
@@ -74,7 +72,8 @@ abstract class AbstractStorageAdapter implements Loggable
     }
 
     /**
-     * @param  Blob   $blob
+     * @param Blob $blob
+     *
      * @return string
      */
     public function makePathForBlob(Blob $blob)
@@ -109,56 +108,64 @@ abstract class AbstractStorageAdapter implements Loggable
     }
 
     /**
-     * @param  string $path
+     * @param string $path
+     *
      * @return bool
      */
     abstract public function checkBlobExists(Blob $blob);
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     *
      * @return bool
      */
     abstract public function deleteBlob(Blob $blob);
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
      * @param $data
+     *
      * @return mixed
      */
     abstract public function writeBlobString(Blob $blob, $data);
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param  resource                              $data
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param resource                              $data
+     *
      * @return int
      */
     abstract public function writeBlobFromStream(Blob $blob, $fp_source);
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
      * @param $data
+     *
      * @return mixed
      */
     abstract public function writeBlobFromFile(Blob $blob, $source_path);
 
     /**
-     * Loads the entire blob into a string
+     * Loads the entire blob into a string.
      *
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     *
      * @return string
      */
     abstract public function readBlobString(Blob $blob);
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
      * @param $target_path
+     *
      * @return int
      */
     abstract public function readBlobToFile(Blob $blob, $target_path);
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param  resource                              $data
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param resource                              $data
+     *
      * @return int
      */
     abstract public function readBlobToStream(Blob $blob, $fp_target);

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Groups;
@@ -41,7 +39,8 @@ abstract class GroupsRepos implements \Countable, \IteratorAggregate
     private $groups;
 
     /**
-     * Groups mapped by sysname
+     * Groups mapped by sysname.
+     *
      * @var \Application\DeskPRO\Entity\Usergroup[]
      */
     private $groups_named;
@@ -53,9 +52,10 @@ abstract class GroupsRepos implements \Countable, \IteratorAggregate
 
     /**
      * @param array $groups */
+
     public function __construct(array $groups)
     {
-        $this->groups = array();
+        $this->groups       = array();
         $this->groups_named = array();
 
         foreach ($groups as $g) {
@@ -68,7 +68,8 @@ abstract class GroupsRepos implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @param  int  $id
+     * @param int $id
+     *
      * @return bool
      */
     public function groupExists($id)
@@ -77,7 +78,8 @@ abstract class GroupsRepos implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function sysGroupExists($name)
@@ -86,7 +88,8 @@ abstract class GroupsRepos implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @param  int                                   $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\Usergroup
      */
     public function getGroup($id)
@@ -99,7 +102,8 @@ abstract class GroupsRepos implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @param  string                                $name
+     * @param string $name
+     *
      * @return \Application\DeskPRO\Entity\Usergroup
      */
     public function getSysGroup($name)

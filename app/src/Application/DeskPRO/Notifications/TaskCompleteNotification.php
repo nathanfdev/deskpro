@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Notifications;
@@ -80,12 +77,12 @@ class TaskCompleteNotification extends AbstractAgentNotification
     public function send()
     {
         $this->sendBrowserNotifications('AgentBundle:Task:notify-row-completed.html.twig', array(
-            'task' => $this->task,
-            'performer' => App::getCurrentPerson(),
+            'task'        => $this->task,
+            'performer'   => App::getCurrentPerson(),
             'notify_data' => array('notify_type' => 'tasks'),
         ));
         $this->sendEmailNotifications('DeskPRO:emails_agent:task-completed.html.twig', array(
-            'task' => $this->task,
+            'task'      => $this->task,
             'performer' => App::getCurrentPerson(),
         ));
     }

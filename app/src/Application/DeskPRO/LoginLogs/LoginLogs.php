@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\LoginLogs;
@@ -70,7 +68,7 @@ class LoginLogs
      */
     public function __construct(EntityManager $em, AgentDataService $agent_data)
     {
-        $this->em = $em;
+        $this->em         = $em;
         $this->agent_data = $agent_data;
     }
 
@@ -133,7 +131,7 @@ class LoginLogs
                 $log['agent_name'] = "Agent #{$log['person_id']}";
             }
 
-            $d = \DateTime::createFromFormat('Y-m-d H:i:s', $log['date_created']);
+            $d                      = \DateTime::createFromFormat('Y-m-d H:i:s', $log['date_created']);
             $log['date_created_ts'] = $d->getTimestamp();
         }
         unset($log);

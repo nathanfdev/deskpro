@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -77,7 +76,7 @@ class PrefsLoader
         $filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
         $filters = Arrays::keyFromData($filters, 'id');
 
-        $sys_filters = array();
+        $sys_filters    = array();
         $custom_filters = array();
         foreach ($filters as $f) {
             if ($f->sys_name) {
@@ -106,7 +105,7 @@ class PrefsLoader
             }
 
             $filter = $filters[$info['filter_id']];
-            $subs = array('email' => array(), 'alert' => array());
+            $subs   = array('email' => array(), 'alert' => array());
 
             foreach ($info as $k => $v) {
                 if ($v && preg_match('#(email|alert)_(.*?)$#', $k, $m)) {
@@ -188,8 +187,9 @@ class PrefsLoader
     }
 
     /**
-     * @param  array $filter_subs
-     * @param  array $other_subs
+     * @param array $filter_subs
+     * @param array $other_subs
+     *
      * @return Prefs
      */
     public function getPrefsFromArray(array $filter_subs = array(), array $other_subs = array())

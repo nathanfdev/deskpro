@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Theme\TagHandler;
@@ -70,8 +68,8 @@ class EsiTagHandler implements TagHandlerInterface
     public function __construct(ContainerInterface $container, PortalCacheHelper $portal_cache_helper, PortalModeStorage $mode_storage)
     {
         $this->portal_cache_helper = $portal_cache_helper;
-        $this->container = $container;
-        $this->mode_storage = $mode_storage;
+        $this->container           = $container;
+        $this->mode_storage        = $mode_storage;
     }
 
     public function supports(Tag $tag, TagRequest $tag_request)
@@ -99,7 +97,7 @@ class EsiTagHandler implements TagHandlerInterface
         $tag_request->attributes->replace(
             $new_attrs
         );
-        $new_query = $this->filterOutObjects($tag_request->query);
+        $new_query                        = $this->filterOutObjects($tag_request->query);
         $new_query[PortalMode::ATTR_NAME] = $this->mode_storage->getSerializedMode();
         $tag_request->query->replace(
             $new_query

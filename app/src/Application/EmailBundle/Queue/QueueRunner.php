@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\Queue;
@@ -115,8 +112,9 @@ class QueueRunner
     /**
      * Timeout sources that have been marked as processing too long.
      *
-     * @return int
      * @throws \Exception
+     * @return int
+     *
      */
     public function detectProblems()
     {
@@ -140,7 +138,7 @@ class QueueRunner
 
             // Appends to log file about the timeout
             foreach ($batch as $r) {
-                $d = \DateTime::createFromFormat('Y-m-d H:i:s', $r['date_status']);
+                $d   = \DateTime::createFromFormat('Y-m-d H:i:s', $r['date_status']);
                 $msg = sprintf(
                     '[%s] RETRY: Detected process timeout. Stuck at %s since %s (%s mins). Retrying.',
                     date('Y-m-d H:i:s'),
@@ -174,7 +172,7 @@ class QueueRunner
 
             // Appends to log file about the timeout
             foreach ($batch as $r) {
-                $d = \DateTime::createFromFormat('Y-m-d H:i:s', $r['date_status']);
+                $d   = \DateTime::createFromFormat('Y-m-d H:i:s', $r['date_status']);
                 $msg = sprintf(
                     '[%s] ERROR: Detected timeout. Stuck at %s since %s (%s mins)',
                     date('Y-m-d H:i:s'),
@@ -245,21 +243,21 @@ class QueueRunner
     }
 
     /**
-     * Runs through the queue
+     * Runs through the queue.
      *
      * @return int
      */
     public function run()
     {
         $time_start = time();
-        $count = 0;
+        $count      = 0;
 
         $this->logger->info(sprintf('Starting -- Limit: %d -- Max Time: %ds', $this->proc_limit, $this->proc_time_limit));
 
         while (true) {
-            $did_break = false;
+            $did_break   = false;
             $batch_count = 0;
-            $batch = $this->reserveBatch();
+            $batch       = $this->reserveBatch();
             $this->logger->info(sprintf('Reserved %d records', count($batch)));
 
             $proc = new QueueProc($this->source_mapper, $this->source_sender, $this->logger);
@@ -306,8 +304,9 @@ class QueueRunner
     }
 
     /**
-     * @return array      Array of id=>status of records to process
      * @throws \Exception
+     * @return array Array of id=>status of records to process
+     *
      */
     private function reserveBatch()
     {
@@ -348,7 +347,8 @@ class QueueRunner
      * Given a batch of records that we didnt get to (e.g., timeout happened first), release them back
      * to their original status so they can be run next time.
      *
-     * @param  array      $batch
+     * @param array $batch
+     *
      * @throws \Exception
      */
     private function releaseRemaining(array $batch)
@@ -360,12 +360,12 @@ class QueueRunner
         $this->db->beginTransaction();
 
         $as_pending = array();
-        $as_retry = array();
+        $as_retry   = array();
 
         foreach ($batch as $info) {
             switch ($info['status']) {
                 case 'pending': $as_pending[] = $info['id']; break;
-                case 'retry':   $as_retry[] = $info['id']; break;
+                case 'retry':   $as_retry[]   = $info['id']; break;
             }
         }
 

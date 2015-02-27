@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller\JsonRenderer;
@@ -69,8 +67,9 @@ class PeopleListRenderer
     }
 
     /**
-     * @param  PeopleResultsDisplay $display
-     * @param  null                 $fn_visitor
+     * @param PeopleResultsDisplay $display
+     * @param null                 $fn_visitor
+     *
      * @return array
      */
     public function renderArray(PeopleResultsDisplay $display, $fn_visitor = null)
@@ -118,7 +117,8 @@ class PeopleListRenderer
     }
 
     /**
-     * @param  PeopleResultsDisplay $display
+     * @param PeopleResultsDisplay $display
+     *
      * @return string
      */
     public function renderJson(PeopleResultsDisplay $display)
@@ -131,8 +131,9 @@ class PeopleListRenderer
     }
 
     /**
-     * @param  Person               $entity
-     * @param  PeopleResultsDisplay $display
+     * @param Person               $entity
+     * @param PeopleResultsDisplay $display
+     *
      * @return array
      */
     private function renderPerson(Person $entity, PeopleResultsDisplay $display)

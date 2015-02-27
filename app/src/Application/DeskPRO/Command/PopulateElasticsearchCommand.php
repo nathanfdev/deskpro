@@ -14,13 +14,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
 /**
- * Populate Elasticsearch Command
+ * Populate Elasticsearch Command.
  *
  * The primary command for populating Elasticsearch with
  * data from the DB. Uses the dp:elastica:index command
  * to achieve the actual result.
- *
- * @package DeskPRO
  */
 class PopulateElasticsearchCommand extends ContainerAwareCommand
 {

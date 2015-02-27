@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Form
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\CustomFields\Handler;
@@ -38,7 +35,7 @@ use Application\DeskPRO\App;
 use Orb\Util\Arrays;
 
 /**
- * Handles the choice field
+ * Handles the choice field.
  */
 class Choice extends HandlerAbstract
 {

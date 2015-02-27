@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Assetic;
@@ -53,7 +50,8 @@ class AsseticManager
     protected $build_subdir;
 
     /**
-     * The path where files are written to
+     * The path where files are written to.
+     *
      * @var string
      */
     protected $write_path;
@@ -74,7 +72,8 @@ class AsseticManager
     protected $filter_manager;
 
     /**
-     * Config (usually config.assets.php) that holds info about assets
+     * Config (usually config.assets.php) that holds info about assets.
+     *
      * @var array
      */
     protected $asset_config = null;
@@ -98,7 +97,8 @@ class AsseticManager
     protected $auto_update = false;
 
     /**
-     * Keeps track of which assets use others
+     * Keeps track of which assets use others.
+     *
      * @var array
      */
     protected $dep_map = array();
@@ -139,7 +139,8 @@ class AsseticManager
     }
 
     /**
-     * @param  string                           $name
+     * @param string $name
+     *
      * @return \Assetic\Factory\AssetCollection
      */
     public function getBuildAsset($name)
@@ -156,10 +157,9 @@ class AsseticManager
     }
 
     /**
-     * Write the bundle file to the filesystem
+     * Write the bundle file to the filesystem.
      *
      * @param $name
-     * @return void
      */
     public function writeBuildFile($name)
     {
@@ -222,10 +222,9 @@ class AsseticManager
     }
 
     /**
-     * Write a build file only if its stale
+     * Write a build file only if its stale.
      *
      * @param $name
-     * @return void
      */
     public function writeBuildFileIfStale($name)
     {
@@ -235,10 +234,9 @@ class AsseticManager
     }
 
     /**
-     * Templting helper used with fetching URLs
+     * Templting helper used with fetching URLs.
      *
      * @param $asset_helper
-     * @return void
      */
     public function setAssetHelper($asset_helper)
     {
@@ -246,9 +244,10 @@ class AsseticManager
     }
 
     /**
-     * Get the public path to an asset build file
+     * Get the public path to an asset build file.
      *
      * @param $name
+     *
      * @return string
      */
     public function getUrl($name)
@@ -263,9 +262,10 @@ class AsseticManager
     }
 
     /**
-     * Get an array of paths to all the raw files in a bundle
+     * Get an array of paths to all the raw files in a bundle.
      *
      * @param $name
+     *
      * @return string[]
      */
     public function getRawUrls($name)
@@ -300,6 +300,7 @@ class AsseticManager
      * Check to see if a build file is out of date.
      *
      * @param $name
+     *
      * @return bool
      */
     public function isBuildStale($name)
@@ -320,9 +321,10 @@ class AsseticManager
     }
 
     /**
-     * Check if a build exists
+     * Check if a build exists.
      *
      * @param $name
+     *
      * @return bool
      */
     public function isBuildExist($name)
@@ -334,9 +336,10 @@ class AsseticManager
     }
 
     /**
-     * Gets an asset bundle, initializing it if needed
+     * Gets an asset bundle, initializing it if needed.
      *
-     * @param  string                         $name
+     * @param string $name
+     *
      * @return \Assetic\Asset\AssetCollection
      */
     public function getAssetBundle($name)
@@ -375,7 +378,7 @@ class AsseticManager
     }
 
     /**
-     * Get all asset bundles
+     * Get all asset bundles.
      *
      * @return array
      */
@@ -390,7 +393,7 @@ class AsseticManager
     }
 
     /**
-     * Get an array of all defined asset names
+     * Get an array of all defined asset names.
      *
      * @return array
      */
@@ -400,9 +403,10 @@ class AsseticManager
     }
 
     /**
-     * Get bundle configuration
+     * Get bundle configuration.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return array
      */
     public function getBundleConfig($name)
@@ -413,8 +417,7 @@ class AsseticManager
     /**
      * Get a filter or initialize it if its not created yet.
      *
-     * @param  string $name
-     * @return void
+     * @param string $name
      */
     public function getFilter($name, array $options = array())
     {

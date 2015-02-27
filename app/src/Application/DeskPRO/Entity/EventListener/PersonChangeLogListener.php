@@ -111,8 +111,7 @@ class PersonChangeLogListener extends EntityChangeLogListener
     }
 
     /**
-     * @param  Person $person
-     * @return null
+     * @param Person $person
      */
     public function getUpdateLogEntry(Person $person)
     {

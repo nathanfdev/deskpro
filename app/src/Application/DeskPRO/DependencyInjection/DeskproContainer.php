@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category DependencyInjection
  */
 
@@ -109,6 +108,7 @@ class DeskproContainer extends Container
      * if a certain service has been created already, and you'd use has() to see if a service can be used.
      *
      * @param $id
+     *
      * @return bool
      */
     public function isServiceInitialized($id)
@@ -119,8 +119,10 @@ class DeskproContainer extends Container
     /**
      * This returns a reference to a system service.
      *
+     *
+     * @param string $id
      * @throws \InvalidArgumentException
-     * @param  string                    $id
+     *
      * @return mixed
      */
     public function getSystemService($id)
@@ -168,7 +170,8 @@ class DeskproContainer extends Container
     }
 
     /**
-     * @param  string                                                                        $id
+     * @param string $id
+     *
      * @return \Application\DeskPRO\DependencyInjection\SystemServices\BaseRepositoryService
      */
     public function getDataService($id)
@@ -179,9 +182,11 @@ class DeskproContainer extends Container
     /**
      * This calls a system factory and returns a new instance of some kind of object.
      *
+     *
+     * @param string $id
+     * @param array  $options
      * @throws \InvalidArgumentException
-     * @param  string                    $id
-     * @param  array                     $options
+     *
      * @return mixed
      */
     public function getSystemObject($id, array $options = array())
@@ -275,8 +280,9 @@ class DeskproContainer extends Container
      * If the config value is an array of arrays, then it's expected that there are multiple
      * databases to choose from and one is selected at random.
      *
-     * @param  string                               $type
-     * @param  array                                $context = null
+     * @param string $type
+     * @param array  $context = null
+     *
      * @return \Application\DeskPRO\DBAL\Connection
      */
     public function getDbRead($type = 'default', array $context = null)
@@ -366,7 +372,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the DeskPRO serializer
+     * Get the DeskPRO serializer.
      *
      * @return \Application\DeskPRO\Serializer\SerializerRegistry
      */
@@ -376,9 +382,10 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the request
+     * Get the request.
      *
      * @deprecated Should inject the request into the current controller action
+     *
      * @return \Symfony\Component\HttpFoundation\Request
      */
     public function getRequest()
@@ -387,7 +394,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the response
+     * Get the response.
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -397,7 +404,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the session
+     * Get the session.
      *
      * @return \Application\DeskPRO\HttpFoundation\Session
      */
@@ -407,7 +414,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the mailer
+     * Get the mailer.
      *
      * @return \Application\EmailBundle\SwiftMailer\Mailer
      */
@@ -417,7 +424,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the translator
+     * Get the translator.
      *
      * @return \Application\DeskPRO\Translate\Translate
      */
@@ -427,7 +434,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the templating service
+     * Get the templating service.
      *
      * @return \Application\DeskPRO\Templating\Engine
      */
@@ -437,7 +444,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the twig service
+     * Get the twig service.
      *
      * @return \Application\DeskPRO\Twig\Environment
      */
@@ -447,7 +454,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the router
+     * Get the router.
      *
      * @return \Application\DeskPRO\Routing\Router
      */
@@ -465,7 +472,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the app event dispatcher
+     * Get the app event dispatcher.
      *
      * @return \Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher
      */
@@ -475,7 +482,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the form factory
+     * Get the form factory.
      *
      * @return \Symfony\Component\Form\FormFactory
      */
@@ -485,7 +492,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the searcher
+     * Get the searcher.
      *
      * @return \Application\DeskPRO\NewSearch\SearchEngine\SearchEngine
      */
@@ -495,7 +502,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the context factory
+     * Get the context factory.
      *
      * @return \Application\DeskPRO\NewSearch\SearchEngine\SearchContextFactory
      */
@@ -513,7 +520,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the person activity logger
+     * Get the person activity logger.
      *
      * @return \Application\DeskPRO\People\ActivityLogger\ActivityLogger
      */
@@ -523,7 +530,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the reference generator
+     * Get the reference generator.
      *
      * @return \Application\DeskPRO\RefGenerator\RefGeneratorInterface
      */
@@ -541,9 +548,10 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the queuer
+     * Get the queuer.
      *
-     * @param  string                           $name
+     * @param string $name
+     *
      * @return \Application\DeskPRO\Queue\Queue
      */
     public function getQueue($name)
@@ -701,8 +709,9 @@ class DeskproContainer extends Container
     /**
      * Get the value of a setting.
      *
-     * @param  string $name    The name of the setting to get
-     * @param  mixed  $default
+     * @param string $name    The name of the setting to get
+     * @param mixed  $default
+     *
      * @return string
      */
     public function getSetting($name, $default = null)
@@ -713,7 +722,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the settings object
+     * Get the settings object.
      *
      * @return \Application\DeskPRO\Settings\Settings
      *
@@ -727,7 +736,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get the settings resolver system serivce
+     * Get the settings resolver system serivce.
      *
      * @return \Application\DeskPRO\NewSettings\SettingsResolver
      */
@@ -747,10 +756,11 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Get a value from the main system configuration
+     * Get a value from the main system configuration.
      *
-     * @param  string $name
-     * @param  mixed  $default
+     * @param string $name
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getSysConfig($name, $default = null)
@@ -857,10 +867,11 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Checks a static security token
+     * Checks a static security token.
      *
-     * @param  string $name
-     * @param  string $token
+     * @param string $name
+     * @param string $token
+     *
      * @return bool
      */
     public function checkStaticSecurityToken($name, $token)
@@ -869,10 +880,11 @@ class DeskproContainer extends Container
     }
 
     /**
-     * Generate static security token
+     * Generate static security token.
      *
-     * @param  string $name
-     * @param  int    $timeout
+     * @param string $name
+     * @param int    $timeout
+     *
      * @return string
      */
     public function generateStaticSecurityToken($name, $timeout = 18000)

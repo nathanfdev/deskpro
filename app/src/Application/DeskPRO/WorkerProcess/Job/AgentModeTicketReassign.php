@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -49,7 +46,7 @@ class AgentModeTicketReassign extends AbstractJob
 
     public function run()
     {
-        $db = App::getDb();
+        $db  = App::getDb();
         $max = 2000;
 
         #------------------------------

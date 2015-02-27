@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
@@ -72,9 +69,9 @@ class StringToIntegerArrayTransformer implements DataTransformerInterface
      *
      * @param mixed $value The value in the original representation
      *
+     * @throws TransformationFailedException When the transformation fails.
      * @return mixed The value in the transformed representation
      *
-     * @throws TransformationFailedException When the transformation fails.
      */
     public function transform($value)
     {
@@ -108,9 +105,9 @@ class StringToIntegerArrayTransformer implements DataTransformerInterface
      *
      * @param mixed $value The value in the transformed representation
      *
+     * @throws TransformationFailedException When the transformation fails.
      * @return mixed The value in the original representation
      *
-     * @throws TransformationFailedException When the transformation fails.
      */
     public function reverseTransform($value)
     {

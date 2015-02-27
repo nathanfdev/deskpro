@@ -28,8 +28,7 @@
 namespace Application\ImportBundle\Generator\Validator;
 
 /**
- * Interface ValidatorExceptionInterface
- * @package Application\ImportBundle\Generator\Validator
+ * Interface ValidatorExceptionInterface.
  */
 interface ValidatorExceptionInterface
 {

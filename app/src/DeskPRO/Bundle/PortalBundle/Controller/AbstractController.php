@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Doctrine\DBAL\Connection;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class AbstractController extends BaseController
 {
@@ -72,7 +69,8 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @param  string                         $entity_name
+     * @param string $entity_name
+     *
      * @return \Doctrine\ORM\EntityRepository
      */
     public function getRepo($entity_name)
@@ -81,7 +79,8 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @param  array                                     $options
+     * @param array $options
+     *
      * @return \DeskPRO\Bundle\PortalBundle\Theme\ThemeView
      */
     public function createThemeView(array $options = array())
@@ -122,7 +121,8 @@ class AbstractController extends BaseController
 
     /**
      * @param $setting
-     * @param  null  $default
+     * @param null $default
+     *
      * @return mixed
      */
     protected function getBrandSetting($setting, $default = null)
@@ -175,6 +175,7 @@ class AbstractController extends BaseController
      * @param mixed $object     The object
      *
      * @throws \LogicException
+     *
      * @return bool
      */
     protected function isGranted($attributes, $object = null)

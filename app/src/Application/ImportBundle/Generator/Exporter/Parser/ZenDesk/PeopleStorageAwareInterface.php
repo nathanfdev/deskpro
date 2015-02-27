@@ -28,17 +28,17 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 /**
- * Attach people storage interface
+ * Attach people storage interface.
  *
  * Interface PeopleStorageAwareInterface
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
 interface PeopleStorageAwareInterface
 {
     /**
-     * Attach a people storage
+     * Attach a people storage.
      *
      * @param PeopleStorageInterface $storage
+     *
      * @return $this
      */
     public function setPeopleStorage(PeopleStorageInterface $storage);

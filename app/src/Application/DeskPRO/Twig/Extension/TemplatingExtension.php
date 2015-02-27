@@ -26,20 +26,19 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Templating
  */
 
 namespace Application\DeskPRO\Twig\Extension;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Adapter\IframeSsoInterface;
 use Orb\Auth\Adapter\JsSsoInterface;
@@ -174,39 +173,39 @@ class TemplatingExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            'safe_link_urls'         => new \Twig_Filter_Method($this, 'safeLinkUrls', array('is_safe' => array('html'))),
-            'safe_link_urls_html'    => new \Twig_Filter_Method($this, 'safeLinkUrlsHtml', array('is_safe' => array('html'))),
+            'safe_link_urls'              => new \Twig_Filter_Method($this, 'safeLinkUrls', array('is_safe' => array('html'))),
+            'safe_link_urls_html'         => new \Twig_Filter_Method($this, 'safeLinkUrlsHtml', array('is_safe' => array('html'))),
             'link_agent_short_code_html'  => new \Twig_Filter_Method($this, 'linkAgentShortCodeHtml', array('is_safe' => array('html'))),
-            'raw_url_encode'         => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
-            'repeat'                 => new \Twig_Filter_Method($this, 'strRepeat'),
-            'trim'                   => new \Twig_Filter_Method($this, 'strTrim'),
-            'ltrim'                  => new \Twig_Filter_Method($this, 'strLtrim'),
-            'rtrim'                  => new \Twig_Filter_Method($this, 'strRtrim'),
-            'encode_number'          => new \Twig_Filter_Method($this, 'encNum', array('is_safe' => array('html'))),
-            'decode_number'          => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
-            'md5_hash'               => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
-            'date'                   => new \Twig_Filter_Method($this, 'userDate', array('needs_context' => true)),
-            'to_jqueryui_dateformat' => new \Twig_Filter_Method($this, 'jqueryUiDateFormat'),
-            'time_length'            => new \Twig_Filter_Method($this, 'timeLength'),
-            'momentjs_format'        => new \Twig_Filter_Method($this, 'momentJsFormat'),
-            'slugify'                => new \Twig_Filter_Method($this, 'slugify'),
-            'emphasize_words'        => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
-            'strip_linebreaks'       => new \Twig_Filter_Method($this, 'stripLinebreaks'),
-            'explode'                => new \Twig_Filter_Method($this, 'explodeString'),
-            'split'                  => new \Twig_Filter_Method($this, 'explodeString'),
-            'join'                   => new \Twig_Filter_Method($this, 'implodeArray'),
-            'implode'                => new \Twig_Filter_Method($this, 'implodeArray'),
-            'crc32'                  => new \Twig_Filter_Method($this, 'crc32'),
-            'url_domain'             => new \Twig_Filter_Method($this, 'getUrlDomain'),
-            'truncate'               => new \Twig_Filter_Method($this, 'strTruncate'),
-            'first'                  => new \Twig_Filter_Method($this, 'getFirst'),
-            'last'                   => new \Twig_Filter_Method($this, 'getLast'),
-            'filesize_display'       => new \Twig_Filter_Method($this, 'filesizeDisplay'),
-            'url_trim_scheme'        => new \Twig_Filter_Method($this, 'urlTrimScheme'),
-            'country_name'           => new \Twig_Filter_Method($this, 'countryName'),
-            'count_lines'            => new \Twig_Filter_Method($this, 'countLines'),
-            'smart_wrap'             => new \Twig_Filter_Method($this, 'smartWrap'),
-            'json_encode_inhtml'     => new \Twig_Filter_Method($this, 'jsonEncodeInHtml', array('is_safe' => array('html'))),
+            'raw_url_encode'              => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
+            'repeat'                      => new \Twig_Filter_Method($this, 'strRepeat'),
+            'trim'                        => new \Twig_Filter_Method($this, 'strTrim'),
+            'ltrim'                       => new \Twig_Filter_Method($this, 'strLtrim'),
+            'rtrim'                       => new \Twig_Filter_Method($this, 'strRtrim'),
+            'encode_number'               => new \Twig_Filter_Method($this, 'encNum', array('is_safe' => array('html'))),
+            'decode_number'               => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
+            'md5_hash'                    => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
+            'date'                        => new \Twig_Filter_Method($this, 'userDate', array('needs_context' => true)),
+            'to_jqueryui_dateformat'      => new \Twig_Filter_Method($this, 'jqueryUiDateFormat'),
+            'time_length'                 => new \Twig_Filter_Method($this, 'timeLength'),
+            'momentjs_format'             => new \Twig_Filter_Method($this, 'momentJsFormat'),
+            'slugify'                     => new \Twig_Filter_Method($this, 'slugify'),
+            'emphasize_words'             => new \Twig_Filter_Method($this, 'emphasizeWords', array('is_safe' => array('html'))),
+            'strip_linebreaks'            => new \Twig_Filter_Method($this, 'stripLinebreaks'),
+            'explode'                     => new \Twig_Filter_Method($this, 'explodeString'),
+            'split'                       => new \Twig_Filter_Method($this, 'explodeString'),
+            'join'                        => new \Twig_Filter_Method($this, 'implodeArray'),
+            'implode'                     => new \Twig_Filter_Method($this, 'implodeArray'),
+            'crc32'                       => new \Twig_Filter_Method($this, 'crc32'),
+            'url_domain'                  => new \Twig_Filter_Method($this, 'getUrlDomain'),
+            'truncate'                    => new \Twig_Filter_Method($this, 'strTruncate'),
+            'first'                       => new \Twig_Filter_Method($this, 'getFirst'),
+            'last'                        => new \Twig_Filter_Method($this, 'getLast'),
+            'filesize_display'            => new \Twig_Filter_Method($this, 'filesizeDisplay'),
+            'url_trim_scheme'             => new \Twig_Filter_Method($this, 'urlTrimScheme'),
+            'country_name'                => new \Twig_Filter_Method($this, 'countryName'),
+            'count_lines'                 => new \Twig_Filter_Method($this, 'countLines'),
+            'smart_wrap'                  => new \Twig_Filter_Method($this, 'smartWrap'),
+            'json_encode_inhtml'          => new \Twig_Filter_Method($this, 'jsonEncodeInHtml', array('is_safe' => array('html'))),
 
             'text_wrap_marks'        => new \Twig_Filter_Method($this, 'textWrapMarks'),
 
@@ -253,8 +252,8 @@ class TemplatingExtension extends \Twig_Extension
     public function getBaseTemplateName($name)
     {
         $parts = explode(':', $name);
-        $name = array_pop($parts);
-        $name = str_replace('.html.twig', '', $name);
+        $name  = array_pop($parts);
+        $name  = str_replace('.html.twig', '', $name);
 
         return $name;
     }
@@ -330,7 +329,7 @@ class TemplatingExtension extends \Twig_Extension
     public function gravatar($email, $size = 80)
     {
         $hash = strtolower(md5($email));
-        $url = 'http://www.gravatar.com/avatar/'.$hash.'?';
+        $url  = 'http://www.gravatar.com/avatar/'.$hash.'?';
         $url .= '&d='.App::get('router')->generate('serve_default_picture', array('s' => $size), true);
 
         return $url;
@@ -339,7 +338,7 @@ class TemplatingExtension extends \Twig_Extension
     public function getFirst($var)
     {
         if (!$var) {
-            return null;
+            return;
         }
 
         return \Orb\Util\Arrays::getFirstItem($var);
@@ -348,7 +347,7 @@ class TemplatingExtension extends \Twig_Extension
     public function getLast($var)
     {
         if (!$var) {
-            return null;
+            return;
         }
 
         return \Orb\Util\Arrays::getLastItem($var);
@@ -460,13 +459,13 @@ class TemplatingExtension extends \Twig_Extension
     public function linkAgentShortCodeHtml($html)
     {
         $id_map = array(
-            't' => array('Ticket', 'agent/#app.tickets,t.o:'),
-            'p' => array('Person', 'agent/#app.people,p.o:'),
-            'o' => array('Organization', 'agent/#app.people.orgs,o.o:'),
-            'a' => array('Article', 'agent/#app.publish,a.o:'),
-            'n' => array('News', 'agent/#app.publish,n.o:'),
-            'd' => array('Download', 'agent/#app.publish,d.o:'),
-            'i' => array('Feedback', 'agent/#app.feedback,i.o:'),
+            't'  => array('Ticket', 'agent/#app.tickets,t.o:'),
+            'p'  => array('Person', 'agent/#app.people,p.o:'),
+            'o'  => array('Organization', 'agent/#app.people.orgs,o.o:'),
+            'a'  => array('Article', 'agent/#app.publish,a.o:'),
+            'n'  => array('News', 'agent/#app.publish,n.o:'),
+            'd'  => array('Download', 'agent/#app.publish,d.o:'),
+            'i'  => array('Feedback', 'agent/#app.feedback,i.o:'),
             'tw' => array('Tweet', 'agent/#app.twitter,tw.o:'),
         );
 
@@ -508,7 +507,7 @@ class TemplatingExtension extends \Twig_Extension
 
     public function explodeString($string, $del = ',')
     {
-        $ret = array();
+        $ret    = array();
         $string = (string) $string;
 
         foreach (explode($del, $string) as $p) {
@@ -529,8 +528,8 @@ class TemplatingExtension extends \Twig_Extension
 
     public function htmlGetAssetic($name, $options = array())
     {
-        $raw_packs = App::getConfig('debug.raw_assets', array());
-        $less_use_css = App::getConfig('debug.less_use_css_dir', false);
+        $raw_packs            = App::getConfig('debug.raw_assets', array());
+        $less_use_css         = App::getConfig('debug.less_use_css_dir', false);
         $disable_client_cache = App::getConfig('debug.disable_client_cache', false);
 
         if ($raw_packs && (in_array($name, $raw_packs) or in_array('all', $raw_packs) or (in_array('all -vendors', $raw_packs) && $name != 'agent_vendors'))) {
@@ -568,8 +567,8 @@ class TemplatingExtension extends \Twig_Extension
                     }
 
                     if ($less_use_css && strpos($url, '/stylesheets-less/') !== false) {
-                        $url = str_replace('/stylesheets-less/', '/stylesheets/', $url);
-                        $url = str_replace('.less', '.css', $url);
+                        $url    = str_replace('/stylesheets-less/', '/stylesheets/', $url);
+                        $url    = str_replace('.less', '.css', $url);
                         $html[] = '<link rel="stylesheet" type="text/css" media="'.$options['media'].'" href="'.$url.'" />';
                     } else {
                         $html[] = '<link rel="stylesheet/less" type="text/css" media="'.$options['media'].'" href="'.$url.'" />';
@@ -605,7 +604,7 @@ class TemplatingExtension extends \Twig_Extension
                 return $tzs;
                 break;
             default:
-                return null;
+                return;
         }
     }
 
@@ -621,7 +620,7 @@ class TemplatingExtension extends \Twig_Extension
 
         $string = htmlspecialchars($string);
         foreach ($words as $w) {
-            $w = htmlspecialchars($w);
+            $w      = htmlspecialchars($w);
             $string = preg_replace('#(\\b)('.preg_quote($w, '#').')(\\b)#iu', '$1<em>$2</em>$3', $string);
         }
 
@@ -663,7 +662,7 @@ class TemplatingExtension extends \Twig_Extension
             }
 
             list($date, $format, $timezone) = $args;
-            $context = null;
+            $context                        = null;
         }
 
         switch ($format) {
@@ -700,7 +699,7 @@ class TemplatingExtension extends \Twig_Extension
             } else {
                 try {
                     $date_str = $date;
-                    $date = new \DateTime($date_str);
+                    $date     = new \DateTime($date_str);
                 } catch (\Exception $e) {
                 }
             }
@@ -776,7 +775,7 @@ class TemplatingExtension extends \Twig_Extension
             } else {
                 if ($escaping) {
                     $new_format[] = "'";
-                    $escaping = false;
+                    $escaping     = false;
                 }
                 if (isset($php_sym[$char])) {
                     $new_format[] = $php_sym[$char];
@@ -995,7 +994,7 @@ class TemplatingExtension extends \Twig_Extension
     }
 
     /**
-     * Checks the special _partial flag in incoming requests to see if the user wants a partial
+     * Checks the special _partial flag in incoming requests to see if the user wants a partial.
      *
      * @return bool
      */
@@ -1028,7 +1027,8 @@ class TemplatingExtension extends \Twig_Extension
      * A unique ID generator usually used to generate unique element ID's. Unique
      * ID's are generally needed only in the agent interface where things share the same dom.
      *
-     * @param  string $prefix
+     * @param string $prefix
+     *
      * @return string
      */
     public function elUid($prefix = 'dp_')
@@ -1044,7 +1044,8 @@ class TemplatingExtension extends \Twig_Extension
      * Makes it prettier when displaying links in emails.
      *
      * @param $name
-     * @param  array        $parameters
+     * @param array $parameters
+     *
      * @return mixed|string
      */
     public function urlDisplay($name, array $parameters = array())
@@ -1076,7 +1077,7 @@ class TemplatingExtension extends \Twig_Extension
             $path = $pathinfo['path'];
         }
 
-        $path = Strings::canonicalPath($path);
+        $path      = Strings::canonicalPath($path);
         $root_path = '/'.trim($this->container->get('router')->getGenerator()->generate('user', array(), false), '/');
 
         if (strpos($path, $root_path) !== 0) {
@@ -1115,7 +1116,7 @@ class TemplatingExtension extends \Twig_Extension
             return $formExtension->renderer->searchAndRenderBlock($display_array, 'widget');
         }
 
-        $handler = $display_array['handler'];
+        $handler  = $display_array['handler'];
         $formView = $display_array['formView'];
 
         if (is_object($display_array)) {
@@ -1149,7 +1150,7 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         $attributes = array(
-            'dir' => ($language->is_rtl ? 'dir="rtl"' : 'dir="ltr"'),
+            'dir'  => ($language->is_rtl ? 'dir="rtl"' : 'dir="ltr"'),
             'lang' => 'lang="'.htmlspecialchars(substr($language->locale, 0, 2), \ENT_QUOTES, 'UTF-8').'"',
         );
 
@@ -1161,7 +1162,7 @@ class TemplatingExtension extends \Twig_Extension
         if ($rtl === null) {
             switch ($ltr) {
                 case 'right': $ltr = '&rarr;'; $rtl = '&larr;'; break;
-                case 'left': $ltr = '&larr;'; $rtl = '&rarr;'; break;
+                case 'left': $ltr  = '&larr;'; $rtl  = '&rarr;'; break;
                 default: return 'unknown';
             }
         }
@@ -1270,14 +1271,14 @@ class TemplatingExtension extends \Twig_Extension
         $hex = preg_replace("/[^0-9A-Fa-f]/", '', $hex);
         $rgb = array();
         if (strlen($hex) == 6) {
-            $color_val = hexdec($hex);
-            $rgb['red'] = 0xFF & ($color_val >> 0x10);
+            $color_val    = hexdec($hex);
+            $rgb['red']   = 0xFF & ($color_val >> 0x10);
             $rgb['green'] = 0xFF & ($color_val >> 0x8);
-            $rgb['blue'] = 0xFF & $color_val;
+            $rgb['blue']  = 0xFF & $color_val;
         } elseif (strlen($hex) == 3) {
-            $rgb['red'] = hexdec(str_repeat(substr($hex, 0, 1), 2));
+            $rgb['red']   = hexdec(str_repeat(substr($hex, 0, 1), 2));
             $rgb['green'] = hexdec(str_repeat(substr($hex, 1, 1), 2));
-            $rgb['blue'] = hexdec(str_repeat(substr($hex, 2, 1), 2));
+            $rgb['blue']  = hexdec(str_repeat(substr($hex, 2, 1), 2));
         } else {
             return false;
         }
@@ -1456,7 +1457,7 @@ class TemplatingExtension extends \Twig_Extension
         $originalCount = count($tabs);
 
         foreach ($this->_getPageLocationWidgets($page, $location, 'tab') as $widget) {
-            $htmlId = $this->getWidgetHtmlId($baseId, $widget);
+            $htmlId        = $this->getWidgetHtmlId($baseId, $widget);
             $tabs[$htmlId] = $widget->title;
         }
 
@@ -1472,11 +1473,11 @@ class TemplatingExtension extends \Twig_Extension
             return '<h4>'.reset($tabs).'</h4>';
         } else {
             $tabHtml = array();
-            $on = false;
+            $on      = false;
             foreach ($tabs as $id => $title) {
                 if (!$on) {
                     $onHtml = ' class="on"';
-                    $on = true;
+                    $on     = true;
                 } else {
                     $onHtml = '';
                 }
@@ -1496,10 +1497,10 @@ class TemplatingExtension extends \Twig_Extension
     {
         ///////////////////////////////////////////////////////////////////////
         // Settings
-        $person = App::getCurrentPerson();
+        $person        = App::getCurrentPerson();
         $is_first_page = App::getSession()->isFirstPage(); // not to be trusted
         /** @var \Application\DeskPRO\Auth\AuthSettings $auth_settings */
-        $auth_settings = $this->container->getSystemService('auth_settings');
+        $auth_settings           = $this->container->getSystemService('auth_settings');
         $auth_interface_settings = $interface == 'user' ? $auth_settings->getUserInterfaceSettings() : $auth_settings->getAgentInterfaceSettings();
         /** @var \Symfony\Component\HttpFoundation\RequestStack $request_stack */
         $request_stack = $this->getContainer()->get('request_stack');
@@ -1553,6 +1554,7 @@ class TemplatingExtension extends \Twig_Extension
      * @param $interface
      * @param $person
      * @param $is_first_page
+     *
      * @return array
      */
     protected function legacyMagentoPluginCode($interface, $person, $is_first_page)
@@ -1591,7 +1593,7 @@ class TemplatingExtension extends \Twig_Extension
                 continue;
             }
 
-            $adapter = $us->getAdapter()->getAuthAdapter();
+            $adapter  = $us->getAdapter()->getAuthAdapter();
             $output[] = $adapter->getSsoShareSessionHtml($assoc->identity);
         }
 
@@ -1690,8 +1692,8 @@ class TemplatingExtension extends \Twig_Extension
         $positions = array();
 
         for ($i = 0; $i < 5; $i++) {
-            $text = App::getTranslator()->getPhraseTextCount($phrase_name, $i);
-            $text = str_replace('{{count}}', '{}', $text);
+            $text          = App::getTranslator()->getPhraseTextCount($phrase_name, $i);
+            $text          = str_replace('{{count}}', '{}', $text);
             $positions[$i] = $text;
         }
 
@@ -1758,7 +1760,8 @@ class TemplatingExtension extends \Twig_Extension
         if (is_array($params)) {
             $params = json_encode($params);
         }
-        return '{{ state_path(\'' . addslashes($route) . '\', '.$params.') }}';
+
+        return '{{ state_path(\''.addslashes($route).'\', '.$params.') }}';
     }
 
     public function ngHrefVar($route_var, $params = '{}')

@@ -1,47 +1,48 @@
 <?php
 namespace DpUnitTests\DeskPRO\Tickets\Triggers\Terms;
 
+use Application\DeskPRO\Entity\LabelOrganization;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\LabelOrganization;
 
 require_once 'AbstractEntityCheckTest.php';
 
 class CheckOrgLabelTest extends AbstractEntityCheckTest
 {
     /**
-     * @param  int    $id
+     * @param int $id
      * @param $object
+     *
      * @return Ticket
      */
     public function createTicket($id, $object)
     {
         if ($object === null) {
             // no test for nulls
-            return null;
+            return;
         }
 
         $org = new Organization();
 
-        $bogus = new LabelOrganization();
+        $bogus        = new LabelOrganization();
         $bogus->label = "bogus";
 
         $org->labels->add($bogus);
         $org->labels->add($object);
 
-        $ticket = new Ticket();
-        $ticket->id = $id;
+        $ticket               = new Ticket();
+        $ticket->id           = $id;
         $ticket->organization = $org;
 
         return $ticket;
     }
 
     /**
-     * Checks 'is label' on a ticket without an org
+     * Checks 'is label' on a ticket without an org.
      */
     public function testNoOrgIsLabel()
     {
-        $ticket = new Ticket();
+        $ticket     = new Ticket();
         $ticket->id = 10;
 
         $checker = $this->createChecker('is', array('labels' => array('label')));
@@ -58,11 +59,11 @@ class CheckOrgLabelTest extends AbstractEntityCheckTest
     }
 
     /**
-     * Check 'not label' on a ticket without an org
+     * Check 'not label' on a ticket without an org.
      */
     public function testNoOrgNotLabel()
     {
-        $ticket = new Ticket();
+        $ticket     = new Ticket();
         $ticket->id = 10;
 
         $checker = $this->createChecker('not', array('labels' => array('label')));
@@ -95,7 +96,8 @@ class CheckOrgLabelTest extends AbstractEntityCheckTest
     }
 
     /**
-     * The entity class we are checking
+     * The entity class we are checking.
+     *
      * @return string
      */
     public function getEntityClass()
@@ -104,12 +106,13 @@ class CheckOrgLabelTest extends AbstractEntityCheckTest
     }
 
     /**
-     * @param  int    $id
+     * @param int $id
+     *
      * @return object
      */
     public function createEntityObject($id)
     {
-        $object = new LabelOrganization();
+        $object        = new LabelOrganization();
         $object->label = $id;
 
         return $object;

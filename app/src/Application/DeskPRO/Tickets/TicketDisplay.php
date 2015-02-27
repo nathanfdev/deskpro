@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Tickets;
 
@@ -203,11 +201,11 @@ class TicketDisplay implements PersonContextInterface
 
     public function getMessageAttachments($message, $include_inline = false)
     {
-        $id = $message->getId();
+        $id              = $message->getId();
         $messagetoattach = $this->getMessagesToAttachments($include_inline);
 
         if (!isset($messagetoattach[$id])) {
-            return null;
+            return;
         }
 
         $ret = array();
@@ -237,7 +235,7 @@ class TicketDisplay implements PersonContextInterface
 
     public function getDisplayArray()
     {
-        $last_user_message = 0;
+        $last_user_message  = 0;
         $last_agent_message = 0;
 
         foreach ($this->getMessages() as $message) {
@@ -261,12 +259,12 @@ class TicketDisplay implements PersonContextInterface
             'user_participants'  => $this->getUserParticipants(),
             'agent_participants' => $this->getAgentParticipants(),
 
-            'notes' => $this->getNotes(),
-            'messages' => $this->getMessages(),
-            'attachments' => $this->getAttachments(),
+            'notes'             => $this->getNotes(),
+            'messages'          => $this->getMessages(),
+            'attachments'       => $this->getAttachments(),
             'message_to_attach' => $this->getMessagesToAttachments(),
 
-            'last_user_message_id' => $last_user_message,
+            'last_user_message_id'  => $last_user_message,
             'last_agent_message_id' => $last_agent_message,
 
             'user_ratings' => $this->getFeedbackRatings(),

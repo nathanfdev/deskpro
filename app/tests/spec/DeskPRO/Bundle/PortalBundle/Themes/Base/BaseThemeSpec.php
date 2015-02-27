@@ -26,86 +26,81 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\PortalBundle\Themes\Base;
 
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use DeskPRO\Bundle\PortalBundle\Themes\Base\BaseTheme;
+use PhpSpec\ObjectBehavior;
 
 /**
  * @mixin \DeskPRO\Bundle\PortalBundle\Themes\Base\BaseTheme
  */
 class BaseThemeSpec extends ObjectBehavior
 {
-
     // we test the base theme more thouroughly, the others work similarly
     // so we don't test them as much (we're basically targeting AbstractTheme)
 
-    function it_is_a_theme_that_extends_abstract_theme()
+    public function it_is_a_theme_that_extends_abstract_theme()
     {
         $this->shouldHaveType('DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface');
         $this->shouldHaveType('DeskPRO\Bundle\PortalBundle\Theme\AbstractTheme');
     }
 
-    function it_is_serializable()
+    public function it_is_serializable()
     {
         $this->shouldHaveType('\Serializable');
     }
 
-    function it_has_an_id_and_a_name()
+    public function it_has_an_id_and_a_name()
     {
         $this->getId()->shouldReturn('base');
         $this->getName()->shouldReturn('Base');
     }
 
-    function it_does_not_have_a_parent_because_it_is_base_theme_and_parents_are_hardcoded()
+    public function it_does_not_have_a_parent_because_it_is_base_theme_and_parents_are_hardcoded()
     {
         $this->getParent()->shouldBe(null);
         $this->getParentId()->shouldBe(null);
     }
 
-    function it_knows_its_base_template_dir()
+    public function it_knows_its_base_template_dir()
     {
         $this->getBaseTemplateDir()->shouldBeString();
     }
 
-    function it_knows_its_base_controller_dir()
+    public function it_knows_its_base_controller_dir()
     {
         $this->getBaseControllerDir()->shouldBeString();
     }
 
-    function it_knows_its_namespace()
+    public function it_knows_its_namespace()
     {
         $this->getNamespace()->shouldBeString();
     }
 
-    function it_can_contain_hard_coded_tags_but_we_dont_use_them()
+    public function it_can_contain_hard_coded_tags_but_we_dont_use_them()
     {
         $this->getHardCodedTags()->shouldBe(array());
     }
 
-    function it_does_of_course_allow_adding_tags_after_construction(
+    public function it_does_of_course_allow_adding_tags_after_construction(
         Tag $tag1,
         Tag $tag2,
         Tag $tag3
-    )
-    {
+    ) {
         $tag1->getName()->willReturn('first_tag');
         $tag2->getName()->willReturn('second_tag');
         $tag3->getName()->willReturn('third_tag');
 
         $this->setTags($tags = array($tag1, $tag2, $tag3));
         $this->getTags()->shouldBe(array(
-            'first_tag' => $tag1,
+            'first_tag'  => $tag1,
             'second_tag' => $tag2,
-            'third_tag' => $tag3
+            'third_tag'  => $tag3,
         ));
 
         $this->getTag('first_tag')->shouldReturn($tag1);
@@ -113,11 +108,10 @@ class BaseThemeSpec extends ObjectBehavior
         $this->getTag('third_tag')->shouldReturn($tag3);
     }
 
-    function it_can_resolve_a_tag_which_will_recursively_climb_the_parent_tree(
+    public function it_can_resolve_a_tag_which_will_recursively_climb_the_parent_tree(
         Tag $tag1,
         Tag $tag2
-    )
-    {
+    ) {
         // base does not have a parent, so check out the StandardTheme spec
         // a better example (since no parent here, it is the same as getTag())
 
@@ -126,8 +120,8 @@ class BaseThemeSpec extends ObjectBehavior
 
         $this->setTags($tags = array($tag1, $tag2));
         $this->getTags()->shouldBe(array(
-            'first_tag' => $tag1,
-            'second_tag' => $tag2
+            'first_tag'  => $tag1,
+            'second_tag' => $tag2,
         ));
 
         $this->resolveTag('first_tag')->shouldReturn($tag1);

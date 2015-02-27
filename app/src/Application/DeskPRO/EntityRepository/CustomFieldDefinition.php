@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -36,8 +35,8 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\TicketLayout\Layout;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\DBAL\Connection;
-use \Doctrine\Common\Util\ClassUtils;
 
 class CustomFieldDefinition extends AbstractEntityRepository
 {

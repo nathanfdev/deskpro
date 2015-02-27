@@ -26,13 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DpBehat\Page;
-
 
 use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
@@ -56,7 +53,7 @@ class BasePage extends Page
         $uri = $url_info['path'];
 
         if (isset($url_info['query'])) {
-            $uri .= '?' . $url_info['query'];
+            $uri .= '?'.$url_info['query'];
         }
 
         return $uri;

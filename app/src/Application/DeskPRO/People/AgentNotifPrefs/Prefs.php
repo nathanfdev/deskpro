@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -54,13 +53,13 @@ class Prefs
 
     /** @var array */
     public static $apps = array(
-        'chat' => 1,
-        'task' => 1,
-        'twitter' => 1,
+        'chat'     => 1,
+        'task'     => 1,
+        'twitter'  => 1,
         'feedback' => 1,
-        'publish' => 1,
-        'crm' => 1,
-        'account' => 1,
+        'publish'  => 1,
+        'crm'      => 1,
+        'account'  => 1,
     );
 
     public function __construct()
@@ -85,9 +84,10 @@ class Prefs
     }
 
     /**
-     * @param  TicketFilter              $filter
-     * @param  array                     $sub_types Map of subtype=>value. Currently, value must be either true or false
-     * @param  string                    $type
+     * @param TicketFilter $filter
+     * @param array        $sub_types Map of subtype=>value. Currently, value must be either true or false
+     * @param string       $type
+     *
      * @throws \InvalidArgumentException
      */
     public function setFilterSubs($type, TicketFilter $filter, array $sub_types)
@@ -114,7 +114,8 @@ class Prefs
 
     /**
      * @param $type
-     * @param  TicketFilter $for_filter
+     * @param TicketFilter $for_filter
+     *
      * @return array
      */
     public function getFilterSubsForFilter($type, TicketFilter $for_filter)
@@ -131,7 +132,8 @@ class Prefs
     /**
      * This gets the filter sub settings for all set filters.
      *
-     * @param  string|null $type
+     * @param string|null $type
+     *
      * @return array
      */
     public function getFilterSubs($type = null)
@@ -172,6 +174,7 @@ class Prefs
 
     /**
      * @param $mode
+     *
      * @throws \InvalidArgumentException
      */
     public function setEmailMentionMode($mode)
@@ -184,7 +187,8 @@ class Prefs
     }
 
     /**
-     * @param  string $type
+     * @param string $type
+     *
      * @return mixed
      */
     public function getFilterNotifyPrefs($type)
@@ -208,8 +212,9 @@ class Prefs
     }
 
     /**
-     * @param  string $type
-     * @param  string $app_name
+     * @param string $type
+     * @param string $app_name
+     *
      * @return mixed
      */
     public function getAppSubs($type, $app_name = null)
@@ -218,9 +223,10 @@ class Prefs
     }
 
     /**
-     * @param  string                    $type
-     * @param  string                    $app_name
-     * @param  array                     $values
+     * @param string $type
+     * @param string $app_name
+     * @param array  $values
+     *
      * @throws \InvalidArgumentException
      */
     public function setAppSubs($type, $app_name, $values)
@@ -238,10 +244,12 @@ class Prefs
     ####################################################################################################################
 
     /**
-     * @param  TicketFilter              $filter
-     * @param  string                    $type
-     * @return array
+     * @param TicketFilter $filter
+     * @param string       $type
+     *
      * @throws \InvalidArgumentException
+     * @return array
+     *
      */
     public function getFilterNotifyTypes(TicketFilter $filter, $type)
     {
@@ -288,9 +296,11 @@ class Prefs
     }
 
     /**
-     * @param  string                    $type
-     * @return array
+     * @param string $type
+     *
      * @throws \InvalidArgumentException
+     * @return array
+     *
      */
     public function getFilterNotifyPrefNames($type)
     {
@@ -301,7 +311,8 @@ class Prefs
     }
 
     /**
-     * @param  string $type
+     * @param string $type
+     *
      * @return array
      */
     public function getChatNotifyTypes($type)
@@ -316,7 +327,8 @@ class Prefs
     }
 
     /**
-     * @param  string $type
+     * @param string $type
+     *
      * @return array
      */
     public function getTaskNotifyTypes($type)
@@ -330,7 +342,8 @@ class Prefs
     }
 
     /**
-     * @param  string $type
+     * @param string $type
+     *
      * @return array
      */
     public function getTwitterNotifyTypes($type)
@@ -347,7 +360,8 @@ class Prefs
     }
 
     /**
-     * @param  string $type
+     * @param string $type
+     *
      * @return array
      */
     public function getFeedbackNotifyTypes($type)
@@ -359,7 +373,8 @@ class Prefs
     }
 
     /**
-     * @param  string $type
+     * @param string $type
+     *
      * @return array
      */
     public function getPublishNotifyTypes($type)
@@ -371,7 +386,8 @@ class Prefs
     }
 
     /**
-     * @param  string $type
+     * @param string $type
+     *
      * @return array
      */
     public function getCrmNotifyTypes($type)
@@ -383,7 +399,8 @@ class Prefs
     }
 
     /**
-     * @param  string $type
+     * @param string $type
+     *
      * @return array
      */
     public function getAccountNotifyTypes($type)

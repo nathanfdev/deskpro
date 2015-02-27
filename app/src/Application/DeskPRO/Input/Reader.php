@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Input;
@@ -36,11 +34,9 @@ namespace Application\DeskPRO\Input;
 use Orb\Input\Reader\Reader as BaseReader;
 
 /**
- * Class Reader
+ * Class Reader.
  *
  * This class just defines some useful getX methods.
- *
- * @package Application\DeskPRO\Input
  */
 class Reader extends BaseReader
 {
@@ -52,8 +48,9 @@ class Reader extends BaseReader
     /**
      * Gets a string.
      *
-     * @param  string $name
-     * @param  null   $source_name
+     * @param string $name
+     * @param null   $source_name
+     *
      * @return string
      */
     public function getString($name, $source_name = null)
@@ -64,8 +61,9 @@ class Reader extends BaseReader
     /**
      * Gets a string and strips HTML.
      *
-     * @param  string $name
-     * @param  null   $source_name
+     * @param string $name
+     * @param null   $source_name
+     *
      * @return string
      */
     public function getStringNoHtml($name, $source_name = null)
@@ -76,8 +74,9 @@ class Reader extends BaseReader
     /**
      * Gets a raw string. No UTF-8 fixing, no trimming, etc.
      *
-     * @param  string $name
-     * @param  null   $source_name
+     * @param string $name
+     * @param null   $source_name
+     *
      * @return string
      */
     public function getStringRaw($name, $source_name = null)
@@ -88,8 +87,9 @@ class Reader extends BaseReader
     /**
      * Gets a boolean.
      *
-     * @param  string $name
-     * @param  null   $source_name
+     * @param string $name
+     * @param null   $source_name
+     *
      * @return bool
      */
     public function getBool($name, $source_name = null)
@@ -100,8 +100,9 @@ class Reader extends BaseReader
     /**
      * Gets a 1/0 based on boolean input.
      *
-     * @param  string $name
-     * @param  null   $source_name
+     * @param string $name
+     * @param null   $source_name
+     *
      * @return int
      */
     public function getBoolInt($name, $source_name = null)
@@ -112,8 +113,9 @@ class Reader extends BaseReader
     /**
      * Gets an integer.
      *
-     * @param  string $name
-     * @param  null   $source_name
+     * @param string $name
+     * @param null   $source_name
+     *
      * @return int
      */
     public function getInt($name, $source_name = null)
@@ -124,8 +126,9 @@ class Reader extends BaseReader
     /**
      * Gets an unsigned integer.
      *
-     * @param  string $name
-     * @param  null   $source_name
+     * @param string $name
+     * @param null   $source_name
+     *
      * @return int
      */
     public function getUInt($name, $source_name = null)
@@ -136,8 +139,9 @@ class Reader extends BaseReader
     /**
      * Gets a float.
      *
-     * @param  string $name
-     * @param  null   $source_name
+     * @param string $name
+     * @param null   $source_name
+     *
      * @return float
      */
     public function getFloat($name, $source_name = null)
@@ -148,8 +152,9 @@ class Reader extends BaseReader
     /**
      * Gets an unsigned float.
      *
-     * @param  string $name
-     * @param  null   $source_name
+     * @param string $name
+     * @param null   $source_name
+     *
      * @return float
      */
     public function getUFloat($name, $source_name = null)
@@ -158,10 +163,11 @@ class Reader extends BaseReader
     }
 
     /**
-     * Gets an array of integers (with keys discarded)
+     * Gets an array of integers (with keys discarded).
      *
      * @param $name
-     * @param  null  $source_name
+     * @param null $source_name
+     *
      * @return array
      */
     public function getArrayOfInts($name, $source_name = null)
@@ -170,10 +176,11 @@ class Reader extends BaseReader
     }
 
     /**
-     * Gets an array of unsigned integers (with keys discarded)
+     * Gets an array of unsigned integers (with keys discarded).
      *
      * @param $name
-     * @param  null  $source_name
+     * @param null $source_name
+     *
      * @return array
      */
     public function getArrayOfUInts($name, $source_name = null)
@@ -182,10 +189,11 @@ class Reader extends BaseReader
     }
 
     /**
-     * Gets an array of strings (with keys discarded)
+     * Gets an array of strings (with keys discarded).
      *
      * @param $name
-     * @param  null  $source_name
+     * @param null $source_name
+     *
      * @return array
      */
     public function getArrayOfStrings($name, $source_name = null)
@@ -197,7 +205,8 @@ class Reader extends BaseReader
      * Gets an array of id=>string (where id is uint).
      *
      * @param $name
-     * @param  null  $source_name
+     * @param null $source_name
+     *
      * @return array
      */
     public function getIdMappedStrings($name, $source_name = null)
@@ -209,7 +218,8 @@ class Reader extends BaseReader
      * Gets an array of id=>int (where id is uint).
      *
      * @param $name
-     * @param  null  $source_name
+     * @param null $source_name
+     *
      * @return array
      */
     public function getIdMappedInts($name, $source_name = null)
@@ -221,7 +231,8 @@ class Reader extends BaseReader
      * Gets an array of id=>uint (where id is uint).
      *
      * @param $name
-     * @param  null  $source_name
+     * @param null $source_name
+     *
      * @return array
      */
     public function getIdMappedUInts($name, $source_name = null)

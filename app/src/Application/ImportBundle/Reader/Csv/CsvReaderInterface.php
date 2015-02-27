@@ -28,25 +28,26 @@
 namespace Application\ImportBundle\Reader\Csv;
 
 /**
- * Csv data parser interface
+ * Csv data parser interface.
  *
  * Interface CsvReaderInterface
- * @package Application\ImportBundle\Reader\Csv
  */
 interface CsvReaderInterface
 {
     /**
-     * Returns rows count of csv file
+     * Returns rows count of csv file.
      *
      * @param CsvConfig $config
+     *
      * @return int
      */
     public function getRowsCount(CsvConfig $config);
 
     /**
-     * Parse csv file into raw array
+     * Parse csv file into raw array.
      *
      * @param CsvConfig $config
+     *
      * @return array
      */
     public function getData(CsvConfig $config);

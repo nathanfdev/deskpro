@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -65,7 +62,7 @@ class CleanupQuarterHourly extends AbstractJob
         # Update table counts
         #------------------------------
 
-        $counts = array();
+        $counts                               = array();
         $counts['tickets']                    = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets`");
         $counts['tickets.resolved']           = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'resolved'");
         $counts['tickets.archive_validating'] = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'validating'");
@@ -99,7 +96,7 @@ class CleanupQuarterHourly extends AbstractJob
             $agent->loadHelper('AgentPrefs');
 
             foreach ($filters as $filter) {
-                /** @var \Application\DeskPRO\Entity\TicketFilter $filter*/
+                /* @var \Application\DeskPRO\Entity\TicketFilter $filter*/
                 $searcher = $filter->getSearcher();
                 $searcher->setPersonContext($agent);
 

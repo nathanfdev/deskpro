@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 
 /**
- * Abstract zenDesk parser
+ * Abstract zenDesk parser.
  *
  * Class AbstractParser
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
 abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
 {
@@ -43,7 +42,7 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected $reader;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param ZenDeskReaderInterface $reader
      */

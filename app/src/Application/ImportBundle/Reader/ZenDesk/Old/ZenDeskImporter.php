@@ -26,20 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Import
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Import\Importer;
 
-use Doctrine\ORM\Query;
-use Orb\Log\Logger;
 use Application\DeskPRO\DBAL\Logging\QueryLogger;
+use Orb\Log\Logger;
 use Orb\Service\Zendesk\Zendesk;
 
-class ZendeskImporter extends AbstractImporter
+class ZenDeskImporter extends AbstractImporter
 {
     /**
      * @var \Application\DeskPRO\DBAL\Connection
@@ -72,8 +68,8 @@ class ZendeskImporter extends AbstractImporter
     public $run_mode;
 
     protected $cache_map_types = array(
-        'zd_org_id' => true,
-        'zd_group_id' => true,
+        'zd_org_id'          => true,
+        'zd_group_id'        => true,
         'zd_ticket_field_id' => true,
     );
 
@@ -98,9 +94,9 @@ class ZendeskImporter extends AbstractImporter
     public function validateOptions()
     {
         $errors = array();
+
         return $errors;
     }
-
 
     public function setupImport($mode = 'run')
     {
@@ -116,29 +112,25 @@ class ZendeskImporter extends AbstractImporter
         $this->zd->importer = $this;
     }
 
-
     public function cleanupImport()
     {
-
     }
-
 
     public function countSteps()
     {
         return count($this->steps);
     }
 
-
     public function getStep($step)
     {
-        $class = 'Application\\DeskPRO\\Import\\Importer\\Step\\Zendesk\\' . $this->steps[$step-1] . 'Step';
-        $step = new $class($this);
+        $class = 'Application\\DeskPRO\\Import\\Importer\\Step\\Zendesk\\'.$this->steps[$step-1].'Step';
+        $step  = new $class($this);
 
         return $step;
     }
 
     /**
-     * Called before a step is run
+     * Called before a step is run.
      *
      * @param $step
      */
@@ -150,9 +142,9 @@ class ZendeskImporter extends AbstractImporter
         # logger for db connection
         #------------------------------
 
-        $qlog = new QueryLogger();
+        $qlog                    = new QueryLogger();
         $qlog->ignore_triggers[] = 'DP_QLOG_NOLOG';
-        $qlog->tag = 'new_db';
+        $qlog->tag               = 'new_db';
 
         $this->logger->addFilter(new \Application\InstallBundle\Logger\Filter\InstallQueryLogFormatter());
         $qlog->setLogger($this->logger);
@@ -168,7 +160,7 @@ class ZendeskImporter extends AbstractImporter
         # logger for ZD
         #------------------------------
 
-        $zdlog = new ZendeskApiLogger();
+        $zdlog       = new ZendeskApiLogger();
         $this->zdlog = $zdlog;
         $this->zd->addListener(array($zdlog, 'callback'));
 
@@ -177,9 +169,8 @@ class ZendeskImporter extends AbstractImporter
         $this->time_begin = microtime(true);
     }
 
-
     /**
-     * Called after a step is run
+     * Called after a step is run.
      *
      * @param $step
      */
@@ -190,8 +181,8 @@ class ZendeskImporter extends AbstractImporter
         $time_end   = microtime(true);
         $time_total = $time_end - $this->time_begin;
 
-        $time_db    = $this->qlog_db->total_time;
-        $time_zd    = $this->zdlog->time;
+        $time_db        = $this->qlog_db->total_time;
+        $time_zd        = $this->zdlog->time;
         $time_php_total = $time_total - $time_db - $time_zd;
 
         $total_queries  = $this->qlog_db->query_count;
@@ -206,9 +197,8 @@ class ZendeskImporter extends AbstractImporter
         $this->logMessage(sprintf("Time: %0.2f   PHP: %0.2f   ZD: %.02f   DB: %0.2f   ZD Calls: %d   Queries: %d,  Peak Mem: %s", $time_total, $time_php_total, $time_zd, $time_db, $total_apicalls, $total_queries, $mem));
     }
 
-
     /**
-     * Remove indexes on a table for bulk inserting
+     * Remove indexes on a table for bulk inserting.
      *
      * We are a bit clever and combine the alter queries into one so they execute faster,
      * rather than trying to do them one at a time as Doctrine does by default
@@ -219,24 +209,25 @@ class ZendeskImporter extends AbstractImporter
         $sm = $this->getDb()->getSchemaManager();
 
         $indexes = $sm->listTableIndexes($table);
-        $fkeys = $sm->listTableForeignKeys($table);
+        $fkeys   = $sm->listTableForeignKeys($table);
 
-        $drop_parts = array();
+        $drop_parts    = array();
         $restore_parts = array();
 
         foreach ($indexes as $x) {
-            if ($x->isPrimary()) continue;
+            if ($x->isPrimary()) {
+                continue;
+            }
 
             $cols = $x->getColumns();
             $skip = false;
 
             foreach ($keep_indexes as $keep) {
-                $count = count($keep);
+                $count       = count($keep);
                 $found_count = 0;
                 if (count($cols) == $count) {
                     foreach ($cols as $idx_col) {
                         if (in_array($idx_col, $keep)) {
-
                             $found_count++;
                         }
                     }
@@ -251,29 +242,27 @@ class ZendeskImporter extends AbstractImporter
                 continue;
             }
 
-            $p = $sm->getDatabasePlatform()->getDropIndexSQL($x, $table);
-            $p = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
-            $p = preg_replace("# ON (.*?)$#", '', trim($p));
+            $p            = $sm->getDatabasePlatform()->getDropIndexSQL($x, $table);
+            $p            = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
+            $p            = preg_replace("# ON (.*?)$#", '', trim($p));
             $drop_parts[] = $p;
 
-            $p = $sm->getDatabasePlatform()->getCreateIndexSQL($x, $table);
-            $p = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
-            $p = preg_replace('#^CREATE #', 'ADD ', trim($p));
-            $p = preg_replace('# ON (.*?) \((.*?)\)$#', ' ($2)', trim($p));
+            $p               = $sm->getDatabasePlatform()->getCreateIndexSQL($x, $table);
+            $p               = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
+            $p               = preg_replace('#^CREATE #', 'ADD ', trim($p));
+            $p               = preg_replace('# ON (.*?) \((.*?)\)$#', ' ($2)', trim($p));
             $restore_parts[] = $p;
         }
         foreach ($fkeys as $x) {
-
             $cols = $x->getColumns();
             $skip = false;
 
             foreach ($keep_indexes as $keep) {
-                $count = count($keep);
+                $count       = count($keep);
                 $found_count = 0;
                 if (count($cols) == $count) {
                     foreach ($cols as $idx_col) {
                         if (in_array($idx_col, $keep)) {
-
                             $found_count++;
                         }
                     }
@@ -288,8 +277,8 @@ class ZendeskImporter extends AbstractImporter
                 continue;
             }
 
-            $p = $sm->getDatabasePlatform()->getDropForeignKeySQL($x, $table);
-            $p = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
+            $p            = $sm->getDatabasePlatform()->getDropForeignKeySQL($x, $table);
+            $p            = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
             $drop_parts[] = $p;
 
             $name = $x->getQuotedName($sm->getDatabasePlatform());
@@ -300,7 +289,7 @@ class ZendeskImporter extends AbstractImporter
                 $p = $sm->getDatabasePlatform()->getCreateForeignKeySQL($x, $table);
             }
 
-            $p = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
+            $p               = preg_replace('#^ALTER TABLE (.*?) #', '', trim($p));
             $restore_parts[] = $p;
         }
 
@@ -308,26 +297,25 @@ class ZendeskImporter extends AbstractImporter
             return;
         }
 
-        $drop_sql      = "ALTER TABLE `$table` " . implode(', ', $drop_parts);
-        $restore_sql   = "ALTER TABLE `$table` " . implode(', ', $restore_parts);
+        $drop_sql      = "ALTER TABLE `$table` ".implode(', ', $drop_parts);
+        $restore_sql   = "ALTER TABLE `$table` ".implode(', ', $restore_parts);
 
         $this->getDb()->replace('import_datastore', array(
-            'typename' => 'tableindexes.' . $table,
-            'data' => serialize(array('sql' => $restore_sql))
+            'typename' => 'tableindexes.'.$table,
+            'data'     => serialize(array('sql' => $restore_sql)),
         ));
 
         $this->getDb()->exec($drop_sql);
     }
 
-
     /**
-     * Restores indexes that were previously deleted
+     * Restores indexes that were previously deleted.
      *
      * @param string $table
      */
     public function restoreTableIndexes($table)
     {
-        $data = $this->getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('tableindexes.' . $table));
+        $data = $this->getDb()->fetchColumn("SELECT data FROM import_datastore WHERE typename = ?", array('tableindexes.'.$table));
         $data = @unserialize($data);
 
         if (!$data || empty($data['sql'])) {
@@ -345,9 +333,9 @@ class ZendeskImporter extends AbstractImporter
         }
     }
 
-
     /**
      * @param $table
+     *
      * @return bool
      */
     public function doesOldTableExist($table)
@@ -366,10 +354,10 @@ class ZendeskImporter extends AbstractImporter
         return $this->table_exists[$table];
     }
 
-
     public function getStepTitle($step)
     {
-        $class = 'Application\\DeskPRO\\Import\\Importer\\Step\\Zendesk\\' . $this->steps[$step-1] . 'Step';
+        $class = 'Application\\DeskPRO\\Import\\Importer\\Step\\Zendesk\\'.$this->steps[$step-1].'Step';
+
         return $class::getTitle();
     }
 

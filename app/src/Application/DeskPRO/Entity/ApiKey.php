@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
  * @category Entities
  */
 
@@ -49,7 +47,6 @@ use Orb\Util\Strings;
  * @property Person $person
  * @property array $flags
  */
-
 class ApiKey extends DomainObject
 {
     const FLAG_ADMIN_MANAGE = 'admin_manage';
@@ -94,7 +91,7 @@ class ApiKey extends DomainObject
     }
 
     /**
-     * Regenerate the API key
+     * Regenerate the API key.
      */
     public function regenerateApiKey()
     {
@@ -113,7 +110,8 @@ class ApiKey extends DomainObject
     }
 
     /**
-     * @param  string $flag
+     * @param string $flag
+     *
      * @return bool
      */
     public function isFlagSet($flag)
@@ -122,9 +120,10 @@ class ApiKey extends DomainObject
     }
 
     /**
-     * @param  bool  $primary
-     * @param  bool  $deep
-     * @param  array $visited
+     * @param bool  $primary
+     * @param bool  $deep
+     * @param array $visited
+     *
      * @return array
      */
     public function toApiData($primary = true, $deep = true, array $visited = array())
@@ -196,11 +195,11 @@ class ApiKey extends DomainObject
         ));
 
         $metadata->mapOneToMany(array(
-            'fieldName'    => 'logs',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\ApiKeyLog',
-            'mappedBy'     => 'key',
-            'inversedBy'   => null,
-            'orderBy'      => array('id' => 'DESC'),
+            'fieldName'                  => 'logs',
+            'targetEntity'               => 'Application\\DeskPRO\\Entity\\ApiKeyLog',
+            'mappedBy'                   => 'key',
+            'inversedBy'                 => null,
+            'orderBy'                    => array('id' => 'DESC'),
             'cascade'                    => array('persist', 'remove'), // doesn't work
         ));
     }

@@ -30,7 +30,7 @@ namespace Application\ImportBundle\Reader\OsTicket;
 use Pdo;
 
 /**
- * Os ticket reader
+ * Os ticket reader.
  *
  * Table os ticket not found by default, use this query to create:
  *
@@ -56,7 +56,6 @@ use Pdo;
  * GROUP BY entry.object_id;
  *
  * Class OsTicketReader
- * @package Application\ImportBundle\Reader\OsTicket
  */
 class OsTicketReader implements OsTicketReaderInterface
 {
@@ -66,7 +65,7 @@ class OsTicketReader implements OsTicketReaderInterface
     private $connection_wrapper;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param ConnectionWrapperInterface $connection_wrapper
      */
@@ -94,19 +93,19 @@ class OsTicketReader implements OsTicketReaderInterface
      */
     public function getPeopleCount()
     {
-        $query = 'SELECT count(staff_id) FROM ost_staff';
+        $query      = 'SELECT count(staff_id) FROM ost_staff';
         $staff_stmt = $this->getConnection()->prepare($query);
         if ($staff_stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to get staff count', $staff_stmt->errorCode(), $staff_stmt->errorInfo());
         }
 
-        $query = 'SELECT count(id) FROM ost_user';
+        $query     = 'SELECT count(id) FROM ost_user';
         $user_stmt = $this->getConnection()->prepare($query);
         if ($user_stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to get users count', $user_stmt->errorCode(), $user_stmt->errorInfo());
         }
 
-        return (int)$staff_stmt->fetchColumn() + (int)$user_stmt->fetchColumn();
+        return (int) $staff_stmt->fetchColumn() + (int) $user_stmt->fetchColumn();
     }
 
     /**
@@ -295,7 +294,7 @@ class OsTicketReader implements OsTicketReaderInterface
     }
 
     /**
-     * Returns pdo connection
+     * Returns pdo connection.
      *
      * @return PDO
      */

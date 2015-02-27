@@ -28,10 +28,9 @@
 namespace Application\ImportBundle\Reader\Json;
 
 /**
- * Json data parser configuration
+ * Json data parser configuration.
  *
  * Class JsonConfig
- * @package Application\ImportBundle\Reader\Json
  */
 class JsonConfig
 {
@@ -46,7 +45,7 @@ class JsonConfig
     private $exclude_done = false;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string $path
      */
@@ -65,11 +64,13 @@ class JsonConfig
 
     /**
      * @param string $path
+     *
      * @return $this
      */
     public function setPath($path)
     {
         $this->path = $path;
+
         return $this;
     }
 
@@ -83,11 +84,13 @@ class JsonConfig
 
     /**
      * @param boolean $exclude_done
+     *
      * @return $this
      */
     public function setExcludeDone($exclude_done)
     {
         $this->exclude_done = $exclude_done;
+
         return $this;
     }
 }

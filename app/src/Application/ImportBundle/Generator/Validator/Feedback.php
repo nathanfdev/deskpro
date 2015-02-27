@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Validator;
 use Application\ImportBundle\Entity;
 
 /**
- * Feedback entities validator
+ * Feedback entities validator.
  *
  * Class Feedback
- * @package Application\ImportBundle\Generator\Validator
  */
 final class Feedback extends AbstractConstraintValidator
 {
@@ -48,7 +47,7 @@ final class Feedback extends AbstractConstraintValidator
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Feedback $entity
+     * @var Entity\Feedback
      */
     public function validate(Entity\EntityInterface $entity)
     {

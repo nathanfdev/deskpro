@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category ORM
  */
 
@@ -51,7 +50,7 @@ class QueryPartial
 
     public function setOrderBy($order_by, $order_dir)
     {
-        $this->order_by = $order_by;
+        $this->order_by  = $order_by;
         $this->order_dir = $order_dir;
 
         return $this;

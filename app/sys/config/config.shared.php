@@ -1,7 +1,10 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
-/** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
+
+/* @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 
 $container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/../doctrine-proxies');
 $container->setParameter('doctrine.orm.entity_manager.class', 'Application\\DeskPRO\\ORM\\EntityManager');
@@ -23,7 +26,7 @@ $definition->setClass('Application\DeskPRO\NewSettings\SettingsResolver');
 $definition->setFactoryClass('Application\DeskPRO\DependencyInjection\SystemServices\SettingsResolverService');
 $definition->setFactoryMethod('create');
 $definition->setArguments(array(
-        new Reference('service_container')
+        new Reference('service_container'),
     )
 );
 $container->setDefinition('settings_resolver', $definition);
@@ -36,7 +39,6 @@ $definition = new Definition();
 $definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\SecurityHeadersResponseListener');
 $definition->addTag('kernel.event_subscriber');
 $container->setDefinition('listener.security_headers', $definition);
-
 
 ############################################################################
 # Form Type
@@ -88,8 +90,6 @@ $definition->addMethodCall('addSource', array('cookie', new Reference('deskpro.c
 $definition->addMethodCall('setArrayStringSeparator', array('.'));
 $container->setDefinition('deskpro.core.input_reader', $definition);
 
-
-
 ############################################################################
 # Doctrine services
 ############################################################################
@@ -99,7 +99,7 @@ $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\DBAL\\ConnectionFactory');
 $definition->setArguments(
     array(
-        '%doctrine.dbal.connection_factory.types%'
+        '%doctrine.dbal.connection_factory.types%',
     )
 );
 $definition->addMethodCall('setContainer', array(new Reference('service_container')));
@@ -109,7 +109,7 @@ $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\ORM\\ContainerAwareEntityListenerResolver');
 $definition->setArguments(
     array(
-        new Reference('service_container')
+        new Reference('service_container'),
     )
 );
 $container->setDefinition('dp.doctrine.entity_listener_resolver', $definition);
@@ -166,20 +166,20 @@ $container->loadFromExtension(
             'entity_managers'             => array(
                 'default' => array(
                     'mappings' => array(
-                        'DeskPRO' => array('type' => 'staticphp'),
+                        'DeskPRO'     => array('type' => 'staticphp'),
                         'EmailBundle' => array('type' => 'staticphp'),
                     ),
-                    'class_metadata_factory_name' => 'Orb\\Doctrine\\ORM\\Mapping\\StaticClassMetadataFactory'
-                )
-            )
+                    'class_metadata_factory_name' => 'Orb\\Doctrine\\ORM\\Mapping\\StaticClassMetadataFactory',
+                ),
+            ),
         ),
         'dbal' => array(
             'default_connection' => 'default',
             'connections'        => array(
                 'default' => array('host' => 'from_user_config.db', 'logging' => true),
-                'read'    => array('host' => 'from_user_config.db_read', 'logging' => true)
-            )
-        )
+                'read'    => array('host' => 'from_user_config.db_read', 'logging' => true),
+            ),
+        ),
     )
 );
 
@@ -211,17 +211,16 @@ $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Mail\\Transport\\DelegatingTransport');
 $definition->setArguments(
     array(
-        new Reference('swiftmailer.mailer.default.transport.eventdispatcher')
+        new Reference('swiftmailer.mailer.default.transport.eventdispatcher'),
     )
 );
 $container->setDefinition('swiftmailer.mailer.transport.dp_delegating', $definition);
 
 $container->loadFromExtension(
     'swiftmailer', array(
-        'transport' => 'dp_delegating'
+        'transport' => 'dp_delegating',
     )
 );
-
 
 // deskpro.mail_logger
 $definition = new Definition();
@@ -231,9 +230,8 @@ $definition->setFactoryMethod('create');
 $definition->setArguments(array(new Reference('service_container')));
 $container->setDefinition('deskpro.mail_logger', $definition);
 
-
 $definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\ActivityLogger', array(
-    new Reference('doctrine.orm.entity_manager')
+    new Reference('doctrine.orm.entity_manager'),
 ));
 $container->setDefinition('deskpro.person_activity_logger', $definition);
 
@@ -244,13 +242,11 @@ $definition = new Definition('Application\DeskPRO\Monolog\Logger', array('change
 $definition->addMethodCall('pushHandler', array(new Reference('deskpro.log_handler.log_event')));
 $container->setDefinition('deskpro.logger.changelog', $definition);
 
-
 $definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
     DP_ROOT.'/sys/config/settings.php',
-    new Reference('database_connection')
+    new Reference('database_connection'),
 ));
 $container->setDefinition('deskpro.core.settings', $definition);
-
 
 $definition = new Definition('Application\\DeskPRO\\Groups\\GroupsReposFactory', array(new Reference('doctrine.orm.entity_manager')));
 $definition->setFactoryClass('Application\\DeskPRO\\Groups\\GroupsReposFactory');
@@ -266,7 +262,6 @@ $definition = new Definition('Application\\DeskPRO\\People\\UserGroups');
 $definition->setFactoryService('deskpro.people.groups_repos_factory');
 $definition->setFactoryMethod('createUserGroups');
 $container->setDefinition('deskpro.people.user_groups', $definition);
-
 
 $container
     ->register('dp.custom_fields.manager', 'Application\DeskPRO\Service\CustomFieldManager')

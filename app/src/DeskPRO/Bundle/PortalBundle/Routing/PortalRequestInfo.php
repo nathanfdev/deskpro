@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Routing;
@@ -73,12 +71,12 @@ class PortalRequestInfo
     public function __construct(Request $request, PortalMode $mode = null)
     {
         $this->request = $request;
-        $this->mode = $mode;
+        $this->mode    = $mode;
         // recommended you also call ->setRouter with the router service
     }
 
     /**
-     * If a router is set on the object, it can do a better job at finding isSpecial() info
+     * If a router is set on the object, it can do a better job at finding isSpecial() info.
      *
      * @param RouterInterface $router
      */
@@ -92,7 +90,7 @@ class PortalRequestInfo
         $pathinfo = $this->getReleventPathInfo();
 
         $matcher = new UrlMatcher();
-        $info = $matcher->extractLanguageCode($pathinfo);
+        $info    = $matcher->extractLanguageCode($pathinfo);
 
         return $info['lang_url_code'];
     }
@@ -102,7 +100,7 @@ class PortalRequestInfo
         $pathinfo = $this->getReleventPathInfo();
 
         $matcher = new UrlMatcher();
-        $info = $matcher->extractLanguageCode($pathinfo);
+        $info    = $matcher->extractLanguageCode($pathinfo);
 
         return $info['remaining_pathinfo'];
     }

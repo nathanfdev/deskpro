@@ -31,10 +31,9 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 
 /**
- * Articles csv file parser
+ * Articles csv file parser.
  *
  * Class Articles
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
 final class Articles extends AbstractParser
 {
@@ -73,7 +72,6 @@ final class Articles extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid article record `%d` found (Skipping)', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid article record `%d` found (Skipping): %s',
@@ -86,7 +84,7 @@ final class Articles extends AbstractParser
     }
 
     /**
-     * Returns an article entity
+     * Returns an article entity.
      *
      * @param int   $num
      * @param array $article
@@ -98,7 +96,7 @@ final class Articles extends AbstractParser
         if ($this->isArticleValid($article)) {
             $entity = new Entity\Article();
             $entity
-                ->setDestination('article_' . $num)
+                ->setDestination('article_'.$num)
                 ->setOid($num)
                 ->setPersonEmail($article['person'])
                 ->setTitle($article['title'])
@@ -118,13 +116,14 @@ final class Articles extends AbstractParser
             return $entity;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Check if article has all required columns
+     * Check if article has all required columns.
      *
      * @param array $article
+     *
      * @return bool
      */
     private function isArticleValid(array $article)
@@ -145,7 +144,7 @@ final class Articles extends AbstractParser
     }
 
     /**
-     * Returns record type reader config
+     * Returns record type reader config.
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */

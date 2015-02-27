@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Twig\Extension;
@@ -62,18 +59,18 @@ class FormExtension extends \Symfony\Bridge\Twig\Extension\FormExtension
             }
         }
 
-        $custom = '_'.$view->get('id');
+        $custom    = '_'.$view->get('id');
         $rendering = $custom.$section;
-        $blocks = $this->getBlocks($view);
+        $blocks    = $this->getBlocks($view);
 
         if (isset($this->varStack[$rendering])) {
-            $typeIndex = $this->varStack[$rendering]['typeIndex'] - 1;
-            $types = $this->varStack[$rendering]['types'];
+            $typeIndex                               = $this->varStack[$rendering]['typeIndex'] - 1;
+            $types                                   = $this->varStack[$rendering]['types'];
             $this->varStack[$rendering]['variables'] = array_replace_recursive($this->varStack[$rendering]['variables'], $variables);
         } else {
-            $types = $view->get('types');
-            $types[] = $custom;
-            $typeIndex = count($types) - 1;
+            $types                      = $view->get('types');
+            $types[]                    = $custom;
+            $typeIndex                  = count($types) - 1;
             $this->varStack[$rendering] = array(
                 'variables' => array_replace_recursive($view->all(), $variables),
                 'types'     => $types,

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Input
  */
 
@@ -38,7 +37,7 @@ use Orb\Input\Cleaner\Cleaner;
 use Orb\Util\Strings;
 
 /**
- * A cleaner plugin registeres typenames and callbacks
+ * A cleaner plugin registeres typenames and callbacks.
  */
 class Basic implements CleanerPlugin
 {
@@ -92,9 +91,10 @@ class Basic implements CleanerPlugin
     /**
      * Clean a value.
      *
-     * @param  mixed $value   The value to clean
-     * @param  int   $type    The type to cast to
-     * @param  mixed $options Options for the type
+     * @param mixed $value   The value to clean
+     * @param int   $type    The type to cast to
+     * @param mixed $options Options for the type
+     *
      * @return mixed The cleaned value
      */
     public function cleanValue($value, $type, array $options, Cleaner $cleaner)
@@ -211,7 +211,8 @@ class Basic implements CleanerPlugin
      * This uses phputf8 from sourceforge through the Strings util class which acts
      * as the loader.
      *
-     * @param  string|array $string The string to work on, or an array to go through
+     * @param string|array $string The string to work on, or an array to go through
+     *
      * @return string
      */
     public function cleanString($string)

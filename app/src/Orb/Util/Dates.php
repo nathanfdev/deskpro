@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
@@ -45,12 +44,12 @@ class Dates
      * How many seconds are in various units of time.
      * @var int
      */
-    const SECS_MIN = 60;
-    const SECS_HOUR = 3600;
-    const SECS_DAY = 86400;
-    const SECS_WEEK = 604800;
+    const SECS_MIN   = 60;
+    const SECS_HOUR  = 3600;
+    const SECS_DAY   = 86400;
+    const SECS_WEEK  = 604800;
     const SECS_MONTH = 2419200;
-    const SECS_YEAR = 29030400;
+    const SECS_YEAR  = 29030400;
     /**#@-**/
 
     /**@#+
@@ -67,9 +66,10 @@ class Dates
     /**#@-**/
 
     /**
-     * Check if a year is a leap year
+     * Check if a year is a leap year.
      *
      * @param $year
+     *
      * @return bool
      */
     public static function checkLeapYear($year)
@@ -97,22 +97,23 @@ class Dates
      * $year is required for checking of leap-years where Feb has 29 days. It can
      * be an integer like 2009, or an Orb_Date, or an array of date parts with an 'year' item.
      *
-     * @param  int   $month The month to check
-     * @param  mixed $year  The year to check in, defaults to this year.
+     * @param int   $month The month to check
+     * @param mixed $year  The year to check in, defaults to this year.
+     *
      * @return int
      */
     public static function daysInMonth($month, $year = null)
     {
         static $map = array(
-            1 => 31,
-            2 => 28,
-            3 => 31,
-            4 => 30,
-            5 => 31,
-            6 => 30,
-            7 => 31,
-            8 => 31,
-            9 => 30,
+            1  => 31,
+            2  => 28,
+            3  => 31,
+            4  => 30,
+            5  => 31,
+            6  => 30,
+            7  => 31,
+            8  => 31,
+            9  => 30,
             10 => 31,
             11 => 30,
             12 => 31,
@@ -143,8 +144,9 @@ class Dates
      * Get a date object for the last day in a month. It will be the last second of the month,
      * useful for "end of month" boundries.
      *
-     * @param  int       $month The month to get, or null for current month
-     * @param  int       $year  The year to get, or null for current year
+     * @param int $month The month to get, or null for current month
+     * @param int $year  The year to get, or null for current year
+     *
      * @return \DateTime
      */
     public static function lastDayInMonth($month = null, $year = null)
@@ -166,8 +168,9 @@ class Dates
      * Get a date object for the first day in a month. It will be the first second of the month,
      * useful for "start of month" boundaries.
      *
-     * @param  int       $month The month to get, or null for current month
-     * @param  int       $year  The year to get, or null for current year
+     * @param int $month The month to get, or null for current month
+     * @param int $year  The year to get, or null for current year
+     *
      * @return \DateTime
      */
     public static function firstDayInMonth($month = null, $year = null)
@@ -192,8 +195,9 @@ class Dates
      * If the day is over the next months number of days, the day is reset to the last day
      * of the month. E.g., Jan 30 +1 month becomes Feb 28.
      *
-     * @param  \DateTime $date
-     * @param  int       $mod_months Months to modify by, can be negative
+     * @param \DateTime $date
+     * @param int       $mod_months Months to modify by, can be negative
+     *
      * @return \DateTime
      */
     public static function modMonths(\DateTime $date, $mod_months)
@@ -206,7 +210,7 @@ class Dates
 
         $neg = false;
         if ($mod_months < 1) {
-            $neg = true;
+            $neg        = true;
             $mod_months = abs($mod_months);
         }
 
@@ -239,8 +243,9 @@ class Dates
     /**
      * Adds or removes years from a date.
      *
-     * @param  \DateTime $date
-     * @param  int       $mod_years Years to modify by, can be negative
+     * @param \DateTime $date
+     * @param int       $mod_years Years to modify by, can be negative
+     *
      * @return \DateTime
      */
     public static function modYears(\DateTime $date, $mod_years)
@@ -262,7 +267,8 @@ class Dates
      * Takes a number of seconds and returns an array of details
      * of how many years, minutes, hours, days and years it is.
      *
-     * @param  int   $seconds
+     * @param int $seconds
+     *
      * @return array
      */
     public static function secsToPartsArray($seconds)
@@ -284,11 +290,12 @@ class Dates
     }
 
     /**
-     * Take some date show readable form of seconds/minutes/hours/days/years ago
+     * Take some date show readable form of seconds/minutes/hours/days/years ago.
      *
-     * @param  \DateTime $date
-     * @param  int       $detail
-     * @param  null      $lang
+     * @param \DateTime $date
+     * @param int       $detail
+     * @param null      $lang
+     *
      * @return string
      */
     public static function dateToAgo(\DateTime $date, $detail = 2, $lang = null)
@@ -299,32 +306,34 @@ class Dates
     }
 
     /**
-     * Take some secondsand show readable form of seconds/minutes/hours/days/years.s
+     * Take some secondsand show readable form of seconds/minutes/hours/days/years.s.
      *
-     * @param  int        $seconds The seconds
-     * @param  int        $detail  How much detail to go into, 1-5
-     * @param  array      $lang    Phrases to use for each unit
-     * @return string
+     * @param int   $seconds The seconds
+     * @param int   $detail  How much detail to go into, 1-5
+     * @param array $lang    Phrases to use for each unit
+     *
      * @throws \Exception
+     * @return string
+     *
      */
     public static function secsToReadable($seconds, $detail = 2, $lang = null)
     {
         static $lang_en = array(
             'seconds' => '%d seconds',
             'minutes' => '%d minutes',
-            'hours' => '%d hours',
-            'days' => '%d days',
-            'years' => '%d years',
-            'sep' => ' ',
+            'hours'   => '%d hours',
+            'days'    => '%d days',
+            'years'   => '%d years',
+            'sep'     => ' ',
         );
 
         static $lang_en_short = array(
             'seconds' => '%ds',
             'minutes' => '%dm',
-            'hours' => '%dh',
-            'days' => '%dd',
-            'years' => '%dy',
-            'sep' => ' ',
+            'hours'   => '%dh',
+            'days'    => '%dd',
+            'years'   => '%dy',
+            'sep'     => ' ',
         );
 
         if (!$lang or $lang == 'long') {
@@ -335,8 +344,8 @@ class Dates
             throw new \Exception('Language must be long, short or an array of phrases');
         }
 
-        $parts = self::secsToPartsArray($seconds);
-        $limit = 0;
+        $parts     = self::secsToPartsArray($seconds);
+        $limit     = 0;
         $str_parts = array();
 
         if ($parts['years']) {
@@ -383,7 +392,8 @@ class Dates
     /**
      * Converts a timezone into a UTC timezone. This does actual time conversion between timezones.
      *
-     * @param  \DateTime $datetime
+     * @param \DateTime $datetime
+     *
      * @return \DateTime
      */
     public static function convertToUtcDateTime(\DateTime $datetime)
@@ -405,7 +415,8 @@ class Dates
      * So if you want a "real" UTC datetime object with the timestamp adjusted, you need to do the conversion based on setting
      * the date.
      *
-     * @param  \DateTime $datetime
+     * @param \DateTime $datetime
+     *
      * @return \DateTime
      */
     public static function makeUtcDateTime(\DateTime $datetime)
@@ -431,8 +442,9 @@ class Dates
     /**
      * Tries to find the name of the timezone for a given offset. Returns false if no timezone found.
      *
-     * @param  float       $offset
-     * @param  null        $dst
+     * @param float $offset
+     * @param null  $dst
+     *
      * @return bool|string
      */
     public static function timezoneOffsetToName($offset, $dst = null)
@@ -460,9 +472,10 @@ class Dates
     }
 
     /**
-     * Get offset in seconds
+     * Get offset in seconds.
      *
      * @param $tz
+     *
      * @return int
      */
     public static function getTimezoneOffset($tz)
@@ -481,9 +494,10 @@ class Dates
     }
 
     /**
-     * Get offset as a string
+     * Get offset as a string.
      *
      * @param $tz
+     *
      * @return string
      */
     public static function getTimezoneOffsetString($tz)
@@ -506,10 +520,12 @@ class Dates
     /**
      * Convert unit of time into seconds (years, days, hours etc to seconds).
      *
-     * @param  int                       $num
-     * @param  string                    $unit
-     * @return int
+     * @param int    $num
+     * @param string $unit
+     *
      * @throws \InvalidArgumentException
+     * @return int
+     *
      */
     public static function getUnitInSeconds($num, $unit)
     {
@@ -536,10 +552,11 @@ class Dates
     /**
      * Convert a relative time input to a concrete date from now.
      *
-     * @param  int            $num       How many of the unit
-     * @param  string         $unit      Unit of time: seconds, minutes, hours, days, weeks, months, years
-     * @param  bool           $ago       True to produce a date in the past ("1 hour ago"), false for a future date ("in 1 hour")
-     * @param  \DateTime|null $from_date Date to start from
+     * @param int            $num       How many of the unit
+     * @param string         $unit      Unit of time: seconds, minutes, hours, days, weeks, months, years
+     * @param bool           $ago       True to produce a date in the past ("1 hour ago"), false for a future date ("in 1 hour")
+     * @param \DateTime|null $from_date Date to start from
+     *
      * @return \DateTime
      */
     public function relativeTimeToDate($num, $unit, $ago = true, \DateTime $from_date = null)

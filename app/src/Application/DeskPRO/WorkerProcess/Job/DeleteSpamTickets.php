@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -37,7 +34,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 use Application\DeskPRO\App;
 
 /**
- * Goes through tickets marked as spam and deletes them
+ * Goes through tickets marked as spam and deletes them.
  */
 class DeleteSpamTickets extends AbstractJob
 {

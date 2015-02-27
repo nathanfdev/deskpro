@@ -1,9 +1,9 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
- * @subpackage SystemScripts
  * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
  * @license http://www.deskpro.com/license-agreement DeskPRO License
  */
@@ -11,7 +11,6 @@
 /**
  * This handles a raw email submitted via a PUT request.
  */
-
 require DP_ROOT.'/sys/load_config.php';
 dp_load_config();
 
@@ -44,7 +43,7 @@ if (!dp_get_config('savemail_accept_all')) {
     if (isset($_GET['cat'])) {
         try {
             $pdo = new \PDO("mysql:host={$DP_CONFIG['db']['host']};dbname={$DP_CONFIG['db']['dbname']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
-            $st = $pdo->prepare("SELECT id FROM email_gateway_addresses WHERE match_pattern = ?");
+            $st  = $pdo->prepare("SELECT id FROM email_gateway_addresses WHERE match_pattern = ?");
             $st->execute(array($_GET['cat']));
 
             if (!$st->fetchColumn()) {
@@ -68,7 +67,7 @@ if (!dp_get_config('savemail_accept_all')) {
 #------------------------------
 
 if (!defined('DP_SAVEMAIL_DIR')) {
-    define('DP_SAVEMAIL_DIR', dp_get_data_dir() . '/emailstore');
+    define('DP_SAVEMAIL_DIR', dp_get_data_dir().'/emailstore');
 }
 
 if (!is_dir(DP_SAVEMAIL_DIR)) {
@@ -90,8 +89,8 @@ if (!preg_match('#^[a-zA-Z0-9\-_][a-zA-Z0-9\-_.@]*$#', $cat)) {
     exit(1);
 }
 
-$cat = strtolower($cat);
-$cat_dir = DP_SAVEMAIL_DIR . '/' . $cat;
+$cat     = strtolower($cat);
+$cat_dir = DP_SAVEMAIL_DIR.'/'.$cat;
 
 if (!is_dir($cat_dir)) {
     if (!mkdir($cat_dir, 0777, true)) {
@@ -109,9 +108,9 @@ if (!is_dir($cat_dir)) {
 # Save input
 #------------------------------
 
-$name = date('Y-m-d.H-i-s') . '-' . mt_rand(100000000,999999999) . '.eml';
+$name = date('Y-m-d.H-i-s').'-'.mt_rand(100000000, 999999999).'.eml';
 
-$tmp_path = dp_get_tmp_dir() . '/tmp_eml_' . $name;
+$tmp_path = dp_get_tmp_dir().'/tmp_eml_'.$name;
 if (!is_dir(dp_get_tmp_dir())) {
     if (!mkdir(dp_get_tmp_dir(), 0777, true)) {
         echo "DP_SAVEMAIL_TMPDIR_MAKE_ERROR";
@@ -131,6 +130,6 @@ umask(0000);
 chmod($tmp_path, 0777);
 umask($current_umask);
 
-rename($tmp_path, $cat_dir . '/' . $name);
+rename($tmp_path, $cat_dir.'/'.$name);
 
 echo "DP_MAIL_ACCEPT";

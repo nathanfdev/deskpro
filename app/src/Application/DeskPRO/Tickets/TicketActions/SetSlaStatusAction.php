@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -38,7 +35,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 
 /**
- * Set SLA status
+ * Set SLA status.
  */
 class SetSlaStatusAction extends AbstractAction
 {
@@ -50,11 +47,11 @@ class SetSlaStatusAction extends AbstractAction
     public function __construct($sla_status, $sla_id)
     {
         $this->sla_status = $sla_status;
-        $this->sla_id = $sla_id;
+        $this->sla_id     = $sla_id;
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -82,7 +79,7 @@ class SetSlaStatusAction extends AbstractAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -110,7 +107,8 @@ class SetSlaStatusAction extends AbstractAction
     }
 
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
@@ -144,7 +142,7 @@ class SetSlaStatusAction extends AbstractAction
 
             return $tr->phrase('agent.tickets.set_sla_status_for_sla_action', array(
                 'sla_status' => $value,
-                'sla' => $sla ? $sla->title : ('<error>Unknown #'.$this->sla_id.'</error>'),
+                'sla'        => $sla ? $sla->title : ('<error>Unknown #'.$this->sla_id.'</error>'),
             ));
         } else {
             return $tr->phrase('agent.tickets.set_sla_status_action', array(

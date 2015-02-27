@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Func;
@@ -40,7 +37,7 @@ use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 /**
- * Handler for STACK_GROUP function
+ * Handler for STACK_GROUP function.
  */
 class StackGroup extends AbstractFunc
 {

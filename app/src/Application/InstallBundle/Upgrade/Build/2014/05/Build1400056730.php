@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -57,10 +54,10 @@ class Build1400056730 extends AbstractBuild
 
         if ($ga = $this->container->getSetting('core.ga_property_id')) {
             $this->out("Installing Google Analytics");
-            $package = $manager->getPackage('deskpro_googleanalytics');
-            $app = new AppInstance();
+            $package      = $manager->getPackage('deskpro_googleanalytics');
+            $app          = new AppInstance();
             $app->package = $package;
-            $app->title = $package->title;
+            $app->title   = $package->title;
             $app->setSettings(array('ga_property_id' => $ga));
             $em->persist($app);
             $em->flush();
@@ -72,10 +69,10 @@ class Build1400056730 extends AbstractBuild
 
         if ($this->container->getSetting('core.use_gravatar')) {
             $this->out("Installing Gravatar");
-            $package = $manager->getPackage('deskpro_gravatar');
-            $app = new AppInstance();
+            $package      = $manager->getPackage('deskpro_gravatar');
+            $app          = new AppInstance();
             $app->package = $package;
-            $app->title = $package->title;
+            $app->title   = $package->title;
             $app->setSettings(array());
             $em->persist($app);
             $em->flush();
@@ -89,19 +86,19 @@ class Build1400056730 extends AbstractBuild
             $this->out("Installing Magento");
 
             $settings = array(
-                'url'      => $this->container->getSetting('Magento.url'),
-                'api_user' => $this->container->getSetting('Magento.api_user'),
-                'api_key'  => $this->container->getSetting('Magento.api_key'),
+                'url'               => $this->container->getSetting('Magento.url'),
+                'api_user'          => $this->container->getSetting('Magento.api_user'),
+                'api_key'           => $this->container->getSetting('Magento.api_key'),
                 'widget_ticket'     => true,
                 'widget_profile'    => true,
                 'enable_usersource' => false, // will be imported next step when importing usersources
                 'enable_sso'        => false,
             );
 
-            $package = $manager->getPackage('deskpro_magento');
-            $app = new AppInstance();
+            $package      = $manager->getPackage('deskpro_magento');
+            $app          = new AppInstance();
             $app->package = $package;
-            $app->title = $package->title;
+            $app->title   = $package->title;
             $app->setSettings($settings);
             $em->persist($app);
             $em->flush();
@@ -113,10 +110,10 @@ class Build1400056730 extends AbstractBuild
 
         if ($this->container->getSetting('MicrosoftTranslator.client_id') && isset($enabled_plugins['MicrosoftTranslator'])) {
             $this->out("Installing MS Translator");
-            $package = $manager->getPackage('deskpro_ms_translator');
-            $app = new AppInstance();
+            $package      = $manager->getPackage('deskpro_ms_translator');
+            $app          = new AppInstance();
             $app->package = $package;
-            $app->title = $package->title;
+            $app->title   = $package->title;
             $app->setSettings(array(
                 'client_id'     => $this->container->getSetting('MicrosoftTranslator.client_id'),
                 'client_secret' => $this->container->getSetting('MicrosoftTranslator.client_secret'),
@@ -131,10 +128,10 @@ class Build1400056730 extends AbstractBuild
 
         if ($this->container->getSetting('Salesforce.api_user') && isset($enabled_plugins['Salesforce'])) {
             $this->out("Installing SalesForce");
-            $package = $manager->getPackage('deskpro_salesforce');
-            $app = new AppInstance();
+            $package      = $manager->getPackage('deskpro_salesforce');
+            $app          = new AppInstance();
             $app->package = $package;
-            $app->title = $package->title;
+            $app->title   = $package->title;
             $app->setSettings(array(
                 'api_user'           => $this->container->getSetting('Salesforce.api_user'),
                 'api_password'       => $this->container->getSetting('Salesforce.api_password'),
@@ -152,10 +149,10 @@ class Build1400056730 extends AbstractBuild
 
         if ($this->container->getSetting('core.show_share_widget')) {
             $this->out("Installing ShareWidget");
-            $package = $manager->getPackage('deskpro_sharewidget');
-            $app = new AppInstance();
+            $package      = $manager->getPackage('deskpro_sharewidget');
+            $app          = new AppInstance();
             $app->package = $package;
-            $app->title = $package->title;
+            $app->title   = $package->title;
             $app->setSettings(array(
                 'show_share_facebook' => (bool) $this->container->getSetting('core.show_share_facebook'),
                 'show_share_twitter'  => (bool) $this->container->getSetting('core.show_share_twitter'),

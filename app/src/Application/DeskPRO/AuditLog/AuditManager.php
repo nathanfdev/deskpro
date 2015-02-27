@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\AuditLog;
@@ -67,7 +65,7 @@ class AuditManager
     }
 
     /**
-     * Disable the audit manager
+     * Disable the audit manager.
      */
     public function disable()
     {
@@ -75,7 +73,7 @@ class AuditManager
     }
 
     /**
-     * Enable the audit manager
+     * Enable the audit manager.
      */
     public function enable()
     {
@@ -83,7 +81,7 @@ class AuditManager
     }
 
     /**
-     * Check if the audit manager is enabled
+     * Check if the audit manager is enabled.
      */
     public function isEnabled()
     {
@@ -99,7 +97,7 @@ class AuditManager
     }
 
     /**
-     * Add a writer
+     * Add a writer.
      *
      * @param AuditWriterInterface $writer
      */
@@ -109,16 +107,17 @@ class AuditManager
     }
 
     /**
-     * @param  mixed    $object
-     * @param  string   $field_id
-     * @param  mixed    $old_val
-     * @param  mixed    $new_val
+     * @param mixed  $object
+     * @param string $field_id
+     * @param mixed  $old_val
+     * @param mixed  $new_val
+     *
      * @return AuditLog
      */
     public function recordChange($object, $field_id, $old_val, $new_val)
     {
         if ($this->disabled) {
-            return null;
+            return;
         }
 
         $name = AuditLog::getObjectNameFromVar($object);
@@ -144,13 +143,14 @@ class AuditManager
     }
 
     /**
-     * @param  mixed    $object
+     * @param mixed $object
+     *
      * @return AuditLog
      */
     public function recordCreated($object)
     {
         if ($this->disabled) {
-            return null;
+            return;
         }
 
         $name                      = AuditLog::getObjectNameFromVar($object);
@@ -165,13 +165,14 @@ class AuditManager
     }
 
     /**
-     * @param  mixed    $object
+     * @param mixed $object
+     *
      * @return AuditLog
      */
     public function recordDelete($object)
     {
         if ($this->disabled) {
-            return null;
+            return;
         }
 
         $name                      = AuditLog::getObjectNameFromVar($object);
@@ -186,9 +187,7 @@ class AuditManager
     }
 
     /**
-     * Write logs
-     *
-     * @return void
+     * Write logs.
      */
     public function flushLogs()
     {

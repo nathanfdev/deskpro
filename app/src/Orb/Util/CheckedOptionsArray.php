@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
@@ -38,26 +37,26 @@ use Orb\Validator\Callback as CallbackValidator;
 use Orb\Validator\ValidatorInterface;
 
 /**
- * Like a normal options array except that we run validations
+ * Like a normal options array except that we run validations.
  */
 class CheckedOptionsArray extends OptionsArray
 {
     /**
-     * Array if name=>array(ValidatorInterface)
+     * Array if name=>array(ValidatorInterface).
      *
      * @var array
      */
     private $validators = array();
 
     /**
-     * An array of the only valid names
+     * An array of the only valid names.
      *
      * @var array
      */
     private $valid_names = array();
 
     /**
-     * An array of required names
+     * An array of required names.
      *
      * @var array
      */
@@ -85,7 +84,7 @@ class CheckedOptionsArray extends OptionsArray
     }
 
     /**
-     * Add valid names
+     * Add valid names.
      *
      * @param string|string[] $name...
      */
@@ -105,14 +104,14 @@ class CheckedOptionsArray extends OptionsArray
     }
 
     /**
-     * Ensures we have all the required options
+     * Ensures we have all the required options.
      *
      * @throws CheckedOptionsException
      */
     public function ensureRequired()
     {
         $required_names = array_keys($this->required_names);
-        $diff = array_diff($required_names, array_keys($this->options));
+        $diff           = array_diff($required_names, array_keys($this->options));
         if ($diff) {
             throw new CheckedOptionsException("Missing required options: ".implode(', ', $diff), array('required'), array('names' => $diff));
         }
@@ -172,7 +171,7 @@ class CheckedOptionsArray extends OptionsArray
                 return array(array('invalid_value', array('expected_type' => 'callback')));
             }
 
-            return null;
+            return;
         };
 
         $validator = new CallbackValidator(array('callback_function' => $fn));
@@ -191,7 +190,7 @@ class CheckedOptionsArray extends OptionsArray
                 return array(array('null_value', array('expected_type' => 'not_null')));
             }
 
-            return null;
+            return;
         };
 
         $validator = new CallbackValidator(array('callback_function' => $fn));
@@ -199,7 +198,7 @@ class CheckedOptionsArray extends OptionsArray
     }
 
     /**
-     * Ensure $name is an instance of $type
+     * Ensure $name is an instance of $type.
      *
      * @param string $name
      * @param string $type
@@ -226,8 +225,9 @@ class CheckedOptionsArray extends OptionsArray
     }
 
     /**
-     * @param  string                  $name
-     * @param  mixed                   $value
+     * @param string $name
+     * @param mixed  $value
+     *
      * @throws CheckedOptionsException
      */
     public function set($name, $value)

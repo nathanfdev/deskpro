@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -63,7 +62,8 @@ class TicketFilter extends AbstractEntityRepository
     }
 
     /**
-     * Updates display orders of $filter_ids
+     * Updates display orders of $filter_ids.
+     *
      * @param array $filter_ids
      */
     public function updateDisplayOrder(array $filter_ids)
@@ -133,7 +133,7 @@ class TicketFilter extends AbstractEntityRepository
         }
 
         $agent_ids = implode(',', $agent_ids);
-        $teams = implode(',', $teams);
+        $teams     = implode(',', $teams);
 
         $filters = $this->getEntityManager()->createQuery("
             SELECT q
@@ -168,7 +168,7 @@ class TicketFilter extends AbstractEntityRepository
         }
 
         if ($teams) {
-            $teams = array_values($teams);
+            $teams   = array_values($teams);
             $filters = $this->getEntityManager()->createQuery("
                 SELECT q
                 FROM DeskPRO:TicketFilter q INDEX BY q.id
@@ -271,9 +271,7 @@ class TicketFilter extends AbstractEntityRepository
     }
 
     /**
-     *
      * @param  $type
-     * @return void
      */
     public function getFiltersForType($type)
     {
@@ -315,12 +313,13 @@ class TicketFilter extends AbstractEntityRepository
     /**
      * Find all ticket filters (system and custom) that a person can see.
      *
-     * @param  mixed $person_id
+     * @param mixed $person_id
+     *
      * @return array
      */
     public function getFiltersForPerson($person)
     {
-        /** @var $person \Application\DeskPRO\Entity\Person */
+        /* @var $person \Application\DeskPRO\Entity\Person */
 
         if (!($person instanceof \Application\DeskPRO\Entity\Person)) {
             $person = $this->getEntityManager()->find('DeskPRO:Person', $person);
@@ -355,6 +354,7 @@ class TicketFilter extends AbstractEntityRepository
 
     /**
      * @param $person_id
+     *
      * @return
      */
     public function getCustomFiltersForPerson($person_id)
@@ -387,6 +387,6 @@ class TicketFilter extends AbstractEntityRepository
             return $this->find($ticket_filter_id);
         }
 
-        return null;
+        return;
     }
 }

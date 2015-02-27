@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\SwiftMailer\Message;
@@ -52,7 +49,8 @@ class MessageFactory implements MessageFactoryInterface
     }
 
     /**
-     * @param  string         $type
+     * @param string $type
+     *
      * @return \Swift_Message
      */
     public function createMessage($type)
@@ -65,6 +63,6 @@ class MessageFactory implements MessageFactoryInterface
             return $message;
         }
 
-        return null;
+        return;
     }
 }

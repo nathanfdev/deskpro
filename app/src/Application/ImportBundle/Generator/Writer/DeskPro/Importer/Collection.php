@@ -30,39 +30,41 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 use Application\ImportBundle\AbstractCollection;
 
 /**
- * Collection of DeskPro importers
+ * Collection of DeskPro importers.
  *
  * Class Collection
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 final class Collection extends AbstractCollection
 {
     /**
-     * Add an importer
+     * Add an importer.
      *
      * @param ImporterInterface $importer
+     *
      * @return $this
      */
     public function attach(ImporterInterface $importer)
     {
         $this->collection[] = $importer;
+
         return $this;
     }
 
     /**
-     * Returns an importer by entity type
+     * Returns an importer by entity type.
      *
      * @param string $type
      *
-     * @return Collection
      * @throws \Exception
+     * @return Collection
+     *
      */
     public function getByEntityType($type)
     {
         $collection = new Collection();
 
         foreach ($this->collection as $importer) {
-            /** @var ImporterInterface $importer */
+            /* @var ImporterInterface $importer */
             if ($importer->getEntityType() === $type) {
                 $collection->attach($importer);
             }

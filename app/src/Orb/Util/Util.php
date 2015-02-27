@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
@@ -48,7 +47,8 @@ class Util
     /**
      * Get the type of a variable. If it's an object, also get the classname.
      *
-     * @param  mixed  $var
+     * @param mixed $var
+     *
      * @return string
      */
     public static function typeof($var)
@@ -72,8 +72,9 @@ class Util
      * $val = Orb_Util::ifsetor($var, 'default value');
      * </code>
      *
-     * @param  mixed $param The parameter to check
-     * @param  mixed $or    The value to return if $param is not set
+     * @param mixed $param The parameter to check
+     * @param mixed $or    The value to return if $param is not set
+     *
      * @return mixed
      */
     public static function ifsetor(&$param, $or = null)
@@ -95,8 +96,9 @@ class Util
      * $val = Orb_Util::ifvalor($var, 'val');
      * </code>
      *
-     * @param  mixed $param The parameter to check
-     * @param  mixed $or    The value to return if $param is not truthy
+     * @param mixed $param The parameter to check
+     * @param mixed $or    The value to return if $param is not truthy
+     *
      * @return mixed
      */
     public static function ifvalor($param, $or = null)
@@ -136,9 +138,10 @@ class Util
      * NOTE: You should use the ternary operator in most cases, but this function
      * exists for situations where a function is required.
      *
-     * @param  mixed $cond  The condition
-     * @param  mixed $true  What to return if the condition is true
-     * @param  mixed $false What to return if the condition is false
+     * @param mixed $cond  The condition
+     * @param mixed $true  What to return if the condition is true
+     * @param mixed $false What to return if the condition is false
+     *
      * @return mixed
      */
     public static function iff($cond, $true = true, $false = false)
@@ -172,8 +175,9 @@ class Util
     /**
      * Encode a number using an alphabet.
      *
-     * @param  int    $num      The number to encode
-     * @param  string $alphabet The alphabet to encode with
+     * @param int    $num      The number to encode
+     * @param string $alphabet The alphabet to encode with
+     *
      * @return string
      */
     public static function baseEncode($num, $alphabet)
@@ -190,12 +194,12 @@ class Util
             return $alphabet[0];
         }
 
-        $arr = array();
+        $arr  = array();
         $base = strlen($alphabet);
 
         while ($num) {
-            $rem = $num % $base;
-            $num = (int) ($num / $base);
+            $rem   = $num % $base;
+            $num   = (int) ($num / $base);
             $arr[] = $alphabet[$rem];
         }
 
@@ -207,8 +211,9 @@ class Util
     /**
      * Decode a number using an alphabet.
      *
-     * @param  string $string   The string-encoded number to decode
-     * @param  string $alphabet The alphabet used to decode
+     * @param string $string   The string-encoded number to decode
+     * @param string $alphabet The alphabet used to decode
+     *
      * @return int
      */
     public static function baseDecode($string, $alphabet)
@@ -222,18 +227,18 @@ class Util
         }
 
         $alphabet = str_split($alphabet);
-        $base = sizeof($alphabet);
-        $strlen = strlen($string);
-        $num = 0;
-        $idx = 0;
+        $base     = sizeof($alphabet);
+        $strlen   = strlen($string);
+        $num      = 0;
+        $idx      = 0;
 
-        $s = str_split($string);
+        $s        = str_split($string);
         $tebahpla = array_flip($alphabet);
 
         foreach ($s as $char) {
             // Invalid character found in string
             if (!isset($tebahpla[$char])) {
-                return null;
+                return;
             }
             $power = ($strlen - ($idx + 1));
             $num += $tebahpla[$char] * (pow($base, $power));
@@ -251,8 +256,9 @@ class Util
      * be tampered with by a user. If they tamper with the data, then the sign hash
      * becomes invalid and the unserialize method will throw an exception.
      *
-     * @param  mixed  $data     The data you want to serialize (i.e., an array)
-     * @param  string $sign_key The secret key to sign with. You should most certainly provide this!
+     * @param mixed  $data     The data you want to serialize (i.e., an array)
+     * @param string $sign_key The secret key to sign with. You should most certainly provide this!
+     *
      * @return string
      */
     public static function signedSerialize($data, $sign_key = 'orb_util_sign_key')
@@ -270,10 +276,13 @@ class Util
      * Unserialized a signed serialized string.
      *
      * @see Orb_Util::signedSeriaize()
-     * @param  mixed     $string   The string you want to unserialize
-     * @param  string    $sign_key The secret key it was signed with. You should most certainly provide this!
-     * @return mixed
+     *
+     * @param mixed  $string   The string you want to unserialize
+     * @param string $sign_key The secret key it was signed with. You should most certainly provide this!
+     *
      * @throws Exception
+     * @return mixed
+     *
      */
     public static function signedUnserialize($string, $sign_key = 'orb_util_sign_key')
     {
@@ -292,8 +301,9 @@ class Util
      * Create a new object and pass $args as arguments to the constructor.
      * Same as callUserConstructor but this takes an array of arguments instead.
      *
-     * @param  string     $classname The class to instantiate
-     * @param  array      $args      Args to pass to the constructor
+     * @param string $classname The class to instantiate
+     * @param array  $args      Args to pass to the constructor
+     *
      * @return $classname
      */
     public static function callUserConstructorArray($classname, array $args)
@@ -326,8 +336,9 @@ class Util
     /**
      * Create a new object and pass arguments to the constructor.
      *
-     * @param  string     $classname The class to instantiate
-     * @param  mixed      $param...  Parameters to call the constructor with
+     * @param string $classname The class to instantiate
+     * @param mixed  $param...  Parameters to call the constructor with
+     *
      * @return $classname
      */
     public static function callUserConstructor($classname)
@@ -366,8 +377,9 @@ class Util
     /**
      * Generate a random security token using some secret.
      *
-     * @param  string $secret  A secret to encode the token with.
-     * @param  int    $timeout How long (seconds) is the token valid for? 0 disables
+     * @param string $secret  A secret to encode the token with.
+     * @param int    $timeout How long (seconds) is the token valid for? 0 disables
+     *
      * @return string
      */
     public static function generateStaticSecurityToken($secret, $timeout = 0)
@@ -375,7 +387,7 @@ class Util
         if ($timeout) {
             // rand is so we never give the exact real time the token was made
             // since we have to put that in plaintext
-            $expire_time = time() + $timeout + mt_rand(1, 10);
+            $expire_time     = time() + $timeout + mt_rand(1, 10);
             $expire_time_enc = base_convert($expire_time, 10, 36);
         } else {
             $expire_time_enc = 0;
@@ -391,8 +403,9 @@ class Util
     /**
      * Check a security token to see if its valid.
      *
-     * @param  string $token  The token to check
-     * @param  string $secret The same secret used to create the token
+     * @param string $token  The token to check
+     * @param string $secret The same secret used to create the token
+     *
      * @return bool
      */
     public static function checkStaticSecurityToken($token, $secret)
@@ -425,7 +438,8 @@ class Util
     /**
      * Get all the parts of a classname (i.e., split up by namespace).
      *
-     * @param  mixed $obj_or_classname An object or string classname
+     * @param mixed $obj_or_classname An object or string classname
+     *
      * @return array
      */
     public static function getClassnameParts($obj_or_classname)
@@ -439,7 +453,7 @@ class Util
     }
 
     /**
-     * Get the namespace of a class
+     * Get the namespace of a class.
      *
      * @return string
      */
@@ -455,7 +469,8 @@ class Util
      * Get the base name of a class. That is, the classname itself without the full
      * namespace path.
      *
-     * @param  mixed  $obj
+     * @param mixed $obj
+     *
      * @return string
      */
     public static function getBaseClassname($obj)
@@ -499,7 +514,9 @@ class Util
      * Converts a hex string to binary (opposite of bin2hex).
      *
      * @see http://php.net/manual/en/function.hex2bin.php
-     * @param  string $hex_string
+     *
+     * @param string $hex_string
+     *
      * @return string
      */
     public static function hex2bin($hex_string)
@@ -509,7 +526,7 @@ class Util
             return @hex2bin($hex_string);
         }
 
-        $len = strlen($hex_string);
+        $len        = strlen($hex_string);
         $bin_string = '';
 
         $pos = 0;
@@ -524,7 +541,8 @@ class Util
     /**
      * Generate random bytes.
      *
-     * @param  int    $len
+     * @param int $len
+     *
      * @return string
      */
     public static function randomData($len = 250)
@@ -551,7 +569,8 @@ class Util
     /**
      * This takes an array of numbers, and encodes them as an alpha string (0-26 as a-z).
      *
-     * @param  array  $parts
+     * @param array $parts
+     *
      * @return string
      */
     public static function encodeNumberSegments(array $parts, $alphabet = 'base36')
@@ -571,8 +590,8 @@ class Util
 
         $enc_string = array();
         foreach ($enc_numbers as $enc_num) {
-            $len = strlen($enc_num);
-            $len_enc = self::baseEncode($len, $alphabet);
+            $len          = strlen($enc_num);
+            $len_enc      = self::baseEncode($len, $alphabet);
             $enc_string[] = "{$len_enc}{$enc_num}";
         }
 
@@ -583,6 +602,7 @@ class Util
      * Decodes an array of integers from encodeNumberSegments().
      *
      * @param  $encoded_string
+     *
      * @return int[]
      */
     public static function decodeNumberSegments($encoded_string, $alphabet = 'base36')
@@ -594,16 +614,16 @@ class Util
             return array();
         }
 
-        $parts = array();
-        $len = strlen($encoded_string);
-        $pos = 0;
-        $state = 0; // 0=sig, 1=num
+        $parts    = array();
+        $len      = strlen($encoded_string);
+        $pos      = 0;
+        $state    = 0; // 0=sig, 1=num
         $read_len = 0;
 
         while ($pos < $len) {
             if ($state == 0) {
                 $read_len = self::baseDecode($encoded_string[$pos], $alphabet);
-                $state = 1;
+                $state    = 1;
                 $pos++;
             } elseif ($state == 1) {
                 $read = '';
@@ -615,10 +635,10 @@ class Util
                     } // invalid
                 }
 
-                $num = self::baseDecode($read, $alphabet);
+                $num     = self::baseDecode($read, $alphabet);
                 $parts[] = $num;
 
-                $state = 0;
+                $state    = 0;
                 $read_len = 0;
             }
         }
@@ -634,8 +654,9 @@ class Util
      * With options: array('world' => 1, 'hello' => 2, 'blah' => 'unrelated')
      * Thie method returns: array(2, 1)
      *
-     * @param  \ReflectionFunctionAbstract $func_refl
-     * @param  array                       $options
+     * @param \ReflectionFunctionAbstract $func_refl
+     * @param array                       $options
+     *
      * @return array
      */
     public static function getFunctionParamsFromArray(\ReflectionFunctionAbstract $func_refl, array $options)
@@ -661,9 +682,10 @@ class Util
     }
 
     /**
-     * Get the filename a class is defined in
+     * Get the filename a class is defined in.
      *
-     * @param  string|\ReflectionClass $classname
+     * @param string|\ReflectionClass $classname
+     *
      * @return string
      */
     public static function getClassFilename($classname)
@@ -679,7 +701,9 @@ class Util
 
     /**
      * @static
+     *
      * @param $var
+     *
      * @return string
      */
     public static function debugVar($var, $d = 0)
@@ -691,7 +715,7 @@ class Util
                 return str_repeat("\t", $d)."[".get_class($var)."]";
             }
         } elseif (is_array($var)) {
-            $str = array();
+            $str   = array();
             $str[] = str_repeat("\t", $d)."array(";
             foreach ($var as $k => $v) {
                 $str[] = str_repeat("\t", $d+1)."$k: ".self::debugVar($v, $d + 1);
@@ -705,7 +729,8 @@ class Util
     }
 
     /**
-     * @param  mixed $value
+     * @param mixed $value
+     *
      * @return int
      */
     public static function boolInt($value)
@@ -719,8 +744,9 @@ class Util
      * - Returns null if $val is null.
      * - Returns $fn($val) if $val is not a collection (makes a useful one-liner to apply $fn($val) when $val may be null)
      *
-     * @param  mixed      $val
-     * @param  callable   $fn
+     * @param mixed    $val
+     * @param callable $fn
+     *
      * @return mixed|null
      */
     public static function flatMap($val, $fn)
@@ -738,6 +764,6 @@ class Util
             }
         }
 
-        return null;
+        return;
     }
 }

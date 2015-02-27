@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -59,7 +58,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
             return array();
         }
 
-        $output = array();
+        $output  = array();
         $results = $this->getEntityManager()->createQuery("
             SELECT s, t, u
             FROM DeskPRO:TwitterAccountStatus s
@@ -127,14 +126,14 @@ class TwitterAccountStatus extends AbstractEntityRepository
 
     protected function _getTimelineWhereClause(TwitterAccountEntity $account, array $conditions = array())
     {
-        $query = 'WHERE s.account = ?0';
+        $query  = 'WHERE s.account = ?0';
         $params = array($account);
-        $i = 1;
+        $i      = 1;
 
         $type = isset($conditions['type']) ? $conditions['type'] : 'all';
 
         if ($type == 'sent') {
-            $conditions['include_self'] = true;
+            $conditions['include_self']     = true;
             $conditions['include_archived'] = true; // can't actually archive sent statuses
         }
 
@@ -179,7 +178,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
                 $where[] = "s.agent IS NULL";
             } elseif ($conditions['agent']) {
                 $conditions['agent'] = array_map('intval', (array) $conditions['agent']);
-                $where[] = "s.agent IN (".implode(',', $conditions['agent']).")";
+                $where[]             = "s.agent IN (".implode(',', $conditions['agent']).")";
             }
         }
         if (isset($conditions['agent_team'])) {
@@ -189,7 +188,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
                 $where[] = "s.agent_team IS NULL";
             } elseif ($conditions['agent_team']) {
                 $conditions['agent_team'] = array_map('intval', (array) $conditions['agent_team']);
-                $where[] = "s.agent_team IN (".implode(',', $conditions['agent_team']).")";
+                $where[]                  = "s.agent_team IN (".implode(',', $conditions['agent_team']).")";
             }
         }
         if (isset($conditions['assigned'])) {
@@ -208,7 +207,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
         }
 
         if (empty($conditions['include_self'])) {
-            $where[] = "(s.status_type <> 'direct' OR t.user <> ?$i)";
+            $where[]  = "(s.status_type <> 'direct' OR t.user <> ?$i)";
             $params[] = $account->user->getId();
 
             if ($where) {
@@ -216,7 +215,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
             }
         } else {
             $sent_condition = "(s.status_type = 'sent' OR (s.status_type = 'direct' AND t.user = ?$i))";
-            $params[] = $account->user->getId();
+            $params[]       = $account->user->getId();
 
             if ($where) {
                 $query .= " AND ((".implode(' AND ', $where).") OR $sent_condition)";
@@ -234,7 +233,7 @@ class TwitterAccountStatus extends AbstractEntityRepository
         if ($accounts instanceof \Doctrine\Common\Collections\Collection) {
             $accounts = $accounts->toArray();
         } elseif (!is_array($accounts)) {
-            $single = $accounts->id;
+            $single   = $accounts->id;
             $accounts = array($accounts);
         }
         if (!$accounts) {
@@ -242,11 +241,11 @@ class TwitterAccountStatus extends AbstractEntityRepository
         }
 
         if (count($accounts) == 1) {
-            $account = reset($accounts);
-            $ids = array($account->id);
+            $account      = reset($accounts);
+            $ids          = array($account->id);
             $dm_sent_case = ($account->user->id+0);
         } else {
-            $ids = array();
+            $ids          = array();
             $dm_sent_case = 'CASE a.account_id';
             foreach ($accounts as $account) {
                 $ids[] = $account->id;
@@ -354,7 +353,8 @@ class TwitterAccountStatus extends AbstractEntityRepository
     }
 
     /**
-     * @param  string $sortByDate (optional)
+     * @param string $sortByDate (optional)
+     *
      * @return string
      */
     protected function normalizeSortByDate($sortByDate = 'asc')
@@ -368,8 +368,9 @@ class TwitterAccountStatus extends AbstractEntityRepository
     }
 
     /**
-     * @param  integer $limit
-     * @param  integer $page
+     * @param integer $limit
+     * @param integer $page
+     *
      * @return integer
      */
     protected function calculateOffset($limit, $page)

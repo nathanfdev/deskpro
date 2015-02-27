@@ -27,9 +27,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Command;
@@ -63,6 +61,7 @@ class TestCommand extends ContainerAwareCommand
     {
         echo __FILE__;
         echo "\n";
+
         return 0;
     }
 }

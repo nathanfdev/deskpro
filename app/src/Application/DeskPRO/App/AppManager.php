@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -47,7 +46,8 @@ class AppManager implements AppManagerInterface
     private $packages = array();
 
     /**
-     * Apps grouped by package name
+     * Apps grouped by package name.
+     *
      * @var array
      */
     private $package_to_apps = array();
@@ -58,7 +58,8 @@ class AppManager implements AppManagerInterface
     private $apps = array();
 
     /**
-     * Cache of native configs per package
+     * Cache of native configs per package.
+     *
      * @var array
      */
     private $native_package_configs = array();
@@ -74,7 +75,8 @@ class AppManager implements AppManagerInterface
     private $app_service_container;
 
     /**
-     * Paths to apps on the filesystem
+     * Paths to apps on the filesystem.
+     *
      * @var array
      */
     private $app_paths = array();
@@ -123,7 +125,8 @@ class AppManager implements AppManagerInterface
     }
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function hasPackage($name)
@@ -132,9 +135,11 @@ class AppManager implements AppManagerInterface
     }
 
     /**
-     * @param  string                    $name
-     * @return AppPackage
+     * @param string $name
+     *
      * @throws \InvalidArgumentException
+     * @return AppPackage
+     *
      */
     public function getPackage($name)
     {
@@ -154,7 +159,8 @@ class AppManager implements AppManagerInterface
     }
 
     /**
-     * @param  int  $id
+     * @param int $id
+     *
      * @return bool
      */
     public function hasApp($id)
@@ -163,9 +169,11 @@ class AppManager implements AppManagerInterface
     }
 
     /**
-     * @param  int                       $id
-     * @return AppInstance
+     * @param int $id
+     *
      * @throws \InvalidArgumentException
+     * @return AppInstance
+     *
      */
     public function getApp($id)
     {
@@ -185,7 +193,8 @@ class AppManager implements AppManagerInterface
     }
 
     /**
-     * @param  string|AppPackage $name
+     * @param string|AppPackage $name
+     *
      * @return AppInstance[]
      */
     public function getPackageApps($name)
@@ -204,7 +213,8 @@ class AppManager implements AppManagerInterface
     /**
      * Gets a single app for a package.
      *
-     * @param  string|AppPackage $name
+     * @param string|AppPackage $name
+     *
      * @return AppInstance
      */
     public function getPackageApp($name)
@@ -214,16 +224,17 @@ class AppManager implements AppManagerInterface
         }
 
         if (!isset($this->package_to_apps[$name])) {
-            return null;
+            return;
         }
 
         return $this->package_to_apps[$name][0];
     }
 
     /**
-     * Checks if a package has been installed at least once
+     * Checks if a package has been installed at least once.
      *
-     * @param  string|AppPackage $name
+     * @param string|AppPackage $name
+     *
      * @return bool
      */
     public function isPackageInstalled($name)
@@ -236,11 +247,12 @@ class AppManager implements AppManagerInterface
     }
 
     /**
-     * Gets an AppManager with a specific scope filter applied to it
+     * Gets an AppManager with a specific scope filter applied to it.
      *
-     * @param  string              $scope          The scope to search for
-     * @param  callable            $package_filter Optionally specify a custom package filter
-     * @param  callable            $app_filter     Optionally specify a custom app filter
+     * @param string   $scope          The scope to search for
+     * @param callable $package_filter Optionally specify a custom package filter
+     * @param callable $app_filter     Optionally specify a custom app filter
+     *
      * @return AppManagerInterface
      */
     public function getScopeFilter($scope, $package_filter = null, $app_filter = null)
@@ -260,7 +272,8 @@ class AppManager implements AppManagerInterface
     }
 
     /**
-     * @param  AppInstance|int $app The app or app_id
+     * @param AppInstance|int $app The app or app_id
+     *
      * @return NativeApp
      */
     public function getNativeApp($app)
@@ -268,7 +281,7 @@ class AppManager implements AppManagerInterface
         if ($app instanceof AppInstance) {
             $app_id = $app->id;
         } else {
-            $app = $this->getApp($app);
+            $app    = $this->getApp($app);
             $app_id = $app->id;
         }
 
@@ -280,8 +293,8 @@ class AppManager implements AppManagerInterface
             return $this->native_apps[$app_id];
         }
 
-        $native_config = $this->getNativePackageConfig($app->package);
-        $native_app = new NativeApp($app, $native_config);
+        $native_config              = $this->getNativePackageConfig($app->package);
+        $native_app                 = new NativeApp($app, $native_config);
         $this->native_apps[$app_id] = $native_app;
 
         $this->app_service_container->registerNativeApp($native_app);
@@ -290,9 +303,11 @@ class AppManager implements AppManagerInterface
     }
 
     /**
-     * @param  AppPackage                $package
-     * @return NativePackageConfig
+     * @param AppPackage $package
+     *
      * @throws \InvalidArgumentException
+     * @return NativePackageConfig
+     *
      */
     public function getNativePackageConfig(AppPackage $package)
     {
@@ -303,7 +318,7 @@ class AppManager implements AppManagerInterface
         if (isset($this->native_package_configs[$package->name])) {
             return $this->native_package_configs[$package->name];
         } else {
-            $native_config = NativePackageConfig::createFromPackage($package, $this->getAppPath($package->name, true));
+            $native_config                                = NativePackageConfig::createFromPackage($package, $this->getAppPath($package->name, true));
             $this->native_package_configs[$package->name] = $native_config;
         }
 
@@ -344,8 +359,9 @@ class AppManager implements AppManagerInterface
     }
 
     /**
-     * @param  string                    $name
-     * @param  AppInstance|NativeApp|int $app
+     * @param string                    $name
+     * @param AppInstance|NativeApp|int $app
+     *
      * @return mixed
      */
     public function getService($name, $app = null)
@@ -356,8 +372,9 @@ class AppManager implements AppManagerInterface
     /**
      * Gets the base app path for a given app name.
      *
-     * @param  string      $app_name
-     * @param  bool        $check_exists
+     * @param string $app_name
+     * @param bool   $check_exists
+     *
      * @return string|null
      */
     public function getAppPath($app_name, $check_exists = false)
@@ -379,11 +396,12 @@ class AppManager implements AppManagerInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * @param  AppInstance                            $appId
+     * @param AppInstance $appId
+     *
      * @return \Application\DeskPRO\Entity\Usersource
      */
     public function getUsersourceForApp($appId, $type)

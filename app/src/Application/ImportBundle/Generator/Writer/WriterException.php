@@ -28,12 +28,10 @@
 namespace Application\ImportBundle\Generator\Writer;
 
 /**
- * Generator writer exception
+ * Generator writer exception.
  *
  * Class WriterException
- * @package Application\ImportBundle\Generator\Writer
  */
 class WriterException extends \Exception
 {
-
 }

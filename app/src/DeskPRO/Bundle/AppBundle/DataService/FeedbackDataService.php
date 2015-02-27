@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
@@ -58,7 +55,8 @@ class FeedbackDataService extends AbstractDataService
     /**
      * @param $page
      * @param $max_per_page
-     * @param  FeedbackFilter $filter
+     * @param FeedbackFilter $filter
+     *
      * @return Pagerfanta
      */
     public function getItemsPager($page, $max_per_page, FeedbackFilter $filter)
@@ -136,7 +134,8 @@ class FeedbackDataService extends AbstractDataService
     }
 
     /**
-     * @param  int|null|Feedback $item
+     * @param int|null|Feedback $item
+     *
      * @return null|Feedback
      */
     public function getItem($item)
@@ -150,7 +149,7 @@ class FeedbackDataService extends AbstractDataService
             ),
             function () use ($that, $item) {
                 if (!$item) { // we need some input
-                    return null;
+                    return;
                 }
 
                 if ($item instanceof Feedback) { // already have what you seek
@@ -181,7 +180,8 @@ class FeedbackDataService extends AbstractDataService
     }
 
     /**
-     * @param  Person             $person
+     * @param Person $person
+     *
      * @return FeedbackCategory[]
      */
     public function getFeedbackCategoriesForPerson(Person $person)
@@ -192,6 +192,7 @@ class FeedbackDataService extends AbstractDataService
 
     /**
      * @param $status_category
+     *
      * @return FeedbackStatusCategory
      */
     public function getFeedbackStatusCategory($status_category)

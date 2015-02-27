@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -99,7 +98,7 @@ abstract class AbstractAction implements ActionDefinitionInterface
     }
 
     /**
-     * Gets the type name of the criteria
+     * Gets the type name of the criteria.
      *
      * @return string
      */
@@ -109,7 +108,7 @@ abstract class AbstractAction implements ActionDefinitionInterface
     }
 
     /**
-     * Get's an array of options
+     * Get's an array of options.
      *
      * @return array
      */
@@ -119,8 +118,9 @@ abstract class AbstractAction implements ActionDefinitionInterface
     }
 
     /**
-     * @param  string $name
-     * @param  mixed  $default
+     * @param string $name
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getActionOption($name, $default = null)

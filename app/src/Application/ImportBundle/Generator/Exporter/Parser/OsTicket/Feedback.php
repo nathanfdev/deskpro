@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 use Application\ImportBundle\Entity;
 
 /**
- * OsTicket feedback parser
+ * OsTicket feedback parser.
  *
  * Class Feedback
- * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
 final class Feedback extends AbstractParser
 {

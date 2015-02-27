@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Component\Hierarchy\Formatter;
@@ -39,7 +36,7 @@ use DeskPRO\Component\Hierarchy\HierarchyNode;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
- * The AbstractFormatter lets you easily get the string value of a node (optionally, with a property accessor)
+ * The AbstractFormatter lets you easily get the string value of a node (optionally, with a property accessor).
  */
 abstract class AbstractFormatter implements HierarchyFormatterInterface
 {

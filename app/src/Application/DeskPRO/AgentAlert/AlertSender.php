@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\AgentAlert;
@@ -65,7 +63,7 @@ class AlertSender
     {
         $tpl_line = null;
 
-        $alert = new AgentAlert();
+        $alert           = new AgentAlert();
         $alert->person   = $agent;
         $alert->typename = $type;
         $alert->data     = $data;
@@ -82,7 +80,7 @@ class AlertSender
             $cm = new ClientMessage();
             $cm->fromArray(array(
                 'channel' => 'agent-notify.tickets',
-                'data' => array(
+                'data'    => array(
                     'type'       => $type,
                     'alert_id'   => $alert->getId(),
                     'row'        => $tpl_line,
@@ -100,12 +98,13 @@ class AlertSender
     /**
      * @param $agent
      * @param $type
-     * @param  array      $data
+     * @param array $data
+     *
      * @return AgentAlert
      */
     public function createAlert($agent, $type, array $data)
     {
-        $alert = new AgentAlert();
+        $alert           = new AgentAlert();
         $alert->person   = $agent;
         $alert->typename = $type;
         $alert->data     = $data;
@@ -120,14 +119,13 @@ class AlertSender
     /**
      * @param $agent
      * @param $type
-     * @param  array      $data
-     * @param  AgentAlert $alert
-     * @return null
+     * @param array      $data
+     * @param AgentAlert $alert
      */
     public function createClientMessage($agent, $type, array $data, AgentAlert $alert = null)
     {
         if (!isset($data['browser_rendered'])) {
-            return null;
+            return;
         }
 
         $tpl_line = $data['browser_rendered'];
@@ -135,7 +133,7 @@ class AlertSender
         $cm = new ClientMessage();
         $cm->fromArray(array(
             'channel' => 'agent-notify.tickets',
-            'data' => array(
+            'data'    => array(
                 'type'       => $type,
                 'alert_id'   => $alert ? $alert->id : null,
                 'row'        => $tpl_line,
@@ -148,7 +146,8 @@ class AlertSender
     }
 
     /**
-     * @param  AgentAlert $alert
+     * @param AgentAlert $alert
+     *
      * @return array
      */
     public function getDataArray(AgentAlert $alert, $target = null)

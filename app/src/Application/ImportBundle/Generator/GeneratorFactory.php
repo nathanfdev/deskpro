@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Importer generator factory
+ * Importer generator factory.
  *
  * Class GeneratorFactory
- * @package Application\ImportBundle\Generator
  */
 class GeneratorFactory
 {
@@ -43,7 +42,7 @@ class GeneratorFactory
     protected $container;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param ContainerInterface $container
      */
@@ -65,13 +64,13 @@ class GeneratorFactory
     }
 
     /**
-     * Create a json writer
+     * Create a json writer.
      *
      * @return Writer\Collection
      */
     public function createWritersCollection()
     {
-        $jsonFactory   =  new Writer\Json\JsonWriterFactory($this->container);
+        $jsonFactory    =  new Writer\Json\JsonWriterFactory($this->container);
         $deskProFactory = new Writer\DeskPro\DeskProWriterFactory($this->container);
 
         $writers = new Writer\Collection();
@@ -83,7 +82,7 @@ class GeneratorFactory
     }
 
     /**
-     * Returns a collection of exporters
+     * Returns a collection of exporters.
      *
      * @return Exporter\Collection
      */
@@ -105,7 +104,7 @@ class GeneratorFactory
     }
 
     /**
-     * Returns a collection of validators
+     * Returns a collection of validators.
      *
      * @return Validator\Collection
      */

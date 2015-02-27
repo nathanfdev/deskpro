@@ -1,7 +1,10 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
-/** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
+
+/* @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 
 ############################################################################
 # Parameters
@@ -40,7 +43,7 @@ $container->setDefinition('templating.engine.jsonphp', $definition);
 $definition = new Definition();
 $definition->setClass('Application\\UserBundle\\Twig\\Extension\\UserTemplatingExtension');
 $definition->setArguments(array(
-    new Reference('service_container')
+    new Reference('service_container'),
 ));
 $definition->addTag('twig.extension', array());
 $container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
@@ -52,7 +55,7 @@ $container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
 $container->loadFromExtension('twig', array(
     'form' => array(
         'resources' => array(
-            'DeskPRO:Form:form_div_layout.html.twig'
-        )
-    )
+            'DeskPRO:Form:form_div_layout.html.twig',
+        ),
+    ),
 ));

@@ -26,20 +26,17 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Portal
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security\Authentication\Provider;
 
-use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
-use DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider;
 use Application\DeskPRO\Auth\AuthenticationManager;
 use Application\DeskPRO\Auth\AuthenticationManager as DpAuthManager;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Usersource;
+use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
+use DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Result;
@@ -70,7 +67,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
     {
         $this->dp_auth_manager    = $dp_auth_manager;
         $this->dp_person_provider = $dp_person_provider;
-        $this->session = $session;
+        $this->session            = $session;
     }
 
     /**
@@ -78,9 +75,9 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
      *
      * @param TokenInterface $token The TokenInterface instance to authenticate
      *
+     * @throws AuthenticationException if the authentication fails
      * @return TokenInterface An authenticated TokenInterface instance, never null
      *
-     * @throws AuthenticationException if the authentication fails
      */
     public function authenticate(TokenInterface $token)
     {
@@ -90,8 +87,8 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
 
         $this->session->set('last_username', $token->getUsername());
 
-        /** @var Usersource $usersource */
-        /** @var Result $authResult */
+        /* @var Usersource $usersource */
+        /* @var Result $authResult */
         $auth_manager                  = $this->dp_auth_manager;
         list($authResult, $usersource) = $this->getDpAuthResultForGivenUsersources($token, $auth_manager);
 
@@ -134,8 +131,9 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
     }
 
     /**
-     * @param  TokenInterface $token
-     * @param  Usersource[]   $usersources
+     * @param TokenInterface $token
+     * @param Usersource[]   $usersources
+     *
      * @return Result
      */
     protected function getDpAuthResultForGivenUsersources(TokenInterface $token, AuthenticationManager $auth_manager)

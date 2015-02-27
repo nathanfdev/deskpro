@@ -26,34 +26,31 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\PortalBundle\Themes\Simple;
 
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use DeskPRO\Bundle\PortalBundle\Themes\Simple\SimpleTheme;
+use PhpSpec\ObjectBehavior;
 
 /**
  * @mixin \DeskPRO\Bundle\PortalBundle\Themes\Simple\SimpleTheme
  */
 class SimpleThemeSpec extends ObjectBehavior
 {
-    function it_is_a_theme()
+    public function it_is_a_theme()
     {
         $this->shouldHaveType('DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface');
     }
 
-    function it_has_the_correct_id_and_name()
+    public function it_has_the_correct_id_and_name()
     {
         $this->getId()->shouldReturn('simple');
         $this->getName()->shouldReturn('Simple');
     }
 
-    function it_is_a_child_of_the_base_theme()
+    public function it_is_a_child_of_the_base_theme()
     {
         $this->getParentId()->shouldReturn('base');
     }

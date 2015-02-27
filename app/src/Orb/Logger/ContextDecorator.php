@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Logger
  */
 
@@ -69,7 +68,8 @@ class ContextDecorator implements LoggerInterface
     }
 
     /**
-     * @param  array $context
+     * @param array $context
+     *
      * @return array
      */
     private function getContext(array $context)

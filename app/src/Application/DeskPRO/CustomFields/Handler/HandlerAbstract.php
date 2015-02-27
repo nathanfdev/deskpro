@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Form
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\CustomFields\Handler;
@@ -56,7 +53,8 @@ abstract class HandlerAbstract
     protected $tpl = null;
 
     /**
-     * The form field definition
+     * The form field definition.
+     *
      * @var \Application\DeskPRO\Entity\CustomDefAbstract
      */
     protected $field_def;
@@ -121,7 +119,7 @@ abstract class HandlerAbstract
     }
 
     /**
-     * Get the templating engine
+     * Get the templating engine.
      *
      * @return \Symfony\Component\Templating\EngineInterface
      */
@@ -135,7 +133,7 @@ abstract class HandlerAbstract
     }
 
     /**
-     * Set the templating engine to use
+     * Set the templating engine to use.
      *
      * @param \Symfony\Component\Templating\EngineInterface $tpl
      */
@@ -156,6 +154,7 @@ abstract class HandlerAbstract
 
     /**
      * @param  $context
+     *
      * @return string
      */
     public function getRenderTemplateName($context = 'html')
@@ -184,6 +183,7 @@ abstract class HandlerAbstract
 
     /**
      * @param  $context
+     *
      * @return string
      */
     public function getFormTemplateName()
@@ -232,7 +232,7 @@ abstract class HandlerAbstract
     }
 
     /**
-     * Get additional template vars to set
+     * Get additional template vars to set.
      *
      * @var array
      */
@@ -264,7 +264,7 @@ abstract class HandlerAbstract
     }
 
     /**
-     * Render the field
+     * Render the field.
      */
     public function renderText($data = null, array $template_vars = array())
     {
@@ -286,10 +286,11 @@ abstract class HandlerAbstract
     }
 
     /**
-     * Render the HTML form input
+     * Render the HTML form input.
      *
      * @param  $formView
-     * @param  array  $template_vars
+     * @param array $template_vars
+     *
      * @return string
      */
     public function renderFormHtml($formView, array $template_vars = array())
@@ -324,8 +325,9 @@ abstract class HandlerAbstract
      * $data is a data structure `array(value=>..., children=>array(...))` as returned
      * from `Application\DeskPRO\CustomFields\Util::createDataHierarchy()`
      *
-     * @param  string $context
-     * @param  array  $data
+     * @param string $context
+     * @param array  $data
+     *
      * @return mixed
      */
     public function renderContext($context, $data)
@@ -347,7 +349,7 @@ abstract class HandlerAbstract
     }
 
     /**
-     * Get the form field
+     * Get the form field.
      *
      * @return Symfony\Component\Form\Field
      */
@@ -369,7 +371,8 @@ abstract class HandlerAbstract
      * This must return a standard array of error codes (see Orb\Validator\ValidatorInterface).
      * If an empty array is returned, then that means the field is valid.
      *
-     * @param  array $form_data
+     * @param array $form_data
+     *
      * @return array
      */
     public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
@@ -378,7 +381,8 @@ abstract class HandlerAbstract
     }
 
     /**
-     * @param  array $codes
+     * @param array $codes
+     *
      * @return array
      */
     public function makeErrorArray(array $codes)

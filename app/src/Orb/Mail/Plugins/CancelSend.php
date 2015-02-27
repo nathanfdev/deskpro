@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Mail
+ * Orb.
  */
 
 namespace Orb\Mail\Plugins;
 
 /**
- * Completely turns off email sending
+ * Completely turns off email sending.
  */
 class CancelSend implements \Swift_Events_SendListener
 {

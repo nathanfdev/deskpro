@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\HttpKernel\Exception;
@@ -59,11 +56,11 @@ class PermanentRedirectException extends \RuntimeException
 
     public function __construct($route_name, array $route_params, $url_type = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
-        $this->message = 'Permenantly Redirecting';
-        $this->code = 301;
-        $this->route_name = $route_name;
+        $this->message      = 'Permenantly Redirecting';
+        $this->code         = 301;
+        $this->route_name   = $route_name;
         $this->route_params = $route_params;
-        $this->url_type = $url_type;
+        $this->url_type     = $url_type;
     }
 
     /**

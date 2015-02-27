@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Log
+ * Orb.
  */
 
 namespace Orb\Log\Writer;
 
-use \Orb\Log\LogItem;
+use Orb\Log\LogItem;
 
 /**
- * This writer just saves messages to an array
+ * This writer just saves messages to an array.
  */
 class ArrayWriter extends AbstractWriter
 {

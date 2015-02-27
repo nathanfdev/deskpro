@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Notifications;
@@ -107,7 +104,7 @@ abstract class AbstractAgentNotification
         }
 
         $this->notify_list = array(
-            'email' => $send_email,
+            'email'   => $send_email,
             'browser' => $send_browser,
         );
 
@@ -115,7 +112,7 @@ abstract class AbstractAgentNotification
     }
 
     /**
-     * Send an email notification to agents from the build list
+     * Send an email notification to agents from the build list.
      *
      * @param string $tpl
      * @param array  $vars
@@ -156,13 +153,13 @@ abstract class AbstractAgentNotification
         foreach ($notify_list['browser'] as $agent) {
             $tpl_line = App::getTemplating()->render($tpl, $vars);
 
-            $data = $vars['notify_data'];
+            $data        = $vars['notify_data'];
             $data['row'] = $tpl_line;
 
             $cm = new ClientMessage();
             $cm->fromArray(array(
-                'channel' => 'agent-notify.'.$data['notify_type'],
-                'data' => $data,
+                'channel'           => 'agent-notify.'.$data['notify_type'],
+                'data'              => $data,
                 'for_person'        => $agent,
                 'created_by_client' => $this->client,
             ));

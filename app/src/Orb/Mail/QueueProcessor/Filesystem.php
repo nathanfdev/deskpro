@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Mail
+ * Orb.
  */
 
 namespace Orb\Mail\QueueProcessor;
 
 /**
- * Stores messages in the filesystem
+ * Stores messages in the filesystem.
  */
 class Filesystem implements QueueProcessorInterface
 {
@@ -54,7 +51,7 @@ class Filesystem implements QueueProcessorInterface
     }
 
     /**
-     * Process queues
+     * Process queues.
      *
      * @return Message
      */
@@ -81,7 +78,7 @@ class Filesystem implements QueueProcessorInterface
     }
 
     /**
-     * Add a message to the queue
+     * Add a message to the queue.
      *
      * @param Orb\Mail\Message $message
      */
@@ -100,14 +97,14 @@ class Filesystem implements QueueProcessorInterface
     }
 
     /**
-     * Start the queue system
+     * Start the queue system.
      */
     public function startQueue()
     {
     }
 
     /**
-     * Shutdown the queue system
+     * Shutdown the queue system.
      */
     public function shutdownQueue()
     {

@@ -31,10 +31,9 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Feedback record mapper
+ * Feedback record mapper.
  *
  * Class Feedback
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class Feedback implements MapperInterface, MapperByTitleInterface
 {
@@ -44,7 +43,7 @@ final class Feedback implements MapperInterface, MapperByTitleInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\Feedback $repository
      */

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -37,7 +36,8 @@ namespace Application\DeskPRO\EntityRepository;
 class EmailSource extends AbstractEntityRepository
 {
     /**
-     * @param  array $types
+     * @param array $types
+     *
      * @return int
      */
     public function countAllSources(array $types)
@@ -56,7 +56,8 @@ class EmailSource extends AbstractEntityRepository
     }
 
     /**
-     * @param  array $types
+     * @param array $types
+     *
      * @return int
      */
     public function countErrorStatus(array $types)
@@ -75,7 +76,8 @@ class EmailSource extends AbstractEntityRepository
     }
 
     /**
-     * @param  array $types
+     * @param array $types
+     *
      * @return int
      */
     public function countRejectionStatus(array $types)
@@ -96,8 +98,9 @@ class EmailSource extends AbstractEntityRepository
     /**
      * Check to see if $email is currently rate limited.
      *
-     * @param  string $email     The email to check
-     * @param  int    $lock_time How long a lock is considered for
+     * @param string $email     The email to check
+     * @param int    $lock_time How long a lock is considered for
+     *
      * @return bool
      */
     public function isEmailAddressRateLimited($email, $lock_time)
@@ -172,8 +175,9 @@ class EmailSource extends AbstractEntityRepository
      * Counts non-rejected messages within $time. If there was a ratelimit active, we count
      * from the last rate limit.
      *
-     * @param  string $email
-     * @param  int    $time
+     * @param string $email
+     * @param int    $time
+     *
      * @return int
      */
     public function countEmailsWithinTime($email, $time)

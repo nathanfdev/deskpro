@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,7 +39,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Associates an import word with a piece of content. When someone searches
  * for the word, the content is displayed a the top of result listings.
- *
  */
 class SearchStickyResult extends \Application\DeskPRO\Domain\DomainObject
 {

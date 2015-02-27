@@ -2,19 +2,17 @@
 
 namespace spec\DeskPRO\Component\Hierarchy\Formatter;
 
-use DeskPRO\Component\Hierarchy\HierarchyNode;
 use Application\DeskPRO\Entity\NewsCategory;
+use DeskPRO\Component\Hierarchy\HierarchyNode;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class ParentListFormatterSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         HierarchyNode $node1,
         HierarchyNode $node2,
         HierarchyNode $node3
-    )
-    {
+    ) {
         $cat1 = new NewsCategory();
         $cat1->setTitle('General');
         $cat2 = new NewsCategory();
@@ -29,20 +27,17 @@ class ParentListFormatterSpec extends ObjectBehavior
 
         $node3->getData()->willReturn($cat3);
         $node3->getParents()->willReturn(array($node2));
-
     }
 
-    function it_formats_plain_when_no_parents(
+    public function it_formats_plain_when_no_parents(
         HierarchyNode $node1
-    )
-    {
+    ) {
         $this->format($node1)->shouldReturn('General');
     }
 
-    function it_formats_a_hierarchy_of_parents_when_parents_exist(
+    public function it_formats_a_hierarchy_of_parents_when_parents_exist(
         HierarchyNode $node3
-    )
-    {
+    ) {
         $this->format($node3)->shouldReturn('Specific > More Specific');
     }
 }

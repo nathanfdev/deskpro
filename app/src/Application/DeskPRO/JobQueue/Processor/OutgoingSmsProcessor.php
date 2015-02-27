@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\JobQueue\Processor;
@@ -80,7 +77,7 @@ class OutgoingSmsProcessor extends AbstractJobProcessor
 
         $resolver->setDefaults(
             array(
-                'from_number' => null,
+                'from_number'     => null,
                 'provider_params' => array(),
             )
         );

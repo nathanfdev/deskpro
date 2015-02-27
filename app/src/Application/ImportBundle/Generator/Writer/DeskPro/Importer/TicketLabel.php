@@ -32,10 +32,9 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro ticket labels importer
+ * DeskPro ticket labels importer.
  *
  * Class TicketLabel
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 final class TicketLabel extends AbstractImporter
 {
@@ -50,7 +49,7 @@ final class TicketLabel extends AbstractImporter
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Ticket $entity
+     * @var Entity\Ticket
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
@@ -78,9 +77,10 @@ final class TicketLabel extends AbstractImporter
     }
 
     /**
-     * Returns a new ticket label entity
+     * Returns a new ticket label entity.
      *
      * @param string $label
+     *
      * @return DeskPROEntity\LabelTicket
      */
     private function createTicketLabel($label)
@@ -92,12 +92,13 @@ final class TicketLabel extends AbstractImporter
     }
 
     /**
-     * Returns a collection of existing ticket label names
+     * Returns a collection of existing ticket label names.
      *
      * @param int $id
      *
-     * @return array
      * @throws Mapper\MapperException
+     * @return array
+     *
      */
     private function getExistingLabelsNames($id)
     {
@@ -112,10 +113,11 @@ final class TicketLabel extends AbstractImporter
     }
 
     /**
-     * Returns the person label mapper
+     * Returns the person label mapper.
      *
-     * @return Mapper\TicketLabel
      * @throws \Exception
+     * @return Mapper\TicketLabel
+     *
      */
     private function getTicketLabelMapper()
     {

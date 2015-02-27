@@ -31,10 +31,9 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Feedback label record mapper
+ * Feedback label record mapper.
  *
  * Class FeedbackLabel
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class FeedbackLabel implements MapperInterface
 {
@@ -44,7 +43,7 @@ final class FeedbackLabel implements MapperInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\LabelFeedback $repository
      */
@@ -68,7 +67,7 @@ final class FeedbackLabel implements MapperInterface
     {
         /** @var Entity\LabelFeedback $record */
         $record = $this->repository->findOneBy($criteria);
-        if ( ! $record && $throw_exception) {
+        if (! $record && $throw_exception) {
             throw new MapperException('Feedback label not found', $criteria);
         }
 
@@ -76,13 +75,14 @@ final class FeedbackLabel implements MapperInterface
     }
 
     /**
-     * Returns a collection of feedback labels
+     * Returns a collection of feedback labels.
      *
      * @param int  $id
      * @param bool $throw_exception
      *
-     * @return Entity\LabelFeedback[]
      * @throws MapperException
+     * @return Entity\LabelFeedback[]
+     *
      */
     public function findByFeedbackId($id, $throw_exception = true)
     {

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -72,9 +71,10 @@ class SetUrgency extends AbstractAction implements ActionInterface, MacroActionI
     }
 
     /**
-     * @param  string $mode
-     * @param  int    $num
-     * @param  int    $current_urgency
+     * @param string $mode
+     * @param int    $num
+     * @param int    $current_urgency
+     *
      * @return int
      */
     private function getUrgencyResult($mode, $num, $current_urgency)
@@ -148,7 +148,7 @@ class SetUrgency extends AbstractAction implements ActionInterface, MacroActionI
             return array('fields');
         }
 
-        return null;
+        return;
     }
 
     /**

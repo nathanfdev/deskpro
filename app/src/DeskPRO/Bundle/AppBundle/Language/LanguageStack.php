@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Brand
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Language;
@@ -64,9 +61,6 @@ class LanguageStack
 {
     /**
      * @var array
-    private $stack;
-
-    /**
      * @var Language[] an array of constructed languages keyed by language entity id
      */
     private $languages;
@@ -83,7 +77,7 @@ class LanguageStack
 
     /**
      * only stores the reference for quick access in the case of multiple calls to getDefaultLanguage(), do not
-     * use this prop directly
+     * use this prop directly.
      *
      * @var \Application\DeskPRO\Entity\Language|null
      */
@@ -91,14 +85,14 @@ class LanguageStack
 
     public function __construct(SettingsResolver $settings_resolver, LanguageRepo $language_repo)
     {
-        $this->stack = array();
-        $this->languages = array();
+        $this->stack             = array();
+        $this->languages         = array();
         $this->settings_resolver = $settings_resolver;
-        $this->language_repo = $language_repo;
+        $this->language_repo     = $language_repo;
     }
 
     /**
-     * Gives you the active BrandContainer
+     * Gives you the active BrandContainer.
      *
      * @return Language
      */
@@ -110,7 +104,7 @@ class LanguageStack
             return $this->languages[$language_id];
         }
 
-        return null;
+        return;
     }
 
     public function getStack()
@@ -119,9 +113,10 @@ class LanguageStack
     }
 
     /**
-     * Pushes the Brand into the stack, so that the language's container is now active
+     * Pushes the Brand into the stack, so that the language's container is now active.
      *
-     * @param  Language $language
+     * @param Language $language
+     *
      * @return Language
      */
     public function push(Language $language)

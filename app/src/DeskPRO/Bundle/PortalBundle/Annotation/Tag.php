@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Annotation;
@@ -41,8 +38,8 @@ namespace DeskPRO\Bundle\PortalBundle\Annotation;
 class Tag
 {
     public $name;
-    public $default_options = array();
-    public $esi = false;
-    public $allow_route_params = true;
+    public $default_options     = array();
+    public $esi                 = false;
+    public $allow_route_params  = true;
     public $always_guest_inline = false;
 }

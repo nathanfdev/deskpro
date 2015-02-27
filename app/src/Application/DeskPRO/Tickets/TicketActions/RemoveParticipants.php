@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -38,7 +35,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 
 /**
- * Remove participants
+ * Remove participants.
  */
 class RemoveParticipants extends AbstractAction
 {
@@ -51,7 +48,7 @@ class RemoveParticipants extends AbstractAction
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -64,7 +61,7 @@ class RemoveParticipants extends AbstractAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -74,7 +71,7 @@ class RemoveParticipants extends AbstractAction
 
         foreach ($this->remove_people_ids as $pid) {
             $actions[] = array(
-                'action' => 'remove_participant',
+                'action'    => 'remove_participant',
                 'person_id' => $pid,
             );
         }
@@ -83,7 +80,7 @@ class RemoveParticipants extends AbstractAction
     }
 
     /**
-     * Get the agent id
+     * Get the agent id.
      *
      * @return int
      */
@@ -93,7 +90,8 @@ class RemoveParticipants extends AbstractAction
     }
 
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
@@ -110,7 +108,7 @@ class RemoveParticipants extends AbstractAction
      */
     public function getDescription($as_html = true)
     {
-        $tr = App::getTranslator();
+        $tr     = App::getTranslator();
         $people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->remove_people_ids);
         if (!$people) {
             return '';

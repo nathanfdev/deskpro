@@ -26,21 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Orb\Auth\Adapter;
 
 /**
- * stuff that is not meant to goto the callback interface, but instead to use the sso response action
+ * stuff that is not meant to goto the callback interface, but instead to use the sso response action.
  */
 interface SsoLoginActionInterface
 {
-    const CONTEXT_BACKGROUND = 'background';
-    const CONTEXT_REDIRECT = 'redirect';
+    const CONTEXT_BACKGROUND                 = 'background';
+    const CONTEXT_REDIRECT                   = 'redirect';
     const TOKEN_ATTRIBUTE_BACKGROUND_REFRESH = 'background_refresh';
 
     /**
@@ -48,7 +45,8 @@ interface SsoLoginActionInterface
      * TODO: no current implementers actually use this $controller arg. should replace with $request instead.
      *
      *
-     * @param  \Application\DeskPRO\Controller\AbstractController $controller
+     * @param \Application\DeskPRO\Controller\AbstractController $controller
+     *
      * @return \Orb\Auth\Result
      */
     public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller = null);

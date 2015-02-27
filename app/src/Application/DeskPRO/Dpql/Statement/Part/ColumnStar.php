@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
@@ -41,12 +38,12 @@ use Application\DeskPRO\Dpql\Statement\Display;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Represents a reference to all data in a table
+ * Represents a reference to all data in a table.
  */
 class ColumnStar extends AbstractPart
 {
     /**
-     * List of parts in the reference
+     * List of parts in the reference.
      *
      * @var array
      */

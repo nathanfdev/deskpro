@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -56,7 +53,7 @@ class WorkflowType extends AbstractType
             'class'         => 'Application\\DeskPRO\\Entity\\TicketWorkflow',
             'property'      => 'title',
             'empty_data'    => null,
-            'required' => true,
+            'required'      => true,
             'query_builder' => function (EntityRepository $repo) {
                     return $repo
                         ->createQueryBuilder('w')

@@ -26,21 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\DeskPRO\TicketLayout\LayoutFieldFilter;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 
 class TicketLayoutsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -300,7 +297,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
         }
 
         foreach ($layout_records as $layout) {
-            /** @var $layout TicketLayout */
+            /* @var $layout TicketLayout */
             $dep_id = $layout->department ? $layout->department->id : 0;
 
             $user_layout  = clone $layout->user_layout;

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -89,7 +88,7 @@ class TicketProcLog extends DomainObject
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
 
         $metadata->setPrimaryTable(array(
-            'name' => 'ticket_proc_log',
+            'name'    => 'ticket_proc_log',
             'indexes' => array(
                 'date_created_idx' => array('columns' => array('date_created')),
             ),
@@ -118,7 +117,7 @@ class TicketProcLog extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-                'columnDefinition'     => NULL,
+                'columnDefinition'     => null,
             )),
         ));
 
@@ -130,7 +129,7 @@ class TicketProcLog extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-                'columnDefinition'     => NULL,
+                'columnDefinition'     => null,
             )),
         ));
     }

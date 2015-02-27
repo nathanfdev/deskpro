@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Scraper
+ * Orb.
  */
 
 namespace Orb\Scraper\Highrise;
@@ -37,7 +34,7 @@ namespace Orb\Scraper\Highrise;
 use Orb\Scraper\AbstractScraper;
 
 /**
- * Scrapes person data
+ * Scrapes person data.
  */
 class Person extends AbstractScraper
 {
@@ -47,7 +44,8 @@ class Person extends AbstractScraper
     protected $highrise;
 
     /**
-     * @param  int           $person_id
+     * @param int $person_id
+     *
      * @return ItemInterface
      */
     public function getData($person_id = null)

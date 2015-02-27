@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Controller
  */
 
@@ -63,9 +62,10 @@ abstract class AbstractMessageServer
     }
 
     /**
-     * Handle a new message
+     * Handle a new message.
      *
-     * @param  ClientMessage $message
+     * @param ClientMessage $message
+     *
      * @return mixed
      */
     abstract public function handleNewMessage(Entity\ClientMessage $message);

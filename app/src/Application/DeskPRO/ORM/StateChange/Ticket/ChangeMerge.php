@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -79,7 +78,7 @@ class ChangeMerge implements ChangeInterface, NonStateTrackingInterface
      */
     public function getOld()
     {
-        return null;
+        return;
     }
 
     /**

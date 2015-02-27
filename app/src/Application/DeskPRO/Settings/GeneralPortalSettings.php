@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Settings;
@@ -117,7 +115,6 @@ class GeneralPortalSettings
         $this->resetSettings();
     }
 
-
     /**
      * Resets settings based on stored values.
      */
@@ -127,14 +124,13 @@ class GeneralPortalSettings
             $v = $this->settings->get($info[0]);
             switch ($info[1]) {
                 case 'bool':
-                    $this->$name = (bool)$v;
+                    $this->$name = (bool) $v;
                     break;
                 default:
-                    $this->$name = $v ? (($v . '') ?: '') : '';
+                    $this->$name = $v ? (($v.'') ?: '') : '';
             }
         }
     }
-
 
     /**
      * @return array
@@ -146,10 +142,10 @@ class GeneralPortalSettings
         foreach ($this->map as $name => $info) {
             switch ($info[1]) {
                 case 'bool':
-                    $export_settings[$name] = (bool)$this->$name;
+                    $export_settings[$name] = (bool) $this->$name;
                     break;
                 default:
-                    $export_settings[$name] = $this->$name ? (($this->$name . '') ?: '') : '';
+                    $export_settings[$name] = $this->$name ? (($this->$name.'') ?: '') : '';
             }
         }
 
@@ -161,7 +157,6 @@ class GeneralPortalSettings
 
         return $export_settings;
     }
-
 
     /**
      * @param array $set_settings
@@ -184,17 +179,16 @@ class GeneralPortalSettings
 
             switch ($info[1]) {
                 case 'bool':
-                    $this->$name = (bool)$v;
+                    $this->$name = (bool) $v;
                     break;
                 default:
-                    $this->$name = $v ? (($v . '') ?: '') : '';
+                    $this->$name = $v ? (($v.'') ?: '') : '';
             }
         }
     }
 
-
     /**
-     * Persists settings
+     * Persists settings.
      */
     public function saveSettings()
     {

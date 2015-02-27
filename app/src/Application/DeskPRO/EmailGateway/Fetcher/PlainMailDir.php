@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
@@ -67,7 +65,7 @@ class PlainMailDir extends AbstractFetcher
     protected $read_count = 0;
 
     /**
-     * Initiates the connection
+     * Initiates the connection.
      */
     protected function _initConnection()
     {
@@ -103,7 +101,7 @@ class PlainMailDir extends AbstractFetcher
     }
 
     /**
-     * Read filenames from directory
+     * Read filenames from directory.
      */
     protected function _initMessageList()
     {
@@ -135,14 +133,14 @@ class PlainMailDir extends AbstractFetcher
     }
 
     /**
-     * Reads the next message in the inbox
+     * Reads the next message in the inbox.
      *
      * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      */
     protected function _readNext()
     {
         if (!$this->getStorage()) {
-            return null;
+            return;
         }
 
         $this->getStorage();
@@ -153,7 +151,7 @@ class PlainMailDir extends AbstractFetcher
 
         $next = array_shift($this->message_list);
         if (!$next) {
-            return null;
+            return;
         }
 
         $mailfile = $this->maildir.'/'.$next;
@@ -203,13 +201,13 @@ class PlainMailDir extends AbstractFetcher
 
         $EOL = "\n";
         if (strpos($raw_message->content, $EOL.$EOL)) {
-            list($headers,) = explode($EOL.$EOL, $raw_message->content, 2);
+            list($headers, ) = explode($EOL.$EOL, $raw_message->content, 2);
         } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers,) = explode("\r\n\r\n", $raw_message->content, 2);
+            list($headers, ) = explode("\r\n\r\n", $raw_message->content, 2);
         } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers,) = explode("\n\n", $raw_message->content, 2);
+            list($headers, ) = explode("\n\n", $raw_message->content, 2);
         } else {
-            @list($headers,) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers, ) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
         }
 
         $raw_message->headers = $headers;
@@ -241,10 +239,11 @@ class PlainMailDir extends AbstractFetcher
     }
 
     /**
-     * Tests the connection and returns the number of messages on success
+     * Tests the connection and returns the number of messages on success.
      *
-     * @return bool
      * @throws \InvalidArgumentException
+     * @return bool
+     *
      */
     public function test()
     {

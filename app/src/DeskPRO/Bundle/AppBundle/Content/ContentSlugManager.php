@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Content;
@@ -71,8 +68,7 @@ class ContentSlugManager
      * It then ensures that the slug that is set on the object is correct,
      * if it is not correct, it will find something valid AND SET IT on the content.
      *
-     * @param  ContentAbstract $content
-     * @return null            or the new history object for the content
+     * @param ContentAbstract $content
      */
     public function ensureValidSlug(ContentAbstract $content)
     {
@@ -80,12 +76,12 @@ class ContentSlugManager
         $expected_slug = Strings::slugifyTitle($content->getTitle());
 
         if ($existing_slug === $expected_slug) {
-            return null; // already valid and set, no need to do more here
+            return; // already valid and set, no need to do more here
         }
 
         // check if the expected slug is a valid one, in both content repo and in slug history repo
         $new_slug = $expected_slug;
-        $i = 1;
+        $i        = 1;
         while (!$this->isValidSlug($new_slug, $content)) {
             // if expected slug is not valid, keep incrementing a value at the end until we get something valid
             $new_slug = Strings::slugifyTitle($content->getTitle().' '.++$i);
@@ -103,6 +99,7 @@ class ContentSlugManager
      *
      * @param $slug
      * @param $content_class_name
+     *
      * @return null|object
      */
     public function findContentObjectBySlug($slug, $content_class_name)
@@ -117,7 +114,7 @@ class ContentSlugManager
             return $content_history->getContent();
         }
 
-        return null;
+        return;
     }
 
     protected function isValidSlug($new_slug, ContentAbstract $content)
@@ -145,7 +142,8 @@ class ContentSlugManager
     }
 
     /**
-     * @param  ContentAbstract                $content
+     * @param ContentAbstract $content
+     *
      * @return \Doctrine\ORM\EntityRepository
      */
     private function getRepoForContent(ContentAbstract $content)
@@ -166,7 +164,8 @@ class ContentSlugManager
     }
 
     /**
-     * @param  ContentAbstract                $content
+     * @param ContentAbstract $content
+     *
      * @return \Doctrine\ORM\EntityRepository
      */
     private function getHistoryRepoForContent(ContentAbstract $content)

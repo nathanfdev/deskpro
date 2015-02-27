@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -40,7 +37,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 
 /**
- * Sets status
+ * Sets status.
  */
 class StatusAction extends AbstractAction implements PermissionableAction
 {
@@ -70,7 +67,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * True to stop processing actions after this one
+     * True to stop processing actions after this one.
      *
      * @return bool
      */
@@ -98,7 +95,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -107,7 +104,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
         if (strpos($this->status, '.') !== false) {
             list($status, $hidden_status) = explode('.', $this->status, 2);
         } else {
-            $status = $this->status;
+            $status        = $this->status;
             $hidden_status = null;
         }
 
@@ -152,7 +149,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -168,7 +165,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Get the full status (stauts.hidden_status)
+     * Get the full status (stauts.hidden_status).
      *
      * @return string
      */
@@ -178,7 +175,8 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)

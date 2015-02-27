@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Net\Dns\Rdns;
@@ -37,9 +34,11 @@ namespace Application\DeskPRO\Net\Dns\Rdns;
 interface RdnsInterface
 {
     /**
-     * @param  string            $ip
-     * @return string|null
+     * @param string $ip
+     *
      * @throws \RuntimeException
+     * @return string|null
+     *
      */
     public function lookup($ip);
 }

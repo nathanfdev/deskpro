@@ -1,8 +1,8 @@
 <?php
 namespace DpUnitTests\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Tickets\Actions\ModMuteAgentEmails;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\Actions\ModMuteAgentEmails;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
 class ModMuteAgentEmailsTest extends \DpUnitTestCase

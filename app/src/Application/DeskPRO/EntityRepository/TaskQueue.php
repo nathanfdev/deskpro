@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -77,7 +76,7 @@ class TaskQueue extends AbstractEntityRepository
             return $task;
         }
 
-        return null;
+        return;
     }
 
     public function countTasksBefore(\Application\DeskPRO\Entity\TaskQueue $task)
@@ -115,10 +114,10 @@ class TaskQueue extends AbstractEntityRepository
 
     public function enqueueTask($runner_class, array $data = array(), $task_group = null)
     {
-        $task = new \Application\DeskPRO\Entity\TaskQueue();
+        $task               = new \Application\DeskPRO\Entity\TaskQueue();
         $task->runner_class = $runner_class;
-        $task->task_data = $data;
-        $task->task_group = $task_group;
+        $task->task_data    = $data;
+        $task->task_group   = $task_group;
 
         $em = $this->getEntityManager();
         $em->persist($task);

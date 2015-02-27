@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -44,7 +43,8 @@ class ChatChecker extends AbstractChecker
     protected $person;
 
     /**
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     *
      * @return bool
      */
     public function canView(ChatConversation $convo)
@@ -100,7 +100,8 @@ class ChatChecker extends AbstractChecker
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     *
      * @return bool
      */
     public function canDelete(ChatConversation $convo)

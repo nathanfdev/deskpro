@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets;
@@ -53,7 +51,8 @@ class TicketSlas extends LazyCollection
     // implementing these just for better auto-complete in the IDE (due to @return) :-)
 
     /**
-     * @param  int                             $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\Sla
      */
     public function getById($id)
@@ -62,8 +61,9 @@ class TicketSlas extends LazyCollection
     }
 
     /**
-     * @param  array                             $ids
-     * @param  bool                              $keyed
+     * @param array $ids
+     * @param bool  $keyed
+     *
      * @return \Application\DeskPRO\Entity\Sla[]
      */
     public function getByIds(array $ids, $keyed = false)

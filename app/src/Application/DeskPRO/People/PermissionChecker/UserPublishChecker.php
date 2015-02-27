@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -47,7 +46,8 @@ class UserPublishChecker extends AbstractChecker
     protected $person;
 
     /**
-     * @param  \Application\DeskPRO\Entity\Article $article
+     * @param \Application\DeskPRO\Entity\Article $article
+     *
      * @return bool
      */
     public function canViewArticle(Article $article)
@@ -78,7 +78,8 @@ class UserPublishChecker extends AbstractChecker
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\News $news
+     * @param \Application\DeskPRO\Entity\News $news
+     *
      * @return bool
      */
     public function canViewNews(News $news)
@@ -100,7 +101,8 @@ class UserPublishChecker extends AbstractChecker
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\Download $download
+     * @param \Application\DeskPRO\Entity\Download $download
+     *
      * @return bool
      */
     public function canViewDownload($download)
@@ -122,7 +124,8 @@ class UserPublishChecker extends AbstractChecker
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\Feedback $feedback
+     * @param \Application\DeskPRO\Entity\Feedback $feedback
+     *
      * @return bool
      */
     public function canViewFeedback(Feedback $feedback, HttpSession $user_session = null)

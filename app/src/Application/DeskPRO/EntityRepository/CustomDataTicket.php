@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -48,7 +47,8 @@ class CustomDataTicket extends AbstractEntityRepository
     /**
      * Fetch data for a whole bunch of things.
      *
-     * @param  array $tickets
+     * @param array $tickets
+     *
      * @return array
      */
     public function getDataCollectionForTicketCollection(array $tickets)

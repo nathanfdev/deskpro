@@ -28,10 +28,9 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 /**
- * People reader storage to avoid multiple external api requests
+ * People reader storage to avoid multiple external api requests.
  *
  * Class PeopleStorage
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
 class PeopleStorage implements PeopleStorageInterface
 {
@@ -86,7 +85,7 @@ class PeopleStorage implements PeopleStorageInterface
         $exist_ids     = $this->getPeopleIds();
 
         foreach ($request_ids as $id) {
-            if ( ! in_array($id, $exist_ids)) {
+            if (! in_array($id, $exist_ids)) {
                 $not_exist_ids[] = $id;
             }
         }

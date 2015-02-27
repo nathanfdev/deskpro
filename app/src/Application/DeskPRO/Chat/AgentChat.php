@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Chat
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Chat;
@@ -187,7 +184,7 @@ class AgentChat
         }
 
         if (!$conversation || !count($conversation->participants)) {
-            return null;
+            return;
         }
 
         $em->beginTransaction();

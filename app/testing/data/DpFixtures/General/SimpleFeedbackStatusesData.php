@@ -1,9 +1,9 @@
 <?php
 namespace DpFixtures\General;
 
+use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
-use  \Application\DeskPRO\Entity\FeedbackStatusCategory;
 
 class SimpleFeedbackStatusesData extends AbstractFixture
 {

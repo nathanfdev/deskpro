@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usersource\Adapter;
@@ -102,6 +99,7 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
      * Find a user identity just by an email address.
      *
      * @param $id_input
+     *
      * @return \Orb\Auth\Identity|null
      */
     public function findIdentityByInput($id_input)
@@ -126,7 +124,7 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
         }
 
         if (!$userinfo) {
-            return null;
+            return;
         }
 
         $identify = $adapter->getIdentityFromUserInfo($userinfo);
@@ -155,7 +153,8 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
     }
 
     /**
-     * @param  mixed $capability
+     * @param mixed $capability
+     *
      * @return bool
      */
     public function isCapable($capability)

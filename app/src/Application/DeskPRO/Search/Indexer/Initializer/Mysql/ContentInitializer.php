@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Search
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Search\IndexInitializer\Mysql;

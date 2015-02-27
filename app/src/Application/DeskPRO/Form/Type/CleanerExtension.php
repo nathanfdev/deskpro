@@ -26,21 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Form\Type;
 
+use Orb\Input\Cleaner\Cleaner;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Orb\Input\Cleaner\Cleaner;
 
 class CleanerExtension extends AbstractTypeExtension
 {
@@ -63,7 +60,7 @@ class CleanerExtension extends AbstractTypeExtension
     {
         // only clean root form, otherwise all children get cleaned too
         if ($event->getForm()->isRoot()) {
-            $raw_data = $event->getData();
+            $raw_data     = $event->getData();
             $cleaned_data = $this->cleanData($raw_data, $event->getForm());
             $event->setData($cleaned_data);
         }
@@ -88,7 +85,7 @@ class CleanerExtension extends AbstractTypeExtension
                     } elseif (is_string($data)) {
                         $cleaned = $this->cleaner->clean($data, 'string');
                     } else {
-	                    $cleaned = $data;
+                        $cleaned = $data;
                     }
 
                     $clean_data[$form_name] = $cleaned;

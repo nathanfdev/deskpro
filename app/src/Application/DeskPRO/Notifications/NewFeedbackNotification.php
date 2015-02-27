@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Notifications;
@@ -80,8 +77,8 @@ class NewFeedbackNotification extends AbstractAgentNotification
 
         $cm = new ClientMessage();
         $cm->fromArray(array(
-            'channel' => 'agent.ui.new-feedback',
-            'feedback_id' => $this->feedback->getId(),
+            'channel'           => 'agent.ui.new-feedback',
+            'feedback_id'       => $this->feedback->getId(),
             'created_by_client' => 'sys',
         ));
         $this->em->persist($cm);

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -60,7 +59,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class AppPackage extends DomainObject
 {
-    const SCOPE_AGENT = 'agent';
+    const SCOPE_AGENT     = 'agent';
     const TAG_USERSOURCES = 'usersources';
 
     /**
@@ -109,13 +108,15 @@ class AppPackage extends DomainObject
     protected $version_name;
 
     /**
-     * The app ID if this app has resources in the filesystem
+     * The app ID if this app has resources in the filesystem.
+     *
      * @var string
      */
     protected $native_name;
 
     /**
-     * True to only allow one instance of the app to be installed
+     * True to only allow one instance of the app to be installed.
+     *
      * @var bool
      */
     protected $is_single = false;
@@ -183,15 +184,16 @@ class AppPackage extends DomainObject
     }
 
     /**
-     * @param  Blob     $blob
-     * @param  string   $filename
+     * @param Blob   $blob
+     * @param string $filename
+     *
      * @return AppAsset
      */
     public function addAssetFromBlob(Blob $blob, $filename = null)
     {
-        $asset = new AppAsset();
-        $asset->name = $filename ? $filename : $blob->filename;
-        $asset->blob = $blob;
+        $asset          = new AppAsset();
+        $asset->name    = $filename ? $filename : $blob->filename;
+        $asset->blob    = $blob;
         $asset->package = $this;
         $this->assets->add($asset);
 
@@ -199,9 +201,10 @@ class AppPackage extends DomainObject
     }
 
     /**
-     * Get one asset tagged with some name
+     * Get one asset tagged with some name.
      *
-     * @param  string   $tag
+     * @param string $tag
+     *
      * @return AppAsset
      */
     public function getTaggedAsset($tag)
@@ -212,13 +215,14 @@ class AppPackage extends DomainObject
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Get an array of all assets tagged with a name
+     * Get an array of all assets tagged with a name.
      *
-     * @param  string     $tag
+     * @param string $tag
+     *
      * @return AppAsset[]
      */
     public function getTaggedAssets($tag)
@@ -235,9 +239,10 @@ class AppPackage extends DomainObject
     }
 
     /**
-     * Get the asset with the filename $name
+     * Get the asset with the filename $name.
      *
-     * @param  string        $name
+     * @param string $name
+     *
      * @return AppAsset|null
      */
     public function getAsset($name)
@@ -248,11 +253,12 @@ class AppPackage extends DomainObject
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Get manifest array
+     * Get manifest array.
+     *
      * @return array
      */
     public function getManifest()

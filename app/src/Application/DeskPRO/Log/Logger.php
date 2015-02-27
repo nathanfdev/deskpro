@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Log
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Log;
@@ -38,6 +35,7 @@ class Logger extends \Orb\Log\Logger
 {
     /**
      * Name of this log "file" for those writers that support it.
+     *
      * @var string
      */
     protected $_log_name = null;
@@ -53,7 +51,8 @@ class Logger extends \Orb\Log\Logger
     }
 
     /**
-     * @param  array   $info
+     * @param array $info
+     *
      * @return LogItem
      */
     public function createLogInfoObject(array $info)

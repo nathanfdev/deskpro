@@ -26,23 +26,20 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\Slas;
 
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\ORM\StateChange\ChangeSimple;
-use Application\DeskPRO\Tickets\TicketManager;
-use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\TicketSla;
+use Application\DeskPRO\ORM\StateChange\ChangeSimple;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Doctrine\ORM\EntityManager;
 
 class SlaProcessor
 {
@@ -63,9 +60,9 @@ class SlaProcessor
 
     public function __construct(EntityManager $em, ActionApplicator $action_applicator, SlaClientMessageSender $cm_sender)
     {
-        $this->em = $em;
+        $this->em                = $em;
         $this->action_applicator = $action_applicator;
-        $this->cm_sender = $cm_sender;
+        $this->cm_sender         = $cm_sender;
     }
 
     /**
@@ -136,7 +133,7 @@ class SlaProcessor
                         ));
                         $context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- set failed', $ticket_sla->sla->id, $ticket_sla->sla->title));
                         $ticket_sla->sla_status = TicketSla::STATUS_FAIL;
-                        $do_triggers = true;
+                        $do_triggers            = true;
                     }
                 } elseif ($ticket_sla->sla_status == 'ok') {
                     if ($calc->isTicketSlaWarning($ticket, $ticket_sla)) {
@@ -147,7 +144,7 @@ class SlaProcessor
                         ));
                         $context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- set warning', $ticket_sla->sla->id, $ticket_sla->sla->title));
                         $ticket_sla->sla_status = TicketSla::STATUS_WARNING;
-                        $do_triggers = true;
+                        $do_triggers            = true;
                     }
                 }
             }
@@ -196,8 +193,9 @@ class SlaProcessor
     /**
      * Look up SLAs in the db that are past warning threshold and update them.
      *
-     * @param  callback      $context_factory A factory that returns a new ExecutorContext
-     * @param  TicketManager $tm
+     * @param callback      $context_factory A factory that returns a new ExecutorContext
+     * @param TicketManager $tm
+     *
      * @return int
      */
     public function processAllFailed($context_factory, TicketManager $tm)
@@ -206,7 +204,7 @@ class SlaProcessor
 
         $ticket_slas = $this->em->getRepository('DeskPRO:TicketSla')->getTicketSlasPastThreshold('fail');
         foreach ($ticket_slas as $ticket_sla) {
-            /** @var TicketSla $ticket_sla */
+            /* @var TicketSla $ticket_sla */
 
             // Already complete or not proper status (must currently be ok/warning aka not failed)
             if ($ticket_sla->is_completed && ($ticket_sla->sla_status == 'ok' || $ticket_sla->sla_status == 'warning')) {
@@ -244,8 +242,9 @@ class SlaProcessor
     /**
      * Look up SLAs in the db that are past failing threshold and update them.
      *
-     * @param  callback      $context_factory A factory that returns a new ExecutorContext
-     * @param  TicketManager $tm
+     * @param callback      $context_factory A factory that returns a new ExecutorContext
+     * @param TicketManager $tm
+     *
      * @return int
      */
     public function processAllWarning($context_factory, TicketManager $tm)
@@ -254,7 +253,7 @@ class SlaProcessor
 
         $ticket_slas = $this->em->getRepository('DeskPRO:TicketSla')->getTicketSlasPastThreshold('warning');
         foreach ($ticket_slas as $ticket_sla) {
-            /** @var TicketSla $ticket_sla */
+            /* @var TicketSla $ticket_sla */
 
             // Already complete or not proper status
             if ($ticket_sla->is_completed && ($ticket_sla->sla_status == 'ok')) {

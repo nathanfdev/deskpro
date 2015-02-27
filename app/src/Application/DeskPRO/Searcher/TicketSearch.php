@@ -26,16 +26,14 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketTerms;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Arrays;
@@ -44,56 +42,57 @@ use Orb\Util\Util;
 
 class TicketSearch extends SearcherAbstract
 {
-    const TERM_ID                        = 'id';
-    const TERM_REF                       = 'ref';
-    const TERM_PERSON_ID                 = 'person_id';
-    const TERM_DEPARTMENT                = 'department';
-    const TERM_CATEGORY                  = 'category';
-    const TERM_PRODUCT                   = 'product';
-    const TERM_AGENT                     = 'agent';
-    const TERM_AGENT_TEAM                = 'agent_team';
-    const TERM_STATUS                    = 'status';
-    const TERM_HIDDEN_STATUS             = 'hidden_status';
-    const TERM_EMAIL_ACCOUNT             = 'email_account';
-    const TERM_WORKFLOW                  = 'workflow';
-    const TERM_PRIORITY                  = 'priority';
-    const TERM_SUBJECT                   = 'subject';
-    const TERM_SUBJECT_ADV               = 'subject_adv';
-    const TERM_MESSAGE                   = 'ticket_message';
-    const TERM_MESSAGE_ADV               = 'ticket_message_adv';
-    const TERM_ORGANIZATION              = 'organization';
-    const TERM_LANGUAGE                  = 'language';
-    const TERM_PARTICIPANT               = 'participant';
-    const TERM_PERSON                    = 'person';
-    const TERM_LABEL                     = 'label';
-    const TERM_TICKET_FIELD              = 'ticket_field';
-    const TERM_DATE_CREATED              = 'date_created';
-    const TERM_DATE_RESOLVED             = 'date_resolved';
+    const TERM_ID                          = 'id';
+    const TERM_REF                         = 'ref';
+    const TERM_PERSON_ID                   = 'person_id';
+    const TERM_DEPARTMENT                  = 'department';
+    const TERM_CATEGORY                    = 'category';
+    const TERM_PRODUCT                     = 'product';
+    const TERM_AGENT                       = 'agent';
+    const TERM_AGENT_TEAM                  = 'agent_team';
+    const TERM_STATUS                      = 'status';
+    const TERM_HIDDEN_STATUS               = 'hidden_status';
+    const TERM_EMAIL_ACCOUNT               = 'email_account';
+    const TERM_WORKFLOW                    = 'workflow';
+    const TERM_PRIORITY                    = 'priority';
+    const TERM_SUBJECT                     = 'subject';
+    const TERM_SUBJECT_ADV                 = 'subject_adv';
+    const TERM_MESSAGE                     = 'ticket_message';
+    const TERM_MESSAGE_ADV                 = 'ticket_message_adv';
+    const TERM_ORGANIZATION                = 'organization';
+    const TERM_LANGUAGE                    = 'language';
+    const TERM_PARTICIPANT                 = 'participant';
+    const TERM_PERSON                      = 'person';
+    const TERM_LABEL                       = 'label';
+    const TERM_TICKET_FIELD                = 'ticket_field';
+    const TERM_DATE_CREATED                = 'date_created';
+    const TERM_DATE_RESOLVED               = 'date_resolved';
     const TERM_DATE_ARCHIVED               = 'date_archived';
-    const TERM_DATE_STATUS               = 'date_status';
-    const TERM_DATE_LAST_USER_REPLY      = 'date_last_user_reply';
-    const TERM_DATE_LAST_AGENT_REPLY     = 'date_last_agent_reply';
-    const TERM_DATE_LAST_REPLY           = 'date_last_reply';
-    const TERM_URGENCY                   = 'urgency';
-    const TERM_USER_WAITING              = 'user_waiting';
-    const TERM_TOTAL_USER_WAITING        = 'total_user_waiting';
-    const TERM_AGENT_WAITING             = 'agent_waiting';
-    const TERM_ARCHIVE_SEARCH            = 'archive_search';
-    const TERM_DELETED                   = 'deleted';
-    const TERM_CREATION_SYSTEM           = 'creation_system';
-    const TERM_HOLD                      = 'is_hold';
-    const TERM_FLAGGED                   = 'flagged';
-    const TERM_TEXT                      = 'text';
-    const TERM_SENT_TO_ADDRESS           = 'sent_to_address';
-    const TERM_DAY_CREATED               = 'day_created';
-    const TERM_FEEDBACK_RATING           = 'feedback_rating';
-    const TERM_SLA                       = 'sla';
-    const TERM_SLA_STATUS                = 'sla_status';
-    const TERM_SLA_COMPLETED             = 'sla_completed';
-    const TERM_IP_ADDRESS                = 'ip_address';
+    const TERM_DATE_STATUS                 = 'date_status';
+    const TERM_DATE_LAST_USER_REPLY        = 'date_last_user_reply';
+    const TERM_DATE_LAST_AGENT_REPLY       = 'date_last_agent_reply';
+    const TERM_DATE_LAST_REPLY             = 'date_last_reply';
+    const TERM_URGENCY                     = 'urgency';
+    const TERM_USER_WAITING                = 'user_waiting';
+    const TERM_TOTAL_USER_WAITING          = 'total_user_waiting';
+    const TERM_AGENT_WAITING               = 'agent_waiting';
+    const TERM_ARCHIVE_SEARCH              = 'archive_search';
+    const TERM_DELETED                     = 'deleted';
+    const TERM_CREATION_SYSTEM             = 'creation_system';
+    const TERM_HOLD                        = 'is_hold';
+    const TERM_FLAGGED                     = 'flagged';
+    const TERM_TEXT                        = 'text';
+    const TERM_SENT_TO_ADDRESS             = 'sent_to_address';
+    const TERM_DAY_CREATED                 = 'day_created';
+    const TERM_FEEDBACK_RATING             = 'feedback_rating';
+    const TERM_SLA                         = 'sla';
+    const TERM_SLA_STATUS                  = 'sla_status';
+    const TERM_SLA_COMPLETED               = 'sla_completed';
+    const TERM_IP_ADDRESS                  = 'ip_address';
 
     /**
-     * True to search in the non-search tables (aka all tickets not just active)
+     * True to search in the non-search tables (aka all tickets not just active).
+     *
      * @var bool
      */
     protected $is_archive = false;
@@ -109,19 +108,22 @@ class TicketSearch extends SearcherAbstract
     protected $org_search = null;
 
     /**
-     * From getSqlParts()
+     * From getSqlParts().
+     *
      * @var array
      */
     protected $sql_parts = null;
 
     /**
-     * Summary of terms in phrases
+     * Summary of terms in phrases.
+     *
      * @var array
      */
     protected $summary = array();
 
     /**
-     * Summary of sorting in phrases
+     * Summary of sorting in phrases.
+     *
      * @var array
      */
     protected $order_summary = array();
@@ -136,7 +138,7 @@ class TicketSearch extends SearcherAbstract
 
     /**
      * An array of search terms that are specific, as in only allow a single
-     * value (so not ranges or IN() types). For example, a single department or organization
+     * value (so not ranges or IN() types). For example, a single department or organization.
      *
      * @return array
      */
@@ -280,6 +282,7 @@ class TicketSearch extends SearcherAbstract
     /**
      * @param $term
      * @param $data
+     *
      * @return bool
      */
     public function isArchiveTerm($term, $op, $data)
@@ -309,7 +312,7 @@ class TicketSearch extends SearcherAbstract
     }
 
     /**
-     * Get the summary of crtiera
+     * Get the summary of crtiera.
      *
      * @return array
      */
@@ -335,7 +338,7 @@ class TicketSearch extends SearcherAbstract
     }
 
     /**
-     * Get the order-by summary
+     * Get the order-by summary.
      *
      * @return array
      */
@@ -347,7 +350,7 @@ class TicketSearch extends SearcherAbstract
     }
 
     /**
-     * Get specific fields in this search
+     * Get specific fields in this search.
      *
      * @return array
      */
@@ -369,9 +372,10 @@ class TicketSearch extends SearcherAbstract
     }
 
     /**
-     * Check an array of fields to see if this searcher has any of them
+     * Check an array of fields to see if this searcher has any of them.
      *
-     * @param  array $fields
+     * @param array $fields
+     *
      * @return bool
      */
     public function hasAnyAffectedFields(array $fields)
@@ -391,7 +395,8 @@ class TicketSearch extends SearcherAbstract
     /**
      * Run the search and return an array of matching ID's.
      *
-     * @param  int   $limit
+     * @param int $limit
+     *
      * @return array
      */
     public function getMatches(array $pageinfo = null)
@@ -421,7 +426,7 @@ class TicketSearch extends SearcherAbstract
     }
 
     /**
-     * Run the search and get the count
+     * Run the search and get the count.
      */
     public function getCount()
     {
@@ -441,7 +446,7 @@ class TicketSearch extends SearcherAbstract
             $table = 'tickets_search_active';
         }
 
-        $sql = "SELECT COUNT(tickets.id) AS count FROM $table AS tickets ";
+        $sql  = "SELECT COUNT(tickets.id) AS count FROM $table AS tickets ";
         $sql2 = "SELECT COUNT(part_perm.id) AS count FROM tickets_participants AS part_perm LEFT JOIN $table AS tickets ON (tickets.id = part_perm.ticket_id) ";
 
         #------------------------------
@@ -613,7 +618,8 @@ class TicketSearch extends SearcherAbstract
     }
 
     /**
-     * Get the SQL query that'll fetch the results
+     * Get the SQL query that'll fetch the results.
+     *
      * @return string
      */
     public function getSql(array $pageinfo = null)
@@ -640,7 +646,7 @@ class TicketSearch extends SearcherAbstract
         if ($this->add_raw_selects) {
             $select = ', '.implode(', ', $this->add_raw_selects);
         }
-        $sql = "SELECT tickets.id $select FROM $table AS tickets ";
+        $sql  = "SELECT tickets.id $select FROM $table AS tickets ";
         $sql2 = "SELECT part_perm.ticket_id AS id $select FROM tickets_participants AS part_perm LEFT JOIN $table AS tickets ON (tickets.id = part_perm.ticket_id) ";
 
         #------------------------------
@@ -744,7 +750,7 @@ class TicketSearch extends SearcherAbstract
 
         if (is_array($order_by)) {
             $order_join = $order_by[0];
-            $order_by = $order_by[1];
+            $order_by   = $order_by[1];
 
             $sql_joins .= " $order_join ";
         }
@@ -845,14 +851,14 @@ class TicketSearch extends SearcherAbstract
         $r_dir = $dir == self::ORDER_ASC ? 'DESC' : 'ASC';
 
         $term_id = null;
-        $m = null;
+        $m       = null;
         if (preg_match('#^(.*?)\[(.*?)\]$#', $type, $m)) {
-            $type = $m[1];
+            $type    = $m[1];
             $term_id = $m[2];
         }
 
         $order_by = '';
-        $tr = App::getTranslator();
+        $tr       = App::getTranslator();
 
         switch ($type) {
             case 'ticket.urgency':
@@ -862,7 +868,7 @@ class TicketSearch extends SearcherAbstract
                     $this->add_raw_selects[] = "tickets.urgency AS status_order";
                 }
 
-                $order_by = "ORDER BY status_order $dir, id $r_dir";
+                $order_by            = "ORDER BY status_order $dir, id $r_dir";
                 $this->order_summary = $tr->phrase('agent.general.urgency');
                 break;
 
@@ -880,7 +886,7 @@ class TicketSearch extends SearcherAbstract
                 break;
 
             case 'ticket.date_created':
-                $order_by = "ORDER BY id $dir";
+                $order_by            = "ORDER BY id $dir";
                 $this->order_summary = $tr->phrase('agent.general.date_created');
                 break;
 
@@ -888,7 +894,7 @@ class TicketSearch extends SearcherAbstract
                 $pris = App::getEntityRepository('DeskPRO:TicketPriority')->getIdsInOrder();
                 if ($pris) {
                     $this->add_raw_selects[] = "FIELD(tickets.priority_id, ".implode(',', $pris).") AS status_order";
-                    $order_by = "ORDER BY status_order $dir, id $r_dir";
+                    $order_by                = "ORDER BY status_order $dir, id $r_dir";
                 } else {
                     $order_by = "ORDER BY id $dir";
                 }
@@ -898,8 +904,8 @@ class TicketSearch extends SearcherAbstract
             case 'ticket.sla_severity':
                 $this->add_raw_selects[] = "MAX(FIELD(sort_table.sla_status, 'ok', 'warning', 'fail')) AS status_order";
                 $this->add_raw_selects[] = "IF(MAX(FIELD(sort_table.sla_status, 'ok', 'warning', 'fail')) <= 1, MIN(sort_table.warn_date), MIN(sort_table.fail_date)) AS status_order2";
-                $this->order_summary = 'SLA Severity';
-                $order_by = array(
+                $this->order_summary     = 'SLA Severity';
+                $order_by                = array(
                     "INNER JOIN ticket_slas AS sort_table ON (sort_table.ticket_id = tickets.id)",
                     "ORDER BY status_order $dir, status_order2 $dir",
                 );
@@ -907,38 +913,38 @@ class TicketSearch extends SearcherAbstract
 
             case 'ticket.date_resolved':
                 $this->add_raw_selects[] = "tickets.date_resolved AS status_order";
-                $this->order_summary = $tr->phrase('agent.general.date_resolved');
-                $order_by = "ORDER BY status_order $dir, id DESC";
+                $this->order_summary     = $tr->phrase('agent.general.date_resolved');
+                $order_by                = "ORDER BY status_order $dir, id DESC";
                 break;
 
             case 'ticket.date_archived':
                 $this->add_raw_selects[] = "tickets.date_archived AS status_order";
-                $this->order_summary = $tr->phrase('agent.general.date_opened');
-                $order_by = "ORDER BY status_order $dir, id DESC";
+                $this->order_summary     = $tr->phrase('agent.general.date_opened');
+                $order_by                = "ORDER BY status_order $dir, id DESC";
                 break;
 
             case 'ticket.last_activity':
                 $this->add_raw_selects[] = "tickets.date_last_user_reply AS status_order";
-                $this->order_summary = $tr->phrase('agent.general.date_of_last_user_reply');
-                $order_by = "ORDER BY status_order $dir, id DESC";
+                $this->order_summary     = $tr->phrase('agent.general.date_of_last_user_reply');
+                $order_by                = "ORDER BY status_order $dir, id DESC";
                 break;
 
             case 'ticket.total_user_waiting':
                 $this->add_raw_selects[] = "tickets.total_user_waiting AS status_order";
-                $this->order_summary = $tr->phrase('agent.general.total_time_waiting');
-                $order_by = "ORDER BY status_order $dir, id DESC";
+                $this->order_summary     = $tr->phrase('agent.general.total_time_waiting');
+                $order_by                = "ORDER BY status_order $dir, id DESC";
                 break;
 
             case 'ticket.date_user_waiting':
                 $this->add_raw_selects[] = "tickets.date_user_waiting AS status_order";
-                $this->order_summary = $tr->phrase('agent.general.time_waiting');
-                $order_by = "ORDER BY status_order $dir, id DESC";
+                $this->order_summary     = $tr->phrase('agent.general.time_waiting');
+                $order_by                = "ORDER BY status_order $dir, id DESC";
                 break;
 
             case 'ticket.organization':
                 $this->add_raw_selects[] = "sort_table.name AS status_order";
-                $this->order_summary = $tr->phrase('agent.general.organization_name');
-                $order_by = array(
+                $this->order_summary     = $tr->phrase('agent.general.organization_name');
+                $order_by                = array(
                     "INNER JOIN organizations AS sort_table ON (sort_table.id = tickets.organization_id)",
                     "ORDER BY status_order $dir, id DESC",
                 );
@@ -946,20 +952,20 @@ class TicketSearch extends SearcherAbstract
 
             case 'ticket.date_last_user_reply':
                 $this->add_raw_selects[] = "tickets.date_last_user_reply AS status_order";
-                $this->order_summary = 'Date of Last User Reply';
-                $order_by = "ORDER BY status_order $dir, id DESC";
+                $this->order_summary     = 'Date of Last User Reply';
+                $order_by                = "ORDER BY status_order $dir, id DESC";
                 break;
 
             case 'ticket.date_last_agent_reply':
-                $this->order_summary = 'Date of Last Agent Reply';
+                $this->order_summary     = 'Date of Last Agent Reply';
                 $this->add_raw_selects[] = "tickets.date_last_agent_reply AS status_order";
-                $order_by = "ORDER BY status_order $dir, id DESC";
+                $order_by                = "ORDER BY status_order $dir, id DESC";
                 break;
 
             case 'ticket.date_last_reply':
-                $this->order_summary = 'Date of Last Reply';
+                $this->order_summary     = 'Date of Last Reply';
                 $this->add_raw_selects[] = "GREATEST(COALESCE(tickets.date_last_agent_reply, '0000-00-00'), COALESCE(tickets.date_last_user_reply, '0000-00-00'), tickets.date_created) AS status_order";
-                $order_by = "ORDER BY status_order $dir, id DESC";
+                $order_by                = "ORDER BY status_order $dir, id DESC";
                 break;
 
             case 'ticket.ticket_field':
@@ -976,7 +982,7 @@ class TicketSearch extends SearcherAbstract
                     case 'input':
                     case 'value':
                         $this->add_raw_selects[] = "sort_table.$search_type AS status_order";
-                        $order_by = array(
+                        $order_by                = array(
                             "INNER JOIN custom_data_ticket AS sort_table ON (sort_table.ticket_id = tickets.id AND sort_table.id = $term_id)",
                             "ORDER BY status_order $dir, id DESC",
                         );
@@ -1024,7 +1030,7 @@ class TicketSearch extends SearcherAbstract
                     continue;
                 }
 
-                $join_id = Util::requestUniqueId();
+                $join_id   = Util::requestUniqueId();
                 $join_name = "j_$join_id";
 
                 list($term, $op, $choice) = $info;
@@ -1034,7 +1040,7 @@ class TicketSearch extends SearcherAbstract
                 // $term of ticket_field[12] becomes $term=ticket_field, $term_id=12
                 $m = null;
                 if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
-                    $term = $m[1];
+                    $term    = $m[1];
                     $term_id = $m[2];
                 }
 
@@ -1138,8 +1144,8 @@ class TicketSearch extends SearcherAbstract
                         $this->affected_fields[] = 'ticket.hidden_status';
 
                         $set_status = true;
-                        $wheres[] = $this->_choiceMatch("$tickets_table.status", self::OP_IS, 'hidden');
-                        $wheres[] = $this->_choiceMatch("$tickets_table.hidden_status", self::OP_IS, 'deleted');
+                        $wheres[]   = $this->_choiceMatch("$tickets_table.status", self::OP_IS, 'hidden');
+                        $wheres[]   = $this->_choiceMatch("$tickets_table.hidden_status", self::OP_IS, 'deleted');
 
                         $this->enableArchiveSearch();
 
@@ -1173,7 +1179,7 @@ class TicketSearch extends SearcherAbstract
                         break;
                     case self::TERM_URGENCY:
                         $this->affected_fields[] = 'ticket.urgency';
-                        $wheres[] = $this->_rangeMatch("$tickets_table.urgency", $op, $choice);
+                        $wheres[]                = $this->_rangeMatch("$tickets_table.urgency", $op, $choice);
                         break;
                     case self::TERM_DATE_CREATED:
                         $wheres[] = $this->_dateMatch("$tickets_table.date_created", $op, $choice);
@@ -1185,8 +1191,8 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_DATE_RESOLVED:
                         $this->enableArchiveSearch();
                         $this->affected_fields[] = 'ticket.date_resolved';
-                        $wheres[] = $this->_dateMatch("$tickets_table.date_resolved", $op, $choice);
-                        $wheres[] = $this->_choiceMatch("$tickets_table.status", 'is', array('resolved'));
+                        $wheres[]                = $this->_dateMatch("$tickets_table.date_resolved", $op, $choice);
+                        $wheres[]                = $this->_choiceMatch("$tickets_table.status", 'is', array('resolved'));
                         break;
                     case self::TERM_DATE_ARCHIVED:
                         $this->enableArchiveSearch();
@@ -1297,20 +1303,20 @@ class TicketSearch extends SearcherAbstract
 
                         if (is_array($choice) && isset($choice['sla_status'])) {
                             $statuses = (array) $choice['sla_status'];
-                            $sla_ids = (array) (isset($choice['sla_id']) ? $choice['sla_id'] : array());
+                            $sla_ids  = (array) (isset($choice['sla_id']) ? $choice['sla_id'] : array());
                             if (!$sla_ids) {
                                 (isset($choice['sla_ids']) ? $choice['sla_ids'] : array());
                             }
                         } else {
                             $statuses = (array) $choice;
-                            $sla_ids = array();
+                            $sla_ids  = array();
                         }
                         if (!$statuses && !$sla_ids) {
                             break;
                         }
 
                         if (!$statuses) {
-                            $statuses = array('ok', 'warning', 'fail');
+                            $statuses       = array('ok', 'warning', 'fail');
                             $status_summary = false;
                         } else {
                             $status_summary = true;
@@ -1322,7 +1328,7 @@ class TicketSearch extends SearcherAbstract
                         }
 
                         $statuses_in = array();
-                        $sla_ids_in = array();
+                        $sla_ids_in  = array();
 
                         foreach ($statuses as $c) {
                             $statuses_in[] = $this->quoteDbValue($c);
@@ -1333,7 +1339,7 @@ class TicketSearch extends SearcherAbstract
                             }
                         }
                         $statuses_in = implode(',', $statuses_in);
-                        $sla_ids_in = implode(',', $sla_ids_in);
+                        $sla_ids_in  = implode(',', $sla_ids_in);
 
                         switch ($op) {
                             case self::OP_IS:
@@ -1363,17 +1369,17 @@ class TicketSearch extends SearcherAbstract
 
                         if (is_array($choice) && isset($choice['is_completed'])) {
                             $completed = (array) $choice['is_completed'];
-                            $sla_ids = (array) (isset($choice['sla_id']) ? $choice['sla_id'] : array());
+                            $sla_ids   = (array) (isset($choice['sla_id']) ? $choice['sla_id'] : array());
                         } else {
                             $completed = (array) $choice;
-                            $sla_ids = array();
+                            $sla_ids   = array();
                         }
                         if (!$completed && !$sla_ids) {
                             break;
                         }
 
                         if (!$completed) {
-                            $completed = array(1, 0);
+                            $completed      = array(1, 0);
                             $status_summary = false;
                         } else {
                             $status_summary = true;
@@ -1385,7 +1391,7 @@ class TicketSearch extends SearcherAbstract
                         }
 
                         $completed_in = array();
-                        $sla_ids_in = array();
+                        $sla_ids_in   = array();
 
                         foreach ($completed as $c) {
                             $completed_in[] = $this->quoteDbValue($c);
@@ -1396,7 +1402,7 @@ class TicketSearch extends SearcherAbstract
                             }
                         }
                         $completed_in = implode(',', $completed_in);
-                        $sla_ids_in = implode(',', $sla_ids_in);
+                        $sla_ids_in   = implode(',', $sla_ids_in);
 
                         switch ($op) {
                             case self::OP_IS:
@@ -1477,10 +1483,10 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_AGENT_TEAM:
                         $this->affected_fields[] = 'ticket.agent_team_id';
 
-                        $info = $this->_normalizeAgentTeamChoice($choice);
+                        $info     = $this->_normalizeAgentTeamChoice($choice);
                         $team_ids = $info['team_ids'];
-                        $not_ids = $info['not_ids'];
-                        $no_team = $info['no_team'];
+                        $not_ids  = $info['not_ids'];
+                        $no_team  = $info['no_team'];
 
                         if ($not_ids) {
                             $wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", 'not', $team_ids, true);
@@ -1513,9 +1519,9 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_STATUS:
 
                         $this->affected_fields[] = 'ticket.status';
-                        $set_status = true;
+                        $set_status              = true;
 
-                        $show_status = array();
+                        $show_status   = array();
                         $hidden_status = array();
 
                         $choice_str = array();
@@ -1523,14 +1529,14 @@ class TicketSearch extends SearcherAbstract
                         foreach ((array) $choice as $c) {
                             if (strpos($c, '.') !== false) {
                                 list($status, $hstatus) = explode('.', $c, 2);
-                                $hidden_status[] = $hstatus;
+                                $hidden_status[]        = $hstatus;
                                 if ($status == 'hidden' && $tr->hasPhrase('agent.tickets.hidden_status_'.$hstatus)) {
                                     $choice_str[] = $tr->phrase('agent.tickets.hidden_status_'.$hstatus);
                                 }
                                 $this->enableArchiveSearch();
                             } else {
                                 $show_status[] = $show_status;
-                                $choice_str[] = $tr->phrase('agent.tickets.status_'.$c);
+                                $choice_str[]  = $tr->phrase('agent.tickets.status_'.$c);
                                 if ($c != 'awaiting_agent' && $c != 'awaiting_user' && $c != 'resolved') {
                                     $this->enableArchiveSearch();
                                 }
@@ -1597,8 +1603,8 @@ class TicketSearch extends SearcherAbstract
                         break;
                     case self::TERM_PARTICIPANT:
                         $this->affected_fields[] = 'ticket.participants';
-                        $joins[] = 'tickets_participants';
-                        $field = 'tickets_participants.person_id';
+                        $joins[]                 = 'tickets_participants';
+                        $field                   = 'tickets_participants.person_id';
 
                         $choice_info = $this->_normalizeAgentChoice($choice);
                         if (!empty($choice_info['agent_ids'])) {
@@ -1638,16 +1644,16 @@ class TicketSearch extends SearcherAbstract
 
                     case self::TERM_SUBJECT:
                         $this->affected_fields[] = 'ticket.subject';
-                        $field = 'tickets.subject';
+                        $field                   = 'tickets.subject';
 
                         $wheres[] = $this->_stringMatch($field, $op, $choice);
                         break;
 
                     case self::TERM_SUBJECT_ADV:
                         $this->affected_fields[] = 'ticket.subject';
-                        $field = 'tickets.subject';
-                        $string = $choice['query'];
-                        $type = !empty($choice['type']) ? $choice['type'] : 'phrase';
+                        $field                   = 'tickets.subject';
+                        $string                  = $choice['query'];
+                        $type                    = !empty($choice['type']) ? $choice['type'] : 'phrase';
 
                         $wheres[] = $this->_stringSearch($field, $op, $string, $type);
                         break;
@@ -1664,11 +1670,11 @@ class TicketSearch extends SearcherAbstract
                         $type = 'and';
 
                         $this->affected_fields[] = 'ticket.message';
-                        $joins[] = array(
+                        $joins[]                 = array(
                             'tickets_messages',
                             "LEFT JOIN tickets_messages AS $join_name ON ($join_name.ticket_id = tickets.id)",
                         );
-                        $field = "$join_name.message";
+                        $field    = "$join_name.message";
                         $wheres[] = $this->_stringSearch($field, $op, $string, $type);
 
                         break;
@@ -1676,21 +1682,21 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_MESSAGE_ADV:
 
                         $string = $choice['query'];
-                        $type = !empty($choice['type']) ? $choice['type'] : 'phrase';
+                        $type   = !empty($choice['type']) ? $choice['type'] : 'phrase';
 
                         $this->affected_fields[] = 'ticket.message';
-                        $joins[] = array(
+                        $joins[]                 = array(
                             'tickets_messages',
                             "LEFT JOIN tickets_messages AS $join_name ON ($join_name.ticket_id = tickets.id)",
                         );
                         $field = "$join_name.message";
 
-                        $w = array();
+                        $w   = array();
                         $w[] = '('.$this->_stringSearch($field, $op, $string, $type).')';
 
                         if (!empty($choice['who'])) {
                             $join_name2 = $join_name.'_u';
-                            $joins[] = array(
+                            $joins[]    = array(
                                 'people',
                                 "LEFT JOIN people AS $join_name2 ON ($join_name2.id = $join_name.person_id)",
                             );
@@ -1712,7 +1718,7 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_FLAGGED:
 
                         $this->affected_fields[] = 'tickets_flagged';
-                        $joins[] = 'tickets_flagged';
+                        $joins[]                 = 'tickets_flagged';
 
                         $this->used_person_context = true;
 
@@ -1850,7 +1856,7 @@ class TicketSearch extends SearcherAbstract
                                 break;
 
                             case 'id':
-                                $join_id = Util::requestUniqueId();
+                                $join_id    = Util::requestUniqueId();
                                 $choices_in = array();
 
                                 if ($choice != 'DP_NO_SELECTION') {
@@ -1939,7 +1945,7 @@ class TicketSearch extends SearcherAbstract
 
                         if (is_array($choice) && isset($choice['waiting_time'])) {
                             $choice = new \DateTime('-'.\Orb\Util\Dates::getUnitInSeconds($choice['waiting_time'], $choice['waiting_time_unit']).' seconds');
-                            $op = $this->invertOp($op);
+                            $op     = $this->invertOp($op);
                         }
 
                         if ($choice) {
@@ -1949,7 +1955,7 @@ class TicketSearch extends SearcherAbstract
 
                     case self::TERM_TOTAL_USER_WAITING:
                         $this->affected_fields[] = 'ticket.total_user_waiting';
-                        $now = time();
+                        $now                     = time();
 
                         // Need the check on waiting_time because it could be date1/date2 instead
                         if (is_array($choice) && isset($choice['waiting_time'])) {
@@ -1964,7 +1970,7 @@ class TicketSearch extends SearcherAbstract
                         break;
 
                     case 'escalation_eliminator':
-                        /** @var $trigger \Application\DeskPRO\Entity\TicketEscalation */
+                        /* @var $trigger \Application\DeskPRO\Entity\TicketEscalation */
                         if ($choice instanceof Entity\TicketEscalation) {
                             $escalation = $choice;
                         } else {
@@ -2000,7 +2006,7 @@ class TicketSearch extends SearcherAbstract
                             $choice[$k] = preg_replace('[^0-9]', '', $choice[$k]);
                         }
 
-                        $column = str_replace('time', 'date', $term);
+                        $column   = str_replace('time', 'date', $term);
                         $wheres[] = "$column IS NOT NULL AND TIME($column) $operator '{$choice['hour1']}:{$choice['minute1']}:00'";
                         break;
 
@@ -2025,8 +2031,8 @@ class TicketSearch extends SearcherAbstract
         }
 
         $this->sql_parts = array(
-            'joins' => $joins,
-            'wheres' => $wheres_all,
+            'joins'      => $joins,
+            'wheres'     => $wheres_all,
             'wheres_any' => $wheres_any,
         );
 
@@ -2036,7 +2042,8 @@ class TicketSearch extends SearcherAbstract
     /**
      * Check a specific ticket against these terms to see if it matches.
      *
-     * @param  Ticket $ticket
+     * @param Ticket $ticket
+     *
      * @return bool
      */
     public function doesTicketMatch(Entity\Ticket $ticket, $context = null, &$failed_term = null)
@@ -2125,8 +2132,8 @@ class TicketSearch extends SearcherAbstract
                     $info = $this->_normalizeAgentChoice($choice);
 
                     $unassigned = $info['unassigned'];
-                    $agent_ids = $info['agent_ids'];
-                    $not_id = $info['not_id'];
+                    $agent_ids  = $info['agent_ids'];
+                    $not_id     = $info['not_id'];
 
                     if ($unassigned) {
                         if ($ticket['agent_id'] && $op == self::OP_IS) {
@@ -2158,10 +2165,10 @@ class TicketSearch extends SearcherAbstract
                     if (isset($choice['agent_team'])) {
                         $choice = $choice['agent_team'];
                     }
-                    $info = $this->_normalizeAgentTeamChoice($choice);
-                    $no_team = $info['no_team'];
+                    $info     = $this->_normalizeAgentTeamChoice($choice);
+                    $no_team  = $info['no_team'];
                     $team_ids = $info['team_ids'];
-                    $not_ids = $info['not_ids'];
+                    $not_ids  = $info['not_ids'];
 
                     if ($no_team) {
                         if ($ticket['agent_team_id'] && $op == self::OP_IS) {
@@ -2208,7 +2215,7 @@ class TicketSearch extends SearcherAbstract
 
                 case self::TERM_PARTICIPANT:
 
-                    $info = $this->_normalizeAgentChoice($choice);
+                    $info   = $this->_normalizeAgentChoice($choice);
                     $choice = (array) $info['agent_ids'];
                     if (count($choice) == 1) {
                         $choice = array_pop($choice);
@@ -2255,7 +2262,7 @@ class TicketSearch extends SearcherAbstract
                             $choice['labels'] = explode(',', $choice['labels']);
                         }
                         foreach ($choice['labels'] as $l) {
-                            $l = Strings::utf8_strtolower($l);
+                            $l                 = Strings::utf8_strtolower($l);
                             $choice_labels[$l] = trim($l);
                         }
                     }
@@ -2314,7 +2321,7 @@ class TicketSearch extends SearcherAbstract
                     $choice = array_pop($choice);
 
                     $choice = strtolower($choice);
-                    $has = $ticket->hasSentToAddress($choice);
+                    $has    = $ticket->hasSentToAddress($choice);
 
                     switch ($op) {
                         case self::OP_IS:
@@ -2390,7 +2397,7 @@ class TicketSearch extends SearcherAbstract
                 case 'time_last_user_reply':
                     $field = str_replace('time', 'date', $term);
 
-                    $f = $ticket[$field];
+                    $f           = $ticket[$field];
                     $ticket_time = clone $f;
 
                     if (!empty($choice['timezone'])) {
@@ -2411,9 +2418,9 @@ class TicketSearch extends SearcherAbstract
                     break;
                 case 'day_created':
                 case 'day_last_user_reply':
-                    $field = str_replace('time', 'date', $term);
+                    $field   = str_replace('time', 'date', $term);
                     $weekday = $ticket[$field]->format('l');
-                    $exists = in_array($weekday, $choice['days']);
+                    $exists  = in_array($weekday, $choice['days']);
                     switch ($op) {
                         case 'is':
                             return $exists;
@@ -2423,8 +2430,8 @@ class TicketSearch extends SearcherAbstract
                     break;
                 default:
                     $terms = new TicketTerms(array(array(
-                        'type' => $term,
-                        'op' => $op,
+                        'type'    => $term,
+                        'op'      => $op,
                         'options' => $choice,
                     )));
                     if (!$terms->doesTicketMatch($ticket)) {
@@ -2495,7 +2502,7 @@ class TicketSearch extends SearcherAbstract
      */
     public function needsUrgency()
     {
-        $info = $this->findTerm('status');
+        $info                   = $this->findTerm('status');
         list($term, $op, $data) = $info;
 
         if (isset($data['status'])) {

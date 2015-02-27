@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -67,7 +66,7 @@ class ModForceAgentEmails extends AbstractContainerAwareAction implements Action
             $agent_ids = array($agent_ids);
         }
 
-        $agent_data = $this->getContainer()->getAgentData();
+        $agent_data     = $this->getContainer()->getAgentData();
         $person_context = $context->getPersonContext();
 
         foreach ($agent_ids as $aid) {

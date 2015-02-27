@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Validator;
@@ -49,7 +46,8 @@ class NewTicketReplyValidator extends AbstractValidator
     /**
      * Check $value to see if its valid.
      *
-     * @param  \Application\UserBundle\Tickets\NewReply $newreply
+     * @param \Application\UserBundle\Tickets\NewReply $newreply
+     *
      * @return bool
      */
     protected function checkIsValid($newreply)

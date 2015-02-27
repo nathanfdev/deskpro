@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,8 +37,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * A simple DB table cache for k=>v
- *
+ * A simple DB table cache for k=>v.
  */
 class Cache extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -77,9 +75,10 @@ class Cache extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Default time to compare is "new DateTime('now')", but you can provide a date
+     * Default time to compare is "new DateTime('now')", but you can provide a date.
      *
-     * @param  \DateTime $now
+     * @param \DateTime $now
+     *
      * @return bool
      */
     public function isExpired(\DateTime $now = null)

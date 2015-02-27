@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -70,7 +69,8 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
     }
 
     /**
-     * @param  TriggerTermInterface      $term
+     * @param TriggerTermInterface $term
+     *
      * @throws \InvalidArgumentException
      */
     public function addTerm(TriggerTermInterface $term)
@@ -83,7 +83,8 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
     }
 
     /**
-     * @param  array                     $term_info
+     * @param array $term_info
+     *
      * @throws \InvalidArgumentException
      */
     public function addTermFromArray(array $term_info)
@@ -103,7 +104,8 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
     }
 
     /**
-     * @param  array                     $term_info
+     * @param array $term_info
+     *
      * @throws \InvalidArgumentException
      */
     public function getTermFromArray(array $term_info)
@@ -112,8 +114,9 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @return bool
      */
     public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
@@ -137,7 +140,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
         $data = array();
 
         $data['version']  = 1;
-        $data['terms'] = array();
+        $data['terms']    = array();
         foreach ($this->criteria->getAll() as $criteria) {
             if ($criteria instanceof TriggerTermComposite) {
                 $set_terms = array();
@@ -209,7 +212,8 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
     }
 
     /**
-     * @param  array        $data
+     * @param array $data
+     *
      * @return TriggerTerms
      */
     public static function unserializeJsonArray(array $data)

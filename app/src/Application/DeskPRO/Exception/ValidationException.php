@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Exception;
@@ -41,8 +39,9 @@ class ValidationException extends \Exception
     private $code_name;
 
     /**
-     * @param  string              $code_name
-     * @param  string              $message
+     * @param string $code_name
+     * @param string $message
+     *
      * @return ValidationException
      */
     public static function create($code_name, $message = null, $code = 1)

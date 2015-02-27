@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,8 +39,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Twitter Status Url
- *
+ * Twitter Status Url.
  */
 class TwitterStatusUrl extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -100,16 +98,17 @@ class TwitterStatusUrl extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param  \SimpleXMLElement|\Zend\Rest\Client\Result   $url
+     * @param \SimpleXMLElement|\Zend\Rest\Client\Result $url
+     *
      * @return \Application\DeskPRO\Entity\TwitterStatusUrl
      */
     public static function createFromJson($url)
     {
-        $entity = new self();
-        $entity['url'] = $url->url;
+        $entity                = new self();
+        $entity['url']         = $url->url;
         $entity['display_url'] = $url->display_url;
-        $entity['starts'] = $url->indices[0];
-        $entity['ends'] = $url->indices[1];
+        $entity['starts']      = $url->indices[0];
+        $entity['ends']        = $url->indices[1];
 
         return $entity;
     }
@@ -131,6 +130,6 @@ class TwitterStatusUrl extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'starts', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'starts'));
         $metadata->mapField(array( 'fieldName' => 'ends', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ends'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'status_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'status_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

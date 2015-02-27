@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
@@ -73,14 +70,14 @@ class EntityToIdTransformer implements DataTransformerInterface
      *
      * @param mixed $value The value in the original representation
      *
+     * @throws TransformationFailedException When the transformation fails.
      * @return mixed The value in the transformed representation
      *
-     * @throws TransformationFailedException When the transformation fails.
      */
     public function transform($value)
     {
         if (!is_object($value)) {
-            return null;
+            return;
         }
 
         return $value->id;
@@ -106,9 +103,9 @@ class EntityToIdTransformer implements DataTransformerInterface
      *
      * @param mixed $value The value in the transformed representation
      *
+     * @throws TransformationFailedException When the transformation fails.
      * @return mixed The value in the original representation
      *
-     * @throws TransformationFailedException When the transformation fails.
      */
     public function reverseTransform($value)
     {

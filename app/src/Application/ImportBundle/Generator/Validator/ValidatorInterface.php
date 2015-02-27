@@ -31,24 +31,24 @@ use Application\ImportBundle\Entity;
 
 /**
  * Validator interface
- * Uses to check an exporting entity
+ * Uses to check an exporting entity.
  *
  * Interface ValidatorInterface
- * @package Application\ImportBundle\Generator\Validator
  */
 interface ValidatorInterface
 {
     /**
-     * Referred record type
+     * Referred record type.
      *
      * @return string
      */
     public function getRecordType();
 
     /**
-     * Returns true on success or false if data is not valid
+     * Returns true on success or false if data is not valid.
      *
      * @param Entity\EntityInterface $entity
+     *
      * @throws ValidatorExceptionInterface
      */
     public function validate(Entity\EntityInterface $entity);

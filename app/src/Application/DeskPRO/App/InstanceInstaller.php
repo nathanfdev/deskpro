@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -72,9 +71,10 @@ class InstanceInstaller
     }
 
     /**
-     * @param  string           $title
-     * @param  array            $settings
-     * @param  DeskproContainer $container
+     * @param string           $title
+     * @param array            $settings
+     * @param DeskproContainer $container
+     *
      * @return AppInstance
      */
     public function install($title, array $settings, DeskproContainer $container, $usersource_type = '')
@@ -108,11 +108,12 @@ class InstanceInstaller
     }
 
     /**
-     * @param  AppPackage       $package
-     * @param  AppInstance      $app
-     * @param  array            $settings
-     * @param  DeskproContainer $container
-     * @param  null             $usersource_type
+     * @param AppPackage       $package
+     * @param AppInstance      $app
+     * @param array            $settings
+     * @param DeskproContainer $container
+     * @param null             $usersource_type
+     *
      * @return InstallerContext
      */
     protected function createInstallContext(AppPackage $package, AppInstance $app, array $settings, DeskproContainer $container, $usersource_type = null)
@@ -136,10 +137,11 @@ class InstanceInstaller
     }
 
     /**
-     * Native apps have their own install handler (usually), but we always return the NoopInstallerHandler so we always have a handler
+     * Native apps have their own install handler (usually), but we always return the NoopInstallerHandler so we always have a handler.
      *
-     * @param  AppPackage                                                                 $package
-     * @param  AppInstance                                                                $app
+     * @param AppPackage  $package
+     * @param AppInstance $app
+     *
      * @return \Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface
      */
     protected function createInstallHandler(AppPackage $package, AppInstance $app)
@@ -155,8 +157,9 @@ class InstanceInstaller
     }
 
     /**
-     * @param  AppPackage $package
-     * @param  array      $settings_form
+     * @param AppPackage $package
+     * @param array      $settings_form
+     *
      * @return array
      */
     public static function readAppSettings(AppPackage $package, array $settings_form)

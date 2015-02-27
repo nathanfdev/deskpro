@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\HttpFoundation;
@@ -45,7 +42,8 @@ class ResponseUtil
     /**
      * Set headers on the response that indicate a response that doesnt expire.
      *
-     * @param  \Symfony\Component\HttpFoundation\Response $response
+     * @param \Symfony\Component\HttpFoundation\Response $response
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public static function setNeverExpireHeaders(Response $response)

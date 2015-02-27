@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Routing;
@@ -50,9 +48,9 @@ class PortalUrlBuilder
 
     public function __construct($path, Language $language = null, PortalMode $mode = null)
     {
-        $this->path = trim($path);
+        $this->path     = trim($path);
         $this->language = $language;
-        $this->mode = $mode;
+        $this->mode     = $mode;
     }
 
     public function __toString()

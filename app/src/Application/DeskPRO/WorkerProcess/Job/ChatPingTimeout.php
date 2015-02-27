@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -39,7 +36,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Log\Logger;
 
 /**
- * This cycles through chats and cleans up abandonded ones
+ * This cycles through chats and cleans up abandonded ones.
  */
 class ChatPingTimeout extends AbstractJob
 {
@@ -75,7 +72,7 @@ class ChatPingTimeout extends AbstractJob
 
         $count_agents = 0;
         foreach ($timeouts as $chat_id => $agent_id) {
-            $chat = App::getEntityRepository('DeskPRO:ChatConversation')->find($chat_id);
+            $chat  = App::getEntityRepository('DeskPRO:ChatConversation')->find($chat_id);
             $agent = App::getEntityRepository('DeskPRO:Person')->find($agent_id);
             $chat_manager->agentTimeout($chat, $agent);
 
@@ -111,7 +108,7 @@ class ChatPingTimeout extends AbstractJob
         # Max waiting times
         #------------------------------
 
-        $max_time = App::getSetting('core_chat.max_wait_time');
+        $max_time   = App::getSetting('core_chat.max_wait_time');
         $count_wait = 0;
 
         if ($max_time) {
@@ -136,7 +133,7 @@ class ChatPingTimeout extends AbstractJob
         # Abandoned chats after user timeout
         #------------------------------
 
-        $max_time = App::getSetting('core_chat.abandoned_time');
+        $max_time        = App::getSetting('core_chat.abandoned_time');
         $count_abandoned = 0;
 
         if ($max_time) {

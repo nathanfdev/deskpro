@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -45,6 +44,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
     /**
      * An array of categories allowed for real, that we get by computing
      * inheritance.
+     *
      * @var array
      */
     protected $allowed_cats = array('tickets' => array(), 'chat' => array());
@@ -72,7 +72,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 
         if (DP_INTERFACE == 'agent' || ($this->person->is_agent && DP_INTERFACE != 'user')) {
             $agent_groups = App::$container->getAgentGroups();
-            $allow_all = false;
+            $allow_all    = false;
             foreach ($this->usergroup_ids as $ugid) {
                 if ($agent_groups->groupExists($ugid)) {
                     $g = $agent_groups->getGroup($ugid);
@@ -96,7 +96,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
                     }
                 }
             } else {
-                $agent_ugs = App::getDataService('Usergroup')->getAgentUsergroups();
+                $agent_ugs     = App::getDataService('Usergroup')->getAgentUsergroups();
                 $has_agent_ugs = array();
 
                 foreach ($this->usergroup_ids as $ugid) {
@@ -193,8 +193,9 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
     }
 
     /**
-     * @param  string $app
-     * @param  string $permission
+     * @param string $app
+     * @param string $permission
+     *
      * @return int[]
      */
     public function getAllowedIds($app, $permission = 'full')
@@ -217,7 +218,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
     }
 
     /**
-     * Get an array of data we'll serialize
+     * Get an array of data we'll serialize.
      *
      * @return array
      */
@@ -231,7 +232,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
     }
 
     /**
-     * Initialize this object with an array of saved data
+     * Initialize this object with an array of saved data.
      *
      * @param array $data
      */

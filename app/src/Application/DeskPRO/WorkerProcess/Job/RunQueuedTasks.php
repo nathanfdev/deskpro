@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -37,7 +34,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 use Application\DeskPRO\App;
 
 /**
- * Runs queued tasks if there are any
+ * Runs queued tasks if there are any.
  */
 class RunQueuedTasks extends AbstractJob
 {
@@ -45,11 +42,11 @@ class RunQueuedTasks extends AbstractJob
 
     public function run()
     {
-        $max_run = 25;
+        $max_run    = 25;
         $start_time = microtime(true);
-        $task = false;
+        $task       = false;
 
-        $em = App::getOrm();
+        $em     = App::getOrm();
         $logger = $this->getLogger();
 
         while (($remaining_time = $max_run - (microtime(true) - $start_time)) > 1) {

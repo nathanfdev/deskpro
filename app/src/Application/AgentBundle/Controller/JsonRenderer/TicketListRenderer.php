@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller\JsonRenderer;
@@ -86,7 +84,8 @@ class TicketListRenderer
     }
 
     /**
-     * @param  null|callback $fn_visitor
+     * @param null|callback $fn_visitor
+     *
      * @return array
      */
     public function renderTicketDisplayArray($fn_visitor = null)
@@ -148,7 +147,8 @@ class TicketListRenderer
     }
 
     /**
-     * @param  Ticket $ticket
+     * @param Ticket $ticket
+     *
      * @return array
      */
     private function renderTicket(Ticket $ticket)

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -47,7 +46,7 @@ abstract class PageDisplayAbstract extends \Application\DeskPRO\Domain\DomainObj
     protected $id = null;
 
     /**
-     * The actual section within the page that this description applies (ex 'toptabs')
+     * The actual section within the page that this description applies (ex 'toptabs').
      *
      * @var string
      */

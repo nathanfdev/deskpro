@@ -26,28 +26,25 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Model;
 
 class FeedbackFilter
 {
-    const STATUS_ALL = 'all';
+    const STATUS_ALL    = 'all';
     const STATUS_ACTIVE = 'active';
     const STATUS_CLOSED = 'closed';
 
-    const SORT_DATE = 'date';
+    const SORT_DATE       = 'date';
     const SORT_POPULARITY = 'most-popular';
-    const SORT_COMMENTS = 'most-discussed';
-    const SORT_RATING = 'highest-rating';
-    const SORT_VIEWS = 'most-views';
+    const SORT_COMMENTS   = 'most-discussed';
+    const SORT_RATING     = 'highest-rating';
+    const SORT_VIEWS      = 'most-views';
 
     const SORT_DIRECTION_DESC = 'desc';
-    const SORT_DIRECTION_ASC = 'asc';
+    const SORT_DIRECTION_ASC  = 'asc';
 
     public static $statuses = array(
         self::STATUS_ALL,
@@ -82,11 +79,11 @@ class FeedbackFilter
     public function toArray()
     {
         return array(
-            'status' => $this->getStatus(),
+            'status'            => $this->getStatus(),
             'status_categories' => $this->getStatusCategories(),
-            'types' => $this->getTypes(),
-            'sort' => $this->getSort(),
-            'sort_direction' => $this->getSortDirection(),
+            'types'             => $this->getTypes(),
+            'sort'              => $this->getSort(),
+            'sort_direction'    => $this->getSortDirection(),
         );
     }
 
@@ -102,11 +99,11 @@ class FeedbackFilter
     public static function getDefaultValues()
     {
         return array(
-            'status' => static::STATUS_ALL,
+            'status'            => static::STATUS_ALL,
             'status_categories' => array(),
-            'types' => array(),
-            'sort' => static::SORT_DATE,
-            'sort_direction' => static::SORT_DIRECTION_DESC,
+            'types'             => array(),
+            'sort'              => static::SORT_DATE,
+            'sort_direction'    => static::SORT_DIRECTION_DESC,
         );
     }
 

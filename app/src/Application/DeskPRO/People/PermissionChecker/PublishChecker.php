@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -42,7 +41,8 @@ class PublishChecker extends AbstractChecker
     protected $person;
 
     /**
-     * @param  mixed $content
+     * @param mixed $content
+     *
      * @return bool
      */
     public function canDelete($content)
@@ -51,7 +51,8 @@ class PublishChecker extends AbstractChecker
     }
 
     /**
-     * @param  mixed $content
+     * @param mixed $content
+     *
      * @return bool
      */
     public function canEdit($content)

@@ -26,14 +26,10 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package    DeskPRO
- * @subpackage NewSettings
+ * DeskPRO.
  */
 
 namespace DpUnitTests\DeskPRO\Application\NewSettings;
-
 
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
@@ -55,7 +51,6 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($loaders, $resolver->getLoaders(), 'stored with the same order');
     }
 
-
     public function testGlobalSettingsMergesLoadersAndCachesProperly()
     {
         $mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
@@ -72,14 +67,14 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
             $settings1 = array(
                 'core.key1' => 'eighteen',
                 'core.key2' => 'sixteen',
-                'core.key3' => 'number4'
+                'core.key3' => 'number4',
             )
         );
 
         $mock2->shouldReceive('load')->andReturn(
             $settings2 = array(
                 'core.key2' => 16,
-                'core.key3' => 'some_new-string'
+                'core.key3' => 'some_new-string',
             )
         );
 
@@ -88,7 +83,7 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
             array(
                 'core.key1' => 'eighteen',
                 'core.key2' => 16,
-                'core.key3' => 'some_new-string'
+                'core.key3' => 'some_new-string',
             )
         );
 
@@ -100,7 +95,6 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedResolvedSettingsBag, $resolver->getGlobalSettings());
     }
-
 
     public function testGlobalSettingsForceReload()
     {
@@ -118,14 +112,14 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
             $settings1 = array(
                 'core.key1' => 'eighteen',
                 'core.key2' => 'sixteen',
-                'core.key3' => 'number4'
+                'core.key3' => 'number4',
             )
         );
 
         $mock2->shouldReceive('load')->with(true)->andReturn(
             $settings2 = array(
                 'core.key2' => 16,
-                'core.key3' => 'some_new-string'
+                'core.key3' => 'some_new-string',
             )
         );
 
@@ -134,7 +128,7 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
             array(
                 'core.key1' => 'eighteen',
                 'core.key2' => 16,
-                'core.key3' => 'some_new-string'
+                'core.key3' => 'some_new-string',
             )
         );
 
@@ -146,7 +140,6 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedResolvedSettingsBag, $resolver->getGlobalSettings(true));
     }
-
 
     public function testDefaultSettingsIsFirstLoader()
     {
@@ -164,14 +157,14 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
             $settings1 = array(
                 'core.key1' => 'eighteen',
                 'core.key2' => 'sixteen',
-                'core.key3' => 'number4'
+                'core.key3' => 'number4',
             )
         );
 
         $mock2->shouldReceive('load')->andReturn(
             $settings2 = array(
                 'core.key2' => 16,
-                'core.key3' => 'some_new-string'
+                'core.key3' => 'some_new-string',
             )
         );
 
@@ -189,7 +182,6 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedDefaultSettingsBag, $resolver->getDefaultSettings());
     }
 
-
     public function testDefaultSettingsCanForceReload()
     {
         $mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
@@ -206,14 +198,14 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
             $settings1 = array(
                 'core.key1' => 'eighteen',
                 'core.key2' => 'sixteen',
-                'core.key3' => 'number4'
+                'core.key3' => 'number4',
             )
         );
 
         $mock2->shouldReceive('load')->with(true)->andReturn(
             $settings2 = array(
                 'core.key2' => 16,
-                'core.key3' => 'some_new-string'
+                'core.key3' => 'some_new-string',
             )
         );
 
@@ -230,7 +222,6 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedDefaultSettingsBag, $resolver->getDefaultSettings(true));
     }
-
 
     public function testVirtualSettings()
     {
@@ -255,7 +246,6 @@ class SettingsResolverTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('func_generated_value', $resolver->getGlobalSettings()->get('core.default_timezone'));
     }
-
 
     public function testVirtualSettingsDefault()
     {

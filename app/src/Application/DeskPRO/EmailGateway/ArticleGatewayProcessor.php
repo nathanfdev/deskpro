@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway;
@@ -106,7 +104,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
                 $this->error = \Application\DeskPRO\Entity\EmailSource::ERR_DUPE;
                 $this->logMessage(sprintf("[ArticleGatewayProcessor] Detected duplicate for source %d", $this->reader->getProperty('email_source')->uid));
 
-                return null;
+                return;
             }
         }
 
@@ -124,7 +122,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
         if ($bounce_detector->isBounced()) {
             $this->logMessage("[ArticleGatewayProcessor] Is bounced");
 
-            return null;
+            return;
         }
 
         // If the detector didnt find a person, doesnt mean they dont exist
@@ -148,7 +146,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
                 ", array($this->account->getId(), $cutoff_date, '%'.$this->reader->getFromAddress()->getEmail().'%'));
 
                 if ($has_processed) {
-                    return null;
+                    return;
                 }
             }
 
@@ -160,7 +158,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
             $message->setTo($this->reader->getFromAddress()->getEmail());
             App::getMailer()->send($message);
 
-            return null;
+            return;
         }
 
         if (ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
@@ -317,7 +315,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 
             App::getMailer()->send($message);
 
-            return null;
+            return;
         }
 
         $email_info['subject'] = ForwardCutter::cutSubjectForwardPrefix($email_info['subject']);

@@ -26,28 +26,28 @@
 \**************************************************************************/
 
 /**
- * @package Importer
  */
 
 namespace Application\ImportBundle\ValueImporter;
 
-use Application\ImportBundle\Value\AttachmentValue;
 use Application\ImportBundle\Exception\BadDataException;
 use Application\ImportBundle\Exception\DuplicateValueException;
+use Application\ImportBundle\Value\AttachmentValue;
 
 class AttachmentValueImporter extends AbstractValueImporter
 {
     /**
+     * @param \Application\ImportBundle\Value\FeedbackValue $aval
      *
-     * @param  \Application\ImportBundle\Value\FeedbackValue $aval
-     * @return boolean
      * @throws \InvalidArgumentException
      * @throws BadDataException
      * @throws DuplicateValueException
+     * @return boolean
+     *
      */
     public function importValue($aval)
     {
-//        if (!($aval instanceof AttachmentValue)) {
+        //        if (!($aval instanceof AttachmentValue)) {
 //            throw new \InvalidArgumentException("This importer can only import Attachments");
 //        }
 //

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Languages;
@@ -77,7 +75,8 @@ class Detect
     }
 
     /**
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public function detectLanguageCode($string)
@@ -85,10 +84,10 @@ class Detect
         $d = $this->getLanguageDetect();
 
         if (!$this->detectable_langs) {
-            return null;
+            return;
         }
 
-        $string = strip_tags($string);
+        $string        = strip_tags($string);
         $detected_code = null;
 
         if (!$detected_code && $this->has_jpn) {
@@ -116,14 +115,15 @@ class Detect
     }
 
     /**
-     * @param  string                               $string
+     * @param string $string
+     *
      * @return \Application\DeskPRO\Entity\Language
      */
     public function detectLanguage($string)
     {
         $code = $this->detectLanguageCode($string);
         if (!$code) {
-            return null;
+            return;
         }
 
         $lang = $this->lang_data->findLangCode($code);

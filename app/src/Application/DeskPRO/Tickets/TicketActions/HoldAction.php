@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -39,7 +36,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 
 /**
- * Sets/removes on hold status
+ * Sets/removes on hold status.
  */
 class HoldAction extends AbstractAction implements PermissionableAction
 {
@@ -60,7 +57,7 @@ class HoldAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * True to stop processing actions after this one
+     * True to stop processing actions after this one.
      *
      * @return bool
      */
@@ -79,7 +76,7 @@ class HoldAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -89,7 +86,7 @@ class HoldAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -105,7 +102,8 @@ class HoldAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)

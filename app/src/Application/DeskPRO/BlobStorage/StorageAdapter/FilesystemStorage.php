@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
@@ -66,7 +64,8 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     *
      * @return bool
      */
     public function checkBlobExists(Blob $blob)
@@ -81,7 +80,8 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     *
      * @return bool
      */
     public function deleteBlob(Blob $blob)
@@ -106,8 +106,9 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
      * @param $data
+     *
      * @return int
      */
     public function writeBlobString(Blob $blob, $data)
@@ -122,8 +123,9 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param  string                                $source_path
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param string                                $source_path
+     *
      * @return int
      */
     public function writeBlobFromFile(Blob $blob, $source_path)
@@ -151,8 +153,9 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param  resource                              $data
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param resource                              $data
+     *
      * @return int
      */
     public function writeBlobFromStream(Blob $blob, $fp_source)
@@ -172,9 +175,10 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     }
 
     /**
-     * Loads the entire blob into a string
+     * Loads the entire blob into a string.
      *
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     *
      * @return string
      */
     public function readBlobString(Blob $blob)
@@ -194,8 +198,9 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param  string                                $target_path
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param string                                $target_path
+     *
      * @return int
      */
     public function readBlobToFile(Blob $blob, $target_path)
@@ -221,8 +226,9 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param  resource                              $fp_target
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param resource                              $fp_target
+     *
      * @return int
      */
     public function readBlobToStream(Blob $blob, $fp_target)
@@ -277,9 +283,10 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     }
 
     /**
-     * Get the full path from a path string
+     * Get the full path from a path string.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return string
      */
     public function resolvePath($path)
@@ -292,6 +299,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     /**
      * @param $fp_from
      * @param $fp_to
+     *
      * @return int
      */
     protected function _copyStream($fp_from, $fp_to)

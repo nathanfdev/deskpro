@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage HttpKernel
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\HttpKernel;
@@ -93,12 +90,14 @@ class HttpKernel extends BaseHttpKernel
     }
 
     /**
-     * @param  Request    $request
-     * @param  int        $type
-     * @param  bool       $catch
+     * @param Request $request
+     * @param int     $type
+     * @param bool    $catch
+     *
+     * @throws \Exception
+     * @throws \Exception
      * @return Response
-     * @throws \Exception
-     * @throws \Exception
+     *
      */
     public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
@@ -132,7 +131,7 @@ class HttpKernel extends BaseHttpKernel
     }
 
     /**
-     * [Copied from BaseHttpKernel]
+     * [Copied from BaseHttpKernel].
      *
      * @param Request  $request
      * @param Response $response
@@ -143,13 +142,15 @@ class HttpKernel extends BaseHttpKernel
     }
 
     /**
-     * Custom DeskPRO code. Same as BaseHttpKernel except we run pre/post methods, and also add in handling for newrelic
+     * Custom DeskPRO code. Same as BaseHttpKernel except we run pre/post methods, and also add in handling for newrelic.
      *
-     * @param  Request                                                       $request
-     * @param  int                                                           $type
-     * @return Response
+     * @param Request $request
+     * @param int     $type
+     *
      * @throws \LogicException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return Response
+     *
      */
     private function handleRaw(Request $request, $type = self::MASTER_REQUEST)
     {
@@ -220,10 +221,10 @@ class HttpKernel extends BaseHttpKernel
             // Run pre event
             $event = new PrePostEvent(array(
                 'request_type' => $type,
-                'request' => $request,
-                'controller' => $controller[0],
-                'action' => $controller[1],
-                'arguments' => $arguments,
+                'request'      => $request,
+                'controller'   => $controller[0],
+                'action'       => $controller[1],
+                'arguments'    => $arguments,
             ));
             $controller[0]->DeskPRO_onControllerPreAction($event);
             $response = null;
@@ -252,11 +253,11 @@ class HttpKernel extends BaseHttpKernel
             // Run post event
             $event = new PrePostEvent(array(
                 'request_type' => $type,
-                'request' => $request,
-                'controller' => $controller[0],
-                'action' => $controller[1],
-                'arguments' => $arguments,
-                'response' => $response,
+                'request'      => $request,
+                'controller'   => $controller[0],
+                'action'       => $controller[1],
+                'arguments'    => $arguments,
+                'response'     => $response,
             ));
 
             $controller[0]->DeskPRO_onControllerPostAction($event);
@@ -296,11 +297,12 @@ class HttpKernel extends BaseHttpKernel
     }
 
     /**
-     * [Copied from BaseHttpKernel]
+     * [Copied from BaseHttpKernel].
      *
-     * @param  Response $response
-     * @param  Request  $request
-     * @param  int      $type
+     * @param Response $response
+     * @param Request  $request
+     * @param int      $type
+     *
      * @return Response
      */
     private function filterResponse(Response $response, Request $request, $type)
@@ -315,7 +317,7 @@ class HttpKernel extends BaseHttpKernel
     }
 
     /**
-     * [Copied from BaseHttpKernel]
+     * [Copied from BaseHttpKernel].
      *
      * @param Request $request
      * @param int     $type
@@ -327,14 +329,16 @@ class HttpKernel extends BaseHttpKernel
     }
 
     /**
-     * [Copied from BaseHttpKernel]
+     * [Copied from BaseHttpKernel].
      *
-     * @param  \Exception                $e
-     * @param  Request                   $request
-     * @param  int                       $type
-     * @return Response
+     * @param \Exception $e
+     * @param Request    $request
+     * @param int        $type
+     *
      * @throws \Exception
      * @throws \InvalidArgumentException
+     * @return Response
+     *
      */
     private function handleException(\Exception $e, $request, $type)
     {
@@ -376,9 +380,10 @@ class HttpKernel extends BaseHttpKernel
     }
 
     /**
-     * [Copied from BaseHttpKernel]
+     * [Copied from BaseHttpKernel].
      *
      * @param $var
+     *
      * @return string
      */
     private function varToString($var)

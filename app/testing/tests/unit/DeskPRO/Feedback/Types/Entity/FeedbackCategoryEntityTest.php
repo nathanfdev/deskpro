@@ -8,13 +8,11 @@ class FeedbackCategoryEntityTest extends \DpUnitTestCase
     /**
      * @var \Application\DeskPRO\Entity\FeedbackCategory
      */
-
     private $entity;
 
     /**
      * @var \Symfony\Component\Validator\Validator
      */
-
     private $validator;
 
     public function runBefore()

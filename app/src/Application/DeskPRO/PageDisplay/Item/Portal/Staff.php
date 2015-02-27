@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
@@ -37,14 +34,14 @@ namespace Application\DeskPRO\PageDisplay\Item\Portal;
 use Application\DeskPRO\App;
 
 /**
- * Renders the downloads browser
+ * Renders the downloads browser.
  */
 class Staff extends PortalItemAbstract
 {
     public function getCacheOptions()
     {
         return array(
-            'lifetime' => 1800, // 30 mins
+            'lifetime'         => 1800, // 30 mins
             'user_indifferent' => true,
         );
     }

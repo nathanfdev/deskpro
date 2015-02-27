@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -52,8 +51,9 @@ class LoggerManager
     }
 
     /**
-     * @param  string       $id
-     * @param  string|array $config
+     * @param string       $id
+     * @param string|array $config
+     *
      * @return Logger
      */
     public function getLogger($id, $config = null)
@@ -78,8 +78,9 @@ class LoggerManager
     }
 
     /**
-     * @param  string          $id
-     * @param  Logger          $logger
+     * @param string $id
+     * @param Logger $logger
+     *
      * @throws \LogicException
      */
     public function registerLogger($id, Logger $logger)
@@ -92,7 +93,8 @@ class LoggerManager
     }
 
     /**
-     * @param  string $id
+     * @param string $id
+     *
      * @return bool
      */
     public function hasLogger($id)
@@ -103,8 +105,7 @@ class LoggerManager
     /**
      * Unsets a registered logger.
      *
-     * @param  string $id
-     * @return void
+     * @param string $id
      */
     public function unsetLogger($id)
     {
@@ -119,8 +120,7 @@ class LoggerManager
      * Note that any classes have a reference to the logger will have a reference to
      * an empty logger without any handlers or processors etc.
      *
-     * @param  string $id
-     * @return void
+     * @param string $id
      */
     public function destroyLogger($id)
     {
@@ -161,8 +161,9 @@ class LoggerManager
     /**
      * Create a new logger.
      *
-     * @param  string       $channel
-     * @param  string|array $config  A preset name or an array of configuration
+     * @param string       $channel
+     * @param string|array $config  A preset name or an array of configuration
+     *
      * @return Logger
      */
     public function createLogger($channel, $config = null)

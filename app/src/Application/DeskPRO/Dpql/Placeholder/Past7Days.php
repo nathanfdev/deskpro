@@ -26,16 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Placeholder;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Dpql;
 
 /**
  * Place holder for the past week (today - 1 week), based on the current person's time zone.

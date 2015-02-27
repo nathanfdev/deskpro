@@ -26,20 +26,17 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Request;
 
 class ProfileController extends AbstractController
 {
@@ -143,9 +140,9 @@ class ProfileController extends AbstractController
 
         return $this->renderThemeView(
             'Theme:Profile:edit.html.twig', array(
-                'profile_form' => $profile_form->createView(),
+                'profile_form'  => $profile_form->createView(),
                 'password_form' => $password_form->createView(),
-                'emails_form' => $emails_form->createView(),
+                'emails_form'   => $emails_form->createView(),
             )
         );
     }

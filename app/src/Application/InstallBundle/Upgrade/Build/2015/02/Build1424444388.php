@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -44,7 +41,7 @@ class Build1424444388 extends AbstractBuild
     {
         $this->out("Migrate Phone Numbers");
 
-        $limit = 100;
+        $limit  = 100;
         $offset = 0;
 
         $sq = '
@@ -58,14 +55,13 @@ class Build1424444388 extends AbstractBuild
         $remove = array();
 
         while ($rows = $em->getConnection()->fetchAll(sprintf($sq, $offset, $limit))) {
-
             foreach ($rows as $row) {
                 $phone = new PhoneNumber();
-                $form = $ff->create(new PhoneNumberType(), $phone);
-                $form->submit(array('number' => '+' . preg_replace('/[^0-9]/', '', $row['field_10'])));
+                $form  = $ff->create(new PhoneNumberType(), $phone);
+                $form->submit(array('number' => '+'.preg_replace('/[^0-9]/', '', $row['field_10'])));
 
                 if ($form->isValid()) {
-                    $remove[] = $row['id'];
+                    $remove[]      = $row['id'];
                     $phone->person = $em->getReference('DeskPRO:Person', $row['person_id']);
                     $em->persist($phone);
                     $em->flush();

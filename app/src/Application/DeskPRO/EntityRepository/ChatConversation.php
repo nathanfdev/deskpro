@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -190,7 +189,7 @@ class ChatConversation extends AbstractEntityRepository
         $conversation_ids = $this->getEntityManager()->getConnection()->fetchAllCol($sql, array($person1, $person2));
 
         if (!$conversation_ids) {
-            return null;
+            return;
         }
 
         $conversations = $this->getEntityManager()->createQuery("
@@ -229,7 +228,7 @@ class ChatConversation extends AbstractEntityRepository
     }
 
     /**
-     * Count how many chats there have been between a person, and someone else
+     * Count how many chats there have been between a person, and someone else.
      *
      * @param $person
      * @param $person_ids
@@ -238,7 +237,7 @@ class ChatConversation extends AbstractEntityRepository
     {
         $is_array = true;
         if (!is_array($person_ids)) {
-            $is_array = false;
+            $is_array   = false;
             $person_ids = array($person_ids);
         }
 
@@ -272,9 +271,8 @@ class ChatConversation extends AbstractEntityRepository
      * they participated. Usually this is used to find a private conversation between two people
      * (for agent chats see the ChatController).
      *
-     * @param  array $participant_ids
-     * @param  null  $date_limit
-     * @return void
+     * @param array $participant_ids
+     * @param null  $date_limit
      */
     public function getRecentForPeople(array $participant_ids, $date_limit = null)
     {
@@ -297,10 +295,10 @@ class ChatConversation extends AbstractEntityRepository
 
         $participant_ids = Arrays::removeFalsey($participant_ids);
         $participant_ids = array_unique($participant_ids);
-        $count = count($participant_ids);
+        $count           = count($participant_ids);
 
         if (!$count) {
-            return null;
+            return;
         }
 
         // todo fix query
@@ -317,7 +315,7 @@ class ChatConversation extends AbstractEntityRepository
 
         $conversation_id = $this->getEntityManager()->getConnection()->fetchColumn($sql);
         if (!$conversation_id) {
-            return null;
+            return;
         }
 
         return $this->find($conversation_id);

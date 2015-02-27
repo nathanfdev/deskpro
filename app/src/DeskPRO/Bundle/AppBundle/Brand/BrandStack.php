@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Brand
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Brand;
@@ -90,7 +87,7 @@ class BrandStack
     }
 
     /**
-     * Gives you the active BrandContainer
+     * Gives you the active BrandContainer.
      *
      * @return BrandContainer
      */
@@ -102,7 +99,7 @@ class BrandStack
             return $this->brand_containers[$brand_id];
         }
 
-        return null;
+        return;
     }
 
     public function getStack()
@@ -111,9 +108,10 @@ class BrandStack
     }
 
     /**
-     * Pushes the Brand into the stack, so that the brand's container is now active
+     * Pushes the Brand into the stack, so that the brand's container is now active.
      *
-     * @param  Brand          $brand
+     * @param Brand $brand
+     *
      * @return BrandContainer
      */
     public function push(Brand $brand)

@@ -31,10 +31,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Exporting and importing batch command
+ * Exporting and importing batch command.
  *
  * Class ImportBatchCommand
- * @package Application\ImportBundle\Command
  */
 class ImportBatchCommand extends AbstractExportCommand
 {

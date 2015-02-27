@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Feedback;
@@ -104,7 +102,7 @@ class FeedbackModerate implements PersonContextInterface
         $this->translator->setTemporaryLanguage($feedback->person->getLanguage(), function () use ($mailer, $feedback, $agent) {
             $vars = array(
                 'feedback' => $feedback,
-                'agent' => $agent,
+                'agent'    => $agent,
             );
 
             $message = $mailer->createMessage();

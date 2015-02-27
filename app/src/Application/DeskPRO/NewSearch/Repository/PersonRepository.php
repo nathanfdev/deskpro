@@ -6,12 +6,12 @@ use Elastica\Query;
 use Elastica\Util as ElasticaUtil;
 
 /**
- * Person Repository
+ * Person Repository.
  */
 class PersonRepository extends AbstractRepository implements WithLabelsInterface
 {
     /**
-     * Fields to be highlighted
+     * Fields to be highlighted.
      *
      * @var array
      */
@@ -30,6 +30,7 @@ class PersonRepository extends AbstractRepository implements WithLabelsInterface
 
     /**
      * @param $q
+     *
      * @return Query\MultiMatch
      */
     protected function getQueryString($q)

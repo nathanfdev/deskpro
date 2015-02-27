@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -46,8 +45,7 @@ interface CallbackInterface extends AdapterInterface
     /**
      * Switches the adapter to the callback context using form data $data.
      *
-     * @param  array $data Form data or other callback data
-     * @return void
+     * @param array $data Form data or other callback data
      */
     public function setCallbackContext(array $data);
 

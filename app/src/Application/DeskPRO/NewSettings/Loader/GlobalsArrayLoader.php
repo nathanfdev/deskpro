@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\NewSettings\Loader;
@@ -39,7 +36,7 @@ use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\NewSettings\SettingsLoaderInterface;
 
 /**
- * Gets the returned array from the global array
+ * Gets the returned array from the global array.
  */
 class GlobalsArrayLoader implements SettingsLoaderInterface
 {
@@ -58,7 +55,7 @@ class GlobalsArrayLoader implements SettingsLoaderInterface
     public function __construct(CacheAdapterInterface $cache)
     {
         $this->cacheKey = static::CACHE_KEY;
-        $this->cache = new ConvenientCache($cache);
+        $this->cache    = new ConvenientCache($cache);
     }
 
     /**

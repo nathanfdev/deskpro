@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category DependencyInjection
  */
 
@@ -40,8 +39,9 @@ use Application\DeskPRO\Sms\DeskPROSmsSender;
 class SmsSenderService
 {
     /**
-     * @param  DeskproContainer                          $container
-     * @param  array                                     $options
+     * @param DeskproContainer $container
+     * @param array            $options
+     *
      * @return \Application\DeskPRO\Sms\DeskPROSmsSender
      */
     public static function create(DeskproContainer $container, $options = array())

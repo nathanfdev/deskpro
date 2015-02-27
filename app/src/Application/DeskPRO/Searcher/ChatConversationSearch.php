@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Searcher;
 
@@ -38,16 +36,16 @@ use Application\DeskPRO\Entity;
 
 class ChatConversationSearch extends SearcherAbstract
 {
-    const TERM_ID                   = 'id';
-    const TERM_AGENT_ID             = 'agent_id';
-    const TERM_DEPARTMENT_ID        = 'department_id';
+    const TERM_ID                     = 'id';
+    const TERM_AGENT_ID               = 'agent_id';
+    const TERM_DEPARTMENT_ID          = 'department_id';
     const TERM_DEPARTMENT_ID_SPECIFIC = 'department_id_specific';
-    const TERM_DATE_CREATED         = 'date_created';
-    const TERM_PERSON               = 'person';
-    const TERM_PERSON_ID            = 'person_id';
-    const TERM_STATUS               = 'status';
-    const TERM_TOTAL_TO_ENDED       = 'total_to_ended';
-    const TERM_LABEL                = 'chat_label';
+    const TERM_DATE_CREATED           = 'date_created';
+    const TERM_PERSON                 = 'person';
+    const TERM_PERSON_ID              = 'person_id';
+    const TERM_STATUS                 = 'status';
+    const TERM_TOTAL_TO_ENDED         = 'total_to_ended';
+    const TERM_LABEL                  = 'chat_label';
 
     /** @var string */
     protected $columns = 'chat_conversations.id';
@@ -93,7 +91,8 @@ class ChatConversationSearch extends SearcherAbstract
     }
 
     /**
-     * Get the SQL query that'll fetch the results
+     * Get the SQL query that'll fetch the results.
+     *
      * @return string
      */
     public function getSql()
@@ -102,7 +101,7 @@ class ChatConversationSearch extends SearcherAbstract
 
         $sql = "SELECT $column_def FROM chat_conversations ";
 
-        $parts = $this->getSqlParts();
+        $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
         #------------------------------
@@ -205,7 +204,7 @@ class ChatConversationSearch extends SearcherAbstract
         $tr = App::getTranslator();
 
         $wheres = array();
-        $joins = $this->joins;
+        $joins  = $this->joins;
 
         foreach ($this->terms as $info) {
             list($term, $op, $choice) = $info;
@@ -223,10 +222,10 @@ class ChatConversationSearch extends SearcherAbstract
                     break;
                 case self::TERM_AGENT_ID:
 
-                    $info = $this->_normalizeAgentChoice($choice);
+                    $info       = $this->_normalizeAgentChoice($choice);
                     $unassigned = $info['unassigned'];
-                    $agent_ids = $info['agent_ids'];
-                    $not_id = $info['not_id'];
+                    $agent_ids  = $info['agent_ids'];
+                    $not_id     = $info['not_id'];
 
                     if ($unassigned) {
                         if ($op == self::OP_IS) {
@@ -248,20 +247,20 @@ class ChatConversationSearch extends SearcherAbstract
                     $children = array();
                     foreach ((array) $choice as $did) {
                         $children[] = $did;
-                        $children = array_merge($children, App::getDataService('Department')->getIdsInTree($did, true));
+                        $children   = array_merge($children, App::getDataService('Department')->getIdsInTree($did, true));
                     }
                     $wheres[] = $this->_choiceMatch('chat_conversations.department_id', $op, $children, true);
                     break;
 
                 case self::TERM_DEPARTMENT_ID_SPECIFIC:
-                    $choice = (array) $choice;
+                    $choice     = (array) $choice;
                     $children[] = array_pop($choice);
-                    $wheres[] = $this->_choiceMatch('chat_conversations.department_id', $op, $children, true);
+                    $wheres[]   = $this->_choiceMatch('chat_conversations.department_id', $op, $children, true);
                     break;
 
                 case self::TERM_DATE_CREATED:
                     $this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_created'), $op, $choice);
-                    $wheres[] = $this->_dateMatch('chat_conversations.date_created', $op, $choice);
+                    $wheres[]        = $this->_dateMatch('chat_conversations.date_created', $op, $choice);
                     break;
 
                 case self::TERM_PERSON_ID:
@@ -273,12 +272,12 @@ class ChatConversationSearch extends SearcherAbstract
                     $people = App::getEntityRepository('DeskPRO:Person')->getByIds($choice);
 
                     $person_ids = array();
-                    $emails = array();
-                    $db = App::getDbRead('search.filter.chat');
+                    $emails     = array();
+                    $db         = App::getDbRead('search.filter.chat');
                     foreach ($people as $person) {
                         if ($person instanceof \Application\DeskPRO\Entity\Person) {
                             $person_ids[] = $db->quote($person->id);
-                            $emails[] = $db->quote($person->getPrimaryEmailAddress());
+                            $emails[]     = $db->quote($person->getPrimaryEmailAddress());
                         }
                     }
 
@@ -329,20 +328,20 @@ class ChatConversationSearch extends SearcherAbstract
                     $join_name = 'j_labels';
                     switch ($op) {
                         case self::OP_IS:
-                            $joins[] = "labels_chat_conversations AS $join_name ON ($join_name.chat_id = chat_conversations.id)";
+                            $joins[]  = "labels_chat_conversations AS $join_name ON ($join_name.chat_id = chat_conversations.id)";
                             $wheres[] = "$join_name.label = ".$db->quote($choice);
                             break;
                         case self::OP_NOT:
-                            $joins[] = "labels_chat_conversations AS $join_name ON ($join_name.chat_id = chat_conversations.id AND $join_name.label = '.$db->quote($choice).')";
+                            $joins[]  = "labels_chat_conversations AS $join_name ON ($join_name.chat_id = chat_conversations.id AND $join_name.label = '.$db->quote($choice).')";
                             $wheres[] = "$join_name.chat_id IS NULL";
                             break;
                         case self::OP_CONTAINS:
-                            $joins[] = "labels_chat_conversations AS $join_name ON ($join_name.chat_id = chat_conversations.id)";
+                            $joins[]  = "labels_chat_conversations AS $join_name ON ($join_name.chat_id = chat_conversations.id)";
                             $wheres[] = "$join_name.label IN ($choices_in)";
                             break;
 
                         case self::OP_NOTCONTAINS:
-                            $joins[] = "labels_chat_conversations AS $join_name ON ($join_name.chat_id = chat_conversations.id AND $join_name.label IN ($choices_in)";
+                            $joins[]  = "labels_chat_conversations AS $join_name ON ($join_name.chat_id = chat_conversations.id AND $join_name.label IN ($choices_in)";
                             $wheres[] = "$join_name.chat_id IS NULL";
                             break;
                     }
@@ -351,7 +350,7 @@ class ChatConversationSearch extends SearcherAbstract
         }
 
         return array(
-            'joins' => $joins,
+            'joins'  => $joins,
             'wheres' => $wheres,
         );
     }

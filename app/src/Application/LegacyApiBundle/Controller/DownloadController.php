@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -42,12 +39,12 @@ use Application\DeskPRO\Searcher\DownloadSearch;
 use Orb\Util\Numbers;
 
 /**
-* @SWG\Resource(
-* 	resourcePath="/downloads",
-* 	description="Operations about Downloads",
-* 	basePath="/api"
-* )
-*/
+ * @SWG\Resource(
+ * 	resourcePath="/downloads",
+ * 	description="Operations about Downloads",
+ * 	basePath="/api"
+ * )
+ */
 class DownloadController extends AbstractController
 {
     /**
@@ -164,12 +161,12 @@ class DownloadController extends AbstractController
         $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
             $terms[] = array('type' => DownloadSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start,
-                'date2' => $date_created_end,
+                'date1'             => $date_created_start,
+                'date2'             => $date_created_end,
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => DownloadSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start,
+                'date1'             => $date_created_start,
             ));
         }
 
@@ -1472,9 +1469,11 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @return \Application\DeskPRO\Entity\Download
+     * @param integer $id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return \Application\DeskPRO\Entity\Download
+     *
      */
     protected function _getDownloadOr404($id, $check_perm = false)
     {
@@ -1498,9 +1497,11 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @return \Application\DeskPRO\Entity\DownloadCategory
+     * @param integer $id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return \Application\DeskPRO\Entity\DownloadCategory
+     *
      */
     protected function _getCategoryOr404($id)
     {

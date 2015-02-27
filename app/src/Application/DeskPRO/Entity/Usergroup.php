@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -61,25 +60,22 @@ class Usergroup extends DomainObject
      * @var int
      * @SWG\Property(name="id", type="integer")
      */
-
     protected $id = null;
 
     /**
-     * Title of the usergroup
+     * Title of the usergroup.
      *
      * @var string
      * @SWG\Property(name="title", type="string")
      */
-
     protected $title;
 
     /**
-     * A note or description about the usergroup
+     * A note or description about the usergroup.
      *
      * @var string
      * @SWG\Property(name="note", type="string")
      */
-
     protected $note = '';
 
     /**
@@ -88,7 +84,6 @@ class Usergroup extends DomainObject
      * @var bool
      * @SWG\Property(name="is_agent_group", type="boolean")
      */
-
     protected $is_agent_group = false;
 
     /**
@@ -97,7 +92,6 @@ class Usergroup extends DomainObject
      * @var bool
      * @SWG\Property(name="sys_name", type="string")
      */
-
     protected $sys_name = null;
 
     /**
@@ -106,20 +100,17 @@ class Usergroup extends DomainObject
      * @var bool
      * @SWG\Property(name="is_enabled", type="boolean")
      */
-
     protected $is_enabled = true;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      * @SWG\Property(name="permissions", type="array", @SWG\Items("Permission"))
      */
-
     protected $permissions;
 
     /**
-     * Constructor
+     * Constructor.
      */
-
     public function __construct()
     {
         $this->permissions = new ArrayCollection();
@@ -128,7 +119,6 @@ class Usergroup extends DomainObject
     /**
      * @return Usergroup
      */
-
     public static function createUsergroup()
     {
         return new self();
@@ -137,7 +127,6 @@ class Usergroup extends DomainObject
     /**
      * @param $permission
      */
-
     public function addPermission($permission)
     {
         $this->permissions->add($permission);
@@ -146,7 +135,6 @@ class Usergroup extends DomainObject
     /**
      * @param $permission
      */
-
     public function removePermission($permission)
     {
         $this->permissions->removeElement($permission);
@@ -155,7 +143,6 @@ class Usergroup extends DomainObject
     /**
      * @return int
      */
-
     public function getId()
     {
         return $this->id;
@@ -164,7 +151,6 @@ class Usergroup extends DomainObject
     /**
      * @return string
      */
-
     public function getTitle()
     {
         return $this->title;
@@ -180,7 +166,6 @@ class Usergroup extends DomainObject
      *
      * @return string
      */
-
     public static function generateUsergroupSetKey(array $usergroups)
     {
         $usergroup_ids = array();

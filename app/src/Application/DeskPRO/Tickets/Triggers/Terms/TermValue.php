@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -47,7 +46,8 @@ class TermValue
     private $value_callback;
 
     /**
-     * @param  mixed     $value
+     * @param mixed $value
+     *
      * @return TermValue
      */
     public static function createWithValue($value)
@@ -56,7 +56,8 @@ class TermValue
     }
 
     /**
-     * @param  callback  $value_callback
+     * @param callback $value_callback
+     *
      * @return TermValue
      */
     public static function createWithCallback($value_callback)
@@ -70,7 +71,7 @@ class TermValue
      */
     private function __construct($value = null, $value_callback = null)
     {
-        $this->value = $value;
+        $this->value          = $value;
         $this->value_callback = $value_callback;
     }
 

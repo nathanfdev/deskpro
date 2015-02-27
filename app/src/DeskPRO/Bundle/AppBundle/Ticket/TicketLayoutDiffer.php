@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Ticket;
@@ -48,8 +45,9 @@ class TicketLayoutDiffer
      * the fields that I should remove? (note: doesnt address adding new fields, see findFieldsToAdd())
      * ie. what were the excess Fields in the initial layout?
      *
-     * @param  Layout        $initial_layout
-     * @param  Layout        $destination_layout
+     * @param Layout $initial_layout
+     * @param Layout $destination_layout
+     *
      * @return LayoutField[]
      */
     public function findFieldsToRemove(Layout $initial_layout, Layout $destination_layout)
@@ -69,8 +67,9 @@ class TicketLayoutDiffer
      * Given the $initial_layout, what would we need to add to it to get it to be the $destination_layout?
      * ie. What Fields are missing in our initial layout?
      *
-     * @param  Layout        $initial_layout
-     * @param  Layout        $destination_layout
+     * @param Layout $initial_layout
+     * @param Layout $destination_layout
+     *
      * @return LayoutField[]
      */
     public function findFieldsToAdd(Layout $initial_layout, Layout $destination_layout)

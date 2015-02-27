@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Person record mapper
+ * Person record mapper.
  *
  * Class Person
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class Person implements MapperInterface
 {
@@ -43,7 +42,7 @@ final class Person implements MapperInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\Person $repository
      */
@@ -66,7 +65,7 @@ final class Person implements MapperInterface
     public function findOneBy(array $criteria, $throw_exception = true)
     {
         $record = $this->repository->findOneBy($criteria);
-        if ( ! $record && $throw_exception) {
+        if (! $record && $throw_exception) {
             throw new MapperException('Person not found', $criteria);
         }
 
@@ -74,18 +73,19 @@ final class Person implements MapperInterface
     }
 
     /**
-     * Returns the existing person by email
+     * Returns the existing person by email.
      *
      * @param string $email
      * @param bool   $throw_exception
      *
-     * @return \Application\DeskPRO\Entity\Person
      * @throws MapperException
+     * @return \Application\DeskPRO\Entity\Person
+     *
      */
     public function findOneByEmail($email, $throw_exception = true)
     {
         $record = $this->repository->findOneByEmail($email);
-        if ( ! $record && $throw_exception) {
+        if (! $record && $throw_exception) {
             throw new MapperException('Person not found', array('email' => $email));
         }
 
@@ -93,13 +93,14 @@ final class Person implements MapperInterface
     }
 
     /**
-     * Returns the existing person by list of emails
+     * Returns the existing person by list of emails.
      *
      * @param array $emails
      * @param bool  $throw_exception
      *
-     * @return \Application\DeskPRO\Entity\Person
      * @throws MapperException
+     * @return \Application\DeskPRO\Entity\Person
+     *
      */
     public function findOneByEmails(array $emails, $throw_exception = true)
     {

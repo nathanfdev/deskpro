@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Form\Type;
@@ -44,7 +41,7 @@ class SettingsProfile extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('name', 'text', array('required' => false));
-	    $builder->add('primary_phone', new PhoneNumberType());
+        $builder->add('primary_phone', new PhoneNumberType());
         $builder->add('override_display_name', 'text', array('required' => false));
         $builder->add('email', 'text', array('required' => false));
         $builder->add('timezone', 'choice', array(

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\HttpFoundation;
@@ -38,7 +36,7 @@ use Symfony\Component\HttpFoundation\Cookie as BaseCookie;
 
 class Cookie extends BaseCookie
 {
-    const EXPIRE_NEVER = 'never';
+    const EXPIRE_NEVER  = 'never';
     const EXPIRE_DELETE = 'delete';
 
     public static function makeDeleteCookie($name)

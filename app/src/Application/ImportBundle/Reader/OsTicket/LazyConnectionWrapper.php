@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Reader\OsTicket;
 use PDO;
 
 /**
- * Prevent exceptions if pdo configuration is not valid
+ * Prevent exceptions if pdo configuration is not valid.
  *
  * Class PdoConnection
- * @package Application\ImportBundle\Reader\OsTicket
  */
 class LazyConnectionWrapper implements ConnectionWrapperInterface
 {
@@ -63,7 +62,7 @@ class LazyConnectionWrapper implements ConnectionWrapperInterface
     private $adapter;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string $dsn
      * @param string $user
@@ -79,7 +78,7 @@ class LazyConnectionWrapper implements ConnectionWrapperInterface
     }
 
     /**
-     * Returns pdo connection
+     * Returns pdo connection.
      *
      * @return PDO
      */

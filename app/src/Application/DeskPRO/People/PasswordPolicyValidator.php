@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\People;
@@ -68,9 +66,10 @@ class PasswordPolicyValidator
     }
 
     /**
-     * @param  string $password The password to check
-     * @param  Person $person   The user to check on
-     * @param  string $error
+     * @param string $password The password to check
+     * @param Person $person   The user to check on
+     * @param string $error
+     *
      * @return bool
      */
     public function checkPassword($password, Person $person = null, &$error = null)
@@ -125,7 +124,8 @@ class PasswordPolicyValidator
     }
 
     /**
-     * @param  Person $person
+     * @param Person $person
+     *
      * @return bool
      */
     public function isPasswordExpired(Person $person)

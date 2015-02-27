@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * The JiraController class
+ * The JiraController class.
  *
  * @author Abhinav Kumar <work@abhinavkumar.in>
  */
@@ -62,10 +62,12 @@ class JiraController extends AbstractController
     }
 
     /**
-     * @param  Request                                    $request
+     * @param Request $request
      * @param $ticketId
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws NotFoundHttpException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      */
     public function createIssueAction(Request $request, $ticketId)
     {
@@ -87,8 +89,9 @@ class JiraController extends AbstractController
     }
 
     /**
-     * @param  Request                                    $request
+     * @param Request $request
      * @param $issueId
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function updateIssueAction(Request $request, $issueId)
@@ -112,6 +115,7 @@ class JiraController extends AbstractController
 
     /**
      * @param $ticketId
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function issuesAction($ticketId)
@@ -120,11 +124,13 @@ class JiraController extends AbstractController
     }
 
     /**
-     * @param  Request                                    $request
+     * @param Request $request
      * @param $ticketId
      * @param $issueId
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws NotFoundHttpException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      */
     public function addCommentAction(Request $request, $ticketId, $issueId)
     {
@@ -134,8 +140,10 @@ class JiraController extends AbstractController
     }
 
     /**
-     * search by issue key
-     * @param  Request                                    $request
+     * search by issue key.
+     *
+     * @param Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function searchAction(Request $request)
@@ -144,15 +152,18 @@ class JiraController extends AbstractController
     }
 
     /**
-     * link issue to ticket
+     * link issue to ticket.
+     *
      * @param $ticketId
      * @param $issueId
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws NotFoundHttpException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      */
     public function linkAction($ticketId, $issueId)
     {
-        /** @var $ticket Ticket */
+        /* @var $ticket Ticket */
         if (!$ticket = $this->em->find('DeskPRO:Ticket', $ticketId)) {
             throw new NotFoundHttpException();
         }
@@ -161,11 +172,14 @@ class JiraController extends AbstractController
     }
 
     /**
-     * unlink issue
+     * unlink issue.
+     *
      * @param $ticketId
      * @param $issueId
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws NotFoundHttpException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      */
     public function unlinkAction($ticketId, $issueId)
     {

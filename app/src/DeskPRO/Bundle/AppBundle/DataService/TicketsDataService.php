@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
@@ -54,10 +51,11 @@ class TicketsDataService extends AbstractDataService
     }
 
     /**
-     * @param  Person       $person
-     * @param  TicketFilter $filter
+     * @param Person       $person
+     * @param TicketFilter $filter
      * @param $page
      * @param $max_per_page
+     *
      * @return Pagerfanta
      */
     public function getPager(Person $person, TicketFilter $filter, $page, $max_per_page)
@@ -72,7 +70,7 @@ class TicketsDataService extends AbstractDataService
                 $page,
                 $max_per_page,
             ),
-            function () use ($em, $person, $filter, $page,$max_per_page) {
+            function () use ($em, $person, $filter, $page, $max_per_page) {
                 $qb = $em->createQueryBuilder();
 
                 $qb->select('t')
@@ -154,8 +152,9 @@ class TicketsDataService extends AbstractDataService
     /**
      * Returns the count of tickets that can be seen by the user by default. You can optionally provide a status to count on.
      *
-     * @param  Person   $person
-     * @param  string   $status
+     * @param Person $person
+     * @param string $status
+     *
      * @return int|null
      */
     public function getTicketCount(Person $person, $status = 'all')

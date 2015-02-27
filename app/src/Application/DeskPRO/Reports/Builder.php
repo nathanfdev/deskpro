@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports;
@@ -95,7 +93,8 @@ class Builder
     }
 
     /**
-     * @param  int           $id
+     * @param int $id
+     *
      * @return ReportBuilder
      */
     public function getById($id)
@@ -115,8 +114,9 @@ class Builder
     }
 
     /**
-     * @param  int         $id
-     * @param  string|null $query
+     * @param int         $id
+     * @param string|null $query
+     *
      * @return array
      */
     public function getRenderedResult($id, $query = null)
@@ -138,9 +138,10 @@ class Builder
     }
 
     /**
-     * @param  int                                        $id
-     * @param  string                                     $type
-     * @param  null                                       $query
+     * @param int    $id
+     * @param string $type
+     * @param null   $query
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function outputDownloadContent($id, $type, $query = null)
@@ -159,8 +160,9 @@ class Builder
     }
 
     /**
-     * @param  int         $id
-     * @param  string|null $query
+     * @param int         $id
+     * @param string|null $query
+     *
      * @return boolean
      */
     public function getErrors($id, $query = null)
@@ -182,7 +184,8 @@ class Builder
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\ReportBuilder $report
+     * @param \Application\DeskPRO\Entity\ReportBuilder $report
+     *
      * @throws \Exception
      */
     public function saveQuery($report)
@@ -238,7 +241,8 @@ class Builder
     }
 
     /**
-     * @param  ReportBuilder $report
+     * @param ReportBuilder $report
+     *
      * @throws \Exception
      */
     public function remove($report)
@@ -256,7 +260,8 @@ class Builder
     }
 
     /**
-     * @param  int   $id
+     * @param int $id
+     *
      * @return array
      */
     public function getQueryParts($id, $with_params = true)
@@ -286,7 +291,8 @@ class Builder
     }
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return array
      */
     protected function getParamsInput($name = 'params')
@@ -313,7 +319,8 @@ class Builder
     }
 
     /**
-     * @param  Display $statement
+     * @param Display $statement
+     *
      * @return array
      */
     protected function getDpqlPartsForInput(Display $statement = null)
@@ -348,10 +355,11 @@ class Builder
     }
 
     /**
-     * @param  string                                     $type
-     * @param  string                                     $query
-     * @param  string                                     $title
-     * @param  array                                      $params
+     * @param string $type
+     * @param string $query
+     * @param string $title
+     * @param array  $params
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     protected function getReportResponseForType($type, $query, $title, array $params = array())
@@ -375,10 +383,11 @@ class Builder
     }
 
     /**
-     * @param              $query
-     * @param              $renderer
-     * @param  bool        $error
-     * @param  array       $params
+     * @param       $query
+     * @param       $renderer
+     * @param bool  $error
+     * @param array $params
+     *
      * @return bool|string
      */
     protected function renderQuery($query, $renderer, &$error = false, array $params = array())

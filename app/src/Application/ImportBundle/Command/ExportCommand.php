@@ -28,17 +28,16 @@
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Exception;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Export command
- * Read and parse an external data and save it locally
+ * Read and parse an external data and save it locally.
  *
  * Class ExportCommand
- * @package Application\ImportBundle\Command
  */
 class ExportCommand extends AbstractExportCommand
 {
@@ -73,7 +72,7 @@ class ExportCommand extends AbstractExportCommand
             throw new Exception('Output path must be specified');
         }
         if ($config->needInputPath()) {
-            if ( ! $config->getInputPath()) {
+            if (! $config->getInputPath()) {
                 throw new Exception('Input path must be specified');
             }
             if ($config->getInputPath() === $config->getOutputPath()) {
@@ -91,12 +90,11 @@ class ExportCommand extends AbstractExportCommand
                 'Done. Exporting was successful. Look at the log file `%s` to see details.',
                 $config->getLogPath()
             ));
-
         } catch (Generator\GeneratorException $e) {
             $output->writeln('');
             $output->writeln('');
             foreach ($e->getExceptions() as $exception) {
-                /** @var Generator\Validator\ValidatorConstraintException $exception */
+                /* @var Generator\Validator\ValidatorConstraintException $exception */
                 $logger->critical($exception);
             }
             if ($config->isVerbose() === false) {
@@ -105,7 +103,6 @@ class ExportCommand extends AbstractExportCommand
                     $config->getLogPath()
                 ));
             }
-
         } catch (Exception $e) {
             $output->writeln('');
             $output->writeln('');

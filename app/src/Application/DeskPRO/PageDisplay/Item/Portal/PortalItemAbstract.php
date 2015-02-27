@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
@@ -50,14 +47,14 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
     protected $section;
 
     /**
-     * The controller requesting the portal item
+     * The controller requesting the portal item.
      *
      * @var \Symfony\Component\DependencyInjection\ContainerInterface
      */
     protected $container;
 
     /**
-     * The user who is viewing the item
+     * The user who is viewing the item.
      *
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -70,8 +67,8 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
 
     public function __construct($section, array $options, ContainerInterface $container, Person $person_context)
     {
-        $this->section = $section;
-        $this->container = $container;
+        $this->section        = $section;
+        $this->container      = $container;
         $this->person_context = $person_context;
 
         $this->options = $options;
@@ -80,17 +77,14 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
     }
 
     /**
-     * Hook method called from constructor
-     *
-     * @return void
+     * Hook method called from constructor.
      */
     protected function init()
     {
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\Person $person
-     * @return void
+     * @param \Application\DeskPRO\Entity\Person $person
      */
     public function setPersonContext(Person $person)
     {
@@ -98,14 +92,14 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
     }
 
     /**
-     * Get the HTML for this item that'll be outputted into the page
+     * Get the HTML for this item that'll be outputted into the page.
      *
      * @return string
      */
     abstract public function getHtml();
 
     /**
-     * Check the current person context to see if theyre allowed to see this block
+     * Check the current person context to see if theyre allowed to see this block.
      *
      * @return bool
      */
@@ -115,7 +109,7 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
     }
 
     /**
-     * Get an array of CSS assets that this item requires
+     * Get an array of CSS assets that this item requires.
      *
      * @return array
      */
@@ -125,7 +119,7 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
     }
 
     /**
-     * Get an array of JS assets that this item requires
+     * Get an array of JS assets that this item requires.
      *
      * @return array
      */
@@ -135,10 +129,11 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
     }
 
     /**
-     * Render a view to string
+     * Render a view to string.
      *
-     * @param  string $view
-     * @param  array  $parameters
+     * @param string $view
+     * @param array  $parameters
+     *
      * @return string
      */
     public function renderView($view, array $parameters = array())
@@ -149,10 +144,11 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
     /**
      * Execute a sub-request and then get the string result.
      *
-     * @param  string $controller
-     * @param  array  $path
-     * @param  array  $query
-     * @param  null   $response   If provided, the Response object will be put into this
+     * @param string $controller
+     * @param array  $path
+     * @param array  $query
+     * @param null   $response   If provided, the Response object will be put into this
+     *
      * @return string
      */
     public function renderForward($controller, array $path = array(), array $query = array(), &$response = null)
@@ -171,7 +167,8 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
      * Gets an option but makes sure its not empty ('', 0, false etc), otherwise returns default.
      *
      * @param $name
-     * @param  mixed $default
+     * @param mixed $default
+     *
      * @return mixed
      */
     public function getValueOption($name, $default = null)

@@ -31,10 +31,9 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * News label record mapper
+ * News label record mapper.
  *
  * Class NewsLabel
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class NewsLabel implements MapperInterface
 {
@@ -44,7 +43,7 @@ final class NewsLabel implements MapperInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\LabelNews $repository
      */
@@ -68,7 +67,7 @@ final class NewsLabel implements MapperInterface
     {
         /** @var Entity\LabelNews $record */
         $record = $this->repository->findOneBy($criteria);
-        if ( ! $record && $throw_exception) {
+        if (! $record && $throw_exception) {
             throw new MapperException('News label not found', $criteria);
         }
 
@@ -76,13 +75,14 @@ final class NewsLabel implements MapperInterface
     }
 
     /**
-     * Returns a collection of news labels
+     * Returns a collection of news labels.
      *
      * @param int  $id
      * @param bool $throw_exception
      *
-     * @return Entity\LabelNews[]
      * @throws MapperException
+     * @return Entity\LabelNews[]
+     *
      */
     public function findByNewsId($id, $throw_exception = true)
     {

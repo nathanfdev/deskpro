@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type;
@@ -48,12 +46,12 @@ class EditEmailAccountType extends AbstractType
 
         $builder->add('incoming_type', 'choice', array(
             'choices'  => array(
-                'gmail' => 'gmail',
-                'pop3' => 'pop3',
-                'imap' => 'imap',
-                'exchange' => 'exchange',
+                'gmail'     => 'gmail',
+                'pop3'      => 'pop3',
+                'imap'      => 'imap',
+                'exchange'  => 'exchange',
                 'office365' => 'office365',
-                'noop' => 'noop',
+                'noop'      => 'noop',
             ),
             'required' => true,
         ));
@@ -65,10 +63,10 @@ class EditEmailAccountType extends AbstractType
 
         $builder->add('outgoing_type', 'choice', array(
             'choices'  => array(
-                'gmail' => 'gmail',
-                'smtp' => 'smtp',
-                'php_mail' => 'php_mail',
-                'exchange' => 'exchange',
+                'gmail'     => 'gmail',
+                'smtp'      => 'smtp',
+                'php_mail'  => 'php_mail',
+                'exchange'  => 'exchange',
                 'office365' => 'office365',
             ),
             'required' => true,

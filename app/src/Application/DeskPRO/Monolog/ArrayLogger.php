@@ -20,15 +20,14 @@ class ArrayLogger extends AbstractLogger
     /**
      * Logs with an arbitrary level.
      *
-     * @param  mixed  $level
-     * @param  string $message
-     * @param  array  $context
-     * @return null
+     * @param mixed  $level
+     * @param string $message
+     * @param array  $context
      */
     public function log($level, $message, array $context = array())
     {
         $context['_dp_time'] = time();
-        $this->messages[] = array(
+        $this->messages[]    = array(
             'level'   => $level,
             'message' => $message,
             'context' => $context,
@@ -36,7 +35,7 @@ class ArrayLogger extends AbstractLogger
     }
 
     /**
-     * Get raw messages as an array
+     * Get raw messages as an array.
      *
      * @return array
      */

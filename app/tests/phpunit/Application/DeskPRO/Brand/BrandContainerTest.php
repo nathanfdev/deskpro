@@ -26,14 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Brand
+ * DeskPRO.
  */
 
 namespace DpUnitTests\DeskPRO\Application\Brand;
-
 
 use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
 
@@ -49,7 +45,6 @@ class BrandContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($mockBrand, $bc->getBrand());
         $this->assertSame($mockSettings, $bc->getSettings());
     }
-
 
     public function testGetSetting()
     {

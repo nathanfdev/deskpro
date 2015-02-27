@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Doctrine
+ * Orb.
  */
 
 namespace Orb\Doctrine\Common\Cache;
@@ -54,14 +51,14 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     protected $id_prefix = 'd.';
 
     /**
-     * Pre-loaded data
+     * Pre-loaded data.
      *
      * @var array
      */
     protected $loaded = array();
 
     /**
-     * Array of prefixes we've prelaoded
+     * Array of prefixes we've prelaoded.
      *
      * @var array
      */
@@ -74,7 +71,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 
     /**
      * True to catch and silently discard exceptions
-     * for fetch/save's
+     * for fetch/save's.
      *
      * @var bool
      */
@@ -97,7 +94,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     }
 
     /**
-     * Create the cache database table
+     * Create the cache database table.
      */
     public function initTable()
     {
@@ -113,7 +110,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     }
 
     /**
-     * Set the prefix used on all IDs
+     * Set the prefix used on all IDs.
      *
      * @param $prefix
      */
@@ -122,8 +119,8 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         if (func_num_args() == 1) {
             $this->id_prefix = $prefix;
         } else {
-            $args = func_get_args();
-            $args = Arrays::castToType($args, 'string');
+            $args            = func_get_args();
+            $args            = Arrays::castToType($args, 'string');
             $this->id_prefix = implode('.', $args);
         }
 
@@ -133,7 +130,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     }
 
     /**
-     * Preload one or more keys
+     * Preload one or more keys.
      *
      * If exactly one array param, expected to be an array of keys.
      * Otherwise you can pass any number of key args
@@ -195,7 +192,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     }
 
     /**
-     * Preload a number of items given a prefix
+     * Preload a number of items given a prefix.
      *
      * @param $prefix
      */
@@ -211,7 +208,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
         }
 
         $this->loaded_prefixes[] = $prefix;
-        $prefix_like = "$prefix%";
+        $prefix_like             = "$prefix%";
 
         $date = date('Y-m-d H:i:s');
         try {
@@ -233,13 +230,13 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     }
 
     /**
-     * Delete all caches in the database with a key
+     * Delete all caches in the database with a key.
      *
      * @param $prefix
      */
     public function flushPrefix($prefix)
     {
-        $prefix = $this->id_prefix.$prefix;
+        $prefix      = $this->id_prefix.$prefix;
         $prefix_like = "$prefix%";
 
         try {
@@ -263,7 +260,8 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     /**
      * Fetches an entry from the cache.
      *
-     * @param  string $id cache id The id of the cache entry to fetch.
+     * @param string $id cache id The id of the cache entry to fetch.
+     *
      * @return string The cached data or FALSE, if no cache entry exists for the given id.
      */
     public function fetch($id)
@@ -307,7 +305,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 
             if ($record) {
                 $this->loaded[$prefix_id] = $record['data'];
-                $data = $this->loaded[$prefix_id];
+                $data                     = $this->loaded[$prefix_id];
             } else {
                 $this->loaded[$prefix_id] = null;
 
@@ -325,7 +323,8 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     /**
      * Test if an entry exists in the cache.
      *
-     * @param  string  $id cache id The cache id of the entry to check for.
+     * @param string $id cache id The cache id of the entry to check for.
+     *
      * @return boolean TRUE if a cache entry exists for the given cache id, FALSE otherwise.
      */
     public function contains($id)
@@ -356,9 +355,10 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     /**
      * Puts data into the cache.
      *
-     * @param  string  $id       The cache id.
-     * @param  string  $data     The cache entry/data.
-     * @param  int     $lifeTime The lifetime. If != 0, sets a specific lifetime for this cache entry (0 => infinite lifeTime).
+     * @param string $id       The cache id.
+     * @param string $data     The cache entry/data.
+     * @param int    $lifeTime The lifetime. If != 0, sets a specific lifetime for this cache entry (0 => infinite lifeTime).
+     *
      * @return boolean TRUE if the entry was successfully stored in the cache, FALSE otherwise.
      */
     public function save($id, $data, $lifeTime = 0)
@@ -392,7 +392,8 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     /**
      * Deletes a cache entry.
      *
-     * @param  string  $id cache id
+     * @param string $id cache id
+     *
      * @return boolean TRUE if the cache entry was successfully deleted, FALSE otherwise.
      */
     public function delete($id)
@@ -416,7 +417,7 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     }
 
     /**
-     * Clear the cache
+     * Clear the cache.
      */
     public function flush()
     {
@@ -439,10 +440,9 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
     }
 
     /**
-     * @return null
      */
     public function getStats()
     {
-        return null;
+        return;
     }
 }

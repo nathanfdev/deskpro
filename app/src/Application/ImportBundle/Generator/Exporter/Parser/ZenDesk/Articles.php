@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 use Application\ImportBundle\Entity;
 
 /**
- * ZenDesk articles parser
+ * ZenDesk articles parser.
  *
  * Class Articles
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
 final class Articles extends AbstractParser
 {

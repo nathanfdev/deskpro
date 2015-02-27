@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports\Overview;
@@ -88,14 +85,15 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
     }
 
     /**
-     * @return array|mixed
      * @throws \InvalidArgumentException
+     * @return array|mixed
+     *
      */
     public function getTitles()
     {
         switch ($this->date_group) {
             case 'hour':
-                $titles = array_combine(range(1, 23), range(1, 23));
+                $titles      = array_combine(range(1, 23), range(1, 23));
                 $titles['0'] = 0;
 
                 foreach ($titles as &$x) {
@@ -126,7 +124,7 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
                 break;
 
             case 'day':
-                $days = Dates::daysInMonth($this->date_start->format('n'), $this->date_start->format('Y'));
+                $days   = Dates::daysInMonth($this->date_start->format('n'), $this->date_start->format('Y'));
                 $titles = array();
                 foreach (range(1, $days) as $d) {
                     $titles[$d] = $d.Numbers::ordinalSuffix($d);
@@ -159,8 +157,9 @@ class TicketsOpenedHour extends AbstractTableOverviewStat implements PersonConte
     }
 
     /**
-     * @return array|\int[]|mixed|null
      * @throws \InvalidArgumentException
+     * @return array|\int[]|mixed|null
+     *
      */
     public function getValues()
     {

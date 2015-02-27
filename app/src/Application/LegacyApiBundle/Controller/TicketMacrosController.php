@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TicketMacro;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 
 class TicketMacrosController extends AbstractController implements ProtectedControllerInterface
 {

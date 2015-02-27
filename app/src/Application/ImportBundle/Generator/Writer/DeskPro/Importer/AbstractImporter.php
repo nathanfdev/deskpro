@@ -28,16 +28,15 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
-use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\AbstractGenerator;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Abstract DeskPro importer
- * Finds or creates DeskPro entities
+ * Finds or creates DeskPro entities.
  *
  * Class AbstractImporter
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 abstract class AbstractImporter extends AbstractGenerator implements ImporterInterface
 {
@@ -52,7 +51,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     protected $records;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Mapper\Collection $mappers
      */
@@ -62,12 +61,13 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns a language id by title
+     * Returns a language id by title.
      *
      * @param string $title
      *
-     * @return int
      * @throws \Exception
+     * @return int
+     *
      */
     protected function findLanguageId($title)
     {
@@ -80,9 +80,10 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns a language by title
+     * Returns a language by title.
      *
      * @param string $title
+     *
      * @return DeskPROEntity\Language|null
      */
     protected function findLanguage($title)
@@ -102,12 +103,13 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
 
     /**
      * Returns an organization by title
-     * Creates a new organization if not found
+     * Creates a new organization if not found.
      *
      * @param string $title
      *
-     * @return DeskPROEntity\Organization|null
      * @throws \Exception
+     * @return DeskPROEntity\Organization|null
+     *
      */
     protected function findOrCreateOrganization($title)
     {
@@ -135,10 +137,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the person mapper
+     * Returns the person mapper.
      *
-     * @return Mapper\Person
      * @throws \Exception
+     * @return Mapper\Person
+     *
      */
     protected function getPersonMapper()
     {
@@ -146,10 +149,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the language mapper
+     * Returns the language mapper.
      *
-     * @return Mapper\Language
      * @throws \Exception
+     * @return Mapper\Language
+     *
      */
     protected function getLanguageMapper()
     {
@@ -157,10 +161,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the article mapper
+     * Returns the article mapper.
      *
-     * @return Mapper\Article
      * @throws \Exception
+     * @return Mapper\Article
+     *
      */
     protected function getArticleMapper()
     {
@@ -168,10 +173,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the download mapper
+     * Returns the download mapper.
      *
-     * @return Mapper\Download
      * @throws \Exception
+     * @return Mapper\Download
+     *
      */
     protected function getDownloadMapper()
     {
@@ -179,10 +185,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the news mapper
+     * Returns the news mapper.
      *
-     * @return Mapper\News
      * @throws \Exception
+     * @return Mapper\News
+     *
      */
     protected function getNewsMapper()
     {
@@ -190,10 +197,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the feedback mapper
+     * Returns the feedback mapper.
      *
-     * @return Mapper\Feedback
      * @throws \Exception
+     * @return Mapper\Feedback
+     *
      */
     protected function getFeedbackMapper()
     {
@@ -201,10 +209,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the ticket mapper
+     * Returns the ticket mapper.
      *
-     * @return Mapper\Ticket
      * @throws \Exception
+     * @return Mapper\Ticket
+     *
      */
     protected function getTicketMapper()
     {

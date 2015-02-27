@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Validator
+ * Orb.
  */
 
 namespace Orb\Validator;
@@ -41,6 +38,7 @@ class StringUrl extends AbstractValidator implements StaticValidator
 
     /**
      * @param $value
+     *
      * @return bool
      */
     public static function isValueValid($value)

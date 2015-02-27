@@ -30,22 +30,23 @@ namespace Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\AbstractCollection;
 
 /**
- * Collection of the supported json writer entities
+ * Collection of the supported json writer entities.
  *
  * Class Collection
- * @package Application\ImportBundle\Generator\Writer\Json\Destination
  */
 final class Collection extends AbstractCollection
 {
     /**
-     * Attach a destination configuration
+     * Attach a destination configuration.
      *
      * @param DestinationInterface $destination
+     *
      * @return $this
      */
     public function attach(DestinationInterface $destination)
     {
         $this->collection[] = $destination;
+
         return $this;
     }
 }

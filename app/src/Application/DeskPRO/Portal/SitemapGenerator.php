@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Portal;
@@ -78,7 +75,7 @@ class SitemapGenerator
         $this->db         = $em->getConnection();
         $this->router     = $router;
 
-        $person = new PersonGuest();
+        $person          = new PersonGuest();
         $this->structure = new PublishStructure(
             $person,
             $this->em,
@@ -87,13 +84,13 @@ class SitemapGenerator
     }
 
     /**
-     * Get sitemap.xml
+     * Get sitemap.xml.
      *
      * @return string
      */
     public function getXml()
     {
-        $xml = array();
+        $xml   = array();
         $xml[] = '<?xml version="1.0" encoding="UTF-8"?>';
         $xml[] = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
@@ -123,7 +120,7 @@ class SitemapGenerator
     }
 
     /**
-     * Get items
+     * Get items.
      *
      * @return array
      */
@@ -149,19 +146,19 @@ class SitemapGenerator
      */
     protected function getSiteItems()
     {
-        $items = array();
+        $items   = array();
         $items[] = array(
-            'loc' => $this->router->generate('user', array()),
+            'loc'        => $this->router->generate('user', array()),
             'changefreq' => 'daily',
         );
 
         $items[] = array(
-            'loc' => $this->router->generate('user_tickets_new', array()),
+            'loc'        => $this->router->generate('user_tickets_new', array()),
             'changefreq' => 'monthly',
         );
 
         $items[] = array(
-            'loc' => $this->router->generate('user_feedback_new', array()),
+            'loc'        => $this->router->generate('user_feedback_new', array()),
             'changefreq' => 'monthly',
         );
 
@@ -181,7 +178,7 @@ class SitemapGenerator
         $items = array();
 
         $items[] = array(
-            'loc' => $this->router->generate('user_articles', array()),
+            'loc'        => $this->router->generate('user_articles', array()),
             'changefreq' => 'daily',
         );
 
@@ -193,7 +190,7 @@ class SitemapGenerator
 
         foreach ($cats as $cat) {
             $items[] = array(
-                'loc' => $this->router->generate('user_articles', array('slug' => $cat->getUrlSlug())),
+                'loc'        => $this->router->generate('user_articles', array('slug' => $cat->getUrlSlug())),
                 'changefreq' => 'daily',
             );
         }
@@ -211,7 +208,7 @@ class SitemapGenerator
 
         foreach ($articles as $a) {
             $items[] = array(
-                'loc' => $this->router->generate('user_articles_article', array('slug' => $a->getUrlSlug())),
+                'loc'        => $this->router->generate('user_articles_article', array('slug' => $a->getUrlSlug())),
                 'changefreq' => 'weekly',
             );
         }
@@ -232,7 +229,7 @@ class SitemapGenerator
         $items = array();
 
         $items[] = array(
-            'loc' => $this->router->generate('user_news', array()),
+            'loc'        => $this->router->generate('user_news', array()),
             'changefreq' => 'daily',
         );
 
@@ -244,7 +241,7 @@ class SitemapGenerator
 
         foreach ($cats as $cat) {
             $items[] = array(
-                'loc' => $this->router->generate('user_news', array('slug' => $cat->getUrlSlug())),
+                'loc'        => $this->router->generate('user_news', array('slug' => $cat->getUrlSlug())),
                 'changefreq' => 'daily',
             );
         }
@@ -262,7 +259,7 @@ class SitemapGenerator
 
             foreach ($news as $n) {
                 $items[] = array(
-                    'loc' => $this->router->generate('user_news_view', array('slug' => $n->getUrlSlug())),
+                    'loc'        => $this->router->generate('user_news_view', array('slug' => $n->getUrlSlug())),
                     'changefreq' => 'weekly',
                 );
             }
@@ -284,7 +281,7 @@ class SitemapGenerator
         $items = array();
 
         $items[] = array(
-            'loc' => $this->router->generate('user_downloads', array()),
+            'loc'        => $this->router->generate('user_downloads', array()),
             'changefreq' => 'daily',
         );
 
@@ -296,7 +293,7 @@ class SitemapGenerator
 
         foreach ($cats as $cat) {
             $items[] = array(
-                'loc' => $this->router->generate('user_downloads', array('slug' => $cat->getUrlSlug())),
+                'loc'        => $this->router->generate('user_downloads', array('slug' => $cat->getUrlSlug())),
                 'changefreq' => 'daily',
             );
         }
@@ -313,7 +310,7 @@ class SitemapGenerator
 
         foreach ($downloads as $d) {
             $items[] = array(
-                'loc' => $this->router->generate('user_downloads_file', array('slug' => $d->getUrlSlug())),
+                'loc'        => $this->router->generate('user_downloads_file', array('slug' => $d->getUrlSlug())),
                 'changefreq' => 'weekly',
             );
         }
@@ -334,7 +331,7 @@ class SitemapGenerator
         $items = array();
 
         $items[] = array(
-            'loc' => $this->router->generate('user_feedback', array()),
+            'loc'        => $this->router->generate('user_feedback', array()),
             'changefreq' => 'daily',
         );
 
@@ -346,7 +343,7 @@ class SitemapGenerator
 
         foreach ($cats as $cat) {
             $items[] = array(
-                'loc' => $this->router->generate('user_feedback', array('slug' => $cat->getUrlSlug())),
+                'loc'        => $this->router->generate('user_feedback', array('slug' => $cat->getUrlSlug())),
                 'changefreq' => 'daily',
             );
         }
@@ -363,7 +360,7 @@ class SitemapGenerator
 
         foreach ($feedback as $f) {
             $items[] = array(
-                'loc' => $this->router->generate('user_feedback_view', array('slug' => $f->getUrlSlug())),
+                'loc'        => $this->router->generate('user_feedback_view', array('slug' => $f->getUrlSlug())),
                 'changefreq' => 'weekly',
             );
         }

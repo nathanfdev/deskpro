@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Routing;
@@ -52,11 +50,12 @@ class Router extends \Symfony\Bundle\FrameworkBundle\Routing\Router
     }
 
     /**
-     * Read the ID in a slug: 123-some-title will return 123
+     * Read the ID in a slug: 123-some-title will return 123.
      *
      * If no ID couldbe found, then 0 is returned.
      *
      * @param $slug
+     *
      * @return int
      */
     public function getIdFromSlug($slug)

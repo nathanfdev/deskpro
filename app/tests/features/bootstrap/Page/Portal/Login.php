@@ -26,23 +26,19 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DpBehat\Page\Portal;
 
-use DpBehat\BasePortalContext;
 use DpBehat\Page\BasePage;
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class Login extends BasePage
 {
-    protected $path = '/login';
+    protected $path       = '/login';
     protected $parameters = array('base_url' => '/');
-    protected $elements = array(
-        'Login Form' => 'form#login'
+    protected $elements   = array(
+        'Login Form' => 'form#login',
     );
 
     public function login($username, $password)

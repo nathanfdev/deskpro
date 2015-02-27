@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -41,7 +40,7 @@ use Application\DeskPRO\Tickets\SnippetFormatter;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Adds a reply to the ticket
+ * Adds a reply to the ticket.
  *
  * @option string reply_text
  * @option int    by_agent_id
@@ -83,8 +82,8 @@ class AddAgentReply extends AbstractContainerAwareAction implements ActionInterf
 
         $em = $this->getContainer()->getEm();
 
-        $message = new TicketMessage();
-        $message->person = $agent;
+        $message               = new TicketMessage();
+        $message->person       = $agent;
         $message->date_created = new \DateTime('+1 second');
 
         $reply_text = $this->getActionOption('reply_text');

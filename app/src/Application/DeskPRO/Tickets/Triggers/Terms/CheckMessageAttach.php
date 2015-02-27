@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks added message to see if it contains an attachment
+ * Checks added message to see if it contains an attachment.
  *
  * @option string filename
  */
@@ -62,7 +61,7 @@ class CheckMessageAttach extends AbstractTriggerTerm
     public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
     {
         $options = $this->getTermOptions();
-        $state = $ticket->getStateChangeRecorder();
+        $state   = $ticket->getStateChangeRecorder();
 
         if (!$state->hasNewReply()) {
             if ($this->getTermOperator() == 'not_isset') {

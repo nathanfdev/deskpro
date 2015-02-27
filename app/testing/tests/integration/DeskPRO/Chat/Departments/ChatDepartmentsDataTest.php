@@ -9,7 +9,6 @@ class ChatDepartmentsDataTest extends \DpIntegrationTestCase
     /**
      * @var \Application\DeskPRO\Departments\ChatDepartments
      */
-
     private $chat_departments;
 
     public function runBefore()

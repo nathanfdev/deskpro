@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Controller;
@@ -51,7 +48,7 @@ class NewTicketController extends AbstractController
     ################################################################################
 
     /**
-     * Create a new ticket
+     * Create a new ticket.
      */
     public function newAction($format = 'normal', $for_department_id = 0)
     {
@@ -71,7 +68,7 @@ class NewTicketController extends AbstractController
             $website_url = $GLOBALS['DP_WEBSITE_URL'];
         }
 
-        $ticket = new Entity\Ticket();
+        $ticket    = new Entity\Ticket();
         $newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
             $interface,
             $this->person,
@@ -83,11 +80,11 @@ class NewTicketController extends AbstractController
         $hide_email_field = false;
         if ($this->in->getString('default_user_name')) {
             $newticket->person->name = $this->in->getString('default_user_name');
-            $hide_name_field = true;
+            $hide_name_field         = true;
         }
         if ($this->in->getString('default_user_email')) {
             $newticket->person->email = $this->in->getString('default_user_email');
-            $hide_email_field = true;
+            $hide_email_field         = true;
         }
 
         if ($website_url) {
@@ -121,10 +118,10 @@ class NewTicketController extends AbstractController
 
         if ($for_department_id) {
             $newticket->ticket->department_id = $for_department_id;
-            $set_dep_id = $newticket->ticket->department_id;
+            $set_dep_id                       = $newticket->ticket->department_id;
         }
 
-        $layouts = $this->container->getTicketLayoutManager()->getUserLayouts();
+        $layouts           = $this->container->getTicketLayoutManager()->getUserLayouts();
         $ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = ".$layouts->compileJsObj().";";
 
         if ($newticket->ticket->department_id) {
@@ -147,10 +144,10 @@ class NewTicketController extends AbstractController
         $unique_items = $this->container->getTicketLayoutManager()->getUserLayoutItems();
 
         /** @var RateLimit $rateLimit */
-        $rateLimit = $this->get(RateLimit::KEY);
-        $captcha = null;
+        $rateLimit     = $this->get(RateLimit::KEY);
+        $captcha       = null;
         $force_captcha = false;
-        $isLimited = $rateLimit->isActionLimited(RateLimit::ACT_SUBMIT_TICKET);
+        $isLimited     = $rateLimit->isActionLimited(RateLimit::ACT_SUBMIT_TICKET);
 
         if ($isLimited || (isset($unique_items['captcha']) && empty($this->person->id))) {
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_newticket'));
@@ -164,7 +161,7 @@ class NewTicketController extends AbstractController
             }
         }
 
-        $errors = array();
+        $errors       = array();
         $error_fields = array();
 
         $validator = new \Application\UserBundle\Validator\NewTicketValidator();
@@ -175,7 +172,7 @@ class NewTicketController extends AbstractController
         // Custom fields
         // We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
         // So dont remove it even though it looks like it's not used! :-)
-        $custom_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_ticket_fields', 'form');
+        $custom_fields_form      = $this->get('form.factory')->createNamedBuilder('newticket_custom_ticket_fields', 'form');
         $custom_user_fields_form = $this->get('form.factory')->createNamedBuilder('newticket_custom_user_fields', 'form');
 
         /** @var $fm \Application\DeskPRO\CustomFields\TicketFieldManager */
@@ -184,28 +181,28 @@ class NewTicketController extends AbstractController
             if (empty($_REQUEST['newticket_custom_ticket_fields']) || !is_array($_REQUEST['newticket_custom_ticket_fields'])) {
                 $_REQUEST['newticket_custom_ticket_fields'] = array();
             }
-            $field_data = $fm->getStrucutredDataFromForm($_REQUEST['newticket_custom_ticket_fields'], 'Application\\DeskPRO\\Entity\\CustomDataTicket');
+            $field_data      = $fm->getStrucutredDataFromForm($_REQUEST['newticket_custom_ticket_fields'], 'Application\\DeskPRO\\Entity\\CustomDataTicket');
             $field_form_data = $fm->createFieldDataFromArray($field_data);
-            $custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, true);
+            $custom_fields   = $fm->getDisplayArray($field_form_data, $custom_fields_form, true);
         } else {
             $custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
         }
 
-        /** @var $fm \Application\DeskPRO\CustomFields\PersonFieldManager */
+        /* @var $fm \Application\DeskPRO\CustomFields\PersonFieldManager */
         $ufm = $this->container->getSystemService('PersonFieldsManager');
         if (isset($_REQUEST['newticket_custom_ticket_fields'])) {
             if (empty($_REQUEST['newticket_custom_user_fields']) || !is_array($_REQUEST['newticket_custom_user_fields'])) {
                 $_REQUEST['newticket_custom_user_fields'] = array();
             }
-            $field_data = $ufm->getStrucutredDataFromForm($_REQUEST['newticket_custom_user_fields'], 'Application\\DeskPRO\\Entity\\CustomDataPerson');
-            $field_form_data = $ufm->createFieldDataFromArray($field_data);
+            $field_data         = $ufm->getStrucutredDataFromForm($_REQUEST['newticket_custom_user_fields'], 'Application\\DeskPRO\\Entity\\CustomDataPerson');
+            $field_form_data    = $ufm->createFieldDataFromArray($field_data);
             $custom_user_fields = $ufm->getDisplayArray($field_form_data, $custom_user_fields_form, true);
         } else {
             $custom_user_fields = $ufm->getDisplayArrayForObject($this->person, $custom_user_fields_form, true);
         }
 
         // specific user custom fields (but can be used for any sort of custom fields)
-        $manager = $this->container->getCustomFieldManager();
+        $manager                = $this->container->getCustomFieldManager();
         $new_custom_fields_form = $manager->createFormForOwner($ticket, $this->person);
         if ($org = $this->person->organization) {
             $manager->merge($new_custom_fields_form, $manager->createFormForOwner($ticket, $org));
@@ -223,10 +220,10 @@ class NewTicketController extends AbstractController
 
             $form->handleRequest($request);
 
-            $newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
+            $newticket->ticket->attach_ids        = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
             $newticket->ticket->attach_ids_authed = true;
-            $newticket->custom_ticket_fields = isset($_POST['newticket_custom_ticket_fields']) ? $_POST['newticket_custom_ticket_fields'] : array();
-            $newticket->custom_user_fields   = isset($_POST['newticket_custom_user_fields']) ? $_POST['newticket_custom_user_fields'] : array();
+            $newticket->custom_ticket_fields      = isset($_POST['newticket_custom_ticket_fields']) ? $_POST['newticket_custom_ticket_fields'] : array();
+            $newticket->custom_user_fields        = isset($_POST['newticket_custom_user_fields']) ? $_POST['newticket_custom_user_fields'] : array();
 
             if ($newticket->ticket->department_id) {
                 $layout_page = $layouts->getLayout($newticket->ticket->department_id);
@@ -331,7 +328,7 @@ class NewTicketController extends AbstractController
                     }
                 }
             } else {
-                $errors = $validator->getErrors(true);
+                $errors       = $validator->getErrors(true);
                 $error_fields = $validator->getErrorGroups(true);
             }
         } else {
@@ -346,10 +343,10 @@ class NewTicketController extends AbstractController
             }
         }
 
-        $tpl = 'UserBundle:NewTicket:new-ticket.html.twig';
+        $tpl            = 'UserBundle:NewTicket:new-ticket.html.twig';
         $redirect_after = '';
         if ($format == 'iframe') {
-            $tpl = 'UserBundle:NewTicket:new-ticket-iframe.html.twig';
+            $tpl            = 'UserBundle:NewTicket:new-ticket-iframe.html.twig';
             $redirect_after = $this->in->getString('redirect_after');
         }
 
@@ -382,7 +379,7 @@ class NewTicketController extends AbstractController
     }
 
     /**
-     * Saves a users form in the database incase they abandon the form
+     * Saves a users form in the database incase they abandon the form.
      */
     public function saveStatusAction()
     {
@@ -421,8 +418,8 @@ class NewTicketController extends AbstractController
         }
 
         $preticket->is_solved    = true;
-        $preticket->object_type = $content_type;
-        $preticket->object_id   = $content_id;
+        $preticket->object_type  = $content_type;
+        $preticket->object_id    = $content_id;
 
         $this->em->beginTransaction();
         $this->em->persist($preticket);
@@ -461,14 +458,14 @@ class NewTicketController extends AbstractController
         }
 
         if ($this->in->getBool('add_unsolved')) {
-            $unsolved = $preticket->unsolved_content;
+            $unsolved   = $preticket->unsolved_content;
             $unsolved[] = array($content_type, $content_id);
 
             $preticket->unsolved_content = $unsolved;
         } else {
             $preticket->is_solved    = true;
-            $preticket->object_type = $content_type;
-            $preticket->object_id   = $content_id;
+            $preticket->object_type  = $content_type;
+            $preticket->object_id    = $content_id;
         }
 
         // Mark content as helpful while we're at it
@@ -508,11 +505,13 @@ class NewTicketController extends AbstractController
 
     /**
      * Standard thanks page after a user submits a tikcet from an embedded iframe,
-     * and the webmaster didnt supply an after-redirection URL
+     * and the webmaster didnt supply an after-redirection URL.
      *
      * @param $ticket_ref
-     * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
+     *
      */
     public function simpleThanksAction()
     {

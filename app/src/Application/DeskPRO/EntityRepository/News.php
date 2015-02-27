@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -43,7 +42,7 @@ class News extends AbstractEntityRepository
     {
         $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
         if (!$id) {
-            return null;
+            return;
         }
 
         return $this->find($id);
@@ -132,7 +131,7 @@ class News extends AbstractEntityRepository
     public function getNewest($num = 10, $node = false)
     {
         if ($node) {
-            $cat_ids = $node->getTreeIds(true);
+            $cat_ids  = $node->getTreeIds(true);
             $articles = $this->getEntityManager()->createQuery("
                 SELECT n
                 FROM DeskPRO:News n INDEX BY n.id
@@ -164,7 +163,7 @@ class News extends AbstractEntityRepository
     {
         return array(
             'views' => array(
-                'conditions' => '%1$s.object_type = 3 AND %1$s.object_id = %2$s.id',
+                'conditions'   => '%1$s.object_type = 3 AND %1$s.object_id = %2$s.id',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog',
             ),
         );

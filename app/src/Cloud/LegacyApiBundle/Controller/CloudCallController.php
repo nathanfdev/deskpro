@@ -26,17 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Cloud\LegacyApiBundle\Controller;
 
-use DeskPRO\Kernel\License;
 use Application\DeskPRO\Entity\TmpData;
 use Application\LegacyApiBundle\Controller\AbstractController;
+use DeskPRO\Kernel\License;
 
 class CloudCallController extends AbstractController
 {
@@ -46,7 +43,7 @@ class CloudCallController extends AbstractController
             return $this->createApiErrorResponse('invalid_call_key', 'Invalid call key', 403);
         }
 
-        return null;
+        return;
     }
 
     public function pingAction()

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ORM\Proxy;
@@ -38,7 +35,7 @@ use Application\DeskPRO\ORM\Unprivate\UnprivateProxyFactory;
 
 /**
  * _generateMethods: Added  __getpropvalue__ and __setpropvalue__ to array of functions to ignore
- * and add them directly as getter/setter
+ * and add them directly as getter/setter.
  */
 class ProxyFactory extends UnprivateProxyFactory
 {

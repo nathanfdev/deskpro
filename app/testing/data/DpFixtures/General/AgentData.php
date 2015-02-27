@@ -3,9 +3,9 @@
 namespace DpFixtures\General;
 
 use Application\DeskPRO\Entity\Person;
-use Faker\Factory;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
+use Faker\Factory;
 
 class AgentData extends AbstractFixture
 {
@@ -14,23 +14,22 @@ class AgentData extends AbstractFixture
         1 => 1,
         2 => 2,
         3 => 2,
-        4 => 5
+        4 => 5,
     );
 
     public function load(ObjectManager $manager)
     {
-        $faker = Factory::create();
+        $faker      = Factory::create();
         $connection = $manager->getConnection();
 
         for ($i = 0; $i < 5; $i++) {
-
-            $agent = new Person();
+            $agent       = new Person();
             $agent->name = $faker->name;
             $agent->setEmail($faker->email, true);
             $agent->date_created = new \DateTime();
-            $agent->is_user = true;
+            $agent->is_user      = true;
             $agent->is_confirmed = true;
-            $agent->is_agent = true;
+            $agent->is_agent     = true;
 
             $manager->persist($agent);
             $manager->flush();
@@ -40,8 +39,8 @@ class AgentData extends AbstractFixture
 
             if ($has_ug) {
                 $connection->insert('person2usergroups', array(
-                    'person_id' => $agent->getId(),
-                    'usergroup_id' => $has_ug
+                    'person_id'    => $agent->getId(),
+                    'usergroup_id' => $has_ug,
                 ));
             }
 
@@ -50,11 +49,10 @@ class AgentData extends AbstractFixture
                 'person_id'     => $agent->getId(),
                 'app'           => 'tickets',
                 'name'          => 'full',
-                'value'         => 1
+                'value'         => 1,
             );
 
             $connection->insert('department_permissions', $dep);
         }
-
     }
 }

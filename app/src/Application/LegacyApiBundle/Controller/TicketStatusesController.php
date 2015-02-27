@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Tickets\TicketPurger;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Orb\Util\Arrays;
 
 class TicketStatusesController extends AbstractController implements ProtectedControllerInterface

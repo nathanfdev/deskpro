@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
@@ -54,9 +51,10 @@ class NewsDataService extends AbstractDataService
     }
 
     /**
-     * @param  NewsCategory $category
+     * @param NewsCategory $category
      * @param $page
      * @param $max_per_page
+     *
      * @return Pagerfanta
      */
     public function getNewsPager(NewsCategory $category = null, $page, $max_per_page)
@@ -93,15 +91,17 @@ class NewsDataService extends AbstractDataService
     }
 
     /**
-     * Takes null, a category ID, or a NewsCategory and returns an iterable collection of NewsCategories
+     * Takes null, a category ID, or a NewsCategory and returns an iterable collection of NewsCategories.
      *
      * Null means ruturn the roots.
      *
      * TODO: this is using the doctrine proxy as a method of finding children of the category. Might be able to improve that.
      *
-     * @param  int|null|NewsCategory     $category
-     * @return NewsCategory[]
+     * @param int|null|NewsCategory $category
+     *
      * @throws \InvalidArgumentException
+     * @return NewsCategory[]
+     *
      */
     public function getCategoryChildren($category)
     {
@@ -129,7 +129,8 @@ class NewsDataService extends AbstractDataService
     }
 
     /**
-     * @param  int|null|News $post
+     * @param int|null|News $post
+     *
      * @return News|null
      */
     public function getPost($post)
@@ -143,7 +144,7 @@ class NewsDataService extends AbstractDataService
             ),
             function () use ($that, $post) {
                 if (!$post) { // we need some input
-                    return null;
+                    return;
                 }
 
                 if ($post instanceof News) { // already have what you seek
@@ -156,11 +157,12 @@ class NewsDataService extends AbstractDataService
     }
 
     /**
-     * Get a category based on arbirtary input
+     * Get a category based on arbirtary input.
      *
      * TODO: optimize the heck out of any possible inputs here (if it helps: cache in an array at least, cache long term if desired, should normalize cache key on lowest common denominator "id")
      *
-     * @param  int|null|NewsCategory $category
+     * @param int|null|NewsCategory $category
+     *
      * @return NewsCategory|null
      */
     public function getCategory($category)
@@ -174,7 +176,7 @@ class NewsDataService extends AbstractDataService
             ),
             function () use ($that, $category) {
                 if (!$category) { // we need some input
-                    return null;
+                    return;
                 }
 
                 if ($category instanceof NewsCategory) { // already have what you seek

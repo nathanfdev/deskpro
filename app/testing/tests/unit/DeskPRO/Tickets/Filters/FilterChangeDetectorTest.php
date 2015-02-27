@@ -31,7 +31,9 @@ class FilterChangeDetectorTest extends \DpUnitTestCase
      */
     private function getMockContainer()
     {
-        if ($this->container) return $this->container;
+        if ($this->container) {
+            return $this->container;
+        }
 
         $this->container = ContainerMock::create()
             ->withAgentData()
@@ -43,7 +45,9 @@ class FilterChangeDetectorTest extends \DpUnitTestCase
 
     public function getAgentsArray()
     {
-        if ($this->agents) return $this->agents;
+        if ($this->agents) {
+            return $this->agents;
+        }
         $this->agents = $this->createAgentObjects();
 
         return $this->agents;
@@ -51,7 +55,9 @@ class FilterChangeDetectorTest extends \DpUnitTestCase
 
     public function getFilters()
     {
-        if ($this->filters) return $this->filters;
+        if ($this->filters) {
+            return $this->filters;
+        }
         $this->filters = $this->createFilterObjects();
 
         return $this->filters;
@@ -77,12 +83,12 @@ class FilterChangeDetectorTest extends \DpUnitTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $agents = $this->getAgentsArray();
-        $set_agent = $agents[2];
+        $agents        = $this->getAgentsArray();
+        $set_agent     = $agents[2];
         $ticket->agent = $set_agent;
 
         $change_detect = $this->createChangeDetector();
-        $changeset = $change_detect->getFilterChangeSet($ticket, $exec);
+        $changeset     = $change_detect->getFilterChangeSet($ticket, $exec);
 
         $this->assertCount(2, $changeset->getAffectedFilters());
     }
@@ -92,8 +98,8 @@ class FilterChangeDetectorTest extends \DpUnitTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $agents = $this->getAgentsArray();
-        $set_agent = $agents[2];
+        $agents        = $this->getAgentsArray();
+        $set_agent     = $agents[2];
         $ticket->agent = $set_agent;
 
         $ticket->resetStateChangeRecorder();
@@ -101,7 +107,7 @@ class FilterChangeDetectorTest extends \DpUnitTestCase
         $ticket->agent = null;
 
         $change_detect = $this->createChangeDetector();
-        $changeset = $change_detect->getFilterChangeSet($ticket, $exec);
+        $changeset     = $change_detect->getFilterChangeSet($ticket, $exec);
 
         $this->assertCount(2, $changeset->getAffectedFilters());
     }
@@ -117,11 +123,11 @@ class FilterChangeDetectorTest extends \DpUnitTestCase
 
         $agent_helper = m::mock();
         $agent_helper->shouldReceive('getTeams')->andReturn(array(
-            $this->getMockContainer()->getAgentData()->getTeam(5)
+            $this->getMockContainer()->getAgentData()->getTeam(5),
         ));
         for ($i = 1; $i < 5; $i++) {
-            $agent = m::mock('Application\\DeskPRO\\Entity\\Person')->makePartial();
-            $agent->id = $i;
+            $agent           = m::mock('Application\\DeskPRO\\Entity\\Person')->makePartial();
+            $agent->id       = $i;
             $agent->is_agent = true;
             $agent->shouldReceive('getHelper')->andReturn($agent_helper);
 

@@ -26,17 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\PortalBundle\HttpCache;
 
+use DeskPRO\Bundle\PortalBundle\HttpCache\PortalCacheHelper;
 use DeskPRO\Bundle\PortalBundle\HttpCache\PortalHttpCache;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use DeskPRO\Bundle\PortalBundle\HttpCache\PortalCacheHelper;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -46,7 +43,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class PortalCacheHelperSpec extends ObjectBehavior
 {
-    function let(RequestStack $request_stack, Request $request, HeaderBag $headers)
+    public function let(RequestStack $request_stack, Request $request, HeaderBag $headers)
     {
         $headers->has(PortalHttpCache::USER_CONTEXT_HASH_HEADER)->willReturn(true);
         $headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER)->willReturn('context_hash');
@@ -56,12 +53,12 @@ class PortalCacheHelperSpec extends ObjectBehavior
         $this->beConstructedWith($request_stack);
     }
 
-    function it_can_get_you_the_master_request_user_context_hash_if_exists()
+    public function it_can_get_you_the_master_request_user_context_hash_if_exists()
     {
         $this->getUserContextHash()->shouldReturn('context_hash');
     }
 
-    function it_knows_if_given_hash_is_a_guest_request_or_not()
+    public function it_knows_if_given_hash_is_a_guest_request_or_not()
     {
         $this->isGuestHash(PortalHttpCache::ANON_HASH)->shouldBe(true);
         $this->isGuestHash(PortalHttpCache::GUEST_HASH)->shouldBe(true);
@@ -69,37 +66,33 @@ class PortalCacheHelperSpec extends ObjectBehavior
         $this->isGuestHash('xyz-gibberish')->shouldBe(false);
     }
 
-    function it_defaults_to_guest_request_if_master_request_does_not_have_a_context_hash(
+    public function it_defaults_to_guest_request_if_master_request_does_not_have_a_context_hash(
         HeaderBag $headers
-    )
-    {
+    ) {
         $headers->has(PortalHttpCache::USER_CONTEXT_HASH_HEADER)->willReturn(false);
 
         $this->isGuestRequest()->shouldReturn(true);
     }
 
-    function it_determines_a_guest_request_if_master_request_context_hash_indicates_anonymous(
+    public function it_determines_a_guest_request_if_master_request_context_hash_indicates_anonymous(
         HeaderBag $headers
-    )
-    {
+    ) {
         $headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER)->willReturn(PortalHttpCache::ANON_HASH);
 
         $this->isGuestRequest()->shouldReturn(true);
     }
 
-    function it_determines_a_guest_request_if_master_request_context_hash_indicates_guest_hash(
+    public function it_determines_a_guest_request_if_master_request_context_hash_indicates_guest_hash(
         HeaderBag $headers
-    )
-    {
+    ) {
         $headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER)->willReturn(PortalHttpCache::GUEST_HASH);
 
         $this->isGuestRequest()->shouldReturn(true);
     }
 
-    function it_determines_not_a_guest_request_if_master_request_context_hash_does_not_look_like_guest(
+    public function it_determines_not_a_guest_request_if_master_request_context_hash_does_not_look_like_guest(
         HeaderBag $headers
-    )
-    {
+    ) {
         $headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER)->willReturn('something that is not anon or guest hash');
 
         $this->isGuestRequest()->shouldReturn(false);

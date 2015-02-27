@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -42,7 +41,7 @@ use Orb\Validator\StringEmail;
 
 /**
  * Requirements:
- * - GoogleOpenID: http://andrewpeace.com/php-google-login-class.html
+ * - GoogleOpenID: http://andrewpeace.com/php-google-login-class.html.
  */
 class Google extends AbstractCallbackAdatper implements DisplayContextInterface
 {
@@ -75,9 +74,10 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
     }
 
     /**
-     * Sets the display context: page or popup
+     * Sets the display context: page or popup.
      *
      * @param $context
+     *
      * @throws \InvalidArgumentException
      */
     public function setDisplayContext($context)
@@ -96,14 +96,14 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
     private function getLightOpenId()
     {
         $return_url = $this->getCallbackUrl();
-        $url_parts = parse_url($return_url);
+        $url_parts  = parse_url($return_url);
 
         $realm = $url_parts['scheme'].'://'.$url_parts['host'];
         if (!empty($url_parts['port'])) {
             $realm .= ':'.$url_parts['port'];
         }
 
-        $openid = new LightOpenID($url_parts['host']);
+        $openid            = new LightOpenID($url_parts['host']);
         $openid->realm     = $realm;
         $openid->returnUrl = $return_url;
         $openid->identity  = 'https://www.google.com/accounts/o8/id';
@@ -119,7 +119,7 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
      */
     protected function authenticateInitialize(StateHandlerInterface $state)
     {
-        $openid = $this->getLightOpenId();
+        $openid       = $this->getLightOpenId();
         $redirect_url = $openid->authUrl();
 
         $params = array();
@@ -172,7 +172,7 @@ class Google extends AbstractCallbackAdatper implements DisplayContextInterface
                 $raw['last_name'] = $attrs['namePerson/last'];
             }
             foreach ($attrs as $k => $v) {
-                $k = 'openid_'.$k;
+                $k       = 'openid_'.$k;
                 $raw[$k] = $v;
             }
 

@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Validator;
 use Application\ImportBundle\Entity;
 
 /**
- * People entities validator
+ * People entities validator.
  *
  * Class Person
- * @package Application\ImportBundle\Generator\Validator
  */
 final class Person extends AbstractConstraintValidator
 {
@@ -48,7 +47,7 @@ final class Person extends AbstractConstraintValidator
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Person $entity
+     * @var Entity\Person
      */
     public function validate(Entity\EntityInterface $entity)
     {
@@ -69,7 +68,7 @@ final class Person extends AbstractConstraintValidator
         }
 
         foreach ($entity->getCustomFields() as $custom_field) {
-            /** @var Entity\CustomField $custom_field */
+            /* @var Entity\CustomField $custom_field */
             $errors = $this->validator->validate($custom_field);
             if (count($errors) > 0) {
                 throw new ValidatorConstraintException($entity, $errors);

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usersource\Adapter;
@@ -70,7 +67,8 @@ class Ldap extends AbstractAdapter
     /**
      * Find a user identity just by an email address.
      *
-     * @param  string                  $id_input Username or email address
+     * @param string $id_input Username or email address
+     *
      * @return \Orb\Auth\Identity|null
      */
     public function findIdentityByInput($id_input)
@@ -195,7 +193,7 @@ class Ldap extends AbstractAdapter
             return $identity;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -210,7 +208,8 @@ class Ldap extends AbstractAdapter
     }
 
     /**
-     * @param  mixed $capability
+     * @param mixed $capability
+     *
      * @return bool
      */
     public function isCapable($capability)

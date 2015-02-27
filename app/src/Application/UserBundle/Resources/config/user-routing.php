@@ -437,7 +437,7 @@ $collection->create('user_downloads_newcomment', array(
 $collection->create('user_news_home', array(
     'path'          => '/news.{_format}',
     'controller'    => 'UserBundle:News:browse',
-    'defaults'      => array('slug' => '', 'page' => 1,        '_format' => 'html'),
+    'defaults'      => array('slug'    => '', 'page' => 1,        '_format' => 'html'),
     'requirements'  => array('_format' => '(html|rss)'),
 ));
 

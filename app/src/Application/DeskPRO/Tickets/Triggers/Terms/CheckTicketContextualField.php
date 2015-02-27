@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,7 +39,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks the value of a ticket field
+ * Checks the value of a ticket field.
  *
  * @option int field_id   The field to check
  * @option mixed value    The value. For choice, this will be multiple ints. For others, it will be a string.
@@ -68,11 +67,11 @@ class CheckTicketContextualField extends AbstractTriggerTerm
         #------------------------------
         # Get the field value
         #------------------------------
-        /** @var CustomFieldManager $manager */
+        /* @var CustomFieldManager $manager */
         $value = null;
         if ($manager = $context->getVars()->get('custom_field_manager')) {
             $field_id = $this->getTermOptions()->get('field_id');
-            $value = $manager->getFieldRawData($field_id, $ticket);
+            $value    = $manager->getFieldRawData($field_id, $ticket);
         }
 
         return $this->isStringMatch($ticket, $context, TermValue::createWithValue($value), $options->get('value'));

@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package    DeskPRO
- * @subpackage Theme
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Theme;
@@ -66,18 +63,20 @@ class ThemeResolver
 
     public function __construct(ContainerInterface $container, ThemeRepository $theme_repo, TagProcessor $tag_processor, LoggerInterface $logger)
     {
-        $this->container  = $container;
-        $this->theme_repo = $theme_repo;
+        $this->container        = $container;
+        $this->theme_repo       = $theme_repo;
         $this->themeTemplateMap = null;
-        $this->logger = $logger;
-        $this->tag_processor = $tag_processor;
+        $this->logger           = $logger;
+        $this->tag_processor    = $tag_processor;
     }
 
     /**
-     * @param  ThemeInterface    $theme
-     * @param                    $input_controller
-     * @return null|string
+     * @param ThemeInterface $theme
+     * @param                $input_controller
+     *
      * @throws \RuntimeException
+     * @return null|string
+     *
      */
     public function controller(ThemeInterface $theme, $input_controller)
     {
@@ -106,22 +105,23 @@ class ThemeResolver
             throw new \RuntimeException(sprintf('could not resolve theme controller "%s"', $input_controller));
         }
 
-        return null;
+        return;
     }
 
     /**
      * Get the absolute path to a filename for a theme, with the name format like:
      * Theme:Portal:index.html.twig
-     * ThemeParent:Portal:index.html.twig
+     * ThemeParent:Portal:index.html.twig.
      *
-     * @param  ThemeInterface $theme
-     * @param                 $name
+     * @param ThemeInterface $theme
+     * @param                $name
+     *
      * @return string
      */
     public function templatePath(ThemeInterface $theme, $name)
     {
         if (!is_string($name) || 3 !== count($parts = explode(':', $name))) {
-            return null;
+            return;
         }
 
         if ('Theme:' === substr($name, 0, 6)) {
@@ -135,7 +135,7 @@ class ThemeResolver
             }
         }
 
-        return null;
+        return;
     }
 
     public function getThemeTemplateMap()
@@ -175,11 +175,12 @@ class ThemeResolver
             return DP_ROOT.$map[$theme->getId()][$name];
         }
 
-        return null;
+        return;
     }
 
     /**
      * @param $theme_id
+     *
      * @return ThemeInterface
      */
     public function getThemeById($theme_id)

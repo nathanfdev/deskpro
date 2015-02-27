@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports;
@@ -81,8 +79,9 @@ class AgentActivity
     }
 
     /**
-     * @param  string string $agent_or_team_id
-     * @param  string string $date
+     * @param string string $agent_or_team_id
+     * @param string string $date
+     *
      * @return array
      */
     public function getVarsForHtmlView($agent_or_team_id = 'all', $date = '')
@@ -178,8 +177,9 @@ class AgentActivity
     }
 
     /**
-     * @param  string $agent
+     * @param string $agent
      * @param $date
+     *
      * @return array
      */
     protected function getChatLogForAgent($agent, $date)
@@ -245,14 +245,15 @@ class AgentActivity
     }
 
     /**
-     * @param  string $agent
+     * @param string $agent
      * @param $date
+     *
      * @return array
      */
     private function getTicketLogForAgent($agent, $date)
     {
         $counts_hourly = array();
-        $logs = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForAgent(
+        $logs          = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForAgent(
             $agent,
             array('date_range' => $this->createMysqlDateRangeForUser($date), 'types' => self::$ticket_log_types)
         );
@@ -277,8 +278,9 @@ class AgentActivity
     }
 
     /**
-     * @param  string $agent
+     * @param string $agent
      * @param $date
+     *
      * @return array
      */
     private function getRevisionsForAgent($agent, $date)
@@ -315,7 +317,8 @@ class AgentActivity
     }
 
     /**
-     * @param  string    $mysql_date
+     * @param string $mysql_date
+     *
      * @return \DateTime
      */
     private function mysqlDateToPhpDate($mysql_date)
@@ -327,7 +330,8 @@ class AgentActivity
     }
 
     /**
-     * @param  string    $date_str
+     * @param string $date_str
+     *
      * @return \DateTime
      */
     protected function createDateFromParamString($date_str)

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -37,7 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 class GlossaryWord extends AbstractEntityRepository
 {
     /**
-     * Get a list of all words
+     * Get a list of all words.
      */
     public function getWords()
     {
@@ -51,7 +50,7 @@ class GlossaryWord extends AbstractEntityRepository
     }
 
     /**
-     * Get a list of all words containing the string
+     * Get a list of all words containing the string.
      */
     public function getWordsContaining($string)
     {

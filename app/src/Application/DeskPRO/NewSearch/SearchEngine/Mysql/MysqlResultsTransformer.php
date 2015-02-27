@@ -45,7 +45,8 @@ class MysqlResultsTransformer
     }
 
     /**
-     * @param  array $results
+     * @param array $results
+     *
      * @return array
      */
     public function transform(array $results)
@@ -74,7 +75,7 @@ class MysqlResultsTransformer
             $ent_objects = $this->em->getRepository($ent)->getByIds($ids, true);
             if ($ent_objects) {
                 foreach ($ent_objects as $o) {
-                    $key = $ent.':'.$o->id;
+                    $key           = $ent.':'.$o->id;
                     $objects[$key] = $o;
                 }
             }
@@ -97,9 +98,11 @@ class MysqlResultsTransformer
     }
 
     /**
-     * @param  string                    $type
-     * @return string
+     * @param string $type
+     *
      * @throws \InvalidArgumentException
+     * @return string
+     *
      */
     private function getEntityFromType($type)
     {

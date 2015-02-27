@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports\Overview;
@@ -48,6 +45,7 @@ abstract class AbstractTableOverviewStat implements Loggable
      * Gets a id => array(info) array of titles. Titles can have children.
      *
      * @abstract
+     *
      * @return mixed
      */
     abstract public function getTitles();
@@ -56,6 +54,7 @@ abstract class AbstractTableOverviewStat implements Loggable
      * Gets an id => xxx of counts.
      *
      * @abstract
+     *
      * @return mixed
      */
     abstract public function getValues();

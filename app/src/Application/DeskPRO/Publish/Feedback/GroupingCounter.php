@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Publish\Feedback;
@@ -51,7 +48,7 @@ class GroupingCounter
     protected $ids = null;
 
     /**
-     * Set specific IDs we want to group
+     * Set specific IDs we want to group.
      *
      * @param array $ids
      */
@@ -61,7 +58,7 @@ class GroupingCounter
     }
 
     /**
-     * Get an array of counts suitable for looping in a template etc
+     * Get an array of counts suitable for looping in a template etc.
      *
      * @return array
      */
@@ -72,9 +69,9 @@ class GroupingCounter
         #------------------------------
 
         $display_elements = $this->getDisplayElementsArray();
-        $titles1 = $display_elements['titles1'];
-        $titles2 = $display_elements['titles2'];
-        $counts  = $display_elements['counts'];
+        $titles1          = $display_elements['titles1'];
+        $titles2          = $display_elements['titles2'];
+        $counts           = $display_elements['counts'];
 
         Arrays::unshiftAssoc($titles1, -1, 'TOTAL');
         if ($titles2) {
@@ -95,8 +92,8 @@ class GroupingCounter
 
             $group1_has[] = $field1_id;
 
-            $row = array();
-            $row['id'] = $field1_id;
+            $row          = array();
+            $row['id']    = $field1_id;
             $row['title'] = $field1_title;
             $row['total'] = $countinfo['total'];
 
@@ -110,8 +107,8 @@ class GroupingCounter
 
                     $group2_has[] = $field2_id;
 
-                    $row2 = array();
-                    $row2['id'] = $field2_id;
+                    $row2          = array();
+                    $row2['id']    = $field2_id;
                     $row2['title'] = $field2_title;
                     $row2['total'] = !empty($countinfo2['total']) ? $countinfo2['total'] : 0;
 
@@ -131,7 +128,7 @@ class GroupingCounter
 
         $status_hierarchy = function () {
             $titles = array(
-                'new' => array('title' => 'New'),
+                'new'    => array('title' => 'New'),
                 'active' => array('title' => 'Active', 'children' => array()),
                 'closed' => array('title' => 'Closed', 'children' => array()),
                 'hidden' => array('title' => 'Hidden'),
@@ -141,11 +138,11 @@ class GroupingCounter
             $closed_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
             foreach ($active_status_cats as $cat) {
-                $titles['active.'.$cat['id']] = array('title' => $cat['title']);
+                $titles['active.'.$cat['id']]                       = array('title' => $cat['title']);
                 $titles['active']['children']['active.'.$cat['id']] = array('title' => $cat['title']);
             }
             foreach ($closed_status_cats as $cat) {
-                $titles['closed.'.$cat['id']] = array('title' => $cat['title']);
+                $titles['closed.'.$cat['id']]                       = array('title' => $cat['title']);
                 $titles['closed']['children']['closed.'.$cat['id']] = array('title' => $cat['title']);
             }
         };
@@ -185,14 +182,14 @@ class GroupingCounter
         }
 
         return array(
-            'items' => $items,
+            'items'            => $items,
             'group1_structure' => $group1_structure,
             'group2_structure' => $group2_structure,
         );
     }
 
     /**
-     * Sort a display array so that the biggest counts are first
+     * Sort a display array so that the biggest counts are first.
      *
      * @param array $display_array
      */
@@ -211,7 +208,7 @@ class GroupingCounter
     }
 
     /**
-     * Get the raw counts
+     * Get the raw counts.
      *
      * @return array
      */
@@ -221,7 +218,7 @@ class GroupingCounter
 
         $grouping1 = $this->grouping1;
         $grouping2 = $this->grouping2;
-        $db = App::getDb();
+        $db        = App::getDb();
 
         if ($grouping1 == 'status') {
             $grouping1 = "IF(feedback.status_category_id, CONCAT(feedback.status, '.', feedback.status_category_id), feedback.status)";
@@ -349,8 +346,9 @@ class GroupingCounter
      * Sometimes $ids is not needed (ie departments can all be fetched),
      * other times it's important (ie dont want every company name in the entire db).
      *
-     * @param  string $field
-     * @param  array  $ids
+     * @param string $field
+     * @param array  $ids
+     *
      * @return array
      */
     public function getFieldTitles($field, array $ids = null)
@@ -365,7 +363,7 @@ class GroupingCounter
             case 'status':
 
                 $titles = array(
-                    'new' => 'New',
+                    'new'    => 'New',
                     'active' => 'Active',
                     'closed' => 'Closed',
                     'hidden' => 'Hidden',

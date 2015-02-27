@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -81,17 +78,18 @@ abstract class AbstractBuild
     /**
      * Saves data to the filesystem (into the tmp dir). Will be overwritten if it already exists.
      *
-     * @param  string       $tag
-     * @param  string       $name
-     * @param  string|array $data Array data will be json_encoded, string data will be written as-is
+     * @param string       $tag
+     * @param string       $name
+     * @param string|array $data Array data will be json_encoded, string data will be written as-is
+     *
      * @return string|false Filename written when successful, or false if failed to write
      */
     public function saveUpgradeData($tag, $name, $data, $throw_exception = true)
     {
         if (is_array($data)) {
             $fname = 'updata-'.$tag.'.'.$name.'.json';
-            $path = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$fname;
-            $data = json_encode($data);
+            $path  = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$fname;
+            $data  = json_encode($data);
             if (file_put_contents($path, $data) === false) {
                 if ($throw_exception) {
                     throw new \RuntimeException("Failed to write upgrade data file to: $path");
@@ -101,8 +99,8 @@ abstract class AbstractBuild
             }
         } else {
             $fname = 'updata-'.$tag.'.'.$name.'.dat';
-            $path = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$fname;
-            $data = (string) $data;
+            $path  = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$fname;
+            $data  = (string) $data;
             if (file_put_contents($path, $data) === false) {
                 if ($throw_exception) {
                     throw new \RuntimeException("Failed to write upgrade data file to: $path");
@@ -120,8 +118,9 @@ abstract class AbstractBuild
     /**
      * Read previously saved upgrade data.
      *
-     * @param  string            $tag
-     * @param  string            $name
+     * @param string $tag
+     * @param string $name
+     *
      * @return array|null|string Array for JSON-encoded array data, string for string data or null if file could not be found
      */
     public function getUpgradeData($tag, $name)
@@ -139,7 +138,7 @@ abstract class AbstractBuild
 
             return $data;
         } else {
-            return null;
+            return;
         }
     }
 
@@ -151,9 +150,7 @@ abstract class AbstractBuild
     }
 
     /**
-     * Run through the upgrade
-     *
-     * @return void
+     * Run through the upgrade.
      */
     abstract public function run();
 
@@ -162,7 +159,8 @@ abstract class AbstractBuild
      * This allows "pages" to run. The "runcount" (fetch with getStatus('runcount')) will be
      * incremented automatically.
      *
-     * @param  bool $rerun
+     * @param bool $rerun
+     *
      * @return bool
      */
     public function setRerun($rerun = true)
@@ -179,7 +177,7 @@ abstract class AbstractBuild
     }
 
     /**
-     * Write to output
+     * Write to output.
      *
      * @param string $string
      */
@@ -250,9 +248,9 @@ abstract class AbstractBuild
 
             $cmd_base = '{tool} --alter {query} --alter-foreign-keys-method auto --no-version-check --host {db_host} --database {db_name} --user {db_user} --password {db_pass} --port {db_port} {mode_param} {dsn}';
 
-            $port = '';
+            $port   = '';
             $dbhost = DP_DATABASE_HOST;
-            $m = null;
+            $m      = null;
             if (preg_match('#^(.*?):([0-9]+)$#', $dbhost, $m)) {
                 $dbhost = $m[1];
                 $port   = $m[2];
@@ -269,10 +267,10 @@ abstract class AbstractBuild
                 '{dsn}'     => "t=$table",
             );
 
-            $params_test = $params;
+            $params_test                 = $params;
             $params_test['{mode_param}'] = '--dry-run --print';
 
-            $params_exec = $params;
+            $params_exec                 = $params;
             $params_exec['{mode_param}'] = '--execute';
 
             $cmd_exec = str_replace(array_keys($params_exec), array_values($params_exec), $cmd_base);
@@ -297,7 +295,7 @@ abstract class AbstractBuild
     }
 
     /**
-     * Save status data (ex. steps completed etc)
+     * Save status data (ex. steps completed etc).
      *
      * @param $key
      * @param $val
@@ -306,13 +304,14 @@ abstract class AbstractBuild
     {
         $this->container->getDb()->replace('import_datastore', array(
             'typename' => 'up.'.$this->getBuildId().'.'.$key,
-            'data' => $val,
+            'data'     => $val,
         ));
     }
 
     /**
-     * @param  string $key
-     * @param  mixed  $default
+     * @param string $key
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getStatus($key, $default = null)
@@ -345,12 +344,12 @@ abstract class AbstractBuild
 
             try {
                 if (strpos($name, 'DeskPRO:emails_') !== false || strpos($name, 'DeskPRO:custom_emails_') !== false) {
-                    $proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
+                    $proc         = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
                     $compile_code = $proc->process($compile_code, $name);
                 }
 
                 $compile_code = preg_replace('#\{%\s*include\s+(.*?)\s*%\}#', '{% include $1 ignore missing %}', $compile_code);
-                $compiled = $twig->compileSource($compile_code, $name);
+                $compiled     = $twig->compileSource($compile_code, $name);
 
                 $this->container->getDb()->update('templates', array(
                     'template_compiled' => $compiled,
@@ -378,6 +377,7 @@ abstract class AbstractBuild
 
     /**
      * @static
+     *
      * @return string
      */
     public function getBuildId()
@@ -398,7 +398,6 @@ abstract class AbstractBuild
     {
         if ($this->schema_helper) {
             return $this->schema_helper;
-
         }
 
         $this->schema_helper = new SchemaHelper($this->container->getDb());

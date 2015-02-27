@@ -26,33 +26,32 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LowUtil
+ * DeskPRO.
  */
 
 /**
- * Makes a request or downloads a file
+ * Makes a request or downloads a file.
  */
 interface DeskPRO_LowUtil_Requester
 {
     /**
-     * Download a remote file to the fs
+     * Download a remote file to the fs.
      *
-     * @param  string $url       The URL to fetch
-     * @param  string $save_path The path to save to
-     * @param  int    $timeout   Timeout
-     * @return int    Filesize
+     * @param string $url       The URL to fetch
+     * @param string $save_path The path to save to
+     * @param int    $timeout   Timeout
+     *
+     * @return int Filesize
      */
     public function download($url, $save_path, $timeout = 15);
 
     /**
-     * Make a web request
+     * Make a web request.
      *
-     * @param  string $url       The URL to fetch
-     * @param  string $save_path The path to save to
-     * @param  int    $timeout   Timeout
+     * @param string $url       The URL to fetch
+     * @param string $save_path The path to save to
+     * @param int    $timeout   Timeout
+     *
      * @return string
      */
     public function request($url, array $data = array(), $method = 'GET', $timeout = 15);
@@ -61,7 +60,7 @@ interface DeskPRO_LowUtil_Requester
 ########################################################################################################################
 
 /**
- * Fetcher that uses any supported fetcher to do actual work
+ * Fetcher that uses any supported fetcher to do actual work.
  */
 class DeskPRO_LowUtil_RemoteRequester implements DeskPRO_LowUtil_Requester
 {
@@ -95,6 +94,7 @@ class DeskPRO_LowUtil_RemoteRequester implements DeskPRO_LowUtil_Requester
 
     /**
      * @static
+     *
      * @return DeskPRO_LowUtil_RemoteRequester
      */
     public static function create()
@@ -114,7 +114,7 @@ class DeskPRO_LowUtil_RemoteRequester implements DeskPRO_LowUtil_Requester
         } elseif (in_array(ini_get('allow_url_fopen'), array('1', 'On'))) {
             return 'native';
         } else {
-            return null;
+            return;
         }
     }
 

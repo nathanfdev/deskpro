@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Routing;
@@ -37,7 +35,8 @@ class Route extends \Symfony\Component\Routing\Route
 {
     /**
      * @param $path
-     * @param  array $info
+     * @param array $info
+     *
      * @return Route
      */
     public static function create(array $info)

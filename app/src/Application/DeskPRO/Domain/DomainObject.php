@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Translate\HasPhraseName;
 use Orb\Util\Util;
 
 /**
- * The basic entity class
+ * The basic entity class.
  */
 abstract class DomainObject extends BasicDomainObject
 {
@@ -76,7 +75,7 @@ abstract class DomainObject extends BasicDomainObject
     }
 
     /**
-     * Get the table name for this entity
+     * Get the table name for this entity.
      *
      * @return string
      */
@@ -102,10 +101,11 @@ abstract class DomainObject extends BasicDomainObject
 
     /**
      * Get an object ref for this entity. This is the table name and the entity ID.
-     * For example, "tickets.1234"
+     * For example, "tickets.1234".
      *
-     * @return string
      * @throws \RuntimeException
+     * @return string
+     *
      */
     public function getObjectRef()
     {
@@ -119,11 +119,10 @@ abstract class DomainObject extends BasicDomainObject
     }
 
     /**
-     * Sets the value of a field, and calls the property changed tracker
+     * Sets the value of a field, and calls the property changed tracker.
      *
      * @param $field
      * @param $value
-     * @return void
      */
     protected function setModelField($field, $value)
     {
@@ -187,9 +186,10 @@ abstract class DomainObject extends BasicDomainObject
     }
 
     /**
-     * @param  bool  $primary
-     * @param  bool  $deep
-     * @param  array $visited
+     * @param bool  $primary
+     * @param bool  $deep
+     * @param array $visited
+     *
      * @return array
      */
     public function toApiData($primary = true, $deep = true, array $visited = array())
@@ -313,7 +313,7 @@ abstract class DomainObject extends BasicDomainObject
     }
 
     /**
-     * Sets the special no persist flag that causes an error if this object is persisted
+     * Sets the special no persist flag that causes an error if this object is persisted.
      */
     public function _setNoPersist()
     {
@@ -321,7 +321,8 @@ abstract class DomainObject extends BasicDomainObject
     }
 
     /**
-     * Check the current status of the no persist flag
+     * Check the current status of the no persist flag.
+     *
      * @return bool
      */
     public function _isNoPersist()

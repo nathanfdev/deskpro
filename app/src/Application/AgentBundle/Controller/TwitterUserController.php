@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -39,17 +36,19 @@ use Application\DeskPRO\Entity\TwitterAccountFriend;
 use Application\DeskPRO\Entity\TwitterUser;
 
 /**
- * Handles creating/editing of Twitter Users
+ * Handles creating/editing of Twitter Users.
  */
 class TwitterUserController extends AbstractController
 {
     /**
      * Check account security.
      *
-     * @param  integer                                                          $id The account id.
-     * @return \Application\DeskPRO\Entity\TwitterAccount
+     * @param integer $id The account id.
+     *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return \Application\DeskPRO\Entity\TwitterAccount
+     *
      */
     protected function getAccountOr404($id)
     {
@@ -68,9 +67,11 @@ class TwitterUserController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @return \Application\DeskPRO\Entity\TwitterUser
+     * @param integer $id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return \Application\DeskPRO\Entity\TwitterUser
+     *
      */
     protected function getUserOr404($id)
     {
@@ -451,8 +452,8 @@ class TwitterUserController extends AbstractController
             $details = $this->_addTwitterAssociation($person, $user->id, $user->screen_name);
             if ($details) {
                 return $this->createJsonResponse(array(
-                    'success' => true,
-                    'html'    => $this->renderView('AgentBundle:TwitterUser:part-possible-person.html.twig', array(
+                    'success'    => true,
+                    'html'       => $this->renderView('AgentBundle:TwitterUser:part-possible-person.html.twig', array(
                         'person' => $person,
                     )),
                 ));
@@ -563,7 +564,7 @@ class TwitterUserController extends AbstractController
     }
 
     /**
-     * List the followers for an account
+     * List the followers for an account.
      */
     public function listFollowersAction($account_id)
     {
@@ -596,7 +597,7 @@ class TwitterUserController extends AbstractController
     }
 
     /**
-     * List the followers for an account
+     * List the followers for an account.
      */
     public function listFollowingAction($account_id)
     {

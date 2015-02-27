@@ -30,8 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class AbstractFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Class AbstractFactory.
  */
 abstract class AbstractFactory implements FactoryInterface
 {
@@ -41,7 +40,7 @@ abstract class AbstractFactory implements FactoryInterface
     protected $container;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param ContainerInterface $container
      */

@@ -26,23 +26,21 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Application\DeskPRO\App;
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Strings;
 use Orb\Util\Util;
-use DateTime;
 
 /**
- * Basic properties on content
- *
+ * Basic properties on content.
  */
 abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -93,28 +91,28 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $content = '';
 
     /**
-     * View counts
+     * View counts.
      *
      * @var string
      */
     protected $view_count = 0;
 
     /**
-     * Total rating: This is a tally and must be updated when a rating is added
+     * Total rating: This is a tally and must be updated when a rating is added.
      *
      * @var string
      */
     protected $total_rating = 0;
 
     /**
-     * Number of user-visible comments: This is a count that must be updated when a comment is added
+     * Number of user-visible comments: This is a count that must be updated when a comment is added.
      *
      * @var int
      */
     protected $num_comments = 0;
 
     /**
-     * Total rating
+     * Total rating.
      *
      * @var string
      */
@@ -152,7 +150,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     //protected $labels;
 
     /**
-     * An array of authors,
+     * An array of authors,.
      */
     protected $_authors = null;
 
@@ -170,7 +168,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $this['date_created'] = new \DateTime();
         $this->revisions      = new \Doctrine\Common\Collections\ArrayCollection();
         $this->labels         = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->slug_history = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->slug_history   = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this['status']        = self::STATUS_HIDDEN;
         $this['hidden_status'] = self::HIDDEN_STATUS_DRAFT;
@@ -263,6 +261,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $this->setModelField('content', $content);
+
         return $this;
     }
 
@@ -327,6 +326,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @return string
+     *
      * @deprecated use getSlug() instead (we no longer do the id-slug format in portal)
      */
     public function getUrlSlug()
@@ -346,7 +346,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      * NOTE: don't use this directly. Instead, use the "content_slug_manager" service to set the slug for you.
      *
      * @param $new_slug
-     * @return null or the new slug history object
+     *
      * @internal this shouldn't be called except by the content_slug_manager
      */
     public function setSlug($new_slug)
@@ -373,7 +373,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     abstract public function getPermalink();
 
     /**
-     * Get an array of authors
+     * Get an array of authors.
      *
      * @return array
      */

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Validator;
@@ -77,7 +74,8 @@ class NewTicketValidator extends AbstractValidator
     /**
      * Check $value to see if its valid.
      *
-     * @param  \Application\AgentBundle\Form\Model\NewTicket $newticket
+     * @param \Application\AgentBundle\Form\Model\NewTicket $newticket
+     *
      * @return bool
      */
     protected function checkIsValid($newticket)

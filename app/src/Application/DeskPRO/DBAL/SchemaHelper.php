@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\DBAL;
@@ -51,7 +48,7 @@ class SchemaHelper
     /**
      * @param DBAL\Connection $db
      */
-    function __construct(DBAL\Connection $db)
+    public function __construct(DBAL\Connection $db)
     {
         $this->db = $db;
     }
@@ -71,10 +68,11 @@ class SchemaHelper
     }
 
     /**
-     * @param string $table     The table that has the FK
-     * @param string $col       The column on the table that has the FK
-     * @param string $f_table   The foreign table
-     * @param string $f_col     The column in the foreign table
+     * @param string $table   The table that has the FK
+     * @param string $col     The column on the table that has the FK
+     * @param string $f_table The foreign table
+     * @param string $f_col   The column in the foreign table
+     *
      * @return \Doctrine\DBAL\Schema\ForeignKeyConstraint|null
      */
     public function findForeignKey($table, $col, $f_table, $f_col)
@@ -89,6 +87,6 @@ class SchemaHelper
             }
         }
 
-        return null;
+        return;
     }
 }

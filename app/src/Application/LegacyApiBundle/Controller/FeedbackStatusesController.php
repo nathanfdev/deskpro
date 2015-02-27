@@ -26,20 +26,17 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\FeedbackStatuses\FeedbackStatusEdit;
 use Application\DeskPRO\FeedbackStatuses\Form\Type\FeedbackStatusType;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Orb\Util\Arrays;
 
 class FeedbackStatusesController extends AbstractController implements ProtectedControllerInterface
@@ -62,10 +59,9 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
     public function listAction()
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+        /*
+         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
-
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
 
         $active_statuses = $this->getApiData(Arrays::flatten($feedback_statuses->getActiveStatuses()));
@@ -87,10 +83,9 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
     public function getAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+        /*
+         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
-
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
         $feedback_status   = $feedback_statuses->getById($id);
 
@@ -107,10 +102,9 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
     public function saveAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+        /*
+         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
-
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
 
         if ($id) {
@@ -152,10 +146,9 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
     public function removeAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+        /*
+         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
-
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
         $feedback_status   = $feedback_statuses->getById($id);
 
@@ -210,10 +203,9 @@ class FeedbackStatusesController extends AbstractController implements Protected
     {
         $display_orders = $this->in->getArrayOfUInts('display_orders');
 
-        /**
-         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses
+        /*
+         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
-
         $feedback_statuses = $this->container->getSystemService('feedback_statuses');
         $feedback_statuses->updateDisplayOrders($display_orders);
 

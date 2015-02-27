@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
@@ -51,7 +48,8 @@ class RatingsDataService extends AbstractDataService
     }
 
     /**
-     * @param  int|null|Rating $rating
+     * @param int|null|Rating $rating
+     *
      * @return Rating|null
      */
     public function getRating($rating)
@@ -65,7 +63,7 @@ class RatingsDataService extends AbstractDataService
             ),
             function () use ($ratings_repo, $rating) {
                 if (!$rating) { // we need some input
-                    return null;
+                    return;
                 }
 
                 if ($rating instanceof Rating) { // already have what you seek

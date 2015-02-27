@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -46,7 +45,7 @@ use Symfony\Component\Validator\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
- * Departments
+ * Departments.
  *
  * @property string title
  * @property string $user_title
@@ -55,45 +54,37 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property int $display_order
  * @property Department $parent
  * @property Department $children
- *
  */
 class Department extends DomainObject implements HasPhraseName
 {
     /**
      * @var int
-     *
      */
-
     protected $id;
 
     /**
      * @var Department
      */
-
     protected $parent = null;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-
     protected $children = null;
 
     /**
      * @var string
      */
-
     protected $title;
 
     /**
      * @var string
      */
-
     protected $user_title = '';
 
     /**
      * @var bool
      */
-
     protected $is_tickets_enabled = true;
 
     /**
@@ -123,7 +114,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return Department
      */
-
     public static function createTicketDepartment()
     {
         $dep                     = new self();
@@ -136,7 +126,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return Department
      */
-
     public static function createChatDepartment()
     {
         $dep                     = new self();
@@ -149,7 +138,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      *
      */
-
     public function __construct()
     {
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
@@ -158,7 +146,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return int
      */
-
     public function getId()
     {
         return $this->id;
@@ -169,7 +156,6 @@ class Department extends DomainObject implements HasPhraseName
      *
      * @return bool
      */
-
     public function isType($type)
     {
         if ($type == 'tickets' && $this->is_tickets_enabled) {
@@ -184,7 +170,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return string
      */
-
     public function getRealUserTitle()
     {
         return $this->user_title;
@@ -193,7 +178,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return string
      */
-
     public function getUserTitle()
     {
         if ($this->user_title) {
@@ -206,7 +190,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @param $title
      */
-
     public function setUserTitle($title)
     {
         if (!$title) {
@@ -226,7 +209,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return Department|null
      */
-
     public function getParent()
     {
         return $this->parent;
@@ -235,7 +217,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return int
      */
-
     public function getParentId()
     {
         if ($this->parent) {
@@ -248,7 +229,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @param $id
      */
-
     public function setParentId($id)
     {
         if ($id) {
@@ -261,7 +241,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return string
      */
-
     public function getTitle()
     {
         return $this->title;
@@ -273,7 +252,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return string
      */
-
     public function getRealTitle()
     {
         return $this->title;
@@ -282,7 +260,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @param $title
      */
-
     public function setRealTitle($title)
     {
         $this->title = $title;
@@ -295,7 +272,6 @@ class Department extends DomainObject implements HasPhraseName
      *
      * @return string
      */
-
     public function getFullTitle($sep = null)
     {
         if ($sep === null) {
@@ -314,7 +290,6 @@ class Department extends DomainObject implements HasPhraseName
      *
      * @return string
      */
-
     public function getFullUserTitle($sep = null)
     {
         if ($sep === null) {
@@ -329,10 +304,10 @@ class Department extends DomainObject implements HasPhraseName
     }
 
     /**
-     * Add a child department
+     * Add a child department.
+     *
      * @param Department $department
      */
-
     public function addChild(Department $department)
     {
         $department['parent'] = $this;
@@ -342,7 +317,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return array
      */
-
     public function getChildrenOrdered()
     {
         $children = $this->children->toArray();
@@ -359,13 +333,12 @@ class Department extends DomainObject implements HasPhraseName
     }
 
     /**
-     * Get all children down the entire tree
+     * Get all children down the entire tree.
      *
      * Note: Currently only two levels, so this is the same as getChildren()
      *
      * @return array
      */
-
     public function getAllChildren()
     {
         return $this->getChildren();
@@ -374,20 +347,19 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return \Doctrine\Common\Collections\ArrayCollection|null
      */
-
     public function getChildren()
     {
         return $this->children;
     }
 
     /**
-     * Return a unique ID that we can use to look up translations for this object
+     * Return a unique ID that we can use to look up translations for this object.
      *
-     * @param  string    $property  If supplied, the property on the object we want to translate.
-     * @param  Translate $translate
+     * @param string    $property  If supplied, the property on the object we want to translate.
+     * @param Translate $translate
+     *
      * @return string
      */
-
     public function getPhraseName($property = null, Translate $translate)
     {
         if (!$property) {
@@ -407,13 +379,13 @@ class Department extends DomainObject implements HasPhraseName
     }
 
     /**
-     * Get the default value phrase for the object
+     * Get the default value phrase for the object.
      *
-     * @param  string    $property  If supplied, the property on the object we want to translate.
-     * @param  Translate $translate
+     * @param string    $property  If supplied, the property on the object we want to translate.
+     * @param Translate $translate
+     *
      * @return string
      */
-
     public function getPhraseDefault($property = null, Translate $translate)
     {
         if ($property == 'full') {
@@ -430,7 +402,6 @@ class Department extends DomainObject implements HasPhraseName
     /**
      * @return string
      */
-
     public function __toString()
     {
         return $this->getFullTitle();
@@ -494,7 +465,7 @@ class Department extends DomainObject implements HasPhraseName
     public function getAvatarUrl($size = 50)
     {
         if (!$this->hasAvatar()) {
-            return null;
+            return;
         }
 
         return $this->avatar->getThumbnailUrl($size);
@@ -594,10 +565,10 @@ class Department extends DomainObject implements HasPhraseName
         );
         $metadata->mapOneToMany(
             array(
-                 'fieldName'    => 'children',
-                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
-                 'mappedBy'     => 'parent',
-                 'orderBy'      => array('display_order' => 'ASC'),
+                 'fieldName'                             => 'children',
+                 'targetEntity'                          => 'Application\\DeskPRO\\Entity\\Department',
+                 'mappedBy'                              => 'parent',
+                 'orderBy'                               => array('display_order' => 'ASC'),
                  'indexBy'                               => 'id',
             )
         );
@@ -605,15 +576,15 @@ class Department extends DomainObject implements HasPhraseName
         $metadata->mapManyToOne(array(
             'fieldName'    => 'avatar',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
-            'mappedBy'     => NULL,
-            'inversedBy'   => NULL,
+            'mappedBy'     => null,
+            'inversedBy'   => null,
             'joinColumns'  => array(
                 0 => array(
                     'name'                 => 'avatar_blob_id',
                     'referencedColumnName' => 'id',
                     'nullable'             => true,
                     'onDelete'             => 'cascade',
-                    'columnDefinition'     => NULL,
+                    'columnDefinition'     => null,
                 ),
             ),
             'dpApi' => true,

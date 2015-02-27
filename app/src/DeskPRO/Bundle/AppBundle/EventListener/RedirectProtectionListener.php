@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
-use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -63,9 +60,9 @@ class RedirectProtectionListener implements EventSubscriberInterface
 
     public function __construct(BrandStack $brand_stack, UrlHostChecker $url_host_checker, LoggerInterface $logger)
     {
-        $this->brand_stack = $brand_stack;
+        $this->brand_stack      = $brand_stack;
         $this->url_host_checker = $url_host_checker;
-        $this->logger = $logger;
+        $this->logger           = $logger;
     }
 
     public function onResponse(FilterResponseEvent $event)

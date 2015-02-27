@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Validator
+ * Orb.
  */
 
 namespace Orb\Validator;
 
 /**
- * Validates a value
+ * Validates a value.
  */
 abstract class AbstractValidator implements ValidatorInterface
 {
@@ -49,14 +46,14 @@ abstract class AbstractValidator implements ValidatorInterface
     /**
      * Sometimes an error might have additional information, such as a position or
      * context where an error took place. This should be an array of errorcode=>info
-     * that could be used in some other system to report errors to a user
+     * that could be used in some other system to report errors to a user.
      *
      * @var array
      */
     protected $errors_info = array();
 
     /**
-     * Options for the validator
+     * Options for the validator.
      *
      * @var array
      */
@@ -80,7 +77,7 @@ abstract class AbstractValidator implements ValidatorInterface
     public function isValid($value)
     {
         // Reset
-        $this->errors = array();
+        $this->errors      = array();
         $this->errors_info = array();
 
         return $this->checkIsValid($value);
@@ -89,7 +86,8 @@ abstract class AbstractValidator implements ValidatorInterface
     /**
      * Check to see if a value is valid or not.
      *
-     * @param  mixed $value
+     * @param mixed $value
+     *
      * @return bool
      */
     public function __invoke($value)
@@ -105,7 +103,7 @@ abstract class AbstractValidator implements ValidatorInterface
     abstract protected function checkIsValid($value);
 
     /**
-     * Get an array of error codes
+     * Get an array of error codes.
      *
      * @return array
      */
@@ -182,7 +180,7 @@ abstract class AbstractValidator implements ValidatorInterface
     }
 
     /**
-     * Get a string of all errors and info that can help in debugging
+     * Get a string of all errors and info that can help in debugging.
      *
      * @return string
      */
@@ -220,7 +218,8 @@ abstract class AbstractValidator implements ValidatorInterface
     /**
      * Check if a certain error has occurred.
      *
-     * @param  string $code
+     * @param string $code
+     *
      * @return bool
      */
     public function hasError($code)
@@ -233,13 +232,14 @@ abstract class AbstractValidator implements ValidatorInterface
      * If nothing was set but the error exists, then $code is just
      * given back to you.
      *
-     * @param  string $code
+     * @param string $code
+     *
      * @return mixed
      */
     public function getErrorInfo($code)
     {
         if (!$this->hasError($code)) {
-            return null;
+            return;
         }
 
         if (isset($this->errors_info[$code])) {
@@ -250,7 +250,7 @@ abstract class AbstractValidator implements ValidatorInterface
     }
 
     /**
-     * Remove an error from the collection
+     * Remove an error from the collection.
      *
      * @param string $code
      */
@@ -261,8 +261,9 @@ abstract class AbstractValidator implements ValidatorInterface
     }
 
     /**
-     * @param  string $name
-     * @param  mixed  $default
+     * @param string $name
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getOption($name, $default = null)
@@ -271,7 +272,8 @@ abstract class AbstractValidator implements ValidatorInterface
     }
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function hasOption($name)

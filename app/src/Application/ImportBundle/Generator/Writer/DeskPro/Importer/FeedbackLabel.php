@@ -32,10 +32,9 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro feedback labels importer
+ * DeskPro feedback labels importer.
  *
  * Class FeedbackLabel
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 final class FeedbackLabel extends AbstractImporter
 {
@@ -50,7 +49,7 @@ final class FeedbackLabel extends AbstractImporter
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Feedback $entity
+     * @var Entity\Feedback
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
@@ -78,9 +77,10 @@ final class FeedbackLabel extends AbstractImporter
     }
 
     /**
-     * Returns a new feedback label entity
+     * Returns a new feedback label entity.
      *
      * @param string $label
+     *
      * @return DeskPROEntity\LabelFeedback
      */
     private function createFeedbackLabel($label)
@@ -89,16 +89,18 @@ final class FeedbackLabel extends AbstractImporter
         $entity->setLabel($label);
 
         $this->records->add($entity);
+
         return $entity;
     }
 
     /**
-     * Returns a collection of existing feedback label names
+     * Returns a collection of existing feedback label names.
      *
      * @param int $id
      *
-     * @return array
      * @throws Mapper\MapperException
+     * @return array
+     *
      */
     private function getExistingLabelsNames($id)
     {
@@ -113,10 +115,11 @@ final class FeedbackLabel extends AbstractImporter
     }
 
     /**
-     * Returns the feedback label mapper
+     * Returns the feedback label mapper.
      *
-     * @return Mapper\FeedbackLabel
      * @throws \Exception
+     * @return Mapper\FeedbackLabel
+     *
      */
     private function getFeedbackLabelMapper()
     {

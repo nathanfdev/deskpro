@@ -26,17 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\ArticleCategory as CategoryEntity;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 use Application\DeskPRO\Searcher\ArticleSearch;
 use Orb\Util\Arrays;
@@ -124,7 +123,7 @@ class ArticleCategory extends AbstractCategoryRepository
     {
         $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
         if (!$id) {
-            return null;
+            return;
         }
 
         return $this->find($id);

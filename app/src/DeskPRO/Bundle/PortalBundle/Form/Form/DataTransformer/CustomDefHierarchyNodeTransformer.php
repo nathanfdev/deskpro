@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
@@ -54,7 +51,7 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
     public function __construct(ChoiceListInterface $choice_list, $multiple = false)
     {
         $this->choice_list = $choice_list;
-        $this->multiple = $multiple;
+        $this->multiple    = $multiple;
     }
 
     /**
@@ -80,9 +77,9 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
      *
      * @param mixed $value The value in the original representation
      *
+     * @throws TransformationFailedException When the transformation fails.
      * @return mixed The value in the transformed representation
      *
-     * @throws TransformationFailedException When the transformation fails.
      */
     public function transform($value)
     {
@@ -104,6 +101,7 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
 
     /**
      * @param $value
+     *
      * @return \DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyNode
      */
     protected function findChoiceForValue($value)
@@ -136,9 +134,9 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
      *
      * @param mixed $value The value in the transformed representation
      *
+     * @throws TransformationFailedException When the transformation fails.
      * @return mixed The value in the original representation
      *
-     * @throws TransformationFailedException When the transformation fails.
      */
     public function reverseTransform($value)
     {

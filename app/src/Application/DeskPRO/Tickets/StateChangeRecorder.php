@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -76,13 +75,15 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     private $no_id = false;
 
     /**
-     * If this is a trivial changeset
+     * If this is a trivial changeset.
+     *
      * @var bool
      */
     private $is_trivial = false;
 
     /**
-     * When the last trivial check was made
+     * When the last trivial check was made.
+     *
      * @var null
      */
     private $is_trivial_checkid = null;
@@ -106,7 +107,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     public function isTrivialChangeSet()
     {
         if ($this->is_trivial_checkid === null || $this->is_trivial_checkid < $this->getStateVersion()) {
-            $this->is_trivial = true;
+            $this->is_trivial         = true;
             $this->is_trivial_checkid = $this->getStateVersion();
 
             foreach ($this->getChangedFields() as $f) {
@@ -136,9 +137,10 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     }
 
     /**
-     * Check if there has been a new reply of type
+     * Check if there has been a new reply of type.
      *
-     * @param  string $type
+     * @param string $type
+     *
      * @return bool
      */
     private function hasNewMessageOfType($type)
@@ -176,9 +178,10 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     }
 
     /**
-     * Get new messages of type
+     * Get new messages of type.
      *
-     * @param  string $type
+     * @param string $type
+     *
      * @return bool
      */
     private function getNewMessagesOfType($type = 'any')
@@ -262,7 +265,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     }
 
     /**
-     * Get an array of any new repies
+     * Get an array of any new repies.
      *
      * @return \Application\DeskPRO\Entity\TicketMessage[]
      */
@@ -272,7 +275,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     }
 
     /**
-     * Get an array of any new agent replies
+     * Get an array of any new agent replies.
      *
      * @return \Application\DeskPRO\Entity\TicketMessage[]
      */
@@ -282,7 +285,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     }
 
     /**
-     * Get an array of any new agent notes
+     * Get an array of any new agent notes.
      *
      * @return \Application\DeskPRO\Entity\TicketMessage[]
      */
@@ -292,7 +295,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     }
 
     /**
-     * Get an array of any new user replies
+     * Get an array of any new user replies.
      *
      * @return \Application\DeskPRO\Entity\TicketMessage[]
      */

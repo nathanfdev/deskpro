@@ -26,19 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\Entity\RoundRobin;
 use Application\DeskPRO\Tickets\Actions\ActionComposite;
 use Application\DeskPRO\Tickets\Actions\SetRoundRobin;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
+use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 
 class RoundRobinController extends AbstractController implements ProtectedControllerInterface
 {
@@ -71,7 +68,7 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 
     public function getAction($id)
     {
-        /** @var $rr RoundRobin */
+        /* @var $rr RoundRobin */
         if (!$rr = $this->em->getRepository('DeskPRO:RoundRobin')->find($id)) {
             throw $this->createNotFoundException();
         }
@@ -88,7 +85,7 @@ class RoundRobinController extends AbstractController implements ProtectedContro
         /** @var \Application\DeskPRO\EntityRepository\RoundRobin $rep */
         $rep = $this->em->getRepository('DeskPRO:RoundRobin');
 
-        /** @var $rr RoundRobin */
+        /* @var $rr RoundRobin */
         if (!$id) {
             $rr = new RoundRobin();
             $this->em->persist($rr);
@@ -115,7 +112,7 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 
     public function deleteAction($id)
     {
-        /** @var $rr RoundRobin */
+        /* @var $rr RoundRobin */
         if (!$rr = $this->em->getRepository('DeskPRO:RoundRobin')->find($id)) {
             throw $this->createNotFoundException();
         }
@@ -148,8 +145,10 @@ class RoundRobinController extends AbstractController implements ProtectedContro
     }
 
     /**
-     * check triggers using round robin id, or all round robins if id is null
+     * check triggers using round robin id, or all round robins if id is null.
+     *
      * @param $id
+     *
      * @return Response
      */
     public function checkTriggersAction($id)

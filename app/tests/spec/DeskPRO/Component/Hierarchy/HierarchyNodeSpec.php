@@ -10,14 +10,14 @@ use Prophecy\Argument;
 
 class HierarchyNodeSpec extends ObjectBehavior
 {
-    function let()
+    public function let()
     {
         $this->beConstructedWith(null);
     }
 
-    function it_holds_any_data()
+    public function it_holds_any_data()
     {
-        $data = 'strings, arrays, objects, whatever';
+        $data  = 'strings, arrays, objects, whatever';
         $depth = 0;
         $order = 0;
 
@@ -28,11 +28,10 @@ class HierarchyNodeSpec extends ObjectBehavior
         $this->getOrder()->shouldBe($order);
     }
 
-    function it_uses_the_hierarchy_formatter_to_display_itself(
+    public function it_uses_the_hierarchy_formatter_to_display_itself(
         Hierarchy $hierarchy,
         HierarchyFormatterInterface $formatter
-    )
-    {
+    ) {
         $hierarchy->getFormatter()->willReturn($formatter);
         $formatter->format(Argument::any())->willReturn('some formatted output');
 
@@ -40,12 +39,11 @@ class HierarchyNodeSpec extends ObjectBehavior
         $this->__toString()->shouldReturn('some formatted output');
     }
 
-    function it_holds_child_nodes_and_is_countable(
+    public function it_holds_child_nodes_and_is_countable(
         Hierarchy $hierarchy,
         HierarchyNode $child1,
         HierarchyNode $child2
-    )
-    {
+    ) {
         $this->setHierarchy($hierarchy);
         $this->addChild($child1);
         $this->addChild($child2);
@@ -53,13 +51,11 @@ class HierarchyNodeSpec extends ObjectBehavior
         $this->count()->shouldReturn(2);
     }
 
-    function it_maintains_children_order_and_is_traversable(
+    public function it_maintains_children_order_and_is_traversable(
         Hierarchy $hierarchy,
         HierarchyNode $child1,
         HierarchyNode $child2
-    )
-    {
-
+    ) {
         $child1->getOrder()->willReturn(15);
         $child2->getOrder()->willReturn(16);
 

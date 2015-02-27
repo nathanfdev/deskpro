@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -96,12 +95,12 @@ class EscalationsRunner implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Runs all escalations
+     * Runs all escalations.
      */
     public function run()
     {
         $this->logger->debug(sprintf("[EscalationsRunner] %d escalations to run -- batch_size(%d) -- time_limit(%d)", count($this->escalations), $this->batch_size, $this->time_limit));
-        $ms_start = microtime(true);
+        $ms_start   = microtime(true);
         $time_start = time();
 
         foreach ($this->escalations as $esc) {

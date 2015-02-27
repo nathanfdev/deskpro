@@ -34,16 +34,17 @@ use Application\DeskPRO\EntityRepository\WhiteListedIp;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Class CheckWhitelistedIP
- * @package Application\DeskPRO\Service
+ * Class CheckWhitelistedIP.
  */
 class CheckWhitelistedIP
 {
     /**
      * TODO should be moved to security layer
-     * check if IP of agent/admin is whitelisted
-     * @param  DeskproContainer $container
-     * @param  Person           $person
+     * check if IP of agent/admin is whitelisted.
+     *
+     * @param DeskproContainer $container
+     * @param Person           $person
+     *
      * @return bool
      */
     public static function checkIP(DeskproContainer $container, Person $person = null)
@@ -56,7 +57,7 @@ class CheckWhitelistedIP
             return true;
         }
 
-        $mode = $container->getSetting('agent.ip_security.mode');
+        $mode             = $container->getSetting('agent.ip_security.mode');
         $enabledForAgents = false !== strpos($mode, 'agents');
         $enabledForAdmins = false !== strpos($mode, 'admins') && $person['can_admin'];
         if (!$enabledForAgents && !$enabledForAdmins) {
@@ -80,11 +81,11 @@ class CheckWhitelistedIP
             'agent_whitelist_ip', array('code' => $code_data->getCode()), UrlGeneratorInterface::ABSOLUTE_URL
         );
         $vars = array(
-            'ip'        => dp_get_user_ip_address(),
-            'code'        => $code_data->getCode(),
-            'person'    => $person,
+            'ip'           => dp_get_user_ip_address(),
+            'code'         => $code_data->getCode(),
+            'person'       => $person,
             'interface'    => DP_INTERFACE,
-            'url'        => $url,
+            'url'          => $url,
         );
 
         $message = $container->getMailer()->createMessage();

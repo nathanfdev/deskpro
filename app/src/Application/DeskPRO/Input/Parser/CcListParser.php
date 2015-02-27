@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Input\Parser;
@@ -51,14 +49,15 @@ class CcListParser
     }
 
     /**
-     * @param  string   $input
+     * @param string $input
+     *
      * @return string[]
      */
     public function parse($input)
     {
         $emails = array();
 
-        $matches = null;
+        $matches    = null;
         $char_group = preg_quote(' ,;<>|', '#');
         if (!preg_match_all("#(?<=[$char_group])([^$char_group]+@[^$char_group]+)(?=[$char_group])#", "|$input|", $matches)) {
             return array();

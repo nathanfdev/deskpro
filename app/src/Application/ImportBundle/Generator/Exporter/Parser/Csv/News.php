@@ -32,10 +32,9 @@ use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use DateTime;
 
 /**
- * News csv file parser
+ * News csv file parser.
  *
  * Class News
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
 final class News extends AbstractParser
 {
@@ -74,7 +73,6 @@ final class News extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid news record `%d` found (Skipping)', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid news record `%d` found (Skipping): %s',
@@ -87,7 +85,7 @@ final class News extends AbstractParser
     }
 
     /**
-     * Returns a news entity
+     * Returns a news entity.
      *
      * @param int   $num
      * @param array $news
@@ -99,7 +97,7 @@ final class News extends AbstractParser
         if ($this->isNewsValid($news)) {
             $entity = new Entity\News();
             $entity
-                ->setDestination('news_' . $num)
+                ->setDestination('news_'.$num)
                 ->setOid($num)
                 ->setPersonEmail($news['person'])
                 ->setLanguage($news['language'])
@@ -121,13 +119,14 @@ final class News extends AbstractParser
             return $entity;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Check if news has all required columns
+     * Check if news has all required columns.
      *
      * @param array $news
+     *
      * @return bool
      */
     private function isNewsValid(array $news)
@@ -149,7 +148,7 @@ final class News extends AbstractParser
     }
 
     /**
-     * Returns record type reader config
+     * Returns record type reader config.
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */

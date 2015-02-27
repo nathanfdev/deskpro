@@ -28,10 +28,9 @@
 namespace Application\ImportBundle\Reader\Json;
 
 /**
- * Directory json files filter
+ * Directory json files filter.
  *
  * Class DirectoryIteratorFilter
- * @package Application\ImportBundle\Reader\Json
  */
 class DirectoryIteratorFilter extends \RecursiveFilterIterator
 {
@@ -41,7 +40,7 @@ class DirectoryIteratorFilter extends \RecursiveFilterIterator
     private $exclude_done = false;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param \RecursiveIterator $iterator
      * @param boolean            $exclude_done
@@ -54,11 +53,13 @@ class DirectoryIteratorFilter extends \RecursiveFilterIterator
 
     /**
      * @param boolean $exclude_done
+     *
      * @return $this
      */
     public function setExcludeDone($exclude_done)
     {
-        $this->exclude_done = (bool)$exclude_done;
+        $this->exclude_done = (bool) $exclude_done;
+
         return $this;
     }
 

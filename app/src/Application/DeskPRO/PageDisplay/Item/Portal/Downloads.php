@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
@@ -37,7 +34,7 @@ namespace Application\DeskPRO\PageDisplay\Item\Portal;
 use Application\DeskPRO\App;
 
 /**
- * Renders the downloads browser
+ * Renders the downloads browser.
  */
 class Downloads extends PortalItemAbstract implements CacheableItem
 {
@@ -85,7 +82,7 @@ class Downloads extends PortalItemAbstract implements CacheableItem
 
         $html = $this->renderView('UserBundle:Portal:downloads-sidebar.html.twig', array(
             'downloads' => $downloads,
-            'title' => $this->getOption('block_title'),
+            'title'     => $this->getOption('block_title'),
         ));
 
         return $html;

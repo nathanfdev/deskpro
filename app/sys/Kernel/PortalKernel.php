@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Kernel;
@@ -48,6 +45,7 @@ class PortalKernel extends Kernel
      * Returns an array of bundles to register.
      *
      * @return BundleInterface[] An array of bundle instances.
+     *
      * @api
      */
     public function registerBundles()
@@ -73,7 +71,7 @@ class PortalKernel extends Kernel
         );
 
         if ('dev' === $this->getEnvironment()
-            OR
+            or
             'test' === $this->getEnvironment()) {
             $bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
@@ -87,7 +85,6 @@ class PortalKernel extends Kernel
         return $bundles;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -100,22 +97,21 @@ class PortalKernel extends Kernel
      * Loads the container configuration.
      *
      * @param LoaderInterface $loader A LoaderInterface instance
+     *
      * @api
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(DP_ROOT . '/sys/config/portal/portal_config_' . $this->getEnvironment() . '.yml');
+        $loader->load(DP_ROOT.'/sys/config/portal/portal_config_'.$this->getEnvironment().'.yml');
     }
-
 
     /**
      * @return string
      */
     public function getRootDir()
     {
-        return DP_ROOT . '/sys';
+        return DP_ROOT.'/sys';
     }
-
 
     /**
      * @return string
@@ -126,15 +122,14 @@ class PortalKernel extends Kernel
 
         if ($cache_dir === null) {
             if (defined('DPC_IS_CLOUD')) {
-                $cache_dir = dp_get_cache_dir() . '/portal/' . $this->environment . '-cloud';
+                $cache_dir = dp_get_cache_dir().'/portal/'.$this->environment.'-cloud';
             } else {
-                $cache_dir = dp_get_cache_dir() . '/portal/' . $this->environment . '';
+                $cache_dir = dp_get_cache_dir().'/portal/'.$this->environment.'';
             }
         }
 
         return $cache_dir;
     }
-
 
     /**
      * {@inheritDoc}
@@ -148,16 +143,16 @@ class PortalKernel extends Kernel
         //    }
         //}
 
-		//if ($this->environment == 'prod' && !defined('DP_BUILDING') && !defined('DPC_IS_CLOUD')) {
-		//	// If the container doesnt exist and we're in prod, then means we're installing an update.
-		//	// Halt now. This prevents the system from trying to generate the cache itself,
-		//	// even though the new files will be installed in a second.
-		//	$cache_file = $this->getCacheDir() . '/' . $this->getContainerClass() . '.php';
-		//	if (!is_file($cache_file)) {
-		//		echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates' . $cache_file);
-		//		exit;
-		//	}
-		//}
+        //if ($this->environment == 'prod' && !defined('DP_BUILDING') && !defined('DPC_IS_CLOUD')) {
+        //	// If the container doesnt exist and we're in prod, then means we're installing an update.
+        //	// Halt now. This prevents the system from trying to generate the cache itself,
+        //	// even though the new files will be installed in a second.
+        //	$cache_file = $this->getCacheDir() . '/' . $this->getContainerClass() . '.php';
+        //	if (!is_file($cache_file)) {
+        //		echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates' . $cache_file);
+        //		exit;
+        //	}
+        //}
 
         // entity loader required to construct symfony container
         // so enable it temporarily while the container builds
@@ -178,24 +173,24 @@ class PortalKernel extends Kernel
     protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
     {
         // Make sure the cache dirs exist
-        $env_dir = realpath($this->getCacheDir() . '/../..');
+        $env_dir = realpath($this->getCacheDir().'/../..');
 
         if (!is_dir($this->getCacheDir())) {
             mkdir($this->getCacheDir(), 0777, true);
         }
-        if (!file_exists($env_dir . '/doctrine-proxies')) {
-            mkdir($env_dir . '/doctrine-proxies', 0777, true);
+        if (!file_exists($env_dir.'/doctrine-proxies')) {
+            mkdir($env_dir.'/doctrine-proxies', 0777, true);
         }
-        if (!file_exists($env_dir . '/twig-compiled')) {
-            @mkdir($env_dir . '/twig-compiled', 0777, true);
+        if (!file_exists($env_dir.'/twig-compiled')) {
+            @mkdir($env_dir.'/twig-compiled', 0777, true);
         }
 
         @chmod($this->getCacheDir(), 0777);
-        @chmod($env_dir . '/doctrine-proxies', 0777);
-        @chmod($env_dir . '/twig-compiled', 0777);
+        @chmod($env_dir.'/doctrine-proxies', 0777);
+        @chmod($env_dir.'/twig-compiled', 0777);
 
         // Clear the dql cache when the container is regenerated as well
-        $dql_cache = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'dql.cache';
+        $dql_cache = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'dql.cache';
         if (file_exists($dql_cache)) {
             @unlink($dql_cache);
         }
@@ -208,7 +203,7 @@ class PortalKernel extends Kernel
         }
 
         // Re-write absolute paths to use DP_ROOT instead
-        $content = str_replace("'" . DP_ROOT, 'DP_ROOT.\'', $content);
+        $content = str_replace("'".DP_ROOT, 'DP_ROOT.\'', $content);
         // Correct double slash paths
         $content = str_replace('prod//', 'prod/', $content);
         // Empty logs dir that isn't used (we get it from conf)

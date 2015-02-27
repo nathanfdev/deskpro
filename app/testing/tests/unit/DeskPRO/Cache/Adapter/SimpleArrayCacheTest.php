@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Cache
+ * DeskPRO.
  */
 
 namespace DpUnitTests\DeskPRO\Cache\Adapter;
@@ -40,7 +37,7 @@ class SimpleArrayCacheTest extends \DpUnitTestCase
 {
     public function testCacheWorks()
     {
-        $cache = new SimpleArrayCache;
+        $cache = new SimpleArrayCache();
 
         $this->assertFalse($cache->has('key'));
 

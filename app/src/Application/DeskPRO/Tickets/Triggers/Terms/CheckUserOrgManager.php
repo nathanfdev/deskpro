@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +37,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 /**
- * Checks if the user is a manager of their org
+ * Checks if the user is a manager of their org.
  */
 class CheckUserOrgManager extends AbstractTriggerTerm
 {
@@ -48,7 +47,7 @@ class CheckUserOrgManager extends AbstractTriggerTerm
     public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
     {
         $person = $ticket->person;
-        $op = $this->getTermOperator();
+        $op     = $this->getTermOperator();
 
         if (!$person->organization) {
             $is_manager = false;

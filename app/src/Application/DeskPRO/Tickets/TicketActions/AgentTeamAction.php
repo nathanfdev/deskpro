@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -40,7 +37,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
 
 /**
- * Sets agent
+ * Sets agent.
  */
 class AgentTeamAction extends AbstractAction implements PersonContextInterface, PermissionableAction
 {
@@ -73,7 +70,7 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -100,7 +97,7 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -133,7 +130,7 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
     }
 
     /**
-     * Get the agent team id
+     * Get the agent team id.
      *
      * @return int
      */
@@ -143,7 +140,8 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
     }
 
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\DataFixtures\ORM;
@@ -36,11 +34,11 @@ namespace DeskPRO\Bundle\PortalBundle\DataFixtures\ORM;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
-use Application\DeskPRO\Entity\DownloadCategory;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -48,7 +46,7 @@ class FakeContentData implements FixtureInterface
 {
     protected $person;
     /**
-     * Load data fixtures with the passed EntityManager
+     * Load data fixtures with the passed EntityManager.
      *
      * @param \Doctrine\Common\Persistence\ObjectManager $manager
      */
@@ -108,7 +106,7 @@ class FakeContentData implements FixtureInterface
             $cat               = 'kb_category'.$i;
             $article->setCategories(array($$cat));
             $article->title    = $title;
-            $article->person = $this->person;
+            $article->person   = $this->person;
             $article->content  = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut lobortis velit id lobortis aliquet. In vel elit vel ex ornare viverra. Morbi scelerisque arcu eros, at varius turpis vulputate non. Praesent ultrices pharetra mattis. Nullam euismod nunc nulla, in cursus nibh aliquet nec. Cras a hendrerit ex. Donec sit amet lectus eu turpis lobortis commodo. Curabitur ut consequat turpis, quis tempus ipsum. Aenean aliquam turpis ligula, eu ullamcorper purus ultricies quis. Fusce eleifend lorem vel eros aliquam pretium. Pellentesque sodales dictum nulla volutpat egestas.';
             $article->setStatus(Article::STATUS_PUBLISHED);
             $manager->persist($article);
@@ -168,13 +166,13 @@ class FakeContentData implements FixtureInterface
         }
 
         $feedbacks = array(
-            'I like it' => $feedback_cat1,
+            'I like it'              => $feedback_cat1,
             'I dont like it, really' => $feedback_cat2,
-            'Can it be be green?' => $feedback_cat3,
-            'What is this feature?' => $feedback_cat1,
-            'Ok, fair enough' => $feedback_cat1,
-            'Woohoo!' => $feedback_cat2,
-            'Latest Build' => $feedback_cat2,
+            'Can it be be green?'    => $feedback_cat3,
+            'What is this feature?'  => $feedback_cat1,
+            'Ok, fair enough'        => $feedback_cat1,
+            'Woohoo!'                => $feedback_cat2,
+            'Latest Build'           => $feedback_cat2,
         );
 
         foreach ($feedbacks as $title => $cat) {
@@ -196,7 +194,7 @@ class FakeContentData implements FixtureInterface
     {
         $download_cat = $manager->getRepository('DeskPRO:DownloadCategory')->find(1);
         if (!$download_cat) {
-            $download_cat = new DownloadCategory();
+            $download_cat        = new DownloadCategory();
             $download_cat->title = 'Documents';
             $manager->persist($download_cat);
         }
@@ -224,7 +222,7 @@ class FakeContentData implements FixtureInterface
 
     private function addFeedbackCat($string, ObjectManager $manager)
     {
-        $cat_feedback = new FeedbackCategory();
+        $cat_feedback        = new FeedbackCategory();
         $cat_feedback->title = $string;
         $manager->persist($cat_feedback);
 

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Protocol;
@@ -184,7 +181,7 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
     }
 
     /**
-     * Fetchs a message by UID
+     * Fetchs a message by UID.
      */
     public function fetchByUid($items, $from, $to = null)
     {
@@ -270,13 +267,14 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
     }
 
     /**
-     * STORE by UID
+     * STORE by UID.
      *
-     * @param  array      $flags
+     * @param array $flags
      * @param $from
-     * @param  null       $to
-     * @param  null       $mode
-     * @param  bool       $silent
+     * @param null  $to
+     * @param null  $mode
+     * @param bool  $silent
+     *
      * @return array|bool
      */
     public function storeById(array $flags, $from, $to = null, $mode = null, $silent = true)

@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Doctrine
+ * Orb.
  */
 
 namespace Orb\Doctrine\ORM\Mapping;
 
-use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\Common\Persistence\Mapping\ReflectionService;
+use Doctrine\ORM\Mapping\ClassMetadataFactory;
 
 class StaticClassMetadataFactory extends ClassMetadataFactory
 {

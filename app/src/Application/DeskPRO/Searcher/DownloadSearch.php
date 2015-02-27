@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Searcher;
 
@@ -39,18 +37,18 @@ use Orb\Util\Util;
 
 class DownloadSearch extends SearcherAbstract
 {
-    const TERM_ID              = 'id';
-    const TERM_CATEGORY        = 'category';
-    const TERM_DELETED         = 'deleted';
+    const TERM_ID                = 'id';
+    const TERM_CATEGORY          = 'category';
+    const TERM_DELETED           = 'deleted';
     const TERM_CATEGORY_SPECIFIC = 'category_specific';
-    const TERM_DOWNLOADS       = 'num_downloads';
-    const TERM_DATE_CREATED    = 'date_created';
-    const TERM_POPULAR         = 'popular';
-    const TERM_NEW             = 'new';
-    const TERM_LABEL           = 'label';
-    const TERM_STATUS          = 'status';
-    const TERM_AGENT_LIST      = 'agent_list';
-    const TERM_QUERY           = 'query';
+    const TERM_DOWNLOADS         = 'num_downloads';
+    const TERM_DATE_CREATED      = 'date_created';
+    const TERM_POPULAR           = 'popular';
+    const TERM_NEW               = 'new';
+    const TERM_LABEL             = 'label';
+    const TERM_STATUS            = 'status';
+    const TERM_AGENT_LIST        = 'agent_list';
+    const TERM_QUERY             = 'query';
 
     const ORDER_ID       = 'id';
     const ORDER_TITLE    = 'title';
@@ -58,13 +56,15 @@ class DownloadSearch extends SearcherAbstract
     const ORDER_DOWNLOAD = 'num_downloads';
 
     /**
-     * From getSqlParts()
+     * From getSqlParts().
+     *
      * @var array
      */
     protected $sql_parts = null;
 
     /**
-     * Summary of terms in phrases
+     * Summary of terms in phrases.
+     *
      * @var array
      */
     protected $summary = array();
@@ -72,7 +72,8 @@ class DownloadSearch extends SearcherAbstract
     /**
      * Run the search and return an array of matching ID's.
      *
-     * @param  int   $limit
+     * @param int $limit
+     *
      * @return array
      */
     public function getMatches(array $limit = null)
@@ -85,9 +86,10 @@ class DownloadSearch extends SearcherAbstract
     }
 
     /**
-     * Get actual model objects for matches
+     * Get actual model objects for matches.
      *
-     * @param  array $limit
+     * @param array $limit
+     *
      * @return array
      */
     public function getMatchingObjects(array $limit = null)
@@ -127,14 +129,14 @@ class DownloadSearch extends SearcherAbstract
     }
 
     /**
-     * Get the total number of matches
+     * Get the total number of matches.
      *
      * @return int
      */
     public function getCount()
     {
-        $sql = "SELECT COUNT(*) FROM downloads ";
-        $parts = $this->getSqlParts();
+        $sql      = "SELECT COUNT(*) FROM downloads ";
+        $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
         #------------------------------
@@ -178,7 +180,7 @@ class DownloadSearch extends SearcherAbstract
     }
 
     /**
-     * Get the summary of crtiera
+     * Get the summary of crtiera.
      *
      * @return array
      */
@@ -192,7 +194,7 @@ class DownloadSearch extends SearcherAbstract
     }
 
     /**
-     * Get the SQL query that'll fetch the results
+     * Get the SQL query that'll fetch the results.
      *
      * @return string
      */
@@ -200,7 +202,7 @@ class DownloadSearch extends SearcherAbstract
     {
         $sql = "SELECT downloads.id FROM downloads ";
 
-        $parts = $this->getSqlParts();
+        $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
         #------------------------------
@@ -304,14 +306,14 @@ class DownloadSearch extends SearcherAbstract
         $tr = App::getTranslator();
 
         $wheres = array();
-        $joins = array();
+        $joins  = array();
 
         foreach ($this->terms as $info) {
-            $join_id = Util::requestUniqueId();
+            $join_id   = Util::requestUniqueId();
             $join_name = "j_$join_id";
 
             list($term, $op, $choice) = $info;
-            $term_id = null;
+            $term_id                  = null;
 
             switch ($term) {
                 case self::TERM_ID:
@@ -324,7 +326,7 @@ class DownloadSearch extends SearcherAbstract
                         }
                         $wheres[] = $this->_choiceMatch('downloads.id', 'is', $choice);
                     } else {
-                        $wheres[] = $this->_rangeMatch("downloads.id", $op, $choice, true);
+                        $wheres[]        = $this->_rangeMatch("downloads.id", $op, $choice, true);
                         $this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
                     }
                     break;
@@ -336,7 +338,7 @@ class DownloadSearch extends SearcherAbstract
 
                     // Normal vis status
                     if (strpos($choice, '.') === false) {
-                        $status = $choice;
+                        $status        = $choice;
                         $hidden_status = '';
 
                     // Formatted: hidden.hidden_status
@@ -370,7 +372,7 @@ class DownloadSearch extends SearcherAbstract
                 case self::TERM_CATEGORY:
                 case self::TERM_CATEGORY_SPECIFIC:
                     $base_ids = (array) ((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
-                    $ids = array();
+                    $ids      = array();
 
                     if ($term == self::TERM_CATEGORY_SPECIFIC) {
                         $ids = $base_ids;
@@ -394,13 +396,13 @@ class DownloadSearch extends SearcherAbstract
                 case self::TERM_QUERY:
 
                     $string = $choice['query'];
-                    $type = !empty($choice['type']) ? $choice['type'] : 'phrase';
+                    $type   = !empty($choice['type']) ? $choice['type'] : 'phrase';
 
                     if (!$string) {
                         break;
                     }
 
-                    $w = array();
+                    $w   = array();
                     $w[] = '('.$this->_stringSearch("downloads.title", $op, $string, $type).')';
                     $w[] = '('.$this->_stringSearch("downloads.content", $op, $string, $type).')';
 
@@ -411,7 +413,7 @@ class DownloadSearch extends SearcherAbstract
                     $choice = (array) $choice;
                     $choice = array_values($choice);
 
-                    $wheres[] = $this->_rangeMatch('downloads.num_downloads', $op, $choice);
+                    $wheres[]        = $this->_rangeMatch('downloads.num_downloads', $op, $choice);
                     $this->summary[] = $this->_rangeSummary('Downloads', $op, $choice);
                     break;
 
@@ -422,7 +424,7 @@ class DownloadSearch extends SearcherAbstract
                     // must be 1
                     // this check needed because usually the option is a checkbox, and the type/op fields would still get picekd up
                     if ($choice) {
-                        $wheres[] = $this->_rangeMatch('downloads.num_downloads', 'gte', App::getSetting('core_downloads.popular_downloads'));
+                        $wheres[]        = $this->_rangeMatch('downloads.num_downloads', 'gte', App::getSetting('core_downloads.popular_downloads'));
                         $this->summary[] = 'Popular';
                     }
                     break;
@@ -434,13 +436,13 @@ class DownloadSearch extends SearcherAbstract
                     // must be 1
                     // this check needed because usually the option is a checkbox, and the type/op fields would still get picekd up
                     if ($choice) {
-                        $date = new \DateTime(App::getSetting('core_downloads.new_time'));
+                        $date     = new \DateTime(App::getSetting('core_downloads.new_time'));
                         $wheres[] = $this->_dateMatch('downloads.date_created', 'gte', array('date1' => $date));
                     }
                     break;
 
                 case self::TERM_DATE_CREATED:
-                    $wheres[] = $this->_dateMatch('downloads.date_created', $op, $choice);
+                    $wheres[]        = $this->_dateMatch('downloads.date_created', $op, $choice);
                     $this->summary[] = $this->_dateRangeSummary('Date created', $op, $choice);
                     break;
 
@@ -501,7 +503,7 @@ class DownloadSearch extends SearcherAbstract
         $wheres = Arrays::removeEmptyString($wheres);
 
         $this->sql_parts = array(
-            'joins' => $joins,
+            'joins'  => $joins,
             'wheres' => $wheres,
         );
 

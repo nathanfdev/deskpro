@@ -52,11 +52,11 @@ class ContextualChoiceType extends ChoiceType
         if ($options['allow_edit']) {
             $builder->add('custom_choice', 'text', array(
                 'required' => false,
-                'label' => false,
-                'mapped' => false,
-                'attr' => array(
+                'label'    => false,
+                'mapped'   => false,
+                'attr'     => array(
                     'placeholder' => 'Custom choice',
-                    'style' => 'display:none;',
+                    'style'       => 'display:none;',
                 ),
             ));
         }
@@ -78,8 +78,9 @@ class ContextualChoiceType extends ChoiceType
     }
 
     /**
-     * @param  EntityRepository           $er
-     * @param  array                      $options
+     * @param EntityRepository $er
+     * @param array            $options
+     *
      * @return \Doctrine\ORM\QueryBuilder
      */
     public function getChoicesQueryBuilder(EntityRepository $er, array $options)
@@ -129,7 +130,7 @@ class ContextualChoiceType extends ChoiceType
             return;
         }
 
-        $form = $event->getForm();
+        $form     = $event->getForm();
         $editable = $form->getConfig()->getOption('allow_edit');
 
         if ($editable && !empty($data['custom_choice'])) {
@@ -138,7 +139,7 @@ class ContextualChoiceType extends ChoiceType
             $this->handleCustomChoice($form, $choices, $data);
             $form->remove('value');
             $form->add('value', 'entity', array_merge($this->getValueOptions(), array(
-                'class' => 'DeskPRO:CustomFieldDefinition',
+                'class'   => 'DeskPRO:CustomFieldDefinition',
                 'choices' => $choices,
             )));
 
@@ -147,7 +148,8 @@ class ContextualChoiceType extends ChoiceType
     }
 
     /**
-     * select choice or add new if not exist
+     * select choice or add new if not exist.
+     *
      * @param FormInterface $form
      * @param array         $choices
      * @param $data
@@ -158,13 +160,13 @@ class ContextualChoiceType extends ChoiceType
             return;
         }
 
-        $check = strtolower($data['custom_choice']);
+        $check  = strtolower($data['custom_choice']);
         $newVal = isset($choices[$data['custom_choice']]) ? $choices[$data['custom_choice']] : null;
 
         // first, string comparison
         if (!$newVal) {
             foreach ($choices as $choice) {
-                /** @var CustomFieldDefinition $choice */
+                /* @var CustomFieldDefinition $choice */
                 if (strtolower($choice['title']) === $check) {
                     $newVal = $choice['id'];
                 }
@@ -173,11 +175,11 @@ class ContextualChoiceType extends ChoiceType
 
         // then, add new choice to list
         if (!$newVal) {
-            $newDef = clone $this->definition;
-            $newDef['id'] = null;
-            $newDef->parent = $this->definition;
-            $newDef->children = new ArrayCollection();
-            $newDef['title'] = $data['custom_choice'];
+            $newDef            = clone $this->definition;
+            $newDef['id']      = null;
+            $newDef->parent    = $this->definition;
+            $newDef->children  = new ArrayCollection();
+            $newDef['title']   = $data['custom_choice'];
             $newDef['options'] = array();
 
             if ($context = $form->getConfig()->getOption('context')) {
@@ -186,7 +188,7 @@ class ContextualChoiceType extends ChoiceType
 
             $form->get('value')->getConfig()->getOption('em')->persist($newDef);
             $form->get('value')->getConfig()->getOption('em')->flush($newDef);
-            $newVal = $newDef['id'];
+            $newVal           = $newDef['id'];
             $choices[$newVal] = $newDef;
         }
 

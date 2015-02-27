@@ -26,23 +26,20 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security\Permissions\Portal;
 
-use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
 use Application\DeskPRO\Cache\CacheAdapterInterface;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\NewSettings\SettingsResolver;
-use Doctrine\DBAL\Connection;
 use Application\DeskPRO\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
+use Doctrine\DBAL\Connection;
 
 /**
  * The PortalPermissionsManager is the gatekeeper between you (developing on the portal) and the permissions system.
@@ -105,18 +102,16 @@ class PortalPermissionsManager
         PortalUsergroupDecider $usergroupDecider,
         PortalPermissionsLoader $permissionsLoader
     ) {
-        $this->settingsResolver = $settingsResolver;
-        $this->usergroupDecider = $usergroupDecider;
+        $this->settingsResolver  = $settingsResolver;
+        $this->usergroupDecider  = $usergroupDecider;
         $this->permissionsLoader = $permissionsLoader;
-        $this->cache = new ConvenientCache($cacheAdapter);
-        $this->conn = $em->getConnection();
-        $this->em = $em;
+        $this->cache             = new ConvenientCache($cacheAdapter);
+        $this->conn              = $em->getConnection();
+        $this->em                = $em;
     }
 
     /**
-     * Updates the settings for the portal permissions timestamp and then forces a reload of global settings
-     *
-     * @return null
+     * Updates the settings for the portal permissions timestamp and then forces a reload of global settings.
      */
     public function invalidatePortalPermissionsCaches()
     {
@@ -128,14 +123,15 @@ class PortalPermissionsManager
     }
 
     /**
-     * Returns the PermissionBag for the given person
+     * Returns the PermissionBag for the given person.
      *
-     * @param  Person         $person
+     * @param Person $person
+     *
      * @return PermissionsBag
      */
     public function getPermissionsBagForPerson(Person $person)
     {
-        $that = $this;
+        $that     = $this;
         $generate = function () use ($that, $person) {
             return $that->generatePermissionsMapForPerson($person);
         };
@@ -154,13 +150,13 @@ class PortalPermissionsManager
     }
 
     /**
-     * Returns the PermissionBag for a guest
+     * Returns the PermissionBag for a guest.
      *
      * @return PermissionsBag
      */
     public function getPermissionsBagForGuest()
     {
-        $that = $this;
+        $that     = $this;
         $generate = function () use ($that) {
             return $that->generatePermissionsMapForGuest();
         };
@@ -182,7 +178,7 @@ class PortalPermissionsManager
     public function getAllowedDepartmentIds(Person $person)
     {
         // TODO: this is just returning back all departments. add logic in the closure for actual permission logic.
-        $that = $this;
+        $that     = $this;
         $generate = function () use ($person, $that) {
             $ids = $that->getEm()->createQuery('SELECT d.id FROM DeskPRO:Department d')->getScalarResult();
 
@@ -202,9 +198,10 @@ class PortalPermissionsManager
     }
 
     /**
-     * Given a set of ints, combines a hash of them with the current cache timestamp to get the cache key
+     * Given a set of ints, combines a hash of them with the current cache timestamp to get the cache key.
      *
-     * @param  array  $usergroupIds
+     * @param array $usergroupIds
+     *
      * @return string
      */
     public function getCacheKeyForUsergroupIds(array $usergroupIds)
@@ -213,7 +210,7 @@ class PortalPermissionsManager
     }
 
     /**
-     * Gets the portal permissions timestamp from the global SettingsBag
+     * Gets the portal permissions timestamp from the global SettingsBag.
      *
      * @return int
      */
@@ -223,9 +220,10 @@ class PortalPermissionsManager
     }
 
     /**
-     * Given a person, uses IDs from usergroups and does getCacheKeyForUsergroupIds
+     * Given a person, uses IDs from usergroups and does getCacheKeyForUsergroupIds.
      *
-     * @param  Person $person
+     * @param Person $person
+     *
      * @return string
      */
     public function getCacheKeyForPerson(Person $person)
@@ -239,9 +237,10 @@ class PortalPermissionsManager
     }
 
     /**
-     * Get IDs from usergroups and does getCacheKeyForUsergroupIds
+     * Get IDs from usergroups and does getCacheKeyForUsergroupIds.
      *
-     * @param  array  $usergroups
+     * @param array $usergroups
+     *
      * @return string
      */
     public function getCacheKeyForUsergroups(array $usergroups)
@@ -256,9 +255,10 @@ class PortalPermissionsManager
     }
 
     /**
-     * Generates the permissions map
+     * Generates the permissions map.
      *
-     * @param  Person $person
+     * @param Person $person
+     *
      * @return array
      */
     public function generatePermissionsMapForPerson(Person $person)

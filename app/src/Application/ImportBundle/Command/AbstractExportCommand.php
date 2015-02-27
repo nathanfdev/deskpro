@@ -27,13 +27,16 @@
 
 namespace Application\ImportBundle\Command;
 
-use Application\ImportBundle\Generator\GeneratorConfig;
-use Application\ImportBundle\Generator\Exporter\ExporterInterface;
-use Application\ImportBundle\Generator;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator;
+use Application\ImportBundle\Generator\Exporter\ExporterInterface;
+use Application\ImportBundle\Generator\GeneratorConfig;
+use Exception;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Orb\Util\OptionsArray;
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -42,15 +45,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Orb\Util\OptionsArray;
-use Psr\Log\LoggerInterface;
-use Exception;
 
 /**
- * Base export command
+ * Base export command.
  *
  * Class AbstractExportCommand
- * @package Application\ImportBundle\Command
  */
 abstract class AbstractExportCommand extends ContainerAwareCommand
 {
@@ -76,13 +75,14 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
 
     /**
      * Creates a new generator config instance
-     * The export is executing in the order of the entity type collection
+     * The export is executing in the order of the entity type collection.
      *
      * @param InputInterface $input
      * @param array          $supported_types
      *
-     * @return GeneratorConfig
      * @throws Exception
+     * @return GeneratorConfig
+     *
      */
     protected function createGeneratorConfig(InputInterface $input, array $supported_types)
     {
@@ -99,7 +99,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Returns a collection of supported entity types that should be exported in this order
+     * Returns a collection of supported entity types that should be exported in this order.
      *
      * @return array
      */
@@ -116,7 +116,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Returns a collection of supported entity types that should be imported in this order
+     * Returns a collection of supported entity types that should be imported in this order.
      *
      * @return array
      */
@@ -133,7 +133,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Use project config to set up generator config params
+     * Use project config to set up generator config params.
      *
      * @param GeneratorConfig $config
      */
@@ -142,12 +142,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $import_config = new OptionsArray(dp_get_config('import', array()));
         $config
             ->setOutputPath($import_config->get('output_path'))
-            ->setLogPath($import_config->get('log_path', dp_get_log_dir() . '/export.log'))
+            ->setLogPath($import_config->get('log_path', dp_get_log_dir().'/export.log'))
             ->setMarkDone($import_config->get('mark_done', true));
     }
 
     /**
-     * Use cli to set up generator config params
+     * Use cli to set up generator config params.
      *
      * @param GeneratorConfig $config
      * @param InputInterface  $input
@@ -163,7 +163,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         }
 
         if ($input->hasOption('output-path') && $input->getOption('output-path')) {
-            $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/") . "/");
+            $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/")."/");
         }
 
         if ($input->hasOption('input-path')) {
@@ -194,7 +194,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Create a logger
+     * Create a logger.
      *
      * @param GeneratorConfig $config
      * @param OutputInterface $output
@@ -228,7 +228,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Create a generator
+     * Create a generator.
      *
      * @param GeneratorConfig $config
      * @param OutputInterface $output
@@ -255,7 +255,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     }
 
     /**
-     * Override container to set correct type hinting
+     * Override container to set correct type hinting.
      *
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
      */

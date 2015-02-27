@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Validator
+ * Orb.
  */
 
 namespace Orb\Validator;
@@ -45,6 +42,7 @@ interface StaticValidator
      * or error info, you must instantiate the object normally.
      *
      * @param $value
+     *
      * @return bool
      */
     public static function isValueValid($value);

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +37,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Filters based on creation system
+ * Filters based on creation system.
  *
  * @option string subject
  */
@@ -55,14 +54,13 @@ class FilterCreationSystem extends AbstractFilterTerm
         return $options;
     }
 
-
     /**
      * {@inheritDoc}
      */
     public function getFilterQuery(ExecutorContextInterface $context = null)
     {
         $options = $this->getTermOptions();
-        $query = $this->getStringMatchQuery('tickets.creation_system', $options['creation_system']);
+        $query   = $this->getStringMatchQuery('tickets.creation_system', $options['creation_system']);
 
         return $query;
     }

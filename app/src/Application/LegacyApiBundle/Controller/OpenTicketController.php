@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -43,7 +40,7 @@ class OpenTicketController extends AbstractController
 {
     public function preAction($action, $arguments = null)
     {
-        return null;
+        return;
     }
 
     public function newTicketMessageAction()

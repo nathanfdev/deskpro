@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Controller
  */
 
@@ -97,7 +96,7 @@ class LanguagePhrases
 
     public function getGroupPhrases($group)
     {
-        $file = str_replace('.', DIRECTORY_SEPARATOR, $group).'.php';
+        $file     = str_replace('.', DIRECTORY_SEPARATOR, $group).'.php';
         $filepath = $this->lang_root.DIRECTORY_SEPARATOR.$file;
 
         if (!file_exists($filepath)) {
@@ -109,7 +108,7 @@ class LanguagePhrases
 
     public function getMasterPhrase($phrase_id)
     {
-        $path = DP_ROOT.'/languages/default';
+        $path        = DP_ROOT.'/languages/default';
         $group_parts = explode('.', $phrase_id, 3);
 
         if (count($group_parts) == 3) {

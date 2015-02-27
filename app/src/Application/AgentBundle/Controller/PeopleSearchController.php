@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -44,7 +41,7 @@ use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 
 /**
- * Handles searching for people
+ * Handles searching for people.
  */
 class PeopleSearchController extends AbstractController
 {
@@ -244,6 +241,7 @@ class PeopleSearchController extends AbstractController
 
     /**
      * Render a new pageset.
+     *
      * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
      */
     public function getPeoplePageAction()

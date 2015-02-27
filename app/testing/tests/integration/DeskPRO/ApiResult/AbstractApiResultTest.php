@@ -39,7 +39,7 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
     public function getApiWithLimitedAccess()
     {
         if (!$this->limitedAccessApi) {
-            $this->limitedAccessApi = new \DeskPRO\Api('http://localhost:8888', '2:' . str_repeat('Y', 25));
+            $this->limitedAccessApi = new \DeskPRO\Api('http://localhost:8888', '2:'.str_repeat('Y', 25));
         }
 
         return $this->limitedAccessApi;
@@ -55,7 +55,7 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
                 'date_created_ts_ms',
                 'date_password_set',
                 'date_password_set_ts',
-                'date_password_set_ts_ms'
+                'date_password_set_ts_ms',
             ),
             'person_email' => array(
                 'date_created',
@@ -104,7 +104,7 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
                 'date_created',
                 'date_created_ts',
                 'date_created_ts_ms',
-            )
+            ),
         );
 
         if (array_key_exists($entity, $ignoreKeys)) {
@@ -128,7 +128,7 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 
     protected function _getExpectedTicket()
     {
-        return require 'Tickets'. DIRECTORY_SEPARATOR . 'Data' . DIRECTORY_SEPARATOR . 'ExpectedTicket.php';
+        return require 'Tickets'.DIRECTORY_SEPARATOR.'Data'.DIRECTORY_SEPARATOR.'ExpectedTicket.php';
     }
 
     protected function getDateTimeFields($entity)
@@ -143,14 +143,14 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
             ),
             'person' => array(
                 'date_created',
-                'date_password_set'
+                'date_password_set',
             ),
             'person_email' => array(
-                'date_created'
+                'date_created',
             ),
             'ticket_message' => array(
                 'date_created',
-            )
+            ),
         );
 
         return isset($datetimeFields[$entity]) ? $datetimeFields[$entity] : null;
@@ -177,16 +177,16 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
                 'date_created_ts',
                 'date_created_ts_ms',
                 'date_password_set_ts',
-                'date_password_set_ts_ms'
+                'date_password_set_ts_ms',
             ),
             'person_email' => array(
                 'date_created_ts',
-                'date_created_ts_ms'
+                'date_created_ts_ms',
             ),
             'ticket_message' => array(
                 'date_created_ts',
                 'date_created_ts_ms',
-            )
+            ),
         );
 
         return isset($timestampFields[$entity]) ? $timestampFields[$entity] : null;

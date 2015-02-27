@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -111,7 +110,7 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
             $ticket->agent = $agent;
 
             $triggerId = (int) $context->getVars()->get('trigger_id', 0);
-            $entry = new LogRoundRobin($rr['id'], $agent['id'], $ticket['id'], $triggerId);
+            $entry     = new LogRoundRobin($rr['id'], $agent['id'], $ticket['id'], $triggerId);
             $context->getLogger()->info($entry);
         } catch (\RuntimeException $e) {
             // todo log error
@@ -150,17 +149,17 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
         $id = $this->getActionOption('id');
 
         if (!$rr = $this->getRoundRobin($id)) {
-            return null;
+            return;
         }
 
         if (!$agent = $this->getRep()->getNextAgent($rr)) {
-            return null;
+            return;
         }
 
         if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent')) {
             if ($agent['id'] == $person->getId()) {
                 if ($person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_self')) {
-                    return null;
+                    return;
                 }
 
                 return array('assign_self');
@@ -169,7 +168,7 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
             return array('assign_agent');
         }
 
-        return null;
+        return;
     }
 
     /**

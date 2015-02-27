@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +37,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Filters based on subject
+ * Filters based on subject.
  *
  * @option string subject
  */
@@ -61,7 +60,7 @@ class FilterSubject extends AbstractFilterTerm
     public function getFilterQuery(ExecutorContextInterface $context = null)
     {
         $options = $this->getTermOptions();
-        $query = $this->getStringMatchQuery('tickets.subject', $options['subject']);
+        $query   = $this->getStringMatchQuery('tickets.subject', $options['subject']);
 
         return $query;
     }

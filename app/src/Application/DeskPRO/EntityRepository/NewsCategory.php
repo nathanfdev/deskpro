@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -78,7 +77,7 @@ class NewsCategory extends AbstractCategoryRepository
     }
 
     /**
-     * Get an array of categories
+     * Get an array of categories.
      *
      * @return array
      */
@@ -101,7 +100,7 @@ class NewsCategory extends AbstractCategoryRepository
     {
         $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
         if (!$id) {
-            return null;
+            return;
         }
 
         return $this->find($id);
@@ -131,7 +130,7 @@ class NewsCategory extends AbstractCategoryRepository
             $counts['0_total'] += $counts[$c['id']];
         }
 
-        $repos = $this;
+        $repos    = $this;
         $fn_count = function ($node) use (&$counts, $repos, &$fn_count) {
             $total = 0;
             foreach ($repos->children($node, true) as $c) {

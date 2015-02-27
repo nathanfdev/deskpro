@@ -27,14 +27,13 @@
 
 namespace Application\ImportBundle\ValueImporter;
 
-use Application\ImportBundle\Value\CustomDefValue;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\ImportBundle\RecordMapper\RecordMapperRegistry;
+use Application\ImportBundle\Value\CustomDefValue;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class AbstractCustomDefValueImporter
- * @package Application\ImportBundle\ValueImporter
+ * Class AbstractCustomDefValueImporter.
  */
 abstract class AbstractCustomDefValueImporter extends AbstractValueImporter
 {
@@ -57,7 +56,7 @@ abstract class AbstractCustomDefValueImporter extends AbstractValueImporter
 //        'Application\DeskPRO\CustomFields\Handler\Date'
 //    );
 
-    /**
+    /*
      * Constructor
      *
      * @param string               $mode
@@ -72,7 +71,7 @@ abstract class AbstractCustomDefValueImporter extends AbstractValueImporter
 //        $this->mapped_value = $mapped_value;
 //    }
 
-    /**
+    /*
      * @param $field_type
      * @return bool
      */
@@ -81,7 +80,7 @@ abstract class AbstractCustomDefValueImporter extends AbstractValueImporter
 //        return in_array($field_type, $this->supported_custom_field_types);
 //    }
 
-    /**
+    /*
      * @param CustomDefValue $custom_def_value
      */
 //    protected function processCustomField(CustomDefValue $custom_def_value)

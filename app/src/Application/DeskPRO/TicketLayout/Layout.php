@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -73,11 +72,11 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
                 return $v->getId() == $before_field;
             });
             if ($pos !== null) {
-                $all_fields = $this->fields;
+                $all_fields   = $this->fields;
                 $this->fields = array();
                 foreach ($all_fields as $k => $v) {
                     if ($k == $before_field) {
-                        $did_add = true;
+                        $did_add           = true;
                         $this->fields[$id] = $field;
                     }
 
@@ -105,7 +104,8 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
     }
 
     /**
-     * @param  string $id
+     * @param string $id
+     *
      * @return bool
      */
     public function has($id)
@@ -114,7 +114,8 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
     }
 
     /**
-     * @param  string      $id
+     * @param string $id
+     *
      * @return LayoutField
      */
     public function get($id)
@@ -213,7 +214,7 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
         $data = array();
 
         $data['version']  = 1;
-        $data['fields'] = array();
+        $data['fields']   = array();
         foreach ($this->fields as $f) {
             $data['fields'][] = $f->exportToArray();
         }
@@ -267,7 +268,8 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
     }
 
     /**
-     * @param  array  $data
+     * @param array $data
+     *
      * @return Layout
      */
     public static function unserializeJsonArray(array $data)
@@ -280,6 +282,7 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 
     /**
      * @param $type
+     *
      * @return array
      */
     public function getIdsOfFieldType($type)

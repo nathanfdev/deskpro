@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -56,7 +53,7 @@ class PriorityType extends AbstractType
             'class'         => 'Application\\DeskPRO\\Entity\\TicketPriority',
             'property'      => 'title',
             'empty_data'    => null,
-            'required' => true,
+            'required'      => true,
             'query_builder' => function (EntityRepository $repo) {
                     return $repo
                         ->createQueryBuilder('p')

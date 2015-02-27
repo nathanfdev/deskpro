@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -37,7 +34,7 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 use Application\DeskPRO\Entity\Ticket;
 
 /**
- * Basic action for properties
+ * Basic action for properties.
  */
 abstract class AbstractPropertyAction extends AbstractAction
 {
@@ -50,14 +47,14 @@ abstract class AbstractPropertyAction extends AbstractAction
     }
 
     /**
-     * Get the property name on the ticket object
+     * Get the property name on the ticket object.
      *
      * @return string
      */
     abstract public function getPropertyName();
 
     /**
-     * Get the property value
+     * Get the property value.
      *
      * @return mixed
      */
@@ -67,14 +64,14 @@ abstract class AbstractPropertyAction extends AbstractAction
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
     public function apply(Ticket $ticket)
     {
         $prop = $this->getPropertyName();
-        $val = $this->getPropertyValue();
+        $val  = $this->getPropertyValue();
 
         $ticket[$prop] = $val;
     }
@@ -82,7 +79,8 @@ abstract class AbstractPropertyAction extends AbstractAction
     /**
      * With properties, the other action always overwrites the previous action.
      *
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)

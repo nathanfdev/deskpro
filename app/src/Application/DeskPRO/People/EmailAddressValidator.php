@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -70,7 +69,8 @@ class EmailAddressValidator
     /**
      * Check if a user inputted email address is valid.
      *
-     * @param  string $email
+     * @param string $email
+     *
      * @return bool
      */
     public function isValidUserEmail($email)
@@ -92,9 +92,10 @@ class EmailAddressValidator
     }
 
     /**
-     * Check if a person has any banned emails
+     * Check if a person has any banned emails.
      *
-     * @param  Person $person
+     * @param Person $person
+     *
      * @return bool
      */
     public function personHasBannedEmail(Person $person)

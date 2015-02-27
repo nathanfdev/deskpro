@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -42,7 +41,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 /**
- * News
+ * News.
  *
  * @SWG\Model (id="News")
  */
@@ -70,7 +69,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
     protected $labels;
 
     /**
-     * The search result highlights
+     * The search result highlights.
      *
      * @var array
      */
@@ -130,6 +129,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @return string
+     *
      * @deprecated generate the route properly, check route name is right and use getSlug()
      */
     public function getLink()
@@ -141,6 +141,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @return string
+     *
      * @deprecated generate the route properly, check route name is right and use getSlug()
      */
     public function getPermalink()
@@ -151,9 +152,10 @@ class News extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * Set a category
+     * Set a category.
      *
      * @param NewsCategory $category
+     *
      * @return $this
      */
     public function setCategory(NewsCategory $category = null)
@@ -219,9 +221,10 @@ class News extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * Get Elasticsearch highlight data
+     * Get Elasticsearch highlight data.
      *
-     * @param  null       $field
+     * @param null $field
+     *
      * @return array|null
      */
     public function getElasticHighlights($field = null)
@@ -232,7 +235,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
             if (isset($this->_search_highlights[$field])) {
                 return $this->_search_highlights[$field];
             } else {
-                return null;
+                return;
             }
         }
     }
@@ -257,7 +260,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
             array(
                 'name'    => 'news',
                 'indexes' => array(
-                    'date_published_idx' => array('columns' => array(0 => 'date_published')),
+                    'date_published_idx'                               => array('columns' => array(0 => 'date_published')),
                     'status_idx'                                       => array('columns' => array('status')),
                 ),
             )
@@ -279,14 +282,14 @@ class News extends ContentAbstract implements HighlightableModelInterface
         $metadata->mapField(array( 'fieldName' => 'date_end', 'type' => 'datetime', 'nullable' => true, 'columnName' => 'date_end'));
         $metadata->mapField(array( 'fieldName' => 'end_action', 'type' => 'string', 'length' => 10, 'nullable' => true, 'columnName' => 'end_action'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsCategory', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'dpApi' => true ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsCategory', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'dpApi' => true ));
         $metadata->mapOneToMany(array( 'fieldName' => 'revisions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsRevision', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'news'));
         $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelNews', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'news', 'orphanRemoval' => true));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL)), 'dpApi' => true ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'dpApi' => true ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'dpApi' => true ));
         $metadata->mapOneToMany(array(
             'fieldName' => 'slug_history', 'targetEntity' => 'Application\DeskPRO\Entity\NewsSlugHistory',
-            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'news',
+            'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'news',
         ));
     }
 }

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -81,7 +78,7 @@ class TicketFieldAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -103,7 +100,7 @@ class TicketFieldAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -115,7 +112,8 @@ class TicketFieldAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
@@ -128,15 +126,15 @@ class TicketFieldAction extends AbstractAction implements PermissionableAction
      */
     public function getDescription($as_html = true)
     {
-        $tr = App::getTranslator();
+        $tr    = App::getTranslator();
         $title = $this->field_def->title;
         $value = $this->set_value;
 
         $value = isset($value['custom_fields']['field_'.$this->field_def->getId()]) ? $value['custom_fields']['field_'.$this->field_def->getId()] : '';
         if ($this->field_def->getTypeName() == 'choice') {
             $value_ids = (array) $value;
-            $value = array();
-            $titles = $this->field_def->getAllChildTitles();
+            $value     = array();
+            $titles    = $this->field_def->getAllChildTitles();
             foreach ($value_ids as $id) {
                 if (isset($titles[$id])) {
                     $value[] = $titles[$id];

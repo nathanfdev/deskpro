@@ -31,22 +31,22 @@ use Application\ImportBundle\Generator\AbstractGenerator;
 use DateTime;
 
 /**
- * Abstract generator exporter parser
+ * Abstract generator exporter parser.
  *
  * Class AbstractParser
- * @package Application\ImportBundle\Generator\Exporter\Parser
  */
 abstract class AbstractParser extends AbstractGenerator implements ParserInterface
 {
     /**
-     * Check if a record has all required columns
+     * Check if a record has all required columns.
      *
      * @param array   $record
      * @param array   $columns
      * @param boolean $throw_exception
      *
-     * @return bool
      * @throws NoColumnException
+     * @return bool
+     *
      */
     protected function hasRequiredColumns(array $record, array $columns, $throw_exception = true)
     {
@@ -64,16 +64,16 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
     }
 
     /**
-     * Check if a record column is array
+     * Check if a record column is array.
      *
      * @param array  $record
      * @param string $column
      * @param bool   $throw_exception
      *
-     * @return bool
-     *
      * @throws NoColumnException
      * @throws NotArrayException
+     * @return bool
+     *
      */
     protected function isArrayColumn(array $record, $column, $throw_exception = true)
     {
@@ -97,9 +97,10 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
     }
 
     /**
-     * Returns date time object from string or current date time if the format is empty
+     * Returns date time object from string or current date time if the format is empty.
      *
      * @param string $format
+     *
      * @return DateTime
      */
     protected function getFromStringOrCurrentDateTime($format)
@@ -108,13 +109,14 @@ abstract class AbstractParser extends AbstractGenerator implements ParserInterfa
     }
 
     /**
-     * Returns true if value is "true" or intval of value = 1
+     * Returns true if value is "true" or intval of value = 1.
      *
      * @param int|string $value
+     *
      * @return bool
      */
     protected function isBooleanTrue($value)
     {
-        return $value === 'true' || (int)$value === 1;
+        return $value === 'true' || (int) $value === 1;
     }
 }

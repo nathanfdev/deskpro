@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Settings;
@@ -41,49 +39,56 @@ class PasswordPolicy
     const SYMBOLS   = 'symbols';
 
     /**
-     * Minimum password length
+     * Minimum password length.
+     *
      * @var int
      */
     public $min_length            = 5;
 
     /**
-     * Max age until we prompt user to reset password
+     * Max age until we prompt user to reset password.
+     *
      * @var int
      */
     public $max_age               = 0;
 
     /**
-     * Dont allow reuse of old passwords
+     * Dont allow reuse of old passwords.
+     *
      * @var bool
      */
     public $forbid_reuse          = false;
 
     /**
-     * (Character class) Require this many uppercase chars
+     * (Character class) Require this many uppercase chars.
+     *
      * @var int
      */
     public $require_num_uppercase = 0;
 
     /**
-     * (Character class) Require this many lowercase chars
+     * (Character class) Require this many lowercase chars.
+     *
      * @var int
      */
     public $require_num_lowercase = 0;
 
     /**
-     * (Character class) Require this many numbers
+     * (Character class) Require this many numbers.
+     *
      * @var int
      */
     public $require_num_number    = 0;
 
     /**
-     * (Character class) Require this many symbols
+     * (Character class) Require this many symbols.
+     *
      * @var int
      */
     public $require_num_symbol    = 0;
 
     /**
-     * Makes sure the values are the correct types and valid ranges
+     * Makes sure the values are the correct types and valid ranges.
      */
     public function verify()
     {

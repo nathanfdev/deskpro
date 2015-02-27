@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Component\Hierarchy;
@@ -79,7 +76,7 @@ class Hierarchy implements \Countable, \IteratorAggregate
         }
 
         $this->node_id_path = $node_id_path;
-        $this->accessor = PropertyAccess::createPropertyAccessor();
+        $this->accessor     = PropertyAccess::createPropertyAccessor();
     }
 
     /**
@@ -108,9 +105,10 @@ class Hierarchy implements \Countable, \IteratorAggregate
 
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
-     * Retrieve an external iterator
+     * Retrieve an external iterator.
      *
      * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
+     *
      * @return Traversable An instance of an object implementing <b>Iterator</b> or
      *                     <b>Traversable</b>
      */
@@ -121,9 +119,10 @@ class Hierarchy implements \Countable, \IteratorAggregate
 
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
-     * Count elements of an object
+     * Count elements of an object.
      *
      * @link http://php.net/manual/en/countable.count.php
+     *
      * @return int The custom count as an integer.
      *             </p>
      *             <p>
@@ -135,7 +134,8 @@ class Hierarchy implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @param  HierarchyNode $node
+     * @param HierarchyNode $node
+     *
      * @return mixed
      */
     public function getNodeId(HierarchyNode $node)
@@ -144,10 +144,11 @@ class Hierarchy implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Will find you a node in the tree for a given node ID (as defined by this hierarchy's node property acessor)
+     * Will find you a node in the tree for a given node ID (as defined by this hierarchy's node property acessor).
      *
      * @param $node_id
-     * @param  bool               $recursive
+     * @param bool $recursive
+     *
      * @return HierarchyNode|null
      */
     public function findNodeById($node_id, $recursive = true)
@@ -166,6 +167,6 @@ class Hierarchy implements \Countable, \IteratorAggregate
             }
         }
 
-        return null;
+        return;
     }
 }

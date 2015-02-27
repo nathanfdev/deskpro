@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -48,7 +45,7 @@ class PersonChangePasswordType extends AbstractType
     {
         if ($options['require_current_password']) {
             $builder->add('current_password', 'password', array(
-                'required' => true,
+                'required'    => true,
                 'constraints' => array(
                     new UserPassword(),
                 ),
@@ -57,13 +54,13 @@ class PersonChangePasswordType extends AbstractType
         }
 
         $builder->add('new_password', 'repeated', array(
-            'first_name' => 'password',
-            'first_options' => array('label' => 'New Password'),
-            'second_name' => 'confirm',
+            'first_name'     => 'password',
+            'first_options'  => array('label' => 'New Password'),
+            'second_name'    => 'confirm',
             'second_options' => array('label' => 'Confirm'),
-            'type' => 'password',
-            'required' => true,
-            'constraints' => array(
+            'type'           => 'password',
+            'required'       => true,
+            'constraints'    => array(
                 new NotBlank(),
             ),
             'mapped' => false,
@@ -78,7 +75,7 @@ class PersonChangePasswordType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Application\DeskPRO\Entity\Person',
+                'data_class'               => 'Application\DeskPRO\Entity\Person',
                 'require_current_password' => true,
             )
         );

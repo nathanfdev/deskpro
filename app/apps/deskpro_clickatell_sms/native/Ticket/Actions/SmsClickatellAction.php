@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Twilio
  */
 
@@ -67,6 +66,6 @@ class SmsClickatellAction extends AbstractSmsAction
      */
     public function getFromPhoneNumber()
     {
-        return null;
+        return;
     }
 }

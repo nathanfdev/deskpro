@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -68,7 +65,7 @@ class DeskproController extends AbstractController
     }
 
     /**
-     * Sets a new value for a setting
+     * Sets a new value for a setting.
      *
      * @param string $setting_name
      */

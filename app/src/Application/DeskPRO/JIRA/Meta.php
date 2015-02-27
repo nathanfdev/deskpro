@@ -35,25 +35,29 @@ class Meta
     protected $api_username;
 
     /**
-     * create meta-data
+     * create meta-data.
+     *
      * @var array
      */
     protected $projects = array();
 
     /**
-     * schema for fields
+     * schema for fields.
+     *
      * @var array
      */
     protected $fields = array();
 
     /**
-     * available statuses
+     * available statuses.
+     *
      * @var array
      */
     protected $statuses = array();
 
     /**
-     * available issue types
+     * available issue types.
+     *
      * @var array
      */
     protected $issuetypes = array();
@@ -61,8 +65,8 @@ class Meta
     protected $default_project;
     protected $default_issuetype;
     protected $default_fields_summary = array();
-    protected $default_fields_list = array();
-    protected $system_fields = array('project', 'issuetype', 'summary');
+    protected $default_fields_list    = array();
+    protected $system_fields          = array('project', 'issuetype', 'summary');
 
     /**
      * @return array
@@ -73,7 +77,7 @@ class Meta
 
         $ref = new \ReflectionObject($this);
         foreach ($ref->getProperties() as $prop) {
-            $name = $prop->getName();
+            $name       = $prop->getName();
             $ret[$name] = $this->{$name};
         }
 
@@ -81,7 +85,8 @@ class Meta
     }
 
     /**
-     * @param  array $data
+     * @param array $data
+     *
      * @return Meta
      */
     public static function fromArray(array $data)
@@ -123,8 +128,8 @@ class Meta
         $this->projects = array();
         foreach ($projects as $project) {
             $this->projects[] = array(
-                'id' => $project['id'],
-                'key' => $project['key'],
+                'id'   => $project['id'],
+                'key'  => $project['key'],
                 'name' => $project['name'],
             );
         }
@@ -135,8 +140,8 @@ class Meta
         $this->issuetypes = array();
         foreach ($issuetypes as $issuetype) {
             $this->issuetypes[] = array(
-                'id' => $issuetype['id'],
-                'name' => $issuetype['name'],
+                'id'      => $issuetype['id'],
+                'name'    => $issuetype['name'],
                 'subtask' => false,
             );
         }
@@ -147,7 +152,7 @@ class Meta
         $this->statuses = array();
         foreach ($statuses as $status) {
             $this->statuses[] = array(
-                'id' => $status['id'],
+                'id'   => $status['id'],
                 'name' => $status['name'],
             );
         }
@@ -158,8 +163,8 @@ class Meta
         $this->fields = array();
         foreach ($fields as $field) {
             $this->fields[] = array(
-                'id' => $field['id'],
-                'name' => $field['name'],
+                'id'     => $field['id'],
+                'name'   => $field['name'],
                 'custom' => $field['custom'],
                 'schema' => $field['schema'],
             );

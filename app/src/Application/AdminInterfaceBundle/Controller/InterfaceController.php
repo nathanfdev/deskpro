@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\AdminInterfaceBundle\Controller;
 
@@ -203,6 +201,7 @@ class InterfaceController extends AbstractController
 
     /**
      * @param $code
+     *
      * @return BinaryFileResponse
      */
     public function downloadExportFileAction($code)

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -51,15 +50,14 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TicketSla extends DomainObject
 {
-    const STATUS_OK = 'ok';
+    const STATUS_OK      = 'ok';
     const STATUS_WARNING = 'warning';
-    const STATUS_FAIL = 'fail';
+    const STATUS_FAIL    = 'fail';
 
     /**
      * The unique ID.
      *
      * @var int
-     *
      */
     protected $id = null;
 
@@ -159,7 +157,7 @@ class TicketSla extends DomainObject
         }
 
         if (!$times) {
-            return null;
+            return;
         }
 
         return new \DateTime('@'.min($times));
@@ -187,7 +185,7 @@ class TicketSla extends DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketSla';
 
         $metadata->setPrimaryTable(array(
-            'name' => 'ticket_slas',
+            'name'    => 'ticket_slas',
             'indexes' => array(
                 'status_completed_warn_date_idx' => array('columns' => array('sla_status', 'is_completed', 'warn_date')),
                 'status_completed_fail_date_idx' => array('columns' => array('sla_status', 'is_completed', 'fail_date')),
@@ -257,7 +255,7 @@ class TicketSla extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-                'columnDefinition'     => NULL,
+                'columnDefinition'     => null,
             )),
             'dpApi' => true,
         ));

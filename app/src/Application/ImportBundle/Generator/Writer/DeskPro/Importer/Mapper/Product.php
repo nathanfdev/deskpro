@@ -31,10 +31,9 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Product record mapper
+ * Product record mapper.
  *
  * Class Product
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class Product implements MapperInterface, MapperByTitleInterface
 {
@@ -44,7 +43,7 @@ final class Product implements MapperInterface, MapperByTitleInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\Product $repository
      */

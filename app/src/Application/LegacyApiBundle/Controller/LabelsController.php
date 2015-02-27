@@ -26,15 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\EntityRepository\LabelDef;
+use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LabelsController extends AbstractController implements ProtectedControllerInterface
@@ -71,8 +69,8 @@ class LabelsController extends AbstractController implements ProtectedController
         }
 
         $label = trim($new['label']);
-        $type = trim($new['label_type']);
-        $rep = $this->rep();
+        $type  = trim($new['label_type']);
+        $rep   = $this->rep();
         $rep->renameLabelDef($old['label'], $label, $new['color'], $type);
         $rep->updateColorForLabel($type, $label, $new['color']);
 
@@ -100,7 +98,7 @@ class LabelsController extends AbstractController implements ProtectedController
             $definition = new \Application\DeskPRO\Entity\LabelDef();
             // primary key
             $definition['label_type'] = $type;
-            $definition['label'] = trim($label);
+            $definition['label']      = trim($label);
             $this->em->persist($definition);
         } else {
             $rep->renameLabelDef($definition['label'], trim($label), $color, $type);
@@ -122,7 +120,7 @@ class LabelsController extends AbstractController implements ProtectedController
     public function deleteDefinitionAction()
     {
         $label = $this->in->getString('label');
-        $type = $this->in->getString('label_type');
+        $type  = $this->in->getString('label_type');
         try {
             if (!$definition = $this->rep()->getDefinition($type, $label)) {
                 throw $this->createNotFoundException();

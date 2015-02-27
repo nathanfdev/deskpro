@@ -26,20 +26,17 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Entity\SmsAccount;
 use Application\DeskPRO\Sms\SmsProviderFactory;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Orb\Sms\SmsMessage;
 use Orb\Sms\SmsSender;
 use Orb\Util\Strings;
@@ -105,7 +102,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
             $account = new SmsAccount();
         }
 
-        /**
+        /*
          * If anything needs to be done with the data here in the future, a Form should be made
          * on an EditSmsAccount object
          */

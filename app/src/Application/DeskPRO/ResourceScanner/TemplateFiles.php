@@ -26,16 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Controller
  */
 
 namespace Application\DeskPRO\ResourceScanner;
 
 /**
- * Scans the filesystem for an array of all templates
+ * Scans the filesystem for an array of all templates.
  */
 class TemplateFiles
 {
@@ -51,7 +50,7 @@ class TemplateFiles
     }
 
     /**
-     * Get the map array
+     * Get the map array.
      *
      * @return array
      */
@@ -69,7 +68,7 @@ class TemplateFiles
     }
 
     /**
-     * Scans the filesystem to generate the map on-demand
+     * Scans the filesystem to generate the map on-demand.
      *
      * @return array
      */
@@ -88,11 +87,11 @@ class TemplateFiles
             $finder->files()->name('*.twig')->in($dir);
 
             foreach ($finder as $file) {
-                /** @var \Symfony\Component\Finder\SplFileinfo $file */
+                /* @var \Symfony\Component\Finder\SplFileinfo $file */
 
                 $filepath = $file->getRealPath();
                 $filepath = str_replace('\\', '/', $filepath);
-                $dir = str_replace('\\', '/', $dir);
+                $dir      = str_replace('\\', '/', $dir);
 
                 $tplname = str_replace($dir.'/', ':', $filepath);
                 $tplname = str_replace('/', ':', $tplname);
@@ -107,7 +106,7 @@ class TemplateFiles
                 }
 
                 $tpl_info[$tplname] = array(
-                    'path' => $file->getRealPath(),
+                    'path'         => $file->getRealPath(),
                     'last_updated' => 0,
                 );
             }
@@ -135,7 +134,7 @@ class TemplateFiles
     }
 
     /**
-     * Non-user portal templates
+     * Non-user portal templates.
      */
     public function getEmailTemplates()
     {
@@ -153,7 +152,7 @@ class TemplateFiles
     }
 
     /**
-     * Email templates
+     * Email templates.
      */
     public function getOtherTemplates()
     {
@@ -171,9 +170,10 @@ class TemplateFiles
     }
 
     /**
-     * Group the map into [bundle][dir][tplname]
+     * Group the map into [bundle][dir][tplname].
      *
-     * @param  array $map
+     * @param array $map
+     *
      * @return array
      */
     public function groupPrefixes(array $map)
@@ -182,7 +182,7 @@ class TemplateFiles
         foreach ($map as $k => $v) {
             preg_match('#^(.*?):(.*?):(.*?)$#', $k, $m);
             $bundle = $m[1];
-            $dir = $m[2];
+            $dir    = $m[2];
             if ($dir) {
                 $dir = 'TOP';
             }
@@ -194,7 +194,7 @@ class TemplateFiles
                 $grouped[$bundle][$dir] = array();
             }
 
-            $grouped[$bundle][$dir][$k] = $v;
+            $grouped[$bundle][$dir][$k]              = $v;
             $grouped[$bundle][$dir][$k]['shortname'] = str_replace('.twig', '', $m[3]);
         }
 
@@ -202,8 +202,9 @@ class TemplateFiles
     }
 
     /**
-     * @param  array $map
-     * @param  array $custom_templates
+     * @param array $map
+     * @param array $custom_templates
+     *
      * @return array
      */
     public function groupMap(array $map, array $custom_templates)
@@ -213,7 +214,7 @@ class TemplateFiles
         foreach ($map as $k => $v) {
             preg_match('#^(.*?):(.*?):(.*?)$#', $k, $m);
             $bundle = $m[1];
-            $dir = $m[2];
+            $dir    = $m[2];
             if (!$dir) {
                 $dir = 'TOP';
             }
@@ -225,7 +226,7 @@ class TemplateFiles
                 $grouped[$bundle][$dir] = array('count_changed' => 0, 'count_outdated' => 0, 'templates' => array());
             }
 
-            $v['name'] = $k;
+            $v['name']      = $k;
             $v['shortname'] = str_replace('.twig', '', $m[3]);
 
             if (isset($custom_templates[$k])) {
@@ -238,7 +239,7 @@ class TemplateFiles
                     $v['is_outdated'] = true;
                 }
             } else {
-                $v['is_custom'] = false;
+                $v['is_custom']   = false;
                 $v['is_outdated'] = false;
             }
 

@@ -26,11 +26,9 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Search
+ * DeskPRO.
  */
+
 namespace Application\DeskPRO\Search\Indexer\Initializer;
 
 use Application\DeskPRO\Search\Adapter\AbstractAdapter;

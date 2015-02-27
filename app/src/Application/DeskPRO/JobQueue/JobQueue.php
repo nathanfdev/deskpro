@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage JobQueue
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\JobQueue;
@@ -51,12 +48,12 @@ class JobQueue
 
     public function __construct(EntityManager $em, JobScheduler $scheduler)
     {
-        $this->em = $em;
+        $this->em        = $em;
         $this->scheduler = $scheduler;
     }
 
     /**
-     * Allows adding a job with just the job type and payload
+     * Allows adding a job with just the job type and payload.
      *
      * @param           $type
      * @param array     $data
@@ -68,7 +65,7 @@ class JobQueue
     }
 
     /**
-     * allows adding a job directly
+     * allows adding a job directly.
      *
      * @param Job       $job
      * @param \DateTime $nextTry
@@ -107,9 +104,10 @@ class JobQueue
     }
 
     /**
-     * Determines if the job is ready to run now
+     * Determines if the job is ready to run now.
      *
-     * @param  Job  $job
+     * @param Job $job
+     *
      * @return bool
      */
     public function isReady(Job $job)
@@ -118,9 +116,10 @@ class JobQueue
     }
 
     /**
-     * Useful proxy if you only have the job ID
+     * Useful proxy if you only have the job ID.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return bool
      */
     public function isReadyByJobId($id)
@@ -129,7 +128,7 @@ class JobQueue
     }
 
     /**
-     * Useful proxy if you only have the job ID
+     * Useful proxy if you only have the job ID.
      *
      * @param int $id
      */
@@ -139,7 +138,7 @@ class JobQueue
     }
 
     /**
-     * Useful proxy if you only have the job ID
+     * Useful proxy if you only have the job ID.
      *
      * @param int $id
      */
@@ -149,7 +148,7 @@ class JobQueue
     }
 
     /**
-     * Save a Job
+     * Save a Job.
      *
      * @param Job $job
      */
@@ -161,9 +160,10 @@ class JobQueue
     }
 
     /**
-     * Get a Job directly from the database (refreshes)
+     * Get a Job directly from the database (refreshes).
      *
-     * @param  int      $id the job id
+     * @param int $id the job id
+     *
      * @return Job|null
      */
     public function getJob($id)

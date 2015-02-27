@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage RefGenerator
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\RefGenerator;
@@ -76,7 +73,8 @@ class RandomRef implements RefGeneratorInterface
      * Check if a string is a valid ref format. This only checks
      * the format, no checking if it exists or anything like that.
      *
-     * @param  string $ref
+     * @param string $ref
+     *
      * @return bool
      */
     public function isRefMatch($ref)
@@ -93,6 +91,7 @@ class RandomRef implements RefGeneratorInterface
      * the first one should be the most likely match.
      *
      * @param $string
+     *
      * @return string[]
      */
     public function extractRefs($string, $ldelim = '\b', $rdelim = '\b')

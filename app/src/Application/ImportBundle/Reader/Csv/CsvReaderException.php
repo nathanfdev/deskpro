@@ -29,10 +29,9 @@ namespace Application\ImportBundle\Reader\Csv;
 
 /**
  * Csv reader exception
- * If reading data is not valid
+ * If reading data is not valid.
  *
  * Class CsvReaderException
- * @package Application\ImportBundle\Reader\Csv
  */
 final class CsvReaderException extends \Exception
 {

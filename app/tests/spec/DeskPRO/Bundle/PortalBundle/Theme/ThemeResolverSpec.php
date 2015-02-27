@@ -26,21 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 use DeskPRO\Bundle\PortalBundle\Theme\TagProcessor;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeRepository;
+use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -49,22 +46,20 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ThemeResolverSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         ContainerInterface $container,
         ThemeRepository $theme_repo,
         TagProcessor $tag_processor,
         LoggerInterface $logger
-    )
-    {
+    ) {
         $this->beConstructedWith($container, $theme_repo, $tag_processor, $logger);
     }
 
-    function it_processes_a_tag_by_handing_off_to_the_tag_processor(
+    public function it_processes_a_tag_by_handing_off_to_the_tag_processor(
         TagProcessor $tag_processor,
         ThemeInterface $theme,
         Tag $tag
-    )
-    {
+    ) {
         $args = array('some' => 'args');
 
         $theme->resolveTag('knowledgebase')->willReturn($tag);
@@ -74,11 +69,10 @@ class ThemeResolverSpec extends ObjectBehavior
         $this->processTag($theme, 'knowledgebase', $args)->shouldReturn('result');
     }
 
-    function it_returns_blank_string_if_tag_is_not_found_in_theme(
+    public function it_returns_blank_string_if_tag_is_not_found_in_theme(
         TagProcessor $tag_processor,
         ThemeInterface $theme
-    )
-    {
+    ) {
         $args = array('some' => 'args');
 
         $theme->resolveTag('knowledgebase')->willReturn(null);

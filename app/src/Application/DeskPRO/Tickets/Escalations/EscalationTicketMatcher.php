@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -62,8 +61,8 @@ class EscalationTicketMatcher
 
     public function __construct(EntityManager $em, Connection $db)
     {
-        $this->em = $em;
-        $this->db = $db;
+        $this->em     = $em;
+        $this->db     = $db;
         $this->logger = new NullLogger();
     }
 
@@ -76,8 +75,9 @@ class EscalationTicketMatcher
     }
 
     /**
-     * @param  TicketEscalation                     $esc
-     * @param  int                                  $limit
+     * @param TicketEscalation $esc
+     * @param int              $limit
+     *
      * @return \Application\DeskPRO\Entity\Ticket[]
      */
     public function getMatches(TicketEscalation $esc, $limit = 100)
@@ -91,7 +91,7 @@ class EscalationTicketMatcher
 
         $this->logger->debug(sprintf("[EscalationTicketMatcher] --> SQL: %s", $searcher->getSql()));
         $ticket_ids = $searcher->getMatches();
-        $tickets = array();
+        $tickets    = array();
         if ($ticket_ids) {
             $tickets = $this->em->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids);
         }
@@ -102,9 +102,11 @@ class EscalationTicketMatcher
     }
 
     /**
-     * @param  TicketEscalation          $esc
-     * @return TicketSearch
+     * @param TicketEscalation $esc
+     *
      * @throws \InvalidArgumentException
+     * @return TicketSearch
+     *
      */
     private function _getSearcherForEscalation(TicketEscalation $esc)
     {

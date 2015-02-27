@@ -2,18 +2,18 @@
 
 namespace Application\DeskPRO\NewSearch\Transformer;
 
-use Elastica\Document;
 use Application\DeskPRO\Entity\Person;
+use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
 
 /**
- * Person To Elastica Transformer
+ * Person To Elastica Transformer.
  */
 class PersonToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Transform
+     * Transform.
      *
      * @param Person $object
      * @param array  $fields

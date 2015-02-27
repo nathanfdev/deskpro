@@ -26,12 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage InstallBundle
+ * DeskPRO.
  */
-
 if (php_sapi_name() != 'cli') {
     echo "This script must only be run from the CLI.\n";
     echo "Contact support@deskpro.com if you require assistance.\n";
@@ -42,7 +38,7 @@ if (php_sapi_name() != 'cli') {
 $find = '/\\$DP_CONFIG\\[\'php_path\'\\] = \'.*\';/';
 
 // replace with PHP path
-$php = $argv['1'];
+$php     = $argv['1'];
 $replace = '$DP_CONFIG[\'php_path\'] = \''.$php.'\';';
 
 // open, replace, write config

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage JobQueue
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\JobQueue;
@@ -68,7 +65,7 @@ class JobSupervisor
     public function __construct(Connection $connection, array $rules = array())
     {
         $this->connection = $connection;
-        $this->rules = $rules;
+        $this->rules      = $rules;
     }
 
     /**

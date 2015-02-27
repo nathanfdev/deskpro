@@ -30,8 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter;
 use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 
 /**
- * Class ZenDeskFactory
- * @package Application\ImportBundle\Generator\Exporter
+ * Class ZenDeskFactory.
  */
 class ZenDeskFactory extends AbstractFactory
 {

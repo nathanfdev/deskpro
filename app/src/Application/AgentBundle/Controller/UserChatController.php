@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -115,7 +112,7 @@ class UserChatController extends AbstractController
     }
 
     /**
-     * Reassign a chat
+     * Reassign a chat.
      *
      * @param  $conversation_id
      * @param  $quick_reply_id
@@ -176,7 +173,7 @@ class UserChatController extends AbstractController
     }
 
     /**
-     * Reassign a chat
+     * Reassign a chat.
      *
      * @param  $conversation_id
      * @param  $quick_reply_id
@@ -205,7 +202,7 @@ class UserChatController extends AbstractController
     }
 
     /**
-     * Changes properties
+     * Changes properties.
      *
      * @param  $conversation_id
      * @param  $quick_reply_id
@@ -258,7 +255,7 @@ class UserChatController extends AbstractController
     }
 
     /**
-     * Add a participant
+     * Add a participant.
      *
      * @param  $conversation_id
      * @param  $quick_reply_id
@@ -380,7 +377,7 @@ class UserChatController extends AbstractController
     }
 
     /**
-     * End a chat
+     * End a chat.
      *
      * @param  $conversation_id
      */
@@ -400,7 +397,7 @@ class UserChatController extends AbstractController
     }
 
     /**
-     * Accepts a POST of a new message to a conversation
+     * Accepts a POST of a new message to a conversation.
      */
     public function sendMessageAction($conversation_id)
     {
@@ -439,7 +436,7 @@ class UserChatController extends AbstractController
     }
 
     /**
-     * End a chat
+     * End a chat.
      *
      * @param  $conversation_id
      */
@@ -454,7 +451,7 @@ class UserChatController extends AbstractController
         $chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
         $chat_manager->personLeft($convo, $this->person);
 
-        /** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+        /* @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
         if ($convo->status == 'open') {
             switch ($this->in->getString('action')) {
                 case 'unassign':
@@ -505,7 +502,7 @@ class UserChatController extends AbstractController
     }
 
     /**
-     * List the articles
+     * List the articles.
      */
     public function getSectionDataAction()
     {
@@ -691,8 +688,10 @@ class UserChatController extends AbstractController
 
     /**
      * @param $id
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      */
     public function getChatAlertAction($id)
     {
@@ -722,9 +721,10 @@ class UserChatController extends AbstractController
     }
 
     /**
-     * Creates a JSON response but with client messages as well
+     * Creates a JSON response but with client messages as well.
      *
-     * @param  array                                               $other_data
+     * @param array $other_data
+     *
      * @return \Application\DeskPRO\HttpKernel\Controller\Response
      */
     protected function createJsonCmResponse(array $other_data = array())
@@ -745,7 +745,7 @@ class UserChatController extends AbstractController
     }
 
     /**
-     * Lists previously closed chats
+     * Lists previously closed chats.
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -79,7 +78,7 @@ class Usergroup extends AbstractEntityRepository
     public function getUsergroupNames($for_ids = null)
     {
         if ($this->_usergroup_names === null) {
-            $db = $this->_em->getConnection();
+            $db                     = $this->_em->getConnection();
             $this->_usergroup_names = $db->fetchAllKeyValue("
                 SELECT id, title
                 FROM usergroups
@@ -118,7 +117,7 @@ class Usergroup extends AbstractEntityRepository
         if ($this->_agent_usergroup_names !== null) {
             return $this->_agent_usergroup_names;
         }
-        $db = $this->getEntityManager()->getConnection();
+        $db                           = $this->getEntityManager()->getConnection();
         $this->_agent_usergroup_names = $db->fetchAllKeyValue("
             SELECT id, title
             FROM usergroups
@@ -144,14 +143,14 @@ class Usergroup extends AbstractEntityRepository
     }
 
     /**
-     * get the counts for all usergroups
+     * get the counts for all usergroups.
      *
      * @return array
      */
     public function getCountsForAll()
     {
         /** @var Connection $conn */
-        $conn = $this->getEntityManager()->getConnection();
+        $conn   = $this->getEntityManager()->getConnection();
         $output = $conn->fetchAllKeyValue("
             SELECT usergroup_id, COUNT(*)
             FROM person2usergroups
@@ -178,9 +177,10 @@ class Usergroup extends AbstractEntityRepository
     }
 
     /**
-     * Count the number of members in usergroups ($ids)
+     * Count the number of members in usergroups ($ids).
      *
-     * @param  array $ids
+     * @param array $ids
+     *
      * @return array
      */
     public function getCountsFor(array $ids)
@@ -190,7 +190,7 @@ class Usergroup extends AbstractEntityRepository
         }
 
         /** @var Connection $conn */
-        $conn = $this->getEntityManager()->getConnection();
+        $conn   = $this->getEntityManager()->getConnection();
         $output = $conn->fetchAllKeyValue('
             SELECT usergroup_id, COUNT(*)
             FROM person2usergroups
@@ -228,9 +228,10 @@ class Usergroup extends AbstractEntityRepository
     }
 
     /**
-     * Count the number of organization members in usergroups ($ids)
+     * Count the number of organization members in usergroups ($ids).
      *
-     * @param  array $ids
+     * @param array $ids
+     *
      * @return int
      */
     public function getOrganizationCountsFor(array $ids)
@@ -252,7 +253,7 @@ class Usergroup extends AbstractEntityRepository
 
     /**
      * Get all agents of all teams, and sort them into an array keyed
-     * by team: array('teamid' => array('agentid', 'agentid'))
+     * by team: array('teamid' => array('agentid', 'agentid')).
      *
      * @return array
      */

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Article
+ * Article.
  */
 class RoundRobinAgent extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -49,14 +48,14 @@ class RoundRobinAgent extends \Application\DeskPRO\Domain\DomainObject
     protected $robin;
 
     /**
-     * Next agent in queue
+     * Next agent in queue.
      *
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $agent;
 
     /**
-     * Sort field
+     * Sort field.
      *
      * @var int
      */
@@ -94,15 +93,15 @@ class RoundRobinAgent extends \Application\DeskPRO\Domain\DomainObject
             'id'           => true,
             'fieldName'    => 'agent',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-            'mappedBy'     => NULL,
-            'inversedBy'   => NULL,
+            'mappedBy'     => null,
+            'inversedBy'   => null,
             'joinColumns'  => array(
                 0 => array(
                     'name'                 => 'agent_id',
                     'referencedColumnName' => 'id',
                     'nullable'             => false,
                     'onDelete'             => 'cascade',
-                    'columnDefinition'     => NULL,
+                    'columnDefinition'     => null,
                 ),
             ),
         ));
@@ -111,7 +110,7 @@ class RoundRobinAgent extends \Application\DeskPRO\Domain\DomainObject
             'id'           => true,
             'fieldName'    => 'robin',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\RoundRobin',
-            'mappedBy'     => NULL,
+            'mappedBy'     => null,
             'inversedBy'   => 'agents',
             'joinColumns'  => array(
                 0 => array(
@@ -119,7 +118,7 @@ class RoundRobinAgent extends \Application\DeskPRO\Domain\DomainObject
                     'referencedColumnName' => 'id',
                     'nullable'             => false,
                     'onDelete'             => 'cascade',
-                    'columnDefinition'     => NULL,
+                    'columnDefinition'     => null,
                 ),
             ),
         ));

@@ -30,177 +30,187 @@ namespace Application\ImportBundle\Entity;
 use DateTime;
 
 /**
- * Basic properties on content interface
+ * Basic properties on content interface.
  *
  * Interface ContentAwareInterface
- * @package Application\ImportBundle\Entity
  */
 interface ContentAwareInterface
 {
     /**
-     * Entity title
+     * Entity title.
      *
      * @return string
      */
     public function getTitle();
 
     /**
-     * Set entity title
+     * Set entity title.
      *
      * @param string $title
+     *
      * @return $this
      */
     public function setTitle($title);
 
     /**
-     * Entity content
+     * Entity content.
      *
      * @return string
      */
     public function getContent();
 
     /**
-     * Set entity content
+     * Set entity content.
      *
      * @param string $content
+     *
      * @return $this
      */
     public function setContent($content);
 
     /**
-     * Sets an acceptable URL slug
+     * Sets an acceptable URL slug.
      *
      * @return string
      */
     public function getSlug();
 
     /**
-     * Get an acceptable URL slug
+     * Get an acceptable URL slug.
      *
      * Turns a string into an acceptable URL slug.
      * "My Great Title!" becomes "my-great-title"
      *
      * @param string $slug
+     *
      * @return $this
      */
     public function setSlug($slug);
 
     /**
-     * Entity language
+     * Entity language.
      *
      * @return string
      */
     public function getLanguage();
 
     /**
-     * Set entity language
+     * Set entity language.
      *
      * @param string $language
+     *
      * @return $this
      */
     public function setLanguage($language);
 
     /**
-     * Set status
+     * Set status.
      *
      * @return string
      */
     public function getStatus();
 
     /**
-     * Status
+     * Status.
      *
      * @param string $status
+     *
      * @return $this
      */
     public function setStatus($status);
 
     /**
-     * View count
+     * View count.
      *
      * @return int
      */
     public function getViewCount();
 
     /**
-     * Set a view count
+     * Set a view count.
      *
      * @param int $view_count
+     *
      * @return $this
      */
     public function setViewCount($view_count);
 
     /**
-     * Total rating
+     * Total rating.
      *
      * @return int
      */
     public function getTotalRating();
 
     /**
-     * Set total rating
+     * Set total rating.
      *
      * @param int $total_rating
+     *
      * @return $this
      */
     public function setTotalRating($total_rating);
 
     /**
-     * Number of comments
+     * Number of comments.
      *
      * @return int
      */
     public function getNumComments();
 
     /**
-     * Set number of comments
+     * Set number of comments.
      *
      * @param int $num_comments
+     *
      * @return $this
      */
     public function setNumComments($num_comments);
 
     /**
-     * Number of rating
+     * Number of rating.
      *
      * @return int
      */
     public function getNumRatings();
 
     /**
-     * Set number of rating
+     * Set number of rating.
      *
      * @param int $num_ratings
+     *
      * @return $this
      */
     public function setNumRatings($num_ratings);
 
     /**
-     * Date created
+     * Date created.
      *
      * @return DateTime
      */
     public function getDateCreated();
 
     /**
-     * Set date created
+     * Set date created.
      *
      * @param DateTime $date_created
+     *
      * @return $this
      */
     public function setDateCreated(DateTime $date_created);
 
     /**
-     * Date published
+     * Date published.
      *
      * @return DateTime
      */
     public function getDatePublished();
 
     /**
-     * Set date published
+     * Set date published.
      *
      * @param DateTime $date_published
+     *
      * @return $this
      */
     public function setDatePublished(DateTime $date_published);

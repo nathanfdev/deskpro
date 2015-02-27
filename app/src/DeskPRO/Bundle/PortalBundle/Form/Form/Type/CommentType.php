@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -57,9 +54,9 @@ class CommentType extends AbstractType
                 $form->add('name', 'text', array('label' => 'Your Name'));
                 $form->add('email', 'email', array('label' => 'Your Email'));
                 $form->add('captcha', 'deskpro_captcha', array(
-                    'mapped' => false,
+                    'mapped'         => false,
                     'error_bubbling' => false,
-                    'constraints' => array(
+                    'constraints'    => array(
                         new ValidCaptcha(),
                     ),
                 ));
@@ -71,7 +68,7 @@ class CommentType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Application\\DeskPRO\\Entity\\CommentAbstract',
-            'person' => null,
+            'person'     => null,
         ));
 
         $resolver->setRequired(array(

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package    Orb
- * @subpackage Sms
+ * Orb.
  */
 
 namespace Orb\Sms;
@@ -65,7 +62,7 @@ class SmsSender
     public function __construct(SmsProviderInterface $provider = null, $from_number = null)
     {
         $this->default_provider = $provider;
-        $this->from_number = $from_number;
+        $this->from_number      = $from_number;
     }
 
     /**
@@ -79,10 +76,11 @@ class SmsSender
      * This method is meant to be overwritten by subclasses (different types of SmsSenders) to wrap their differences
      * around the doSend() method, which handles some common logic around interacting with the provider.
      *
-     * @param  string               $to_number
-     * @param  string               $message
-     * @param  string|null          $from_number
-     * @param  SmsProviderInterface $provider
+     * @param string               $to_number
+     * @param string               $message
+     * @param string|null          $from_number
+     * @param SmsProviderInterface $provider
+     *
      * @throws SmsException
      */
     public function send($to_number, SmsMessage $message, $from_number = null, SmsProviderInterface $provider = null)
@@ -149,11 +147,13 @@ class SmsSender
      *
      * This allows subclasses to reuse this sending logic, if they want, and wrap it with other functionality.
      *
-     * @param  string               $to_number
-     * @param  string               $message
-     * @param  string|null          $from_number
-     * @param  SmsProviderInterface $provider
+     * @param string               $to_number
+     * @param string               $message
+     * @param string|null          $from_number
+     * @param SmsProviderInterface $provider
+     *
      * @throws SmsException
+     *
      * @return bool
      */
     protected function doSend(

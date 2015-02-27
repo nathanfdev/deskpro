@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Theme;
@@ -37,7 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Theme;
 use Symfony\Component\Finder\Finder;
 
 /**
- * Representation of a DeskPRO Theme
+ * Representation of a DeskPRO Theme.
  */
 abstract class AbstractTheme implements ThemeInterface, \Serializable
 {
@@ -79,6 +76,7 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
      * Get the tag for the given tag name.
      *
      * @param $tag_name
+     *
      * @return Tag|null
      */
     public function getTag($tag_name)
@@ -87,7 +85,8 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
     }
 
     /**
-     * @param           $tag_name
+     * @param   $tag_name
+     *
      * @return Tag|null will return null if tag doesn't exist for this theme or its parent heirarchy
      */
     public function resolveTag($tag_name)
@@ -100,11 +99,11 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
             return $parent->resolveTag($tag_name);
         }
 
-        return null;
+        return;
     }
 
     /**
-     * A list of all tag objects
+     * A list of all tag objects.
      *
      * @return Tag[]
      */
@@ -125,16 +124,16 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
                 $path        = $temp->getRelativePathname();
                 $name        = $temp->getFilename();
                 $path_broken = explode('/', $path);
-                $controller = array_shift($path_broken);
+                $controller  = array_shift($path_broken);
                 if (count($path_broken) == 0) {
-                    $name = $controller;
+                    $name       = $controller;
                     $controller = '';
                 } else {
                     $name = implode('/', $path_broken);
                 }
-                $template_name = "Theme:$controller:$name";
-                $resolved_path = $temp->getRealPath();
-                $resolved_path = substr($resolved_path, strlen(realpath(DP_ROOT)));
+                $template_name         = "Theme:$controller:$name";
+                $resolved_path         = $temp->getRealPath();
+                $resolved_path         = substr($resolved_path, strlen(realpath(DP_ROOT)));
                 $temps[$template_name] = $resolved_path;
             }
         }

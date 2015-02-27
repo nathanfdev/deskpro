@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -38,9 +37,10 @@ class NewCommentDownload extends NewCommentAbstract
 {
     public function getDetails()
     {
-        $details = parent::getDetails();
-        $details['download_id'] = $this->comment->download['id'];
+        $details                   = parent::getDetails();
+        $details['download_id']    = $this->comment->download['id'];
         $details['download_title'] = $this->comment->download['title'];
-	    return $details;
+
+        return $details;
     }
 }

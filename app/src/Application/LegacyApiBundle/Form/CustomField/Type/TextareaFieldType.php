@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AdminBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Form\CustomField\Type;

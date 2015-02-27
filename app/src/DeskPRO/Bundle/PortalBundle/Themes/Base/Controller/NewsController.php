@@ -26,23 +26,20 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
-use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
+use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class NewsController extends AbstractController
 {
@@ -77,7 +74,7 @@ class NewsController extends AbstractController
         return $this->renderThemeView(
             sprintf('Theme:News:Tag/%s.html.twig', $options['style']),
             array(
-                'category' => $category,
+                'category'          => $category,
                 'category_children' => $category_children,
             )
         );
@@ -116,9 +113,9 @@ class NewsController extends AbstractController
         return $this->renderThemeView(
             sprintf('Theme:News:Tag/posts_%s.html.twig', $options['style']),
             array(
-                'pager' => $pager,
+                'pager'              => $pager,
                 'show_category_link' => $options['show_category_link'],
-                'category' => $category,
+                'category'           => $category,
             )
         );
     }
@@ -179,7 +176,7 @@ class NewsController extends AbstractController
         return $this->renderThemeView(
             sprintf('Theme:News:Tag/post_subscription_%s.html.twig', $options['style']),
             array(
-                'post' => $post,
+                'post'          => $post,
                 'is_subscribed' => $is_subscribed,
             )
         );
@@ -212,7 +209,7 @@ class NewsController extends AbstractController
 
         return $this->renderThemeView(
             'Theme:News:Tag/subscription_category.html.twig', array(
-                'category' => $category,
+                'category'      => $category,
                 'is_subscribed' => $is_subscribed,
             )
         );
@@ -240,7 +237,7 @@ class NewsController extends AbstractController
         $comments = $this->getNewsDataService()->getPostComments($post, $this->getUser());
 
         return $this->renderThemeView('Theme:News:Tag/comments.html.twig', array(
-            'post' => $post,
+            'post'     => $post,
             'comments' => $comments,
         ));
     }
@@ -304,7 +301,7 @@ class NewsController extends AbstractController
             'Theme:News:Tag/breadcrumbs.html.twig',
             array(
                 'category' => $category,
-                'post' => $post,
+                'post'     => $post,
             )
         );
     }
@@ -331,7 +328,7 @@ class NewsController extends AbstractController
         return $this->renderThemeView(
             'Theme:News:Tag/ratings.html.twig',
             array(
-                'post' => $post,
+                'post'   => $post,
                 'rating' => $rating,
             )
         );

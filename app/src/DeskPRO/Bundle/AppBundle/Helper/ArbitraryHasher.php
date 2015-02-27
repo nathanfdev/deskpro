@@ -21,7 +21,8 @@ class ArbitraryHasher
      * is only in the memory of the current process. This hash should not be trusted for cache's that persist over more than
      * a single request.
      *
-     * @param  mixed  $input
+     * @param mixed $input
+     *
      * @return string
      */
     public function generateHash($input)

@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
 
-use DeskPRO\Component\Hierarchy\HierarchyNode;
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Component\Hierarchy\HierarchyNode;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceListInterface;
@@ -55,7 +52,7 @@ class HierarchyNodeTransformer implements DataTransformerInterface
     public function __construct(ChoiceListInterface $choice_list, $multiple = false)
     {
         $this->choice_list = $choice_list;
-        $this->multiple = $multiple;
+        $this->multiple    = $multiple;
     }
 
     /**
@@ -81,9 +78,9 @@ class HierarchyNodeTransformer implements DataTransformerInterface
      *
      * @param mixed $value The value in the original representation
      *
+     * @throws TransformationFailedException When the transformation fails.
      * @return mixed The value in the transformed representation
      *
-     * @throws TransformationFailedException When the transformation fails.
      */
     public function transform($value)
     {
@@ -140,9 +137,9 @@ class HierarchyNodeTransformer implements DataTransformerInterface
      *
      * @param mixed $value The value in the transformed representation
      *
+     * @throws TransformationFailedException When the transformation fails.
      * @return mixed The value in the original representation
      *
-     * @throws TransformationFailedException When the transformation fails.
      */
     public function reverseTransform($value)
     {

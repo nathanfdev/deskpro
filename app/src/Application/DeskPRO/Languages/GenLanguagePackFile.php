@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Languages;
@@ -75,7 +73,7 @@ class GenLanguagePackFile
     }
 
     /**
-     * Add an array of phrases
+     * Add an array of phrases.
      *
      * @param string[] $phrases
      */
@@ -85,7 +83,7 @@ class GenLanguagePackFile
     }
 
     /**
-     * Get the generated document as a string
+     * Get the generated document as a string.
      *
      * @return string
      */
@@ -97,9 +95,10 @@ class GenLanguagePackFile
     }
 
     /**
-     * Write the generated XML document to a file
+     * Write the generated XML document to a file.
      *
-     * @param  string            $path
+     * @param string $path
+     *
      * @throws \RuntimeException
      */
     public function writeXml($path)
@@ -112,13 +111,13 @@ class GenLanguagePackFile
     }
 
     /**
-     * Get the generated DOMDocuemtn
+     * Get the generated DOMDocuemtn.
      *
      * @return \DOMDocument
      */
     public function getDomDocument()
     {
-        $dom = new DOMDocument('1.0', 'UTF-8');
+        $dom               = new DOMDocument('1.0', 'UTF-8');
         $dom->formatOutput = true;
 
         $pack = $dom->createElement('pack');

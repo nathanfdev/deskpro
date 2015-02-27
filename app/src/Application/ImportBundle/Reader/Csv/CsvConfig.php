@@ -28,10 +28,9 @@
 namespace Application\ImportBundle\Reader\Csv;
 
 /**
- * Csv data parser configuration
+ * Csv data parser configuration.
  *
  * Class CsvConfig
- * @package Application\ImportBundle\Reader\Csv
  */
 class CsvConfig
 {
@@ -56,7 +55,7 @@ class CsvConfig
     private $escape = '\\';
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string $resource
      */
@@ -75,11 +74,13 @@ class CsvConfig
 
     /**
      * @param string $resource
+     *
      * @return $this
      */
     public function setResource($resource)
     {
         $this->resource = $resource;
+
         return $this;
     }
 
@@ -93,11 +94,13 @@ class CsvConfig
 
     /**
      * @param string $delimiter
+     *
      * @return $this
      */
     public function setDelimiter($delimiter)
     {
         $this->delimiter = $delimiter;
+
         return $this;
     }
 
@@ -111,11 +114,13 @@ class CsvConfig
 
     /**
      * @param string $enclosure
+     *
      * @return $this
      */
     public function setEnclosure($enclosure)
     {
         $this->enclosure = $enclosure;
+
         return $this;
     }
 
@@ -129,11 +134,13 @@ class CsvConfig
 
     /**
      * @param string $escape
+     *
      * @return $this
      */
     public function setEscape($escape)
     {
         $this->escape = $escape;
+
         return $this;
     }
 }

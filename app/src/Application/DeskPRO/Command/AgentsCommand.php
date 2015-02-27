@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Command;
 
@@ -75,7 +73,8 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
     }
 
     /**
-     * @param  string                                  $caption
+     * @param string $caption
+     *
      * @return \Application\DeskPRO\Entity\Person|null
      */
     private function askForAgent($caption)
@@ -88,14 +87,15 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
         if (!$agent || !$agent->can_agent) {
             $this->output->writeln("<error>There is no agent with that email address.</error>");
 
-            return null;
+            return;
         }
 
         return $agent;
     }
 
     /**
-     * @param  string                                  $caption
+     * @param string $caption
+     *
      * @return \Application\DeskPRO\Entity\Person|null
      */
     private function getAgentFromInput($caption)
@@ -122,7 +122,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
                     $this->output->writeln("<error>There is no agent with that email address.</error>");
                 }
 
-                return null;
+                return;
             }
 
             $this->output->writeln("Agent: {$agent->display_name} <$agent->email_address>");
@@ -134,8 +134,9 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
     }
 
     /**
-     * @param  InputInterface  $input
-     * @param  OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)

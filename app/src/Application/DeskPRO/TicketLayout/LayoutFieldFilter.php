@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -56,11 +55,12 @@ class LayoutFieldFilter
     public function __construct(TicketFieldManager $ticket_fields, PersonFieldManager $user_fields)
     {
         $this->ticket_fields = $ticket_fields;
-        $this->user_fields = $user_fields;
+        $this->user_fields   = $user_fields;
     }
 
     /**
-     * @param  LayoutField $field
+     * @param LayoutField $field
+     *
      * @return bool
      */
     public function isFieldValid(LayoutField $field)
@@ -92,7 +92,8 @@ class LayoutFieldFilter
     }
 
     /**
-     * @param  Layout $layout
+     * @param Layout $layout
+     *
      * @return array
      */
     public function getInvalidIds(Layout $layout)
@@ -108,7 +109,8 @@ class LayoutFieldFilter
     }
 
     /**
-     * @param  Layout $layout
+     * @param Layout $layout
+     *
      * @return Layout
      */
     public function filterInvalid(Layout $layout)

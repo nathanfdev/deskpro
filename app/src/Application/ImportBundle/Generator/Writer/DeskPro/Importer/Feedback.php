@@ -32,10 +32,9 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro feedback importer
+ * DeskPro feedback importer.
  *
  * Class Feedback
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 final class Feedback extends AbstractImporter implements SkipDuplicateInterface
 {
@@ -56,7 +55,7 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
      * $record['num_ratings']		= $fval->num_ratings;
      * $record['popularity']		= $fval->popularity;
      *
-     * @var Entity\Feedback $entity
+     * @var Entity\Feedback
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
@@ -75,13 +74,14 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
             ->setViewsCount($entity->getViewCount());
 
         $this->records->add($feedback);
+
         return $this->records;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Feedback $entity
+     * @var Entity\Feedback
      */
     public function checkAlreadyExists(Entity\EntityInterface $entity)
     {
@@ -92,12 +92,13 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
 
     /**
      * Returns an feedback category by title
-     * Creates a new feedback category if not found
+     * Creates a new feedback category if not found.
      *
      * @param string $title
      *
-     * @return DeskPROEntity\FeedbackCategory|null
      * @throws \Exception
+     * @return DeskPROEntity\FeedbackCategory|null
+     *
      */
     private function findOrCreateFeedbackCategory($title)
     {
@@ -119,10 +120,11 @@ final class Feedback extends AbstractImporter implements SkipDuplicateInterface
     }
 
     /**
-     * Returns the feedback category mapper
+     * Returns the feedback category mapper.
      *
-     * @return Mapper\FeedbackCategory
      * @throws \Exception
+     * @return Mapper\FeedbackCategory
+     *
      */
     private function getFeedbackCategoryMapper()
     {

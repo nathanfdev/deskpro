@@ -31,10 +31,9 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * News record mapper
+ * News record mapper.
  *
  * Class News
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class News implements MapperInterface, MapperByTitleInterface
 {
@@ -44,7 +43,7 @@ final class News implements MapperInterface, MapperByTitleInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\News $repository
      */

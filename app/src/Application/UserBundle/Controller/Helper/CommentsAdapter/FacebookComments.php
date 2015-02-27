@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Controller\Helper\CommentsAdapter;
@@ -41,7 +38,7 @@ use Orb\Util\Util;
 class FacebookComments extends AbstractComments
 {
     /**
-     * Get the HTML block for disqus templates
+     * Get the HTML block for disqus templates.
      *
      * @return string
      */

@@ -2,20 +2,18 @@
 namespace DpIntegrationTests\DeskPRO\Chat\Departments;
 
 use Application\DeskPRO\Departments\ChatDepartmentEdit;
-use \Application\DeskPRO\Departments\Form\Type\ChatDepartmentType;
+use Application\DeskPRO\Departments\Form\Type\ChatDepartmentType;
 
 class ChatDepartmentTypeTest extends \DpIntegrationTestCase
 {
     /**
      * @var \Symfony\Component\Form\Form
      */
-
     private $form;
 
     /**
      * @var \Application\DeskPRO\Entity\Department
      */
-
     private $chat_departments;
 
     public function runBefore()

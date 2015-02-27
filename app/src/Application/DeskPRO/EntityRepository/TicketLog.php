@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,8 +38,9 @@ use Application\DeskPRO\Entity;
 class TicketLog extends AbstractEntityRepository
 {
     /**
-     * @param  Entity\Ticket $ticket
-     * @param  array         $options
+     * @param Entity\Ticket $ticket
+     * @param array         $options
+     *
      * @return array
      */
     public function getLogsForTicket(Entity\Ticket $ticket, array $options = array())
@@ -78,7 +78,7 @@ class TicketLog extends AbstractEntityRepository
             $params['types'] = $options['types'];
         }
 
-        $query = $qb->getQuery();
+        $query           = $qb->getQuery();
         $raw_ticket_logs = $query->execute($params);
 
         $ticket_logs = array();
@@ -92,6 +92,7 @@ class TicketLog extends AbstractEntityRepository
 
     /**
      * @param $ticket_logs
+     *
      * @return array
      */
     public function groupTicketLogs($ticket_logs)
@@ -138,6 +139,7 @@ class TicketLog extends AbstractEntityRepository
     /**
      * @param $ticket_logs
      * @param $filter_type
+     *
      * @return array
      */
     public function filterTicketLogs($ticket_logs, $filter_type)
@@ -171,6 +173,7 @@ class TicketLog extends AbstractEntityRepository
 
     /**
      * @param $ticket_logs
+     *
      * @return array
      */
     public function countTicketLogTypes($ticket_logs)
@@ -211,7 +214,7 @@ class TicketLog extends AbstractEntityRepository
             ->where('log.person = :person')
             ->orderBy('log.date_created', 'ASC');
 
-        $params = array();
+        $params           = array();
         $params['person'] = $agent;
 
         if (!empty($options['types'])) {

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Orb\Service\Twilio;
@@ -37,7 +34,7 @@ namespace Orb\Service\Twilio;
 use Orb\Util\PhoneNumbers;
 
 /**
- * Represents a single twillio api account
+ * Represents a single twillio api account.
  */
 class Twilio
 {
@@ -58,7 +55,7 @@ class Twilio
 
     public function __construct($sid, $auth_token)
     {
-        $this->sid = $sid;
+        $this->sid        = $sid;
         $this->auth_token = $auth_token;
 
         $this->twilio = new \Services_Twilio($sid, $auth_token);
@@ -93,12 +90,12 @@ class Twilio
     public function setSmsUrl($phone_number, $url, $method = 'POST')
     {
         $request_num = PhoneNumbers::toE164Format($phone_number);
-        $numbers = $this->twilio->account->incoming_phone_numbers;
+        $numbers     = $this->twilio->account->incoming_phone_numbers;
         /** @var \Services_Twilio_Rest_IncomingPhoneNumber $number */
         foreach ($numbers as $number) {
             if ($request_num == PhoneNumbers::toE164Format($number->phone_number)) {
                 $number_sid = $number->sid;
-                $number = $this->twilio->account->incoming_phone_numbers->get($number_sid);
+                $number     = $this->twilio->account->incoming_phone_numbers->get($number_sid);
                 $number->update(
                     array(
                         "SmsUrl"   => "http://demo.twilio.com/docs/sms.xml",
@@ -107,13 +104,13 @@ class Twilio
             }
         }
 
-        return null;
+        return;
     }
 
     public function getIncomingNumbers()
     {
         $numbers = array();
-        $nums = $this->twilio->account->incoming_phone_numbers;
+        $nums    = $this->twilio->account->incoming_phone_numbers;
         foreach ($nums as $number) {
             $numbers[$number->friendly_name] = $number->phone_number;
         }
@@ -129,7 +126,7 @@ class Twilio
                 // this is the correct number
                 $num->update(
                     array(
-                        "SmsUrl"   => $url,
+                        "SmsUrl"    => $url,
                         "SmsMethod" => 'POST',
                     )
                 );

@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
 /**
- * Docs API Controller
+ * Docs API Controller.
  */
 class DocsController extends AbstractController
 {
@@ -50,7 +47,7 @@ class DocsController extends AbstractController
 
     public function preAction($action, $arguments = null)
     {
-        return null;
+        return;
     }
 
     ####################################################################################################################

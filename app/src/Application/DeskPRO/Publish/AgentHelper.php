@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Addons
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Publish;
@@ -40,7 +37,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 use Orb\Util\Arrays;
 
 /**
- * Helps fetch info related to structure of Publish
+ * Helps fetch info related to structure of Publish.
  */
 class AgentHelper implements PersonContextInterface
 {
@@ -64,7 +61,7 @@ class AgentHelper implements PersonContextInterface
             return array_pop($t);
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -78,9 +75,10 @@ class AgentHelper implements PersonContextInterface
     }
 
     /**
-     * Get the category structure
+     * Get the category structure.
      *
-     * @param  string $type
+     * @param string $type
+     *
      * @return array
      */
     public function getCategoryStructure($type, $flat = false)
@@ -91,29 +89,31 @@ class AgentHelper implements PersonContextInterface
     }
 
     /**
-     * @param  string $type
+     * @param string $type
+     *
      * @return int
      */
     public function getCategoryCounts($type)
     {
         $entity_name = self::getCatEntityNameFor($type);
-        $repos = App::getEntityRepository($entity_name);
-        $counts = $repos->getAllCounts($this->person_context, null);
+        $repos       = App::getEntityRepository($entity_name);
+        $counts      = $repos->getAllCounts($this->person_context, null);
 
         return $counts;
     }
 
     /**
-     * Get an array of categories and their perms usergroups
+     * Get an array of categories and their perms usergroups.
      *
      * @param $type
+     *
      * @return array
      */
     public function getCategoryUsergroups($type)
     {
         $entity_name = self::getCatEntityNameFor($type);
-        $repos = App::getEntityRepository($entity_name);
-        $table = $repos->getPermissionTableName();
+        $repos       = App::getEntityRepository($entity_name);
+        $table       = $repos->getPermissionTableName();
 
         if (!$table) {
             return array();
@@ -132,7 +132,7 @@ class AgentHelper implements PersonContextInterface
     ############################################################################
 
     /**
-     * Get an array of glossary words, sorted into an alphabetically-indexed array
+     * Get an array of glossary words, sorted into an alphabetically-indexed array.
      *
      * @return array
      */
@@ -149,7 +149,7 @@ class AgentHelper implements PersonContextInterface
     ############################################################################
 
     /**
-     * Counts all content that needs validating
+     * Counts all content that needs validating.
      *
      * @return int
      */
@@ -157,8 +157,8 @@ class AgentHelper implements PersonContextInterface
     {
         $db = App::getDb();
         foreach ($this->enabled_types as $t) {
-            $table = $db->quoteIdentifier($t);
-            $alias = $db->quoteIdentifier('count_'.$t);
+            $table       = $db->quoteIdentifier($t);
+            $alias       = $db->quoteIdentifier('count_'.$t);
             $sql_parts[] = "(
                 SELECT COUNT(*)
                 FROM $table
@@ -166,7 +166,7 @@ class AgentHelper implements PersonContextInterface
             ) AS $alias";
         }
 
-        $sql =  "SELECT ".implode(', ', $sql_parts);
+        $sql     =  "SELECT ".implode(', ', $sql_parts);
         $results = $db->fetchAssoc($sql);
 
         return array_sum($results);
@@ -190,15 +190,15 @@ class AgentHelper implements PersonContextInterface
 
         if ($limit !== null && !is_array($limit)) {
             $limit = array(
-                'max' => $limit,
+                'max'    => $limit,
                 'offset' => 0,
             );
         }
 
         $types = array(
-            'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
-            'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
-            'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+            'articles'       => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
+            'downloads'      => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
+            'news'           => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
             'feedback'       => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
         );
 
@@ -208,8 +208,8 @@ class AgentHelper implements PersonContextInterface
 
         $db = App::getDb();
         foreach ($this->enabled_types as $t) {
-            $t_info = $types[$t];
-            $table = $db->quoteIdentifier($t);
+            $t_info      = $types[$t];
+            $table       = $db->quoteIdentifier($t);
             $sql_parts[] = "(
                 SELECT DISTINCT(c.id) as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
                 FROM $table AS c
@@ -240,12 +240,12 @@ class AgentHelper implements PersonContextInterface
 
         if (!is_array($limit)) {
             $limit = array(
-                'max' => $limit,
+                'max'    => $limit,
                 'offset' => 0,
             );
         }
         $offset = (int) $limit['offset'];
-        $limit = (int) $limit['max'];
+        $limit  = (int) $limit['max'];
 
         $types = $this->getCommentTypeInfo();
 
@@ -254,7 +254,7 @@ class AgentHelper implements PersonContextInterface
         #------------------------------
 
         foreach ($this->enabled_types as $t) {
-            $t_info = $types[$t];
+            $t_info      = $types[$t];
             $sql_parts[] = "(
                 SELECT id as comment_id, '{$t_info['content_type']}' as content_type, date_created
                 FROM {$t_info['table']}
@@ -265,7 +265,7 @@ class AgentHelper implements PersonContextInterface
         $sql = implode(' UNION ', $sql_parts);
         $sql .= "ORDER BY date_created $order_dir LIMIT {$offset}, {$limit}";
 
-        $db = App::getDb();
+        $db      = App::getDb();
         $results = $db->fetchAll($sql);
 
         if (!$results) {
@@ -289,7 +289,7 @@ class AgentHelper implements PersonContextInterface
         $results_typed = array();
 
         foreach ($result_ids_typed as $t => $ids) {
-            $t_info = $types[$t];
+            $t_info            = $types[$t];
             $results_typed[$t] = App::getEntityRepository($t_info['entity'])->getByIds($ids);
         }
 
@@ -317,11 +317,11 @@ class AgentHelper implements PersonContextInterface
         $sql_parts = array();
 
         $types = $this->getCommentTypeInfo();
-        $db = App::getDb();
+        $db    = App::getDb();
 
         foreach ($this->enabled_types as $t) {
-            $t_info = $types[$t];
-            $alias = $db->quoteIdentifier('count_'.$t);
+            $t_info      = $types[$t];
+            $alias       = $db->quoteIdentifier('count_'.$t);
             $sql_parts[] = "(
                 SELECT COUNT(*)
                 FROM {$t_info['table']}
@@ -329,7 +329,7 @@ class AgentHelper implements PersonContextInterface
             ) AS $alias";
         }
 
-        $sql =  "SELECT ".implode(', ', $sql_parts);
+        $sql     =  "SELECT ".implode(', ', $sql_parts);
         $results = $db->fetchAssoc($sql);
 
         return array_sum($results);
@@ -345,12 +345,12 @@ class AgentHelper implements PersonContextInterface
 
         if (!is_array($limit)) {
             $limit = array(
-                'max' => $limit,
+                'max'    => $limit,
                 'offset' => 0,
             );
         }
         $offset = (int) $limit['offset'];
-        $limit = (int) $limit['max'];
+        $limit  = (int) $limit['max'];
 
         $types = $this->getCommentTypeInfo();
 
@@ -359,7 +359,7 @@ class AgentHelper implements PersonContextInterface
         #------------------------------
 
         foreach ($this->enabled_types as $t) {
-            $t_info = $types[$t];
+            $t_info      = $types[$t];
             $sql_parts[] = "(
                 SELECT id as comment_id, '{$t_info['content_type']}' as content_type, date_created
                 FROM {$t_info['table']}
@@ -370,7 +370,7 @@ class AgentHelper implements PersonContextInterface
         $sql = implode(' UNION ', $sql_parts);
         $sql .= "ORDER BY date_created $order_dir LIMIT {$offset}, {$limit}";
 
-        $db = App::getDb();
+        $db      = App::getDb();
         $results = $db->fetchAll($sql);
 
         if (!$results) {
@@ -394,7 +394,7 @@ class AgentHelper implements PersonContextInterface
         $results_typed = array();
 
         foreach ($result_ids_typed as $t => $ids) {
-            $t_info = $types[$t];
+            $t_info            = $types[$t];
             $results_typed[$t] = App::getEntityRepository($t_info['entity'])->getByIds($ids);
         }
 
@@ -422,11 +422,11 @@ class AgentHelper implements PersonContextInterface
         $sql_parts = array();
 
         $types = $this->getCommentTypeInfo();
-        $db = App::getDb();
+        $db    = App::getDb();
 
         foreach ($this->enabled_types as $t) {
-            $t_info = $types[$t];
-            $alias = $db->quoteIdentifier($t);
+            $t_info      = $types[$t];
+            $alias       = $db->quoteIdentifier($t);
             $sql_parts[] = "(
                 SELECT COUNT(*)
                 FROM {$t_info['table']}
@@ -434,12 +434,12 @@ class AgentHelper implements PersonContextInterface
             ) AS $alias";
         }
 
-        $sql =  "SELECT ".implode(', ', $sql_parts);
+        $sql     =  "SELECT ".implode(', ', $sql_parts);
         $results = $db->fetchAssoc($sql);
 
         $count_all = array_sum($results);
 
-        $counts = $results;
+        $counts        = $results;
         $counts['all'] = $count_all;
 
         return $counts;
@@ -478,7 +478,7 @@ class AgentHelper implements PersonContextInterface
     ############################################################################
 
     /**
-     * Get an array of all drafts
+     * Get an array of all drafts.
      *
      * @return array
      */
@@ -495,19 +495,19 @@ class AgentHelper implements PersonContextInterface
 
         if ($limit !== null && !is_array($limit)) {
             $limit = array(
-                'max' => $limit,
+                'max'    => $limit,
                 'offset' => 0,
             );
         }
         if (null !== $limit) {
             $offset = (int) $limit['offset'];
-            $limit = (int) $limit['max'];
+            $limit  = (int) $limit['max'];
         }
 
         $types = array(
-            'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
-            'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
-            'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+            'articles'       => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
+            'downloads'      => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
+            'news'           => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
             'feedback'       => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
         );
 
@@ -517,9 +517,9 @@ class AgentHelper implements PersonContextInterface
 
         $db = App::getDb();
         foreach ($this->enabled_types as $t) {
-            $t_info = $types[$t];
+            $t_info     = $types[$t];
             $person_sql = '';
-            $table = $db->quoteIdentifier($t);
+            $table      = $db->quoteIdentifier($t);
 
             if (!$all) {
                 $person_sql = " AND c.person_id = {$this->person_context['id']}";
@@ -547,26 +547,26 @@ class AgentHelper implements PersonContextInterface
     }
 
     /**
-     * Count how many drafts there are for this user
+     * Count how many drafts there are for this user.
      *
      * @return int
      */
     public function getDraftsCount($mine = true)
     {
         $types = array(
-            'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
-            'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
-            'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+            'articles'       => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
+            'downloads'      => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
+            'news'           => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
             'feedback'       => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
         );
 
-        $db = App::getDb();
+        $db        = App::getDb();
         $sql_parts = array();
         foreach ($this->enabled_types as $t) {
-            $t_info = $types[$t];
+            $t_info     = $types[$t];
             $person_sql = '';
-            $table = $db->quoteIdentifier($t);
-            $alias = $db->quoteIdentifier('count_'.$t);
+            $table      = $db->quoteIdentifier($t);
+            $alias      = $db->quoteIdentifier('count_'.$t);
 
             if ($mine) {
                 $person_sql = " AND c.person_id = {$this->person_context['id']}";
@@ -590,15 +590,16 @@ class AgentHelper implements PersonContextInterface
     ############################################################################
 
     /**
-     * @param  int   $limit
+     * @param int $limit
+     *
      * @return array
      */
     public function getContentFromInfo($results)
     {
         $types = array(
-            'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
-            'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
-            'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+            'articles'       => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
+            'downloads'      => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
+            'news'           => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
             'feedback'       => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
         );
 
@@ -619,7 +620,7 @@ class AgentHelper implements PersonContextInterface
         $results_typed = array();
 
         foreach ($result_ids_typed as $t => $ids) {
-            $t_info = $types[$t];
+            $t_info            = $types[$t];
             $results_typed[$t] = App::getEntityRepository($t_info['entity'])->getByIds($ids);
         }
 
@@ -643,10 +644,12 @@ class AgentHelper implements PersonContextInterface
     }
 
     /**
-     * Get the content entity for a publish type
+     * Get the content entity for a publish type.
      *
-     * @throws \InvalidArgumentException
+     *
      * @param $type
+     * @throws \InvalidArgumentException
+     *
      * @return string
      */
     public function getEntityNameFor($type)
@@ -670,10 +673,12 @@ class AgentHelper implements PersonContextInterface
     }
 
     /**
-     * Get the category entity for a publish type
+     * Get the category entity for a publish type.
      *
-     * @throws \InvalidArgumentException
+     *
      * @param $type
+     * @throws \InvalidArgumentException
+     *
      * @return string
      */
     public static function getCatEntityNameFor($type)

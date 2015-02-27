@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Renderer;
@@ -62,7 +59,7 @@ class Pdf extends Html
     }
 
     /**
-     * Render to the specified format and type
+     * Render to the specified format and type.
      *
      * @return string
      */

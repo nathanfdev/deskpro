@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\Slas;
@@ -116,7 +113,7 @@ class SlaClientMessageSender implements PersonContextInterface
             return 0;
         }
 
-        $q = $this->queue;
+        $q           = $this->queue;
         $this->queue = array();
 
         $this->db->batchInsert('client_messages', $q);

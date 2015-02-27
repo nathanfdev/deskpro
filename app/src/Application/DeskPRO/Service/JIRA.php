@@ -112,7 +112,7 @@ class JIRA
     public function getConsumerKey()
     {
         if (!$app = $this->getApp()) {
-            return null;
+            return;
         }
 
         return $app->getSetting(self::PARAM_CONSUMER);
@@ -124,7 +124,7 @@ class JIRA
     public function getUrl()
     {
         if (!$app = $this->getApp()) {
-            return null;
+            return;
         }
 
         return $app->getSetting(self::PARAM_URL);
@@ -136,7 +136,7 @@ class JIRA
     public function getPrivateKey()
     {
         if (!$app = $this->getApp()) {
-            return null;
+            return;
         }
 
         return $app->getSetting(self::PARAM_KEY);
@@ -197,14 +197,16 @@ class JIRA
     }
 
     /**
-     * @param  array      $properties
-     * @return Meta
+     * @param array $properties
+     *
      * @throws \Exception
+     * @return Meta
+     *
      */
     public function updateMeta(array $properties = array())
     {
         if (!$app = $this->getApp()) {
-            return null;
+            return;
         }
 
         try {
@@ -215,17 +217,17 @@ class JIRA
                 $properties = array_merge($metadata, $properties);
             }
 
-            $session = $api->call('rest/auth/1/session');
+            $session                    = $api->call('rest/auth/1/session');
             $properties['api_username'] = $session['name'];
 
 //            $res = $this->getCreateMeta();
 //            $properties['projects'] = $res['projects'];
             $meta = Meta::fromArray($properties);
 
-            $fields = $api->get('/field');
-            $keys = array_flip($this->allowed);
+            $fields     = $api->get('/field');
+            $keys       = array_flip($this->allowed);
             $keysCustom = array_flip($this->allowed_custom);
-            $fields = array_filter($fields, function ($a) use ($keys, $keysCustom) {
+            $fields     = array_filter($fields, function ($a) use ($keys, $keysCustom) {
                 return isset($keys[$a['id']]) || (isset($a['schema']['custom']) && isset($keysCustom[$a['schema']['custom']]));
             });
 
@@ -248,7 +250,7 @@ class JIRA
     {
         if ($api = $this->getApi()) {
             $projectId = (int) $projectId;
-            $params = array('expand' => 'projects.issuetypes.fields');
+            $params    = array('expand' => 'projects.issuetypes.fields');
             if ($projectId) {
                 $params['projectIds'] = $projectId;
             }
@@ -265,7 +267,7 @@ class JIRA
     public function getMeta()
     {
         if (!$app = $this->getApp()) {
-            return null;
+            return;
         }
 
         if ($metaData = $app->getSetting(self::PARAM_META)) {
@@ -279,12 +281,14 @@ class JIRA
 
     /**
      * @param $jql
-     * @return array
+     *
      * @throws \Exception
+     * @return array
+     *
      */
     public function searchIssues($q)
     {
-        $q = trim($q);
+        $q     = trim($q);
         $query = sprintf('summary ~ "%s*"', $q);
 
         // issue key
@@ -297,12 +301,13 @@ class JIRA
 
             return $this->getApi()->searchIssues($query, array_merge($meta->getAllFields(), $meta->getSystemFields()));
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
     /**
-     * @param  array      $ids
+     * @param array $ids
+     *
      * @return array|null
      */
     public function searchByIds(array $ids)
@@ -310,15 +315,16 @@ class JIRA
         try {
             return $this->getApi()->searchIssues(sprintf('id IN (%s)', implode(',', $ids)), $this->getMeta()->getAllFields());
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
     /**
-     * @param              $issueId
-     * @param  Person      $author
-     * @param  Ticket      $ticket
-     * @param              $message
+     * @param        $issueId
+     * @param Person $author
+     * @param Ticket $ticket
+     * @param        $message
+     *
      * @throws \Exception
      * @throws \Exceptions
      */
@@ -338,8 +344,9 @@ class JIRA
     }
 
     /**
-     * @param  Ticket      $ticket
+     * @param Ticket $ticket
      * @param $issueId
+     *
      * @throws \Exception
      * @throws \Exceptions
      */
@@ -350,12 +357,12 @@ class JIRA
                 .'#app.tickets,t.o:'.$ticket['id'];
 
             $data = array(
-                'globalId' => 'deskpro_ticket_'.$ticket['id'],
+                'globalId'     => 'deskpro_ticket_'.$ticket['id'],
                 'relationship' => 'linked with',
-                'object' => array(
-                    'title' => 'DeskPRO #'.$ticket['id'],
+                'object'       => array(
+                    'title'   => 'DeskPRO #'.$ticket['id'],
                     'summary' => $ticket['subject'],
-                    'url' => $url,
+                    'url'     => $url,
                 ),
             );
 
@@ -367,7 +374,8 @@ class JIRA
     }
 
     /**
-     * @param  JiraIssue   $issue
+     * @param JiraIssue $issue
+     *
      * @throws \Exception
      * @throws \Exceptions
      */
@@ -386,12 +394,14 @@ class JIRA
     }
 
     /**
-     * @param  Ticket      $ticket
-     * @param              $issueId
-     * @param  Person      $byPerson
-     * @return array|null
+     * @param Ticket $ticket
+     * @param        $issueId
+     * @param Person $byPerson
+     *
      * @throws \Exception
      * @throws \Exceptions
+     * @return array|null
+     *
      */
     public function link(Ticket $ticket, $issueId, Person $byPerson)
     {
@@ -399,18 +409,18 @@ class JIRA
 
         // already linked
         if ($issue = $rep->findOneBy(array('ticket' => $ticket['id'], 'issue_id' => $issueId))) {
-            return null;
+            return;
         }
 
         // api error
         if (!$result = $this->searchByIds(array($issueId))) {
-            return null;
+            return;
         }
 
         // issue link on DP side
-        $issue = new JiraIssue();
+        $issue             = new JiraIssue();
         $issue['issue_id'] = $issueId;
-        $fields = $result['issues'][0]['fields'];
+        $fields            = $result['issues'][0]['fields'];
         if (isset($fields['status'])) {
             $issue['status_id'] = $fields['status']['id'];
         }
@@ -426,7 +436,7 @@ class JIRA
 
         // trigger an update event
         $manager = $this->container->getTicketManager();
-        $state = $ticket->getStateChangeRecorder();
+        $state   = $ticket->getStateChangeRecorder();
         $context = $manager->createAppExecutorContext($this->getApp(), 'issue_update');
 
         $state->recordData('jira.linked', $result['issues'][0]);
@@ -437,19 +447,21 @@ class JIRA
     }
 
     /**
-     * @param  Ticket      $ticket
-     * @param              $issueId
-     * @return bool|null
+     * @param Ticket $ticket
+     * @param        $issueId
+     *
      * @throws \Exception
      * @throws \Exceptions
+     * @return bool|null
+     *
      */
     public function unlink(Ticket $ticket, $issueId)
     {
-        $em = $this->container->getEm();
-        $rep = $em->getRepository('DeskPRO:JiraIssue');
+        $em    = $this->container->getEm();
+        $rep   = $em->getRepository('DeskPRO:JiraIssue');
         $issue = $rep->findOneBy(array('ticket' => $ticket['id'], 'issue_id' => $issueId));
         if (!$issue) {
-            return null;
+            return;
         }
 
         $this->removeRemoteIssueLink($issue);
@@ -462,13 +474,14 @@ class JIRA
 
     /**
      * @param $ticketId
+     *
      * @return array|null
      */
     public function issues($ticketId)
     {
-        $em = $this->container->getEm();
+        $em     = $this->container->getEm();
         $issues = $em->getRepository('DeskPRO:JiraIssue')->findBy(array('ticket' => $ticketId));
-        $map = array();
+        $map    = array();
         foreach ($issues as $issue) {
             $map[$issue['issue_id']] = $issue;
         }
@@ -499,6 +512,7 @@ class JIRA
 
     /**
      * @param $data
+     *
      * @return array
      */
     public function createIssueJson($data)
@@ -507,13 +521,15 @@ class JIRA
     }
 
     /**
-     * @param              $message
-     * @param              $ticketId
-     * @param  Person      $performer
-     * @param  null        $issueId
-     * @return array|void
+     * @param        $message
+     * @param        $ticketId
+     * @param Person $performer
+     * @param null   $issueId
+     *
      * @throws \Exception
      * @throws \Exceptions
+     * @return array|void
+     *
      */
     public function addComment($message, $ticketId, Person $performer, $issueId = null)
     {
@@ -536,11 +552,11 @@ class JIRA
 
         foreach ($issues as $issue) {
             $response = $this->createComment($issue['issue_id'], $performer, $issue->ticket, $message);
-            $ticket = $ticket ?: $issue->ticket;
+            $ticket   = $ticket ?: $issue->ticket;
         }
 
         $manager = $this->container->getTicketManager();
-        $state = $issue->ticket->getStateChangeRecorder();
+        $state   = $issue->ticket->getStateChangeRecorder();
         $context = $manager->createAppExecutorContext($this->getApp(), 'issue_update');
 
         $state->recordData('jira.comment', $response);
@@ -552,7 +568,8 @@ class JIRA
     }
 
     /**
-     * just a proxy for integration testing
+     * just a proxy for integration testing.
+     *
      * @param $id
      * @param $json
      */

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
@@ -53,9 +52,10 @@ class OptionsArray implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
-     * Has the option $name
+     * Has the option $name.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function has($name)
@@ -64,9 +64,10 @@ class OptionsArray implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
-     * Has any of the options named in $names
+     * Has any of the options named in $names.
      *
-     * @param  string[] $names
+     * @param string[] $names
+     *
      * @return bool
      */
     public function hasAny(array $names)
@@ -75,9 +76,10 @@ class OptionsArray implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
-     * Has all of the options named in $names
+     * Has all of the options named in $names.
      *
-     * @param  string[] $names
+     * @param string[] $names
+     *
      * @return bool
      */
     public function hasAll(array $names)
@@ -86,9 +88,10 @@ class OptionsArray implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
-     * Has any option with the value in $values
+     * Has any option with the value in $values.
      *
-     * @param  string[] $values
+     * @param string[] $values
+     *
      * @return bool
      */
     public function hasAnyValue(array $values)
@@ -97,9 +100,10 @@ class OptionsArray implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
-     * Has option with all the values in $values
+     * Has option with all the values in $values.
      *
-     * @param  string[] $values
+     * @param string[] $values
+     *
      * @return bool
      */
     public function hasAllValues(array $values)
@@ -108,10 +112,11 @@ class OptionsArray implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
-     * Get the option named $name or return $default if it doesnt exist
+     * Get the option named $name or return $default if it doesnt exist.
      *
-     * @param  string $name
-     * @param  mixed  $default
+     * @param string $name
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function get($name, $default = null)
@@ -120,7 +125,7 @@ class OptionsArray implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
-     * Set the option $name
+     * Set the option $name.
      *
      * @param string $name
      * @param mixed  $value
@@ -131,7 +136,7 @@ class OptionsArray implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
-     * Unset the option $name
+     * Unset the option $name.
      *
      * @param string $name
      */
@@ -168,7 +173,7 @@ class OptionsArray implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
-     * Set the option $name if it hasnt been set already
+     * Set the option $name if it hasnt been set already.
      *
      * @param string $name
      * @param mixed  $value
@@ -181,7 +186,7 @@ class OptionsArray implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
-     * Sets the entire options array
+     * Sets the entire options array.
      *
      * @param array $options
      */
@@ -192,7 +197,7 @@ class OptionsArray implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
-     * Gets options as an array
+     * Gets options as an array.
      *
      * @return array
      */

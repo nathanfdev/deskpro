@@ -27,16 +27,15 @@
 
 namespace Application\ImportBundle\Command;
 
+use Application\ImportBundle\Generator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Application\ImportBundle\Generator;
 
 /**
  * Check export command
- * Read and parse an external data to check if it's valid
+ * Read and parse an external data to check if it's valid.
  *
  * Class CheckExportCommand
- * @package Application\ImportBundle\Command
  */
 class CheckExportCommand extends AbstractExportCommand
 {
@@ -64,7 +63,7 @@ class CheckExportCommand extends AbstractExportCommand
 
         $exceptions = $generator->validate();
         foreach ($exceptions as $exception) {
-            /** @var Generator\Validator\ValidatorConstraintException $exception */
+            /* @var Generator\Validator\ValidatorConstraintException $exception */
             $logger->critical($exception);
         }
 

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Sms\Detector;
@@ -38,7 +35,7 @@ use Application\DeskPRO\Entity\SmsAccount;
 use Doctrine\ORM\EntityManager;
 
 /**
- * Detect what SmsAccount entity is related to sms messages
+ * Detect what SmsAccount entity is related to sms messages.
  */
 class SmsAccountDetector
 {
@@ -53,10 +50,12 @@ class SmsAccountDetector
     }
 
     /**
-     * @param                                         $sms_account_id
-     * @param  null                                   $to_number
-     * @return SmsAccount|null
+     * @param      $sms_account_id
+     * @param null $to_number
+     *
      * @throws \Doctrine\ORM\NonUniqueResultException
+     * @return SmsAccount|null
+     *
      */
     public function detect($sms_account_id, $to_number = null)
     {
@@ -67,7 +66,7 @@ class SmsAccountDetector
         $phone_number = $this->em->getRepository('DeskPRO:PhoneNumber')->findByNumber($to_number);
 
         if (!$phone_number) {
-            return null;
+            return;
         }
 
         $query = $this->em->createQuery("

@@ -4,7 +4,7 @@ namespace DpUnitTests\DeskPRO\ApiResult\Tickets;
 
 use DpUnitTests\DeskPRO\ApiResult\AbstractApiResultTest;
 
-require_once __DIR__ . '/../AbstractApiResultTest.php';
+require_once __DIR__.'/../AbstractApiResultTest.php';
 
 class SavePersonTest extends AbstractApiResultTest
 {
@@ -13,7 +13,7 @@ class SavePersonTest extends AbstractApiResultTest
         $builder = $this->getApi()->people->createPersonEditor();
 
         $builder->setName('Test Person')
-            ->setEmail('testperson3' . uniqid() . '@test.com')
+            ->setEmail('testperson3'.uniqid().'@test.com')
             ->setPassword('password');
 
         $result = $this->getApi()->people->save($builder);

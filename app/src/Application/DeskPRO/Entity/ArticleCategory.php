@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Article categories
+ * Article categories.
  *
  * @property ArrayCollection $articles
  */
@@ -54,7 +53,7 @@ class ArticleCategory extends CategoryAbstract
     protected $children;
 
     /**
-     * ArrayCollection
+     * ArrayCollection.
      */
     protected $articles;
 
@@ -66,7 +65,7 @@ class ArticleCategory extends CategoryAbstract
     /**
      * If this is true, then all categories and articles under this one
      * are considered agent KB articles and wont be displayed in
-     * the user interface
+     * the user interface.
      *
      * @var bool
      */
@@ -166,7 +165,7 @@ class ArticleCategory extends CategoryAbstract
             array(
                 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory',
                 'mappedBy'  => null, 'inversedBy' => 'children', 'joinColumns' => array(
-                0 => array(
+                0           => array(
                     'name' => 'parent_id', 'referencedColumnName' => 'id', 'onDelete' => 'set null',
                 ),
             ), 'dpApi'      => true,
@@ -180,10 +179,10 @@ class ArticleCategory extends CategoryAbstract
         );
         $metadata->mapManyToMany(
             array(
-                'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
-                'cascade'   => array('persist', 'merge'), 'joinTable' => array(
+                'fieldName'             => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+                'cascade'               => array('persist', 'merge'), 'joinTable' => array(
                 'name'                  => 'article_category2usergroup', 'schema' => null, 'joinColumns' => array(
-                    0 => array(
+                    0                   => array(
                         'name'     => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true,
                         'onDelete' => 'cascade', 'columnDefinition' => null,
                     ),

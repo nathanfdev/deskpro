@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -39,7 +36,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Orb\Util\Arrays;
 
 /**
- * Sends article and category notifications to users with subscriptions
+ * Sends article and category notifications to users with subscriptions.
  */
 class NewsSubscriptions extends AbstractJob
 {
@@ -95,10 +92,10 @@ class NewsSubscriptions extends AbstractJob
         #------------------------------
 
         $structure = App::getContainer()->getSystemService('publish_structure');
-        $helper = $structure->getNewsCategoryHelper();
+        $helper    = $structure->getNewsCategoryHelper();
 
         $category_ids = array();
-        $news_ids  = array();
+        $news_ids     = array();
 
         foreach ($published as $a) {
             $category_ids[] = $a->category->id;
@@ -108,7 +105,7 @@ class NewsSubscriptions extends AbstractJob
         }
 
         $category_ids = array_unique($category_ids);
-        $news_ids = array_unique($news_ids);
+        $news_ids     = array_unique($news_ids);
 
         $cat_subs     = array();
         $article_subs = array();
@@ -150,8 +147,8 @@ class NewsSubscriptions extends AbstractJob
 
         foreach ($cat_subs as $person_id => $cids) {
             foreach ($published as $news) {
-                $cat = $news->category;
-                $path = $helper->getPathIds($cat);
+                $cat    = $news->category;
+                $path   = $helper->getPathIds($cat);
                 $path[] = $cat->getId();
 
                 if (Arrays::isIn($path, $cids)) {
@@ -196,15 +193,15 @@ class NewsSubscriptions extends AbstractJob
         ", array(), 'category_id', null, 'usergroup_id');
 
         $all_user_to_articles = $user_to_news;
-        $user_to_news = array();
+        $user_to_news         = array();
 
         foreach ($all_user_to_articles as $person_id => $articles) {
-            $person_ugs = isset($user_groupmembers[$person_id]) ? $user_groupmembers[$person_id] : array();
+            $person_ugs   = isset($user_groupmembers[$person_id]) ? $user_groupmembers[$person_id] : array();
             $person_ugs[] = 1; // Everyone
 
             foreach ($articles as $news) {
-                $add = false;
-                $cat = $news->category;
+                $add     = false;
+                $cat     = $news->category;
                 $cat_ugs = isset($cat_groups[$cat->getId()]) ? $cat_groups[$cat->getId()] : array();
                 if (Arrays::isIn($person_ugs, $cat_ugs)) {
                     $add = true;

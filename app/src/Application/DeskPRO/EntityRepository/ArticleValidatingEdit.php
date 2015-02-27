@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -61,7 +60,7 @@ class ArticleValidatingEdit extends AbstractEntityRepository
 
             return $edit;
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 

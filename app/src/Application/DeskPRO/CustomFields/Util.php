@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\CustomFields;
 
@@ -43,7 +41,7 @@ class Util
 {
     /**
      * Standard form field naming has the key as field_X. So this is the same as
-     * createDataHierarchy except the key is the standard form name
+     * createDataHierarchy except the key is the standard form name.
      *
      * @return array
      */
@@ -70,6 +68,7 @@ class Util
      *
      * @param $field_datas
      * @param $field_defs
+     *
      * @return array
      */
     public function createDataHierarchy($field_datas, $field_defs)
@@ -107,9 +106,10 @@ class Util
      * but dont need to store the values in a real data table (eg macros), then you can use this method.
      *
      * @param  $field_id
-     * @param  array $form_data
+     * @param array $form_data
      * @param  $entity_def
      * @param  $entity_data
+     *
      * @return array
      */
     public function getRenderableDataArrayFromForm(array $form_data, $field_id, $entity_def, $entity_data)

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AdminBundle
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Controller;
@@ -44,7 +41,7 @@ use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Installation
+ * Installation.
  */
 class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Controller
 {
@@ -161,7 +158,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
         $is_fatal = $server_check->hasFatalErrors();
 
-        $has_config = false;
+        $has_config    = false;
         $has_db_checks = false;
 
         $did_create_db = false;
@@ -228,12 +225,12 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
                 // Dont send when its just a config.php missing error
             } else {
                 $errors = $server_check->getFatalErrors();
-                $msg = array();
+                $msg    = array();
                 foreach ($errors as $k => $er) {
                     $msg[] = "$k: {$er['message']}";
                 }
                 $msg = implode(", ", $msg);
-                $e = new \Application\InstallBundle\Install\ServerCheckException("Server requirements failed: $msg");
+                $e   = new \Application\InstallBundle\Install\ServerCheckException("Server requirements failed: $msg");
                 $this->sendInstallReport($e);
             }
         }
@@ -248,8 +245,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
         #------------------------------
 
         $new_download = null;
-        $this_build = date('Y-m-d', DP_BUILD_TIME);
-        $new_build = 0;
+        $this_build   = date('Y-m-d', DP_BUILD_TIME);
+        $new_build    = 0;
         /*
         try {
             $latest_version = \Application\DeskPRO\Service\LicenseService::getLatestVersion();
@@ -265,8 +262,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
         #------------------------------
 
         $do_data_dir_check = null;
-        $dir_data_check = str_replace('\\', '/', dp_get_data_dir());
-        $dir_web_check  = str_replace('\\', '/', DP_WEB_ROOT);
+        $dir_data_check    = str_replace('\\', '/', dp_get_data_dir());
+        $dir_web_check     = str_replace('\\', '/', DP_WEB_ROOT);
 
         if (strpos($dir_data_check, $dir_web_check) === 0) {
             $do_data_dir_check = str_replace($dir_web_check, '', $dir_data_check);
@@ -325,7 +322,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
             $file = file_get_contents(DP_WEB_ROOT.'/config.new.php');
             foreach (array_keys($exist) as $k) {
                 $value = !empty($_REQUEST[$k]) ? $_REQUEST[$k] : '';
-                $file = preg_replace("#^define\('$k'.*?$#m", "define('$k', '".addslashes($value)."');", $file);
+                $file  = preg_replace("#^define\('$k'.*?$#m", "define('$k', '".addslashes($value)."');", $file);
             }
 
             file_put_contents(DP_CONFIG_FILE, $file);
@@ -405,7 +402,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
             exit;
         }
 
-        $verify = new \Application\DeskPRO\Distribution\VerifyChecksums();
+        $verify  = new \Application\DeskPRO\Distribution\VerifyChecksums();
         $results = $verify->compareChunk($batch);
 
         if (!empty($results['changed'])) {
@@ -426,13 +423,13 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
         if (!empty($results['changed']) || !empty($results['removed'])) {
             $type = 'file_checksum';
-            $e = new \Exception("Install error: $type");
+            $e    = new \Exception("Install error: $type");
             $this->sendInstallReport($e);
         }
 
         return $this->render('InstallBundle:Install:verify-files-do.html.php', array(
             'results' => $results,
-            'batch' => $batch,
+            'batch'   => $batch,
         ));
     }
 
@@ -448,7 +445,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
         $this->getLogger()->log('Install::createTables', 'debug');
 
-        $db = $this->getDb();
+        $db    = $this->getDb();
         $check = $db->fetchColumn("SHOW TABLES LIKE 'install_data'");
 
         if ($check != 'install_data') {
@@ -464,8 +461,8 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
                 $db->insert('install_data', array(
                     'build' => 'default',
-                    'name' => 'install_build',
-                    'data' => DP_BUILD_TIME,
+                    'name'  => 'install_build',
+                    'data'  => DP_BUILD_TIME,
                 ));
             } catch (\Exception $e) {
                 $this->getLogger()->log('Failed to craete install_data: '.$e->getCode().' '.$e->getMessage(), 'err');
@@ -478,7 +475,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
                 }
 
                 $html = deskpro_install_basic_error($msg);
-                $res = new \Symfony\Component\HttpFoundation\Response($html);
+                $res  = new \Symfony\Component\HttpFoundation\Response($html);
                 $res->headers->set('Content-Type', 'text/html');
 
                 return $res;
@@ -489,7 +486,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
                 $this->getLogger()->log('install_data is not innodb', 'err');
 
                 $html = deskpro_install_basic_error('Your database server created a new table, but it ignored the instruction to use the InnoDB engine. Please refer to our helpdesk for information on how to resolve this error.');
-                $res = new \Symfony\Component\HttpFoundation\Response($html);
+                $res  = new \Symfony\Component\HttpFoundation\Response($html);
                 $res->headers->set('Content-Type', 'text/html');
 
                 return $res;
@@ -552,9 +549,9 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
         flush();
 
         $limit = 10;
-        $skip = $limit * $batch;
+        $skip  = $limit * $batch;
 
-        $logger = new \Orb\Log\Logger();
+        $logger         = new \Orb\Log\Logger();
         $install_logger = $this->getLogger();
 
         $logger->addWriter(new \Orb\Log\Writer\Callback(function ($log_item) use ($install_logger) {
@@ -645,10 +642,10 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
                 $ini_path = \Orb\Util\Env::getPhpIniPath();
 
                 return $this->render('InstallBundle:Install:install-data-serverchecks.html.php', array(
-                    'errors' => $server_check->getErrors(),
-                    'is_fatal' => $is_fatal,
-                    'data_dir' => $data_dir,
-                    'ini_path' => $ini_path,
+                    'errors'        => $server_check->getErrors(),
+                    'is_fatal'      => $is_fatal,
+                    'data_dir'      => $data_dir,
+                    'ini_path'      => $ini_path,
                     'is_webinstall' => $is_webinstall,
                 ));
             }
@@ -683,19 +680,19 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
         $this->getOrm()->getConnection()->beginTransaction();
 
         try {
-            $agent = new \Application\DeskPRO\Entity\Person();
+            $agent             = new \Application\DeskPRO\Entity\Person();
             $agent->first_name = $this->getIn()->getString('admin.first_name');
-            $agent->last_name = $this->getIn()->getString('admin.last_name');
+            $agent->last_name  = $this->getIn()->getString('admin.last_name');
             $agent->setEmail($this->getIn()->getString('admin.email'), true);
             $agent->setPassword($this->getIn()->getString('admin.password'));
-            $agent->is_user = true;
-            $agent->is_confirmed = true;
+            $agent->is_user            = true;
+            $agent->is_confirmed       = true;
             $agent->is_agent_confirmed = true;
-            $agent->is_agent = true;
-            $agent->can_agent = true;
-            $agent->can_admin = true;
-            $agent->can_billing = true;
-            $agent->can_reports = true;
+            $agent->is_agent           = true;
+            $agent->can_agent          = true;
+            $agent->can_admin          = true;
+            $agent->can_billing        = true;
+            $agent->can_reports        = true;
 
             $this->getOrm()->persist($agent);
             $this->getOrm()->flush();
@@ -705,15 +702,15 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
             $this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
 
             // Install data stuff
-            $AGENTGROUP_ALL = null; // should be defined by the time we finish processing data.php
+            $AGENTGROUP_ALL     = null; // should be defined by the time we finish processing data.php
             $USERGROUP_EVERYONE = null; // should be defined by the time we finish processing data.php
-            $AGENT = $agent; // can be used in data.php
-            $WEB_INSTALL = true;
-            $IMPORT_INSTALL = false;
+            $AGENT              = $agent; // can be used in data.php
+            $WEB_INSTALL        = true;
+            $IMPORT_INSTALL     = false;
 
             $install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
-            $em = $this->getOrm();
-            $translate = $this->container->get('deskpro.core.translate');
+            $em           = $this->getOrm();
+            $translate    = $this->container->get('deskpro.core.translate');
             foreach ($install_data as $php) {
                 eval($php);
             }
@@ -740,10 +737,10 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
             if ($USERGROUP_EVERYONE) {
                 $scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
                 foreach ($scanner->getNames() as $p_name) {
-                    $p = new \Application\DeskPRO\Entity\Permission();
+                    $p            = new \Application\DeskPRO\Entity\Permission();
                     $p->usergroup = $USERGROUP_EVERYONE;
-                    $p->name = $p_name;
-                    $p->value = 1;
+                    $p->name      = $p_name;
+                    $p->value     = 1;
                     $this->getOrm()->persist($p);
                 }
                 $this->getOrm()->flush();
@@ -789,12 +786,12 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
         $prev_time += microtime(true) - $start;
         $this->getDb()->replace('install_data', array('build' => 'default', 'name' => 'install_time', 'data' => sprintf('%.4f', $prev_time)));
 
-        $data_init = new \Application\InstallBundle\Data\DataInitializer($this->container);
+        $data_init             = new \Application\InstallBundle\Data\DataInitializer($this->container);
         $data_init->admin_user = $agent;
         $data_init->run();
 
         App::getDb()->replace('settings', array(
-            'name' => 'core.done_data_initializer',
+            'name'  => 'core.done_data_initializer',
             'value' => 1,
         ));
 
@@ -822,7 +819,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
             $rewrite_urls = true;
         } else {
             try {
-                $url = $this->get('request')->getUriForPath('/__checkurlrewrite/path');
+                $url         = $this->get('request')->getUriForPath('/__checkurlrewrite/path');
                 $url_noindex = str_replace('/index.php/', '/', $url);
 
                 $client = new \Zend\Http\Client(null, array('timeout' => 5));
@@ -843,43 +840,43 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
             $db = $this->getOrm()->getConnection();
 
             $db->replace('settings', array(
-                'name' => 'core.install_timestamp',
+                'name'  => 'core.install_timestamp',
                 'value' => time(),
             ));
             $db->replace('settings', array(
-                'name' => 'core.install_build',
+                'name'  => 'core.install_build',
                 'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
             ));
             $db->replace('settings', array(
-                'name' => 'core.install_key',
+                'name'  => 'core.install_key',
                 'value' => Strings::random(20, Strings::CHARS_KEY),
             ));
             $db->replace('settings', array(
-                'name' => 'core.install_token',
+                'name'  => 'core.install_token',
                 'value' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
             ));
             $db->replace('settings', array(
-                'name' => 'core.deskpro_build',
+                'name'  => 'core.deskpro_build',
                 'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
             ));
             $db->replace('settings', array(
-                'name' => 'core.deskpro_build_num',
+                'name'  => 'core.deskpro_build_num',
                 'value' => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
             ));
             $db->replace('settings', array(
-                'name' => 'core.deskpro_version',
+                'name'  => 'core.deskpro_version',
                 'value' => date('YmdHis'),
             ));
             if (isset($_COOKIE['dp_install_stats_opt_out']) && $_COOKIE['dp_install_stats_opt_out']) {
                 $db->replace('settings', array(
-                    'name' => 'core.enable_reduced_lic_reports',
+                    'name'  => 'core.enable_reduced_lic_reports',
                     'value' => 1,
                 ));
             }
 
             if ($rewrite_urls) {
                 $db->replace('settings', array(
-                    'name' => 'core.rewrite_urls',
+                    'name'  => 'core.rewrite_urls',
                     'value' => '1',
                 ));
             }
@@ -972,7 +969,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
         if (!isset($_COOKIE['stats_opt_out']) || !$_COOKIE['stats_opt_out']) {
             try {
                 $stats_fetcher = new \Application\InstallBundle\Data\ServerStats($this->getDb());
-                $data = array_merge($data, $stats_fetcher->getStats());
+                $data          = array_merge($data, $stats_fetcher->getStats());
             } catch (\Exception $e) {
             }
         }

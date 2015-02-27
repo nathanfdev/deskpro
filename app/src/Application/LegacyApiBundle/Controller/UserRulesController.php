@@ -26,17 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\UserRules\Form\Type\UserRuleType;
 use Application\DeskPRO\UserRules\UserRuleEdit;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 
 class UserRulesController extends AbstractController implements ProtectedControllerInterface
 {
@@ -54,10 +52,9 @@ class UserRulesController extends AbstractController implements ProtectedControl
 
     public function listAction()
     {
-        /**
-         * @var \Application\DeskPRO\UserRules\UserRules $user_rules
+        /*
+         * @var \Application\DeskPRO\UserRules\UserRules
          */
-
         $user_rules = $this->container->getSystemService('user_rules');
 
         return $this->createApiResponse(
@@ -73,10 +70,9 @@ class UserRulesController extends AbstractController implements ProtectedControl
 
     public function getAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\UserRules\UserRules $user_rules
+        /*
+         * @var \Application\DeskPRO\UserRules\UserRules
          */
-
         $user_rules = $this->container->getSystemService('user_rules');
         $user_rule  = $user_rules->getWithUsergroup($id);
 
@@ -97,10 +93,9 @@ class UserRulesController extends AbstractController implements ProtectedControl
 
     public function saveAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\UserRules\UserRules $user_rules
+        /*
+         * @var \Application\DeskPRO\UserRules\UserRules
          */
-
         $user_rules = $this->container->getSystemService('user_rules');
 
         if ($id) {
@@ -140,10 +135,9 @@ class UserRulesController extends AbstractController implements ProtectedControl
 
     public function removeAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\UserRules\UserRules $user_rules
+        /*
+         * @var \Application\DeskPRO\UserRules\UserRules
          */
-
         $user_rules = $this->container->getSystemService('user_rules');
         $user_rule  = $user_rules->getById($id);
 
@@ -174,10 +168,9 @@ class UserRulesController extends AbstractController implements ProtectedControl
 
     public function applyAction($id, $page_id)
     {
-        /**
-         * @var \Application\DeskPRO\UserRules\UserRules $user_rules
+        /*
+         * @var \Application\DeskPRO\UserRules\UserRules
          */
-
         $user_rules = $this->container->getSystemService('user_rules');
         $user_rule  = $user_rules->getById($id);
 

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Settings;
@@ -58,10 +55,11 @@ class ServiceUrls
     }
 
     /**
-     * @param  string $name         Name of the URL
-     * @param  array  $params       Query params to append to the URL
-     * @param  array  $named_params Named parameters in the URL {{somevar}}
-     * @param  bool   $html         True if this is going to be used in HTML. Arg separater becomes &amp;
+     * @param string $name         Name of the URL
+     * @param array  $params       Query params to append to the URL
+     * @param array  $named_params Named parameters in the URL {{somevar}}
+     * @param bool   $html         True if this is going to be used in HTML. Arg separater becomes &amp;
+     *
      * @return string
      */
     public function get($name, array $params = null, array $named_params = null, $html = true)
@@ -89,6 +87,7 @@ class ServiceUrls
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function has($name)

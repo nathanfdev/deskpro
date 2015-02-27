@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Reader;
@@ -195,7 +193,7 @@ abstract class AbstractReader
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -320,7 +318,7 @@ abstract class AbstractReader
 
         foreach ($try as $header_name) {
             if (!($h = $this->getHeader($header_name))) {
-                return null;
+                return;
             }
 
             if (!$h->getHeader() || !\Orb\Validator\StringEmail::isValueValid($h->getHeader())) {
@@ -334,7 +332,7 @@ abstract class AbstractReader
 
         $this->vals['original_to'] = false;
 
-        return null;
+        return;
     }
 
     /**
@@ -365,7 +363,7 @@ abstract class AbstractReader
     abstract protected function _getHeader($header);
 
     /**
-     * Returns true if message marks itself as from a robot
+     * Returns true if message marks itself as from a robot.
      *
      * @return bool
      */
@@ -404,7 +402,7 @@ abstract class AbstractReader
     }
 
     /**
-     * Checks if the email was sent via outlook
+     * Checks if the email was sent via outlook.
      *
      * @return bool
      */
@@ -451,7 +449,7 @@ abstract class AbstractReader
 
         $date_header = $this->getHeader('Date');
         if (!$date_header || !count($date_header->header_parts)) {
-            return null;
+            return;
         }
 
         foreach ($date_header->header_parts as $date_part) {
@@ -472,7 +470,7 @@ abstract class AbstractReader
             return $use_date;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -480,19 +478,19 @@ abstract class AbstractReader
      */
     public function getId()
     {
-        /** @var Header $id */
+        /* @var Header $id */
         if (!$id = $this->getHeader('message-id')) {
-            return null;
+            return;
         }
         $id = reset($id->header_parts);
 
         if (20 > $length = strlen($id)) {
-            return null;
+            return;
         }
 
         $matchLt = false;
         $matchAt = false;
-        $newId = '';
+        $newId   = '';
 
         for ($i = 0; $i < $length; $i++) {
             $char = $id[$i];
@@ -519,7 +517,7 @@ abstract class AbstractReader
         }
 
         if (!$matchLt || !$matchAt) {
-            return null;
+            return;
         }
 
         return $newId;

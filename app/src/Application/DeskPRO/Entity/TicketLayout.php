@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -100,7 +99,7 @@ class TicketLayout extends DomainObject
     }
 
     /**
-     * Enable the layout
+     * Enable the layout.
      */
     public function enable()
     {
@@ -108,7 +107,7 @@ class TicketLayout extends DomainObject
     }
 
     /**
-     * Disable the layout
+     * Disable the layout.
      */
     public function disable()
     {

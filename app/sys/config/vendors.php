@@ -28,5 +28,5 @@
         'into'    => DP_WEB_ROOT.'/web/vendor-src/twig',
         'repos'   => 'git://github.com/justjohn/twig.js.git',
         'version' => 'HEAD',
-    )
+    ),
 );

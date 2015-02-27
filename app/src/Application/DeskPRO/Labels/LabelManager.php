@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category ORM
  */
 
@@ -54,10 +53,10 @@ class LabelManager
 
     public function __construct($entity, $label_entity_name, $labels_property = 'labels')
     {
-        $this->entity = $entity;
-        $this->label_entity_name = $label_entity_name;
+        $this->entity                 = $entity;
+        $this->label_entity_name      = $label_entity_name;
         $this->label_entity_classname = str_replace('DeskPRO:', 'Application\\DeskPRO\\Entity\\', $this->label_entity_name);
-        $this->labels_property = $labels_property;
+        $this->labels_property        = $labels_property;
 
         // todo construct in factory method, em injection
         $this->em = App::getOrm();
@@ -103,7 +102,7 @@ class LabelManager
             }
         }
 
-        return null;
+        return;
     }
 
     public function removeLabels(array $labels)
@@ -130,7 +129,7 @@ class LabelManager
             }
         }
 
-        $labelobj = $this->createLabelEntity();
+        $labelobj          = $this->createLabelEntity();
         $labelobj['label'] = $label;
         $this->entity->addLabel($labelobj);
 
@@ -159,8 +158,8 @@ class LabelManager
         if (!$definition = $rep->getDefinition($type_name, $label)) {
             $definition = new \Application\DeskPRO\Entity\LabelDef(array(
                 'label_type' => $type_name,
-                'label' => $label,
-                'color' => $rep->getColorForLabel($label),
+                'label'      => $label,
+                'color'      => $rep->getColorForLabel($label),
             ));
             $this->em->persist($definition);
             $rep->updateDefinitionUsages($definition);
@@ -223,7 +222,7 @@ class LabelManager
         }
 
         $labels_raw = $labels;
-        $labels = array();
+        $labels     = array();
 
         foreach ($labels_raw as $label) {
             $label = self::normalizeLabel($label);
@@ -233,8 +232,8 @@ class LabelManager
         }
 
         $existing_labels = $this->getLabelsArray();
-        $added = array_diff($labels, $existing_labels);
-        $removed = array_diff($existing_labels, $labels);
+        $added           = array_diff($labels, $existing_labels);
+        $removed         = array_diff($existing_labels, $labels);
 
         /** @var LabelDef $rep */
         $rep     = $this->em->getRepository('DeskPRO:LabelDef');
@@ -251,7 +250,7 @@ class LabelManager
                 case 'DeskPRO:LabelNews':             $perm = $person->hasPerm("agent_publish.news_create_labels"); break;
                 case 'DeskPRO:LabelDownload':         $perm = $person->hasPerm("agent_publish.downloads_create_labels"); break;
                 case 'DeskPRO:LabelFeedback':         $perm = $person->hasPerm("agent_publish.feedback_create_labels"); break;
-                default: $perm = false;
+                default: $perm                              = false;
             }
         } else {
             // no user at the moment which means

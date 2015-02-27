@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ORM;
@@ -42,7 +39,7 @@ use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 
 /**
- * Customized EM to override proxy factory
+ * Customized EM to override proxy factory.
  */
 class EntityManager extends UnprivateEntityManager
 {
@@ -55,7 +52,7 @@ class EntityManager extends UnprivateEntityManager
     {
         parent::__construct($conn, $config, $eventManager);
 
-        $this->unitOfWork = new UnitOfWork($this);
+        $this->unitOfWork   = new UnitOfWork($this);
         $this->proxyFactory = new ProxyFactory(
             $this,
             $config->getProxyDir(),
@@ -76,7 +73,7 @@ class EntityManager extends UnprivateEntityManager
 
             if ($logger === null) {
                 $logger = new \Orb\Log\Logger();
-                $wr = new \Orb\Log\Writer\Stream(dp_get_log_dir().'/em-persist.log', 'a');
+                $wr     = new \Orb\Log\Writer\Stream(dp_get_log_dir().'/em-persist.log', 'a');
                 $logger->addWriter($wr);
             }
 
@@ -173,7 +170,7 @@ class EntityManager extends UnprivateEntityManager
                 $this->persist($persist);
             }
             $this->_delayedInsert = array();
-            $flush_again = true;
+            $flush_again          = true;
         }
 
         if ($this->_delayedUpdate) {
@@ -181,7 +178,7 @@ class EntityManager extends UnprivateEntityManager
                 $closure($this);
             }
             $this->_delayedUpdate = array();
-            $flush_again = true;
+            $flush_again          = true;
         }
 
         if ($flush_again) {

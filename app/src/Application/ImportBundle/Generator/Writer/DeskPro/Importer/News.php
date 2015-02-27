@@ -32,10 +32,9 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro news importer
+ * DeskPro news importer.
  *
  * Class News
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 final class News extends AbstractImporter implements SkipDuplicateInterface
 {
@@ -55,7 +54,7 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
      * 'num_comments'   => $nval->num_comments,
      * 'num_ratings'    => $nval->num_ratings,
      *
-     * @var Entity\News $entity
+     * @var Entity\News
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
@@ -74,13 +73,14 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
             ->setViewsCount($entity->getViewCount());
 
         $this->records->add($news);
+
         return $this->records;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @var Entity\News $entity
+     * @var Entity\News
      */
     public function checkAlreadyExists(Entity\EntityInterface $entity)
     {
@@ -91,12 +91,13 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
 
     /**
      * Returns an feedback category by title
-     * Creates a new feedback category if not found
+     * Creates a new feedback category if not found.
      *
      * @param string $title
      *
-     * @return DeskPROEntity\NewsCategory|null
      * @throws \Exception
+     * @return DeskPROEntity\NewsCategory|null
+     *
      */
     private function findOrCreateNewsCategory($title)
     {
@@ -118,10 +119,11 @@ final class News extends AbstractImporter implements SkipDuplicateInterface
     }
 
     /**
-     * Returns the news category mapper
+     * Returns the news category mapper.
      *
-     * @return Mapper\NewsCategory
      * @throws \Exception
+     * @return Mapper\NewsCategory
+     *
      */
     private function getNewsCategoryMapper()
     {

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
@@ -43,11 +40,11 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
  */
 class ContentSubscriptionsVoter extends AbstractVoter
 {
-    const SUBSCRIBE_ARTICLES = 'SUBSCRIBE_ARTICLES';
-    const SUBSCRIBE_ARTICLE_CATEGORIES = 'SUBSCRIBE_ARTICLE_CATEGORIES';
-    const SUBSCRIBE_NEWS = 'SUBSCRIBE_NEWS';
-    const SUBSCRIBE_NEWS_CATEGORIES = 'SUBSCRIBE_NEWS_CATEGORIES';
-    const SUBSCRIBE_DOWNLOADS = 'SUBSCRIBE_DOWNLOADS';
+    const SUBSCRIBE_ARTICLES             = 'SUBSCRIBE_ARTICLES';
+    const SUBSCRIBE_ARTICLE_CATEGORIES   = 'SUBSCRIBE_ARTICLE_CATEGORIES';
+    const SUBSCRIBE_NEWS                 = 'SUBSCRIBE_NEWS';
+    const SUBSCRIBE_NEWS_CATEGORIES      = 'SUBSCRIBE_NEWS_CATEGORIES';
+    const SUBSCRIBE_DOWNLOADS            = 'SUBSCRIBE_DOWNLOADS';
     const SUBSCRIBE_DOWNLOADS_CATEGORIES = 'SUBSCRIBE_DOWNLOADS_CATEGORIES';
 
     protected function getSupportedAttributes()
@@ -86,7 +83,7 @@ class ContentSubscriptionsVoter extends AbstractVoter
     }
 
     /**
-     * Return an array of supported classes. This will be called by supportsClass
+     * Return an array of supported classes. This will be called by supportsClass.
      *
      * @return array an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
      */

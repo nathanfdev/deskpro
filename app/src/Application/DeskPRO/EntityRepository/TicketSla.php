@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -64,7 +63,7 @@ class TicketSla extends AbstractEntityRepository
         }
 
         if (!$person_context->hasPerm('agent_tickets.view_others')) {
-            $part = array();
+            $part   = array();
             $part[] = "tickets.agent_id = {$person_context['id']}";
             if ($person_context->getAgentTeamIds()) {
                 $part[] = "tickets.agent_team_id IN (".implode(',', $person_context->getAgentTeamIds()).")";
@@ -135,7 +134,7 @@ class TicketSla extends AbstractEntityRepository
     {
         switch ($type) {
             case 'warning': $date_field = 'warn_date'; $statuses = "'ok'"; break;
-            case 'fail': $date_field = 'fail_date'; $statuses = "'ok','warning'"; break;
+            case 'fail': $date_field    = 'fail_date'; $statuses    = "'ok','warning'"; break;
             default: throw new \InvalidArgumentException("Unknown SLA status $type");
         }
 
@@ -152,13 +151,13 @@ class TicketSla extends AbstractEntityRepository
     {
         $dt = App::getCurrentPerson()->getDateTime();
 
-        $today = $dt->setTime(0, 0, 0)->getTimestamp();
+        $today     = $dt->setTime(0, 0, 0)->getTimestamp();
         $yesterday = $dt->modify('-1 day')->getTimestamp();
 
         $dt->modify('+1 day');
 
         $currentDayOfWeek = $dt->format('N');
-        $startAdjust = $currentDayOfWeek - App::getCurrentPerson()->getStartOfWeek();
+        $startAdjust      = $currentDayOfWeek - App::getCurrentPerson()->getStartOfWeek();
 
         if ($startAdjust) {
             if ($startAdjust > 0) {
@@ -173,14 +172,14 @@ class TicketSla extends AbstractEntityRepository
         $dt = App::getCurrentPerson()->getDateTime();
 
         $month = $dt->format('n');
-        $year = $dt->format('Y');
+        $year  = $dt->format('Y');
 
         $graphs = array(
-            'today' => $today,
-            'yesterday' => array($yesterday, $today - 1),
-            'this_week' => $week_start,
+            'today'      => $today,
+            'yesterday'  => array($yesterday, $today - 1),
+            'this_week'  => $week_start,
             'this_month' => gmmktime(0, 0, 0, $month, 1, $year),
-            'this_year' => gmmktime(0, 0, 0, 1, 1, $year),
+            'this_year'  => gmmktime(0, 0, 0, 1, 1, $year),
         );
 
         $output = array();
@@ -193,9 +192,9 @@ class TicketSla extends AbstractEntityRepository
             $data = $this->getTicketSlaStatusData($start, $end);
             if ($data) {
                 $output[$title] = array(
-                    'ok' => array('title' => 'OK', 'count' => 0, 'id' => 'ok', 'color' => '#abf3ae'),
+                    'ok'      => array('title' => 'OK', 'count' => 0, 'id' => 'ok', 'color' => '#abf3ae'),
                     'warning' => array('title' => 'Warning', 'count' => 0, 'id' => 'warning', 'color' => '#F7BC1F'),
-                    'fail' => array('title' => 'Failed', 'count' => 0, 'id' => 'count', 'color' => '#de5949'),
+                    'fail'    => array('title' => 'Failed', 'count' => 0, 'id' => 'count', 'color' => '#de5949'),
                 );
                 foreach ($data as $status => $count) {
                     $output[$title][$status]['count'] = $count;

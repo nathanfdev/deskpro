@@ -27,17 +27,16 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
-use Application\ImportBundle\Entity;
 use DateTime;
 
 /**
- * Articles json file parser
+ * Articles json file parser.
  *
  * Class Articles
- * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
 final class Articles extends AbstractParser
 {
@@ -63,7 +62,7 @@ final class Articles extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $articles = $this->reader->getData($this->getConfig());
+        $articles   = $this->reader->getData($this->getConfig());
 
         foreach ($articles as $num => $article) {
             $this->advanceProgressBar();
@@ -76,13 +75,11 @@ final class Articles extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid article record `%d` found (Skipping)', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid article record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
-
             } catch (NotArrayException $e) {
                 $this->logWarning(sprintf(
                     'Invalid article record `%d` found (Skipping): %s',
@@ -95,9 +92,10 @@ final class Articles extends AbstractParser
     }
 
     /**
-     * Returns an article entity
+     * Returns an article entity.
      *
      * @param array $article
+     *
      * @return Entity\Article|null
      */
     private function exportArticle(array $article)
@@ -105,7 +103,7 @@ final class Articles extends AbstractParser
         if ($this->isArticleValid($article)) {
             $entity = new Entity\Article();
             $entity
-                ->setDestination('news_' . $article['oid'])
+                ->setDestination('news_'.$article['oid'])
                 ->setOid($article['oid'])
                 ->setPersonEmail($article['person'])
                 ->setTitle($article['title'])
@@ -136,11 +134,11 @@ final class Articles extends AbstractParser
             return $entity;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Returns record type reader config
+     * Returns record type reader config.
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
      */
@@ -150,11 +148,13 @@ final class Articles extends AbstractParser
     }
 
     /**
-     * Check if article has all required columns
+     * Check if article has all required columns.
      *
      * @param array $article
-     * @return bool
+     *
      * @throws NotArrayException
+     * @return bool
+     *
      */
     private function isArticleValid(array $article)
     {

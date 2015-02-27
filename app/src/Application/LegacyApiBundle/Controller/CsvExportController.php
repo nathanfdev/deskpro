@@ -26,16 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\EntityRepository\TaskQueue;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 
 class CsvExportController extends AbstractController implements ProtectedControllerInterface
 {
@@ -76,7 +74,7 @@ class CsvExportController extends AbstractController implements ProtectedControl
 
         if ($tasks = $rep->getTasksInGroup('data_export', true)) {
             if ($task = end($tasks)) {
-                $task['status'] = 'completed';
+                $task['status']         = 'completed';
                 $task['date_completed'] = new \DateTime();
                 $this->em->flush();
             }
@@ -98,7 +96,7 @@ class CsvExportController extends AbstractController implements ProtectedControl
             $task = end($tasks);
 
             if (new \DateTime('-1day') < $task['date_runnable']) {
-                $data = $task['task_data'];
+                $data          = $task['task_data'];
                 $res['status'] = $task['status'];
                 $res['offset'] = (int) @$data['offset'];
 
@@ -117,16 +115,16 @@ class CsvExportController extends AbstractController implements ProtectedControl
     public function listAction()
     {
         $datas = $this->em->getRepository('DeskPRO:TmpData')->getByName('csv_export.file', false);
-        $ret = array();
+        $ret   = array();
 
         foreach ($datas as $data) {
-            /** @var $data TmpData */
+            /* @var $data TmpData */
             $ret[] = array(
-                'created' => $data->date_created->format('Y-m-d H:i:s'),
-                'code' => $data->getCode(),
-                'count' => $data->getData('count'),
+                'created'  => $data->date_created->format('Y-m-d H:i:s'),
+                'code'     => $data->getCode(),
+                'count'    => $data->getData('count'),
                 'filename' => pathinfo($data->getData('file'), PATHINFO_BASENAME),
-                'expire' => $data->date_expire->format('Y-m-d H:i:s'),
+                'expire'   => $data->date_expire->format('Y-m-d H:i:s'),
             );
         }
 

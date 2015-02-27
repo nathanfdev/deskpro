@@ -26,33 +26,32 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
+ *
  * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Currency entity definition
- *
+ * Currency entity definition.
  */
 abstract class Currency extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
-     * The unique ID
+     * The unique ID.
      *
      * @var int
-     *
      */
     protected $id = null;
 
     /**
-     * The Currency Type's name
+     * The Currency Type's name.
      *
      * @var string
      */

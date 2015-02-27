@@ -26,22 +26,20 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 
 class TicketEdit implements PersonContextInterface
 {
     /**
-     * Application\DeskPRO\Entity\Ticket
+     * Application\DeskPRO\Entity\Ticket.
      */
     protected $ticket;
 
@@ -76,14 +74,14 @@ class TicketEdit implements PersonContextInterface
     public function applyActions(array $actions)
     {
         $this->perm_errors = array();
-        $return = array();
+        $return            = array();
 
         if ($this->person_context) {
             $tcheck = $this->person_context->PermissionsManager->TicketChecker;
         } else {
             $tcheck = null;
         }
-        /** @var $tcheck \Application\DeskPRO\People\PermissionChecker\TicketChecker */
+        /* @var $tcheck \Application\DeskPRO\People\PermissionChecker\TicketChecker */
 
         foreach ($actions as $term => $action) {
             $term_id = null;
@@ -91,7 +89,7 @@ class TicketEdit implements PersonContextInterface
             // $term of ticket_field[12] becomes $term=ticket_field, $term_id=12
             $m = null;
             if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
-                $term = $m[1];
+                $term    = $m[1];
                 $term_id = $m[2];
             }
 
@@ -332,7 +330,7 @@ class TicketEdit implements PersonContextInterface
                         continue;
                     }
 
-                    $message = new Entity\TicketMessage();
+                    $message            = new Entity\TicketMessage();
                     $message['person']  = $agent;
                     $message['ticket']  = $this->ticket;
                     $message['message'] = $action['new_reply'];

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Log
+ * Orb.
  */
 
 namespace Orb\Log;
@@ -44,41 +41,44 @@ namespace Orb\Log;
 class Logger
 {
     /**@#+ Standard log levels */
-    const EMERG   = 0;
-    const ALERT   = 1;
-    const CRIT    = 2;
-    const ERR     = 3;
-    const WARN    = 4;
-    const NOTICE  = 5;
-    const INFO    = 6;
-    const DEBUG   = 7;
+    const EMERG    = 0;
+    const ALERT    = 1;
+    const CRIT     = 2;
+    const ERR      = 3;
+    const WARN     = 4;
+    const NOTICE   = 5;
+    const INFO     = 6;
+    const DEBUG    = 7;
     const STRICT   = 8;
     /**@#-*/
 
     /**
-     * Priority number => name
+     * Priority number => name.
+     *
      * @var array
      */
     protected $_priorities = array(
-        self::EMERG    => 'EMERG',
-        self::ALERT    => 'ALERT',
-        self::CRIT     => 'CRIT',
-        self::ERR      => 'ERR',
-        self::WARN     => 'WARN',
-        self::NOTICE   => 'NOTICE',
-        self::INFO     => 'INFO',
-        self::DEBUG    => 'DEBUG',
+        self::EMERG     => 'EMERG',
+        self::ALERT     => 'ALERT',
+        self::CRIT      => 'CRIT',
+        self::ERR       => 'ERR',
+        self::WARN      => 'WARN',
+        self::NOTICE    => 'NOTICE',
+        self::INFO      => 'INFO',
+        self::DEBUG     => 'DEBUG',
         self::STRICT    => 'STRICT',
     );
 
     /**
-     * Main filter chain that will apply to all writers
+     * Main filter chain that will apply to all writers.
+     *
      * @var \Orb\Log\Writer\WriterChain
      */
     protected $_writer_chain = null;
 
     /**
-     * A session name
+     * A session name.
+     *
      * @var string
      */
     protected $_session_name = null;
@@ -108,25 +108,26 @@ class Logger
     }
 
     /**
-     * Disable logger
+     * Disable logger.
      */
     public function disable()
     {
-        $this->disabled    = true;
+        $this->disabled         = true;
         $this->default_disabled = false;
     }
 
     /**
-     * Enable logger
+     * Enable logger.
      */
     public function enable()
     {
-        $this->disabled = true;
+        $this->disabled         = true;
         $this->default_disabled = false;
     }
 
     /**
      * Is the logger enabled?
+     *
      * @return bool
      */
     public function isEnabled()
@@ -135,10 +136,11 @@ class Logger
     }
 
     /**
-     * Add a priroty
+     * Add a priroty.
      *
-     * @param  string $name
-     * @param  int    $priority
+     * @param string $name
+     * @param int    $priority
+     *
      * @return Logger
      */
     public function addPriority($name, $priority)
@@ -178,7 +180,7 @@ class Logger
         // If its disabled because of default, we'll enable
         // it because this is the first writer
         if ($this->disabled && $this->default_disabled) {
-            $this->disabled = false;
+            $this->disabled         = false;
             $this->default_disabled = false;
         }
 
@@ -213,7 +215,7 @@ class Logger
     }
 
     /**
-     * Log a new message
+     * Log a new message.
      *
      * @param string $message
      * @param int    $priority
@@ -232,8 +234,8 @@ class Logger
             $priority = constant('Orb\\Log\\Logger::'.strtoupper($priority));
         }
 
-        $info[LogItem::MESSAGE] = $message;
-        $info[LogItem::PRIORITY] = $priority;
+        $info[LogItem::MESSAGE]       = $message;
+        $info[LogItem::PRIORITY]      = $priority;
         $info[LogItem::PRIORITY_NAME] = $this->_priorities[$priority];
 
         $log_item = $this->createLogInfoObject($info);
@@ -252,7 +254,7 @@ class Logger
     }
 
     /**
-     * Shortcut for logging a dump of a value
+     * Shortcut for logging a dump of a value.
      *
      * @param string $name     The name/message that precedes the dump
      * @param mixed  $var      The variable to be dumped
@@ -272,8 +274,9 @@ class Logger
     }
 
     /**
-     * @param  mixed  $var
-     * @param  int    $_depth
+     * @param mixed $var
+     * @param int   $_depth
+     *
      * @return string
      */
     public static function varToString($var, $_depth = 0)
@@ -382,7 +385,8 @@ class Logger
     }
 
     /**
-     * @param  array   $info
+     * @param array $info
+     *
      * @return LogItem
      */
     public function createLogInfoObject(array $info)
@@ -393,7 +397,8 @@ class Logger
     }
 
     /**
-     * Write a log item
+     * Write a log item.
+     *
      * @param LogItem $log_item
      */
     public function logItem(LogItem $log_item)
@@ -419,8 +424,10 @@ class Logger
 
     /**
      * @param $name
-     * @return mixed
+     *
      * @throws \InvalidArgumentException
+     * @return mixed
+     *
      */
     public function getStartTime($name)
     {
@@ -432,10 +439,12 @@ class Logger
     }
 
     /**
-     * @param  string                    $name
-     * @param  bool                      $reset
-     * @return mixed
+     * @param string $name
+     * @param bool   $reset
+     *
      * @throws \InvalidArgumentException
+     * @return mixed
+     *
      */
     public function getTotalTime($name = 'default', $reset = true)
     {

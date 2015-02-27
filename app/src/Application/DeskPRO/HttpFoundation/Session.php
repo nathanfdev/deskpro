@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category HttpFoundation
  */
 
@@ -45,25 +44,29 @@ use Orb\Util\Web;
 class Session extends \Symfony\Component\HttpFoundation\Session\Session implements \ArrayAccess, \IteratorAggregate
 {
     /**
-     * The person this session belongs to
+     * The person this session belongs to.
+     *
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $person;
 
     /**
-     * The lang used for this user
+     * The lang used for this user.
+     *
      * @var \Application\DeskPRO\Entity\Language
      */
     protected $language;
 
     /**
-     * The current visitor
+     * The current visitor.
+     *
      * @var \Application\DeskPRO\Entity\Visitor
      */
     protected $visitor;
 
     /**
      * True if this is the first page view of a session.
+     *
      * @var bool
      */
     protected $is_first_page = false;
@@ -201,7 +204,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
             // user interface and a new session - we need to look through user sources for cookie handlers
             $sources = App::getEntityRepository('DeskPRO:Usersource')->getCookieInputUsersources();
             foreach ($sources as $source) {
-                /** @var $source \Application\DeskPRO\Entity\Usersource */
+                /* @var $source \Application\DeskPRO\Entity\Usersource */
                 $adapter = $source->getAdapter()->getAuthAdapter();
 
                 if ($adapter instanceof \Orb\Auth\Adapter\CookieLoginInterface) {
@@ -213,7 +216,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                     $identity = $adapter->getIdentityFromUserInfo($userinfo);
 
                     $login_processor = new \Application\DeskPRO\Auth\LoginProcessor($source, $identity);
-                    $person = $login_processor->getPerson();
+                    $person          = $login_processor->getPerson();
 
                     $this->_setCurrentPerson($person);
                     break;
@@ -224,7 +227,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
         // See if we need to carry an admin session
         if (DP_INTERFACE == 'user' && !$this->person && isset($_GET['admin_portal_controls'])) {
             $admin_session_code = !empty($_COOKIE['dpsid-admin']) ? $_COOKIE['dpsid-admin'] : false;
-            $admin_session = null;
+            $admin_session      = null;
             if ($admin_session_code) {
                 $admin_session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($admin_session_code);
                 if (!$admin_session || !$admin_session->person || !$admin_session->person->is_agent) {
@@ -264,11 +267,11 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
         }
 
         if (!Web::isBotUseragent()) {
-            $is_new_vis = false;
+            $is_new_vis      = false;
             $soft_visitor_id = null;
             if (!$vis) {
-                $is_new_vis = true;
-                $vis = new Entity\Visitor();
+                $is_new_vis          = true;
+                $vis                 = new Entity\Visitor();
                 $vis['page_url']     = $url;
                 $vis['ref_page_url'] = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
                 $vis['ip_address']   = $user_ip;
@@ -331,7 +334,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
             // Insert tracks
             $track = null;
             if (!$vis->initial_track || (DP_INTERFACE == 'user' && $url && !preg_match('#/chat/#', $url) && !preg_match('#/widget/#', $url) && !$is_ajax)) {
-                $track = array();
+                $track                 = array();
                 $track['date_created'] = date('Y-m-d H:i:s');
                 $track['page_url']     = $url;
                 $track['ref_page_url'] = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
@@ -349,7 +352,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                 }
 
                 $geoip = App::getSystemService('geo_ip');
-                $geo = $geoip->lookup($user_ip);
+                $geo   = $geoip->lookup($user_ip);
 
                 if (!empty($geo['continent'])) {
                     $track['geo_continent'] = $geo['continent'];
@@ -380,8 +383,8 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                 App::getDb()->insert('visitor_tracks', $track);
                 $track['id'] = App::getDb()->lastInsertId();
 
-                $trackRef = App::getContainer()->getEm()->getReference('DeskPRO:VisitorTrack', $track['id']);
-                $vis->date_last = new \DateTime();
+                $trackRef        = App::getContainer()->getEm()->getReference('DeskPRO:VisitorTrack', $track['id']);
+                $vis->date_last  = new \DateTime();
                 $vis->last_track = $trackRef;
 
                 if (!$vis->initial_track) {
@@ -408,7 +411,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                     'geo_country',
                 ) as $field) {
                     if (isset($track[$field])) {
-                        $vis[$field] = $track[$field];
+                        $vis[$field]    = $track[$field];
                         $params[$field] = $track[$field];
                     }
                 }
@@ -462,10 +465,10 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
         }
 
         if ($this->getPerson() && $this->getPerson()->is_agent && !preg_match('#^/agent/(client-messages/|poller|.*/new)#', $path) && !preg_match('#\.json(\?.*?)?$#', $path) && empty($_GET['dp_no_activity'])) {
-            $agent = $this->getPerson();
-            $date_active = new \DateTime();
+            $agent               = $this->getPerson();
+            $date_active         = new \DateTime();
             list($hour, $minute) = explode(':', $date_active->format('H:i'));
-            $minute = intval($minute / 5) * 5;
+            $minute              = intval($minute / 5) * 5;
             $date_active->setTime($hour, $minute, 0);
 
             App::getDb()->executeQuery('INSERT IGNORE INTO agent_activity(agent_id, date_active) VALUES(?,?)', array($agent['id'], $date_active->format('Y-m-d H:i:s')));
@@ -494,7 +497,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
         $this->person = $person;
         App::setCurrentPerson($person);
         if ($person->is_agent) {
-            $this->attributes['active_status'] = 'available';
+            $this->attributes['active_status']     = 'available';
             $this->attributes['is_chat_available'] = 1;
         }
 
@@ -502,7 +505,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
     }
 
     /**
-     * Get the current visitor record
+     * Get the current visitor record.
      *
      * @return \Application\DeskPRO\Entity\Visitor
      */
@@ -512,7 +515,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
     }
 
     /**
-     * Get the logged in Person
+     * Get the logged in Person.
      *
      * @return \Application\DeskPRO\Entity\Person
      */
@@ -565,7 +568,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
     }
 
     /**
-     * Get the language object
+     * Get the language object.
      *
      * @return \Application\DeskPRO\Entity\Language
      */
@@ -585,8 +588,8 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
         }
 
         if (!$this->language) {
-            $data = App::getDataService('Language');
-            $languages = $data->getAll();
+            $data       = App::getDataService('Language');
+            $languages  = $data->getAll();
             $default_id = $data->getDefaultId();
 
             $locales = array('');
@@ -596,11 +599,11 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 
             try {
                 // get the highest priority language if available
-                $locale = App::getRequest()->getPreferredLanguage($locales);
+                $locale           = App::getRequest()->getPreferredLanguage($locales);
                 $accept_languages = App::getRequest()->getLanguages();
             } catch (\Symfony\Component\DependencyInjection\Exception\InactiveScopeException $e) {
                 // the request may not be available, so use the default lang
-                $locale = '';
+                $locale           = '';
                 $accept_languages = array();
             }
 
@@ -656,7 +659,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
     }
 
     /**
-     * Clears all data in the session
+     * Clears all data in the session.
      */
     public function clear()
     {
@@ -672,9 +675,10 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
     }
 
     /**
-     * Get a secret string
+     * Get a secret string.
      *
-     * @param  string $secret
+     * @param string $secret
+     *
      * @return string
      */
     public function getSessionSecret($secret = '')
@@ -683,10 +687,11 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
     }
 
     /**
-     * Check if a security token is valid
+     * Check if a security token is valid.
      *
      * @param $name
      * @param $token
+     *
      * @return bool
      */
     public function checkSecurityToken($name, $token)
@@ -695,10 +700,11 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
     }
 
     /**
-     * Generate a new security token
+     * Generate a new security token.
      *
      * @param $name
-     * @param  int    $timeout
+     * @param int $timeout
+     *
      * @return string
      */
     public function generateSecurityToken($name, $timeout = 43200)
@@ -728,8 +734,9 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
     }
 
     /**
-     * @param  string $name
-     * @param  mixed  $default
+     * @param string $name
+     * @param mixed  $default
+     *
      * @return array
      */
     public function getFlash($name, array $default = array())
@@ -738,7 +745,8 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
     }
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function hasFlash($name)

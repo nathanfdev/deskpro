@@ -26,14 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage NewSettings
+ * DeskPRO.
  */
 
 namespace DpUnitTests\DeskPRO\Application\NewSettings;
-
 
 use Application\DeskPRO\NewSettings\SettingsBag;
 
@@ -54,7 +50,7 @@ class SettingsBagTest extends \PHPUnit_Framework_TestCase
         $inputArray = array(
             'key'           => 'value',
             'setting'       => 2,
-            'extra_setting' => 0.9
+            'extra_setting' => 0.9,
         );
 
         $bag = new SettingsBag($inputArray);
@@ -82,43 +78,43 @@ class SettingsBagTest extends \PHPUnit_Framework_TestCase
     public function testGroups()
     {
         $inputArray = array(
-            'no_group'          => 'value',
-            'group_1.key'       => 'val',
-            'group_1.extra_num' => 2,
-            'group_2.key'       => 7.8,
-            'group_2.extra_num' => 99,
-            'group_2.deep.extra_num' => 301
+            'no_group'               => 'value',
+            'group_1.key'            => 'val',
+            'group_1.extra_num'      => 2,
+            'group_2.key'            => 7.8,
+            'group_2.extra_num'      => 99,
+            'group_2.deep.extra_num' => 301,
         );
 
         $bag = new SettingsBag($inputArray);
 
         $this->assertEquals(
             array(
-                'key' => 'val',
-                'extra_num' => 2
+                'key'       => 'val',
+                'extra_num' => 2,
             ),
             $bag->getGroup('group_1')
         );
 
         $this->assertEquals(
             array(
-                'key' => 7.8,
-                'extra_num' => 99,
-                'deep.extra_num' => 301
+                'key'            => 7.8,
+                'extra_num'      => 99,
+                'deep.extra_num' => 301,
             ),
             $bag->getGroup('group_2')
         );
 
         $this->assertEquals(
             array(
-                'extra_num' => 301
+                'extra_num' => 301,
             ),
             $bag->getGroup('group_2.deep')
         );
 
         $this->assertEquals(
             array(
-                'group_2.deep.extra_num' => 301
+                'group_2.deep.extra_num' => 301,
             ),
             $bag->getGroup('group_2.deep', false)
         );

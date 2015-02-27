@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Command;
@@ -182,7 +180,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
         if (!$source->email_account && !$account_id) {
             $output->writeln("<error>Could not find account for email. Specify an account using --account</error>");
 
-            $source->status = 'error';
+            $source->status     = 'error';
             $source->error_code = 'invalid_address';
             App::getOrm()->persist($source);
             App::getOrm()->flush();
@@ -207,7 +205,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
                 if (!$account) {
                     $output->writeln("<error>No account with address $account_id</error>");
 
-                    $source->status = 'error';
+                    $source->status     = 'error';
                     $source->error_code = 'invalid_address';
                     App::getOrm()->persist($source);
                     App::getOrm()->flush();
@@ -219,7 +217,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
             if ($input->getOption('account-force') && !$account->is_enabled) {
                 $output->writeln("<error>Account $account_id is disabled (use --account-force if you want to use it anyway)</error>");
 
-                $source->status = 'error';
+                $source->status     = 'error';
                 $source->error_code = 'invalid_address';
                 App::getOrm()->persist($source);
                 App::getOrm()->flush();
@@ -274,7 +272,8 @@ class ProcessEmailCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param  AbstractReader                                $reader
+     * @param AbstractReader $reader
+     *
      * @return \Application\DeskPRO\Entity\EmailAccount|null
      */
     private function findEmailAccountFrom(AbstractReader $reader)
@@ -288,6 +287,6 @@ class ProcessEmailCommand extends ContainerAwareCommand
             }
         }
 
-        return null;
+        return;
     }
 }

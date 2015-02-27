@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +37,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * A custom field definition
+ * A custom field definition.
  *
  * @property CustomDefFeedback $parent
  * @property int $display_order
@@ -50,27 +49,23 @@ class CustomDefFeedback extends CustomDefAbstract
     /**
      * @var CustomDefFeedback
      */
-
     protected $parent = null;
 
     /**
-     * Field children
+     * Field children.
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-
     protected $children = null;
 
     /**
      * @var string
      */
-
     protected $sys_name = null;
 
     /**
      * @return CustomDefFeedback
      */
-
     public static function createFeedbackCategory()
     {
         $category = new self();
@@ -254,9 +249,9 @@ class CustomDefFeedback extends CustomDefAbstract
         );
         $metadata->mapOneToMany(
             array(
-                 'fieldName'    => 'children',
-                 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefFeedback',
-                 'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                 'fieldName'               => 'children',
+                 'targetEntity'            => 'Application\\DeskPRO\\Entity\\CustomDefFeedback',
+                 'cascade'                 => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
                  'mappedBy'                => 'parent',
                  'orderBy'                 => array('display_order' => 'ASC'),
             )

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package    Orb
- * @subpackage Sms
+ * Orb.
  */
 
 namespace Orb\Sms;
@@ -46,7 +43,7 @@ class SmsMessage
 {
     const STATUS_SUCCESS = 'success';
     const STATUS_PENDING = 'queued';
-    const STATUS_FAILED = 'failed';
+    const STATUS_FAILED  = 'failed';
 
     /**
      * @var string full message, without chunking
@@ -61,15 +58,15 @@ class SmsMessage
     public function __construct($rawMessage)
     {
         $this->rawMessage = $rawMessage;
-        $chunks = Strings::splitStringIntoArray($rawMessage, 160);
-        $this->chunks = array();
+        $chunks           = Strings::splitStringIntoArray($rawMessage, 160);
+        $this->chunks     = array();
         foreach ($chunks as $chunk) {
             $this->chunks[] = new SmsMessageChunk($chunk);
         }
     }
 
     /**
-     * This method will advance over time to allow for queuing, pending, etc
+     * This method will advance over time to allow for queuing, pending, etc.
      *
      * @return bool
      */

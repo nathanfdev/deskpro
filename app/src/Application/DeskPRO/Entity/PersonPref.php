@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,7 +39,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Every person can have various data or preferences associated with their account.
  * These are just key value pairs basically.
- *
  */
 class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -50,21 +48,21 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     protected $person;
 
     /**
-     * The name of the pref
+     * The name of the pref.
      *
      * @var string
      */
     protected $name;
 
     /**
-     * String value
+     * String value.
      *
      * @var string
      */
     protected $value_str = null;
 
     /**
-     * Array value
+     * Array value.
      *
      * @var array
      */
@@ -99,7 +97,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      */
@@ -109,7 +107,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -119,7 +117,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set value_str
+     * Set value_str.
      *
      * @param text $valueStr
      */
@@ -129,7 +127,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get value_str
+     * Get value_str.
      *
      * @return text
      */
@@ -139,7 +137,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set value_array
+     * Set value_array.
      *
      * @param array $valueArray
      */
@@ -149,7 +147,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get value_array
+     * Get value_array.
      *
      * @return array
      */
@@ -159,7 +157,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set date_expire
+     * Set date_expire.
      *
      * @param datetime $dateExpire
      */
@@ -169,7 +167,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get date_expire
+     * Get date_expire.
      *
      * @return datetime
      */
@@ -179,7 +177,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set person
+     * Set person.
      *
      * @param Application\DeskPRO\Entity\Person $person
      */
@@ -189,7 +187,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get person
+     * Get person.
      *
      * @return Application\DeskPRO\Entity\Person
      */
@@ -208,7 +206,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonPref';
         $metadata->setPrimaryTable(array( 'name' => 'people_prefs'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'preferences', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => 'preferences', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
         $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true));
         $metadata->mapField(array( 'fieldName' => 'value_str', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value_str'));
         $metadata->mapField(array( 'fieldName' => 'value_array', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value_array'));

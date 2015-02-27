@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Serializer
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Serializer;

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -59,7 +56,7 @@ class BlobType extends AbstractType
 
     public function __construct(EntityManager $em, DeskproBlobStorage $blob_storage)
     {
-        $this->em = $em;
+        $this->em           = $em;
         $this->blob_storage = $blob_storage;
     }
 
@@ -78,7 +75,7 @@ class BlobType extends AbstractType
 
         $form = $event->getForm();
 
-        /** @var \Application\DeskPRO\Entity\TicketAttachment $attachment */
+        /* @var \Application\DeskPRO\Entity\TicketAttachment $attachment */
         $blob = $event->getData() instanceof Blob ? $event->getData() : new Blob();
         $form = $event->getForm();
 

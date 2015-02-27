@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -41,7 +40,7 @@ use Application\DeskPRO\Tickets\SnippetFormatter;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Adds a reply to the ticket
+ * Adds a reply to the ticket.
  *
  * @option string note_text
  * @option int    by_agent_id

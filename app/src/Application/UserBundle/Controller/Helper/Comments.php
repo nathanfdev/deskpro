@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Controller\Helper;
@@ -49,10 +46,11 @@ class Comments
 
     /**
      * Creates a new instance of this comments helper using the adapter
-     * defined in settings. Or returns null if no adapter is set
+     * defined in settings. Or returns null if no adapter is set.
      *
      * @param  $page_url
      * @param  $entity
+     *
      * @return Comments
      */
     public static function create($entity)
@@ -62,7 +60,7 @@ class Comments
         } elseif (App::getSetting('core.comments_adapter') == 'facebook') {
             $adapter = 'FacebookComments';
         } else {
-            return null;
+            return;
         }
 
         return new self($adapter, $entity);
@@ -78,7 +76,7 @@ class Comments
         $this->entity = $entity;
 
         if (is_string($adapter)) {
-            $class = 'Application\\UserBundle\\Controller\\Helper\\CommentsAdapter\\'.$adapter;
+            $class   = 'Application\\UserBundle\\Controller\\Helper\\CommentsAdapter\\'.$adapter;
             $adapter = new $class($entity);
         }
 
@@ -86,7 +84,7 @@ class Comments
     }
 
     /**
-     * Get the HTML block from the adapter
+     * Get the HTML block from the adapter.
      *
      * @return string
      */

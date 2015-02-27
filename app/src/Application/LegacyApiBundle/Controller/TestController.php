@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -37,21 +34,21 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\App;
 
 /**
- * A Test API resource
+ * A Test API resource.
  */
 class TestController extends AbstractController
 {
     public function preAction($action, $arguments = null)
     {
         if ($action == 'testAction' || $action == 'aboutAction') {
-            return null;
+            return;
         }
 
         return parent::preAction($action, $arguments);
     }
 
     /**
-     * This action simply returns a message to indicate that the API is working
+     * This action simply returns a message to indicate that the API is working.
      *
      * @depreciated
      */
@@ -108,7 +105,7 @@ class TestController extends AbstractController
     }
 
     /**
-     * Another test action to indicate the POST API is working
+     * Another test action to indicate the POST API is working.
      */
     public function postTestAction()
     {

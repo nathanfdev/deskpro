@@ -1,10 +1,10 @@
 <?php
 namespace DpUnitTests\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Tickets\Actions\SetAgent;
-use DpTestingMocks\ContainerMock;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\Actions\SetAgent;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use DpTestingMocks\ContainerMock;
 
 class SetAgentTest extends \DpUnitTestCase
 {
@@ -18,7 +18,9 @@ class SetAgentTest extends \DpUnitTestCase
      */
     private function getMockContainer()
     {
-        if ($this->container) return $this->container;
+        if ($this->container) {
+            return $this->container;
+        }
         $this->container = ContainerMock::create()->withAgentData()->get();
 
         return $this->container;
@@ -26,9 +28,9 @@ class SetAgentTest extends \DpUnitTestCase
 
     public function testSetAgent()
     {
-        $ticket = new Ticket();
+        $ticket        = new Ticket();
         $ticket->agent = $this->getMockContainer()->getAgentData()->get(1);
-        $exec   = new ExecutorContext();
+        $exec          = new ExecutorContext();
 
         $action = new SetAgent(array('agent_id' => 55));
         $action->setContainer($this->getMockContainer());
@@ -41,9 +43,9 @@ class SetAgentTest extends \DpUnitTestCase
 
     public function testSetUnassigned()
     {
-        $ticket = new Ticket();
+        $ticket        = new Ticket();
         $ticket->agent = $this->getMockContainer()->getAgentData()->get(1);
-        $exec   = new ExecutorContext();
+        $exec          = new ExecutorContext();
 
         $action = new SetAgent(array('agent_id' => 0));
         $action->setContainer($this->getMockContainer());
@@ -55,7 +57,7 @@ class SetAgentTest extends \DpUnitTestCase
 
     public function testSetSelf()
     {
-        $ticket = new Ticket();
+        $ticket        = new Ticket();
         $ticket->agent = $this->getMockContainer()->getAgentData()->get(1);
 
         $exec = new ExecutorContext();
@@ -72,7 +74,7 @@ class SetAgentTest extends \DpUnitTestCase
 
     public function testNoop()
     {
-        $ticket = new Ticket();
+        $ticket        = new Ticket();
         $ticket->agent = $this->getMockContainer()->getAgentData()->get(55);
 
         $exec = new ExecutorContext();
@@ -86,7 +88,7 @@ class SetAgentTest extends \DpUnitTestCase
     public function testInvalid()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         $action = new SetAgent(array('agent_id' => 200));
         $action->setContainer($this->getMockContainer());

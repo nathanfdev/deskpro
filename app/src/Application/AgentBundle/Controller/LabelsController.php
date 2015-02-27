@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
 
 /**
- * Handles label definitions
+ * Handles label definitions.
  */
 class LabelsController extends AbstractController
 {

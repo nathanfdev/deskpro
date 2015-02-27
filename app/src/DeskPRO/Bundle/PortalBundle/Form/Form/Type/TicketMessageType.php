@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -57,8 +54,8 @@ class TicketMessageType extends AbstractType
         }
 
         $builder->add('message', 'textarea', array(
-            'label' => $options['message_label'],
-            'required' => $options['required'],
+            'label'       => $options['message_label'],
+            'required'    => $options['required'],
             'constraints' => $constraints,
         ));
 
@@ -90,8 +87,8 @@ class TicketMessageType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Application\\DeskPRO\\Entity\\TicketMessage',
-            'message_label' => 'Message',
+            'data_class'          => 'Application\\DeskPRO\\Entity\\TicketMessage',
+            'message_label'       => 'Message',
             'message_constraints' => array(),
         ));
         $resolver->setRequired(array(

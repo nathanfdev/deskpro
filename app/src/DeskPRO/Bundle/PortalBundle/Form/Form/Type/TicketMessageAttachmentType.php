@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -76,7 +73,7 @@ class TicketMessageAttachmentType extends AbstractType
 
     public function preSubmit(FormEvent $event)
     {
-        $form = $event->getForm();
+        $form          = $event->getForm();
         $submittedData = $event->getData();
         if (array_key_exists('blob_auth', $submittedData)) {
             if (!$form->getData()) {
@@ -111,9 +108,9 @@ class TicketMessageAttachmentType extends AbstractType
     public function postSubmit(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\TicketAttachment $attachment */
-        $attachment = $event->getData() instanceof TicketAttachment ? $event->getData() : new TicketAttachment();
-        $form = $event->getForm();
-        $person = $form->getConfig()->getOption('person');
+        $attachment     = $event->getData() instanceof TicketAttachment ? $event->getData() : new TicketAttachment();
+        $form           = $event->getForm();
+        $person         = $form->getConfig()->getOption('person');
         $ticket_message = $form->getConfig()->getOption('ticket_message');
 
         if ($form->has('upload')) {
@@ -174,7 +171,7 @@ class TicketMessageAttachmentType extends AbstractType
         $resolver->setAllowedTypes(
             array(
                 'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
-                'person' => 'Application\\DeskPRO\\Entity\\Person',
+                'person'         => 'Application\\DeskPRO\\Entity\\Person',
             )
         );
     }

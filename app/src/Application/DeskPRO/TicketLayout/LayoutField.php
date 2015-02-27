@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -113,7 +112,7 @@ class LayoutField implements \Serializable
 
         if ($options->has('criteria')) {
             $crit_options = new OptionsArray($options->get('criteria'));
-            $criteria = new LayoutFieldCriteria();
+            $criteria     = new LayoutFieldCriteria();
             $criteria->setMode($crit_options->get('mode') == 'all' ? 'all' : 'any');
 
             foreach ($crit_options->get('terms') as $term_info) {
@@ -189,7 +188,7 @@ class LayoutField implements \Serializable
     }
 
     /**
-     * Enables field on new ticket
+     * Enables field on new ticket.
      */
     public function enableOnNew()
     {
@@ -197,7 +196,7 @@ class LayoutField implements \Serializable
     }
 
     /**
-     * Disables field on new ticket
+     * Disables field on new ticket.
      */
     public function disableOnNew()
     {
@@ -213,7 +212,7 @@ class LayoutField implements \Serializable
     }
 
     /**
-     * Enables field on ticket view
+     * Enables field on ticket view.
      *
      * @param string $mode View mode: Always show field or only show when there is a value
      */
@@ -224,7 +223,7 @@ class LayoutField implements \Serializable
     }
 
     /**
-     * Disables field on ticket view
+     * Disables field on ticket view.
      */
     public function disableOnView()
     {
@@ -249,7 +248,7 @@ class LayoutField implements \Serializable
     }
 
     /**
-     * Enable field on ticket edit
+     * Enable field on ticket edit.
      */
     public function enableOnEdit()
     {
@@ -257,7 +256,7 @@ class LayoutField implements \Serializable
     }
 
     /**
-     * Disable field on ticket edit
+     * Disable field on ticket edit.
      */
     public function disableOnEdit()
     {
@@ -303,7 +302,7 @@ class LayoutField implements \Serializable
     }
 
     /**
-     * Removes criteria from the field
+     * Removes criteria from the field.
      */
     public function removeCriteria()
     {
@@ -329,7 +328,7 @@ class LayoutField implements \Serializable
     {
         $data = array();
 
-        $data['version']  = 1;
+        $data['version']    = 1;
         $data['field_type'] = $this->field_type;
         $data['field_id']   = $this->field_id;
         $data['options']    = array();

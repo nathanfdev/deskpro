@@ -10,7 +10,7 @@ use Guzzle\Http\Exception\BadResponseException;
 
 /**
  * JIRA Web Service Wrapper<br/>
- * Handles the communication to and from JIRA's REST API
+ * Handles the communication to and from JIRA's REST API.
  *
  * @author Abhinav Kumar <work@abhinavkumar.in>
  */
@@ -18,14 +18,14 @@ class Service
 {
     /**
      * An HTTP REST client for making<br/>
-     * REST API calls to the JIRA service
+     * REST API calls to the JIRA service.
      *
      * @var Client An HTTP Rest Client
      */
     protected $_client;
 
     /**
-     * An array of errors
+     * An array of errors.
      *
      * @var array errors
      */
@@ -35,7 +35,7 @@ class Service
      * Switches the debug mode<br/>
      * On: Will throw an exception as and when it's caught<br/>
      * Off: Will catch all the errors/exceptions and store<br/>
-     * it in $this->_errors array
+     * it in $this->_errors array.
      *
      * @var bool Debug Mode
      */
@@ -48,7 +48,7 @@ class Service
     protected $_regEnabled = false;
 
     /**
-     * The default constructor
+     * The default constructor.
      *
      * @param type $params
      */
@@ -76,7 +76,7 @@ class Service
     }
 
     /**
-     * Gets the base URL
+     * Gets the base URL.
      *
      * @return String The base URL
      */
@@ -86,7 +86,7 @@ class Service
     }
 
     /**
-     * Gets all the errors occured in the current instance
+     * Gets all the errors occured in the current instance.
      *
      * @return array An array of errors
      */
@@ -98,11 +98,13 @@ class Service
     /**
      * Adds a new error<br/>
      * Based on the debug mode it either throws the exception<br/>
-     * or stores the error in the $this->_errors array
+     * or stores the error in the $this->_errors array.
      *
-     * @param  String        $error The Error Message
+     * @param String $error The Error Message
+     *
+     * @throws \Exception if the debug mode is off
      * @return \JIRA\Service
-     * @throws \Exception    if the debug mode is off
+     *
      */
     public function addError($error, $code = 0)
     {
@@ -116,7 +118,7 @@ class Service
     }
 
     /**
-     * Resets the current errors
+     * Resets the current errors.
      *
      * @return \JIRA\Service
      */
@@ -128,9 +130,10 @@ class Service
     }
 
     /**
-     * Sends an HTTP request
+     * Sends an HTTP request.
      *
-     * @param  \Guzzle\Http\Message\Request $request
+     * @param \Guzzle\Http\Message\Request $request
+     *
      * @return array|string|int|bool|float
      */
     protected function _send(\Guzzle\Http\Message\Request $request, $raw = false)
@@ -161,10 +164,11 @@ class Service
     }
 
     /**
-     * Performs an HTTP GET request
+     * Performs an HTTP GET request.
      *
-     * @param  String                      $uri    the URI to GET
-     * @param  array                       $params request parameters
+     * @param String $uri    the URI to GET
+     * @param array  $params request parameters
+     *
      * @return array|string|int|bool|float
      */
     public function get($uri, array $headers = array(), $params = array())
@@ -182,12 +186,13 @@ class Service
     }
 
     /**
-     * Performs an HTTP POST request
+     * Performs an HTTP POST request.
      *
-     * @param  type                        $uri         the URI to POST to
-     * @param  array                       $headers     additional headers to pass
-     * @param  String                      $body        request body
-     * @param  String                      $contentType content-type to encode the body
+     * @param type   $uri         the URI to POST to
+     * @param array  $headers     additional headers to pass
+     * @param String $body        request body
+     * @param String $contentType content-type to encode the body
+     *
      * @return array|string|int|bool|float
      */
     public function post($uri, $headers, $body, $contentType = null)
@@ -204,12 +209,13 @@ class Service
     }
 
     /**
-     * Performs an HTTP PUT request
+     * Performs an HTTP PUT request.
      *
-     * @param  String                      $uri         the URI to PUT to
-     * @param  array                       $headers     additional headers to pass
-     * @param  String                      $body        request body
-     * @param  String                      $contentType content-type to encode the body
+     * @param String $uri         the URI to PUT to
+     * @param array  $headers     additional headers to pass
+     * @param String $body        request body
+     * @param String $contentType content-type to encode the body
+     *
      * @return array|string|int|bool|float
      */
     public function put($uri, $headers, $body, $contentType = null)
@@ -226,10 +232,11 @@ class Service
     }
 
     /**
-     * Performs a POST with content-type: JSON
+     * Performs a POST with content-type: JSON.
      *
-     * @param  String                      $uri  the URI to POST to
-     * @param  String|array                $body pre encoded request body
+     * @param String       $uri  the URI to POST to
+     * @param String|array $body pre encoded request body
+     *
      * @return array|string|int|bool|float
      */
     public function postJson($uri, $body)
@@ -250,10 +257,11 @@ class Service
     }
 
     /**
-     * Performs a PUT with content-type: JSON
+     * Performs a PUT with content-type: JSON.
      *
-     * @param  String                      $uri  the URI to PUT to
-     * @param  String|array                $body The request body
+     * @param String       $uri  the URI to PUT to
+     * @param String|array $body The request body
+     *
      * @return array|string|int|bool|float
      */
     public function putJson($uri, $body)
@@ -274,9 +282,10 @@ class Service
     }
 
     /**
-     * Performs an HTTP DELETE request
+     * Performs an HTTP DELETE request.
      *
-     * @param  String                      $uri the URI to DELETE
+     * @param String $uri the URI to DELETE
+     *
      * @return array|string|int|bool|float
      */
     public function delete($uri)
@@ -287,10 +296,11 @@ class Service
     }
 
     /**
-     * Finds an Entity
+     * Finds an Entity.
      *
-     * @param  String                      $entity Entity class name
-     * @param  int                         $id     id of the entity to find
+     * @param String $entity Entity class name
+     * @param int    $id     id of the entity to find
+     *
      * @return boolean|\JIRA\Entity\Entity The object if found and "FALSE" otherwise
      */
     public function find($entity, $id)
@@ -308,10 +318,11 @@ class Service
 
     /**
      * The magical __call method<br/>
-     * Maps the "findBy__EntityName" calls
+     * Maps the "findBy__EntityName" calls.
      *
-     * @param  String                      $name      the name of the function called
-     * @param  mixed                       $arguments additional arguments passed
+     * @param String $name      the name of the function called
+     * @param mixed  $arguments additional arguments passed
+     *
      * @return boolean|\JIRA\Entity\Entity The object if found and "FALSE" otherwise
      */
     public function __call($name, $arguments)
@@ -326,10 +337,11 @@ class Service
     }
 
     /**
-     * Gets the repository class of an entity
+     * Gets the repository class of an entity.
      *
-     * @param  String|\JIRA\Entity\Entity $entity An Entity object or class name
-     * @return string|boolean             The repository class name if found and "FALSE" otherwise
+     * @param String|\JIRA\Entity\Entity $entity An Entity object or class name
+     *
+     * @return string|boolean The repository class name if found and "FALSE" otherwise
      */
     public function getRepositoryClass($entity)
     {
@@ -357,9 +369,10 @@ class Service
     }
 
     /**
-     * Gets the Entity Repository
+     * Gets the Entity Repository.
      *
-     * @param  String|\JIRA\Entity\Entity         $entity An Entity object or class name
+     * @param String|\JIRA\Entity\Entity $entity An Entity object or class name
+     *
      * @return \JIRA\Entity\Repository\Repository | bool if found and "FALSE" otherwise
      */
     public function getRepository($entity)
@@ -378,9 +391,10 @@ class Service
     }
 
     /**
-     * Persists an Entity to the JIRA REST Service
+     * Persists an Entity to the JIRA REST Service.
      *
-     * @param  \JIRA\Entity\Entity $entity The entity to persist
+     * @param \JIRA\Entity\Entity $entity The entity to persist
+     *
      * @return \JIRA\Entity\Entity | boolean The persisted entity on success and "FALSE" otherwise
      */
     public function persist(\Orb\Jira\Entity $entity)
@@ -395,10 +409,11 @@ class Service
     }
 
     /**
-     * Removes and Entity from the JIRA REST Service
+     * Removes and Entity from the JIRA REST Service.
      *
-     * @param  \JIRA\Entity\Entity $entity The entity to persist
-     * @return boolean             "TRUE" on success and "FALSE" otherwise
+     * @param \JIRA\Entity\Entity $entity The entity to persist
+     *
+     * @return boolean "TRUE" on success and "FALSE" otherwise
      */
     public function remove(\Orb\Jira\Entity $entity)
     {
@@ -450,7 +465,7 @@ class Service
     }
 
     /**
-     * Fetches all the comments on all associated JIRA issues
+     * Fetches all the comments on all associated JIRA issues.
      */
     public function fetchAllComment($limit = 0)
     {
@@ -470,7 +485,7 @@ class Service
     }
 
     /**
-     * Fetches comments on given JIRA issue
+     * Fetches comments on given JIRA issue.
      *
      * @param type $issue_id JIRA issue ID
      */
@@ -532,7 +547,7 @@ class Service
 
                 $jiraUserEmail                    = $comment['author']['emailAddress'];
 
-                /**
+                /*
                  * Comment author mapping
                  * We're trying to find a matching user in DeskPRO
                  * If none found we set it to current user
@@ -550,9 +565,9 @@ class Service
                     }
 
                     $person_processor = new PersonFromEmailProcessor();
-                    $eml = new EmailAddress();
-                    $eml->email = $jiraUserEmail;
-                    $person = $person_processor->createPerson($eml, true);
+                    $eml              = new EmailAddress();
+                    $eml->email       = $jiraUserEmail;
+                    $person           = $person_processor->createPerson($eml, true);
 
                     if (!$person) {
                         // todo?
@@ -579,7 +594,7 @@ class Service
                 $jiraIssueComment = new \Application\DeskPRO\Entity\JiraIssueComment();
 
                 $jiraIssueComment->jiraId            = $comment['id'];
-                $jiraIssueComment->ticketMessage    = $ticketNote;
+                $jiraIssueComment->ticketMessage     = $ticketNote;
 
                 $jiraIssue->addComment($jiraIssueComment);
 

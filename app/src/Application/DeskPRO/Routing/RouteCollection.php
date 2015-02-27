@@ -26,27 +26,26 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Routing;
 
-use \Symfony\Component\Routing\RouteCollection as BaseRouteCollection;
+use Symfony\Component\Routing\RouteCollection as BaseRouteCollection;
 
 class RouteCollection extends \Symfony\Component\Routing\RouteCollection
 {
     /**
-     * Array of operations to be run when this collection is resolved onto another collection
+     * Array of operations to be run when this collection is resolved onto another collection.
      *
      * @var array
      */
     private $ops = array();
 
     /**
-     * @param  string $name
-     * @param  array  $info
+     * @param string $name
+     * @param array  $info
+     *
      * @return Route
      */
     public function create($name, array $info)
@@ -84,7 +83,7 @@ class RouteCollection extends \Symfony\Component\Routing\RouteCollection
     }
 
     /**
-     * Remove all routes for a given controller
+     * Remove all routes for a given controller.
      *
      * @param string $find_controller
      */
@@ -106,8 +105,7 @@ class RouteCollection extends \Symfony\Component\Routing\RouteCollection
      *
      * Used mainly in cloud routing to disable routes that dont apply.
      *
-     * @param  string|array $name... A name or array of names or multiple arguments of the same
-     * @return void
+     * @param string|array $name... A name or array of names or multiple arguments of the same
      */
     public function removeRoutes($name)
     {

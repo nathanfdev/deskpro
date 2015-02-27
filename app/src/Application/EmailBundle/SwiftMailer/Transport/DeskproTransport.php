@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\SwiftMailer\Transport;
@@ -40,10 +37,10 @@ use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use Orb\Util\Arrays;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Swift_Transport;
 use Swift_Events_EventDispatcher;
-use Swift_Mime_Message;
 use Swift_Events_SendEvent;
+use Swift_Mime_Message;
+use Swift_Transport;
 
 class DeskproTransport implements Swift_Transport, StorageTransportInterface
 {
@@ -97,7 +94,7 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
             $this->logger->debug("[Before processing] From is empty");
         }
 
-        $acc = $this->email_accounts->findAccountForSwiftmailerMessage($message);
+        $acc        = $this->email_accounts->findAccountForSwiftmailerMessage($message);
         $from_name  = Arrays::getFirstItem($message->getFrom() ?: array()) ?: '';
         $from_email = $acc->getUseEmailAddress();
 
@@ -149,8 +146,9 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
     /**
      * Queue the message so it is sent by the queue processor.
      *
-     * @param  Swift_Mime_Message $message
-     * @param  \DateTime          $send_date When to send the message. If not specified, it will be sent the next time the processor is run.
+     * @param Swift_Mime_Message $message
+     * @param \DateTime          $send_date When to send the message. If not specified, it will be sent the next time the processor is run.
+     *
      * @return int
      */
     public function queueMessage(Swift_Mime_Message $message, \DateTime $send_date = null)
@@ -173,7 +171,8 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
     /**
      * Save the message to the DB.
      *
-     * @param  Swift_Mime_Message $message
+     * @param Swift_Mime_Message $message
+     *
      * @return int
      */
     public function insertMessage(Swift_Mime_Message $message)

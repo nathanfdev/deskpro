@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category ORM
  */
 
@@ -40,7 +39,7 @@ use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Tools\SchemaTool;
 
 /**
- * Simple utility methods for working with the ORM
+ * Simple utility methods for working with the ORM.
  */
 class Util
 {
@@ -52,7 +51,8 @@ class Util
      * Checks to see if $collection is a valid PersistentCollection, and if it's
      * been initialized yet.
      *
-     * @param  mixed $collection
+     * @param mixed $collection
+     *
      * @return bool
      */
     public static function isCollectionInitialized($collection)
@@ -65,7 +65,8 @@ class Util
     }
 
     /**
-     * @param  \Application\DeskPRO\ORM\EntityManager $em
+     * @param \Application\DeskPRO\ORM\EntityManager $em
+     *
      * @return array
      */
     public static function getUpdateSchemaSql(EntityManager $em = null)
@@ -75,9 +76,9 @@ class Util
         }
 
         $metadata = $em->getMetadataFactory()->getAllMetadata();
-        $tool = new SchemaTool($em);
+        $tool     = new SchemaTool($em);
 
-        $arr = $tool->getUpdateSchemaSql($metadata, true);
+        $arr   = $tool->getUpdateSchemaSql($metadata, true);
         $lines = array();
         foreach ($arr as $a) {
             // Doctrine doesnt seem to detect this properly and always thinks this is needed

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category ORM
  */
 
@@ -52,7 +51,7 @@ class LabelLister
 
     /**
      * Gets an index of labels by index=>array(lables). THe index is usually the
-     * letter, but maybe not depending on language. (?)
+     * letter, but maybe not depending on language. (?).
      *
      * @return array
      */

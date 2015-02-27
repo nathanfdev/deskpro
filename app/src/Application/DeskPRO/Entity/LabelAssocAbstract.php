@@ -26,17 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\Entity;
 
 /**
- * Base labels associations class
- *
+ * Base labels associations class.
  */
 abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -62,7 +60,7 @@ abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObje
     }
 
     /**
-     * Returns label name
+     * Returns label name.
      *
      * @return string
      */

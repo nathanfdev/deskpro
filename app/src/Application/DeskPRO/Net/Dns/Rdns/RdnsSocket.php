@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Net\Dns\Rdns;
@@ -53,7 +50,7 @@ class RdnsSocket implements RdnsInterface
     public function __construct($dns_server, $timeout = 3)
     {
         $this->dns_server = $dns_server;
-        $this->timeout = $timeout;
+        $this->timeout    = $timeout;
     }
 
     /**
@@ -89,9 +86,11 @@ class RdnsSocket implements RdnsInterface
     }
 
     /**
-     * @param  string            $ip
-     * @return string|null
+     * @param string $ip
+     *
      * @throws \RuntimeException
+     * @return string|null
+     *
      */
     public function lookup($ip)
     {
@@ -99,12 +98,14 @@ class RdnsSocket implements RdnsInterface
     }
 
     /**
-     * TODO: add support for ipv6 addresses
+     * TODO: add support for ipv6 addresses.
      *
      * @see http://www.php.net/manual/en/function.gethostbyaddr.php#46869
-     * @param  string      $ip
-     * @param  string      $dns_server
-     * @param  int         $timeout
+     *
+     * @param string $ip
+     * @param string $dns_server
+     * @param int    $timeout
+     *
      * @return string|null
      */
     public static function rdnsLookup($ip, $dns_server, $timeout = 3)
@@ -116,7 +117,7 @@ class RdnsSocket implements RdnsInterface
             $l = strlen($bit);
 
             if (!isset($bitso[$l])) {
-                return null;
+                return;
             }
 
             $data .= "{$bitso[$l]}".$bit;
@@ -125,7 +126,7 @@ class RdnsSocket implements RdnsInterface
         $data .= "\7in-addr\4arpa\0\0\x0C\0\1";
 
         $errno = $errstr = 0;
-        $fp = @fsockopen("udp://{$dns_server}", 53, $errno, $errstr, $timeout);
+        $fp    = @fsockopen("udp://{$dns_server}", 53, $errno, $errstr, $timeout);
         if (!$fp || !is_resource($fp)) {
             throw new \RuntimeException($errstr, $errno);
         }
@@ -137,7 +138,7 @@ class RdnsSocket implements RdnsInterface
         }
 
         $requestsize = @fwrite($fp, $data);
-        $response = '';
+        $response    = '';
 
         $start = time();
         while (((time() - $start) < $timeout) && ($buf = fread($fp, 512)) !== false) {
@@ -151,10 +152,10 @@ class RdnsSocket implements RdnsInterface
 
         // if empty response or bad response, return original ip
         if (empty($response) || bin2hex(substr($response, $requestsize + 2, 2)) != '000c') {
-            return null;
+            return;
         }
 
-        $host = '';
+        $host  = '';
         $loops = 0;
 
         // set our pointer at the beginning of the hostname uses the request size from earlier rather than work it out
@@ -178,6 +179,6 @@ class RdnsSocket implements RdnsInterface
             $loops++;
         } while ($len[1] != 0 && $loops < 150);
 
-        return null;
+        return;
     }
 }

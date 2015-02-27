@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category DBAL
  */
 
@@ -38,7 +37,7 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 
 /**
- * This connects some of the Doctrine events to the symfony event dispatcher
+ * This connects some of the Doctrine events to the symfony event dispatcher.
  */
 class DoctrineEvent extends \Symfony\Component\EventDispatcher\Event
 {
@@ -75,7 +74,7 @@ class DoctrineEvent extends \Symfony\Component\EventDispatcher\Event
     }
 
     /**
-     * The entity, or null if the event type doesnt have an entity
+     * The entity, or null if the event type doesnt have an entity.
      *
      * @return mixed
      */

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Controller;
@@ -65,11 +62,11 @@ class SearchController extends AbstractController
             return $this->redirect($this->in->getString('gourl'));
         }
 
-        $is_search = false;
-        $results = false;
+        $is_search      = false;
+        $results        = false;
         $sticky_results = false;
 
-        $total = 0;
+        $total    = 0;
         $per_page = 25;
         $cur_page = 1;
         if ($this->in->getUint('p')) {
@@ -79,8 +76,8 @@ class SearchController extends AbstractController
         if ($q) {
             $is_search  = true;
 
-            $se = $this->container->getSearchEngine();
-            $context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
+            $se         = $this->container->getSearchEngine();
+            $context    = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
             $result_set = $se->getUserSearch()->search($context, $q);
 
             $total      = $result_set->getTotal();
@@ -151,7 +148,7 @@ class SearchController extends AbstractController
         # Find content with label
         #------------------------------
 
-        $total = 0;
+        $total    = 0;
         $per_page = 25;
         $cur_page = 1;
         if ($this->in->getUint('p')) {
@@ -176,7 +173,7 @@ class SearchController extends AbstractController
             }
         }
 
-        $results = null;
+        $results  = null;
         $pageinfo = null;
         if ($label) {
             $search      = App::getSearchAdapter();
@@ -192,22 +189,22 @@ class SearchController extends AbstractController
         #------------------------------
 
         $content_cloud = new ContentLabelCloud();
-        $cloud = $content_cloud->getCloud();
+        $cloud         = $content_cloud->getCloud();
 
         return $this->render('UserBundle:Search:label-search.html.twig', array(
-            'cloud'    => $cloud,
-            'label'    => $label,
-            'results'  => $results,
-            'type'     => $type,
-            'pageinfo' => $pageinfo,
+            'cloud'       => $cloud,
+            'label'       => $label,
+            'results'     => $results,
+            'type'        => $type,
+            'pageinfo'    => $pageinfo,
             'num_results' => $total,
         ));
     }
 
     public function omnisearchAction($query)
     {
-        $se = $this->container->getSearchEngine();
-        $context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
+        $se             = $this->container->getSearchEngine();
+        $context        = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
         $search_results = $se->getUserSearch()->search($context, $query);
 
         $sticky_search  = new StickyWordSearch($this->em);
@@ -221,7 +218,7 @@ class SearchController extends AbstractController
         $got_sticky = array();
         foreach ($sticky_results as $sitem) {
             $got_sticky[get_class($sitem['object']).$sitem['object']->getId()] = true;
-            $results[] = $sitem;
+            $results[]                                                         = $sitem;
         }
         foreach ($search_results->getTypedResults() as $item) {
             if (isset($got_sticky[get_class($item['object']).$item['object']->getId()])) {
@@ -235,7 +232,7 @@ class SearchController extends AbstractController
 
             foreach ($results as $item) {
                 $data['results'][] = array(
-                    'url' => $item['object']->getLink(),
+                    'url'   => $item['object']->getLink(),
                     'title' => $item['object']->getTitle(),
                 );
             }
@@ -271,7 +268,7 @@ class SearchController extends AbstractController
             ));
         }
 
-        $se = $this->container->getSearchEngine();
+        $se      = $this->container->getSearchEngine();
         $context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
         $results = $se->getUserSearch()->search($context, $content, array('limit_types' => array($content_type)));
 

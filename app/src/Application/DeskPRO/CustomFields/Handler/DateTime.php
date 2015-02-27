@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Form
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\CustomFields\Handler;
@@ -37,7 +34,7 @@ namespace Application\DeskPRO\CustomFields\Handler;
 use Application\DeskPRO\App;
 
 /**
- * Handles the datetime field
+ * Handles the datetime field.
  */
 class DateTime extends HandlerAbstract
 {

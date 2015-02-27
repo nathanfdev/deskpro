@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Searcher;
 
@@ -59,13 +57,15 @@ class ArticleSearch extends SearcherAbstract
     const ORDER_VIEWS = 'view_count';
 
     /**
-     * From getSqlParts()
+     * From getSqlParts().
+     *
      * @var array
      */
     protected $sql_parts = null;
 
     /**
-     * Summary of terms in phrases
+     * Summary of terms in phrases.
+     *
      * @var array
      */
     protected $summary = array();
@@ -73,7 +73,8 @@ class ArticleSearch extends SearcherAbstract
     /**
      * Run the search and return an array of matching ID's.
      *
-     * @param  array $limit
+     * @param array $limit
+     *
      * @return array
      */
     public function getMatches(array $limit = null)
@@ -86,9 +87,10 @@ class ArticleSearch extends SearcherAbstract
     }
 
     /**
-     * Get actual model objects for matches
+     * Get actual model objects for matches.
      *
-     * @param  array $limit
+     * @param array $limit
+     *
      * @return array
      */
     public function getMatchingObjects(array $limit = null)
@@ -128,14 +130,14 @@ class ArticleSearch extends SearcherAbstract
     }
 
     /**
-     * Get the total number of matches
+     * Get the total number of matches.
      *
      * @return int
      */
     public function getCount()
     {
-        $sql = "SELECT COUNT(DISTINCT id) FROM articles ";
-        $parts = $this->getSqlParts();
+        $sql      = "SELECT COUNT(DISTINCT id) FROM articles ";
+        $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
         #------------------------------
@@ -179,7 +181,7 @@ class ArticleSearch extends SearcherAbstract
     }
 
     /**
-     * Get the summary of crtiera
+     * Get the summary of crtiera.
      *
      * @return array
      */
@@ -193,7 +195,7 @@ class ArticleSearch extends SearcherAbstract
     }
 
     /**
-     * Get the SQL query that'll fetch the results
+     * Get the SQL query that'll fetch the results.
      *
      * @return string
      */
@@ -201,7 +203,7 @@ class ArticleSearch extends SearcherAbstract
     {
         $sql = "SELECT articles.id FROM articles ";
 
-        $parts = $this->getSqlParts();
+        $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
         #------------------------------
@@ -303,16 +305,16 @@ class ArticleSearch extends SearcherAbstract
         $tr = App::getTranslator();
 
         $wheres = array();
-        $joins = array(
+        $joins  = array(
             array('article_to_categories_perm', "LEFT JOIN article_to_categories AS catperm ON (catperm.article_id = articles.id)"),
         );
 
         foreach ($this->terms as $info) {
-            $join_id = Util::requestUniqueId();
+            $join_id   = Util::requestUniqueId();
             $join_name = "j_$join_id";
 
             list($term, $op, $choice) = $info;
-            $term_id = null;
+            $term_id                  = null;
 
             switch ($term) {
                 case self::TERM_ID:
@@ -349,7 +351,7 @@ class ArticleSearch extends SearcherAbstract
 
                     // Normal vis status
                     if (strpos($choice, '.') === false) {
-                        $status = $choice;
+                        $status        = $choice;
                         $hidden_status = '';
 
                     // Formatted: hidden.hidden_status
@@ -389,13 +391,13 @@ class ArticleSearch extends SearcherAbstract
                     );
 
                     $string = $choice['query'];
-                    $type = !empty($choice['type']) ? $choice['type'] : 'phrase';
+                    $type   = !empty($choice['type']) ? $choice['type'] : 'phrase';
 
                     if (!$string) {
                         break;
                     }
 
-                    $w = array();
+                    $w   = array();
                     $w[] = '('.$this->_stringSearch("articles.title", $op, $string, $type).')';
                     $w[] = '('.$this->_stringSearch("articles.content", $op, $string, $type).')';
                     $w[] = '('.$this->_stringSearch("$j1.value", $op, $string, $type).')';
@@ -407,7 +409,7 @@ class ArticleSearch extends SearcherAbstract
                 case self::TERM_CATEGORY:
                 case self::TERM_CATEGORY_SPECIFIC:
                     $base_ids = (array) ((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
-                    $ids = array();
+                    $ids      = array();
 
                     if ($term == self::TERM_CATEGORY_SPECIFIC) {
                         $ids = $base_ids;
@@ -452,13 +454,13 @@ class ArticleSearch extends SearcherAbstract
                         $choice = array_pop($choice);
                     }
                     if ($choice) {
-                        $date = new \DateTime(App::getSetting('core_kb.new_time'));
+                        $date     = new \DateTime(App::getSetting('core_kb.new_time'));
                         $wheres[] = $this->_dateMatch('articles.date_created', 'gte', array('date1' => $date));
                     }
                     break;
 
                 case self::TERM_DATE_CREATED:
-                    $wheres[] = $this->_dateMatch('articles.date_created', $op, $choice);
+                    $wheres[]        = $this->_dateMatch('articles.date_created', $op, $choice);
                     $this->summary[] = $this->_dateRangeSummary('Date created', $op, $choice);
                     break;
 

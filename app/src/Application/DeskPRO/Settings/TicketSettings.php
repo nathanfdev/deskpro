@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Settings;
@@ -234,7 +232,7 @@ class TicketSettings
     }
 
     /**
-     * Persists settings
+     * Persists settings.
      */
     public function saveSettings()
     {

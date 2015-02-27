@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * Orb
- *
- * @package    Orb
- * @subpackage Doctrine
+ * Orb.
  */
 
 namespace Orb\Doctrine\DBAL\Driver\PDOODBC;
@@ -37,10 +34,11 @@ namespace Orb\Doctrine\DBAL\Driver\PDOODBC;
 class AbstractDriver implements \Doctrine\DBAL\Driver
 {
     /**
-     * @param  array                                       $params
-     * @param  string|null                                 $username
-     * @param  string|null                                 $password
-     * @param  array                                       $driverOptions
+     * @param array       $params
+     * @param string|null $username
+     * @param string|null $password
+     * @param array       $driverOptions
+     *
      * @return \Doctrine\DBAL\Driver\Connection|Connection
      */
     public function connect(array $params, $username = null, $password = null, array $driverOptions = array())
@@ -56,7 +54,8 @@ class AbstractDriver implements \Doctrine\DBAL\Driver
     /**
      * Constructs the ODBC PDO DSN.
      *
-     * @param  array  $params
+     * @param array $params
+     *
      * @return string The DSN.
      */
     private function _constructPdoDsn(array $params)
@@ -67,12 +66,13 @@ class AbstractDriver implements \Doctrine\DBAL\Driver
     }
 
     /**
-     * @return \Doctrine\DBAL\Platforms\AbstractPlatform
      * @throws \InvalidArgumentException
+     * @return \Doctrine\DBAL\Platforms\AbstractPlatform
+     *
      */
     public function getDatabasePlatform()
     {
-        $classname = $this->platform;
+        $classname         = $this->platform;
         $default_classname = 'Doctrine\\DBAL\\Platforms\\'.$this->platform;
 
         if (class_exists($default_classname)) {
@@ -85,7 +85,8 @@ class AbstractDriver implements \Doctrine\DBAL\Driver
     }
 
     /**
-     * @param  \Doctrine\DBAL\Connection                                                                $conn
+     * @param \Doctrine\DBAL\Connection $conn
+     *
      * @return \Doctrine\DBAL\Schema\AbstractSchemaManager|\Doctrine\DBAL\Schema\SQLServerSchemaManager
      */
     public function getSchemaManager(\Doctrine\DBAL\Connection $conn)
@@ -102,7 +103,8 @@ class AbstractDriver implements \Doctrine\DBAL\Driver
     }
 
     /**
-     * @param  \Doctrine\DBAL\Connection $conn
+     * @param \Doctrine\DBAL\Connection $conn
+     *
      * @return string
      */
     public function getDatabase(\Doctrine\DBAL\Connection $conn)

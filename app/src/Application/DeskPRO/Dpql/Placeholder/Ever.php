@@ -26,15 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Placeholder;
-
-use Application\DeskPRO\Dpql;
 
 /**
  * Place holder for a non-restricted date.

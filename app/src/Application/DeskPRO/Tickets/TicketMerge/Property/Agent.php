@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -45,7 +44,7 @@ class Agent extends PropertyAbstract
         if ($this->strategy == self::STRATEGY_RIGHT) {
             $old_agent = $this->ticket->agent;
 
-            $this->ticket->agent = $this->other_ticket->agent;
+            $this->ticket->agent      = $this->other_ticket->agent;
             $this->ticket->agent_team = $this->other_ticket->agent_team;
 
             if ($this->getStrategyOption('add_follower') and $old_agent != $this->ticket->agent) {

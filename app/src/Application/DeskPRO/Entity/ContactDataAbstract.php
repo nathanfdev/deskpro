@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -42,7 +41,6 @@ use Application\DeskPRO\ContactData\ContactData;
  *
  * Because of the nature, each 'data_type' uses each of the field1-field10
  * differently. Sometimes only a single one might be used, other times multiple.
- *
  */
 abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -50,12 +48,11 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
      * The unique ID.
      *
      * @var int
-     *
      */
     protected $id = null;
 
     /**
-     * The handler class
+     * The handler class.
      *
      * @var string
      */
@@ -119,7 +116,8 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     protected $field_10 = '';
 
     /**
-     * Instance of the handler class
+     * Instance of the handler class.
+     *
      * @var \Application\DeskPRO\ContactData\AbstractContactData
      */
     protected $_handler = null;
@@ -153,8 +151,7 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     }
 
     /**
-     * @param  array $input
-     * @return void
+     * @param array $input
      */
     public function applyFormData(array $input)
     {
@@ -177,7 +174,7 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     }
 
     /**
-     * Gets a collapsed string that can be tried for searches
+     * Gets a collapsed string that can be tried for searches.
      *
      * @return mixed
      */
@@ -200,6 +197,7 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 
     /**
      * @param $string
+     *
      * @return bool
      */
     public function checkStringMatch($string)

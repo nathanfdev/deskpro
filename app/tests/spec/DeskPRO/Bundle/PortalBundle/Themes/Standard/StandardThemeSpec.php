@@ -26,46 +26,42 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\PortalBundle\Themes\Standard;
 
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use DeskPRO\Bundle\PortalBundle\Themes\Standard\StandardTheme;
+use PhpSpec\ObjectBehavior;
 
 /**
  * @mixin \DeskPRO\Bundle\PortalBundle\Themes\Standard\StandardTheme
  */
 class StandardThemeSpec extends ObjectBehavior
 {
-    function it_is_a_theme()
+    public function it_is_a_theme()
     {
         $this->shouldHaveType('DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface');
     }
 
-    function it_has_the_correct_id_and_name()
+    public function it_has_the_correct_id_and_name()
     {
         $this->getId()->shouldReturn('standard');
         $this->getName()->shouldReturn('Standard');
     }
 
-    function it_is_a_child_of_the_base_theme()
+    public function it_is_a_child_of_the_base_theme()
     {
         $this->getParentId()->shouldReturn('base');
     }
 
-    function it_can_resolve_a_tag_which_will_recursively_climb_the_parent_tree(
+    public function it_can_resolve_a_tag_which_will_recursively_climb_the_parent_tree(
         Tag $tag1,
         Tag $tag2,
         ThemeInterface $base_theme
-    )
-    {
+    ) {
         // base holds tag 2
         $tag2->getName()->willReturn('second_tag');
         $base_theme->resolveTag('second_tag')->willReturn($tag2);
@@ -75,7 +71,7 @@ class StandardThemeSpec extends ObjectBehavior
         $tag1->getName()->willReturn('first_tag');
         $this->setTags(array($tag1));
         $this->getTags()->shouldBe(array(
-            'first_tag' => $tag1
+            'first_tag' => $tag1,
         ));
 
         // both can be resolved from standard, transparently

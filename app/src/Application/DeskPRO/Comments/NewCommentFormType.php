@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Comments
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Comments;

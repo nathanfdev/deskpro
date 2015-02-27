@@ -26,20 +26,19 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use Application\DeskPRO\Tickets\Slas\SlaProcessor;
-use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Doctrine\ORM\EntityManager;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 class RecalculateSlas implements TicketSaveActionInterface, ErrorCheckedInterface
 {
@@ -59,14 +58,13 @@ class RecalculateSlas implements TicketSaveActionInterface, ErrorCheckedInterfac
      */
     public function __construct(EntityManager $em, ActionApplicatorInterface $action_applicator)
     {
-        $this->em = $em;
+        $this->em                = $em;
         $this->action_applicator = $action_applicator;
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @return void
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
      */
     public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
     {

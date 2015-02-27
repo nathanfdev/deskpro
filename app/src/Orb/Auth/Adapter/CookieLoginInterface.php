@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -40,7 +39,7 @@ namespace Orb\Auth\Adapter;
 interface CookieLoginInterface extends AdapterInterface
 {
     /**
-     * Authenticates based on data a cookie (such as a session or remember me cookie)
+     * Authenticates based on data a cookie (such as a session or remember me cookie).
      *
      * @param array $cookies
      *

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Data\DefaultData;
@@ -59,7 +56,7 @@ class BrandData extends AbstractDefaultData
         $num_brands = $this->getDb()->query('select count(*) from brands')->fetchColumn();
 
         if ($num_brands > 0) {
-            return null;
+            return;
         }
 
         $this->getDb()->exec("INSERT INTO brands (name, theme_id) VALUES ('Default Brand', 'standard')");

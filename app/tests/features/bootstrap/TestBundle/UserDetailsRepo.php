@@ -26,32 +26,30 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DpBehat\TestBundle;
 
-use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\Person;
+use Doctrine\ORM\EntityManager;
 
 class UserDetailsRepo
 {
-    const ADMIN_EMAIL = 'admin@deskpro.dev';
-    const ADMIN_PASS = 'pass';
+    const ADMIN_EMAIL      = 'admin@deskpro.dev';
+    const ADMIN_PASS       = 'pass';
     const ADMIN_FIRST_NAME = 'Link';
-    const ADMIN_LAST_NAME = 'Admin';
+    const ADMIN_LAST_NAME  = 'Admin';
 
-    const AGENT_EMAIL = 'agent@deskpro.dev';
-    const AGENT_PASS = 'password';
+    const AGENT_EMAIL      = 'agent@deskpro.dev';
+    const AGENT_PASS       = 'password';
     const AGENT_FIRST_NAME = 'Zelda';
-    const AGENT_LAST_NAME = 'Agent';
+    const AGENT_LAST_NAME  = 'Agent';
 
-    const USER_EMAIL = 'user@deskpro.dev';
-    const USER_PASS = '12345';
+    const USER_EMAIL      = 'user@deskpro.dev';
+    const USER_PASS       = '12345';
     const USER_FIRST_NAME = 'Ganon';
-    const USER_LAST_NAME = 'User';
+    const USER_LAST_NAME  = 'User';
 
     /**
      * @var EntityManager
@@ -65,8 +63,10 @@ class UserDetailsRepo
 
     /**
      * @param $who
-     * @return Person
+     *
      * @throws \Exception
+     * @return Person
+     *
      */
     public function getWho($who)
     {
@@ -84,7 +84,7 @@ class UserDetailsRepo
                 return self::USER_EMAIL;
         }
 
-        throw new \Exception('unknown user "' . $who . '"');
+        throw new \Exception('unknown user "'.$who.'"');
     }
 
     public function getPass($who)
@@ -98,7 +98,7 @@ class UserDetailsRepo
                 return self::USER_PASS;
         }
 
-        throw new \Exception('unknown user "' . $who . '"');
+        throw new \Exception('unknown user "'.$who.'"');
     }
 
     public function getFirstName($who)
@@ -112,7 +112,7 @@ class UserDetailsRepo
                 return self::USER_FIRST_NAME;
         }
 
-        throw new \Exception('unknown user "' . $who . '"');
+        throw new \Exception('unknown user "'.$who.'"');
     }
 
     public function getLastName($who)
@@ -126,6 +126,6 @@ class UserDetailsRepo
                 return self::USER_LAST_NAME;
         }
 
-        throw new \Exception('unknown user "' . $who . '"');
+        throw new \Exception('unknown user "'.$who.'"');
     }
 }

@@ -31,30 +31,32 @@ use Application\ImportBundle\AbstractCollection;
 use Exception;
 
 /**
- * Class Collection
- * @package Application\ImportBundle\Generator\Writer
+ * Class Collection.
  */
 class Collection extends AbstractCollection
 {
     /**
-     * Add a writer
+     * Add a writer.
      *
      * @param WriterInterface $writer
+     *
      * @return $this
      */
     public function attach(WriterInterface $writer)
     {
         $this->collection[$writer->getType()] = $writer;
+
         return $this;
     }
 
     /**
-     * Returns a writer by type
+     * Returns a writer by type.
      *
      * @param string $type
      *
-     * @return WriterInterface
      * @throws Exception
+     * @return WriterInterface
+     *
      */
     public function getByType($type)
     {

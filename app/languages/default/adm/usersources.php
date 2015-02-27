@@ -26,6 +26,6 @@
 \**************************************************************************/
 
 return array(
-	'adm.usersources.error_last_usersource_agent' => 'You cannot disable the last agent usersource.',
-	'adm.usersources.error_last_usersource' => 'You cannot disable the last usersource.',
+    'adm.usersources.error_last_usersource_agent' => 'You cannot disable the last agent usersource.',
+    'adm.usersources.error_last_usersource'       => 'You cannot disable the last usersource.',
 );

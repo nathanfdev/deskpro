@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Cloud\LegacyApiBundle\Controller;
@@ -40,7 +37,8 @@ use DeskPRO\Kernel\License;
 class AgentsController extends BaseAgentsController
 {
     /**
-     * @param  int           $num
+     * @param int $num
+     *
      * @return Response|null
      */
     protected function preNewAgent($num)
@@ -76,6 +74,6 @@ class AgentsController extends BaseAgentsController
             }
         }
 
-        return null;
+        return;
     }
 }

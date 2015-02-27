@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
@@ -41,7 +38,7 @@ class Feed extends PortalItemAbstract implements CacheableItem
     public function getCacheOptions()
     {
         return array(
-            'lifetime' => 43200, /*12 hours*/
+            'lifetime'    => 43200, /*12 hours*/
             'force_cache' => true,
         );
     }

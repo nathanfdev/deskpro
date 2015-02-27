@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway;
@@ -69,7 +67,8 @@ class PersonFromEmailProcessor
     /**
      * Finds a person based on the From in the email address.
      *
-     * @param  EmailAddress                            $from
+     * @param EmailAddress $from
+     *
      * @return \Application\DeskPRO\Entity\Person|null
      */
     public function findPerson(EmailAddress $from)
@@ -89,14 +88,15 @@ class PersonFromEmailProcessor
             return $person;
         }
 
-        return null;
+        return;
     }
 
     /**
      * Finds a person based on the From in the email address.
      *
-     * @param  string                             $email_address The email address as a string
-     * @param  string|null                        $name
+     * @param string      $email_address The email address as a string
+     * @param string|null $name
+     *
      * @return \Application\DeskPRO\Entity\Person
      */
     public function findPersonByEmailAddress($email_address, $name = null)
@@ -105,7 +105,7 @@ class PersonFromEmailProcessor
         $email->email = $email_address;
 
         if ($name) {
-            $email->name = $name;
+            $email->name      = $name;
             $email->name_utf8 = $name;
         }
 
@@ -114,16 +114,17 @@ class PersonFromEmailProcessor
 
     /**
      * @param $email_address
-     * @param  null          $name
+     * @param null $name
+     *
      * @return Entity\Person
      */
     public function createPersonByEmailAddress($email_address, $name = null)
     {
-        $email = new EmailAddress();
+        $email        = new EmailAddress();
         $email->email = $email_address;
 
         if ($name) {
-            $email->name = $name;
+            $email->name      = $name;
             $email->name_utf8 = $name;
         }
 
@@ -137,7 +138,8 @@ class PersonFromEmailProcessor
      * is properly saved.
      *
      * @param $from
-     * @param  bool                               $do_validated True to validate user, false to use whatever is default
+     * @param bool $do_validated True to validate user, false to use whatever is default
+     *
      * @return \Application\DeskPRO\Entity\Person
      */
     public function createPerson(EmailAddress $from, $do_validated = false)
@@ -167,7 +169,7 @@ class PersonFromEmailProcessor
             ));
 
             // Create new person record (no chance of conflicts here)
-            $p_array = $tmp_person->toArray(Entity\Person::TOARRAY_ONLY_PRIMATIVES);
+            $p_array                 = $tmp_person->toArray(Entity\Person::TOARRAY_ONLY_PRIMATIVES);
             $p_array['date_created'] = date('Y-m-d H:i:s', time() - 5);// overwrting time because we'll set it for real below
             $db->insert('people', Arrays::removeFalsey($p_array));
             $person_id = $db->lastInsertId();
@@ -175,15 +177,15 @@ class PersonFromEmailProcessor
             // Attempt to create email record,
             // this may fail (races)
 
-            $email_address = strtolower($from->getEmail());
+            $email_address        = strtolower($from->getEmail());
             list(, $email_domain) = explode('@', $email_address, 2);
 
             $db->insert('people_emails', array(
-                'person_id' => $person_id,
-                'email' => $email_address,
-                'email_domain' => $email_domain,
-                'is_validated' => 1,
-                'date_created' => date('Y-m-d H:i:s'),
+                'person_id'      => $person_id,
+                'email'          => $email_address,
+                'email_domain'   => $email_domain,
+                'is_validated'   => 1,
+                'date_created'   => date('Y-m-d H:i:s'),
                 'date_validated' => date('Y-m-d H:i:s'),
             ));
             $email_id = $db->lastInsertId();
@@ -219,7 +221,7 @@ class PersonFromEmailProcessor
             }
 
             $this->is_running = true;
-            $person = $this->createPerson($from);
+            $person           = $this->createPerson($from);
             $this->is_running = false;
         }
 

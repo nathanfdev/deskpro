@@ -26,16 +26,15 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
 namespace Orb\Assetic\Filter;
 
-use Assetic\Filter\FilterInterface;
 use Assetic\Asset\AssetInterface;
+use Assetic\Filter\FilterInterface;
 use Symfony\Component\Process\ProcessBuilder;
 
 class Lessc implements FilterInterface
@@ -54,7 +53,7 @@ class Lessc implements FilterInterface
 
     public function filterLoad(AssetInterface $asset)
     {
-        $tempDir = realpath(sys_get_temp_dir());
+        $tempDir   = realpath(sys_get_temp_dir());
         $madefiles = array();
 
         $source_files = array();
@@ -69,7 +68,7 @@ class Lessc implements FilterInterface
         }
 
         foreach ($source_files as $source_file) {
-            $hash = substr(sha1(time().rand(11111, 99999)), 0, 7);
+            $hash   = substr(sha1(time().rand(11111, 99999)), 0, 7);
             $output = $tempDir.DIRECTORY_SEPARATOR.$hash.'.css';
 
             $pb = new ProcessBuilder();

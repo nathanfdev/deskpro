@@ -26,30 +26,29 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
 namespace Orb\Util;
 
 /**
- * Helps fetch stuff about the server/environment
+ * Helps fetch stuff about the server/environment.
  *
  * @static
  */
 class Env
 {
     /**
-     * Static class
+     * Static class.
      */
     private function __construct()
     {
     }
 
     /**
-     * Return 'upload_max_filesize' size in bytes
+     * Return 'upload_max_filesize' size in bytes.
      *
      * @return int
      */
@@ -64,7 +63,7 @@ class Env
     }
 
     /**
-     * Return 'post_max_size' size in bytes
+     * Return 'post_max_size' size in bytes.
      *
      * @return int
      */
@@ -101,7 +100,7 @@ class Env
     }
 
     /**
-     * Return 'memory_limit' size in bytes or -1 if there is no limit
+     * Return 'memory_limit' size in bytes or -1 if there is no limit.
      *
      * @return int
      */
@@ -116,7 +115,7 @@ class Env
     }
 
     /**
-     * Get phpinfo() as a string
+     * Get phpinfo() as a string.
      *
      * @return string
      */
@@ -130,7 +129,7 @@ class Env
     }
 
     /**
-     * Gets the path to the laoded php.ini file by scanning phpinfo
+     * Gets the path to the laoded php.ini file by scanning phpinfo.
      *
      * @return false|string
      */
@@ -148,9 +147,10 @@ class Env
     }
 
     /**
-     * Get php.ini path from the phpinfo HTML string
+     * Get php.ini path from the phpinfo HTML string.
      *
      * @param $phpinfo
+     *
      * @return false|string
      */
     public static function getPhpIniPathFromInfo($phpinfo)
@@ -169,9 +169,10 @@ class Env
     }
 
     /**
-     * Check if a function has been disabled in php.ini with 'disable_functions'
+     * Check if a function has been disabled in php.ini with 'disable_functions'.
      *
-     * @param  string $func_name
+     * @param string $func_name
+     *
      * @return string
      */
     public static function isFunctionDisabled($func_name)
@@ -184,9 +185,10 @@ class Env
     }
 
     /**
-     * Check if a class has been disabled in php.ini with 'disable_classes'
+     * Check if a class has been disabled in php.ini with 'disable_classes'.
      *
-     * @param  string $class_name
+     * @param string $class_name
+     *
      * @return bool
      */
     public static function isClassDisabled($class_name)
@@ -230,7 +232,7 @@ class Env
     }
 
     /**
-     * True if the current OS is Windows
+     * True if the current OS is Windows.
      *
      * @return bool
      */
@@ -268,7 +270,7 @@ class Env
     }
 
     /**
-     * Get an array of disabled functions
+     * Get an array of disabled functions.
      *
      * @return array
      */
@@ -278,13 +280,13 @@ class Env
 
         if ($functions === null) {
             $functions = array();
-            $list = @ini_get('disable_functions').','.@ini_get('suhosin.executor.func.blacklist');
-            $list = explode(',', $list);
+            $list      = @ini_get('disable_functions').','.@ini_get('suhosin.executor.func.blacklist');
+            $list      = explode(',', $list);
 
             foreach ($list as $f) {
                 $f = trim($f);
                 if ($f) {
-                    $f = strtolower($f);
+                    $f             = strtolower($f);
                     $functions[$f] = $f;
                 }
             }
@@ -294,7 +296,7 @@ class Env
     }
 
     /**
-     * Get an array of disabled classes
+     * Get an array of disabled classes.
      *
      * @return array
      */
@@ -304,8 +306,8 @@ class Env
 
         if ($classes === null) {
             $classes = array();
-            $list = @ini_get('disable_classes');
-            $list = explode(',', $list);
+            $list    = @ini_get('disable_classes');
+            $list    = explode(',', $list);
 
             foreach ($list as $c) {
                 $c = trim($c);

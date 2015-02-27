@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -64,7 +63,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
     protected $id;
 
     /**
-     * The authcode to verify an id
+     * The authcode to verify an id.
      *
      * @var string
      */
@@ -107,14 +106,14 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * The users name. Sometimes we might ask the users name, so we can
-     * save it in the visitor record for future reference
+     * save it in the visitor record for future reference.
      *
      * @var string
      */
     protected $name = '';
 
     /**
-     * The users email, like the name above
+     * The users email, like the name above.
      *
      * @var string
      */
@@ -136,28 +135,28 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
     protected $ref_page_url = '';
 
     /**
-     * The users user agent string
+     * The users user agent string.
      *
      * @var string
      */
     protected $user_agent = '';
 
     /**
-     * The users user agent string
+     * The users user agent string.
      *
      * @var string
      */
     protected $user_browser = '';
 
     /**
-     * The users user agent string
+     * The users user agent string.
      *
      * @var string
      */
     protected $user_os = '';
 
     /**
-     * The users IP address
+     * The users IP address.
      *
      * @var string
      */
@@ -288,7 +287,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
             return $this->email;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -314,6 +313,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
      * if they match.
      *
      * @return bool
+     *
      * @deprecated
      */
     public function checkVisitorCode($vis_code)
@@ -322,16 +322,17 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param  string $vis_code
+     * @param string $vis_code
+     *
      * @return int
      */
     public static function getIdFromCode($vis_code)
     {
         if (!strpos($vis_code, '-')) {
-            return null;
+            return;
         }
 
-        list($vis_id,) = explode('-', $vis_code, 2);
+        list($vis_id, ) = explode('-', $vis_code, 2);
 
         return $vis_id;
     }
@@ -341,7 +342,8 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
      *
      * Most notably used as the "proxy key"
      *
-     * @param  string $secret Another component to add to the hash
+     * @param string $secret Another component to add to the hash
+     *
      * @return string
      */
     public function getVisitorSecret($name = '')
@@ -350,10 +352,11 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Generate a security token based off of this session
+     * Generate a security token based off of this session.
      *
      * @param $name
-     * @param  int    $timeout
+     * @param int $timeout
+     *
      * @return string
      */
     public function generateSecurityToken($name, $timeout = 43200)
@@ -362,9 +365,10 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Check a security token to see if its valid
+     * Check a security token to see if its valid.
      *
      * @param $name
+     *
      * @return bool
      */
     public function checkSecurityToken($name, $token)
@@ -378,7 +382,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
     public function getLastPage()
     {
         if (!$this->last_track) {
-            return null;
+            return;
         }
 
         return $this->last_track->page_url;
@@ -425,7 +429,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_NONE);
         $metadata->setPrimaryTable(array(
-            'name' => 'visitors',
+            'name'    => 'visitors',
             'indexes' => array(
                 'date_last_idx' => array(
                     'columns' => array('date_last'),
@@ -455,10 +459,10 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'page_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'page_count'));
         $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
         $metadata->mapField(array( 'fieldName' => 'date_last', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_last'));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'initial_track', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'initial_track_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'visit_track', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visit_track_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'last_track', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'last_track_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'last_track_soft', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'last_track_id_soft', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'initial_track', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'initial_track_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'visit_track', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'visit_track_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'last_track', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'last_track_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'last_track_soft', 'targetEntity' => 'Application\\DeskPRO\\Entity\\VisitorTrack', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'last_track_id_soft', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
     }
 }

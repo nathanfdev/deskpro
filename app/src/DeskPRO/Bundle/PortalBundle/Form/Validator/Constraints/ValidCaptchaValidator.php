@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints;
@@ -47,13 +44,13 @@ class ValidCaptchaValidator extends ConstraintValidator
     protected $private_key;
 
     /**
-     * Request Stack
+     * Request Stack.
      *
      * @var \Symfony\Component\HttpFoundation\RequestStack
      */
     protected $request_stack;
     /**
-     * The reCAPTCHA server URL's
+     * The reCAPTCHA server URL's.
      */
     const RECAPTCHA_VERIFY_SERVER = 'www.google.com';
     /**
@@ -67,9 +64,9 @@ class ValidCaptchaValidator extends ConstraintValidator
      */
     public function __construct(BrandStack $brand_stack, RequestStack $request_stack)
     {
-        $this->private_key = $brand_stack->getActive()->getSetting('core.recaptcha_private_key');
+        $this->private_key   = $brand_stack->getActive()->getSetting('core.recaptcha_private_key');
         $this->request_stack = $request_stack;
-        $this->brand_stack = $brand_stack;
+        $this->brand_stack   = $brand_stack;
     }
 
     /**
@@ -78,9 +75,9 @@ class ValidCaptchaValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         // define variable for recaptcha check answer
-        $remoteip = $this->request_stack->getMasterRequest()->server->get('REMOTE_ADDR');
+        $remoteip  = $this->request_stack->getMasterRequest()->server->get('REMOTE_ADDR');
         $challenge = $this->request_stack->getMasterRequest()->get('recaptcha_challenge_field');
-        $response = $this->request_stack->getMasterRequest()->get('recaptcha_response_field');
+        $response  = $this->request_stack->getMasterRequest()->get('recaptcha_response_field');
         if (
             isset($this->cache[$this->private_key]) &&
             isset($this->cache[$this->private_key][$remoteip]) &&
@@ -97,7 +94,7 @@ class ValidCaptchaValidator extends ConstraintValidator
     }
 
     /**
-     * Calls an HTTP POST function to verify if the user's guess was correct
+     * Calls an HTTP POST function to verify if the user's guess was correct.
      *
      * @param string $privateKey
      * @param string $remoteip
@@ -133,7 +130,7 @@ class ValidCaptchaValidator extends ConstraintValidator
     }
 
     /**
-     * Submits an HTTP POST to a reCAPTCHA server
+     * Submits an HTTP POST to a reCAPTCHA server.
      *
      * @param string $host
      * @param string $path
@@ -144,7 +141,7 @@ class ValidCaptchaValidator extends ConstraintValidator
      */
     private function httpPost($host, $path, $data, $port = 80)
     {
-        $req = $this->getQSEncode($data);
+        $req          = $this->getQSEncode($data);
         $http_request = "POST $path HTTP/1.0\r\n";
         $http_request .= "Host: $host\r\n";
         $http_request .= "Content-Type: application/x-www-form-urlencoded;\r\n";
@@ -167,7 +164,7 @@ class ValidCaptchaValidator extends ConstraintValidator
     }
 
     /**
-     * Encodes the given data into a query string format
+     * Encodes the given data into a query string format.
      *
      * @param $data - array of string elements to be encoded
      *

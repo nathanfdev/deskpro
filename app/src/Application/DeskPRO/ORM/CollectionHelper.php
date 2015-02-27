@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category ORM
  */
 
@@ -70,17 +69,18 @@ class CollectionHelper
      */
     public function __construct($entity, $prop, $fn_filter = null, $fn_keep_filter = null)
     {
-        $this->entity    = $entity;
-        $this->prop      = $prop;
-        $this->fn_filter = $fn_filter;
+        $this->entity         = $entity;
+        $this->prop           = $prop;
+        $this->fn_filter      = $fn_filter;
         $this->fn_keep_filter = $fn_keep_filter;
     }
 
     /**
      * Given an array of records we want the entity to contain ("only $set"),
-     * get an array of records that need to be added or removed. Essentially an easy diff
+     * get an array of records that need to be added or removed. Essentially an easy diff.
      *
-     * @param  array $set
+     * @param array $set
+     *
      * @return array
      */
     public function getAddRemoveForSet(array $set)
@@ -128,13 +128,14 @@ class CollectionHelper
      * Add or remove from the collection so it matcehs $set.
      *
      * @param array $set
+     *
      *                   * @return array
      */
     public function setCollection(array $set)
     {
         $prop = $this->prop;
 
-        $info = $this->getAddRemoveForSet($set);
+        $info    = $this->getAddRemoveForSet($set);
         $add_ids = $info['add'];
         $del_ids = $info['del'];
 

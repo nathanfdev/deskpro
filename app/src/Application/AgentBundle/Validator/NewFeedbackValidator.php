@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Validator;
@@ -40,7 +37,8 @@ use Orb\Validator\AbstractValidator;
 class NewFeedbackValidator extends AbstractValidator
 {
     /**
-     * @param  \Application\AgentBundle\Form\Model\NewFeedback $feedback
+     * @param \Application\AgentBundle\Form\Model\NewFeedback $feedback
+     *
      * @return bool
      */
     protected function checkIsValid($feedback)

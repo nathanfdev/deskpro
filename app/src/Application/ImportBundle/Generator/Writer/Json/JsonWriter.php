@@ -32,10 +32,9 @@ use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Exception;
 
 /**
- * Generator json writer
+ * Generator json writer.
  *
  * Class JsonWriter
- * @package Application\ImportBundle\Generator\Writer\Json
  */
 final class JsonWriter extends AbstractWriter
 {
@@ -45,7 +44,7 @@ final class JsonWriter extends AbstractWriter
     private $mapping;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Destination\Collection $mapping
      */
@@ -67,7 +66,7 @@ final class JsonWriter extends AbstractWriter
      */
     public function writeData(Entity\EntityInterface $entity)
     {
-        if ( ! $this->config) {
+        if (! $this->config) {
             throw new Exception('Generator configuration is not set up');
         }
 
@@ -93,19 +92,20 @@ final class JsonWriter extends AbstractWriter
     }
 
     /**
-     * Returns the entity file path
+     * Returns the entity file path.
      *
      * @param Entity\EntityInterface $entity
      *
-     * @return string
      * @throws \Exception
+     * @return string
+     *
      */
     private function getEntityPath(Entity\EntityInterface $entity)
     {
         foreach ($this->mapping as $destination) {
-            /** @var Destination\DestinationInterface $destination */
+            /* @var Destination\DestinationInterface $destination */
             if ($entity->getType() === $destination->getEntityType()) {
-                return $this->getDestinationOutputPath($destination) . $entity->getDestination() . '.json';
+                return $this->getDestinationOutputPath($destination).$entity->getDestination().'.json';
             }
         }
 
@@ -113,7 +113,7 @@ final class JsonWriter extends AbstractWriter
     }
 
     /**
-     * Make output directories if not exist
+     * Make output directories if not exist.
      *
      * @throws \Exception
      */
@@ -129,7 +129,7 @@ final class JsonWriter extends AbstractWriter
         }
 
         foreach ($this->mapping as $destination) {
-            /** @var Destination\DestinationInterface $destination */
+            /* @var Destination\DestinationInterface $destination */
             $path = $this->getDestinationOutputPath($destination);
 
             if (!is_dir($path)) {
@@ -141,13 +141,14 @@ final class JsonWriter extends AbstractWriter
     }
 
     /**
-     * Returns destination path
+     * Returns destination path.
      *
      * @param Destination\DestinationInterface $destination
+     *
      * @return string
      */
     private function getDestinationOutputPath(Destination\DestinationInterface $destination)
     {
-        return $this->config->getOutputPath() . $destination->getEntityOutputPath();
+        return $this->config->getOutputPath().$destination->getEntityOutputPath();
     }
 }

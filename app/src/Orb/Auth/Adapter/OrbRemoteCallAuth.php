@@ -26,15 +26,14 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
 namespace Orb\Auth\Adapter;
 
-use \Orb\Auth\Result;
+use Orb\Auth\Result;
 
 /**
  * OrbRemoteCallAuth is a very simple protocol where the software sends a POST request to a remote web
@@ -72,31 +71,36 @@ class OrbRemoteCallAuth implements AdapterInterface
     const ERR_SERVICE_ERR = -11;
 
     /**
-     * The key that identifies this service
+     * The key that identifies this service.
+     *
      * @var string
      */
     protected $consumer_key = null;
 
     /**
-     * The URL to call
+     * The URL to call.
+     *
      * @var string
      */
     protected $service_url = null;
 
     /**
-     * HTTP client
+     * HTTP client.
+     *
      * @var \Zend\Http\Client
      */
     protected $http;
 
     /**
-     * Form data
+     * Form data.
+     *
      * @var array
      */
     protected $form_data = array();
 
     /**
      * Do we request userinfo as well?
+     *
      * @var int
      */
     protected $with_userinfo = 1;
@@ -113,7 +117,7 @@ class OrbRemoteCallAuth implements AdapterInterface
     public function __construct($consumer_key, $service_url)
     {
         $this->consumer_key = $consumer_key;
-        $this->service_url = $service_url;
+        $this->service_url  = $service_url;
     }
 
     /**
@@ -127,7 +131,7 @@ class OrbRemoteCallAuth implements AdapterInterface
     }
 
     /**
-     * Set if we want userinfo or not
+     * Set if we want userinfo or not.
      *
      * @param bool $yes_or_no
      */
@@ -170,7 +174,7 @@ class OrbRemoteCallAuth implements AdapterInterface
         }
 
         $identity = new \Orb\Auth\Identity($data['identity'], isset($userdata['userinfo']) ? $userdata : array());
-        $result = new Result(Result::SUCCESS, $identity);
+        $result   = new Result(Result::SUCCESS, $identity);
 
         return $result;
     }

@@ -277,7 +277,7 @@ class AppsController extends AbstractController
 
         if ($app->package->getTaggedAsset('app_js')) {
             $data['with_permissions'] = true;
-            $data['permissions'] = $this->em->getRepository('DeskPRO:AppInstance')->getPermissionsForInstance($app);
+            $data['permissions']      = $this->em->getRepository('DeskPRO:AppInstance')->getPermissionsForInstance($app);
         }
 
         return $this->createApiResponse(array('app' => $data));
@@ -308,7 +308,7 @@ class AppsController extends AbstractController
         $this->db->delete('app_instance_permissions', array('app_instance_id' => $app->id));
         if ($app->package->getTaggedAsset('app_js') && $this->in->getString('permissions.type') == 'set') {
             $app->perm_type = 'set';
-            $batch = array();
+            $batch          = array();
 
             foreach ($this->in->getArrayOfInts('permissions.usergroup_ids') as $ugid) {
                 if ($this->container->getAgentGroups()->groupExists($ugid)) {
@@ -857,7 +857,7 @@ class AppsController extends AbstractController
     public function jiraSettingsAction()
     {
         /** @var JIRA $js */
-        $js = $this->get(JIRA::NAME);
+        $js   = $this->get(JIRA::NAME);
         $meta = $js->getMeta();
         $meta = $meta ? $meta->toArray() : null;
 

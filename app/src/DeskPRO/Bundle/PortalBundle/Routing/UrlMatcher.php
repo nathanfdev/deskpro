@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Routing;
@@ -41,7 +38,7 @@ class UrlMatcher
     public function extractLanguageCode($pathinfo)
     {
         $return = array(
-            'lang_url_code' => null,
+            'lang_url_code'      => null,
             'remaining_pathinfo' => $pathinfo,
         );
 

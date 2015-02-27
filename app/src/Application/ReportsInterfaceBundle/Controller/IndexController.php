@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\ReportsInterfaceBundle\Controller;
 
@@ -39,17 +37,17 @@ class IndexController extends AbstractController
 {
     public function interfaceAction()
     {
-        $token = new ApiToken();
-        $token->scope = ApiToken::SCOPE_SESSION;
-        $token->person = $this->person;
+        $token               = new ApiToken();
+        $token->scope        = ApiToken::SCOPE_SESSION;
+        $token->person       = $this->person;
         $token->date_expires = new \DateTime("+1 hour");
 
         $this->em->persist($token);
         $this->em->flush();
 
         return $this->render('ReportsInterfaceBundle:Index:interface.html.twig', array(
-            'api_token'     => $token,
-            'session'       => $this->session->getEntity(),
+            'api_token'             => $token,
+            'session'               => $this->session->getEntity(),
             'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
         ));
     }

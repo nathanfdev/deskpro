@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Templating\Templates;
@@ -40,8 +38,6 @@ namespace Application\DeskPRO\Templating\Templates;
  *     <dp:subject>My Subject</dp:subject>
  *     And here is my body.
  * </code>
- *
- * @package Application\DeskPRO\Templating\Templates
  */
 class EmailTemplateCode extends TemplateCode
 {
@@ -64,7 +60,7 @@ class EmailTemplateCode extends TemplateCode
     public function __construct($code = null)
     {
         $this->subject = '';
-        $this->body = '';
+        $this->body    = '';
 
         if ($code) {
             $this->setCode($code);
@@ -120,7 +116,8 @@ class EmailTemplateCode extends TemplateCode
     }
 
     /**
-     * @param  string                    $code
+     * @param string $code
+     *
      * @throws \InvalidArgumentException
      */
     public function setCode($code)
@@ -147,7 +144,7 @@ class EmailTemplateCode extends TemplateCode
                 throw new \InvalidArgumentException("Invalid subject tags: Start tag after end tag");
             }
 
-            $subj_len = $subj_end - ($subj_start + $subj_start_len);
+            $subj_len      = $subj_end - ($subj_start + $subj_start_len);
             $this->subject = substr($code, $subj_start+$subj_start_len, $subj_len);
 
             // Subject at beginning
@@ -164,7 +161,7 @@ class EmailTemplateCode extends TemplateCode
         // No Subject
         } else {
             $this->subject = '';
-            $this->body = $code;
+            $this->body    = $code;
         }
 
         $this->subject = trim($this->subject);

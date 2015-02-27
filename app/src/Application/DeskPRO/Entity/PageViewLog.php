@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +37,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * A log of views
+ * A log of views.
  */
 class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -156,7 +155,7 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setPrimaryTable(array(
             'name'    => 'page_view_log',
             'indexes' => array(
-                'object_idx' => array('columns' => array('object_type', 'object_id')),
+                'object_idx'       => array('columns' => array('object_type', 'object_id')),
                 'date_created_idx' => array('columns' => array('date_created')),
             ),
         ));

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Search
  */
 
@@ -42,7 +41,7 @@ use Application\DeskPRO\Search\SearcherResult\ResultSet;
 use Orb\Util\CapabilityInformerInterface;
 
 /**
- * Search adapter
+ * Search adapter.
  */
 abstract class AbstractAdapter implements CapabilityInformerInterface, PersonContextInterface
 {
@@ -72,7 +71,8 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     protected $class_to_contenttype = array();
 
     /**
-     * An array of already initialized contenttypes
+     * An array of already initialized contenttypes.
+     *
      * @var array
      */
     protected $contenttypes = array();
@@ -83,9 +83,10 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     protected $person;
 
     /**
-     * Check if this object is capable of a specific thing
+     * Check if this object is capable of a specific thing.
      *
-     * @param  mixed $capability
+     * @param mixed $capability
+     *
      * @return bool
      */
     public function isCapable($capability)
@@ -94,7 +95,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     }
 
     /**
-     * Returns an array of all capabilities
+     * Returns an array of all capabilities.
      *
      * @return array
      */
@@ -112,7 +113,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     }
 
     /**
-     * Get person context
+     * Get person context.
      *
      * @return \Application\DeskPRO\Entity\Person
      */
@@ -126,7 +127,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     }
 
     /**
-     * Get the map of classes to contenttypes
+     * Get the map of classes to contenttypes.
      *
      * @return array
      */
@@ -136,7 +137,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     }
 
     /**
-     * Adds a mapping that maps a class to a contenttype
+     * Adds a mapping that maps a class to a contenttype.
      *
      * @param string $class     The full class name
      * @param string $type_name The type name
@@ -147,7 +148,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     }
 
     /**
-     * Get the contenttype name we have mapped to an object
+     * Get the contenttype name we have mapped to an object.
      *
      * @return string
      */
@@ -168,7 +169,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     }
 
     /**
-     * Get the actual contenttype handler for the object
+     * Get the actual contenttype handler for the object.
      *
      * @return \Application\DeskPRO\Search\ContentType\ContentTypeInterface
      */
@@ -191,7 +192,8 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
      *
      * Factory method.
      *
-     * @param  string                                                       $type_name
+     * @param string $type_name
+     *
      * @return \Application\DeskPRO\Search\ContentType\ContentTypeInterface
      */
     public function getContentType($type_name)
@@ -210,7 +212,8 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
      *
      * Factory method.
      *
-     * @param  string                                                       $type_name
+     * @param string $type_name
+     *
      * @return \Application\DeskPRO\Search\ContentType\ContentTypeInterface
      */
     abstract protected function createContentType($type_name);
@@ -221,13 +224,14 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
      * This is a shortcut of getting the content type for the result, and then
      * using resultToObject on it.
      *
-     * @param  \Application\DeskPRO\Search\SearcherResult\ResultInterface $result
+     * @param \Application\DeskPRO\Search\SearcherResult\ResultInterface $result
+     *
      * @return mixed
      */
     public function getResultObject(ResultInterface $result)
     {
         $type_name = $result->getContentType();
-        $type = $this->getContentType($type_name);
+        $type      = $this->getContentType($type_name);
 
         $object = $type->resultToObject($result);
 
@@ -239,8 +243,9 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
      *
      * This is a shortcut for converting all results into objects.
      *
-     * @param  \Application\DeskPRO\Search\SearcherResult\ResultSet $result_set
-     * @param  bool                                                 $full_info  True to return a final array of full info: array('object' => object, 'type' => 'contenttype', 'result' => result)
+     * @param \Application\DeskPRO\Search\SearcherResult\ResultSet $result_set
+     * @param bool                                                 $full_info  True to return a final array of full info: array('object' => object, 'type' => 'contenttype', 'result' => result)
+     *
      * @return array
      */
     public function getResultSetObjects(ResultSet $result_set, $full_info = false)
@@ -271,7 +276,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 
         $objects_typed = array();
         foreach ($result_set_typed as $type_name => $results) {
-            $type = $this->getContentType($type_name);
+            $type    = $this->getContentType($type_name);
             $objects = $type->resultsToObjects($results);
 
             if ($objects) {
@@ -287,7 +292,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 
         foreach ($result_set->getResults() as $result) {
             $type_name = $result->getContentTypeName();
-            $obj_id = $result->getId();
+            $obj_id    = $result->getId();
 
             if (!isset($objects_typed[$type_name])) {
                 continue;
@@ -313,10 +318,9 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     }
 
     /**
-     * Update the search index with the specified object
+     * Update the search index with the specified object.
      *
      * @param  $object
-     * @return void
      */
     public function updateObjectInIndex($object)
     {
@@ -324,10 +328,9 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     }
 
     /**
-     * Update the search index with the specified objects
+     * Update the search index with the specified objects.
      *
-     * @param  stdClass[] $objects
-     * @return void
+     * @param stdClass[] $objects
      */
     public function updateObjectsInIndex(array $objects)
     {
@@ -338,7 +341,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
         $documents = array();
 
         foreach ($objects as $object) {
-            $doc = $this->getContentTypeForObject($object)->objectToDocument($object);
+            $doc         = $this->getContentTypeForObject($object)->objectToDocument($object);
             $documents[] = $doc;
         }
 
@@ -346,10 +349,9 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     }
 
     /**
-     * Delete the specified docs from the objects
+     * Delete the specified docs from the objects.
      *
      * @param  $objects
-     * @return void
      */
     public function deleteObjectsFromIndex(array $objects)
     {
@@ -360,7 +362,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
         $documents = array();
 
         foreach ($objects as $object) {
-            $doc = $this->getContentTypeForObject($object)->objectToDocument($object);
+            $doc         = $this->getContentTypeForObject($object)->objectToDocument($object);
             $documents[] = $doc;
         }
 
@@ -375,18 +377,16 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     abstract public function deleteContentTypeFromIndex($type_name);
 
     /**
-     * Update the search index with the specified docs
+     * Update the search index with the specified docs.
      *
      * @param  $documents
-     * @return void
      */
     abstract public function updateDocumentsInIndex(array $documents);
 
     /**
-     * Delete the specified docs from the index
+     * Delete the specified docs from the index.
      *
      * @param  $documents
-     * @return void
      */
     abstract public function deleteDocumentsFromIndex(array $documents);
 }

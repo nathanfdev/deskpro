@@ -1,5 +1,7 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
-require DP_ROOT . '/src/Application/InstallBundle/Install/server_check_functions.php';
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+}
+require DP_ROOT.'/src/Application/InstallBundle/Install/server_check_functions.php';
 echo '<pre>';
 
 #------------------------------
@@ -47,14 +49,14 @@ if ($fail) {
 # Checker requires some services so boot into install kernel
 #---
 
-require DP_ROOT . '/sys/KernelBooter.php';
+require DP_ROOT.'/sys/KernelBooter.php';
 \DeskPRO\Kernel\KernelBooter::bootstrapConfig();
 
-$env = 'prod';
+$env   = 'prod';
 $debug = false;
 
 if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
-    $env = 'dev';
+    $env   = 'dev';
     $debug = true;
 }
 
@@ -78,7 +80,9 @@ if (!$is_fatal) {
 
 $db_errs = false;
 foreach ($server_check->getErrors() as $k => $v) {
-    if (strpos($k, 'db_') === 0) $db_errs = true;
+    if (strpos($k, 'db_') === 0) {
+        $db_errs = true;
+    }
     $fail = true;
     echo "$k\n";
 }
@@ -103,7 +107,6 @@ if (!$is_fatal && !$db_errs && file_exists(DP_ROOT.'/src/Application/InstallBund
                 echo "missing table {$t}\n";
             }
         }
-
     } catch (\Exception $e) {
         echo "exception {$e->getCode()}\n";
         $fail = true;

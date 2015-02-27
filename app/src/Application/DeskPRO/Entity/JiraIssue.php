@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * The JiraIssue Class
- * Emulates a Jira Issue
+ * Emulates a Jira Issue.
  *
  * @author Abhinav Kumar <work@abhinavkumar.in>
  */
@@ -17,12 +17,11 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
      * The unique ID.
      *
      * @var int
-     *
      */
     protected $id = null;
 
     /**
-     * The associated DeskPRO ticket
+     * The associated DeskPRO ticket.
      *
      * @var \Application\DeskPRO\Entity\Ticket Associated ticket
      */
@@ -39,7 +38,7 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
     protected $status_id;
 
     /**
-     * Export time
+     * Export time.
      *
      * @var int Timestamp
      */
@@ -68,12 +67,12 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array('fieldName' => 'status_id', 'type' => 'integer', 'columnName' => 'status_id', 'nullable' => true));
         $metadata->mapField(array('fieldName' => 'created', 'type' => 'datetime', 'columnName' => 'created'));
         $metadata->mapManyToOne(array(
-            'fieldName' => 'ticket',
+            'fieldName'    => 'ticket',
             'targetEntity' => 'Application\DeskPRO\Entity\Ticket',
-            'joinColumns' => array(array(
-                'name' => 'ticket_id',
+            'joinColumns'  => array(array(
+                'name'                 => 'ticket_id',
                 'referencedColumnName' => 'id',
-                'onDelete' => 'cascade',
+                'onDelete'             => 'cascade',
             )),
             'dpApi' => true,
         ));

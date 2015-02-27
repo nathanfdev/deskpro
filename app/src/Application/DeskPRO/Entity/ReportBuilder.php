@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -42,7 +41,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Report builder query
+ * Report builder query.
  *
  * @property int $id
  * @property ReportBuilder $parent
@@ -114,8 +113,9 @@ class ReportBuilder extends DomainObject
     }
 
     /**
-     * @param  string       $type
-     * @param  array        $params
+     * @param string $type
+     * @param array  $params
+     *
      * @return mixed|string
      */
     public function getTitle($type = 'raw', $params = array())
@@ -254,7 +254,7 @@ class ReportBuilder extends DomainObject
     }
 
     /**
-     * Gets the DPQL parts for this report's query
+     * Gets the DPQL parts for this report's query.
      *
      * @return array
      */
@@ -299,14 +299,14 @@ class ReportBuilder extends DomainObject
     }
 
     /**
-     * Quick lookup handler to determine if a particular user has favorited this
+     * Quick lookup handler to determine if a particular user has favorited this.
      *
      * @var array
      */
     protected $_is_favorited = array();
 
     /**
-     * Returns true if the specified person has favorited this
+     * Returns true if the specified person has favorited this.
      *
      * @param Person|null $person Defaults to current person
      *

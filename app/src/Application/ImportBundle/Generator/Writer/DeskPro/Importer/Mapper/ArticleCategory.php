@@ -31,10 +31,9 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Article category record mapper
+ * Article category record mapper.
  *
  * Class ArticleCategory
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class ArticleCategory implements MapperInterface, MapperByTitleInterface
 {
@@ -44,7 +43,7 @@ final class ArticleCategory implements MapperInterface, MapperByTitleInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\ArticleCategory $repository
      */

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -57,7 +54,8 @@ abstract class AbstractAction implements ActionInterface
     }
 
     /**
-     * @param  array $metadata
+     * @param array $metadata
+     *
      * @return mixed
      */
     public function setMetaData(array $metadata)

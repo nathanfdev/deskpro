@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -87,17 +84,17 @@ class TicketMessageAttachmentCollectionType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'type' => 'ticket_message_attachment',
+                'type'    => 'ticket_message_attachment',
                 'options' => function (Options $options) {
                         return array(
-                            'ticket_message' =>  $options->get('ticket_message'),
-                            'person'         =>  $options->get('person'),
+                            'ticket_message' => $options->get('ticket_message'),
+                            'person'         => $options->get('person'),
                             'label'          => false,
                         );
                     },
-                'allow_add' => true,
+                'allow_add'    => true,
                 'allow_delete' => true,
-                'label' => false,
+                'label'        => false,
             )
         );
 
@@ -111,7 +108,7 @@ class TicketMessageAttachmentCollectionType extends AbstractType
         $resolver->setAllowedTypes(
             array(
                 'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
-                'person' => 'Application\\DeskPRO\\Entity\\Person',
+                'person'         => 'Application\\DeskPRO\\Entity\\Person',
             )
         );
     }

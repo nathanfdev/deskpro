@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -41,7 +40,7 @@ use Orb\Util\Arrays;
 
 /**
  * Requirements:
- * - Facebook SDK: https://github.com/facebook/php-sdk
+ * - Facebook SDK: https://github.com/facebook/php-sdk.
  */
 class Facebook extends AbstractCallbackAdatper implements DisplayContextInterface
 {
@@ -53,7 +52,8 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
     protected $display = 'page';
 
     /**
-     * The facebook object
+     * The facebook object.
+     *
      * @var Facebook
      */
     protected $fb;
@@ -64,14 +64,15 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
      */
     public function __construct($app_id, $app_secret)
     {
-        $this->app_id = $app_id;
+        $this->app_id     = $app_id;
         $this->app_secret = $app_secret;
     }
 
     /**
-     * Sets the display context: page or popup
+     * Sets the display context: page or popup.
      *
      * @param $context
+     *
      * @throws \InvalidArgumentException
      */
     public function setDisplayContext($context)
@@ -131,8 +132,8 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 
         $redirect_url = $this->fb->getLoginUrl(array(
             'redirect_uri' => $this->getCallbackUrl(),
-            'display' => $this->display,
-            'req_perms' => 'user_about_me,user_birthday,user_website,email',
+            'display'      => $this->display,
+            'req_perms'    => 'user_about_me,user_birthday,user_website,email',
         ));
 
         if ($this->logger) {

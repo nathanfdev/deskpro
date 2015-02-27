@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Auth;
@@ -47,25 +44,29 @@ use Orb\Util\OptionsArray;
 class LoginProcessor
 {
     /**
-     * The users identity
+     * The users identity.
+     *
      * @var \Orb\Auth\Identity
      */
     protected $identity;
 
     /**
-     * The usersource
+     * The usersource.
+     *
      * @var \Application\DeskPRO\Entity\Usersource
      */
     protected $usersource;
 
     /**
-     * The association
+     * The association.
+     *
      * @var \Application\DeskPRO\Entity\PersonUsersourceAssoc
      */
     protected $assoc;
 
     /**
-     * The person the login represents
+     * The person the login represents.
+     *
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $person;
@@ -301,6 +302,7 @@ class LoginProcessor
     /**
      * @param $mapped_fields
      * @param $em
+     *
      * @throws \Exception
      */
     protected function updateTwitter($mapped_fields, $em)
@@ -337,13 +339,13 @@ class LoginProcessor
             }
 
             if (!$has_account) {
-                $twitter_details = new \Application\DeskPRO\Entity\PersonContactData();
+                $twitter_details               = new \Application\DeskPRO\Entity\PersonContactData();
                 $twitter_details->contact_type = 'twitter';
-                $twitter_details->person = $this->person;
-                $twitter_details->field_1 = $twitter['screen_name'];
-                $twitter_details->field_2 = '0';
-                $twitter_details->field_3 = $twitter['user_id'];
-                $twitter_details->field_10 = '1';
+                $twitter_details->person       = $this->person;
+                $twitter_details->field_1      = $twitter['screen_name'];
+                $twitter_details->field_2      = '0';
+                $twitter_details->field_3      = $twitter['user_id'];
+                $twitter_details->field_10     = '1';
                 $this->persist($em, $twitter_details);
             }
 
@@ -359,15 +361,15 @@ class LoginProcessor
     {
         if ($mapped_fields->has('picture_data')) {
             $filename = tempnam(dp_get_tmp_dir(), 'picture');
-            $fp = @fopen($filename, 'w');
+            $fp       = @fopen($filename, 'w');
             if ($fp) {
                 @fwrite($fp, $mapped_fields->get('picture_data'));
                 @fclose($fp);
 
                 $mime_map = array(
-                    IMAGETYPE_GIF => array('gif', 'image/gif'),
+                    IMAGETYPE_GIF  => array('gif', 'image/gif'),
                     IMAGETYPE_JPEG => array('jpg', 'image/jpeg'),
-                    IMAGETYPE_PNG => array('png', 'image/png'),
+                    IMAGETYPE_PNG  => array('png', 'image/png'),
                 );
                 $image_info = getimagesize($filename);
                 if ($image_info && $image_info[0] && $image_info[1] && isset($mime_map[$image_info[2]])) {
@@ -377,7 +379,7 @@ class LoginProcessor
                     );
 
                     $accept = App::getContainer()->getAttachmentAccepter();
-                    $blob = $accept->accept($file);
+                    $blob   = $accept->accept($file);
                     $this->person->setPictureBlob($blob);
                 }
             }
@@ -395,7 +397,7 @@ class LoginProcessor
     {
         // TODO: we need to update this to the person phone_number field when we deprecate the contact data phone number
         if ($mapped_fields->has('phone')) {
-            $contact_data = new PersonContactData();
+            $contact_data               = new PersonContactData();
             $contact_data->contact_type = 'phone';
             $contact_data->applyFormData(array(
                 'number' => $mapped_fields->get('phone'),

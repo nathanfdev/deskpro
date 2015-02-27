@@ -28,10 +28,9 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 
 /**
- * Blob data mapper
+ * Blob data mapper.
  *
  * Class BlobData
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class BlobData implements MapperInterface
 {
@@ -49,20 +48,20 @@ final class BlobData implements MapperInterface
     public function findOneBy(array $criteria, $throw_exception = true)
     {
         $data = null;
-        if ( ! empty($criteria['data'])) {
+        if (! empty($criteria['data'])) {
             $data = base64_decode($criteria['data']);
         }
-        if ( ! empty($criteria['path'])) {
+        if (! empty($criteria['path'])) {
             if (!is_readable($criteria['path'])) {
                 throw new MapperException(sprintf('Invalid blob path %s', $criteria['path']), $criteria);
             }
 
             $data = @file_get_contents($criteria['path']);
         }
-        if ( ! empty($criteria['url'])) {
+        if (! empty($criteria['url'])) {
             $data = @file_get_contents($criteria['url']);
         }
-        if ( ! $data) {
+        if (! $data) {
             throw new MapperException('Blob data not found', $criteria);
         }
 
@@ -70,15 +69,16 @@ final class BlobData implements MapperInterface
     }
 
     /**
-     * Returns blob data by params
+     * Returns blob data by params.
      *
      * @param string $data
      * @param string $path
      * @param string $url
      * @param bool   $throw_exception
      *
-     * @return mixed|null|string
      * @throws MapperException
+     * @return mixed|null|string
+     *
      */
     public function findOneByParams($data, $path, $url, $throw_exception = true)
     {

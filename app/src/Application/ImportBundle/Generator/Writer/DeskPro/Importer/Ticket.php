@@ -31,13 +31,11 @@ use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\DeskPRO\Tickets\TicketManager;
 use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
-use Orb\Util\Strings;
 
 /**
- * DeskPro ticket importer
+ * DeskPro ticket importer.
  *
  * Class Ticket
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 final class Ticket extends AbstractImporter
 {
@@ -52,7 +50,7 @@ final class Ticket extends AbstractImporter
     private $blob_adapter;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Mapper\Collection    $mappers
      * @param TicketManager        $manager
@@ -77,7 +75,7 @@ final class Ticket extends AbstractImporter
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Ticket $entity
+     * @var Entity\Ticket
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
@@ -125,13 +123,15 @@ final class Ticket extends AbstractImporter
         }
 
         $this->records->add($ticket);
+
         return $this->records;
     }
 
     /**
-     * Returns the importing DeskPro doctrine ticket message entity
+     * Returns the importing DeskPro doctrine ticket message entity.
      *
      * @param Entity\TicketMessage $importing_entity
+     *
      * @return DeskPROEntity\TicketMessage
      */
     private function createTicketMessage(Entity\TicketMessage $importing_entity)
@@ -155,11 +155,12 @@ final class Ticket extends AbstractImporter
         }
 
         $this->records->add($message);
+
         return $message;
     }
 
     /**
-     * Returns the importing DeskPro doctrine ticket message attachment entity
+     * Returns the importing DeskPro doctrine ticket message attachment entity.
      *
      * @param Entity\Attachment $importing_entity
      * @param string            $message_person_email
@@ -168,23 +169,25 @@ final class Ticket extends AbstractImporter
      */
     private function createAttachment(Entity\Attachment $importing_entity, $message_person_email)
     {
-        $email = $importing_entity->getPersonEmail() ? : $message_person_email;
+        $email      = $importing_entity->getPersonEmail() ?: $message_person_email;
         $attachment = new DeskPROEntity\TicketAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
             ->setBlob($this->blob_adapter->createByAttachment($importing_entity));
 
         $this->records->add($attachment);
+
         return $attachment;
     }
 
     /**
-     * Returns the importing DeskPro doctrine ticket participant entity
+     * Returns the importing DeskPro doctrine ticket participant entity.
      *
      * @param string $email
      *
-     * @return DeskPROEntity\TicketParticipant
      * @throws Mapper\MapperException
+     * @return DeskPROEntity\TicketParticipant
+     *
      */
     private function createParticipant($email)
     {
@@ -192,17 +195,19 @@ final class Ticket extends AbstractImporter
         $participant->setPerson($this->getPersonMapper()->findOneByEmail($email));
 
         $this->records->add($participant);
+
         return $participant;
     }
 
     /**
      * Returns a department by title
-     * Creates a new department if not found
+     * Creates a new department if not found.
      *
      * @param string $title
      *
-     * @return DeskPROEntity\Department|null
      * @throws \Exception
+     * @return DeskPROEntity\Department|null
+     *
      */
     private function findOrCreateTicketDepartment($title)
     {
@@ -228,12 +233,13 @@ final class Ticket extends AbstractImporter
 
     /**
      * Returns a ticket priority by title
-     * Creates a new ticket priority if not found
+     * Creates a new ticket priority if not found.
      *
      * @param string $title
      *
-     * @return DeskPROEntity\TicketPriority|null
      * @throws \Exception
+     * @return DeskPROEntity\TicketPriority|null
+     *
      */
     private function findOrCreateTicketPriority($title)
     {
@@ -256,12 +262,13 @@ final class Ticket extends AbstractImporter
 
     /**
      * Returns a ticket category by title
-     * Creates a new ticket category if not found
+     * Creates a new ticket category if not found.
      *
      * @param string $title
      *
-     * @return DeskPROEntity\TicketCategory|null
      * @throws \Exception
+     * @return DeskPROEntity\TicketCategory|null
+     *
      */
     private function findOrCreateTicketCategory($title)
     {
@@ -283,12 +290,13 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns custom def person entity
+     * Returns custom def person entity.
      *
      * @param Entity\CustomField $importing_entity
      *
-     * @return DeskPROEntity\CustomDataTicket
      * @throws ImporterException
+     * @return DeskPROEntity\CustomDataTicket
+     *
      */
     private function createCustomData(Entity\CustomField $importing_entity)
     {
@@ -336,14 +344,16 @@ final class Ticket extends AbstractImporter
         }
 
         $this->records->add($entity);
+
         return $entity;
     }
 
     /**
-     * Returns the ticket department mapper
+     * Returns the ticket department mapper.
      *
-     * @return Mapper\TicketDepartment
      * @throws \Exception
+     * @return Mapper\TicketDepartment
+     *
      */
     private function getTicketDepartmentMapper()
     {
@@ -351,10 +361,11 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the ticket priority mapper
+     * Returns the ticket priority mapper.
      *
-     * @return Mapper\TicketPriority
      * @throws \Exception
+     * @return Mapper\TicketPriority
+     *
      */
     private function getTicketPriorityMapper()
     {
@@ -362,10 +373,11 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the ticket category mapper
+     * Returns the ticket category mapper.
      *
-     * @return Mapper\TicketCategory
      * @throws \Exception
+     * @return Mapper\TicketCategory
+     *
      */
     private function getTicketCategoryMapper()
     {
@@ -373,10 +385,11 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns the custom def person mapper
+     * Returns the custom def person mapper.
      *
-     * @return Mapper\CustomDefTicket
      * @throws \Exception
+     * @return Mapper\CustomDefTicket
+     *
      */
     private function getCustomDefTicketMapper()
     {

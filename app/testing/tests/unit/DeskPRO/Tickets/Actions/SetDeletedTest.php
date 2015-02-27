@@ -20,9 +20,9 @@ class SetDeletedTest extends \DpUnitTestCase
 
     public function testNoop()
     {
-        $ticket = new Ticket();
+        $ticket         = new Ticket();
         $ticket->status = 'hidden.deleted';
-        $exec   = new ExecutorContext();
+        $exec           = new ExecutorContext();
 
         $action = new SetDeleted();
         $this->assertTrue($action->isNoop($ticket, $exec));

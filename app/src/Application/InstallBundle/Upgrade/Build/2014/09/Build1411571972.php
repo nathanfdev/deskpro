@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -40,7 +37,7 @@ class Build1411571972 extends AbstractBuild
     {
         $this->out("Primary Team upgrade");
 
-        $queries = array();
+        $queries   = array();
         $queries[] = "ALTER TABLE people ADD primary_team_id INT DEFAULT NULL";
         $queries[] = "CREATE INDEX IDX_28166A26E715BE01 ON people (primary_team_id)";
         $queries[] = "ALTER TABLE people ADD CONSTRAINT FK_28166A26E715BE01 FOREIGN KEY (primary_team_id) REFERENCES agent_teams (id)";
@@ -59,7 +56,7 @@ class Build1411571972 extends AbstractBuild
             $this->container->getDb()->update(
                 'people',
                 array('primary_team_id' => $team_id),
-                array('id' => $agent_id)
+                array('id'              => $agent_id)
             );
         }
     }

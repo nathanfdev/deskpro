@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Serializer
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Serializer;
@@ -54,14 +51,15 @@ class PersonSerializer implements SerializerInterface
     }
 
     /**
-     * @param  mixed  $data   anything that the serializer can handle
-     * @param  string $view   defaults to "default" but can be anything and the handlers understand what to do
-     * @param  string $format requested return format - defaults to an array
+     * @param mixed  $data   anything that the serializer can handle
+     * @param string $view   defaults to "default" but can be anything and the handlers understand what to do
+     * @param string $format requested return format - defaults to an array
+     *
      * @return mixed
      */
     public function serialize($data, $view = 'default', $format = 'array')
     {
-        /** @var \Application\DeskPRO\Entity\Person $data */
+        /* @var \Application\DeskPRO\Entity\Person $data */
         $agent = $data;
 
         $data = $agent->toApiData();
@@ -70,7 +68,7 @@ class PersonSerializer implements SerializerInterface
         }
 
         $data['notification_settings'] = array(
-            'no_allow_set_email' => (bool) $agent->getPref('agent_notif.no_allow_set_email'),
+            'no_allow_set_email'   => (bool) $agent->getPref('agent_notif.no_allow_set_email'),
             'no_allow_set_browser' => (bool) $agent->getPref('agent_notif.no_allow_set_browser'),
         );
 
@@ -78,9 +76,10 @@ class PersonSerializer implements SerializerInterface
     }
 
     /**
-     * @param  mixed  $data   anything that the serializer can handle
-     * @param  string $view   defaults to "default" but can be anything and the handlers understand what to do
-     * @param  string $format requested return format - defaults to an array
+     * @param mixed  $data   anything that the serializer can handle
+     * @param string $view   defaults to "default" but can be anything and the handlers understand what to do
+     * @param string $format requested return format - defaults to an array
+     *
      * @return mixed
      */
     public function supports($data, $view = 'default', $format = 'array')

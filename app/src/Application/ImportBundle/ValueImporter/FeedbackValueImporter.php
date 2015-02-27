@@ -26,29 +26,29 @@
 \**************************************************************************/
 
 /**
- * @package Importer
  */
 
 namespace Application\ImportBundle\ValueImporter;
 
-use Application\ImportBundle\Value\FeedbackValue;
 use Application\ImportBundle\Exception\BadDataException;
 use Application\ImportBundle\Exception\DuplicateValueException;
+use Application\ImportBundle\Value\FeedbackValue;
 use Orb\Validator\StringEmail;
 
 class FeedbackValueImporter extends AbstractValueImporter
 {
     /**
+     * @param \Application\ImportBundle\Value\FeedbackValue $fval
      *
-     * @param  \Application\ImportBundle\Value\FeedbackValue $fval
-     * @return boolean
      * @throws \InvalidArgumentException
      * @throws BadDataException
      * @throws DuplicateValueException
+     * @return boolean
+     *
      */
     public function importValue($fval)
     {
-//        if (!($fval instanceof FeedbackValue)) {
+        //        if (!($fval instanceof FeedbackValue)) {
 //            throw new \InvalidArgumentException("This importer can only import Feedback Items");
 //        }
 

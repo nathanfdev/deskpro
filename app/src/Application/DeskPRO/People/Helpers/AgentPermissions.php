@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 /**
- * Figures out agent permissions
+ * Figures out agent permissions.
  */
 class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterface
 {
@@ -58,9 +57,9 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
     public function getShortCallableNames()
     {
         return array(
-            'getAgentPermissions' => '_getthis',
+            'getAgentPermissions'      => '_getthis',
             'getDisallowedDepartments' => 'getDisallowedDepartments',
-            'getAllowedDepartments' => 'getAllowedDepartments',
+            'getAllowedDepartments'    => 'getAllowedDepartments',
         );
     }
 
@@ -74,9 +73,10 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
     }
 
     /**
-     * Check if the user is allowed to use a particular department
+     * Check if the user is allowed to use a particular department.
      *
-     * @param  int|Department $dep
+     * @param int|Department $dep
+     *
      * @return bool
      */
     public function isDepartmentAllowed($dep, $context = 'tickets')
@@ -89,7 +89,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
     }
 
     /**
-     * Get an array of departments the user isn't allowed to see
+     * Get an array of departments the user isn't allowed to see.
      *
      * @return array
      */
@@ -111,7 +111,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
     }
 
     /**
-     * Get an array of departments the user is allowed to see
+     * Get an array of departments the user is allowed to see.
      *
      * @return array
      */

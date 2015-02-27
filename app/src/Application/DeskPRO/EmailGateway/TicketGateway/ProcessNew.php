@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category EmailGateway
  */
 
@@ -43,8 +42,8 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
+use Application\DeskPRO\Translate\Translate;
 use Orb\Util\Strings;
-use \Application\DeskPRO\Translate\Translate;
 
 class ProcessNew extends ProcessAbstract
 {
@@ -80,8 +79,9 @@ class ProcessNew extends ProcessAbstract
     }
 
     /**
-     * @return Ticket|mixed
      * @throws \Exception
+     * @return Ticket|mixed
+     *
      */
     public function run()
     {
@@ -143,7 +143,7 @@ class ProcessNew extends ProcessAbstract
                 $this->logMessage('[TicketGatewayProcessor] runNewTicket read text email');
                 $txt = $this->ticket_email->email_body_text;
                 if (!$txt && $this->ticket_email->email_body_text) {
-                    $txt = $this->ticket_email->email_body_text;
+                    $txt                       = $this->ticket_email->email_body_text;
                     $email_info->charset_error = $this->reader->getBodyText()->getOriginalCharset();
                 }
 
@@ -152,13 +152,13 @@ class ProcessNew extends ProcessAbstract
                     $txt = substr($txt, 0, 25000);
                 }
 
-                $email_info->body = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
+                $email_info->body         = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
                 $email_info->body_is_html = false;
             }
 
             // Replace inline image tags with tokens
-            $email_info->body_raw = $email_info->body;
-            $email_info->body = $inline_images->processTokens($email_info->body);
+            $email_info->body_raw  = $email_info->body;
+            $email_info->body      = $inline_images->processTokens($email_info->body);
             $email_info->body_full = '';
 
             if ($email_info->body_is_html) {
@@ -261,11 +261,11 @@ class ProcessNew extends ProcessAbstract
             $subject = '(No Subject)';
         }
 
-        $ticket = $this->getTicketManager()->createTicket();
-        $ticket->subject = $subject;
-        $ticket->person = $this->person;
-        $ticket->status = 'awaiting_agent';
-        $ticket->email_account = $this->account;
+        $ticket                  = $this->getTicketManager()->createTicket();
+        $ticket->subject         = $subject;
+        $ticket->person          = $this->person;
+        $ticket->status          = 'awaiting_agent';
+        $ticket->email_account   = $this->account;
         $ticket->creation_system = 'gateway.person';
 
         if ($use_lang) {
@@ -280,11 +280,11 @@ class ProcessNew extends ProcessAbstract
             }
         }
 
-        $ticket_message = new TicketMessage($this->reader->getId());
-        $ticket_message->person = $this->person;
+        $ticket_message              = new TicketMessage($this->reader->getId());
+        $ticket_message->person      = $this->person;
         $ticket_message->message_raw = $email_info->body_raw;
         $ticket_message->setMessageHtml($email_info->body);
-        $ticket_message->withNewSubject = $subject;
+        $ticket_message->withNewSubject  = $subject;
         $ticket_message->creation_system = 'gateway.person';
 
         if ($this->reader->getProperty('email_source')) {
@@ -294,8 +294,8 @@ class ProcessNew extends ProcessAbstract
         $ticket->addMessage($ticket_message);
 
         foreach ($this->processBlobs() as $blob) {
-            $attach = new TicketAttachment();
-            $attach['blob'] = $blob;
+            $attach           = new TicketAttachment();
+            $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
             if (isset($this->inline_blobs[$blob->id])) {
@@ -328,9 +328,9 @@ class ProcessNew extends ProcessAbstract
         #------------------------------
 
         if ($this->ticket_email->reply_actions) {
-            $reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
-            $reply_actions_context = new ReplyActionsContext();
-            $reply_actions_context->ticket = $ticket;
+            $reply_actions_apply            = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
+            $reply_actions_context          = new ReplyActionsContext();
+            $reply_actions_context->ticket  = $ticket;
             $reply_actions_context->message = $ticket_message;
             $reply_actions_apply->apply($reply_actions_context);
         }
@@ -366,7 +366,7 @@ class ProcessNew extends ProcessAbstract
         }
 
         return array(
-            'ticket' => $ticket,
+            'ticket'         => $ticket,
             'ticket_message' => $ticket_message,
         );
     }

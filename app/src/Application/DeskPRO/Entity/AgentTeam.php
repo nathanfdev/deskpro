@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -44,7 +43,6 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
  * An agent team is a group of agents. Similar to usergroups but for agents.
- *
  */
 class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -142,9 +140,9 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
             'mapedBy'      => 'teams',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
             'joinTable'    => array(
-                'name'        => 'agent_team_members',
-                'joinColumns' => array(array( 'name' => 'team_id' )),
-                'inverseJoinColumns'                 => array(array( 'name' => 'person_id' )),
+                'name'                                                      => 'agent_team_members',
+                'joinColumns'                                               => array(array( 'name' => 'team_id' )),
+                'inverseJoinColumns'                                        => array(array( 'name' => 'person_id' )),
                 'onDelete'                                                  => 'cascade',
             ),
             'orderBy' => array( 'name' => 'ASC'),
@@ -152,8 +150,8 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapManyToOne(array(
             'fieldName'    => 'avatar',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
-            'mappedBy'     => NULL,
-            'inversedBy'   => NULL,
+            'mappedBy'     => null,
+            'inversedBy'   => null,
             'joinColumns'  => array(array(
                 'name'                 => 'avatar_blob_id',
                 'referencedColumnName' => 'id',

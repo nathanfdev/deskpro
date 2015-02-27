@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -55,8 +54,9 @@ abstract class AbstractContainerAwareAction extends AbstractAction implements De
     /**
      * Gets the set container.
      *
-     * @return DeskproContainer
      * @throws \RuntimeException When no container has been set yet
+     * @return DeskproContainer
+     *
      */
     protected function getContainer()
     {

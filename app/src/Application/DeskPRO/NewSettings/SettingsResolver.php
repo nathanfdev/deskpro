@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage NewSettings
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\NewSettings;
@@ -40,8 +37,8 @@ use Application\DeskPRO\Entity\Brand;
 
 class SettingsResolver
 {
-    const CACHE_KEY_GLOBAL = 'settings.bag.global';
-    const CACHE_KEY_DEFAULT = 'settings.bag.default';
+    const CACHE_KEY_GLOBAL       = 'settings.bag.global';
+    const CACHE_KEY_DEFAULT      = 'settings.bag.default';
     const CACHE_KEY_BRAND_PREFIX = 'settings.bag.brand';
 
     /**
@@ -60,7 +57,7 @@ class SettingsResolver
     private $virtual_settings;
 
     /**
-     * Loader responsible for brand specific settings
+     * Loader responsible for brand specific settings.
      *
      * @var SettingsLoaderInterface
      */
@@ -68,9 +65,9 @@ class SettingsResolver
 
     public function __construct(array $loaders, CacheAdapterInterface $cache, SettingsLoaderInterface $brandSettingsLoader)
     {
-        $this->loaders = $loaders;
-        $this->cache = new ConvenientCache($cache);
-        $this->virtual_settings = array();
+        $this->loaders             = $loaders;
+        $this->cache               = new ConvenientCache($cache);
+        $this->virtual_settings    = array();
         $this->brandSettingsLoader = $brandSettingsLoader;
     }
 
@@ -80,7 +77,8 @@ class SettingsResolver
     }
 
     /**
-     * @param  bool        $force
+     * @param bool $force
+     *
      * @return SettingsBag
      */
     public function getGlobalSettings($force = false)
@@ -89,7 +87,7 @@ class SettingsResolver
             $this->cache->delete(static::CACHE_KEY_GLOBAL);
         }
 
-        $that = $this;
+        $that             = $this;
         $virtual_settings = $this->virtual_settings;
 
         return $this->cache->get(
@@ -111,10 +109,11 @@ class SettingsResolver
     }
 
     /**
-     * Gets the settings bag for the given brand ID
+     * Gets the settings bag for the given brand ID.
      *
-     * @param  bool        $force
-     * @param  int         $brand_id
+     * @param bool $force
+     * @param int  $brand_id
+     *
      * @return SettingsBag
      */
     public function getBrandSettings($brand_id, $force = false)
@@ -134,7 +133,7 @@ class SettingsResolver
         }
 
         $brand_settings_resolver = $this->brandSettingsLoader;
-        $global_settings = $this->getGlobalSettings($force);
+        $global_settings         = $this->getGlobalSettings($force);
 
         return $this->cache->get(
             $cacheKey,
@@ -150,7 +149,8 @@ class SettingsResolver
     }
 
     /**
-     * @param  bool        $force
+     * @param bool $force
+     *
      * @return SettingsBag
      */
     public function getDefaultSettings($force = false)
@@ -159,7 +159,7 @@ class SettingsResolver
             $this->cache->delete(static::CACHE_KEY_DEFAULT);
         }
 
-        $that = $this;
+        $that             = $this;
         $virtual_settings = $this->virtual_settings;
 
         return $this->cache->get(

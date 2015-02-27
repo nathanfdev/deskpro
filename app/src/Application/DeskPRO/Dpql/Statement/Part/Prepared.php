@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
@@ -70,14 +67,14 @@ class Prepared
     protected $_sqlExprOrder = false;
 
     /**
-     * A custom renderer that should be used to render this DPQL part
+     * A custom renderer that should be used to render this DPQL part.
      *
      * @var \Closure|string|null
      */
     protected $_renderer = null;
 
     /**
-     * A callback to fill rows of the results based on values of this field (if grouping by it)
+     * A callback to fill rows of the results based on values of this field (if grouping by it).
      *
      * @var \Closure|null
      */
@@ -157,7 +154,7 @@ class Prepared
     }
 
     /**
-     * Returns the orderable SQL expression. Returns the gen
+     * Returns the orderable SQL expression. Returns the gen.
      *
      * @return string
      */

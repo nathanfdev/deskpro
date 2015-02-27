@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Validator
+ * Orb.
  */
 
 namespace Orb\Validator;
@@ -40,7 +37,8 @@ namespace Orb\Validator;
 class ValidatorChain extends AbstractValidator
 {
     /**
-     * Array of validators to run
+     * Array of validators to run.
+     *
      * @var array
      */
     protected $validators = array();
@@ -60,7 +58,7 @@ class ValidatorChain extends AbstractValidator
     }
 
     /**
-     * Get an array of currently set validators
+     * Get an array of currently set validators.
      *
      * @return array
      */
@@ -81,7 +79,7 @@ class ValidatorChain extends AbstractValidator
         }
 
         foreach ($this->validators as $x) {
-            $validator = $x[0];
+            $validator        = $x[0];
             $break_on_invalid = $x[1];
 
             if (!$validator->isValid($value)) {

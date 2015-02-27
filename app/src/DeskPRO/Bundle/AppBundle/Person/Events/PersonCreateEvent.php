@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Person\Events;
@@ -52,7 +49,7 @@ class PersonCreateEvent extends Event
 
     public function __construct(Person $person, CreatePersonContext $context)
     {
-        $this->person = $person;
+        $this->person  = $person;
         $this->context = $context;
     }
 

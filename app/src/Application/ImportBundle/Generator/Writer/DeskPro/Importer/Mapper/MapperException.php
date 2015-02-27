@@ -28,10 +28,9 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 
 /**
- * Mapper exception
+ * Mapper exception.
  *
  * Class MapperException
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class MapperException extends \Exception
 {
@@ -41,7 +40,7 @@ final class MapperException extends \Exception
     private $criteria;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string $message
      * @param array  $criteria
@@ -53,7 +52,7 @@ final class MapperException extends \Exception
     }
 
     /**
-     * Returns the criteria
+     * Returns the criteria.
      *
      * @return array
      */
@@ -63,7 +62,7 @@ final class MapperException extends \Exception
     }
 
     /**
-     * Parse to string
+     * Parse to string.
      *
      * @return string
      */

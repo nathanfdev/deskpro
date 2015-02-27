@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Doctrine
+ * Orb.
  */
 
 namespace Orb\Doctrine\ORM\Mapping;
@@ -41,7 +38,8 @@ class StaticRuntimeReflectionService implements ReflectionService
     /**
      * Return an array of the parent classes (not interfaces) for the given class.
      *
-     * @param  string $class
+     * @param string $class
+     *
      * @return array
      */
     public function getParentClasses($class)
@@ -52,7 +50,8 @@ class StaticRuntimeReflectionService implements ReflectionService
     /**
      * Return the shortname of a class.
      *
-     * @param  string $className
+     * @param string $className
+     *
      * @return string
      */
     public function getClassShortName($className)
@@ -67,7 +66,8 @@ class StaticRuntimeReflectionService implements ReflectionService
     /**
      * Return the namespace of a class.
      *
-     * @param  string $className
+     * @param string $className
+     *
      * @return string
      */
     public function getClassNamespace($className)
@@ -81,9 +81,10 @@ class StaticRuntimeReflectionService implements ReflectionService
     }
 
     /**
-     * Return a reflection class instance or null
+     * Return a reflection class instance or null.
      *
-     * @param  string                $class
+     * @param string $class
+     *
      * @return \ReflectionClass|null
      */
     public function getClass($class)
@@ -94,8 +95,9 @@ class StaticRuntimeReflectionService implements ReflectionService
     /**
      * Return an accessible property (setAccessible(true)) or null.
      *
-     * @param  string                   $class
-     * @param  string                   $property
+     * @param string $class
+     * @param string $property
+     *
      * @return \ReflectionProperty|null
      */
     public function getAccessibleProperty($class, $property)
@@ -109,8 +111,9 @@ class StaticRuntimeReflectionService implements ReflectionService
     /**
      * Check if the class have a public method with the given name.
      *
-     * @param  mixed $class
-     * @param  mixed $method
+     * @param mixed $class
+     * @param mixed $method
+     *
      * @return bool
      */
     public function hasPublicMethod($class, $method)

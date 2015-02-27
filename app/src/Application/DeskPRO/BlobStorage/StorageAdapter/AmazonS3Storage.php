@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\BlobStorage\StorageAdapter;
@@ -88,7 +86,8 @@ class AmazonS3Storage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  Blob   $blob
+     * @param Blob $blob
+     *
      * @return string
      */
     public function makePathForBlob(Blob $blob)
@@ -107,9 +106,10 @@ class AmazonS3Storage extends AbstractStorageAdapter
     }
 
     /**
-     * Get the full path from a path string
+     * Get the full path from a path string.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return string
      */
     public function resolvePath($path)
@@ -120,7 +120,8 @@ class AmazonS3Storage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     *
      * @return bool
      */
     public function checkBlobExists(Blob $blob)
@@ -132,7 +133,8 @@ class AmazonS3Storage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     *
      * @return bool
      */
     public function deleteBlob(Blob $blob)
@@ -148,8 +150,9 @@ class AmazonS3Storage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
      * @param $data
+     *
      * @return mixed
      */
     public function writeBlobString(Blob $blob, $data)
@@ -191,8 +194,9 @@ class AmazonS3Storage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param  resource                              $data
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param resource                              $data
+     *
      * @return int
      */
     public function writeBlobFromStream(Blob $blob, $fp_source)
@@ -201,8 +205,9 @@ class AmazonS3Storage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param  string                                $source_path
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param string                                $source_path
+     *
      * @return int
      */
     public function writeBlobFromFile(Blob $blob, $source_path)
@@ -211,9 +216,10 @@ class AmazonS3Storage extends AbstractStorageAdapter
     }
 
     /**
-     * Loads the entire blob into a string
+     * Loads the entire blob into a string.
      *
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     *
      * @return string
      */
     public function readBlobString(Blob $blob)
@@ -241,8 +247,9 @@ class AmazonS3Storage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
      * @param $target_path
+     *
      * @return int
      */
     public function readBlobToFile(Blob $blob, $target_path)
@@ -251,8 +258,9 @@ class AmazonS3Storage extends AbstractStorageAdapter
     }
 
     /**
-     * @param  \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param  resource                              $data
+     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param resource                              $data
+     *
      * @return int
      */
     public function readBlobToStream(Blob $blob, $fp_target)

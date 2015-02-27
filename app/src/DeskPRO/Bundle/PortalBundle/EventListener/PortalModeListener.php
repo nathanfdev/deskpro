@@ -30,8 +30,8 @@ class PortalModeListener implements EventSubscriberInterface
     public function __construct(PortalModeFactory $factory, PortalModeStorage $store, LoggerInterface $logger)
     {
         $this->factory = $factory;
-        $this->store = $store;
-        $this->logger = $logger;
+        $this->store   = $store;
+        $this->logger  = $logger;
     }
 
     public function onKernelRequest(GetResponseEvent $event)

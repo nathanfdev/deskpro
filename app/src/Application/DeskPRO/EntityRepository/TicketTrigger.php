@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -37,7 +36,8 @@ namespace Application\DeskPRO\EntityRepository;
 class TicketTrigger extends AbstractEntityRepository
 {
     /**
-     * @param  string                                      $event_type
+     * @param string $event_type
+     *
      * @return \Application\DeskPRO\Entity\TicketTrigger[]
      */
     public function getTriggersForEventType($event_type)
@@ -53,7 +53,8 @@ class TicketTrigger extends AbstractEntityRepository
     }
 
     /**
-     * @param  string|null                                 $type
+     * @param string|null $type
+     *
      * @return \Application\DeskPRO\Entity\TicketTrigger[]
      */
     public function getTriggers($type = null)

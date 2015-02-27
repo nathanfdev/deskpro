@@ -26,15 +26,12 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage HttpFoundation
+ * Orb.
  */
 
 namespace Orb\HttpFoundation\Session;
 
-use \Symfony\Component\HttpFoundation\SessionStorage\SessionStorageInterface;
+use Symfony\Component\HttpFoundation\SessionStorage\SessionStorageInterface;
 
 /**
  *
@@ -48,6 +45,7 @@ class Session implements SessionInterface
 
     /**
      * Has the session been started yet?
+     *
      * @var bool
      */
     protected $has_started = false;
@@ -55,6 +53,7 @@ class Session implements SessionInterface
     /**
      * Created namespaces. Namespaces are always using this objects data directly,
      * but more efficient if we use the same namespace objects instead of creating new ones.
+     *
      * @var array
      */
     protected $namespaces = array();
@@ -62,12 +61,14 @@ class Session implements SessionInterface
     /**
      * The raw data we'll save to storage. This is public for efficiencies sake in
      * SessionNamespace -- you shouldn't use this yourself though.
+     *
      * @var array
      */
     public $data = array();
 
     /**
-     * Various metadata
+     * Various metadata.
+     *
      * @var array
      */
     public $metadata = array();
@@ -81,9 +82,10 @@ class Session implements SessionInterface
     }
 
     /**
-     * Gets a session object who is sandboxed to a specific sub-key (namespace)
+     * Gets a session object who is sandboxed to a specific sub-key (namespace).
      *
-     * @param  string           $namespace The namespace to fetch
+     * @param string $namespace The namespace to fetch
+     *
      * @return SessionNamespace
      */
     public function createNamespace($namespace)
@@ -107,7 +109,7 @@ class Session implements SessionInterface
         }
 
         $this->storage->start();
-        $this->data = $this->storage->read('orb_sess');
+        $this->data     = $this->storage->read('orb_sess');
         $this->metadata = array();
         if (isset($this->data['__metadata'])) {
             $this->metadata = $this->data['__metadata'];
@@ -119,7 +121,8 @@ class Session implements SessionInterface
     /**
      * Checks if a data item is defined.
      *
-     * @param  string  $name The data item name
+     * @param string $name The data item name
+     *
      * @return boolean
      */
     public function has($name)
@@ -132,8 +135,9 @@ class Session implements SessionInterface
     /**
      * Returns a data item.
      *
-     * @param  string $name    The attribute name
-     * @param  mixed  $default The default value
+     * @param string $name    The attribute name
+     * @param mixed  $default The default value
+     *
      * @return mixed
      */
     public function get($name, $default = null)
@@ -180,7 +184,7 @@ class Session implements SessionInterface
     }
 
     /**
-     * Clear all set data
+     * Clear all set data.
      */
     public function removeAllData()
     {

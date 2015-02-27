@@ -28,10 +28,9 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 /**
- * Exporter from json files
+ * Exporter from json files.
  *
  * Class Json
- * @package Application\ImportBundle\Generator\Exporter
  */
 final class Json extends AbstractExporter
 {

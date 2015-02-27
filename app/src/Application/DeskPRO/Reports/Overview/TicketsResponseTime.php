@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports\Overview;
@@ -97,7 +94,7 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
     public function getSubgroupTitles()
     {
         if (!$this->grouping_field) {
-            return null;
+            return;
         }
 
         $collect = array();

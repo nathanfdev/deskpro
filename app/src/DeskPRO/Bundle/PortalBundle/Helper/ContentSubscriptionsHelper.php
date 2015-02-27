@@ -26,19 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Application\DeskPRO\Entity\CategoryAbstract;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 class ContentSubscriptionsHelper
@@ -64,8 +61,9 @@ class ContentSubscriptionsHelper
     }
 
     /**
-     * @param  CategoryAbstract $category
-     * @param  Person           $person
+     * @param CategoryAbstract $category
+     * @param Person           $person
+     *
      * @return bool
      */
     public function isSubscribedCategory(CategoryAbstract $category, Person $person)
@@ -78,8 +76,9 @@ class ContentSubscriptionsHelper
     }
 
     /**
-     * @param  ContentAbstract $content
-     * @param  Person          $person
+     * @param ContentAbstract $content
+     * @param Person          $person
+     *
      * @return bool
      */
     public function isSubscribedContent(ContentAbstract $content, Person $person)
@@ -92,8 +91,9 @@ class ContentSubscriptionsHelper
     }
 
     /**
-     * @param  CategoryAbstract $category
-     * @param  Person           $person
+     * @param CategoryAbstract $category
+     * @param Person           $person
+     *
      * @return bool
      */
     public function subscribeToCategory(CategoryAbstract $category, Person $person)
@@ -103,7 +103,7 @@ class ContentSubscriptionsHelper
         }
 
         $this->getDb()->insert($this->getSubscriptionsTableName($category), array(
-            'person_id' => $person->getId(),
+            'person_id'   => $person->getId(),
             'category_id' => $category->getId(),
         ));
 
@@ -111,15 +111,16 @@ class ContentSubscriptionsHelper
     }
 
     /**
-     * @param  CategoryAbstract $category
-     * @param  Person           $person
+     * @param CategoryAbstract $category
+     * @param Person           $person
+     *
      * @return bool
      */
     public function unsubscribeFromCategory(CategoryAbstract $category, Person $person)
     {
         if ($this->isSubscribedCategory($category, $person)) {
             $this->getDb()->delete($this->getSubscriptionsTableName($category), array(
-                'person_id' => $person->getId(),
+                'person_id'   => $person->getId(),
                 'category_id' => $category->getId(),
             ));
 
@@ -130,8 +131,9 @@ class ContentSubscriptionsHelper
     }
 
     /**
-     * @param  ContentAbstract $content
-     * @param  Person          $person
+     * @param ContentAbstract $content
+     * @param Person          $person
+     *
      * @return bool
      */
     public function subscribeToContent(ContentAbstract $content, Person $person)
@@ -141,7 +143,7 @@ class ContentSubscriptionsHelper
         }
 
         $this->getDb()->insert($this->getSubscriptionsTableName($content), array(
-            'person_id' => $person->getId(),
+            'person_id'                             => $person->getId(),
             $this->getSubscriptionsIdName($content) => $content->getId(),
         ));
 
@@ -149,15 +151,16 @@ class ContentSubscriptionsHelper
     }
 
     /**
-     * @param  ContentAbstract $content
-     * @param  Person          $person
+     * @param ContentAbstract $content
+     * @param Person          $person
+     *
      * @return bool
      */
     public function unsubscribeFromContent(ContentAbstract $content, Person $person)
     {
         if ($this->isSubscribedContent($content, $person)) {
             $this->getDb()->delete($this->getSubscriptionsTableName($content), array(
-                'person_id' => $person->getId(),
+                'person_id'                             => $person->getId(),
                 $this->getSubscriptionsIdName($content) => $content->getId(),
             ));
 
@@ -236,7 +239,8 @@ class ContentSubscriptionsHelper
 
     /**
      * @param $setting
-     * @param  null  $default
+     * @param null $default
+     *
      * @return mixed
      */
     protected function getBrandSetting($setting, $default = null)

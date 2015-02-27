@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -87,7 +86,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
     public function __construct(array $options)
     {
-        $this->options = array_merge($this->options, $options);
+        $this->options                         = array_merge($this->options, $options);
         $this->options['accountCanonicalForm'] = 4;
     }
 
@@ -117,7 +116,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
         if (!empty($this->options['ldapClass'])) {
             $class = $this->options['ldapClass'];
-            $ldap = new $class();
+            $ldap  = new $class();
             $auth->setLdap($ldap);
         }
 
@@ -145,7 +144,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
                     $this->set_username = $record['distinguishedname'][0];
                 }
 
-                $res2 = $this->doAuthenticate();
+                $res2               = $this->doAuthenticate();
                 $this->set_username = $old;
                 if ($res2->isValid()) {
                     return $res2;
@@ -210,13 +209,13 @@ class ActiveDirectory implements FormLoginInterface, Loggable
             return new Result(Result::FAILURE_INVALID_CREDS, null, array('error_code' => 'invalid_credentials', 'error_message' => 'Invalid username or password'));
         }
 
-        $raw_info = array();
+        $raw_info                      = array();
         $raw_info['identity_friendly'] = $result->getIdentity();
 
         try {
             /** @var $ldap \Zend\Ldap\Ldap */
             $ldap = $auth->getLdap();
-            $dn = $ldap->getCanonicalAccountName($result->getIdentity(), \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
+            $dn   = $ldap->getCanonicalAccountName($result->getIdentity(), \Zend\Ldap\Ldap::ACCTNAME_FORM_DN);
 
             /** @var $rec \Zend\Ldap\Node */
             $rec = $ldap->getNode($dn);
@@ -296,12 +295,12 @@ class ActiveDirectory implements FormLoginInterface, Loggable
     }
 
     /**
-     * Search the AD for the user based on email address
+     * Search the AD for the user based on email address.
      */
     public function findRecordViaEmail()
     {
         if (!$this->set_username || !preg_match('#^.+@.+$#', $this->set_username)) {
-            return null;
+            return;
         }
 
         if ($this->logger) {
@@ -310,7 +309,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
         $set = false;
         if (!$this->options['accountDomainName']) {
-            $set = true;
+            $set                                = true;
             $this->options['accountDomainName'] = Strings::extractRegexMatch('#@(.*?)$#', $this->set_username, 1);
         }
 
@@ -340,7 +339,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
                 $this->logger->log("Failed to search: ".$e->getCode().' '.$e->getMessage(), Logger::DEBUG);
             }
 
-            return null;
+            return;
         }
 
         if ($set) {
@@ -352,18 +351,18 @@ class ActiveDirectory implements FormLoginInterface, Loggable
         }
 
         if ($r->count() == 1) {
-            $arr = $r->getFirst();
-            $arr['domain'] = $this->options['accountDomainName'];
+            $arr                      = $r->getFirst();
+            $arr['domain']            = $this->options['accountDomainName'];
             $arr['accountDomainName'] = $this->options['accountDomainName'];
 
             return $arr;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Search the AD for the user based on username
+     * Search the AD for the user based on username.
      */
     public function findRecordViaUsername()
     {
@@ -373,7 +372,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
         $set = false;
         if (!$this->options['accountDomainName']) {
-            $set = true;
+            $set                                = true;
             $this->options['accountDomainName'] = Strings::extractRegexMatch('#@(.*?)$#', $this->set_username, 1);
         }
 
@@ -403,7 +402,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
                 $this->logger->log("Failed to search: ".$e->getCode().' '.$e->getMessage(), Logger::DEBUG);
             }
 
-            return null;
+            return;
         }
 
         if ($set) {
@@ -415,14 +414,14 @@ class ActiveDirectory implements FormLoginInterface, Loggable
         }
 
         if ($r->count() == 1) {
-            $arr = $r->getFirst();
-            $arr['domain'] = $this->options['accountDomainName'];
+            $arr                      = $r->getFirst();
+            $arr['domain']            = $this->options['accountDomainName'];
             $arr['accountDomainName'] = $this->options['accountDomainName'];
 
             return $arr;
         }
 
-        return null;
+        return;
     }
 
     /**

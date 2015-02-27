@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -63,9 +62,10 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  array                    $agent_ids
-     * @param  ExecutorContextInterface $context
+     * @param Ticket                   $ticket
+     * @param array                    $agent_ids
+     * @param ExecutorContextInterface $context
+     *
      * @return array
      */
     private function resolveAgents(Ticket $ticket, array $agent_ids, ExecutorContextInterface $context)
@@ -195,9 +195,9 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
         );
 
         $sent_count = 0;
-        $em  = $this->getContainer()->getEm();
-        $tpl = $this->getContainer()->getTemplating();
-        $tr  = $this->getContainer()->getTranslator();
+        $em         = $this->getContainer()->getEm();
+        $tpl        = $this->getContainer()->getTemplating();
+        $tr         = $this->getContainer()->getTranslator();
 
         $alert_records = array();
 

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Departments;
@@ -42,25 +40,21 @@ class ChatDepartmentEditor
     /**
      * @var \Doctrine\ORM\EntityManager
      */
-
     protected $em;
 
     /**
      * @var \Application\DeskPRO\DBAL\Connection
      */
-
     protected $db;
 
     /**
      * @var \Application\DeskPRO\Entity\Department
      */
-
     protected $dep;
 
     /**
      * @param $em
      */
-
     public function __construct(EntityManager $em)
     {
         $this->em       = $em;
@@ -70,7 +64,6 @@ class ChatDepartmentEditor
     /**
      * @param array $orders
      */
-
     public function updateDisplayOrders($orders)
     {
         $x    = 10;
@@ -93,9 +86,8 @@ class ChatDepartmentEditor
     }
 
     /**
-     * Deletes the department
+     * Deletes the department.
      */
-
     public function removeDepartment(Department $dep, Department $move_to_dep)
     {
         if ($move_to_dep->id == $dep->id) {

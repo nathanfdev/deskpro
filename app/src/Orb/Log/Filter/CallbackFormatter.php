@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Log
+ * Orb.
  */
 
 namespace Orb\Log\Filter;
 
 /**
- * This wraps up a function callback
+ * This wraps up a function callback.
  */
 class CallbackFormatter extends \Orb\Filter\AbstractFilter
 {
@@ -50,7 +47,7 @@ class CallbackFormatter extends \Orb\Filter\AbstractFilter
     public function filter($log_item)
     {
         if (!$log_item) {
-            return null;
+            return;
         }
 
         $log_item = call_user_func($this->callback, $log_item);

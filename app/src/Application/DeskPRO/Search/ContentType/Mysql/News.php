@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Search
  */
 
@@ -45,20 +44,20 @@ class News extends AbstractContentType
     public function objectToDocument($news)
     {
         if ($news->status != 'published') {
-            $data = array();
-            $data['id'] = $news['id'];
+            $data                 = array();
+            $data['id']           = $news['id'];
             $data['content_type'] = 'news';
-            $data['remove'] = true;
+            $data['remove']       = true;
 
             $doc = Document::newFromArray($data);
 
             return $doc;
         }
 
-        $data = array();
-        $data['id'] = $news['id'];
+        $data                 = array();
+        $data['id']           = $news['id'];
         $data['content_type'] = 'news';
-        $data['content'] = $news['title']."\n".$news['content']."\n";
+        $data['content']      = $news['title']."\n".$news['content']."\n";
 
         foreach ($news->getLabelManager()->getLabelsArray() as $label) {
             $label = MysqlAdapter::encodeLabel($label);

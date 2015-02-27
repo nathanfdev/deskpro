@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage InstallBundle
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Install;
@@ -42,7 +39,7 @@ use Orb\Util\Strings;
 class ServerChecks
 {
     const MODE_NORMAL = 'normal';
-    const MODE_CRON = 'cron';
+    const MODE_CRON   = 'cron';
 
     /**
      * @var \Orb\Log\Logger
@@ -78,7 +75,7 @@ class ServerChecks
     }
 
     /**
-     * Set check mode
+     * Set check mode.
      *
      * @param string $mode
      */
@@ -163,9 +160,10 @@ class ServerChecks
     }
 
     /**
-     * Check if a speciifc error occurred
+     * Check if a speciifc error occurred.
      *
-     * @param  string $type
+     * @param string $type
+     *
      * @return bool
      */
     public function hasErrorType($type)
@@ -182,7 +180,7 @@ class ServerChecks
     }
 
     /**
-     * Get only fatal errors
+     * Get only fatal errors.
      *
      * @return array
      */
@@ -199,7 +197,7 @@ class ServerChecks
     }
 
     /**
-     * Get only non-fatal errors
+     * Get only non-fatal errors.
      *
      * @return array
      */
@@ -224,7 +222,7 @@ class ServerChecks
     }
 
     /**
-     * Runs through basic server checks
+     * Runs through basic server checks.
      *
      * @return bool True if all okay, or false if there are errors
      */
@@ -240,11 +238,11 @@ class ServerChecks
                 $this->getLogger()->log("[OK] PHP version of ".phpversion()." is OK", Logger::DEBUG);
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg = "[FATAL] Install PHP 5.3.2 or newer. You currently have ".phpversion();
+                $msg                           = "[FATAL] Install PHP 5.3.2 or newer. You currently have ".phpversion();
                 $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                 $this->server_errors['php_version'] = array(
                     'message' => $msg,
-                    'level' => 'fatal',
+                    'level'   => 'fatal',
                 );
 
                 // Lets not go any further in case the php version is so old something in this script fails
@@ -263,38 +261,38 @@ class ServerChecks
 
                 if (defined('DATABASE_HOST')) {
                     $this->has_fatal_server_errors = true;
-                    $msg = "/config.php exists but appears to contain configuration from a DeskPRO v3 file";
+                    $msg                           = "/config.php exists but appears to contain configuration from a DeskPRO v3 file";
                     $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                     $this->server_errors['config_dp3_values'] = array(
                         'message' => $msg,
-                        'level' => 'fatal',
+                        'level'   => 'fatal',
                     );
                 } elseif (!defined('DP_DATABASE_HOST') || !defined('DP_DATABASE_USER') || !defined('DP_DATABASE_PASSWORD') || !defined('DP_DATABASE_NAME')) {
                     $this->has_fatal_server_errors = true;
-                    $msg = "/config.php exists but does not contain the required database values";
+                    $msg                           = "/config.php exists but does not contain the required database values";
                     $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                     $this->server_errors['config_values'] = array(
                         'message' => $msg,
-                        'level' => 'fatal',
+                        'level'   => 'fatal',
                     );
                 } elseif (!defined('DP_TECHNICAL_EMAIL') || !DP_TECHNICAL_EMAIL || !strpos(DP_TECHNICAL_EMAIL, '@')) {
                     $this->has_fatal_server_errors = true;
-                    $msg = "/config.php exists but does not contain the required DP_TECHNICAL_EMAIL value";
+                    $msg                           = "/config.php exists but does not contain the required DP_TECHNICAL_EMAIL value";
                     $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                     $this->server_errors['config_technical_email'] = array(
                         'message' => $msg,
-                        'level' => 'recommended',
+                        'level'   => 'recommended',
                     );
                 } else {
                     $this->getLogger()->log("[OK] config file exists and contains required values", Logger::DEBUG);
                 }
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg = "/config.php file is missing";
+                $msg                           = "/config.php file is missing";
                 $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                 $this->server_errors['config'] = array(
                     'message' => $msg,
-                    'level' => 'fatal',
+                    'level'   => 'fatal',
                 );
             }
         }
@@ -325,13 +323,13 @@ class ServerChecks
                 $this->getLogger()->log("[OK] No common disabled functions", Logger::DEBUG);
             } else {
                 $this->has_fatal_server_errors = true;
-                $has_disabled_str = implode(', ', $has_disabled);
-                $msg = "Edit php.ini and remove the disabled_functions line (Found these disabled functions: $has_disabled_str)";
+                $has_disabled_str              = implode(', ', $has_disabled);
+                $msg                           = "Edit php.ini and remove the disabled_functions line (Found these disabled functions: $has_disabled_str)";
                 $this->getLogger()->log($msg, Logger::INFO);
                 $this->server_errors['php_functions'] = array(
-                    'message' => $msg,
-                    'level' => 'recommended',
-                    'has_disabled' => $has_disabled,
+                    'message'          => $msg,
+                    'level'            => 'recommended',
+                    'has_disabled'     => $has_disabled,
                     'has_disabled_str' => $has_disabled_str,
                 );
             }
@@ -353,22 +351,22 @@ class ServerChecks
                 ) {
                     if (!version_compare('2.7', $libxml_version, '<=')) {
                         $this->has_fatal_server_errors = true;
-                        $msg = "PHP is built against a very old version of libxml. This can cause errors in parsing HTML. You need to upgrade libxml and re-build PHP.";
+                        $msg                           = "PHP is built against a very old version of libxml. This can cause errors in parsing HTML. You need to upgrade libxml and re-build PHP.";
                         $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                         $this->server_errors['libxml_version'] = array(
-                            'message' => $msg,
-                            'level' => 'fatal',
+                            'message'          => $msg,
+                            'level'            => 'fatal',
                             'detected_version' => $libxml_version,
                         );
                     }
                 }
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg = "Install and enable the libxml extension";
+                $msg                           = "Install and enable the libxml extension";
                 $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                 $this->server_errors['libxml_ext'] = array(
                     'message' => $msg,
-                    'level' => 'fatal',
+                    'level'   => 'fatal',
                 );
             }
         }
@@ -383,11 +381,11 @@ class ServerChecks
                 $this->getLogger()->log("[OK] json extension installed", Logger::DEBUG);
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg = "Install and enable the json extension";
+                $msg                           = "Install and enable the json extension";
                 $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                 $this->server_errors['json_ext'] = array(
                     'message' => $msg,
-                    'level' => 'fatal',
+                    'level'   => 'fatal',
                 );
             }
         }
@@ -402,11 +400,11 @@ class ServerChecks
                 $this->getLogger()->log("[OK] session extension installed", Logger::DEBUG);
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg = "Install and enable the session extension";
+                $msg                           = "Install and enable the session extension";
                 $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                 $this->server_errors['session_ext'] = array(
                     'message' => $msg,
-                    'level' => 'fatal',
+                    'level'   => 'fatal',
                 );
             }
         }
@@ -421,11 +419,11 @@ class ServerChecks
                 $this->getLogger()->log("[OK] An image manipulation extension is installed", Logger::DEBUG);
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg = "Install and enable the Imagick, Gmagick or GD extension";
+                $msg                           = "Install and enable the Imagick, Gmagick or GD extension";
                 $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                 $this->server_errors['image_manip'] = array(
                     'message' => $msg,
-                    'level' => 'fatal',
+                    'level'   => 'fatal',
                 );
             }
         }
@@ -440,11 +438,11 @@ class ServerChecks
                 $this->getLogger()->log("[OK] ctype session installed", Logger::DEBUG);
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg = "Install and enable the ctype extension";
+                $msg                           = "Install and enable the ctype extension";
                 $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                 $this->server_errors['ctype_ext'] = array(
                     'message' => "Install and enable the ctype extension",
-                    'level' => 'fatal',
+                    'level'   => 'fatal',
                 );
             }
         }
@@ -459,11 +457,11 @@ class ServerChecks
                 $this->getLogger()->log("[OK] tokenizer session installed", Logger::DEBUG);
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg = "Install and enable the tokenizer extension";
+                $msg                           = "Install and enable the tokenizer extension";
                 $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                 $this->server_errors['tokenizer_ext'] = array(
                     'message' => $msg,
-                    'level' => 'fatal',
+                    'level'   => 'fatal',
                 );
             }
         }
@@ -482,20 +480,20 @@ class ServerChecks
                     $this->getLogger()->log("[OK] PDO_MySQL installed", Logger::DEBUG);
                 } else {
                     $this->has_fatal_server_errors = true;
-                    $msg = "You need to install the MySQL PDO driver";
+                    $msg                           = "You need to install the MySQL PDO driver";
                     $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                     $this->server_errors['pdo_mysql_ext'] = array(
                         'message' => $msg,
-                        'level' => 'fatal',
+                        'level'   => 'fatal',
                     );
                 }
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg = "Install and enable the PDO/PDO_MySQL extension";
+                $msg                           = "Install and enable the PDO/PDO_MySQL extension";
                 $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                 $this->server_errors['pdo_ext'] = array(
                     'message' => $msg,
-                    'level' => 'fatal',
+                    'level'   => 'fatal',
                 );
             }
         }
@@ -513,7 +511,7 @@ class ServerChecks
                 $this->getLogger()->log("$msg", Logger::INFO);
                 $this->server_errors['openssl_ext'] = array(
                     'message' => $msg,
-                    'level' => 'recommended',
+                    'level'   => 'recommended',
                 );
             }
         }
@@ -523,9 +521,9 @@ class ServerChecks
         #------------------------------
 
         if ($type == 'apc_check' || $type == 'all') {
-            $enabledApc = function_exists('apc_store') && (int) ini_get('apc.enabled');
+            $enabledApc      = function_exists('apc_store') && (int) ini_get('apc.enabled');
             $enabledWincache = extension_loaded('wincache') && (int) ini_get('wincache.ocenabled');
-            $enabledOpcache = (int) ini_get('opcache.enable') && extension_loaded('Zend OPcache');
+            $enabledOpcache  = (int) ini_get('opcache.enable') && extension_loaded('Zend OPcache');
 
             $this->getLogger()->log("[CHECK] Checking if any opcode cache is enabled", Logger::DEBUG);
 
@@ -559,7 +557,7 @@ class ServerChecks
                     $this->getLogger()->log("$msg", Logger::INFO);
                     $this->server_errors['magic_quotes_gpc_check'] = array(
                         'message' => $msg,
-                        'level' => 'recommended',
+                        'level'   => 'recommended',
                     );
                 }
             }
@@ -578,7 +576,7 @@ class ServerChecks
                 $this->getLogger()->log("$msg", Logger::INFO);
                 $this->server_errors['ldap_check'] = array(
                     'message' => $msg,
-                    'level' => 'recommended',
+                    'level'   => 'recommended',
                 );
             }
         }
@@ -596,7 +594,7 @@ class ServerChecks
                 $this->getLogger()->log("$msg", Logger::INFO);
                 $this->server_errors['curl_check'] = array(
                     'message' => $msg,
-                    'level' => 'recommended',
+                    'level'   => 'recommended',
                 );
             }
         }
@@ -611,11 +609,11 @@ class ServerChecks
                 $this->getLogger()->log("[OK] mbstring is installed", Logger::DEBUG);
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg = "You must install and enabled the mbstring extension";
+                $msg                           = "You must install and enabled the mbstring extension";
                 $this->getLogger()->log("$msg", Logger::INFO);
                 $this->server_errors['mbstring_ext'] = array(
                     'message' => $msg,
-                    'level' => 'fatal',
+                    'level'   => 'fatal',
                 );
             }
         }
@@ -630,11 +628,11 @@ class ServerChecks
                 $this->getLogger()->log("[OK] iconv or mbstring is installed", Logger::DEBUG);
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg = "You must install and enabled the iconv or mbstring extension";
+                $msg                           = "You must install and enabled the iconv or mbstring extension";
                 $this->getLogger()->log("$msg", Logger::INFO);
                 $this->server_errors['iconv_ext'] = array(
                     'message' => $msg,
-                    'level' => 'fatal',
+                    'level'   => 'fatal',
                 );
             }
         }
@@ -649,11 +647,11 @@ class ServerChecks
                 $this->getLogger()->log("[OK] dom is installed", Logger::DEBUG);
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg = "You must install and enabled the dom extension";
+                $msg                           = "You must install and enabled the dom extension";
                 $this->getLogger()->log("$msg", Logger::INFO);
                 $this->server_errors['dom_ext'] = array(
                     'message' => $msg,
-                    'level' => 'fatal',
+                    'level'   => 'fatal',
                 );
             }
         }
@@ -668,11 +666,11 @@ class ServerChecks
                 $this->getLogger()->log("[OK] Memory limit is okay", Logger::DEBUG);
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg = "DeskPRO needs PHP's memory_limit option to be at least 128 MB";
+                $msg                           = "DeskPRO needs PHP's memory_limit option to be at least 128 MB";
                 $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                 $this->server_errors['memory_limit'] = array(
                     'message' => $msg,
-                    'level' => 'fatal',
+                    'level'   => 'fatal',
                 );
             }
         }
@@ -690,7 +688,7 @@ class ServerChecks
                 $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                 $this->server_errors['upload_tmp_dir'] = array(
                     'message' => $msg,
-                    'level' => 'recommended',
+                    'level'   => 'recommended',
                 );
             }
         }
@@ -706,11 +704,11 @@ class ServerChecks
                 $this->getLogger()->log("[OK] Data dirs are writable", Logger::DEBUG);
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg = "The data directory and all sub-directories must exist and be writable (path: $dir).";
+                $msg                           = "The data directory and all sub-directories must exist and be writable (path: $dir).";
                 $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                 $this->server_errors['data_write'] = array(
                     'message' => $msg,
-                    'level' => 'fatal',
+                    'level'   => 'fatal',
                 );
             }
         }
@@ -725,11 +723,11 @@ class ServerChecks
                 $this->getLogger()->log("[OK] DeskPRO v3 files not here", Logger::DEBUG);
             } else {
                 $this->has_fatal_server_errors = true;
-                $msg = "[FATAL] It appears as though you installed the DeskPRO v4 files over a copy of DeskPRO v3. DeskPRO v4 is completely new and shares no common files with v3, and having v3 files in the same directory is a security risk. You should delete the directory and extract a fresh copy of DeskPRO v4.";
+                $msg                           = "[FATAL] It appears as though you installed the DeskPRO v4 files over a copy of DeskPRO v3. DeskPRO v4 is completely new and shares no common files with v3, and having v3 files in the same directory is a security risk. You should delete the directory and extract a fresh copy of DeskPRO v4.";
                 $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                 $this->server_errors['dp3_files'] = array(
                     'message' => $msg,
-                    'level' => 'fatal',
+                    'level'   => 'fatal',
                 );
             }
         }
@@ -747,7 +745,7 @@ class ServerChecks
                 $this->getLogger()->log("$msg", Logger::INFO);
                 $this->server_errors['imap_check'] = array(
                     'message' => $msg,
-                    'level' => 'recommended',
+                    'level'   => 'recommended',
                 );
             }
         }
@@ -765,7 +763,7 @@ class ServerChecks
                 $this->getLogger()->log("$msg", Logger::INFO);
                 $this->server_errors['soap_check'] = array(
                     'message' => $msg,
-                    'level' => 'recommended',
+                    'level'   => 'recommended',
                 );
             }
         }
@@ -778,9 +776,10 @@ class ServerChecks
     }
 
     /**
-     * Checks the database to make sure details are correct and version etc is ok
+     * Checks the database to make sure details are correct and version etc is ok.
      *
-     * @param  array $db_conf If null, will use config data and try to conect through App::getDb
+     * @param array $db_conf If null, will use config data and try to conect through App::getDb
+     *
      * @return bool
      */
     public function checkDatabase(array $db_conf = null, $should_be_empty = false)
@@ -817,11 +816,11 @@ class ServerChecks
                 }
 
                 $this->has_fatal_server_errors = true;
-                $msg = "Connecting through MySQL through 'localhost' causes very poor performance on Windows servers. Change the database server to 127.0.0.1 instead.";
+                $msg                           = "Connecting through MySQL through 'localhost' causes very poor performance on Windows servers. Change the database server to 127.0.0.1 instead.";
                 $this->getLogger()->log("$msg", Logger::INFO);
                 $this->server_errors['db_win_localhost'] = array(
                     'message' => $msg,
-                    'level' => $level,
+                    'level'   => $level,
                 );
             }
         }
@@ -844,11 +843,11 @@ class ServerChecks
             }
         } catch (\Exception $e) {
             $this->has_fatal_db_errors = true;
-            $msg = "Connection failed: {$e->getMessage()}";
+            $msg                       = "Connection failed: {$e->getMessage()}";
             $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
             $this->server_errors['db_connect'] = array(
                 'message' => $msg,
-                'level' => 'fatal',
+                'level'   => 'fatal',
             );
 
             return false;
@@ -859,11 +858,11 @@ class ServerChecks
             $engines = App::getDb()->fetchAllKeyed("SHOW ENGINES", array(), 'Engine');
             if (!$engines || !isset($engines['InnoDB']) || $engines['InnoDB']['Support'] == 'NO') {
                 $this->has_fatal_db_errors = true;
-                $msg = "MySQL does not have the InnoDB engine enabled";
+                $msg                       = "MySQL does not have the InnoDB engine enabled";
                 $this->getLogger()->log("[FAIL] $msg", Logger::INFO);
                 $this->server_errors['db_no_innodb'] = array(
                     'message' => $msg,
-                    'level' => 'fatal',
+                    'level'   => 'fatal',
                 );
 
                 return false;
@@ -877,11 +876,11 @@ class ServerChecks
                 $this->getLogger()->log("[OK] mysql version of $ver is okay", Logger::DEBUG);
             } else {
                 $this->has_fatal_db_errors = true;
-                $msg = "Install MySQL verson 5.0 or newer";
+                $msg                       = "Install MySQL verson 5.0 or newer";
                 $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                 $this->server_errors['db_version'] = array(
                     'message' => $msg,
-                    'level' => 'fatal',
+                    'level'   => 'fatal',
                 );
 
                 return false;
@@ -892,11 +891,11 @@ class ServerChecks
                 $tables = $db->fetchAll("SHOW TABLES");
                 if ($tables) {
                     $this->has_fatal_db_errors = true;
-                    $msg = "DeskPRO needs to be installed into an empty database";
+                    $msg                       = "DeskPRO needs to be installed into an empty database";
                     $this->getLogger()->log("[FATAL] $msg", Logger::INFO);
                     $this->server_errors['db_not_empty'] = array(
                         'message' => $msg,
-                        'level' => 'fatal',
+                        'level'   => 'fatal',
                     );
 
                     return false;
@@ -924,7 +923,8 @@ class ServerChecks
     }
 
     /**
-     * check for optional extensions
+     * check for optional extensions.
+     *
      * @return array
      */
     public function getOptionals()
@@ -933,7 +933,7 @@ class ServerChecks
 
         $optionals['test'] = array(
             'message' => 'err',
-            'level' => 'recommended',
+            'level'   => 'recommended',
         );
 
         return $optionals;

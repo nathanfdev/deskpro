@@ -11,19 +11,20 @@ require_once 'AbstractTicketStringCheckTest.php';
 class CheckUserMessageTest extends AbstractStringCheckTest
 {
     /**
-     * @param  int    $id
-     * @param  string $test_string
+     * @param int    $id
+     * @param string $test_string
+     *
      * @return Ticket
      */
     public function createTicket($id, $test_string)
     {
-        $ticket = new Ticket();
+        $ticket     = new Ticket();
         $ticket->id = $id;
 
         $person = new Person();
 
-        $message = new TicketMessage();
-        $message->person = $person;
+        $message          = new TicketMessage();
+        $message->person  = $person;
         $message->message = $test_string;
         $ticket->addMessage($message);
 
@@ -49,7 +50,7 @@ class CheckUserMessageTest extends AbstractStringCheckTest
     public function testNoMessage()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         $check = $this->createChecker('is', array('%OPT%' => $this->getString1()));
         $this->assertFalse($check->isTriggerMatch($ticket, $exec));
@@ -58,7 +59,7 @@ class CheckUserMessageTest extends AbstractStringCheckTest
     public function testNotIsset()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         $check = $this->createChecker('isset', array('%OPT%' => $this->getString1()));
         $this->assertFalse($check->isTriggerMatch($ticket, $exec));

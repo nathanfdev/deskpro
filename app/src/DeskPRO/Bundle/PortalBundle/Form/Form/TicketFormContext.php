@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form;
@@ -48,16 +45,16 @@ use Symfony\Component\Form\FormInterface;
 class TicketFormContext
 {
     /**
-     * visibilities
+     * visibilities.
      */
-    const VISIBILITY_NEW = 'new';
+    const VISIBILITY_NEW  = 'new';
     const VISIBILITY_EDIT = 'edit';
     const VISIBILITY_VIEW = 'view';
 
     /**
-     * view contexts
+     * view contexts.
      */
-    const VIEW_USER = 'user';
+    const VIEW_USER  = 'user';
     const VIEW_AGENT = 'agent';
 
     /**
@@ -106,14 +103,14 @@ class TicketFormContext
      */
     public function __construct(FormInterface $form, Ticket $ticket, TicketMessage $ticket_message = null, Person $person, TicketLayout $layout, $view_context, $visibility)
     {
-        $this->form = $form;
-        $this->ticket = $ticket;
-        $this->person = $person;
-        $this->layout = $layout;
+        $this->form            = $form;
+        $this->ticket          = $ticket;
+        $this->person          = $person;
+        $this->layout          = $layout;
         $this->previous_layout = $layout;
-        $this->view_context = $view_context;
-        $this->visibility = $visibility;
-        $this->ticket_message = $ticket_message;
+        $this->view_context    = $view_context;
+        $this->visibility      = $visibility;
+        $this->ticket_message  = $ticket_message;
     }
 
     /**
@@ -164,7 +161,8 @@ class TicketFormContext
     /**
      * Does this field have the right visibility, given our context?
      *
-     * @param  LayoutField $field
+     * @param LayoutField $field
+     *
      * @return bool
      */
     public function hasValidVisibility(LayoutField $field)
@@ -209,7 +207,7 @@ class TicketFormContext
     public function setNewLayout($destination_layout)
     {
         $this->previous_layout = $this->layout;
-        $this->layout = $destination_layout;
+        $this->layout          = $destination_layout;
     }
 
     /**

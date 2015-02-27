@@ -31,10 +31,9 @@ use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\ImportBundle\Entity;
 
 /**
- * Blob storage adapter
+ * Blob storage adapter.
  *
  * Class BlobAdapter
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 class BlobAdapter implements BlobAdapterInterface
 {
@@ -49,7 +48,7 @@ class BlobAdapter implements BlobAdapterInterface
     private $blob_storage;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param DeskproBlobStorage $blob_storage
      * @param Mapper\BlobData    $mapper

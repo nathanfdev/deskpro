@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Templating\Templates;
@@ -53,7 +51,8 @@ class TemplateCustom extends Template
     private $custom_type;
 
     /**
-     * @param  TemplateEntity $entity
+     * @param TemplateEntity $entity
+     *
      * @return TemplateCustom
      */
     public static function createFromEntity(TemplateEntity $entity)
@@ -85,7 +84,7 @@ class TemplateCustom extends Template
     }
 
     /**
-     * Check if the template file exists
+     * Check if the template file exists.
      *
      * @return bool
      */

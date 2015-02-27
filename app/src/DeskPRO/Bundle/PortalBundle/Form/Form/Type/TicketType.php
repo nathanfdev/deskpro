@@ -26,29 +26,26 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
-use DeskPRO\Component\Hierarchy\HierarchyNode;
-use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer;
+use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use DeskPRO\Bundle\PortalBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\PortalBundle\Form\Form\TicketFormContext;
 use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator;
-use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer;
-use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidCaptcha;
-use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Component\Hierarchy\HierarchyNode;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -104,13 +101,13 @@ class TicketType extends AbstractType
         LanguageManager $language_manager,
         CaptchaDecider $captcha_decider
     ) {
-        $this->layout_differ = $layout_differ;
-        $this->field_manager = $field_manager;
+        $this->layout_differ         = $layout_differ;
+        $this->field_manager         = $field_manager;
         $this->ticket_layout_factory = $ticket_layout_factory;
-        $this->hierarchy_generator = $hierarchy_generator;
-        $this->em = $em;
-        $this->language_manager = $language_manager;
-        $this->captcha_decider = $captcha_decider;
+        $this->hierarchy_generator   = $hierarchy_generator;
+        $this->em                    = $em;
+        $this->language_manager      = $language_manager;
+        $this->captcha_decider       = $captcha_decider;
     }
 
     /**
@@ -126,21 +123,21 @@ class TicketType extends AbstractType
     }
 
     /**
-     * PRE DATA PROCESSING (creates the form based on ticket department)
+     * PRE DATA PROCESSING (creates the form based on ticket department).
      *
      * @param FormEvent $event
      */
     public function onPreData(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\Ticket $ticket */
-        $ticket = $event->getData();
-        $form = $event->getForm();
+        $ticket         = $event->getData();
+        $form           = $event->getForm();
         $ticket_message = $form->getConfig()->getOption('ticket_message');
-        $layout = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ?: null);
-        $context = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout);
+        $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ?: null);
+        $context        = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout);
 
         // if there is only one department we want to make sure to set it now...
-        $person = $context->getForm()->getConfig()->getOption('person');
+        $person    = $context->getForm()->getConfig()->getOption('person');
         $hierarchy = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
         if ($hierarchy->countSelectable() === 1) {
             $ticket->department = $hierarchy->getFirstSelectable();
@@ -150,21 +147,21 @@ class TicketType extends AbstractType
     }
 
     /**
-     * PRE SUBMIT PROCESSING (the data we get here is a pure array of submitted values) (we then manipulate the form if dep changes)
+     * PRE SUBMIT PROCESSING (the data we get here is a pure array of submitted values) (we then manipulate the form if dep changes).
      *
      * @param FormEvent $event
      */
     public function onPreSubmit(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\Ticket $ticket */
-        $ticket = $event->getForm()->getData();
-        $form = $event->getForm();
-        $ticket_message = $form->getConfig()->getOption('ticket_message');
+        $ticket          = $event->getForm()->getData();
+        $form            = $event->getForm();
+        $ticket_message  = $form->getConfig()->getOption('ticket_message');
         $pre_submit_data = $event->getData();
 
         // calculate the initial layout of the form (before any form submissions took place)
-        $layout = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ?: null);
-        $context = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout);
+        $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ?: null);
+        $context        = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout);
         $initial_layout = $context->getActiveLayout();
 
         // by default, we treat a submit as a "potentially_rerender", but it wont actually rerender unless
@@ -176,9 +173,9 @@ class TicketType extends AbstractType
             //
             // here we just get the submitted department id (its not the same as submitted value due to choice lists)
             //
-            /** @var \Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList $choice_list */
+            /* @var \Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList $choice_list */
             // choice types dont submit entity IDS, they submit choice list IDs. So we need to calc the real entity Id.
-            $extracted_data = $this->getTicketDataIds($pre_submit_data, $context);
+            $extracted_data    = $this->getTicketDataIds($pre_submit_data, $context);
             $new_department_id = $extracted_data['department'];
             //
             // end get new department id
@@ -231,7 +228,7 @@ class TicketType extends AbstractType
     protected function manipulateForm(Layout $initial_layout, Layout $new_layout, TicketFormContext $context, $submitted_data = array(), $potentially_rerender_form = false)
     {
         $additional_fields = $this->layout_differ->findFieldsToAdd($initial_layout, $new_layout);
-        $fields_to_remove = $this->layout_differ->findFieldsToRemove($initial_layout, $new_layout);
+        $fields_to_remove  = $this->layout_differ->findFieldsToRemove($initial_layout, $new_layout);
 
         $extracted_data = $this->getTicketDataIds($submitted_data, $context);
 
@@ -283,9 +280,10 @@ class TicketType extends AbstractType
      *
      * This inspects the submitted data on our form and gives us data we're interesed in.
      *
-     * @param  array             $submitted_data
-     * @param  TicketFormContext $context
-     * @return array             the form key and its selected entity ID (or null if not submitted)
+     * @param array             $submitted_data
+     * @param TicketFormContext $context
+     *
+     * @return array the form key and its selected entity ID (or null if not submitted)
      */
     private function getTicketDataIds(array $submitted_data, TicketFormContext $context)
     {
@@ -298,7 +296,7 @@ class TicketType extends AbstractType
         foreach ($keys as $key) {
             if (array_key_exists($key, $submitted_data)) {
                 $submitted_value = $submitted_data[$key];
-                $choice = current($form->get($key)->getConfig()->getOption('choice_list')->getChoicesForValues(array($submitted_value)));
+                $choice          = current($form->get($key)->getConfig()->getOption('choice_list')->getChoicesForValues(array($submitted_value)));
 
                 if ($choice instanceof HierarchyNode) {
                     $choice = $choice->getData();
@@ -335,9 +333,9 @@ class TicketType extends AbstractType
             ),
         ));
         $resolver->setAllowedTypes(array(
-            'person'        => 'Application\\DeskPRO\\Entity\\Person',
+            'person'          => 'Application\\DeskPRO\\Entity\\Person',
             'settings'        => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
-            'ticket_message' => array('Application\\DeskPRO\\Entity\\TicketMessage', 'null'),
+            'ticket_message'  => array('Application\\DeskPRO\\Entity\\TicketMessage', 'null'),
         ));
     }
 
@@ -417,7 +415,7 @@ class TicketType extends AbstractType
 
     private function addDepartment(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
-        $person = $form_context->getForm()->getConfig()->getOption('person');
+        $person    = $form_context->getForm()->getConfig()->getOption('person');
         $hierarchy = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
 
         // if it is 1 or less to choose from, dont even add this field to the form
@@ -433,11 +431,11 @@ class TicketType extends AbstractType
     private function addSubject(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         $options = array(
-            'label' => 'Subject',
-            'required' => true,
+            'label'       => 'Subject',
+            'required'    => true,
             'constraints' => array(
                 new NotBlank(array('message' => 'This value is required')),
-                new Length(array('min' => 5, 'minMessage' => 'The subject must be at least 5 characters in length.')),
+                new Length(array('min'       => 5, 'minMessage' => 'The subject must be at least 5 characters in length.')),
             ),
         );
 
@@ -467,7 +465,7 @@ class TicketType extends AbstractType
     {
         $form_context->getForm()->add($field->getId(), 'deskpro_person_email', array(
             'property_path' => 'person.primary_email',
-            'label' => false,
+            'label'         => false,
         ));
     }
 
@@ -509,14 +507,14 @@ class TicketType extends AbstractType
 
         $options = array(
             'custom_data_field' => $field_def,
-            'ticket' => $form_context->getTicket(),
-            'property_path' => sprintf('getCustomDataCollection[%s]', $field->getFieldId()),
-            'agent_interface' => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
-            'label' => false,
+            'ticket'            => $form_context->getTicket(),
+            'property_path'     => sprintf('getCustomDataCollection[%s]', $field->getFieldId()),
+            'agent_interface'   => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
+            'label'             => false,
         );
 
         if ($ignore_validation) {
-            $options = $this->markNoValidation($form_context, $options);
+            $options                      = $this->markNoValidation($form_context, $options);
             $options['ignore_validation'] = true;
         }
 
@@ -537,14 +535,14 @@ class TicketType extends AbstractType
 
         $options = array(
             'custom_data_field' => $field_def,
-            'person' => $form_context->getPerson(),
-            'property_path' => sprintf('person.getCustomDataCollection[%s]', $field->getFieldId()),
-            'agent_interface' => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
-            'label' => false,
+            'person'            => $form_context->getPerson(),
+            'property_path'     => sprintf('person.getCustomDataCollection[%s]', $field->getFieldId()),
+            'agent_interface'   => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
+            'label'             => false,
         );
 
         if ($ignore_validation) {
-            $options = $this->markNoValidation($form_context, $options);
+            $options                      = $this->markNoValidation($form_context, $options);
             $options['ignore_validation'] = true;
         }
 
@@ -642,9 +640,9 @@ class TicketType extends AbstractType
         }
 
         $options = array(
-            'mapped' => false,
+            'mapped'         => false,
             'error_bubbling' => false,
-            'constraints' => array(
+            'constraints'    => array(
                 new ValidCaptcha(),
             ),
         );
@@ -659,8 +657,8 @@ class TicketType extends AbstractType
     private function addCc(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
         $form_context->getForm()->add($field->getId(), 'deskpro_cc', array(
-            'ticket' => $form_context->getTicket(),
-            'mapped' => false,
+            'ticket'   => $form_context->getTicket(),
+            'mapped'   => false,
             'required' => false,
         ));
     }
@@ -676,7 +674,7 @@ class TicketType extends AbstractType
             ));
             $form_context->getForm()->add('more_attachments', 'submit', array(
                 'validation_groups' => false,
-                'label' => 'Add Another Attachment',
+                'label'             => 'Add Another Attachment',
             ));
         }
     }
@@ -689,10 +687,11 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param  Ticket            $ticket
-     * @param  TicketMessage     $ticket_message
-     * @param  FormInterface     $form
-     * @param  TicketLayout      $initial_layout
+     * @param Ticket        $ticket
+     * @param TicketMessage $ticket_message
+     * @param FormInterface $form
+     * @param TicketLayout  $initial_layout
+     *
      * @return TicketFormContext
      */
     private function createTicketFormContext(Ticket $ticket, TicketMessage $ticket_message = null, FormInterface $form, TicketLayout $initial_layout)
@@ -714,12 +713,13 @@ class TicketType extends AbstractType
     {
         return array_merge($options, array(
             'validation_groups' => array(),
-            'constraints' => array(),
+            'constraints'       => array(),
         ));
     }
 
     /**
-     * @param  FormInterface                                $form
+     * @param FormInterface $form
+     *
      * @return \Application\DeskPRO\NewSettings\SettingsBag
      */
     private function getSettingsBag(FormInterface $form)

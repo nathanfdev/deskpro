@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
- * @subpackage Service
  * @category Zendesk
  */
 
@@ -156,7 +154,8 @@ class Zendesk
     }
 
     /**
-     * @param  string $id
+     * @param string $id
+     *
      * @return string
      */
     public function getUrlForEndpoint($id)
@@ -165,12 +164,13 @@ class Zendesk
     }
 
     /**
-     * Send a GET request
+     * Send a GET request.
      *
-     * @return \Orb\Service\Zendesk\ApiResponse
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
+     * @return \Orb\Service\Zendesk\ApiResponse
+     *
      */
     public function sendGet($id, array $query_data = null)
     {
@@ -178,7 +178,8 @@ class Zendesk
     }
 
     /**
-     * @param  array $requests Array of array($id, $query_data) to be called async
+     * @param array $requests Array of array($id, $query_data) to be called async
+     *
      * @return array Array of results
      */
     public function sendGetMulti(array $requests)
@@ -192,7 +193,7 @@ class Zendesk
                 $req = array($req, null);
             }
 
-            $ev = $this->sendRequest($req[0], self::GET, null, $req[1], true);
+            $ev             = $this->sendRequest($req[0], self::GET, null, $req[1], true);
             $request_ev[$k] = $ev;
 
             $ev = $this->_callListeners('preCall', $ev);
@@ -206,12 +207,12 @@ class Zendesk
         } while ($running > 0);
 
         foreach ($request_ev as &$ev) {
-            $ev['output'] = @curl_multi_getcontent($ev['ch']);
+            $ev['output']    = @curl_multi_getcontent($ev['ch']);
             $ev['http_code'] = @curl_getinfo($ev['ch'], CURLINFO_HTTP_CODE);
-            $ev = $this->_callListeners('postCall', $ev);
+            $ev              = $this->_callListeners('postCall', $ev);
 
             $ev['exception'] = null;
-            $ev['response'] = null;
+            $ev['response']  = null;
 
             if (@curl_errno($ev['ch'])) {
                 $ev['exception'] = new \RuntimeException(sprintf("cURL Error: %s: %s", curl_errno($ev['ch']), curl_error($ev['ch'])));
@@ -223,10 +224,10 @@ class Zendesk
 
             if (!$ev['exception']) {
                 try {
-                    $response = new ApiResponse($ev['http_code'], $ev['output']);
+                    $response       = new ApiResponse($ev['http_code'], $ev['output']);
                     $ev['response'] = $response;
                 } catch (ApiException $e) {
-                    $ev['response'] = null;
+                    $ev['response']  = null;
                     $ev['exception'] = $e;
                 }
                 $ev = $this->_callListeners('postResponse', $ev);
@@ -248,19 +249,20 @@ class Zendesk
      *
      * This returns an ARRAY of all results.
      *
-     * @return array
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
+     * @return array
+     *
      */
     public function sendGetAll($id, $key, array $query_data = null)
     {
         $result = array();
 
-        $next_id = $id;
+        $next_id     = $id;
         $next_params = $query_data;
         while ($next_id) {
-            $res = $this->sendRequest($next_id, self::GET, null, $next_params);
+            $res         = $this->sendRequest($next_id, self::GET, null, $next_params);
             $next_params = null;
 
             if ($res->isError()) {
@@ -283,12 +285,13 @@ class Zendesk
     }
 
     /**
-     * Send a DELETE request
+     * Send a DELETE request.
      *
-     * @return \Orb\Service\Zendesk\ApiResponse
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
+     * @return \Orb\Service\Zendesk\ApiResponse
+     *
      */
     public function sendDelete($id)
     {
@@ -296,14 +299,16 @@ class Zendesk
     }
 
     /**
-     * Send a PUT request
+     * Send a PUT request.
      *
-     * @param  string                            $id
-     * @param  array                             $call_data
-     * @return \Orb\Service\Zendesk\ApiResponse
+     * @param string $id
+     * @param array  $call_data
+     *
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
+     * @return \Orb\Service\Zendesk\ApiResponse
+     *
      */
     public function sendPut($id, array $call_data)
     {
@@ -311,14 +316,16 @@ class Zendesk
     }
 
     /**
-     * Send a GET request
+     * Send a GET request.
      *
-     * @param  string                            $id
-     * @param  array                             $call_data
-     * @return \Orb\Service\Zendesk\ApiResponse
+     * @param string $id
+     * @param array  $call_data
+     *
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
+     * @return \Orb\Service\Zendesk\ApiResponse
+     *
      */
     public function sendPost($id, array $call_data)
     {
@@ -326,15 +333,17 @@ class Zendesk
     }
 
     /**
-     * Send an API request
+     * Send an API request.
      *
-     * @param  string                            $id
-     * @param  string                            $action
-     * @param  array                             $call_data The set
-     * @return \Orb\Service\Zendesk\ApiResponse
+     * @param string $id
+     * @param string $action
+     * @param array  $call_data The set
+     *
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Orb\Service\Zendesk\ApiException
+     * @return \Orb\Service\Zendesk\ApiResponse
+     *
      */
     public function sendRequest($id, $action, array $call_data = null, array $query_data = null, $no_exec = false)
     {
@@ -431,7 +440,7 @@ class Zendesk
 
         $ev_data['output']    = $output;
         $ev_data['http_code'] = $http_code;
-        $ev_data = $this->_callListeners('postCall', $ev_data);
+        $ev_data              = $this->_callListeners('postCall', $ev_data);
         extract($ev_data, \EXTR_OVERWRITE);
 
         if (curl_errno($ch)) {
@@ -447,14 +456,15 @@ class Zendesk
         $response = new ApiResponse($http_code, $output);
 
         $ev_data['response'] = $response;
-        $ev_data = $this->_callListeners('postResponse', $ev_data);
+        $ev_data             = $this->_callListeners('postResponse', $ev_data);
         extract($ev_data, \EXTR_OVERWRITE);
 
         return $response;
     }
 
     /**
-     * @param  array $ev_data
+     * @param array $ev_data
+     *
      * @return array
      */
     protected function _callListeners($event_name, array $ev_data)

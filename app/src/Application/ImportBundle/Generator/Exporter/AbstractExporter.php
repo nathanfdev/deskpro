@@ -33,10 +33,9 @@ use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 use Exception;
 
 /**
- * Base data generator class methods
+ * Base data generator class methods.
  *
  * Class AbstractExporter
- * @package Application\ImportBundle\Generator\Exporter
  */
 abstract class AbstractExporter extends AbstractGenerator implements ExporterInterface
 {
@@ -46,7 +45,7 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
     private $parsers;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Parser\Collection $parsers
      */
@@ -72,16 +71,17 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
     }
 
     /**
-     * Get parser by record type
+     * Get parser by record type.
      *
      * @param string $type
      *
-     * @return Parser\ParserInterface
      * @throws Exception
+     * @return Parser\ParserInterface
+     *
      */
     private function getParserByType($type)
     {
-        if ( ! $this->config) {
+        if (! $this->config) {
             throw new Exception('Generator configuration is not set up');
         }
 
@@ -91,11 +91,11 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
         $parser->setConfig($this->config);
 
         if ($this->logger && $parser instanceof LoggerAwareInterface) {
-            /** @var LoggerAwareInterface $parser */
+            /* @var LoggerAwareInterface $parser */
             $parser->setLogger($this->logger);
         }
         if ($this->progress_bar && $parser instanceof ProgressBarAwareInterface) {
-            /** @var ProgressBarAwareInterface $parser */
+            /* @var ProgressBarAwareInterface $parser */
             $parser->setProgressBarHelper($this->progress_bar);
         }
 

@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Email;
@@ -52,8 +49,8 @@ class NewMailer
         $from = $this->getDefaultOutgoingEmailAddress();
 
         $context = array(
-            'person' => $person,
-            'reset_url' => $this->getRouter()->generate('portal_reset_password_process', array(
+            'person'                  => $person,
+            'reset_url'               => $this->getRouter()->generate('portal_reset_password_process', array(
                 'password_reset_code' => $person->getPasswordResetCode(),
             )),
     );
@@ -93,10 +90,10 @@ class NewMailer
         $context = $this->getTwig()->mergeGlobals($context);
 
         $template = $this->getTwig()->loadTemplate($templateName);
-        $subject = trim($template->renderBlock('subject', $context));
+        $subject  = trim($template->renderBlock('subject', $context));
         $textBody = trim($template->renderBlock('text', $context));
         $htmlBody = trim($template->renderBlock('html', $context));
-        $message = \Swift_Message::newInstance()
+        $message  = \Swift_Message::newInstance()
             ->setSubject($subject)
             ->setFrom($fromEmail)
             ->setTo($toEmail);

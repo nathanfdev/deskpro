@@ -26,17 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Ticket;
 
 use Application\DeskPRO\Entity\Department;
-use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\TicketLayout;
+use Doctrine\ORM\EntityManager;
 
 class TicketLayoutFactory
 {
@@ -51,9 +48,10 @@ class TicketLayoutFactory
     }
 
     /**
-     * Used in the TicketType form type to detect the layout it should use, given the selected dept (or null for initial layout)
+     * Used in the TicketType form type to detect the layout it should use, given the selected dept (or null for initial layout).
      *
-     * @param  Department|int $department the department entity or its ID
+     * @param Department|int $department the department entity or its ID
+     *
      * @return TicketLayout
      */
     public function getLayoutForTicketForm($department = null)

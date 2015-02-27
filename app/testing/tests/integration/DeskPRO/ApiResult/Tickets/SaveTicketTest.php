@@ -4,7 +4,7 @@ namespace DpUnitTests\DeskPRO\ApiResult\Tickets;
 
 use DpUnitTests\DeskPRO\ApiResult\AbstractApiResultTest;
 
-require_once __DIR__ . '/../AbstractApiResultTest.php';
+require_once __DIR__.'/../AbstractApiResultTest.php';
 
 class SaveTicketTest extends AbstractApiResultTest
 {
@@ -110,6 +110,5 @@ class SaveTicketTest extends AbstractApiResultTest
         $ticketBuilder->setId($testTicketId)->setSubject($oldSubject);
 
         $this->getApi()->tickets->save($ticketBuilder);
-
     }
 }

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -81,7 +78,7 @@ class Build1355915880 extends AbstractBuild
 
         foreach ($missing_gateway_ids as $gid) {
             if ($trans_info['match_type'] == 'all') {
-                $trans_info['match_type'] = 'exact';
+                $trans_info['match_type']    = 'exact';
                 $trans_info['match_pattern'] = $this->container->getDb()->fetchColumn("SELECT match_pattern FROM email_gateway_addresses WHERE email_gateway_id = ?", array($gid));
             }
 

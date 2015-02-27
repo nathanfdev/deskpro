@@ -26,19 +26,16 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security\Permissions\Portal;
 
-use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Permission;
+use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 
 class PortalPermissionsLoader
 {
@@ -88,6 +85,7 @@ class PortalPermissionsLoader
 
     /**
      * @return mixed|null
+     *
      * @internal
      */
     public function getAllPermissions()
@@ -114,7 +112,9 @@ class PortalPermissionsLoader
 
     /**
      * @param $usergroupIds
+     *
      * @return mixed|null
+     *
      * @internal
      */
     public function getUsergroupsPermissions($usergroupIds)
@@ -142,8 +142,9 @@ class PortalPermissionsLoader
     }
 
     /**
-     * @param  mixed      $params   the "ArbitraryHasher" input to create cache key for this callable
-     * @param  mixed      $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable
+     * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     *
      * @return mixed|null
      */
     protected function generateAndCache($params, $callable)
@@ -164,7 +165,8 @@ class PortalPermissionsLoader
     }
 
     /**
-     * @param  mixed  $input
+     * @param mixed $input
+     *
      * @return string
      */
     protected function generateHash($input)

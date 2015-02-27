@@ -56,7 +56,7 @@ class StringsTest extends \DpUnitTestCase
             array(
                 'hello there',
                 'how are you',
-                'doing today?'
+                'doing today?',
             ),
             Strings::splitStringIntoArray(
                 'hello there how are you doing today?',
@@ -72,7 +72,7 @@ class StringsTest extends \DpUnitTestCase
                 'hello there',
                 'how are you',
                 'doing today',
-                '?'
+                '?',
             ),
             Strings::splitStringIntoArray(
                 ' hello there how are you doing today ? ',

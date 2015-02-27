@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -38,7 +35,7 @@ use Application\DeskPRO\App;
 use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
- * Goes through each gateway and processes email
+ * Goes through each gateway and processes email.
  */
 class ProcessEmailGateways extends AbstractJob
 {
@@ -107,7 +104,7 @@ class ProcessEmailGateways extends AbstractJob
         }
 
         if ($this->options->get('run_source_id')) {
-            $sid = $this->options->get('run_source_id');
+            $sid    = $this->options->get('run_source_id');
             $source = App::getOrm()->find('DeskPRO:EmailSource', $sid);
             if (!$source) {
                 $this->getLogger()->log("No source with ID $sid", 'NOTICE');

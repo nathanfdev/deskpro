@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -59,9 +58,11 @@ class SetAgent extends AbstractContainerAwareAction implements ActionInterface, 
 
     /**
      * @param $set_agent_id
-     * @param  ExecutorContextInterface  $context
-     * @return Person|null
+     * @param ExecutorContextInterface $context
+     *
      * @throws \InvalidArgumentException
+     * @return Person|null
+     *
      */
     private function resolveAgent($set_agent_id, ExecutorContextInterface $context)
     {
@@ -130,7 +131,7 @@ class SetAgent extends AbstractContainerAwareAction implements ActionInterface, 
         if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent')) {
             if ($set_agent_id == $person->getId()) {
                 if ($person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_self')) {
-                    return null;
+                    return;
                 }
 
                 return array('assign_self');
@@ -139,7 +140,7 @@ class SetAgent extends AbstractContainerAwareAction implements ActionInterface, 
             return array('assign_agent');
         }
 
-        return null;
+        return;
     }
 
     /**

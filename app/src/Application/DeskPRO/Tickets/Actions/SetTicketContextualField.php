@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\Actions;
@@ -40,8 +38,9 @@ use Doctrine\Common\Util\ClassUtils;
 class SetTicketContextualField extends AbstractSetCustomField
 {
     /**
-     * @param  Ticket                                         $ticket
-     * @param  ExecutorContextInterface                       $context
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @return \Application\DeskPRO\CustomFields\FieldManager
      */
     public function getFieldManager(Ticket $ticket, ExecutorContextInterface $context)
@@ -50,8 +49,9 @@ class SetTicketContextualField extends AbstractSetCustomField
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @return mixed
      */
     public function getApplicableObject(Ticket $ticket, ExecutorContextInterface $context)
@@ -64,7 +64,7 @@ class SetTicketContextualField extends AbstractSetCustomField
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $fm = $this->getContainer()->getCustomFieldManager();
+        $fm       = $this->getContainer()->getCustomFieldManager();
         $field_id = $this->getActionOption('field_id');
         $value    = $this->getActionOption('value');
 

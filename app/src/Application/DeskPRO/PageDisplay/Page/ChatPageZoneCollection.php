@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Page;
@@ -53,7 +50,8 @@ class ChatPageZoneCollection implements PersonContextInterface
     protected $zone;
 
     /**
-     * department_pages[dep_id] = array(ChatPageZone)
+     * department_pages[dep_id] = array(ChatPageZone).
+     *
      * @var \Application\DeskPRO\PageDisplay\Page\ChatPageZone
      */
     protected $department_pages = array();
@@ -67,8 +65,7 @@ class ChatPageZoneCollection implements PersonContextInterface
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\Person $person
-     * @return void
+     * @param \Application\DeskPRO\Entity\Person $person
      */
     public function setPersonContext(Person $person)
     {
@@ -93,10 +90,10 @@ class ChatPageZoneCollection implements PersonContextInterface
                 foreach ($d->children as $dc) {
                     $page_data = App::getEntityRepository('DeskPRO:ChatPageDisplay')->getSectionDataResolve($dc, $this->zone);
 
-                    $page = new ChatPageDisplay();
-                    $page->zone = $this->zone;
+                    $page             = new ChatPageDisplay();
+                    $page->zone       = $this->zone;
                     $page->department = $dc;
-                    $page->data = $page_data;
+                    $page->data       = $page_data;
 
                     $chat_page_zone = new ChatPageZone($this->zone, $dc);
                     $chat_page_zone->addPageDisplay($page);
@@ -105,10 +102,10 @@ class ChatPageZoneCollection implements PersonContextInterface
             } else {
                 $page_data = App::getEntityRepository('DeskPRO:ChatPageDisplay')->getSectionDataResolve($d, $this->zone);
 
-                $page = new ChatPageDisplay();
-                $page->zone = $this->zone;
+                $page             = new ChatPageDisplay();
+                $page->zone       = $this->zone;
                 $page->department = $d;
-                $page->data = $page_data;
+                $page->data       = $page_data;
 
                 $chat_page_zone = new ChatPageZone($this->zone, $d);
                 $chat_page_zone->addPageDisplay($page);
@@ -116,11 +113,11 @@ class ChatPageZoneCollection implements PersonContextInterface
             }
         }
 
-        $page_data = App::getEntityRepository('DeskPRO:ChatPageDisplay')->getSectionDataResolve(null, $this->zone);
-        $page = new ChatPageDisplay();
-        $page->zone = $this->zone;
+        $page_data        = App::getEntityRepository('DeskPRO:ChatPageDisplay')->getSectionDataResolve(null, $this->zone);
+        $page             = new ChatPageDisplay();
+        $page->zone       = $this->zone;
         $page->department = null;
-        $page->data = $page_data;
+        $page->data       = $page_data;
 
         $chat_page_zone = new ChatPageZone($this->zone, null);
         if ($interface) {
@@ -135,7 +132,7 @@ class ChatPageZoneCollection implements PersonContextInterface
      */
     public function generateAgentZone()
     {
-        $page_display = new ChatPageDisplay();
+        $page_display       = new ChatPageDisplay();
         $page_display->zone = 'agent';
 
         $options = array();
@@ -155,7 +152,7 @@ class ChatPageZoneCollection implements PersonContextInterface
 
     public function generateUserZone()
     {
-        $page_display = new ChatPageDisplay();
+        $page_display       = new ChatPageDisplay();
         $page_display->zone = 'create';
 
         $options[] = array('id' => 'person_name');
@@ -180,7 +177,7 @@ class ChatPageZoneCollection implements PersonContextInterface
             return $this->department_pages[0];
         }
 
-        return null;
+        return;
     }
 
     public function getDepartmentPage($dep_id)
@@ -193,8 +190,7 @@ class ChatPageZoneCollection implements PersonContextInterface
     }
 
     /**
-     * @param  \Application\DeskPRO\PageDisplay\Page\ChatPageZone $page
-     * @return void
+     * @param \Application\DeskPRO\PageDisplay\Page\ChatPageZone $page
      */
     public function addPage(ChatPageZone $page)
     {
@@ -202,12 +198,12 @@ class ChatPageZoneCollection implements PersonContextInterface
             throw new \InvalidArgumentException('Invalid zone context. Must be: '.$this->zone);
         }
 
-        $dep_id = $page->getDepartment() ? $page->getDepartment()->getId() : 0;
+        $dep_id                          = $page->getDepartment() ? $page->getDepartment()->getId() : 0;
         $this->department_pages[$dep_id] = $page;
     }
 
     /**
-     * Add an array of pages at once
+     * Add an array of pages at once.
      *
      * @param \Application\DeskPRO\PageDisplay\Page\ChatPageZone[] $pages
      */
@@ -219,9 +215,10 @@ class ChatPageZoneCollection implements PersonContextInterface
     }
 
     /**
-     * Check if we havea  zone set for a department
+     * Check if we havea  zone set for a department.
      *
-     * @param  int|Department $department
+     * @param int|Department $department
+     *
      * @return bool
      */
     public function hasPage($department)
@@ -234,9 +231,10 @@ class ChatPageZoneCollection implements PersonContextInterface
     }
 
     /**
-     * Get the page for a department
+     * Get the page for a department.
      *
-     * @param  int|Department $department
+     * @param int|Department $department
+     *
      * @return array|null
      */
     public function getPage($department)
@@ -246,7 +244,7 @@ class ChatPageZoneCollection implements PersonContextInterface
         }
 
         if (!isset($this->department_pages[$department])) {
-            return null;
+            return;
         }
 
         return $this->department_pages[$department];
@@ -270,7 +268,7 @@ class ChatPageZoneCollection implements PersonContextInterface
     {
         $part = array();
 
-        $page_display = new ChatPageDisplay();
+        $page_display       = new ChatPageDisplay();
         $page_display->zone = $this->zone;
 
         $options = array();

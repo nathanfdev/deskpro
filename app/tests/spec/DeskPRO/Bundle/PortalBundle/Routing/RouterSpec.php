@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\PortalBundle\Routing;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use DeskPRO\Bundle\PortalBundle\Routing\PortalRouter;
+use PhpSpec\ObjectBehavior;
 use Symfony\Bundle\FrameworkBundle\Routing\Router as WrappedRouter;
 
 /**
@@ -45,12 +42,11 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router as WrappedRouter;
  */
 class RouterSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         WrappedRouter $base_router,
         LanguageManager $language_manager,
         PortalModeStorage $mode_storage
-    )
-    {
+    ) {
         $this->beConstructedWith($base_router, $language_manager, $mode_storage);
     }
 }

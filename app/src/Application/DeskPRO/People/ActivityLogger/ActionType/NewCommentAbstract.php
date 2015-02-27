@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -48,12 +47,13 @@ abstract class NewCommentAbstract extends ActionTypeAbstract
      */
     public function __construct(Person $person, CommentAbstract $comment)
     {
-        $this->person = $person;
+        $this->person  = $person;
         $this->comment = $comment;
     }
 
     /**
-     * Get a plain array of details that'll be stored in the databaes
+     * Get a plain array of details that'll be stored in the databaes.
+     *
      * @return array
      */
     public function getDetails()

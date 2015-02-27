@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Func;
@@ -42,7 +39,7 @@ use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 /**
- * Handler for TIME_LENGTH function
+ * Handler for TIME_LENGTH function.
  */
 class TimeLength extends AbstractFunc
 {

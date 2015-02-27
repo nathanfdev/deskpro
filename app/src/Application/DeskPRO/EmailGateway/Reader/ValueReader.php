@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Reader;
@@ -39,7 +37,7 @@ class ValueReader extends AbstractReader
     private $values = array();
 
     /**
-     * Sets values:
+     * Sets values:.
      *
      * @option array headers  An array of k=>array(values). k sholud be lowercase.
      * @option array ccs      An array of email=>name
@@ -199,7 +197,7 @@ class ValueReader extends AbstractReader
     {
         $header = $this->getHeader('Thread-Topic');
         if (!$header || empty($header->header_parts)) {
-            return null;
+            return;
         }
 
         $subject                   = new Item\Subject();

@@ -28,15 +28,13 @@
 namespace Application\ImportBundle\Generator;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\Validator;
 use Exception;
 
 /**
  * Generator importer service
- * Data exporter (what we call "generators") from 3rd party systems
+ * Data exporter (what we call "generators") from 3rd party systems.
  *
  * Class Generator
- * @package Application\ImportBundle\Generator
  */
 class Generator extends AbstractGenerator implements GeneratorInterface
 {
@@ -56,7 +54,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
     private $writers;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Exporter\Collection  $exporters
      * @param Validator\Collection $validators
@@ -107,7 +105,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
             $this->writerLogHeader($type);
 
             foreach ($collection as $entity) {
-                /** @var Entity\EntityInterface $entity */
+                /* @var Entity\EntityInterface $entity */
                 $outputWriter->writeData($entity);
             }
         }
@@ -132,14 +130,15 @@ class Generator extends AbstractGenerator implements GeneratorInterface
     }
 
     /**
-     * Get exporter by configuration type
+     * Get exporter by configuration type.
      *
-     * @return Exporter\ExporterInterface
      * @throws Exception
+     * @return Exporter\ExporterInterface
+     *
      */
     private function getExporter()
     {
-        if ( ! $this->config) {
+        if (! $this->config) {
             throw new Exception('Generator configuration is not set up');
         }
 
@@ -148,11 +147,11 @@ class Generator extends AbstractGenerator implements GeneratorInterface
         $this->logNotice(sprintf('Get `%s` exporter', $exporter->getType()));
 
         if ($this->logger && $exporter instanceof LoggerAwareInterface) {
-            /** @var LoggerAwareInterface $exporter */
+            /* @var LoggerAwareInterface $exporter */
             $exporter->setLogger($this->logger);
         }
         if ($this->progress_bar && $exporter instanceof ProgressBarAwareInterface) {
-            /** @var ProgressBarAwareInterface $exporter */
+            /* @var ProgressBarAwareInterface $exporter */
             $exporter->setProgressBarHelper($this->progress_bar);
         }
 
@@ -160,14 +159,15 @@ class Generator extends AbstractGenerator implements GeneratorInterface
     }
 
     /**
-     * Returns a writer
+     * Returns a writer.
      *
-     * @return Writer\WriterInterface|mixed
      * @throws Exception
+     * @return Writer\WriterInterface|mixed
+     *
      */
     private function getWriter()
     {
-        if ( ! $this->config) {
+        if (! $this->config) {
             throw new Exception('Generator configuration is not set up');
         }
 
@@ -176,11 +176,11 @@ class Generator extends AbstractGenerator implements GeneratorInterface
         $this->logNotice(sprintf('Get `%s` writer', $writer->getType()));
 
         if ($this->logger && $writer instanceof LoggerAwareInterface) {
-            /** @var LoggerAwareInterface $writer */
+            /* @var LoggerAwareInterface $writer */
             $writer->setLogger($this->logger);
         }
         if ($this->progress_bar && $writer instanceof ProgressBarAwareInterface) {
-            /** @var ProgressBarAwareInterface $writer */
+            /* @var ProgressBarAwareInterface $writer */
             $writer->setProgressBarHelper($this->progress_bar);
         }
 
@@ -188,7 +188,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
     }
 
     /**
-     * Validates exporting collection
+     * Validates exporting collection.
      *
      * @param string            $type
      * @param Entity\Collection $collection
@@ -203,9 +203,8 @@ class Generator extends AbstractGenerator implements GeneratorInterface
         foreach ($collection as $entity) {
             foreach ($validators as $validator) {
                 try {
-                    /** @var Validator\ValidatorInterface $validator */
+                    /* @var Validator\ValidatorInterface $validator */
                     $validator->validate($entity);
-
                 } catch (Validator\ValidatorExceptionInterface $e) {
                     $exceptions->attach($e);
                 }
@@ -216,7 +215,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
     }
 
     /**
-     * Writes exporter log header
+     * Writes exporter log header.
      *
      * @param string $type
      */
@@ -229,7 +228,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
     }
 
     /**
-     * Writes output writer log header
+     * Writes output writer log header.
      *
      * @param string $type
      */

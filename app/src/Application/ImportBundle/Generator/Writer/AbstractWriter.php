@@ -30,12 +30,10 @@ namespace Application\ImportBundle\Generator\Writer;
 use Application\ImportBundle\Generator\AbstractGenerator;
 
 /**
- * Base generator writer
+ * Base generator writer.
  *
  * Class AbstractWriter
- * @package Application\ImportBundle\Generator\Writer
  */
 abstract class AbstractWriter extends AbstractGenerator implements WriterInterface
 {
-
 }

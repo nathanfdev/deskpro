@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -97,12 +96,13 @@ class LayoutFieldCriteria implements \Serializable, \Countable
      */
     public function setMode($mode)
     {
-        $mode = strtoupper($mode);
+        $mode       = strtoupper($mode);
         $this->mode = ($mode == self::CRIT_ALL ? self::CRIT_ALL : self::CRIT_ANY);
     }
 
     /**
-     * @param  Ticket $ticket
+     * @param Ticket $ticket
+     *
      * @return bool
      */
     public function isTicketMatch(Ticket $ticket)
@@ -127,7 +127,8 @@ class LayoutFieldCriteria implements \Serializable, \Countable
     }
 
     /**
-     * @param  array $data
+     * @param array $data
+     *
      * @return bool
      */
     public function isSubmittedDataMatch(array $data)
@@ -164,8 +165,8 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         $js .= "\tvar checkFn = [\n";
         $fn_bits = array();
         foreach ($this->terms as $t) {
-            $t_js = $t->compileJsCheck();
-            $t_js = trim(Strings::modifyLines($t_js, "\t\t"));
+            $t_js      = $t->compileJsCheck();
+            $t_js      = trim(Strings::modifyLines($t_js, "\t\t"));
             $fn_bits[] = "\t\t$t_js";
         }
         $js .= implode(",\n", $fn_bits);
@@ -231,7 +232,7 @@ class LayoutFieldCriteria implements \Serializable, \Countable
 
         foreach ($data['terms'] as $t) {
             $classname = "Application\\DeskPRO\\TicketLayout\\Terms\\{$t['type']}";
-            $obj = new $classname($t['op'], $t['options']);
+            $obj       = new $classname($t['op'], $t['options']);
             $this->addTerm($obj);
         }
     }

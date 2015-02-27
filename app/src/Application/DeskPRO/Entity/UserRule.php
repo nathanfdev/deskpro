@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -54,40 +53,35 @@ class UserRule extends DomainObject
      *
      * @var int
      */
-
     protected $id = null;
 
     /**
-     * An array of email address patterns
+     * An array of email address patterns.
+     *
      * @var array
      */
-
     protected $email_patterns = array();
 
     /**
      * @var \Application\DeskPRO\Entity\Organization
      */
-
     protected $add_organization;
 
     /**
      * @var \Application\DeskPRO\Entity\Usergroup
      */
-
     protected $add_usergroup;
 
     /**
-     * The order in which to run this source
+     * The order in which to run this source.
      *
      * @var int
      */
-
     protected $run_order = 0;
 
     /**
      * @return UserRule
      */
-
     public static function createUserRule()
     {
         return new self();
@@ -96,18 +90,16 @@ class UserRule extends DomainObject
     /**
      * @return int
      */
-
     public function getId()
     {
         return $this->id;
     }
 
     /**
-     * Set the patterns string which is a number of patterns separated by a newline
+     * Set the patterns string which is a number of patterns separated by a newline.
      *
      * @param $patterns
      */
-
     public function setPatternsString($patterns)
     {
         $items = array();
@@ -115,7 +107,7 @@ class UserRule extends DomainObject
         $patterns = Strings::standardEol($patterns);
         $patterns = explode("\n", $patterns);
         foreach ($patterns as $p) {
-            $p = Strings::utf8_strtolower($p);
+            $p       = Strings::utf8_strtolower($p);
             $items[] = trim($p);
         }
 
@@ -125,11 +117,10 @@ class UserRule extends DomainObject
     }
 
     /**
-     * Get the patterns string
+     * Get the patterns string.
      *
      * @return string
      */
-
     public function getPatternsString()
     {
         return implode("\n", $this->email_patterns);
@@ -138,10 +129,10 @@ class UserRule extends DomainObject
     /**
      * Check if an email address to see if it matches any of the patterns in this rule.
      *
-     * @param  string $email_address
+     * @param string $email_address
+     *
      * @return string
      */
-
     public function isEmailMatch($email_address)
     {
         $email_address = Strings::utf8_strtolower($email_address);

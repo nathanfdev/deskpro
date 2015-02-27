@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -42,7 +41,7 @@ use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Send an email to one or more agents
+ * Send an email to one or more agents.
  *
  * @option bool template       The template to send
  * @option bool agent_ids      Agents to send to
@@ -64,16 +63,17 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  array                    $agent_ids
-     * @param  ExecutorContextInterface $context
+     * @param Ticket                   $ticket
+     * @param array                    $agent_ids
+     * @param ExecutorContextInterface $context
+     *
      * @return array
      */
     private function resolveAgents(Ticket $ticket, array $agent_ids, ExecutorContextInterface $context)
     {
         $agents = array();
 
-        $person_context = $context->getPersonContext();
+        $person_context    = $context->getPersonContext();
         $is_notif_disabled = $this->getContainer()->getSetting('agent.disable_notifications');
 
         foreach ($agent_ids as $aid) {
@@ -127,7 +127,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                 }
             } else {
                 $agent_data = $this->getContainer()->getAgentData();
-                $agents = array_merge($agents, $agent_data->selectAgents($aid, $person_context, $ticket));
+                $agents     = array_merge($agents, $agent_data->selectAgents($aid, $person_context, $ticket));
             }
         }
 
@@ -189,7 +189,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
         $sent_count = 0;
 
-        $state = $ticket->getStateChangeRecorder();
+        $state             = $ticket->getStateChangeRecorder();
         $fn_check_new_part = function ($agent) use ($state, $ticket) {
             $has = false;
             foreach ($ticket->participants as $p) {
@@ -240,9 +240,9 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
             }
 
             if ($state->hasChangedField('ticket_sla_status')) {
-                $change = $state->getLastChangeForField('ticket_sla_status');
-                $new = $change->getNew();
-                $vars['sla'] = $new['sla'];
+                $change             = $state->getLastChangeForField('ticket_sla_status');
+                $new                = $change->getNew();
+                $vars['sla']        = $new['sla'];
                 $vars['sla_status'] = $new['status'];
             }
 

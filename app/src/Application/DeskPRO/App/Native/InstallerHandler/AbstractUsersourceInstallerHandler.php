@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -53,11 +52,12 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
     }
 
     /**
-     * This is run during every install and update
+     * This is run during every install and update.
      *
-     * @param  AppInstance   $app
-     * @param  Usersource    $usersource
-     * @param  EntityManager $em
+     * @param AppInstance   $app
+     * @param Usersource    $usersource
+     * @param EntityManager $em
+     *
      * @return mixed
      */
     abstract protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em);
@@ -67,13 +67,12 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
      * you probably need to change your settings back to "off" mode (for exmaple, you need to manually "uncheck" the
      * "enable sso" checkbox here).
      *
-     * @param  AppInstance   $app
-     * @param  EntityManager $em
-     * @return void
+     * @param AppInstance   $app
+     * @param EntityManager $em
      */
     public function disableSsoSettings(AppInstance $app, EntityManager $em)
     {
-        return null;
+        return;
     }
 
     public function setupAutoAgent(Usersource $us, $auto_agent, $permission_group_id)
@@ -128,8 +127,9 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
     }
 
     /**
-     * @param  InstallerContext $context
-     * @param  array            $settings
+     * @param InstallerContext $context
+     * @param array            $settings
+     *
      * @return array
      */
     public function processSettings(InstallerContext $context, array $settings)
@@ -140,8 +140,9 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
     }
 
     /**
-     * @param  InstallerContext $context
-     * @param  array            $settings
+     * @param InstallerContext $context
+     * @param array            $settings
+     *
      * @return array
      */
     public function validateSettings(InstallerContext $context, array $settings)
@@ -152,8 +153,7 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
     }
 
     /**
-     * @param  InstallerContext $context
-     * @return void
+     * @param InstallerContext $context
      */
     public function updatePackage(InstallerContext $context)
     {

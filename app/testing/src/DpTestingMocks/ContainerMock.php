@@ -57,10 +57,10 @@ class ContainerMock
         if ($obj === null) {
             $cats = array();
             for ($i = 1; $i < 100; $i++) {
-                $c = new TicketCategory();
-                $c->id = $i;
+                $c        = new TicketCategory();
+                $c->id    = $i;
                 $c->title = "Category $i";
-                $cats[] = $c;
+                $cats[]   = $c;
             }
 
             $repos = m::mock();
@@ -83,11 +83,11 @@ class ContainerMock
         if ($obj === null) {
             $cats = array();
             for ($i = 1; $i < 100; $i++) {
-                $c = new Department();
-                $c->id = $i;
-                $c->title = "Department $i";
+                $c                     = new Department();
+                $c->id                 = $i;
+                $c->title              = "Department $i";
                 $c->is_tickets_enabled = true;
-                $cats[] = $c;
+                $cats[]                = $c;
             }
 
             $repos = m::mock();
@@ -110,10 +110,10 @@ class ContainerMock
         if ($obj === null) {
             $cats = array();
             for ($i = 1; $i < 100; $i++) {
-                $c = new TicketPriority();
-                $c->id = $i;
+                $c        = new TicketPriority();
+                $c->id    = $i;
                 $c->title = "Priority $i";
-                $cats[] = $c;
+                $cats[]   = $c;
             }
 
             $repos = m::mock();
@@ -137,10 +137,10 @@ class ContainerMock
         if ($obj === null) {
             $cats = array();
             for ($i = 1; $i < 100; $i++) {
-                $c = new TicketWorkflow();
-                $c->id = $i;
+                $c        = new TicketWorkflow();
+                $c->id    = $i;
                 $c->title = "Workflow $i";
-                $cats[] = $c;
+                $cats[]   = $c;
             }
 
             $repos = m::mock();
@@ -164,10 +164,10 @@ class ContainerMock
         if ($obj === null) {
             $cats = array();
             for ($i = 1; $i < 100; $i++) {
-                $c = new Product();
-                $c->id = $i;
+                $c        = new Product();
+                $c->id    = $i;
                 $c->title = "Product $i";
-                $cats[] = $c;
+                $cats[]   = $c;
             }
 
             $repos = m::mock();
@@ -200,7 +200,6 @@ class ContainerMock
     public function withElasticaRepositoryManager($obj = null)
     {
         if ($obj === null) {
-
             $obj = m::mock('FOS\\ElasticaBundle\\Doctrine\\RepositoryManager');
 
             $commonRepository = m::mock('FOS\\ElasticaBundle\\Repository');

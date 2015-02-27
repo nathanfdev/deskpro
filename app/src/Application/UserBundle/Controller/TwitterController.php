@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Controller;
@@ -81,14 +78,14 @@ class TwitterController extends AbstractController
             && App::getSession()->get('twitter_user_id') == $long->for_user->id
         );
         if (!$long->is_read && $is_user) {
-            $long->is_read = true;
+            $long->is_read   = true;
             $long->date_read = new \DateTime();
             $this->em->persist($long);
             $this->em->flush();
         }
 
         $response = $this->render('UserBundle:Twitter:view-long.html.twig', array(
-            'long' => $long,
+            'long'     => $long,
             'can_view' => $can_view,
         ));
 

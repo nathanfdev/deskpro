@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Templating
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Templating;
@@ -137,7 +134,7 @@ class GlobalVariables extends BaseGlobalVariables
 
     public function getVisitor()
     {
-        return null;
+        return;
     }
 
     public function getLanguage()
@@ -161,7 +158,6 @@ class GlobalVariables extends BaseGlobalVariables
     }
 
     /**
-     * @return null
      * @deprecated
      */
     public function getStyle()
@@ -221,7 +217,8 @@ class GlobalVariables extends BaseGlobalVariables
     }
 
     /**
-     * Used only for backwards comptat
+     * Used only for backwards comptat.
+     *
      * @deprecated
      */
     public function getDataRepository($ent)
@@ -282,7 +279,7 @@ class GlobalVariables extends BaseGlobalVariables
                 return App::getSystemService('person_fields_manager');
         }
 
-        return null;
+        return;
     }
 
     public function getBrowserSniffer()
@@ -312,7 +309,7 @@ class GlobalVariables extends BaseGlobalVariables
             return App::getContainer()->getSystemService(ucfirst($ent).'Data');
         }
 
-        return null;
+        return;
     }
 
     public function __call($method, $args)
@@ -321,7 +318,7 @@ class GlobalVariables extends BaseGlobalVariables
             return $this->__get(ucfirst($method));
         }
 
-        return null;
+        return;
     }
 
     public function __isset($name)
@@ -332,7 +329,7 @@ class GlobalVariables extends BaseGlobalVariables
     public function getLastException()
     {
         if (!App::has('deskpro.exception_logger')) {
-            return null;
+            return;
         }
 
         $logger = App::get('deskpro.exception_logger');
@@ -376,7 +373,7 @@ class GlobalVariables extends BaseGlobalVariables
     public function isAppAllowed($name)
     {
         $person = App::getSession()->getPerson();
-        $k = sha1($name . '|' . $person['id']);
+        $k      = sha1($name.'|'.$person['id']);
 
         if (isset($this->app_allowed_checks[$k])) {
             return $this->app_allowed_checks[$k];

@@ -31,10 +31,9 @@ use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\EntityManager;
 
 /**
- * this one is needed because there are too many legacy calls to flush in wrong places
+ * this one is needed because there are too many legacy calls to flush in wrong places.
  *
  * Class CustomDataPersister
- * @package Application\DeskPRO\CustomFields
  */
 class CustomDataPersister
 {

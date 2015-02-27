@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\People;
@@ -54,7 +52,7 @@ class Purger implements PersonContextInterface
     protected $person;
 
     /**
-     * Who is performing the delete
+     * Who is performing the delete.
      *
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -68,7 +66,6 @@ class Purger implements PersonContextInterface
     }
 
     /**
-     * @return void
      */
     public function purge()
     {
@@ -85,9 +82,7 @@ class Purger implements PersonContextInterface
     }
 
     /**
-     * Purge all the tickets belonging to a user
-     *
-     * @return void
+     * Purge all the tickets belonging to a user.
      */
     public function purgeTickets()
     {
@@ -146,7 +141,7 @@ class Purger implements PersonContextInterface
     }
 
     /**
-     * Set the context (who is making these edits)
+     * Set the context (who is making these edits).
      *
      * @param Person $person
      */

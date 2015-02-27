@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,7 +39,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if the ticket has labels
+ * Checks if the ticket has labels.
  *
  * @option string[] labels
  */
@@ -63,8 +62,8 @@ class CheckJIRANewComment extends AbstractTriggerTerm
     public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
     {
         $options = $this->getTermOptions();
-        $state = $ticket->getStateChangeRecorder();
-        $op = $this->getTermOperator();
+        $state   = $ticket->getStateChangeRecorder();
+        $op      = $this->getTermOperator();
         /** @var ChangeData $change */
         $change = $state->getCombinedChangeForField('jira.comment');
 

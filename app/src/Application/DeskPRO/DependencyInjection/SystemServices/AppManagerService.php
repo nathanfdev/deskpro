@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category DependencyInjection
  */
 
@@ -85,8 +84,8 @@ class AppManagerService
         } else {
             // this is constructed in the portal system (for app usersources) during portal cache warm up
             // cannot make db queries while building - nor is this necessary for building
-            $packages = array();
-            $apps = array();
+            $packages    = array();
+            $apps        = array();
             $usersources = array();
         }
 

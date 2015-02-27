@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * Orb
- *
- * @package    Orb
- * @subpackage Sms
+ * Orb.
  */
 
 namespace Orb\Sms\Provider;
@@ -60,9 +57,9 @@ class TwilioSmsProvider implements SmsProviderInterface
 
     public function __construct($sid, $auth_token)
     {
-        $this->sid = $sid;
+        $this->sid        = $sid;
         $this->auth_token = $auth_token;
-        $this->twilio = new Twilio($sid, $auth_token);
+        $this->twilio     = new Twilio($sid, $auth_token);
     }
 
     /**
@@ -79,6 +76,7 @@ class TwilioSmsProvider implements SmsProviderInterface
      * @param string $fromPhoneNumber phone number to send to, provider should be able to handle any format
      *
      * @throws \Orb\Sms\SmsException
+     *
      * @return \Orb\Sms\SmsResult
      */
     public function sendMessage($toPhoneNumber, SmsMessageChunk $chunk, $fromPhoneNumber)
@@ -125,8 +123,9 @@ class TwilioSmsProvider implements SmsProviderInterface
 
     /**
      * @throws \Orb\Sms\SmsException
-     * @return array                 an array of arrays in the format:
-     *                               array( 'display_name' => 'Some Name', 'phone_number' => '+19023340390 )
+     *
+     * @return array an array of arrays in the format:
+     *               array( 'display_name' => 'Some Name', 'phone_number' => '+19023340390 )
      */
     public function getIncomingNumbers()
     {
@@ -136,7 +135,7 @@ class TwilioSmsProvider implements SmsProviderInterface
             $numbers = $this->twilio->getIncomingNumbers();
             foreach ($numbers as $display => $number) {
                 $number = PhoneNumbers::toInternationalFormat($number);
-                $out[] = array('display_name' => $display, 'number' => $number);
+                $out[]  = array('display_name' => $display, 'number' => $number);
             }
 
             return $out;
@@ -166,7 +165,7 @@ class TwilioSmsProvider implements SmsProviderInterface
     public function getParams()
     {
         return array(
-            'sid' => $this->sid,
+            'sid'        => $this->sid,
             'auth_token' => $this->auth_token,
         );
     }

@@ -5,11 +5,13 @@
 <?php if ($is_webinstall) {
     ?>
     <?php $view['slots']->start('subtitle') ?>Step 6: Create Your Admin Account<?php $view['slots']->stop() ?>
-<?php 
+<?php
+
 } else {
     ?>
     <?php $view['slots']->start('subtitle') ?>Create Your Admin Account<?php $view['slots']->stop() ?>
-<?php 
+<?php
+
 } ?>
 <?php $failed = false ?>
 <script type="text/javascript">

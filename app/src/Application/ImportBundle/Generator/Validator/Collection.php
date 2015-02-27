@@ -31,36 +31,38 @@ use Application\ImportBundle\AbstractCollection;
 
 /**
  * Validators collection
- * Uses to check exporting collection of entities
+ * Uses to check exporting collection of entities.
  *
  * Class Collection
- * @package Application\ImportBundle\Generator\Validator
  */
 final class Collection extends AbstractCollection
 {
     /**
-     * Add a validator
+     * Add a validator.
      *
      * @param ValidatorInterface $validator
+     *
      * @return $this
      */
     public function attach(ValidatorInterface $validator)
     {
         $this->collection[] = $validator;
+
         return $this;
     }
 
     /**
-     * Returns a new collection contains validators of current type
+     * Returns a new collection contains validators of current type.
      *
      * @param string $type
+     *
      * @return Collection
      */
     public function getByRecordType($type)
     {
         $collection = new Collection();
         foreach ($this->collection as $validator) {
-            /** @var ValidatorInterface $validator */
+            /* @var ValidatorInterface $validator */
             if ($validator->getRecordType() === $type) {
                 $collection->attach($validator);
             }

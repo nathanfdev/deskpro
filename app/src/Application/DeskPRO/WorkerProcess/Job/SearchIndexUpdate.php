@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 /**
- * This cleans up various temporary data
+ * This cleans up various temporary data.
  */
 class SearchIndexUpdate extends AbstractJob
 {

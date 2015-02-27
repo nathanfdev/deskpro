@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports\Overview;
@@ -84,7 +81,7 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
     public function getSubgroupTitles()
     {
         if (!$this->grouping_field) {
-            return null;
+            return;
         }
 
         $collect = array();
@@ -106,12 +103,12 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
             return $this->values;
         }
 
-        $now = time();
+        $now   = time();
         $field = TimeTitles::makeTimeFieldSelect("($now - UNIX_TIMESTAMP(tickets.date_user_waiting))");
 
         if ($this->grouping_field) {
             $group_field = $this->grouping_field->getFieldInfo();
-            $sql = "
+            $sql         = "
                 SELECT {$group_field['select']}, $field, COUNT(*)
                 FROM tickets
                 {$group_field['join']}
@@ -129,9 +126,9 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
 
             $this->values = array();
             while ($row = $q->fetch(\PDO::FETCH_NUM)) {
-                $group_id = $row[0];
+                $group_id   = $row[0];
                 $time_group = $row[1];
-                $count = $row[2];
+                $count      = $row[2];
                 if (!isset($this->values[$time_group])) {
                     $this->values[$time_group] = array();
                 }

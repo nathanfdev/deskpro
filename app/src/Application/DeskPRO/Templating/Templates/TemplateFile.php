@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Templating\Templates;
@@ -75,7 +73,7 @@ class TemplateFile extends Template
     }
 
     /**
-     * Check if the template file exists
+     * Check if the template file exists.
      *
      * @return bool
      */
@@ -106,7 +104,7 @@ class TemplateFile extends Template
     public function getContent()
     {
         if (!$this->exists()) {
-            return null;
+            return;
         }
 
         if ($this->content === null) {
@@ -117,19 +115,17 @@ class TemplateFile extends Template
     }
 
     /**
-     * @return null
      */
     public function getOriginalName()
     {
-        return null;
+        return;
     }
 
     /**
-     * @return null
      */
     public function getOriginalContent()
     {
-        return null;
+        return;
     }
 
     /**

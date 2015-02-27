@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Search
  */
 
@@ -44,7 +43,7 @@ use Application\DeskPRO\Search\SearcherResult\ResultSet;
 use Orb\Util\Strings;
 
 /**
- * The content searcher searches: articles, downloads, feedback, news
+ * The content searcher searches: articles, downloads, feedback, news.
  */
 class ContentSearcher implements ContentSearcherInterface, PersonContextInterface
 {
@@ -140,7 +139,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
                 $perm_where = '1';
             }
         } else {
-            $perm_join = '';
+            $perm_join  = '';
             $perm_where = '1';
         }
 
@@ -151,7 +150,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
             WHERE $perm_where AND $where
         ";
 
-        $start = ($page - 1) * $per_page;
+        $start        = ($page - 1) * $per_page;
         $select_query = "
             SELECT content_search.object_type, content_search.object_id, MATCH (content_search.content) AGAINST (?) AS _rel
             FROM content_search
@@ -172,7 +171,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
         foreach ($results_raw as $result_raw) {
             $result = Result::newFromArray(array(
-                'id' => $result_raw['object_id'],
+                'id'           => $result_raw['object_id'],
                 'content_type' => $result_raw['object_type'],
             ));
 
@@ -222,7 +221,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
             WHERE $where
         ";
 
-        $start = ($page - 1) * $per_page;
+        $start        = ($page - 1) * $per_page;
         $select_query = "
             SELECT object_type, object_id, MATCH (content_search.content) AGAINST (?) AS _rel
             FROM content_search
@@ -237,7 +236,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
         foreach ($results_raw as $result_raw) {
             $result = Result::newFromArray(array(
-                'id' => $result_raw['object_id'],
+                'id'           => $result_raw['object_id'],
                 'content_type' => $result_raw['object_type'],
             ));
 
@@ -252,8 +251,9 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
     /**
      * Find content similar to $content.
      *
-     * @param  string                                               $content
-     * @param  array                                                $in_types Types you want to search in, or null for all
+     * @param string $content
+     * @param array  $in_types Types you want to search in, or null for all
+     *
      * @return \Application\DeskPRO\Search\SearcherResult\ResultSet
      */
     public function similarContent($content, array $in_types = array())
@@ -264,7 +264,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
     public function omnisearch($query_text, array $limit_types = null, $per_page = 25, $page = 1)
     {
         $per_page = 25;
-        $page = 1;
+        $page     = 1;
 
         // Fulltext matches
         $r = $this->query($query_text, $per_page, $page, $limit_types, true);
@@ -285,7 +285,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
         }
 
         $limit_type_names = $limit_types;
-        $limit_types = "'".implode('\',\'', $limit_types)."'";
+        $limit_types      = "'".implode('\',\'', $limit_types)."'";
 
         $query_text = Strings::decodeHtmlEntities($query_text);
         $query_text = Strings::decodeUnicodeEntities($query_text);
@@ -297,13 +297,13 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
         }
 
         $params = array();
-        $likes = array();
+        $likes  = array();
         foreach ($query_words as $w) {
             if (strlen($w) <= 2) {
                 continue;
             }
 
-            $likes[] = "content_search.content LIKE ?";
+            $likes[]  = "content_search.content LIKE ?";
             $params[] = '%'.str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w).'%';
         }
         if ($likes) {
@@ -326,7 +326,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
                     $perm_where = '1';
                 }
             } else {
-                $perm_join = '';
+                $perm_join  = '';
                 $perm_where = '1';
             }
 
@@ -338,7 +338,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
                 LIMIT $per_page
             ";
 
-            $start = ($page - 1) * $per_page;
+            $start        = ($page - 1) * $per_page;
             $select_query = "
                 SELECT content_search.object_type, content_search.object_id
                 FROM content_search
@@ -355,7 +355,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
             foreach ($results_raw as $result_raw) {
                 $result = Result::newFromArray(array(
-                    'id' => $result_raw['object_id'],
+                    'id'           => $result_raw['object_id'],
                     'content_type' => $result_raw['object_type'],
                 ));
 

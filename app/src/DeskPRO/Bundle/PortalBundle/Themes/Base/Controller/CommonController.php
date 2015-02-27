@@ -26,27 +26,24 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
-use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
+use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Symfony\Component\HttpFoundation\Response;
-use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
 
 class CommonController extends AbstractController
 {
@@ -68,13 +65,13 @@ class CommonController extends AbstractController
         if ($token = $this->get('security.token_storage')->getToken()) {
             if ($token instanceof AgentImpersonateToken) {
                 $agent_id = $token->getAttribute(AgentImpersonateToken::ATTR_AGENT_IMPERSONATE);
-                $agent = $this->getPersonDataService()->getPerson($agent_id);
+                $agent    = $this->getPersonDataService()->getPerson($agent_id);
             }
         }
 
         return $this->renderThemeView('Theme:Common:alerts.html.twig', array(
             'impersonator' => $agent,
-            'user' => $this->getUser(),
+            'user'         => $this->getUser(),
         ));
     }
 
@@ -109,7 +106,7 @@ class CommonController extends AbstractController
      */
     public function relatedContentAction(TagRequest $tag_request, array $options)
     {
-        $content_id = $options['content_id'];
+        $content_id   = $options['content_id'];
         $content_type = $options['content_type'];
 
         if (!$content = $this->extractContent($content_type, $content_id)) {
@@ -117,12 +114,12 @@ class CommonController extends AbstractController
         }
 
         $related_content_finder = new RelatedContentFinder($this->getUser() ?: new PersonGuest(), $content);
-        $related_content = $related_content_finder->getRelatedEntities();
+        $related_content        = $related_content_finder->getRelatedEntities();
 
         return $this->render('Theme:Common:related_content.html.twig', array(
-            'content_type' => $content_type,
-            'content_id' => $content_id,
-            'content' => $content,
+            'content_type'    => $content_type,
+            'content_id'      => $content_id,
+            'content'         => $content,
             'related_content' => $related_content,
         ));
     }
@@ -130,6 +127,7 @@ class CommonController extends AbstractController
     /**
      * @param $content_type
      * @param $content_id
+     *
      * @return Article|Download|Feedback|News|null
      */
     protected function extractContent($content_type, $content_id)

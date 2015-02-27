@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\CustomFields;
@@ -47,7 +44,6 @@ class PersonFieldManager extends FieldManager
      *
      * @return array
      */
-
     public function getDefinedFields()
     {
         return array_values($this->em->getRepository('DeskPRO:CustomDefPerson')->getTopFields());
@@ -57,7 +53,6 @@ class PersonFieldManager extends FieldManager
      * @param string $id
      * @param bool   $enabled
      */
-
     public function setFieldEnabledById($id, $enabled = true)
     {
         if ($custom_field_id = Strings::extractRegexMatch('#^field_(\d+)$#', $id)) {

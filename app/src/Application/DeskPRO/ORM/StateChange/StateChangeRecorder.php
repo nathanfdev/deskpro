@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -113,7 +112,8 @@ class StateChangeRecorder
      * Given a change, get the state version for that change. Will return 0 if no
      * such change is registered.
      *
-     * @param  ChangeInterface $change
+     * @param ChangeInterface $change
+     *
      * @return int
      */
     public function getStateVersionForChange(ChangeInterface $change)
@@ -134,7 +134,7 @@ class StateChangeRecorder
             $this->changes_by_field[$field_id] = array();
         }
 
-        $this->changes[] = $change;
+        $this->changes[]                     = $change;
         $this->changes_by_field[$field_id][] = $change;
 
         if (!($change instanceof NonStateTrackingInterface)) {
@@ -143,7 +143,7 @@ class StateChangeRecorder
         }
 
         if ($this->current_change_metadata) {
-            $id = spl_object_hash($change);
+            $id                         = spl_object_hash($change);
             $this->change_metadata[$id] = $this->current_change_metadata;
         }
 
@@ -153,12 +153,13 @@ class StateChangeRecorder
     }
 
     /**
-     * Record a new change
+     * Record a new change.
      *
-     * @param  string                                                $field_id
-     * @param  mixed                                                 $old
-     * @param  mixed                                                 $new
-     * @param  bool                                                  $skip_same
+     * @param string $field_id
+     * @param mixed  $old
+     * @param mixed  $new
+     * @param bool   $skip_same
+     *
      * @return ChangeArray|ChangeDate|ChangeObject|ChangeSimple|null
      */
     public function record($field_id, $old, $new, $skip_same = true)
@@ -188,7 +189,7 @@ class StateChangeRecorder
         $this->touched_fields[$field_id] = true;
 
         if ($skip_same && $change->isSame()) {
-            return null;
+            return;
         }
 
         $this->addChange($change);
@@ -205,8 +206,9 @@ class StateChangeRecorder
     }
 
     /**
-     * @param  string     $field_id
-     * @param  array      $data
+     * @param string $field_id
+     * @param array  $data
+     *
      * @return ChangeDate
      */
     public function recordData($field_id, array $data = array())
@@ -218,9 +220,10 @@ class StateChangeRecorder
     }
 
     /**
-     * @param  string                $field_id
-     * @param  Collection            $coll
-     * @param  bool                  $skip_same
+     * @param string     $field_id
+     * @param Collection $coll
+     * @param bool       $skip_same
+     *
      * @return ChangeCollection|null
      */
     public function recordCollection($field_id, Collection $coll, $skip_same = true)
@@ -237,7 +240,7 @@ class StateChangeRecorder
 
         $change = ChangeCollection::newFromPersistedCollection($field_id, $coll, $old);
         if ($skip_same && $change->isSame()) {
-            return null;
+            return;
         }
 
         $this->addChange($change);
@@ -246,7 +249,8 @@ class StateChangeRecorder
     }
 
     /**
-     * @param  string $field_id
+     * @param string $field_id
+     *
      * @return bool
      */
     public function hasChangedField($field_id)
@@ -263,7 +267,8 @@ class StateChangeRecorder
     }
 
     /**
-     * @param  string $field_id
+     * @param string $field_id
+     *
      * @return array
      */
     public function getChangesForField($field_id)
@@ -276,18 +281,19 @@ class StateChangeRecorder
      * a change where the old is the first old, and the new is the last new
      * (eg multiple changes made inbetween are not included).
      *
-     * @param  string          $field_id
+     * @param string $field_id
+     *
      * @return ChangeInterface
      */
     public function getCombinedChangeForField($field_id)
     {
         if (!isset($this->changes_by_field[$field_id])) {
-            return null;
+            return;
         }
 
         $changes = $this->changes_by_field[$field_id];
-        $first = array_shift($changes);
-        $last  = $changes ? array_pop($changes) : null;
+        $first   = array_shift($changes);
+        $last    = $changes ? array_pop($changes) : null;
 
         // Only the one change, so
         // can just return that
@@ -329,12 +335,13 @@ class StateChangeRecorder
 
     /**
      * @param $field_id
+     *
      * @return ChangeInterface|null
      */
     public function getFirstChangeForField($field_id)
     {
         if (!isset($this->changes_by_field[$field_id])) {
-            return null;
+            return;
         }
 
         return $this->changes_by_field[$field_id][0];
@@ -342,12 +349,13 @@ class StateChangeRecorder
 
     /**
      * @param $field_id
+     *
      * @return ChangeInterface|null
      */
     public function getLastChangeForField($field_id)
     {
         if (!isset($this->changes_by_field[$field_id])) {
-            return null;
+            return;
         }
 
         $idx = count($this->changes_by_field[$field_id]) - 1;
@@ -356,9 +364,11 @@ class StateChangeRecorder
     }
 
     /**
-     * @param  string                    $field_id
-     * @return mixed
+     * @param string $field_id
+     *
      * @throws \InvalidArgumentException
+     * @return mixed
+     *
      */
     public function getOriginalValueForField($field_id)
     {
@@ -371,9 +381,11 @@ class StateChangeRecorder
     }
 
     /**
-     * @param  string                    $field_id
-     * @return mixed
+     * @param string $field_id
+     *
      * @throws \InvalidArgumentException
+     * @return mixed
+     *
      */
     public function getPreviousValueForField($field_id)
     {
@@ -386,8 +398,7 @@ class StateChangeRecorder
     }
 
     /**
-     * @param  ChangeInterface $change
-     * @return null
+     * @param ChangeInterface $change
      */
     public function getMetaDataForChange(ChangeInterface $change)
     {
@@ -396,7 +407,7 @@ class StateChangeRecorder
             return $this->change_metadata[$id];
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -412,7 +423,6 @@ class StateChangeRecorder
     }
 
     /**
-     * @return void
      */
     public function clearCurrentChangeMetaData()
     {
@@ -429,7 +439,8 @@ class StateChangeRecorder
      *
      * The practical use for this is with triggers to determine if a field was "specified"
      *
-     * @param  string $field_id
+     * @param string $field_id
+     *
      * @return bool
      */
     public function hasTouchedField($field_id)
@@ -446,7 +457,7 @@ class StateChangeRecorder
     }
 
     /**
-     * Touch a field
+     * Touch a field.
      *
      * @param string $field_id
      */

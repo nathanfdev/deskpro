@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -57,7 +56,6 @@ use Orb\Util\Strings;
  * So in that case, the original context would just push an ID of this client message,
  * and the client would later request the full information as an HTTP request or by pushing
  * the ID through the socket.
- *
  */
 class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -82,7 +80,7 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
     protected $auth;
 
     /**
-     * Data to give the handler
+     * Data to give the handler.
      *
      * @var array
      */
@@ -91,19 +89,17 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The client ID (usully sessionid) that created this message.
      * This is so when we fetch messages, we don't get our own messages back.
-     *
      */
     protected $created_by_client = '';
 
     /**
      * The client ID (usully sessionid) that this message is for
      * specifically.
-     *
      */
     protected $for_client;
 
     /**
-     * Who this message is for specifically
+     * Who this message is for specifically.
      *
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -144,7 +140,6 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @param  $delivery_method
-     * @return void
      */
     public function getHandler()
     {
@@ -185,6 +180,6 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'for_client', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'for_client'));
         $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'for_person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'for_person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'for_person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'for_person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

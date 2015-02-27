@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -52,7 +51,6 @@ class Department extends AbstractCategoryRepository
     /**
      * @return \Application\DeskPRO\Entity\Department[]
      */
-
     public function getTicketDepartments()
     {
         return $this->_em->createQuery("
@@ -66,7 +64,6 @@ class Department extends AbstractCategoryRepository
     /**
      * @return \Application\DeskPRO\Entity\Department[]
      */
-
     public function getChatDepartments()
     {
         return $this->_em->createQuery(
@@ -84,7 +81,6 @@ class Department extends AbstractCategoryRepository
      *
      * @return array
      */
-
     public function getPermissionsInfo(DepartmentEntity $dep)
     {
         $perms = App::getDb()->fetchAll(
@@ -123,22 +119,23 @@ class Department extends AbstractCategoryRepository
     }
 
     /**
-     * Get the default ticket department for a given context (ticket, chat)
+     * Get the default ticket department for a given context (ticket, chat).
      *
-     * @param  string                                 $context
-     * @return \Application\DeskPRO\Entity\Department *
+     * @param string $context
+     *
      * @throws \InvalidArgumentException
+     * @return \Application\DeskPRO\Entity\Department *
+     *
      */
-
     public function getDefaultDepartment($context)
     {
         switch ($context) {
             case 'ticket':
-                $opt = 'core.tickets.default_department';
+                $opt         = 'core.tickets.default_department';
                 $check_field = 'is_tickets_enabled';
                 break;
             case 'chat':
-                $opt = 'core.chat.default_department';
+                $opt         = 'core.chat.default_department';
                 $check_field = 'is_chat_enabled';
                 break;
             default:
@@ -146,7 +143,7 @@ class Department extends AbstractCategoryRepository
         }
 
         $dep_id = App::getSetting($opt);
-        $dep = null;
+        $dep    = null;
         if ($dep_id) {
             $dep = $this->find($dep_id);
         }
@@ -174,10 +171,10 @@ class Department extends AbstractCategoryRepository
     /**
      * @param $context
      *
-     * @return \Application\DeskPRO\Entity\Department
      * @throws \InvalidArgumentException
+     * @return \Application\DeskPRO\Entity\Department
+     *
      */
-
     public function getChildDepartments($context)
     {
         switch ($context) {

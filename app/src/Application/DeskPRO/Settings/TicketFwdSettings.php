@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Settings;
@@ -62,7 +60,7 @@ class TicketFwdSettings
      */
     public function __construct(Settings $settings, EmailAccountManager $email_accounts)
     {
-        $this->settings = $settings;
+        $this->settings       = $settings;
         $this->email_accounts = $email_accounts;
 
         $this->resetSettings();
@@ -73,9 +71,9 @@ class TicketFwdSettings
      */
     public function resetSettings()
     {
-        $this->use_account       = (int) $this->settings->get('core_tickets.fwd_use_account');
-        $this->use_agent_address = (bool) $this->settings->get('core_tickets.fwd_use_agent_address');
-        $this->process_agent_fwd = (bool) $this->settings->get('core_tickets.process_agent_fwd');
+        $this->use_account             = (int) $this->settings->get('core_tickets.fwd_use_account');
+        $this->use_agent_address       = (bool) $this->settings->get('core_tickets.fwd_use_agent_address');
+        $this->process_agent_fwd       = (bool) $this->settings->get('core_tickets.process_agent_fwd');
         $this->agent_fwd_subject_regex = $this->settings->get('core_tickets.agent_fwd_subject_regex') ?: '';
 
         if (!$this->use_account || !$this->email_accounts->hasAcccount($this->use_account)) {
@@ -109,9 +107,9 @@ class TicketFwdSettings
     {
         $set_settings = new OptionsArray($set_settings);
 
-        $this->use_account       = (int) $set_settings->get('use_account');
-        $this->use_agent_address = (bool) $set_settings->get('use_agent_address');
-        $this->process_agent_fwd = (bool) $set_settings->get('process_agent_fwd');
+        $this->use_account             = (int) $set_settings->get('use_account');
+        $this->use_agent_address       = (bool) $set_settings->get('use_agent_address');
+        $this->process_agent_fwd       = (bool) $set_settings->get('process_agent_fwd');
         $this->agent_fwd_subject_regex = $set_settings->get('agent_fwd_subject_regex');
 
         if (!$this->use_account || !$this->email_accounts->hasAcccount($this->use_account)) {
@@ -120,7 +118,7 @@ class TicketFwdSettings
     }
 
     /**
-     * Persists settings
+     * Persists settings.
      */
     public function saveSettings()
     {

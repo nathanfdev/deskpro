@@ -32,10 +32,9 @@ use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Entity\CustomField;
 
 /**
- * Custom def people record mapper
+ * Custom def people record mapper.
  *
  * Class CustomDefPeople
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class CustomDefPerson implements MapperInterface, MapperByTitleInterface
 {
@@ -45,7 +44,7 @@ final class CustomDefPerson implements MapperInterface, MapperByTitleInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\CustomDefPerson $repository
      */
@@ -69,10 +68,10 @@ final class CustomDefPerson implements MapperInterface, MapperByTitleInterface
     {
         /** @var Entity\CustomDefPerson $record */
         $record = $this->repository->findOneBy($criteria);
-        if ( ! $record && $throw_exception) {
+        if (! $record && $throw_exception) {
             throw new MapperException('Custom def people not found', $criteria);
         }
-        if ( ! $this->isSupportType($record->getTypeName())) {
+        if (! $this->isSupportType($record->getTypeName())) {
             throw new MapperException(
                 sprintf('Custom field  does not support type `%s`', $record->getTypeName()),
                 $criteria
@@ -91,9 +90,10 @@ final class CustomDefPerson implements MapperInterface, MapperByTitleInterface
     }
 
     /**
-     * Returns true if a type is supported by the custom field entity
+     * Returns true if a type is supported by the custom field entity.
      *
      * @param string $type
+     *
      * @return bool
      */
     public function isSupportType($type)

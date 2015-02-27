@@ -2,22 +2,21 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\EventListener;
 
-use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
-use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use Application\DeskPRO\NewSettings\SettingsBag;
+use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
+use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\HeaderBag;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 class RedirectProtectionListenerSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         BrandStack $brand_stack,
         BrandContainer $brand_container,
         LoggerInterface $logger,
@@ -26,8 +25,7 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         Request $request,
         HeaderBag $response_headers,
         UrlHostChecker $url_host_checker
-    )
-    {
+    ) {
         $brand_stack->getActive()->willReturn($brand_container);
         $event->getResponse()->willReturn($response);
         $event->getRequest()->willReturn($request);
@@ -37,11 +35,10 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         $this->beConstructedWith($brand_stack, $url_host_checker, $logger);
     }
 
-    function it_does_not_change_response_if_not_redirect(
+    public function it_does_not_change_response_if_not_redirect(
         Response $response,
         FilterResponseEvent $event
-    )
-    {
+    ) {
         $response->isRedirection()->willReturn(false);
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
@@ -49,12 +46,11 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         $this->onResponse($event);
     }
 
-    function it_does_not_change_response_if_special_header_exists_and_it_removes_the_special_header(
+    public function it_does_not_change_response_if_special_header_exists_and_it_removes_the_special_header(
         Response $response,
         HeaderBag $response_headers,
         FilterResponseEvent $event
-    )
-    {
+    ) {
         $response->isRedirection()->willReturn(true);
 
         $response_headers
@@ -72,14 +68,13 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         $this->onResponse($event);
     }
 
-    function it_will_change_response_if_redirect_url_does_not_match_config(
+    public function it_will_change_response_if_redirect_url_does_not_match_config(
         UrlHostChecker $url_host_checker,
         Response $response,
         HeaderBag $response_headers,
         FilterResponseEvent $event,
         Request $request
-    )
-    {
+    ) {
         $response->isRedirection()->willReturn(true);
 
         $response_headers
@@ -99,14 +94,13 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         $this->onResponse($event);
     }
 
-    function it_will_not_change_response_if_redirect_url_matches_current_request(
+    public function it_will_not_change_response_if_redirect_url_matches_current_request(
         UrlHostChecker $url_host_checker,
         Response $response,
         HeaderBag $response_headers,
         FilterResponseEvent $event,
         Request $request
-    )
-    {
+    ) {
         $response->isRedirection()->willReturn(true);
 
         $response_headers
@@ -128,15 +122,14 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
         $this->onResponse($event);
     }
 
-    function it_will_not_change_response_if_redirect_url_does_not_match_current_request_but_matches_brand_settings(
+    public function it_will_not_change_response_if_redirect_url_does_not_match_current_request_but_matches_brand_settings(
         UrlHostChecker $url_host_checker,
         Response $response,
         HeaderBag $response_headers,
         FilterResponseEvent $event,
         Request $request,
         BrandContainer $brand_container
-    )
-    {
+    ) {
         $response->isRedirection()->willReturn(true);
 
         $response_headers

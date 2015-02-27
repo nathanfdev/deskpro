@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace deskpro_us_jwt\Usersource\Auth;
@@ -148,7 +145,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 
     /**
      * URL we send the deskpro user to after they log out of our system
-     * This is to comply with sing sign-off in SAML and our JWT system, but is useful in any SSO implementation
+     * This is to comply with sing sign-off in SAML and our JWT system, but is useful in any SSO implementation.
      *
      * @return string
      */
@@ -178,7 +175,8 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
     }
 
     /**
-     * @param  array  $callback_data
+     * @param array $callback_data
+     *
      * @return Result
      */
     protected function tryJwtAuth(array $callback_data)

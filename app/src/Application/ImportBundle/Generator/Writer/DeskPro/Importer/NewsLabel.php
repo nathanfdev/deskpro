@@ -32,10 +32,9 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro news labels importer
+ * DeskPro news labels importer.
  *
  * Class NewsLabel
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 final class NewsLabel extends AbstractImporter
 {
@@ -50,7 +49,7 @@ final class NewsLabel extends AbstractImporter
     /**
      * {@inheritdoc}
      *
-     * @var Entity\News $entity
+     * @var Entity\News
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
@@ -78,9 +77,10 @@ final class NewsLabel extends AbstractImporter
     }
 
     /**
-     * Returns a new news label entity
+     * Returns a new news label entity.
      *
      * @param string $label
+     *
      * @return DeskPROEntity\LabelNews
      */
     private function createNewsLabel($label)
@@ -89,16 +89,18 @@ final class NewsLabel extends AbstractImporter
         $entity->setLabel($label);
 
         $this->records->add($entity);
+
         return $entity;
     }
 
     /**
-     * Returns a collection of existing news label names
+     * Returns a collection of existing news label names.
      *
      * @param int $id
      *
-     * @return array
      * @throws Mapper\MapperException
+     * @return array
+     *
      */
     private function getExistingLabelsNames($id)
     {
@@ -113,10 +115,11 @@ final class NewsLabel extends AbstractImporter
     }
 
     /**
-     * Returns the news label mapper
+     * Returns the news label mapper.
      *
-     * @return Mapper\NewsLabel
      * @throws \Exception
+     * @return Mapper\NewsLabel
+     *
      */
     private function getNewsLabelMapper()
     {

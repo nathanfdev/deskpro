@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Settings;
@@ -137,8 +135,8 @@ class PasswordSettings
     public function toArray()
     {
         return array(
-            'user'  => $this->user_policy->toArray(),
-            'agent' => $this->agent_policy->toArray(),
+            'user'                            => $this->user_policy->toArray(),
+            'agent'                           => $this->agent_policy->toArray(),
             'sessions_lifetime'               => $this->sessions_lifetime,
             'session_keepalive_require_page'  => $this->session_keepalive_require_page,
             'ip_security_enabled'             => $this->ip_security_enabled,
@@ -157,7 +155,7 @@ class PasswordSettings
     {
         $this->user_policy->fromArray($set_settings['user']);
         $this->agent_policy->fromArray($set_settings['agent']);
-        $this->sessions_lifetime = $set_settings['sessions_lifetime'];
+        $this->sessions_lifetime              = $set_settings['sessions_lifetime'];
         $this->session_keepalive_require_page = $set_settings['session_keepalive_require_page'];
 
         $this->ip_security_enabled            = !empty($set_settings['ip_security_enabled']) && $set_settings['ip_security_enabled'];
@@ -169,7 +167,7 @@ class PasswordSettings
     }
 
     /**
-     * Persists settings
+     * Persists settings.
      */
     public function saveSettings()
     {

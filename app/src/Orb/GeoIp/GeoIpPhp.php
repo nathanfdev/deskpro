@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage GeoIp
+ * Orb.
  */
 
 namespace Orb\GeoIp;
@@ -61,7 +58,7 @@ class GeoIpPhp extends AbstractGeoIp
     }
 
     /**
-     * Add a database file
+     * Add a database file.
      *
      * @param string $type
      * @param string $path
@@ -72,7 +69,8 @@ class GeoIpPhp extends AbstractGeoIp
     }
 
     /**
-     * @param  string $type
+     * @param string $type
+     *
      * @return \GeoIP
      */
     public function getDbHandle($type)
@@ -85,7 +83,8 @@ class GeoIpPhp extends AbstractGeoIp
     }
 
     /**
-     * @param  string $type
+     * @param string $type
+     *
      * @return bool
      */
     public function hasDb($type)
@@ -94,8 +93,9 @@ class GeoIpPhp extends AbstractGeoIp
     }
 
     /**
-     * @param  string $host
-     * @param  array  $what
+     * @param string $host
+     * @param array  $what
+     *
      * @return array
      */
     public function lookup($host, array $what = null)
@@ -111,8 +111,8 @@ class GeoIpPhp extends AbstractGeoIp
                 }
 
                 $rec_obj = \GeoIP_record_by_addr($db, $host);
-                $rec = array();
-                $map = array(
+                $rec     = array();
+                $map     = array(
                     'continent_code',
                     'country_code',
                     'region',

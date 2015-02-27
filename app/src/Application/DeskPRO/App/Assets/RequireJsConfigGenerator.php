@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -54,7 +53,7 @@ class RequireJsConfigGenerator extends BaseRequireJsConfigGenerator
             }
 
             $appAsset = $package->getTaggedAsset('app_js');
-            $name = "{$package->name}/app";
+            $name     = "{$package->name}/app";
 
             if ($appAsset) {
                 if ($native_baseurl) {
@@ -66,7 +65,7 @@ class RequireJsConfigGenerator extends BaseRequireJsConfigGenerator
             }
 
             $moduleAsset = $package->getTaggedAsset('module_js');
-            $name = "{$package->name}/module";
+            $name        = "{$package->name}/module";
 
             if ($moduleAsset) {
                 if ($native_baseurl) {
@@ -79,7 +78,7 @@ class RequireJsConfigGenerator extends BaseRequireJsConfigGenerator
 
             // If its a native app, then we can get away with just using the prefix path
             if ($native_baseurl) {
-                $name = $package->name;
+                $name       = $package->name;
                 $asset_path = $native_baseurl.'/js';
                 $this->addPath($name, $asset_path);
 
@@ -87,7 +86,7 @@ class RequireJsConfigGenerator extends BaseRequireJsConfigGenerator
             } else {
                 foreach ($package->getTaggedAssets('js') as $asset) {
                     // JS assets can be named without the '/js/' part, so we have $name and $name2 for legacy
-                    $name = $package->name.'/'.str_replace('.js', '', $asset->name);
+                    $name  = $package->name.'/'.str_replace('.js', '', $asset->name);
                     $name2 = $package->name.'/js/'.str_replace('.js', '', $asset->name);
 
                     $asset_path = preg_replace('#\.js$#', '', $asset->blob->getDownloadUrl(false, false));

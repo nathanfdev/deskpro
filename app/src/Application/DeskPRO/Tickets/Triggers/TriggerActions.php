@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -71,12 +70,13 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
 
     public function __construct()
     {
-        $this->actions = new ActionComposite();
+        $this->actions        = new ActionComposite();
         $this->action_factory = new ActionFactory();
     }
 
     /**
-     * @param  ActionInterface           $action
+     * @param ActionInterface $action
+     *
      * @throws \InvalidArgumentException
      */
     public function addAction(ActionInterface $action)
@@ -89,7 +89,8 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
     }
 
     /**
-     * @param  array                     $action_info
+     * @param array $action_info
+     *
      * @throws \InvalidArgumentException
      */
     public function addActionFromArray(array $action_info)
@@ -109,8 +110,9 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
     /**
      * Gets the set container.
      *
-     * @return DeskproContainer
      * @throws \RuntimeException When no container has been set yet
+     * @return DeskproContainer
+     *
      */
     protected function getContainer()
     {
@@ -149,7 +151,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
         $data = array();
 
         $data['version']  = 1;
-        $data['actions'] = array();
+        $data['actions']  = array();
         foreach ($this->actions->getAll() as $actions) {
             if (!($actions instanceof ActionDefinitionInterface)) {
                 continue;
@@ -215,7 +217,8 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
     }
 
     /**
-     * @param  array          $data
+     * @param array $data
+     *
      * @return TriggerActions
      */
     public static function unserializeJsonArray(array $data)

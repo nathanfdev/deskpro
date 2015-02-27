@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -56,10 +55,9 @@ class ActionApplicator implements ActionApplicatorInterface
     }
 
     /**
-     * @param  ActionInterface          $action
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @return void
+     * @param ActionInterface          $action
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
      */
     public function apply(ActionInterface $action, Ticket $ticket, ExecutorContextInterface $context)
     {

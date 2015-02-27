@@ -3,7 +3,7 @@
 namespace Application\DeskPRO\NewSearch\Repository;
 
 /**
- * Person Repository
+ * Person Repository.
  */
 class ChatConversationRepository extends AbstractRepository implements WithLabelsInterface
 {
@@ -16,7 +16,7 @@ class ChatConversationRepository extends AbstractRepository implements WithLabel
     }
 
     /**
-     * Constructs the filters array to handle agent permission
+     * Constructs the filters array to handle agent permission.
      *
      * @return array
      */

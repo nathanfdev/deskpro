@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Form
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
 /**
- * Hidden input field
+ * Hidden input field.
  */
 class Hidden extends Text
 {

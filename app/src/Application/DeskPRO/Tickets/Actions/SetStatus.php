@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -63,7 +62,8 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
     }
 
     /**
-     * @param  string $status
+     * @param string $status
+     *
      * @return bool
      */
     public function isValidStatus($status)
@@ -122,7 +122,7 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
             return array('set_resolved');
         }
 
-        return null;
+        return;
     }
 
     /**

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
@@ -51,7 +48,8 @@ class PersonDataService extends AbstractDataService
     }
 
     /**
-     * @param  mixed       $person right now only ID is useful
+     * @param mixed $person right now only ID is useful
+     *
      * @return Person|null
      */
     public function getPerson($person)
@@ -61,6 +59,7 @@ class PersonDataService extends AbstractDataService
 
     /**
      * @param $email
+     *
      * @return Person|null
      */
     public function getPersonForEmail($email)
@@ -78,7 +77,7 @@ class PersonDataService extends AbstractDataService
             ));
         }
 
-        return null;
+        return;
     }
 
     /**

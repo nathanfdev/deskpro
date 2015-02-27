@@ -26,17 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
-use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
+use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 
 /**
  * Provides a simple interface to cache various data requests so that data requests through the DataServices' apis are
@@ -57,8 +54,9 @@ class AbstractDataService
     protected $cache;
 
     /**
-     * @param  mixed      $params   the "ArbitraryHasher" input to create cache key for this callable
-     * @param  mixed      $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable
+     * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     *
      * @return mixed|null
      */
     protected function generateAndCache($params, $callable)
@@ -79,7 +77,8 @@ class AbstractDataService
     }
 
     /**
-     * @param  mixed  $input
+     * @param mixed $input
+     *
      * @return string
      */
     protected function generateHash($input)

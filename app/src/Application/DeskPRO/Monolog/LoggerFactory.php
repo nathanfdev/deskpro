@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -73,8 +72,9 @@ class LoggerFactory
     }
 
     /**
-     * @param  string $channel
-     * @param  string $preset_name
+     * @param string $channel
+     * @param string $preset_name
+     *
      * @return Logger
      */
     public function createLoggerFromPreset($channel, array $config = array())
@@ -84,7 +84,7 @@ class LoggerFactory
 
         switch ($preset_name) {
             case 'upgrader':
-                $logger = new $this->logger_class($channel);
+                $logger  = new $this->logger_class($channel);
                 $handler = new ConsoleHandler($config['output']);
                 $logger->pushHandler($handler);
 
@@ -102,8 +102,9 @@ class LoggerFactory
     }
 
     /**
-     * @param  string $channel
-     * @param  array  $config
+     * @param string $channel
+     * @param array  $config
+     *
      * @return Logger
      */
     public function createLogger($channel, array $config)
@@ -113,13 +114,13 @@ class LoggerFactory
             $class = $config['class'];
         }
 
-        $handlers = array();
+        $handlers   = array();
         $processors = array();
 
         if (!empty($config['handlers'])) {
             foreach ($config['handlers'] as $handler_config) {
                 $handler_class = $handler_config['class'];
-                $params = isset($handler_config['params']) ? $handler_config['params'] : array();
+                $params        = isset($handler_config['params']) ? $handler_config['params'] : array();
 
                 // params with a > are shortcuts for get()
                 // params with >> are shortcuts for getSystemService
@@ -142,7 +143,7 @@ class LoggerFactory
         if (!empty($config['processors'])) {
             foreach ($config['processors'] as $proc_config) {
                 $proc_class = $proc_config['class'];
-                $params = isset($proc_config['params']) ? $proc_config['params'] : array();
+                $params     = isset($proc_config['params']) ? $proc_config['params'] : array();
 
                 // params with a > are shortcuts for get()
                 // params with >> are shortcuts for getSystemService

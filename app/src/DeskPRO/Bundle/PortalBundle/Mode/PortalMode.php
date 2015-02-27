@@ -6,10 +6,10 @@ class PortalMode
 {
     const ATTR_NAME = '_portal_mode';
 
-    const MODE_ADMIN = 'admin';
+    const MODE_ADMIN  = 'admin';
     const MODE_NORMAL = 'normal';
-    const MODE_BRAND = 'brand';
-    const MODE_EMBED = 'embed';
+    const MODE_BRAND  = 'brand';
+    const MODE_EMBED  = 'embed';
 
     protected $mode;
     protected $original_path;
@@ -19,7 +19,7 @@ class PortalMode
 
     public function __construct($path)
     {
-        $this->mode = self::MODE_NORMAL;
+        $this->mode          = self::MODE_NORMAL;
         $this->original_path = $this->internal_path = $path;
     }
 

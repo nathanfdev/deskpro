@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
@@ -54,9 +51,10 @@ class DownloadsDataService extends AbstractDataService
     }
 
     /**
-     * @param  DownloadCategory $category
+     * @param DownloadCategory $category
      * @param $page
      * @param $max_per_page
+     *
      * @return Pagerfanta
      */
     public function getDownloadsPager(DownloadCategory $category = null, $page, $max_per_page)
@@ -93,15 +91,17 @@ class DownloadsDataService extends AbstractDataService
     }
 
     /**
-     * Takes null, a category ID, or a DownloadCategory and returns an iterable collection of DownloadCategories
+     * Takes null, a category ID, or a DownloadCategory and returns an iterable collection of DownloadCategories.
      *
      * Null means ruturn the roots.
      *
      * TODO: this is using the doctrine proxy as a method of finding children of the category. Might be able to improve that.
      *
-     * @param  int|null|DownloadCategory $category
-     * @return DownloadCategory[]
+     * @param int|null|DownloadCategory $category
+     *
      * @throws \InvalidArgumentException
+     * @return DownloadCategory[]
+     *
      */
     public function getCategoryChildren($category)
     {
@@ -129,7 +129,8 @@ class DownloadsDataService extends AbstractDataService
     }
 
     /**
-     * @param  int|null|Download $download
+     * @param int|null|Download $download
+     *
      * @return Download|null
      */
     public function getDownload($download)
@@ -143,7 +144,7 @@ class DownloadsDataService extends AbstractDataService
             ),
             function () use ($that, $download) {
                 if (!$download) { // we need some input
-                    return null;
+                    return;
                 }
 
                 if ($download instanceof Download) { // already have what you seek
@@ -156,11 +157,12 @@ class DownloadsDataService extends AbstractDataService
     }
 
     /**
-     * Get a category based on arbirtary input
+     * Get a category based on arbirtary input.
      *
      * TODO: optimize the heck out of any possible inputs here (if it helps: cache in an array at least, cache long term if desired, should normalize cache key on lowest common denominator "id")
      *
-     * @param  int|null|DownloadCategory $category
+     * @param int|null|DownloadCategory $category
+     *
      * @return DownloadCategory|null
      */
     public function getCategory($category)
@@ -174,7 +176,7 @@ class DownloadsDataService extends AbstractDataService
             ),
             function () use ($that, $category) {
                 if (!$category) { // we need some input
-                    return null;
+                    return;
                 }
 
                 if ($category instanceof DownloadCategory) { // already have what you seek

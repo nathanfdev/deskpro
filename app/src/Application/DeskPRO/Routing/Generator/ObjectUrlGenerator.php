@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Util
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Routing\Generator;
@@ -37,7 +34,7 @@ namespace Application\DeskPRO\Routing\Generator;
 use Symfony\Component\Routing\Generator\UrlGenerator as BaseUrlGenerator;
 
 /**
- * Gets the URL to the page for a resource given a context
+ * Gets the URL to the page for a resource given a context.
  */
 class ObjectUrlGenerator
 {
@@ -100,6 +97,6 @@ class ObjectUrlGenerator
             }
         }
 
-        return null;
+        return;
     }
 }

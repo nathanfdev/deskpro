@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -65,7 +64,7 @@ class Language extends AbstractEntityRepository
     public function getTitles($for_ids = null)
     {
         if ($this->lang_titles === null) {
-            $db = $this->getEntityManager()->getConnection();
+            $db                = $this->getEntityManager()->getConnection();
             $this->lang_titles = $db->fetchAllKeyValue("
                 SELECT id, title
                 FROM languages
@@ -107,7 +106,8 @@ class Language extends AbstractEntityRepository
     /**
      * Install all lang packs form $langpacks that arent already installed.
      *
-     * @param  \Application\DeskPRO\Languages\LangPackInfo $langpacks
+     * @param \Application\DeskPRO\Languages\LangPackInfo $langpacks
+     *
      * @throws \Exception
      */
     public function installAll(LangPackInfo $langpacks)
@@ -142,12 +142,12 @@ class Language extends AbstractEntityRepository
     }
 
     public function getByTitle($title)
-	{
-		return $this->getEntityManager()->createQuery('
+    {
+        return $this->getEntityManager()->createQuery('
 				SELECT l FROM DeskPRO:Language l
 				WHERE l.sys_name = :title OR LOWER(l.title) = :title
 			')->setParameter('title', mb_strtolower(trim($title)))->getOneOrNullResult();
-	}
+    }
 
     public function getForLangCode($lang_code)
     {
@@ -164,6 +164,7 @@ class Language extends AbstractEntityRepository
         }
 
         $r = $this->findOneBy(array('locale' => $lang_code));
+
         return $r;
     }
 }

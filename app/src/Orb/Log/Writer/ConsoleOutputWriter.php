@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Log
+ * Orb.
  */
 
 namespace Orb\Log\Writer;
@@ -38,7 +35,7 @@ use Orb\Log\LogItem;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Writes to the symfony Output object
+ * Writes to the symfony Output object.
  */
 class ConsoleOutputWriter extends AbstractWriter
 {

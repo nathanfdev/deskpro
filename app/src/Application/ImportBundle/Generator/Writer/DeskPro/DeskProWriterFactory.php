@@ -28,17 +28,16 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPro;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
-use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Generator\Writer\AbstractFactory;
 use Application\ImportBundle\Generator\Writer\DeskPro\Importer\BlobAdapter;
 use Exception;
 
 /**
- * Generator deskpro writer factory
+ * Generator deskpro writer factory.
  *
  * Class DeskProWriterFactory
- * @package Application\ImportBundle\Generator\Writer\DeskPro
  */
 class DeskProWriterFactory extends AbstractFactory
 {
@@ -146,7 +145,7 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\BlobData())
             ->attach(new Importer\Mapper\EmailAccount($email_account_manager));
 
-        /** @var DeskproBlobStorage $blob_storage */
+        /* @var DeskproBlobStorage $blob_storage */
         if ($this->container instanceof DeskproContainer) {
             $blob_storage = $this->container->getBlobStorage();
             $blob_adapter = new BlobAdapter($blob_storage, new Importer\Mapper\BlobData());

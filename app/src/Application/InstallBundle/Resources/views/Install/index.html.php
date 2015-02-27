@@ -3,10 +3,10 @@
 } ?>
 <?php $view->extend('InstallBundle:Install:layout.html.php') ?>
 <?php $view['slots']->start('subtitle') ?>Step 2: Server and Config Checks<?php $view['slots']->stop() ?>
-<?php $failed = false ?>
+<?php $failed        = false ?>
 <?php $failed_phpini = false ?>
 
-<?php require (DP_ROOT.'/src/Application/InstallBundle/Resources/views/Install/server-checks-table.html.php') ?>
+<?php require(DP_ROOT.'/src/Application/InstallBundle/Resources/views/Install/server-checks-table.html.php') ?>
 
 <?php if ($new_download): ?>
     <div class="alert-message block-message info" style="border: 3px solid #BDD1D7; margin-top: 35px; margin-bottom: 35px;">

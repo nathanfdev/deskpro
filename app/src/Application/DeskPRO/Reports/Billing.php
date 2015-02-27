@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports;
@@ -59,7 +57,8 @@ class Billing
     }
 
     /**
-     * @param  string      $id
+     * @param string $id
+     *
      * @return bool|string
      */
     public function getRenderedResult($id)
@@ -81,6 +80,7 @@ class Billing
 
     /**
      * @param $id
+     *
      * @return bool
      */
     public function getById($id)
@@ -95,10 +95,11 @@ class Billing
     }
 
     /**
-     * @param              $query
-     * @param              $renderer
-     * @param  bool        $error
-     * @param  array       $params
+     * @param       $query
+     * @param       $renderer
+     * @param bool  $error
+     * @param array $params
+     *
      * @return bool|string
      */
     public function renderQuery($query, $renderer, &$error = false, array $params = array())
@@ -117,7 +118,8 @@ class Billing
     }
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return array
      */
     public function getParamsInput($name = 'params')

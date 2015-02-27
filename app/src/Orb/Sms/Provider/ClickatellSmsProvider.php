@@ -26,17 +26,14 @@
  * \**************************************************************************/
 
 /**
- * Orb
- *
- * @package    Orb
- * @subpackage Sms
+ * Orb.
  */
 
 namespace Orb\Sms\Provider;
 
+use Bdt\Clickatell\ClickatellClient;
 use Orb\Sms\SmsMessageChunk;
 use Orb\Sms\SmsProviderInterface;
-use Bdt\Clickatell\ClickatellClient;
 use Orb\Sms\SmsResult;
 
 class ClickatellSmsProvider implements SmsProviderInterface
@@ -70,8 +67,8 @@ class ClickatellSmsProvider implements SmsProviderInterface
     {
         $this->client = ClickatellClient::factory(array( 'api_id'   => $apiId, 'user' => $user,
                                                          'password' => $password, ));
-        $this->user = $user;
-        $this->apiId = $apiId;
+        $this->user     = $user;
+        $this->apiId    = $apiId;
         $this->password = $password;
     }
 
@@ -129,9 +126,9 @@ class ClickatellSmsProvider implements SmsProviderInterface
     public function getParams()
     {
         return array(
-            'user' => $this->user,
+            'user'     => $this->user,
             'password' => $this->password,
-            'api_id' => $this->apiId,
+            'api_id'   => $this->apiId,
         );
     }
 }

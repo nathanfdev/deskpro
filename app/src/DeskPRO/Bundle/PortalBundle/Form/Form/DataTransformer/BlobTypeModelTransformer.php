@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
@@ -39,7 +36,7 @@ use Application\DeskPRO\EntityRepository\Blob as BlobRepo;
 use Symfony\Component\Form\DataTransformerInterface;
 
 /**
- * BlobType has an array as its "normalized" data:
+ * BlobType has an array as its "normalized" data:.
  *
  * - blob (Blob entity)
  * - blob_auth (the persisted blob's authcode)
@@ -70,7 +67,7 @@ class BlobTypeModelTransformer implements DataTransformerInterface
         $default_normailzed = self::$default_normailzed;
 
         if ($value instanceof Blob) {
-            $default_normailzed['blob'] = $value;
+            $default_normailzed['blob']      = $value;
             $default_normailzed['blob_auth'] = $value->getAuthId();
         }
 

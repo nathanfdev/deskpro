@@ -33,15 +33,13 @@ use Application\ImportBundle\Generator\LoggerAwareInterface;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Application\ImportBundle\Generator\Writer\DeskPro\Importer\SkipDuplicateInterface;
-use Application\ImportBundle\Generator\Writer\WriterException;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  * Generator deskpro writer
- * Imports entities into deskpro database
+ * Imports entities into deskpro database.
  *
  * Class DeskProWriter
- * @package Application\ImportBundle\Generator\Writer\DeskPro
  */
 final class DeskProWriter extends AbstractWriter
 {
@@ -56,7 +54,7 @@ final class DeskProWriter extends AbstractWriter
     private $entity_manager;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Importer\Collection $importers
      * @param ObjectManager       $entity_manager
@@ -106,13 +104,11 @@ final class DeskProWriter extends AbstractWriter
                 }
 
                 $this->entity_manager->flush();
-
             } catch (Importer\Mapper\MapperException $e) {
                 $this->logWarning(sprintf(
                     'Unable to create `%s` with oid `%s`. Reason %s',
                     $entity->getType(), $entity->getOid(), $e->__toString()
                 ));
-
             } catch (Importer\DuplicateException $e) {
                 $this->logWarning(sprintf(
                     'Duplicate entity `%s` with oid `%s` (Skipping)',
@@ -125,27 +121,28 @@ final class DeskProWriter extends AbstractWriter
     }
 
     /**
-     * Returns importer by exported entity
+     * Returns importer by exported entity.
      *
      * @param EntityInterface $entity
      *
-     * @return Importer\Collection
      * @throws \Exception
+     * @return Importer\Collection
+     *
      */
     private function getImporters(EntityInterface $entity)
     {
         $importers = $this->importers->getByEntityType($entity->getType());
         foreach ($importers as $importer) {
             if ($this->config && $importer instanceof GeneratorConfigAwareInterface) {
-                /** @var GeneratorConfigAwareInterface $importer */
+                /* @var GeneratorConfigAwareInterface $importer */
                 $importer->setConfig($this->config);
             }
             if ($this->logger && $importer instanceof LoggerAwareInterface) {
-                /** @var LoggerAwareInterface $importer */
+                /* @var LoggerAwareInterface $importer */
                 $importer->setLogger($this->logger);
             }
             if ($this->progress_bar && $importer instanceof ProgressBarAwareInterface) {
-                /** @var ProgressBarAwareInterface $importer */
+                /* @var ProgressBarAwareInterface $importer */
                 $importer->setProgressBarHelper($this->progress_bar);
             }
         }

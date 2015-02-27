@@ -26,17 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\TwitterAccounts\Form\Type\TwitterAccountType;
 use Application\DeskPRO\TwitterAccounts\TwitterAccountEdit;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 
 class TwitterAccountsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -54,8 +52,8 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 
     public function listAction()
     {
-        /**
-         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
+        /*
+         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts
          */
         $twitter_accounts = $this->container->getSystemService('twitter_accounts');
 
@@ -70,8 +68,8 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 
     public function getAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
+        /*
+         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts
          */
         $twitter_accounts = $this->container->getSystemService('twitter_accounts');
         $twitter_account  = $twitter_accounts->getWithUserById($id);
@@ -94,8 +92,8 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 
     public function saveAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
+        /*
+         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts
          */
         $twitter_accounts = $this->container->getSystemService('twitter_accounts');
 
@@ -133,8 +131,8 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
 
     public function removeAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts $twitter_accounts
+        /*
+         * @var \Application\DeskPRO\TwitterAccounts\TwitterAccounts
          */
         $twitter_accounts = $this->container->getSystemService('twitter_accounts');
         $twitter_account  = $twitter_accounts->getById($id);

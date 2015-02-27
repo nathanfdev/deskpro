@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -64,7 +63,7 @@ class TriggerTermComposite implements TriggerTermInterface, \Countable
     }
 
     /**
-     * Change the logic operator between AND/OR ('all must match' versus 'any match')
+     * Change the logic operator between AND/OR ('all must match' versus 'any match').
      *
      * @param string $op
      */

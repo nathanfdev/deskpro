@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -75,7 +74,7 @@ class CheckEmailBody extends AbstractTriggerTerm
 
         $options = $this->getTermOptions();
 
-        $reader = $context->getEmailContext();
+        $reader  = $context->getEmailContext();
         $strings = array();
 
         if ($html = $reader->getBodyHtml()->getBodyUtf8()) {

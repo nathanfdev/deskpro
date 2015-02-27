@@ -2,15 +2,14 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
-use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use Application\DeskPRO\Entity\Person;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
@@ -20,7 +19,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
  */
 class ContentCommentVoterSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         ContainerInterface $container,
         PortalPermissionsManager $permissions_manager,
         BrandStack $brand_stack,
@@ -30,8 +29,7 @@ class ContentCommentVoterSpec extends ObjectBehavior
         TokenInterface $guest_token,
         PermissionsBag $person_permission_bag,
         PermissionsBag $guest_permission_bag
-    )
-    {
+    ) {
         $person->getId()->willReturn(1);
         $token->getUser()->willReturn($person);
         $guest_token->getUser()->willReturn(null);
@@ -44,51 +42,46 @@ class ContentCommentVoterSpec extends ObjectBehavior
         $this->beConstructedWith($container);
     }
 
-    function it_abstains_from_non_comment_attributes(
+    public function it_abstains_from_non_comment_attributes(
         BrandContainer $brand_container,
         TokenInterface $token
-    )
-    {
+    ) {
         $this->verifyAbstainVote(ContentRatingsVoter::RATE_ARTICLES, $token);
     }
 
-    function it_will_deny_user_if_user_publish_settings_is_false(
+    public function it_will_deny_user_if_user_publish_settings_is_false(
         BrandContainer $brand_container,
         TokenInterface $token
-    )
-    {
+    ) {
         $brand_container->getSetting('user.publish_comments', false)->willReturn(false);
 
         $this->verifyDeniedVote(ContentCommentVoter::COMMENT_ARTICLES, $token);
     }
 
-    function it_will_deny_guest_if_user_publish_settings_is_false(
+    public function it_will_deny_guest_if_user_publish_settings_is_false(
         BrandContainer $brand_container,
         TokenInterface $guest_token
-    )
-    {
+    ) {
         $brand_container->getSetting('user.publish_comments', false)->willReturn(false);
         $brand_container->getSetting('core.interact_require_login', false)->willReturn(false);
 
         $this->verifyDeniedVote(ContentCommentVoter::COMMENT_ARTICLES, $guest_token);
     }
 
-    function it_will_deny_if_guest_and_interact_require_login_setting(
+    public function it_will_deny_if_guest_and_interact_require_login_setting(
         BrandContainer $brand_container,
         TokenInterface $guest_token
-    )
-    {
+    ) {
         $brand_container->getSetting('core.interact_require_login', false)->willReturn(true);
 
         $this->verifyDeniedVote(ContentCommentVoter::COMMENT_ARTICLES, $guest_token);
     }
 
-    function it_will_deny_guest_comments_if_permissions_fail(
+    public function it_will_deny_guest_comments_if_permissions_fail(
         BrandContainer $brand_container,
         TokenInterface $guest_token,
         PermissionsBag $guest_permission_bag
-    )
-    {
+    ) {
         $brand_container->getSetting('user.publish_comments', false)->willReturn(true);
         $brand_container->getSetting('core.interact_require_login', false)->willReturn(false);
 
@@ -105,12 +98,11 @@ class ContentCommentVoterSpec extends ObjectBehavior
         $this->verifyDeniedVote(ContentCommentVoter::COMMENT_NEWS, $guest_token);
     }
 
-    function it_will_grant_guest_comments_if_permissions_pass(
+    public function it_will_grant_guest_comments_if_permissions_pass(
         BrandContainer $brand_container,
         TokenInterface $guest_token,
         PermissionsBag $guest_permission_bag
-    )
-    {
+    ) {
         $brand_container->getSetting('user.publish_comments', false)->willReturn(true);
         $brand_container->getSetting('core.interact_require_login', false)->willReturn(false);
 
@@ -127,12 +119,11 @@ class ContentCommentVoterSpec extends ObjectBehavior
         $this->verifyGrantedVote(ContentCommentVoter::COMMENT_NEWS, $guest_token);
     }
 
-    function it_will_deny_user_comments_if_permissions_fail(
+    public function it_will_deny_user_comments_if_permissions_fail(
         BrandContainer $brand_container,
         TokenInterface $token,
         PermissionsBag $person_permission_bag
-    )
-    {
+    ) {
         $brand_container->getSetting('user.publish_comments', false)->willReturn(true);
 
         $person_permission_bag->get('articles.comment')->willReturn(false);
@@ -148,12 +139,11 @@ class ContentCommentVoterSpec extends ObjectBehavior
         $this->verifyDeniedVote(ContentCommentVoter::COMMENT_NEWS, $token);
     }
 
-    function it_will_grant_user_comments_if_permissions_pass(
+    public function it_will_grant_user_comments_if_permissions_pass(
         BrandContainer $brand_container,
         TokenInterface $token,
         PermissionsBag $person_permission_bag
-    )
-    {
+    ) {
         $brand_container->getSetting('user.publish_comments', false)->willReturn(true);
 
         $person_permission_bag->get('articles.comment')->willReturn(true);
@@ -175,10 +165,7 @@ class ContentCommentVoterSpec extends ObjectBehavior
             ->shouldReturn(VoterInterface::ACCESS_GRANTED);
     }
 
-
-
-
-    function verifyGrantedVote($attribute, $token)
+    public function verifyGrantedVote($attribute, $token)
     {
         if (!is_array($attribute)) {
             $attribute = array($attribute);
@@ -188,7 +175,7 @@ class ContentCommentVoterSpec extends ObjectBehavior
             ->shouldReturn(VoterInterface::ACCESS_GRANTED);
     }
 
-    function verifyDeniedVote($attribute, $token)
+    public function verifyDeniedVote($attribute, $token)
     {
         if (!is_array($attribute)) {
             $attribute = array($attribute);
@@ -198,7 +185,7 @@ class ContentCommentVoterSpec extends ObjectBehavior
             ->shouldReturn(VoterInterface::ACCESS_DENIED);
     }
 
-    function verifyAbstainVote($attribute, $token)
+    public function verifyAbstainVote($attribute, $token)
     {
         if (!is_array($attribute)) {
             $attribute = array($attribute);

@@ -26,21 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\CustomFields\CustomDataPersister;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\SimpleDefinitionType;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -48,7 +45,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class CustomFieldsController extends AbstractController implements ProtectedControllerInterface
 {
     protected $allowed = array(
-        'owner' => array('ticket', 'person'),
+        'owner'   => array('ticket', 'person'),
         'context' => array('person', 'organization'),
     );
 
@@ -89,7 +86,8 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
     ####################################################################################################################
 
     /**
-     * @param  Request  $request
+     * @param Request $request
+     *
      * @return Response
      */
     public function listAction(Request $request)
@@ -113,10 +111,11 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
     }
 
     /**
-     * get children (choices) of custom field
+     * get children (choices) of custom field.
      *
-     * @param  Request  $request
+     * @param Request $request
      * @param $id
+     *
      * @return Response
      */
     public function childrenAction(Request $request, $id)
@@ -139,15 +138,18 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
     }
 
     /**
-     * add child (choice) to custom field
-     * @param  Request                                                       $request
+     * add child (choice) to custom field.
+     *
+     * @param Request $request
      * @param $id
-     * @return Response
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return Response
+     *
      */
     public function addChildAction(Request $request, $id)
     {
-        /** @var $definition CustomFieldDefinition */
+        /* @var $definition CustomFieldDefinition */
         if (!$definition = $this->em->find('DeskPRO:CustomFieldDefinition', $id)) {
             throw new NotFoundHttpException();
         }
@@ -258,8 +260,10 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
 
     /**
      * @param $id
-     * @return null|object
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return null|object
+     *
      */
     protected function getDefinition($id)
     {

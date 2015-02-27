@@ -26,23 +26,20 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
+use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
-use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 
 class ArticlesController extends AbstractController
 {
@@ -74,7 +71,7 @@ class ArticlesController extends AbstractController
         return $this->renderThemeView(
             'Theme:Articles:index.html.twig',
             array(
-                'page' => $page,
+                'page'  => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
             )
         );
@@ -109,9 +106,9 @@ class ArticlesController extends AbstractController
         return $this->renderThemeView(
             'Theme:Articles:browse.html.twig',
             array(
-                'category' => $category,
-                'page' => $page,
-                'count' => $this->getBrandSetting('portal.per_page_content'),
+                'category'        => $category,
+                'page'            => $page,
+                'count'           => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination' => true,
             )
         );
@@ -151,10 +148,10 @@ class ArticlesController extends AbstractController
         return $this->renderThemeView(
             'Theme:Articles:view.html.twig',
             array(
-                'article' => $article,
-                'category' => $article->getPrimaryCategory(),
-                'content_id' => $article->getId(),
-                'content_type' => Article::CONTENT_TYPE,
+                'article'          => $article,
+                'category'         => $article->getPrimaryCategory(),
+                'content_id'       => $article->getId(),
+                'content_type'     => Article::CONTENT_TYPE,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
             )
         );
@@ -186,7 +183,7 @@ class ArticlesController extends AbstractController
      */
     public function articleSubscriptionAction(Article $article)
     {
-        $person = $this->getUser();
+        $person               = $this->getUser();
         $subscriptions_helper = $this->getSubscriptionsHelper();
 
         if ($subscriptions_helper->isSubscribedContent($article, $person)) {
@@ -207,7 +204,7 @@ class ArticlesController extends AbstractController
      */
     public function articleCategorySubscriptionAction(ArticleCategory $category)
     {
-        $person = $this->getUser();
+        $person               = $this->getUser();
         $subscriptions_helper = $this->getSubscriptionsHelper();
 
         if ($subscriptions_helper->isSubscribedCategory($category, $person)) {

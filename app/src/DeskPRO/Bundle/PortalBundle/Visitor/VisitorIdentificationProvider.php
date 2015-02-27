@@ -26,20 +26,17 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Visitor;
 
-use Symfony\Component\HttpFoundation\RequestStack;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class VisitorIdentificationProvider
 {
-    const COOKIE_NAME = 'dp__v';
+    const COOKIE_NAME    = 'dp__v';
     const ATTRIBUTE_NAME = 'visitor_id';
 
     /**
@@ -55,7 +52,7 @@ class VisitorIdentificationProvider
     public function __construct(RequestStack $request_stack, LoggerInterface $logger)
     {
         $this->request_stack = $request_stack;
-        $this->logger = $logger;
+        $this->logger        = $logger;
     }
 
     public static function generateRandomIdentifier()
@@ -63,7 +60,7 @@ class VisitorIdentificationProvider
         // take from a comment at: http://php.net/manual/en/function.com-create-guid.php
         $charid = strtoupper(md5(uniqid(rand(), true)));
         $hyphen = chr(45);// "-"
-        $uuid =
+        $uuid   =
             ''
             .substr($charid, 0, 8).$hyphen
             .substr($charid, 8, 4).$hyphen

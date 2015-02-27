@@ -26,15 +26,12 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Templating
+ * Orb.
  */
 
 namespace Orb\Templating\Engine;
 
-use \Symfony\Component\Templating\Storage\Storage;
+use Symfony\Component\Templating\Storage\Storage;
 
 /**
  * Works in the same was as PhpVarRenderer except that $OUTPUT is expected to be an

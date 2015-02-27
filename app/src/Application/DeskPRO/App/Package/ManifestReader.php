@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -64,7 +63,8 @@ class ManifestReader
     private $error_details = array();
 
     /**
-     * @param  array          $data
+     * @param array $data
+     *
      * @return ManifestReader
      */
     public static function newFromArray(array $data)
@@ -73,7 +73,8 @@ class ManifestReader
     }
 
     /**
-     * @param  string         $path
+     * @param string $path
+     *
      * @return ManifestReader
      */
     public static function newFromFile($path)
@@ -88,7 +89,8 @@ class ManifestReader
     }
 
     /**
-     * @param  string         $json
+     * @param string $json
+     *
      * @return ManifestReader
      */
     public static function newFromJson($json)

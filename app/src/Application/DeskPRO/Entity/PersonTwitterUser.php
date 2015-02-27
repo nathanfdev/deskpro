@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,8 +37,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * A persons contact data
- *
+ * A persons contact data.
  */
 class PersonTwitterUser extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -86,7 +84,7 @@ class PersonTwitterUser extends \Application\DeskPRO\Domain\DomainObject
                 'unique_key_idx' => array('columns' => array('person_id', 'screen_name')),
             ),
             'indexes' => array(
-                'screen_name_idx' => array('columns' => array('screen_name')),
+                'screen_name_idx'     => array('columns' => array('screen_name')),
                 'twitter_user_id_idx' => array('columns' => array('twitter_user_id')),
             ),
         ));
@@ -98,6 +96,6 @@ class PersonTwitterUser extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'oauth_token_secret', 'type' => 'string', 'length' => 4000, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'oauth_token_secret', 'dpApi' => false, 'dpqlAccess' => false ));
         $metadata->mapField(array( 'fieldName' => 'twitter_user_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'twitter_user_id'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

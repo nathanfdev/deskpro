@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Controller
  */
 
@@ -57,6 +56,7 @@ abstract class AbstractMessageHandler
      * Get the message to give the client.
      *
      * @param  $context
+     *
      * @return mixed
      */
     abstract public function getMessage($context);

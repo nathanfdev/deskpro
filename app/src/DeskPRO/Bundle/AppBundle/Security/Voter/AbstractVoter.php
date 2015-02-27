@@ -39,7 +39,7 @@ abstract class AbstractVoter extends \Symfony\Component\Security\Core\Authorizat
     protected $container;
 
     /**
-     * Iteratively check all given attributes by calling isGranted
+     * Iteratively check all given attributes by calling isGranted.
      *
      * This method terminates as soon as it is able to return ACCESS_GRANTED
      * If at least one attribute is supported, but access not granted, then ACCESS_DENIED is returned
@@ -95,6 +95,7 @@ abstract class AbstractVoter extends \Symfony\Component\Security\Core\Authorizat
 
     /**
      * @param $user
+     *
      * @return bool
      */
     protected function isLoggedIn($user)
@@ -120,7 +121,8 @@ abstract class AbstractVoter extends \Symfony\Component\Security\Core\Authorizat
 
     /**
      * @param $setting
-     * @param  mixed $default
+     * @param mixed $default
+     *
      * @return mixed
      */
     public function getActiveBrandSetting($setting, $default = null)

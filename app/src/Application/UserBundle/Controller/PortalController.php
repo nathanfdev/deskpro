@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
- * @subpackage UserBundle
  * @category Controllers
  */
 
@@ -161,7 +159,7 @@ class PortalController extends AbstractController
 
             if ($preticket) {
                 if ($rating < 1) {
-                    $unsolved = $preticket->unsolved_content;
+                    $unsolved   = $preticket->unsolved_content;
                     $unsolved[] = array($object_type, $object_id);
 
                     $preticket->unsolved_content = $unsolved;
@@ -186,15 +184,15 @@ class PortalController extends AbstractController
         if ($this->person->isGuest()) {
             $return_url = $this->generateUrl('user_newcomment_finishlogin', array(
                 'comment_type' => $comment_type,
-                'comment_id' => $comment_id,
+                'comment_id'   => $comment_id,
             ));
 
             return $this->redirectRoute('user_login', array('return' => $return_url));
         }
 
         switch ($comment_type) {
-            case 'article': $entity = 'DeskPRO:ArticleComment'; break;
-            case 'news': $entity = 'DeskPRO:NewsComment'; break;
+            case 'article': $entity  = 'DeskPRO:ArticleComment'; break;
+            case 'news': $entity     = 'DeskPRO:NewsComment'; break;
             case 'download': $entity = 'DeskPRO:DownloadComment'; break;
             case 'feedback': $entity = 'DeskPRO:FeedbackComment'; break;
             default:

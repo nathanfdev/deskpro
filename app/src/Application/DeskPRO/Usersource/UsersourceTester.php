@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -69,13 +68,14 @@ class UsersourceTester
     private $raw_data;
 
     /**
-     * @param  string           $type
-     * @param  array            $settings
+     * @param string $type
+     * @param array  $settings
+     *
      * @return UsersourceTester
      */
     public static function createFromOptions($type, array $settings)
     {
-        $us = new Usersource();
+        $us              = new Usersource();
         $us->source_type = $type;
         $us->setOptions($settings);
 
@@ -83,7 +83,8 @@ class UsersourceTester
     }
 
     /**
-     * @param  Usersource       $usersource
+     * @param Usersource $usersource
+     *
      * @return UsersourceTester
      */
     public static function createFromUsersource(Usersource $usersource)
@@ -100,10 +101,12 @@ class UsersourceTester
     }
 
     /**
-     * @param  string            $username
-     * @param  string            $password
-     * @return bool
+     * @param string $username
+     * @param string $password
+     *
      * @throws \RuntimeException
+     * @return bool
+     *
      */
     public function test($username, $password)
     {
@@ -112,7 +115,7 @@ class UsersourceTester
         }
 
         $this->has_run = true;
-        $adapter = $this->adapter;
+        $adapter       = $this->adapter;
 
         $logger = new Logger();
         $arr_wr = new ArrayWriter();
@@ -140,7 +143,7 @@ class UsersourceTester
 
         if ($result && $result->isValid() && $result->getIdentity()) {
             $result_raw = "DATA RECORD:\n=======================================================\n";
-            $raw_data = Arrays::mapRecursive($result->getIdentity()->getRawData(), function ($v) {
+            $raw_data   = Arrays::mapRecursive($result->getIdentity()->getRawData(), function ($v) {
                 if (is_int($v) || is_float($v) || ctype_digit($v) || is_bool($v) || is_null($v) || ctype_print($v)) {
                     return $v;
                 } else {
@@ -155,7 +158,7 @@ class UsersourceTester
         $clean = $result_raw;
         if (!$clean) {
             $result_raw = Strings::utf8_bad_strip($result_raw);
-            $clean = @htmlspecialchars($result_raw, \ENT_QUOTES, 'ISO-8895-1');
+            $clean      = @htmlspecialchars($result_raw, \ENT_QUOTES, 'ISO-8895-1');
             if (!$clean) {
                 $clean = "[Data contains invalid characters]";
             }
@@ -163,7 +166,7 @@ class UsersourceTester
 
         $result_raw = $clean;
 
-        $this->log = $log;
+        $this->log      = $log;
         $this->raw_data = $result_raw;
         $this->is_valid = $result->isValid();
 
@@ -171,8 +174,9 @@ class UsersourceTester
     }
 
     /**
-     * @return string
      * @throws \RuntimeException
+     * @return string
+     *
      */
     public function getLog()
     {
@@ -184,8 +188,9 @@ class UsersourceTester
     }
 
     /**
-     * @return array
      * @throws \RuntimeException
+     * @return array
+     *
      */
     public function getRawData()
     {
@@ -197,8 +202,9 @@ class UsersourceTester
     }
 
     /**
-     * @return bool
      * @throws \RuntimeException
+     * @return bool
+     *
      */
     public function isValid()
     {

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Serializer
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Serializer;
@@ -55,7 +52,8 @@ class SerializerRegistry extends BaseSerializerRegistry
      * the result array. The is only 1 level deep, and is meant to make working with an array of API data (lists, etc)
      * a bit easier.
      *
-     * @param  array $array an array of data to be serialized
+     * @param array $array an array of data to be serialized
+     *
      * @return array an array of serialized data
      */
     public function serializeArray(array $array)

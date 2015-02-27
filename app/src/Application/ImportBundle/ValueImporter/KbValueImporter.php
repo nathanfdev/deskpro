@@ -26,7 +26,6 @@
 \**************************************************************************/
 
 /**
- * @package Importer
  */
 
 namespace Application\ImportBundle\ValueImporter;
@@ -38,12 +37,13 @@ use Orb\Validator\StringEmail;
 class KbValueImporter extends AbstractValueImporter
 {
     /**
-     * @param  mixed                                                $kbval
+     * @param mixed $kbval
+     *
      * @throws \Application\ImportBundle\Exception\BadDataException
      */
     public function importValue($kbval)
     {
-//        if (!($kbval instanceof KbValue)) {
+        //        if (!($kbval instanceof KbValue)) {
 //            throw new \InvalidArgumentException("This importer can only import KbValue");
 //        }
 //

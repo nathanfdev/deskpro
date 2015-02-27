@@ -26,29 +26,29 @@
 \**************************************************************************/
 
 /**
- * @package Importer
  */
 
 namespace Application\ImportBundle\ValueImporter;
 
-use Application\ImportBundle\Value\DownloadValue;
 use Application\ImportBundle\Exception\BadDataException;
 use Application\ImportBundle\Exception\DuplicateValueException;
+use Application\ImportBundle\Value\DownloadValue;
 use Orb\Validator\StringEmail;
 
 class DownloadValueImporter extends AbstractValueImporter
 {
     /**
+     * @param \Application\ImportBundle\Value\DownloadValue $dval
      *
-     * @param  \Application\ImportBundle\Value\DownloadValue $dval
-     * @return boolean
      * @throws \InvalidArgumentException
      * @throws BadDataException
      * @throws DuplicateValueException
+     * @return boolean
+     *
      */
     public function importValue($dval)
     {
-//        if (!($dval instanceof DownloadValue)) {
+        //        if (!($dval instanceof DownloadValue)) {
 //            throw new \InvalidArgumentException("This importer can only import Downloads");
 //        }
 //        if (empty($dval->title) || empty($dval->content)) {

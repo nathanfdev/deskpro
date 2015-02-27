@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package Orb
+ * DeskPRO.
  */
 
 namespace Orb\Mail\KeyCache;
@@ -52,6 +50,7 @@ class DiskKeyCache implements \Swift_KeyCache
 
     /**
      * An InputStream for cloning.
+     *
      * @var \Swift_KeyCache_KeyCacheInputStream
      * @access private
      */
@@ -59,6 +58,7 @@ class DiskKeyCache implements \Swift_KeyCache
 
     /**
      * A path to write to.
+     *
      * @var string
      * @access private
      */
@@ -66,6 +66,7 @@ class DiskKeyCache implements \Swift_KeyCache
 
     /**
      * Stored keys.
+     *
      * @var array
      * @access private
      */
@@ -74,22 +75,26 @@ class DiskKeyCache implements \Swift_KeyCache
     /**
      * Create a new DiskKeyCache with the given $stream for cloning to make
      * InputByteStreams, and the given $path to save to.
+     *
      * @param \Swift_KeyCache_KeyCacheInputStream $stream
      * @param string                              $path   to save to
      */
     public function __construct(\Swift_KeyCache_KeyCacheInputStream $stream, $path)
     {
         $this->_stream = $stream;
-        $this->_path = $path;
+        $this->_path   = $path;
     }
 
     /**
      * Set a string into the cache under $itemKey for the namespace $nsKey.
-     * @param  string             $nsKey
-     * @param  string             $itemKey
-     * @param  string             $string
-     * @param  int                $mode
+     *
+     * @param string $nsKey
+     * @param string $itemKey
+     * @param string $string
+     * @param int    $mode
+     *
      * @throws \Swift_IoException
+     *
      * @see MODE_WRITE, MODE_APPEND
      */
     public function setString($nsKey, $itemKey, $string, $mode)
@@ -112,11 +117,14 @@ class DiskKeyCache implements \Swift_KeyCache
 
     /**
      * Set a ByteStream into the cache under $itemKey for the namespace $nsKey.
-     * @param  string                  $nsKey
-     * @param  string                  $itemKey
-     * @param  \Swift_OutputByteStream $os
-     * @param  int                     $mode
+     *
+     * @param string                  $nsKey
+     * @param string                  $itemKey
+     * @param \Swift_OutputByteStream $os
+     * @param int                     $mode
+     *
      * @see MODE_WRITE, MODE_APPEND
+     *
      * @throws \Swift_IoException
      */
     public function importFromByteStream($nsKey, $itemKey, \Swift_OutputByteStream $os, $mode)
@@ -142,8 +150,10 @@ class DiskKeyCache implements \Swift_KeyCache
     /**
      * Provides a ByteStream which when written to, writes data to $itemKey.
      * NOTE: The stream will always write in append mode.
-     * @param  string                 $nsKey
-     * @param  string                 $itemKey
+     *
+     * @param string $nsKey
+     * @param string $itemKey
+     *
      * @return \Swift_InputByteStream
      */
     public function getInputByteStream($nsKey, $itemKey,
@@ -162,16 +172,19 @@ class DiskKeyCache implements \Swift_KeyCache
 
     /**
      * Get data back out of the cache as a string.
-     * @param  string             $nsKey
-     * @param  string             $itemKey
-     * @return string
+     *
+     * @param string $nsKey
+     * @param string $itemKey
+     *
      * @throws \Swift_IoException
+     * @return string
+     *
      */
     public function getString($nsKey, $itemKey)
     {
         $this->_prepareCache($nsKey);
         if ($this->hasKey($nsKey, $itemKey)) {
-            $fp = $this->_getHandle($nsKey, $itemKey, self::POSITION_START);
+            $fp  = $this->_getHandle($nsKey, $itemKey, self::POSITION_START);
             $str = '';
             while (!feof($fp) && false !== $bytes = fread($fp, 8192)) {
                 $str .= $bytes;
@@ -184,6 +197,7 @@ class DiskKeyCache implements \Swift_KeyCache
 
     /**
      * Get data back out of the cache as a ByteStream.
+     *
      * @param string                 $nsKey
      * @param string                 $itemKey
      * @param \Swift_InputByteStream $is      to write the data to
@@ -201,8 +215,10 @@ class DiskKeyCache implements \Swift_KeyCache
 
     /**
      * Check if the given $itemKey exists in the namespace $nsKey.
-     * @param  string  $nsKey
-     * @param  string  $itemKey
+     *
+     * @param string $nsKey
+     * @param string $itemKey
+     *
      * @return boolean
      */
     public function hasKey($nsKey, $itemKey)
@@ -212,6 +228,7 @@ class DiskKeyCache implements \Swift_KeyCache
 
     /**
      * Clear data for $itemKey in the namespace $nsKey if it exists.
+     *
      * @param string $nsKey
      * @param string $itemKey
      */
@@ -225,6 +242,7 @@ class DiskKeyCache implements \Swift_KeyCache
 
     /**
      * Clear all data in the namespace $nsKey if it exists.
+     *
      * @param string $nsKey
      */
     public function clearAll($nsKey)
@@ -246,6 +264,7 @@ class DiskKeyCache implements \Swift_KeyCache
 
     /**
      * Initialize the namespace of $nsKey if needed.
+     *
      * @param string $nsKey
      * @access private
      */
@@ -262,17 +281,19 @@ class DiskKeyCache implements \Swift_KeyCache
 
     /**
      * Get a file handle on the cache item.
-     * @param  string   $nsKey
-     * @param  string   $itemKey
-     * @param  int      $position
+     *
+     * @param string $nsKey
+     * @param string $itemKey
+     * @param int    $position
+     *
      * @return resource
      * @access private
      */
     private function _getHandle($nsKey, $itemKey, $position)
     {
         if (!isset($this->_keys[$nsKey][$itemKey])) {
-            $openMode = $this->hasKey($nsKey, $itemKey) ? 'r+b' : 'w+b';
-            $fp = fopen($this->_path.'/'.$nsKey.'/'.$itemKey, $openMode);
+            $openMode                      = $this->hasKey($nsKey, $itemKey) ? 'r+b' : 'w+b';
+            $fp                            = fopen($this->_path.'/'.$nsKey.'/'.$itemKey, $openMode);
             $this->_keys[$nsKey][$itemKey] = $fp;
         }
 

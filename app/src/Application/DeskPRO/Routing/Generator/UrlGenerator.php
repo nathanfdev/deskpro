@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Routing\Generator;
@@ -89,7 +87,7 @@ class UrlGenerator extends BaseUrlGenerator
         try {
             return parent::generate($name, $parameters, $absolute);
         } catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
-            return null;
+            return;
         }
     }
 
@@ -118,14 +116,14 @@ class UrlGenerator extends BaseUrlGenerator
     {
         $url = $this->generate($name, $parameters, $absolute);
 
-        $with_file = false;
+        $with_file   = false;
         $with_widget = false;
         if (strpos($url, '/file.php/') !== false) {
             $with_file = true;
-            $url = str_replace('/file.php/', '/index.php/', $url);
+            $url       = str_replace('/file.php/', '/index.php/', $url);
         } elseif (strpos($url, '/dp.php/') !== false) {
             $with_file = true;
-            $url = str_replace('/dp.php/', '/index.php/', $url);
+            $url       = str_replace('/dp.php/', '/index.php/', $url);
         }
 
         $url = preg_replace('#^'.preg_quote($this->context->getBaseUrl(), '#').'#', '', $url);

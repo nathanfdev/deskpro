@@ -57,9 +57,10 @@ class Api
 
     /**
      * @param $endpoint
-     * @param  string     $method
-     * @param  array      $headers
-     * @param  array      $params
+     * @param string $method
+     * @param array  $headers
+     * @param array  $params
+     *
      * @throws \Exception
      */
     public function call($endpoint, $method = 'GET', array $headers = array(), $params = array())
@@ -99,7 +100,8 @@ class Api
 
     /**
      * @param $endpoint
-     * @param  array $params
+     * @param array $params
+     *
      * @return mixed
      */
     public function get($endpoint, array $params = array())
@@ -109,7 +111,8 @@ class Api
 
     /**
      * @param $endpoint
-     * @param  array $params
+     * @param array $params
+     *
      * @return mixed
      */
     public function post($endpoint, array $params = array())
@@ -119,7 +122,8 @@ class Api
 
     /**
      * @param $endpoint
-     * @param  array $params
+     * @param array $params
+     *
      * @return mixed
      */
     public function put($endpoint, array $params = array())
@@ -129,7 +133,8 @@ class Api
 
     /**
      * @param $endpoint
-     * @param  array $params
+     * @param array $params
+     *
      * @return mixed
      */
     public function delete($endpoint, array $params = array())
@@ -138,7 +143,8 @@ class Api
     }
 
     /**
-     * @param  array $data
+     * @param array $data
+     *
      * @return mixed
      */
     public function createIssue(array $data)
@@ -148,8 +154,10 @@ class Api
 
     /**
      * @param $json
+     *
      * @throws ApiErrorsException
      * @throws \Exception
+     *
      * @return array
      */
     public function createIssueJson($json)
@@ -159,7 +167,8 @@ class Api
 
     /**
      * @param $id
-     * @param  array $data
+     * @param array $data
+     *
      * @return mixed
      */
     public function updateIssue($id, array $data)
@@ -170,6 +179,7 @@ class Api
     /**
      * @param $id
      * @param $json
+     *
      * @throws ApiCoreException
      * @throws ApiErrorsException
      * @throws \Exception
@@ -186,14 +196,16 @@ class Api
 
     /**
      * @param $jql
-     * @return array
+     *
      * @throws \Exception
+     * @return array
+     *
      */
     public function searchIssues($jql, array $fields)
     {
         try {
             return $this->post('/search', array(
-                'jql' => $jql,
+                'jql'    => $jql,
                 'fields' => $fields,
                 'expand' => array('renderedFields'),
             ));

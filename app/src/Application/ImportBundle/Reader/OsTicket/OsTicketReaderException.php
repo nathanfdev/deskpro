@@ -28,10 +28,9 @@
 namespace Application\ImportBundle\Reader\OsTicket;
 
 /**
- * Os ticket exception (pdo exceptions)
+ * Os ticket exception (pdo exceptions).
  *
  * Class OsTicketReaderException
- * @package Application\ImportBundle\Reader\OsTicket
  */
 class OsTicketReaderException extends \Exception
 {
@@ -46,7 +45,7 @@ class OsTicketReaderException extends \Exception
     private $error_info;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string $message
      * @param string $error_code
@@ -61,7 +60,7 @@ class OsTicketReaderException extends \Exception
     }
 
     /**
-     * Returns error code
+     * Returns error code.
      *
      * @return string
      */
@@ -71,7 +70,7 @@ class OsTicketReaderException extends \Exception
     }
 
     /**
-     * Returns error info
+     * Returns error info.
      *
      * @return array
      */

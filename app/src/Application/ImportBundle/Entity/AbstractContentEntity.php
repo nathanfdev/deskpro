@@ -2,16 +2,15 @@
 
 namespace Application\ImportBundle\Entity;
 
+use DateTime;
+use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Orb\Util\Strings;
-use DateTime;
 
 /**
- * Basic properties on content
+ * Basic properties on content.
  *
  * Class AbstractContentEntity
- * @package Application\ImportBundle\Entity
  */
 abstract class AbstractContentEntity extends AbstractEntity implements ContentAwareInterface
 {
@@ -84,6 +83,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     public function setTitle($title)
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -101,6 +101,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     public function setContent($content)
     {
         $this->content = $content;
+
         return $this;
     }
 
@@ -122,6 +123,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     public function setSlug($slug)
     {
         $this->slug = $slug;
+
         return $this;
     }
 
@@ -139,6 +141,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     public function setLanguage($language)
     {
         $this->language = $language;
+
         return $this;
     }
 
@@ -160,6 +163,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     public function setStatus($status)
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -176,7 +180,8 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
      */
     public function setViewCount($view_count)
     {
-        $this->view_count = (int)$view_count;
+        $this->view_count = (int) $view_count;
+
         return $this;
     }
 
@@ -193,7 +198,8 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
      */
     public function setTotalRating($total_rating)
     {
-        $this->total_rating = (int)$total_rating;
+        $this->total_rating = (int) $total_rating;
+
         return $this;
     }
 
@@ -210,7 +216,8 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
      */
     public function setNumComments($num_comments)
     {
-        $this->num_comments = (int)$num_comments;
+        $this->num_comments = (int) $num_comments;
+
         return $this;
     }
 
@@ -227,7 +234,8 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
      */
     public function setNumRatings($num_ratings)
     {
-        $this->num_ratings = (int)$num_ratings;
+        $this->num_ratings = (int) $num_ratings;
+
         return $this;
     }
 
@@ -245,6 +253,7 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     public function setDateCreated(DateTime $date_created)
     {
         $this->date_created = $date_created;
+
         return $this;
     }
 
@@ -262,11 +271,12 @@ abstract class AbstractContentEntity extends AbstractEntity implements ContentAw
     public function setDatePublished(DateTime $date_published)
     {
         $this->date_published = $date_published;
+
         return $this;
     }
 
     /**
-     * Validator class metadata
+     * Validator class metadata.
      *
      * @param ClassMetadata $metadata
      */

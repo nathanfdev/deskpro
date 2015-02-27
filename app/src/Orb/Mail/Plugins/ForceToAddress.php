@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Mail
+ * Orb.
  */
 
 namespace Orb\Mail\Plugins;
 
 /**
- * Overrides the 'to' of a message, good for debugging
+ * Overrides the 'to' of a message, good for debugging.
  */
 class ForceToAddress implements \Swift_Events_SendListener
 {

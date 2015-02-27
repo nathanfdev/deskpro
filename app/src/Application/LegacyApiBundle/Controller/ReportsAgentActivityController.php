@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -44,8 +41,8 @@ class ReportsAgentActivityController extends AbstractController
 
     public function listAction($agent_or_team_id, $date)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\AgentActivity $reports_agent_activity
+        /*
+         * @var \Application\DeskPRO\Reports\AgentActivity
          */
         $reports_agent_activity = $this->container->getSystemService('reports_agent_activity');
         $html_vars              = $reports_agent_activity->getVarsForHtmlView($agent_or_team_id, $date);

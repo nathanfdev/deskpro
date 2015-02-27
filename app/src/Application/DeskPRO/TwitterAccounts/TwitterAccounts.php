@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\TwitterAccounts;
@@ -41,13 +39,11 @@ class TwitterAccounts
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     /**
      * @var \Application\DeskPRO\Entity\TwitterAccount[]
      */
-
     protected $twitter_accounts;
 
     public function __construct(EntityManager $em)
@@ -56,9 +52,8 @@ class TwitterAccounts
     }
 
     /**
-     * Loads twitter accounts data from the database
+     * Loads twitter accounts data from the database.
      */
-
     private function preload()
     {
         if ($this->twitter_accounts !== null) {
@@ -72,17 +67,16 @@ class TwitterAccounts
      * Resets this repository so the next time data is requested form it, it will
      * be queried again.
      */
-
     public function reset()
     {
         $this->twitter_accounts = null;
     }
 
     /**
-     * @param  int                                        $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\TwitterAccount
      */
-
     public function getById($id)
     {
         return $this->em->getRepository('DeskPRO:TwitterAccount')->get($id);
@@ -93,7 +87,6 @@ class TwitterAccounts
      *
      * @return array
      */
-
     public function getWithUserById($id)
     {
         $twitter_account = $this->em->getRepository('DeskPRO:TwitterAccount')->get($id);
@@ -124,7 +117,6 @@ class TwitterAccounts
     /**
      * @return \Application\DeskPRO\Entity\TwitterAccount[]
      */
-
     public function getAll()
     {
         $this->preload();
@@ -135,7 +127,6 @@ class TwitterAccounts
     /**
      * @return array
      */
-
     public function getAllWithUserAsArray()
     {
         $this->preload();
@@ -158,7 +149,6 @@ class TwitterAccounts
     /**
      * @return array
      */
-
     public function getAllAgents()
     {
         $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
@@ -178,7 +168,6 @@ class TwitterAccounts
     /**
      * @return int
      */
-
     public function count()
     {
         $this->preload();
@@ -189,7 +178,6 @@ class TwitterAccounts
     /**
      * @return \Application\DeskPRO\Entity\TwitterAccount
      */
-
     public function createNew()
     {
         return TwitterAccount::createTwitterAccount();

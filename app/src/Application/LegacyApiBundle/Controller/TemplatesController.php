@@ -26,18 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\ResourceScanner\TemplateFiles;
 use Application\DeskPRO\Templating\EmailTemplatesDesc;
 use Application\DeskPRO\Templating\Templates\TemplateCustom;
 use Application\DeskPRO\Templating\Templates\TemplateSet;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Orb\Util\Strings;
 
 class TemplatesController extends AbstractController implements ProtectedControllerInterface

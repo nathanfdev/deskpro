@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Twig;
@@ -70,13 +67,15 @@ class LanguageExtension extends \Twig_Extension
     }
 
     /**
-     * @param  \Twig_Environment   $env
-     * @param  array               $context
-     * @param  string              $phrase_name
-     * @param  array               $vars
-     * @param  bool                $raw
-     * @return mixed
+     * @param \Twig_Environment $env
+     * @param array             $context
+     * @param string            $phrase_name
+     * @param array             $vars
+     * @param bool              $raw
+     *
      * @throws \Twig_Error_Runtime
+     * @return mixed
+     *
      */
     public function getPhrase(\Twig_Environment $env, $context, $phrase_name, $vars = null, $raw = false)
     {

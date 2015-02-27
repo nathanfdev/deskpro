@@ -26,17 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount;
+use Application\DeskPRO\Entity\EmailAccount;
 use Orb\Util\Arrays;
 use Orb\Util\OptionsArray;
 
@@ -102,9 +99,9 @@ class Build1400056713 extends AbstractBuild
         if ($default_tr) {
             $default_tr_address = $this->container->getSetting('core.default_from_email');
 
-            $tr_account = new EmailAccount(EmailAccount::TYPE_OUT);
-            $tr_account->address = $default_tr_address;
-            $tr_account->is_enabled = true;
+            $tr_account                   = new EmailAccount(EmailAccount::TYPE_OUT);
+            $tr_account->address          = $default_tr_address;
+            $tr_account->is_enabled       = true;
             $tr_account->outgoing_account = $this->_getTransportConfig($default_tr);
 
             // Cloud must mark the incoming settings as noop
@@ -154,9 +151,10 @@ class Build1400056713 extends AbstractBuild
     }
 
     /**
-     * @param  array        $gateway
-     * @param  array        $tr
-     * @param  array        $addrs
+     * @param array $gateway
+     * @param array $tr
+     * @param array $addrs
+     *
      * @return EmailAccount
      */
     private function _convertGatewayAccount(array $gateway, array $tr = null, array $addrs)
@@ -173,7 +171,7 @@ class Build1400056713 extends AbstractBuild
 
         switch ($gateway['connection_type']) {
             case 'pop3':
-                $pop3_config = new IncomingAccount\Pop3Config();
+                $pop3_config           = new IncomingAccount\Pop3Config();
                 $pop3_config->host     = $conn_opts->get('host', 'localhost');
                 $pop3_config->port     = $conn_opts->get('port', 995);
                 $pop3_config->user     = $conn_opts->get('username');
@@ -189,7 +187,7 @@ class Build1400056713 extends AbstractBuild
                 break;
 
             case 'gmail':
-                $gmail_config = new IncomingAccount\GmailConfig();
+                $gmail_config           = new IncomingAccount\GmailConfig();
                 $gmail_config->user     = $conn_opts->get('username');
                 $gmail_config->password = $conn_opts->get('password');
 
@@ -198,7 +196,7 @@ class Build1400056713 extends AbstractBuild
 
             // directory was the type used by cloud accounts
             case 'directory':
-                $null_config = new IncomingAccount\NoopConfig();
+                $null_config               = new IncomingAccount\NoopConfig();
                 $account->incoming_account = $null_config;
                 break;
 
@@ -219,8 +217,8 @@ class Build1400056713 extends AbstractBuild
             $account->date_read_start = \DateTime::createFromFormat('Y-m-d H:i:s', $gateway['start_date_limit']);
         }
 
-        $dates = array($account->date_created, $account->date_last_incoming, $account->date_read_start);
-        $dates = Arrays::removeFalsey($dates);
+        $dates                 = array($account->date_created, $account->date_last_incoming, $account->date_read_start);
+        $dates                 = Arrays::removeFalsey($dates);
         $account->date_created = min($dates);
 
         $account->address = $addrs[0]['match_pattern'];
@@ -239,9 +237,11 @@ class Build1400056713 extends AbstractBuild
     }
 
     /**
-     * @param  array                                                                                $tr
-     * @return OutgoingAccount\GmailConfig|OutgoingAccount\PhpMailConfig|OutgoingAccount\SmtpConfig
+     * @param array $tr
+     *
      * @throws \InvalidArgumentException
+     * @return OutgoingAccount\GmailConfig|OutgoingAccount\PhpMailConfig|OutgoingAccount\SmtpConfig
+     *
      */
     private function _getTransportConfig(array $tr = null)
     {
@@ -266,7 +266,7 @@ class Build1400056713 extends AbstractBuild
                 return $mail_config;
 
             case 'smtp':
-                $smtp_config = new OutgoingAccount\SmtpConfig();
+                $smtp_config           = new OutgoingAccount\SmtpConfig();
                 $smtp_config->host     = $conn_opts->get('host', 'localhost');
                 $smtp_config->port     = $conn_opts->get('port', 25);
                 $smtp_config->user     = $conn_opts->get('username');
@@ -281,7 +281,7 @@ class Build1400056713 extends AbstractBuild
                 return $smtp_config;
 
             case 'gmail':
-                $gmail_config = new OutgoingAccount\GmailConfig();
+                $gmail_config           = new OutgoingAccount\GmailConfig();
                 $gmail_config->user     = $conn_opts->get('username');
                 $gmail_config->password = $conn_opts->get('password');
 

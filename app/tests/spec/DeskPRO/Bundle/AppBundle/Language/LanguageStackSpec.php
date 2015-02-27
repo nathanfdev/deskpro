@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\AppBundle\Language;
@@ -38,40 +36,37 @@ use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\DeskPRO\Translate\SystemLanguage;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
+use PhpSpec\ObjectBehavior;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\Language\LanguageStack
  */
 class LanguageStackSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         SettingsResolver $settings_resolver,
         LanguageRepo $language_repo
-    )
-    {
+    ) {
         $this->beConstructedWith($settings_resolver, $language_repo);
     }
 
-    function it_will_return_null_if_no_active_language_set()
+    public function it_will_return_null_if_no_active_language_set()
     {
         $this->getActive()->shouldReturn(null);
     }
 
-    function it_returns_active_language_when_one_on_stack(Language $lang)
+    public function it_returns_active_language_when_one_on_stack(Language $lang)
     {
         $lang->getId()->willReturn(1);
         $this->push($lang);
         $this->getActive()->shouldReturn($lang);
     }
 
-    function it_returns_active_language_when_multiple_on_stack(
+    public function it_returns_active_language_when_multiple_on_stack(
         Language $lang,
         Language $lang2
-    )
-    {
+    ) {
         $lang->getId()->willReturn(1);
         $lang2->getId()->willReturn(2);
         $this->push($lang);
@@ -79,12 +74,11 @@ class LanguageStackSpec extends ObjectBehavior
         $this->getActive()->shouldReturn($lang2);
     }
 
-    function it_allows_you_to_pop_the_active_lang_off_the_stack(
+    public function it_allows_you_to_pop_the_active_lang_off_the_stack(
         Language $lang,
         Language $lang2,
         Language $lang3
-    )
-    {
+    ) {
         $lang->getId()->willReturn(1);
         $lang2->getId()->willReturn(2);
         $lang3->getId()->willReturn(3);
@@ -95,13 +89,12 @@ class LanguageStackSpec extends ObjectBehavior
         $this->getActive()->shouldReturn($lang2);
     }
 
-    function it_look_first_at_settings_for_default_language(
+    public function it_look_first_at_settings_for_default_language(
         SettingsResolver $settings_resolver,
         SettingsBag $settings_bag,
         Language $default_lang,
         LanguageRepo $language_repo
-    )
-    {
+    ) {
         $settings_resolver->getGlobalSettings()->willReturn($settings_bag);
         $settings_bag->get('core.default_language_id')->willReturn(5);
         $language_repo->find(5)->willReturn($default_lang);
@@ -109,13 +102,12 @@ class LanguageStackSpec extends ObjectBehavior
         $this->getDefaultLanguage()->shouldReturn($default_lang);
     }
 
-    function it_will_default_to_lang_id_1_if_not_found_via_settings(
+    public function it_will_default_to_lang_id_1_if_not_found_via_settings(
         SettingsResolver $settings_resolver,
         SettingsBag $settings_bag,
         Language $default_lang,
         LanguageRepo $language_repo
-    )
-    {
+    ) {
         $settings_resolver->getGlobalSettings()->willReturn($settings_bag);
         $settings_bag->get('core.default_language_id')->willReturn(null);
 
@@ -124,14 +116,13 @@ class LanguageStackSpec extends ObjectBehavior
         $this->getDefaultLanguage()->shouldReturn($default_lang);
     }
 
-    function it_allows_you_a_shortcut_to_easily_push_default_lang(
+    public function it_allows_you_a_shortcut_to_easily_push_default_lang(
         SettingsResolver $settings_resolver,
         SettingsBag $settings_bag,
         Language $default_lang,
         LanguageRepo $language_repo,
         SystemLanguage $sys_lang
-    )
-    {
+    ) {
         $settings_resolver->getGlobalSettings()->willReturn($settings_bag);
         $settings_bag->get('core.default_language_id')->willReturn(null);
         $language_repo->find(1)->willReturn($default_lang);

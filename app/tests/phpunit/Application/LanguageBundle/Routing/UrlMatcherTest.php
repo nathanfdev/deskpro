@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Language
+ * DeskPRO.
  */
 
 namespace DpUnitTests\LanguageBundle\Routing;

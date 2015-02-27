@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Orb\Util;
@@ -43,19 +40,20 @@ class Colors
     /**
      * Get colors (eg for a legend) for keys.
      *
-     * @param  array $keys
+     * @param array $keys
+     *
      * @return array
      */
     public static function getColorsForKeys(array $keys)
     {
         $count = count($keys);
-        $step = 1.0 / $count;
+        $step  = 1.0 / $count;
 
         $segs = array();
-        $tmp = 0;
+        $tmp  = 0;
         for ($x = 0; $x < $count; $x++) {
             $tmp += $step;
-            $rgb = \Orb\Util\Colors::getColorFromValue($tmp);
+            $rgb    = \Orb\Util\Colors::getColorFromValue($tmp);
             $segs[] = \Orb\Util\Colors::rgbToHexcode($rgb);
         }
         shuffle($segs);
@@ -69,9 +67,10 @@ class Colors
     }
 
     /**
-     * Get a color from 0 to 1 which will be a reasonable color in the spectrum
+     * Get a color from 0 to 1 which will be a reasonable color in the spectrum.
      *
-     * @param  int   $value
+     * @param int $value
+     *
      * @return array
      */
     public static function getColorFromValue($value)
@@ -108,7 +107,8 @@ class Colors
     /**
      * Safely convert rgb to hex. Error corrects numbers out-of-range.
      *
-     * @param  array  $rgb
+     * @param array $rgb
+     *
      * @return string
      */
     public static function rgbToHexcode(array $rgb)
@@ -132,6 +132,7 @@ class Colors
      * Turn a hex string into an array with 'red', 'green' and 'blue' items.
      *
      * @param $hex
+     *
      * @return array
      */
     public static function hex2rgb($hex)
@@ -139,14 +140,14 @@ class Colors
         $hex = preg_replace("/[^0-9A-Fa-f]/", '', $hex);
         $rgb = array();
         if (strlen($hex) == 6) {
-            $color_val = hexdec($hex);
-            $rgb['red'] = 0xFF & ($color_val >> 0x10);
+            $color_val    = hexdec($hex);
+            $rgb['red']   = 0xFF & ($color_val >> 0x10);
             $rgb['green'] = 0xFF & ($color_val >> 0x8);
-            $rgb['blue'] = 0xFF & $color_val;
+            $rgb['blue']  = 0xFF & $color_val;
         } elseif (strlen($hex) == 3) {
-            $rgb['red'] = hexdec(str_repeat(substr($hex, 0, 1), 2));
+            $rgb['red']   = hexdec(str_repeat(substr($hex, 0, 1), 2));
             $rgb['green'] = hexdec(str_repeat(substr($hex, 1, 1), 2));
-            $rgb['blue'] = hexdec(str_repeat(substr($hex, 2, 1), 2));
+            $rgb['blue']  = hexdec(str_repeat(substr($hex, 2, 1), 2));
         } else {
             return false;
         }

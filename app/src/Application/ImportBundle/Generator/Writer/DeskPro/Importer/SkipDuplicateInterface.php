@@ -30,17 +30,17 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 use Application\ImportBundle\Entity;
 
 /**
- * Importer interface that does not allow update records
+ * Importer interface that does not allow update records.
  *
  * Interface SkipDuplicateInterface
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 interface SkipDuplicateInterface
 {
     /**
-     * Throws an exception if importing entity already exists
+     * Throws an exception if importing entity already exists.
      *
      * @param Entity\EntityInterface $entity
+     *
      * @throws DuplicateException
      */
     public function checkAlreadyExists(Entity\EntityInterface $entity);

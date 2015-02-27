@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -57,7 +56,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
      */
     public function __construct($consumer_key, $consumer_secret)
     {
-        $this->consumer_key = $consumer_key;
+        $this->consumer_key    = $consumer_key;
         $this->consumer_secret = $consumer_secret;
     }
 
@@ -185,8 +184,8 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
         static $has_set_http_client = false;
         if (!$has_set_http_client) {
             $has_set_http_client = true;
-            $httpClient = new \Zend\Http\Client(null, array(
-                'adapter' => 'Zend\Http\Client\Adapter\Curl',
+            $httpClient          = new \Zend\Http\Client(null, array(
+                'adapter'       => 'Zend\Http\Client\Adapter\Curl',
                 'sslverifypeer' => false,
             ));
             OAuth::setHttpClient($httpClient);

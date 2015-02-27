@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports\Overview;
@@ -78,8 +75,8 @@ class GroupingField
             $this->field = $field;
         } else {
             list($field, $field_id) = explode('.', $field);
-            $this->field    = $field;
-            $this->field_id = $field_id;
+            $this->field            = $field;
+            $this->field_id         = $field_id;
         }
     }
 
@@ -259,9 +256,11 @@ class GroupingField
     }
 
     /**
-     * @param  array                     $values
-     * @return array|null
+     * @param array $values
+     *
      * @throws \InvalidArgumentException
+     * @return array|null
+     *
      */
     public function getTitles(array $values = array())
     {

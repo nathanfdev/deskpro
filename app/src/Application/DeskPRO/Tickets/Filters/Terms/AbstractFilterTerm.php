@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -104,7 +103,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
     }
 
     /**
-     * Gets the type name of the criteria
+     * Gets the type name of the criteria.
      *
      * @return string
      */
@@ -124,7 +123,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
     }
 
     /**
-     * Get's an array of options
+     * Get's an array of options.
      *
      * @return \Orb\Util\OptionsArray
      */
@@ -138,25 +137,27 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
      */
     public function getFilterQuery(ExecutorContextInterface $context = null)
     {
-        return null;
+        return;
     }
 
     /**
      * Gets the matching trigger term for this filter term
-     * (aka the term that checks a Ticket in PHP-land whereas these filters check in MySQL-lang)
+     * (aka the term that checks a Ticket in PHP-land whereas these filters check in MySQL-lang).
      *
      * @return \Application\DeskPRO\Tickets\Triggers\Terms\AbstractTriggerTerm
      */
     public function getTriggerTerm()
     {
-        return null;
+        return;
     }
 
     /**
-     * @param  string                    $field_name
-     * @param  array                     $check_ids
-     * @return FilterQuery
+     * @param string $field_name
+     * @param array  $check_ids
+     *
      * @throws \InvalidArgumentException
+     * @return FilterQuery
+     *
      */
     protected function getIdMatchQuery($field_name, array $check_ids)
     {
@@ -178,7 +179,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
         $check_ids = array_filter($check_ids, function ($x) { return (int) $x; });
         $check_ids = array_unique($check_ids);
 
-        $has_null = in_array(0, $check_ids, true);
+        $has_null  = in_array(0, $check_ids, true);
         $check_ids = Arrays::removeFalsey($check_ids);
 
         $query = new FilterQuery();
@@ -207,10 +208,12 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
     }
 
     /**
-     * @param  string                    $field_name
-     * @param  int                       $int
-     * @return FilterQuery
+     * @param string $field_name
+     * @param int    $int
+     *
      * @throws \InvalidArgumentException
+     * @return FilterQuery
+     *
      */
     protected function getIntMatchQuery($field_name, $int)
     {
@@ -244,11 +247,13 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
     }
 
     /**
-     * @param  string                    $field_name
-     * @param  int                       $int1
-     * @param  int                       $int2
-     * @return FilterQuery
+     * @param string $field_name
+     * @param int    $int1
+     * @param int    $int2
+     *
      * @throws \InvalidArgumentException
+     * @return FilterQuery
+     *
      */
     protected function getIntRangeMatch($field_name, $int1, $int2)
     {
@@ -256,7 +261,7 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
         $int2 = (int) $int2;
 
         if ($int1 > $int2) {
-            $x = $int1;
+            $x    = $int1;
             $int1 = $int2;
             $int2 = $x;
             unset($x);
@@ -281,10 +286,12 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
     }
 
     /**
-     * @param  string                    $field_name
-     * @param  \DateTime                 $date
-     * @return FilterQuery
+     * @param string    $field_name
+     * @param \DateTime $date
+     *
      * @throws \InvalidArgumentException
+     * @return FilterQuery
+     *
      */
     protected function getDateMatchQuery($field_name, \DateTime $date)
     {
@@ -321,16 +328,18 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
     }
 
     /**
-     * @param  string                    $field_name
-     * @param  \DateTime                 $date1
-     * @param  \DateTime                 $date2
-     * @return FilterQuery
+     * @param string    $field_name
+     * @param \DateTime $date1
+     * @param \DateTime $date2
+     *
      * @throws \InvalidArgumentException
+     * @return FilterQuery
+     *
      */
     protected function getDateRangeMatch($field_name, \DateTime $date1, \DateTime $date2)
     {
         if ($date1 > $date2) {
-            $x = $date1;
+            $x     = $date1;
             $date1 = $date2;
             $date2 = $x;
             unset($x);
@@ -360,10 +369,12 @@ abstract class AbstractFilterTerm implements CriteriaTermInterface, FilterTermIn
     }
 
     /**
-     * @param  string                    $field_name
-     * @param  string|string[]           $check_value
-     * @return FilterQuery
+     * @param string          $field_name
+     * @param string|string[] $check_value
+     *
      * @throws \InvalidArgumentException
+     * @return FilterQuery
+     *
      */
     protected function getStringMatchQuery($field_name, $check_value)
     {

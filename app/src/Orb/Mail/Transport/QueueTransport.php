@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Mail
+ * Orb.
  */
 
 namespace Orb\Mail\Transport;
@@ -37,7 +34,7 @@ namespace Orb\Mail\Transport;
 use Application\DeskPRO\App;
 
 /**
- * Queue mail transport
+ * Queue mail transport.
  */
 class QueueTransport implements \Swift_Transport
 {

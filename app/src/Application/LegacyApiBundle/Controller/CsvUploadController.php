@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -53,15 +51,14 @@ class CsvUploadController extends AbstractController implements ProtectedControl
     {
         $file = $this->request->files->get('file');
 
-        /**
-         * @var \Application\DeskPRO\CsvUpload\CsvUpload $csv_upload
+        /*
+         * @var \Application\DeskPRO\CsvUpload\CsvUpload
          */
-
         $csv_upload = $this->container->getSystemService('csv_upload');
         $options    = $this->in->getArrayValue('options');
 
-        $result = $csv_upload->upload($file, $options);
-	    $result['custom_fields'] = $this->getApiData($result['custom_fields']);
+        $result                  = $csv_upload->upload($file, $options);
+        $result['custom_fields'] = $this->getApiData($result['custom_fields']);
 
         return $this->createApiResponse($result);
     }
@@ -72,18 +69,17 @@ class CsvUploadController extends AbstractController implements ProtectedControl
 
     public function importAction()
     {
-        $field_maps    = $this->in->getCleanValueArray('field_maps', 'raw', 'uint');
-        $user_filename = $this->in->getString('user_filename');
-        $skip_first    = $this->in->getBool('skip_first');
-	    $update_if_exists = $this->in->getBool('update_if_exists');
-        $welcome_email = $this->in->getBool('welcome_email');
-        $filename      = $this->in->getUint('filename');
-        $options       = $this->in->getArrayValue('options');
+        $field_maps       = $this->in->getCleanValueArray('field_maps', 'raw', 'uint');
+        $user_filename    = $this->in->getString('user_filename');
+        $skip_first       = $this->in->getBool('skip_first');
+        $update_if_exists = $this->in->getBool('update_if_exists');
+        $welcome_email    = $this->in->getBool('welcome_email');
+        $filename         = $this->in->getUint('filename');
+        $options          = $this->in->getArrayValue('options');
 
-        /**
-         * @var \Application\DeskPRO\CsvUpload\CsvUpload $csv_upload
+        /*
+         * @var \Application\DeskPRO\CsvUpload\CsvUpload
          */
-
         $csv_upload = $this->container->getSystemService('csv_upload');
 
         $result = $csv_upload->startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email, $update_if_exists, $options);
@@ -97,10 +93,9 @@ class CsvUploadController extends AbstractController implements ProtectedControl
 
     public function statusAction()
     {
-        /**
-         * @var \Application\DeskPRO\CsvUpload\CsvUpload $csv_upload
+        /*
+         * @var \Application\DeskPRO\CsvUpload\CsvUpload
          */
-
         $csv_upload = $this->container->getSystemService('csv_upload');
 
         $result = $csv_upload->returnStatusOfImport();

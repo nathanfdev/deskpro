@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
  * @category Entities
  */
 
@@ -56,7 +54,7 @@ class ApiToken extends DomainObject
 
     /**
      * This scope is any type of client (eg mobile app)
-     * These typicaly dont expire
+     * These typicaly dont expire.
      */
     const SCOPE_CLIENT = 'client';
 
@@ -96,7 +94,7 @@ class ApiToken extends DomainObject
     }
 
     /**
-     * Regenerates a new token
+     * Regenerates a new token.
      */
     public function regenerateToken()
     {

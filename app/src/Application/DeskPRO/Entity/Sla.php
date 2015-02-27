@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -48,7 +47,7 @@ use Orb\Util\WorkHoursSet;
 use Orb\Util\WorkHoursSetAll;
 
 /**
- * Entity for an SLA record
+ * Entity for an SLA record.
  *
  * @property int $id
  * @property string $title
@@ -78,7 +77,6 @@ class Sla extends DomainObject
      * The unique ID.
      *
      * @var int
-     *
      */
     protected $id = null;
 
@@ -88,7 +86,7 @@ class Sla extends DomainObject
     protected $title = '';
 
     /**
-     * Type of SLA - first_response, resolution, waiting_time
+     * Type of SLA - first_response, resolution, waiting_time.
      *
      * @var string
      */
@@ -96,7 +94,7 @@ class Sla extends DomainObject
 
     /**
      * Whether active all the time (all) or during work hours only (work_hours)
-     * or use the default ticket-wide settings (default)
+     * or use the default ticket-wide settings (default).
      *
      * @var string
      */
@@ -118,28 +116,28 @@ class Sla extends DomainObject
 
     /**
      * Array of work days, stored with keys corresponding to day numbers. Values are true.
-     * 0 = Sunday, 6 = Saturday (same as PHP, easy to convert to MySQL which is 1 = Sunday, 7 = Saturday)
+     * 0 = Sunday, 6 = Saturday (same as PHP, easy to convert to MySQL which is 1 = Sunday, 7 = Saturday).
      *
      * @var array
      */
     protected $work_days = array();
 
     /**
-     * Timezone for work hours/days to be considered in
+     * Timezone for work hours/days to be considered in.
      *
      * @var string
      */
     protected $work_timezone;
 
     /**
-     * List of work holidays
+     * List of work holidays.
      *
      * @var array
      */
     protected $work_holidays = array();
 
     /**
-     * Controls how the SLA is applied to tickets: all, auto, manual
+     * Controls how the SLA is applied to tickets: all, auto, manual.
      *
      * @var string
      */
@@ -228,7 +226,7 @@ class Sla extends DomainObject
     }
 
     /**
-     * Resets holidays
+     * Resets holidays.
      */
     public function resetHolidays()
     {
@@ -236,7 +234,7 @@ class Sla extends DomainObject
     }
 
     /**
-     * Removes a single holiday by index
+     * Removes a single holiday by index.
      *
      * @param $key
      */
@@ -248,12 +246,13 @@ class Sla extends DomainObject
     }
 
     /**
-     * Adds a holiday
+     * Adds a holiday.
      *
      * @param $name
      * @param $day
      * @param $month
-     * @param  null       $year
+     * @param null $year
+     *
      * @return int|string
      */
     public function addHoliday($name, $day, $month, $year = null)
@@ -288,7 +287,7 @@ class Sla extends DomainObject
     }
 
     /**
-     * Gets an array of holidays, sorted by date
+     * Gets an array of holidays, sorted by date.
      *
      * @return array
      */

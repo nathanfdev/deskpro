@@ -26,17 +26,11 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\People\UserPermissions\GroupDbPersister;
@@ -44,6 +38,9 @@ use Application\DeskPRO\People\UserPermissions\GroupsDbLoader;
 use Application\DeskPRO\People\UserPermissions\UserPermissions;
 use Application\DeskPRO\Usergroups\Form\Type\UsergroupType;
 use Application\DeskPRO\Usergroups\UsergroupEdit;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Orb\Util\Numbers;
 
 class UsergroupsController extends AbstractController implements ProtectedControllerInterface

@@ -26,24 +26,24 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DeskPRO\Kernel;
 
-if (!defined('DP_ROOT')) exit('No access');
+if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 
 require_once DP_ROOT.'/sys/serve_abstract.php';
 
 /**
  * Take a request that saves an SMTP event.
+ *
  * @see http://sendgrid.com/docs/API_Reference/Webhooks/event.html
  */
-class SmtpEvent extends LoaderAbstract
+class smtp_event extends LoaderAbstract
 {
     /**
      * @var \PDOStatement
@@ -62,7 +62,7 @@ class SmtpEvent extends LoaderAbstract
         }
 
         $is_json = false;
-        foreach($_SERVER as $key => $value) {
+        foreach ($_SERVER as $key => $value) {
             if (substr($key, 0, 5) != 'HTTP_') {
                 continue;
             }
@@ -97,9 +97,9 @@ class SmtpEvent extends LoaderAbstract
         }
     }
 
-
     /**
-     * @param  array $post
+     * @param array $post
+     *
      * @return bool
      */
     public function processEvent(array $post)
@@ -130,7 +130,7 @@ class SmtpEvent extends LoaderAbstract
 
         $this->log('Got log ID: %s (for %s/%s)', $log['id'], $post['dp_code'], $post['email']);
 
-        $now = date('Y-m-d H:i:s');
+        $now    = date('Y-m-d H:i:s');
         $update = array();
 
         $this->log('Event: %s', $post['event']);
@@ -141,12 +141,12 @@ class SmtpEvent extends LoaderAbstract
                 break;
 
             case 'deferred':
-                $update['date_defer'] = $now;
+                $update['date_defer']   = $now;
                 $update['reason_defer'] = $this->appendReasonLog($log, 'reason_defer', "(#{$post['attempt']}) {$post['response']}");
                 break;
 
             case 'delivered':
-                $update['date_deliver'] = $now;
+                $update['date_deliver']   = $now;
                 $update['reason_deliver'] = $this->appendReasonLog($log, 'reason_deliver', $post['response']);
                 break;
 
@@ -162,23 +162,23 @@ class SmtpEvent extends LoaderAbstract
                     $update['date_click'] = $now;
                 }
                 if (!$log['date_open']) {
-                    $update['date_open'] = $now;
+                    $update['date_open']  = $now;
                     $update['count_open'] = 1;
                 }
 
-                $update['count_click'] = $log['count_click'] + 1;
+                $update['count_click']  = $log['count_click'] + 1;
                 $update['clicked_urls'] = $this->appendReasonLog($log, 'clicked_urls', $post['url']);
                 break;
 
             case 'bounce':
                 $update['date_bounce']   = $now;
                 $update['bounce_code']   = $post['status'];
-                $update['bounce_type']   = $post['type'] . '/' . $post['status'];
+                $update['bounce_type']   = $post['type'].'/'.$post['status'];
                 $update['reason_bounce'] = $post['reason'];
                 break;
 
             case 'dropped':
-                $update['date_drop'] = $now;
+                $update['date_drop']   = $now;
                 $update['reason_drop'] = $post['reason'];
                 break;
 
@@ -198,7 +198,7 @@ class SmtpEvent extends LoaderAbstract
 
             $this->getPdo()->prepare("
                 UPDATE sendmail_logs
-                SET " . implode(', ', $update_p) . "
+                SET ".implode(', ', $update_p)."
                 WHERE id = ?
             ")->execute($update_v);
         }
@@ -206,30 +206,30 @@ class SmtpEvent extends LoaderAbstract
         return true;
     }
 
-
     /**
-     * @param  array  $log
+     * @param array $log
      * @param $key
      * @param $log_string
+     *
      * @return string
      */
     protected function appendReasonLog(array $log, $key, $log_string)
     {
         $str = '';
         if ($log[$key]) {
-            $str = $log[$key] . "\n";
+            $str = $log[$key]."\n";
         }
 
         $now = date('Y-m-d H:i:s');
-        $str .= "[$now] " . $log_string;
+        $str .= "[$now] ".$log_string;
 
         return $str;
     }
 
-
     /**
-     * @param  string $code
-     * @param  string $email
+     * @param string $code
+     * @param string $email
+     *
      * @return array
      */
     public function getSendmailLog($code, $email)
@@ -250,7 +250,7 @@ class SmtpEvent extends LoaderAbstract
     }
 
     /**
-     * Log a debug message
+     * Log a debug message.
      */
     public function log()
     {
@@ -264,7 +264,7 @@ class SmtpEvent extends LoaderAbstract
 
         $message = array_shift($args);
         if ($message == 'DEBUG' || $message == 'WARN') {
-            $level = $message;
+            $level   = $message;
             $message = array_shift($args);
         }
 
@@ -274,7 +274,7 @@ class SmtpEvent extends LoaderAbstract
             $message = $message;
         }
 
-        $now = date('Y-m-d H:i:s');
+        $now     = date('Y-m-d H:i:s');
         $message = "[$now] $level -- $message";
 
         if ($this->debug) {

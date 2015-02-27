@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -77,7 +74,7 @@ class Build1424282192 extends AbstractBuild
         ");
 
         if (!$rec) {
-            return null;
+            return;
         }
 
         $this->container->getDb()->delete('sendmail_queue', array('id' => $rec['id']));

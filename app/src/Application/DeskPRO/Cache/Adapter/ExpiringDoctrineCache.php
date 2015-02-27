@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Cache\Adapter;
@@ -39,7 +36,7 @@ use Application\DeskPRO\Entity\Cache;
 use Doctrine\ORM\EntityManager;
 
 /**
- * Cache using the
+ * Cache using the.
  */
 class ExpiringDoctrineCache implements CacheAdapterInterface
 {
@@ -55,16 +52,15 @@ class ExpiringDoctrineCache implements CacheAdapterInterface
 
     public function __construct(EntityManager $em, $expiration_interval_in_seconds)
     {
-        $this->em = $em;
+        $this->em                             = $em;
         $this->expiration_interval_in_seconds = $expiration_interval_in_seconds;
     }
 
     /**
-     * sets the key => val in the ORM
+     * sets the key => val in the ORM.
      *
      * @param $key
      * @param $val
-     * @return null
      */
     public function set($key, $val)
     {
@@ -79,13 +75,14 @@ class ExpiringDoctrineCache implements CacheAdapterInterface
         $this->em->persist($cache);
         $this->em->flush($cache);
 
-        return null;
+        return;
     }
 
     /**
      * Fetch the data of the cache entry for key, but WILL NOT return it if it is expired.
      *
-     * @param  string      $key
+     * @param string $key
+     *
      * @return null|string
      */
     public function get($key)
@@ -97,14 +94,13 @@ class ExpiringDoctrineCache implements CacheAdapterInterface
             return $cache->getData();
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Delete the entity (flushes)
+     * Delete the entity (flushes).
      *
-     * @param  string $key
-     * @return null
+     * @param string $key
      */
     public function delete($key)
     {
@@ -114,18 +110,19 @@ class ExpiringDoctrineCache implements CacheAdapterInterface
             $this->em->flush($cache);
         }
 
-        return null;
+        return;
     }
 
     /**
-     * True if a cache entry exists for the key, and that is is NOT expired
+     * True if a cache entry exists for the key, and that is is NOT expired.
      *
      * @param $key
+     *
      * @return bool
      */
     public function has($key)
     {
-        /** @var \Application\DeskPRO\Entity\Cache $cache */
+        /* @var \Application\DeskPRO\Entity\Cache $cache */
         if (!$cache = $this->getCacheRepo()->find($key)) {
             return false;
         }

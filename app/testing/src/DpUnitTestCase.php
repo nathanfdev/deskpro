@@ -18,6 +18,10 @@ class DpUnitTestCase extends \Codeception\TestCase\Test
         \Mockery::close();
     }
 
-    public function runBefore() {}
-    public function runAfter() {}
+    public function runBefore()
+    {
+    }
+    public function runAfter()
+    {
+    }
 }

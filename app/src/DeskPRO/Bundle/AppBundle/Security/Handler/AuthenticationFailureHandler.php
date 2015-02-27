@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security\Handler;
 
-use DeskPRO\Bundle\AppBundle\Email\NewMailer;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
+use DeskPRO\Bundle\AppBundle\Email\NewMailer;
 use Doctrine\DBAL\Driver\Connection;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,8 +61,8 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
     public function __construct(HttpKernelInterface $httpKernel, HttpUtils $httpUtils, array $options = array(), LoggerInterface $logger = null, NewMailer $new_mailer, Connection $db, PersonRepository $person_repo)
     {
         parent::__construct($httpKernel, $httpUtils, $options, $logger);
-        $this->new_mailer = $new_mailer;
-        $this->db = $db;
+        $this->new_mailer  = $new_mailer;
+        $this->db          = $db;
         $this->person_repo = $person_repo;
     }
 
@@ -86,12 +83,12 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
         // Save login log
         if ($attempt_person) {
             $this->db->insert('login_log', array(
-                'person_id' => $attempt_person->getId(),
-                'area' => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
-                'is_success' => 0,
-                'ip_address' => dp_get_user_ip_address(),
-                'hostname' => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
-                'user_agent' => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+                'person_id'    => $attempt_person->getId(),
+                'area'         => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
+                'is_success'   => 0,
+                'ip_address'   => dp_get_user_ip_address(),
+                'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
+                'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
                 'date_created' => date('Y-m-d H:i:s'),
             ));
         }

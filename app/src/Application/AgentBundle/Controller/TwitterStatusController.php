@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -40,7 +37,7 @@ use Application\DeskPRO\Entity\TwitterAccountStatus;
 use Application\DeskPRO\Entity\TwitterAccountStatusNote;
 
 /**
- * Handles creating/editing of Twitter Accounts
+ * Handles creating/editing of Twitter Accounts.
  */
 class TwitterStatusController extends AbstractController
 {
@@ -190,9 +187,11 @@ class TwitterStatusController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @return \Application\DeskPRO\Entity\TwitterAccountStatus
+     * @param integer $id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return \Application\DeskPRO\Entity\TwitterAccountStatus
+     *
      */
     protected function _getAccountStatusOr404($id, $check_perm = '')
     {
@@ -242,10 +241,12 @@ class TwitterStatusController extends AbstractController
     /**
      * Check account security.
      *
-     * @param  integer                                                          $id The account id.
-     * @return \Application\DeskPRO\Entity\TwitterAccount
+     * @param integer $id The account id.
+     *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return \Application\DeskPRO\Entity\TwitterAccount
+     *
      */
     protected function _getAccountOr404($id)
     {
@@ -286,7 +287,7 @@ class TwitterStatusController extends AbstractController
         $twitter_service = new \Application\DeskPRO\Service\Twitter();
 
         foreach ($account_statuses as $account_status) {
-            /** @var $account_status TwitterAccountStatus */
+            /* @var $account_status TwitterAccountStatus */
             if (!$account_status->account->hasPerson($this->person)) {
                 continue;
             }

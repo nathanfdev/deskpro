@@ -37,14 +37,14 @@ class RateLimit
 {
     const KEY = 'rate_limit';
 
-    const ACT_LOGIN = 'login';
-    const ACT_REGISTRATION = 'registration';
-    const ACT_RESET_PWD = 'reset_password';
+    const ACT_LOGIN          = 'login';
+    const ACT_REGISTRATION   = 'registration';
+    const ACT_RESET_PWD      = 'reset_password';
     const ACT_TOKEN_EXCHANGE = 'token_exchange';
 
-    const ACT_SUBMIT_COMMENT = 'submit_comment';
+    const ACT_SUBMIT_COMMENT  = 'submit_comment';
     const ACT_SUBMIT_FEEDBACK = 'submit_feedback';
-    const ACT_SUBMIT_TICKET = 'submit_ticket';
+    const ACT_SUBMIT_TICKET   = 'submit_ticket';
 
     /** @var DeskproContainer  */
     protected $container;
@@ -57,10 +57,13 @@ class RateLimit
     }
 
     /**
-     * save action
+     * save action.
+     *
      * @param $action
-     * @return bool
+     *
      * @throws \Exception
+     * @return bool
+     *
      */
     public function saveAction($action)
     {
@@ -70,8 +73,8 @@ class RateLimit
 
         /** @var Request $request */
         $request = $this->container->get('request');
-        $person = $request->getSession()->getPerson();
-        $ip = $request->getClientIp();
+        $person  = $request->getSession()->getPerson();
+        $ip      = $request->getClientIp();
 
         if (!$params = $this->getParams($action, $person, $ip)) {
             throw new \Exception('Invalid rate limit action');
@@ -83,12 +86,15 @@ class RateLimit
     }
 
     /**
-     * response. bool for now
+     * response. bool for now.
+     *
      * @param $action
-     * @param  Person     $person
-     * @param  null       $ip
-     * @return bool
+     * @param Person $person
+     * @param null   $ip
+     *
      * @throws \Exception
+     * @return bool
+     *
      */
     public function getResponse($action, Person $person, $ip = null)
     {
@@ -107,10 +113,12 @@ class RateLimit
     }
 
     /**
-     * params for current dataset
+     * params for current dataset.
+     *
      * @param $action
-     * @param  Person $person
-     * @param  null   $ip
+     * @param Person $person
+     * @param null   $ip
+     *
      * @return array
      */
     protected function getParams($action, Person $person, $ip = null)
@@ -143,8 +151,10 @@ class RateLimit
 
     /**
      * @param $action
-     * @return bool
+     *
      * @throws \Exception
+     * @return bool
+     *
      */
     public function isActionLimited($action)
     {
@@ -154,8 +164,8 @@ class RateLimit
 
         /** @var Request $request */
         $request = $this->container->get('request');
-        $person = $request->getSession()->getPerson();
-        $ip = $request->getClientIp();
+        $person  = $request->getSession()->getPerson();
+        $ip      = $request->getClientIp();
 
         return (bool) $this->getResponse($action, $person, $ip);
     }

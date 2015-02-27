@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -61,9 +58,9 @@ class CustomFeedbackType extends AbstractType
                 'deskpro_custom_data_feedback',
                 array(
                     'custom_data_field' => $field_def,
-                    'property_path' => sprintf('[%s]', $field_def->getId()),
-                    'agent_interface' => $options['agent_interface'],
-                    'label' => false,
+                    'property_path'     => sprintf('[%s]', $field_def->getId()),
+                    'agent_interface'   => $options['agent_interface'],
+                    'label'             => false,
                 )
             );
         }
@@ -73,9 +70,9 @@ class CustomFeedbackType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Application\FormBundle\Collection\CustomDataCollection',
+                'data_class'      => 'Application\FormBundle\Collection\CustomDataCollection',
                 'agent_interface' => false,
-                'label' => false,
+                'label'           => false,
             )
         );
     }

@@ -27,15 +27,13 @@
 
 namespace Application\ImportBundle\Entity;
 
-use Symfony\Component\Validator\Constraints;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
 use DateTime;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Exporting article entity
+ * Exporting article entity.
  *
  * Class Article
- * @package Application\ImportBundle\Entity
  */
 final class Article extends AbstractContentEntity implements PersonAwareInterface, LabelAwareInterface
 {
@@ -86,6 +84,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     public function setPersonEmail($person_email)
     {
         $this->person_email = $person_email;
+
         return $this;
     }
 
@@ -99,11 +98,13 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
 
     /**
      * @param string $end_action
+     *
      * @return $this
      */
     public function setEndAction($end_action)
     {
         $this->end_action = $end_action;
+
         return $this;
     }
 
@@ -129,11 +130,13 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
 
     /**
      * @param DateTime $date_end
+     *
      * @return $this
      */
     public function setDateEnd(DateTime $date_end)
     {
         $this->date_end = $date_end;
+
         return $this;
     }
 
@@ -147,11 +150,13 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
 
     /**
      * @param string $category
+     *
      * @return $this
      */
     public function addCategory($category)
     {
-        $this->categories[] = (string)$category;
+        $this->categories[] = (string) $category;
+
         return $this;
     }
 
@@ -168,7 +173,8 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
      */
     public function addLabel($label)
     {
-        $this->labels[] = (string)$label;
+        $this->labels[] = (string) $label;
+
         return $this;
     }
 
@@ -177,7 +183,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
      */
     public function toArray()
     {
-        if ( ! $this->date_created) {
+        if (! $this->date_created) {
             throw new \Exception('Date created is not set up');
         }
 
@@ -203,7 +209,7 @@ final class Article extends AbstractContentEntity implements PersonAwareInterfac
     }
 
     /**
-     * Validator class metadata
+     * Validator class metadata.
      *
      * @param ClassMetadata $metadata
      */

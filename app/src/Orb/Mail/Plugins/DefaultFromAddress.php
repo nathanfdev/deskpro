@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Mail
+ * Orb.
  */
 
 namespace Orb\Mail\Plugins;
@@ -37,7 +34,7 @@ namespace Orb\Mail\Plugins;
 use Orb\Log\Logger;
 
 /**
- * If no 'from' is set on a message, this will give it a default
+ * If no 'from' is set on a message, this will give it a default.
  */
 class DefaultFromAddress implements \Swift_Events_SendListener
 {
@@ -50,8 +47,8 @@ class DefaultFromAddress implements \Swift_Events_SendListener
 
     public function __construct($from, $name = '', Logger $logger = null)
     {
-        $this->from = $from;
-        $this->name = $name;
+        $this->from   = $from;
+        $this->name   = $name;
         $this->logger = $logger;
 
         if ($this->logger) {

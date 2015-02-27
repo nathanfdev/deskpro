@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\CacheInvalidator;
@@ -166,7 +163,8 @@ class QueryListener
      * Get the ID of a query that we can try to match against caches.
      *
      * @param $sql
-     * @param  array  $params
+     * @param array $params
+     *
      * @return string
      */
     public function getQueryIdent($sql, array $params)
@@ -175,7 +173,7 @@ class QueryListener
             $query_name = $m[1];
         } else {
             if (preg_match('#^\s*SELECT#i', $sql)) {
-                return null; // Ignore selects
+                return; // Ignore selects
             } elseif (preg_match('#^\s*UPDATE#i', $sql)) {
                 $query_type = 'UPDATE';
             } elseif (preg_match('#^\s*INSERT#i', $sql)) {
@@ -183,13 +181,13 @@ class QueryListener
             } elseif (preg_match('#^\s*DELETE#i', $sql)) {
                 $query_type = 'DELETE';
             } else {
-                return null; // unknown
+                return; // unknown
             }
 
             if (preg_match('#\s*(FROM|INSERT\s+INTO|UPDATE|DELETE\s+FROM)\s+(.*?)\s+#i', $sql, $m)) {
                 $query_table = $m[2];
             } else {
-                return null; // unknown table
+                return; // unknown table
             }
 
             $query_name = $query_type.'_'.$query_table;

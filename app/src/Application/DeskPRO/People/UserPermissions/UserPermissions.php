@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -100,7 +99,7 @@ class UserPermissions
     }
 
     /**
-     * Reads perms in from an array
+     * Reads perms in from an array.
      *
      * @param array $perms
      */

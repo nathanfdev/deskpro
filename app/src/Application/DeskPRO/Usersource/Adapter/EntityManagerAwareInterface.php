@@ -26,11 +26,9 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
+
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Doctrine\ORM\EntityManager;

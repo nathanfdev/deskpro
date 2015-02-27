@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Item;
@@ -37,28 +34,26 @@ namespace Application\DeskPRO\PageDisplay\Item;
 interface ItemInterface
 {
     /**
-     * Get the unique typename that identifies this type
+     * Get the unique typename that identifies this type.
      *
      * @return strong
      */
     public function getType();
 
     /**
-     * The ID of the type of item, if the type has multiple items (such as custom fields)
+     * The ID of the type of item, if the type has multiple items (such as custom fields).
      *
      * @return int
      */
     public function getId();
 
     /**
-     * Sets item data
-     *
-     * @return void
+     * Sets item data.
      */
     public function setData(array $data);
 
     /**
-     * Returns item data
+     * Returns item data.
      *
      * @return array
      */

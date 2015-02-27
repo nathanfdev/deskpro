@@ -26,16 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Controller
  */
 
 namespace Application\DeskPRO\ClientMessage\MessageHandler;
 
 /**
- * A new chat message
+ * A new chat message.
  */
 class ChatMessage extends AbstractMessageHandler
 {
@@ -43,6 +42,7 @@ class ChatMessage extends AbstractMessageHandler
      * Get the message to give the client.
      *
      * @param  $context
+     *
      * @return mixed
      */
     public function getMessage($context)

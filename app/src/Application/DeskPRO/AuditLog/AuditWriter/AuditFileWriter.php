@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\AuditLog\AuditWriter;
@@ -51,11 +49,11 @@ class AuditFileWriter implements AuditWriterInterface
     }
 
     /**
-     * Write a log entry
+     * Write a log entry.
      *
-     * @param  \Application\DeskPRO\Entity\AuditLog[] $log
+     * @param \Application\DeskPRO\Entity\AuditLog[] $log
+     *
      * @throws \Exception
-     * @return void
      */
     public function writeLogs(array $logs)
     {
@@ -74,7 +72,8 @@ class AuditFileWriter implements AuditWriterInterface
     }
 
     /**
-     * @param  AuditLog $log
+     * @param AuditLog $log
+     *
      * @return string
      */
     private function _formatLog(AuditLog $log)

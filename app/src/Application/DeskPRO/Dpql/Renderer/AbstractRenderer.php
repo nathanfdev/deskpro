@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Renderer;
@@ -61,7 +58,7 @@ abstract class AbstractRenderer
     protected $_results;
 
     /**
-     * Name of the output type (html, csv, etc)
+     * Name of the output type (html, csv, etc).
      *
      * @var string
      */
@@ -181,7 +178,7 @@ abstract class AbstractRenderer
     }
 
     /**
-     * Render to the specified format and type
+     * Render to the specified format and type.
      *
      * @return string
      */

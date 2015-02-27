@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if the current context was submitted via the api with a given api key
+ * Checks if the current context was submitted via the api with a given api key.
  *
  * @option int api_key_id
  */
@@ -63,7 +62,7 @@ class CheckApiKey extends AbstractTriggerTerm
     {
         $options = $this->getTermOptions();
         $api_key = $context->getVars()->get('via_api_key');
-        $id = $options->get('api_key_id');
+        $id      = $options->get('api_key_id');
 
         if (!$api_key || !$id) {
             return false;

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Form\Model;
@@ -76,9 +73,9 @@ class NewNews
     {
         $this->_em->beginTransaction();
 
-        $news = new News();
+        $news         = new News();
         $news->person = $this->_person_context;
-        $news->title = $this->title;
+        $news->title  = $this->title;
 
         $news->content = $this->_person_context->hasPerm('agent_publish.can_insert_html')
             ? App::$container->getInputCleaner()->clean($this->content ?: '', 'string', array('noclean' => true))

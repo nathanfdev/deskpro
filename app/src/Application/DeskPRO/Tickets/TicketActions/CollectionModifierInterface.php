@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -37,10 +34,9 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 interface CollectionModifierInterface
 {
     /**
-     * Inspect the collection and modify it
+     * Inspect the collection and modify it.
      *
-     * @param  ActionsCollection $collection
-     * @return void
+     * @param ActionsCollection $collection
      */
     public function modifyCollection(ActionsCollection $collection);
 

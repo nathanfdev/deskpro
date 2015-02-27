@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -66,8 +65,9 @@ class Package
     }
 
     /**
-     * @param  AppPackage $def         Existing app package to update. Otherwise, a new package is created.
-     * @param  string     $native_name
+     * @param AppPackage $def         Existing app package to update. Otherwise, a new package is created.
+     * @param string     $native_name
+     *
      * @return AppPackage
      */
     public function createAppPackage(AppPackage $def = null)
@@ -76,21 +76,21 @@ class Package
             $def = new AppPackage();
         }
 
-        $def->name         = $this->manifest->getPackageName();
-        $def->title        = $this->manifest->getTitle();
-        $def->description  = $this->manifest->getDescription();
-        $def->author_name  = $this->manifest->getAuthorName();
-        $def->author_email = $this->manifest->getAuthorEmail();
-        $def->author_link  = $this->manifest->getAuthorLink();
-        $def->api_version  = $this->manifest->getApiVersion();
-        $def->version      = $this->manifest->getVersion();
-        $def->version_name = $this->manifest->getVersionName();
-        $def->is_single    = $this->manifest->getIsSingle();
-        $def->scopes       = array(AppPackage::SCOPE_AGENT);
-        $def->tags         = $this->manifest->getTags() ?: array();
+        $def->name           = $this->manifest->getPackageName();
+        $def->title          = $this->manifest->getTitle();
+        $def->description    = $this->manifest->getDescription();
+        $def->author_name    = $this->manifest->getAuthorName();
+        $def->author_email   = $this->manifest->getAuthorEmail();
+        $def->author_link    = $this->manifest->getAuthorLink();
+        $def->api_version    = $this->manifest->getApiVersion();
+        $def->version        = $this->manifest->getVersion();
+        $def->version_name   = $this->manifest->getVersionName();
+        $def->is_single      = $this->manifest->getIsSingle();
+        $def->scopes         = array(AppPackage::SCOPE_AGENT);
+        $def->tags           = $this->manifest->getTags() ?: array();
         $def->trigger_events = $this->manifest->getTriggerEvents();
-        $def->settings_def = $this->manifest->getSettingsDef();
-        $def->native_name  = $this->manifest->getIsNative() ? $def->name : null;
+        $def->settings_def   = $this->manifest->getSettingsDef();
+        $def->native_name    = $this->manifest->getIsNative() ? $def->name : null;
 
         return $def;
     }
@@ -112,14 +112,15 @@ class Package
     }
 
     /**
-     * @param  int    $size The size of the icon we want
+     * @param int $size The size of the icon we want
+     *
      * @return string
      */
     public function getIconFilePath($size)
     {
         $path = $this->path.'/res/icons/app_'.$size.'.png';
         if (!file_exists($path)) {
-            return null;
+            return;
         }
 
         return $path;
@@ -132,7 +133,7 @@ class Package
     {
         $path = $this->path.'/README';
         if (!file_exists($path)) {
-            return null;
+            return;
         }
 
         return $path;
@@ -145,7 +146,7 @@ class Package
     {
         $path = $this->path.'/app.js';
         if (!file_exists($path)) {
-            return null;
+            return;
         }
 
         return $path;
@@ -158,7 +159,7 @@ class Package
     {
         $path = $this->path.'/module.js';
         if (!file_exists($path)) {
-            return null;
+            return;
         }
 
         return $path;
@@ -197,7 +198,8 @@ class Package
     }
 
     /**
-     * @param  string $path_name
+     * @param string $path_name
+     *
      * @return array
      */
     private function readAssetPath($path_name)
@@ -218,7 +220,7 @@ class Package
         }
 
         foreach ($finder as $file) {
-            /** @var $file \SplFileInfo */
+            /* @var $file \SplFileInfo */
 
             $full_path  = $file->getRealPath();
             $asset_path = str_replace($path_std.'/', '', str_replace('\\', '/', $full_path));

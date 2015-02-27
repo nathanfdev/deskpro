@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -59,7 +58,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Get the entity
+     * Get the entity.
      */
     public function getEntity()
     {
@@ -72,7 +71,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Log a property change
+     * Log a property change.
      *
      * @param  $prop
      * @param  $old_val
@@ -106,7 +105,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Log a property change where the value is multiple, such as additions to a collection
+     * Log a property change where the value is multiple, such as additions to a collection.
      *
      * @param  $prop
      * @param  $old_val
@@ -125,6 +124,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
      * @param $prop
      * @param $old_val
      * @param $new_val
+     *
      * @return array
      */
     public function getChangeData($prop, $old_val, $new_val)
@@ -133,9 +133,10 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Get details of a property change
+     * Get details of a property change.
      *
      * @param  $prop
+     *
      * @return array|null
      */
     public function getChangedProperty($prop)
@@ -144,7 +145,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Get array of all property changes
+     * Get array of all property changes.
      *
      * @return array
      */
@@ -154,7 +155,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Get the names of all changed properties
+     * Get the names of all changed properties.
      *
      * @return array
      */
@@ -164,9 +165,10 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Check if a specific property is changed
+     * Check if a specific property is changed.
      *
      * @param  $prop
+     *
      * @return bool
      */
     public function isPropertyChanged($prop)
@@ -175,7 +177,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Record some extra data about a ticket event that listeners might be interested in
+     * Record some extra data about a ticket event that listeners might be interested in.
      *
      * @param  $key
      * @param  $value
@@ -199,9 +201,10 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Get extra data
+     * Get extra data.
      *
      * @param  $key
+     *
      * @return array|null
      */
     public function getExtra($key)
@@ -210,7 +213,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Get an array of all registered extra data
+     * Get an array of all registered extra data.
      *
      * @return array
      */
@@ -220,9 +223,10 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Check if some extra data item is set
+     * Check if some extra data item is set.
      *
      * @param  $key
+     *
      * @return bool
      */
     public function isExtraSet($key)
@@ -231,9 +235,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
     }
 
     /**
-     * Notify all listeners that changes to the entity have been committed
-     *
-     * @return void
+     * Notify all listeners that changes to the entity have been committed.
      */
     abstract public function done();
 }

@@ -26,16 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Elastica\ClientFactory;
 use Application\DeskPRO\Monolog\Logger;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
 use Orb\Util\Numbers;
 

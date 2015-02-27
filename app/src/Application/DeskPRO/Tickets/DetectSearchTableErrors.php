@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets;
@@ -144,7 +142,7 @@ class DetectSearchTableErrors
         ";
 
         $search_tickets = array();
-        $q = $this->db->executeQuery("
+        $q              = $this->db->executeQuery("
             SELECT $select_fields
             FROM tickets_search_active
             ORDER BY id DESC
@@ -156,7 +154,7 @@ class DetectSearchTableErrors
         $q->closeCursor();
 
         $real_tickets = array();
-        $q = $this->db->executeQuery("
+        $q            = $this->db->executeQuery("
             SELECT $select_fields
             FROM tickets
             WHERE status IN ('awaiting_user', 'awaiting_agent', 'resolved')

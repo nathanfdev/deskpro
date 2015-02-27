@@ -31,10 +31,9 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Article label record mapper
+ * Article label record mapper.
  *
  * Class ArticleLabel
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class ArticleLabel implements MapperInterface
 {
@@ -44,7 +43,7 @@ final class ArticleLabel implements MapperInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\LabelArticle $repository
      */
@@ -68,7 +67,7 @@ final class ArticleLabel implements MapperInterface
     {
         /** @var Entity\LabelArticle $record */
         $record = $this->repository->findOneBy($criteria);
-        if ( ! $record && $throw_exception) {
+        if (! $record && $throw_exception) {
             throw new MapperException('Article label not found', $criteria);
         }
 
@@ -76,13 +75,14 @@ final class ArticleLabel implements MapperInterface
     }
 
     /**
-     * Returns a collection of article labels
+     * Returns a collection of article labels.
      *
      * @param int  $id
      * @param bool $throw_exception
      *
-     * @return Entity\LabelArticle[]
      * @throws MapperException
+     * @return Entity\LabelArticle[]
+     *
      */
     public function findByArticleId($id, $throw_exception = true)
     {

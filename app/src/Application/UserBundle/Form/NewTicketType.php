@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Form;
@@ -41,15 +38,15 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * The new ticket form
+ * The new ticket form.
  */
 class NewTicketType extends AbstractType
 {
     const MODE_NORMAL = 'normal';
-    const MODE_WIDGE = 'widget';
+    const MODE_WIDGE  = 'widget';
 
     /**
-     * The actual person (logged in)
+     * The actual person (logged in).
      */
     protected $person;
 
@@ -77,7 +74,7 @@ class NewTicketType extends AbstractType
     public function __construct($person, $mode = self::MODE_NORMAL)
     {
         $this->person = $person;
-        $this->mode = $mode;
+        $this->mode   = $mode;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -87,7 +84,7 @@ class NewTicketType extends AbstractType
     }
 
     /**
-     * Configures the person form
+     * Configures the person form.
      */
     protected function buildPersonForm(FormBuilderInterface $builder)
     {
@@ -109,7 +106,7 @@ class NewTicketType extends AbstractType
     }
 
     /**
-     * Configures the ticket form
+     * Configures the ticket form.
      */
     protected function buildTicketForm(FormBuilderInterface $builder)
     {
@@ -119,7 +116,7 @@ class NewTicketType extends AbstractType
         # Standard fields
         #------------------------------
 
-        $ticket_options = App::getApi('tickets')->getTicketOptions($this->mock_person);
+        $ticket_options       = App::getApi('tickets')->getTicketOptions($this->mock_person);
         $this->ticket_options = $ticket_options;
 
         $this->ticket_options = $ticket_options;
@@ -129,7 +126,7 @@ class NewTicketType extends AbstractType
 
         if ($deps = App::getDataService('Department')->getPersonDepartments(App::getCurrentPerson(), 'tickets')) {
             $ticket_builder->add('department_id', 'choice', array(
-                'choices' => Arrays::selectArrayFromHierarchy($deps, 'id', 'title'),
+                'choices'  => Arrays::selectArrayFromHierarchy($deps, 'id', 'title'),
                 'required' => false,
             ));
         }
@@ -144,8 +141,8 @@ class NewTicketType extends AbstractType
         #------------------------------
 
         if ($this->mode == self::MODE_NORMAL) {
-            $ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-            $custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array());
+            $ticket_field_defs   = App::getApi('custom_fields.tickets')->getEnabledFields();
+            $custom_fields       = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array());
             $this->ticket_fields = $custom_fields;
 
             $builder->add($ticket_builder);

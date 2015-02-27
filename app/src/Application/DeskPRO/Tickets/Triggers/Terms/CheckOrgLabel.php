@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,7 +39,7 @@ use Application\DeskPRO\Util as DeskPROUtil;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if the users belongs to a usergroup
+ * Checks if the users belongs to a usergroup.
  *
  * @option string[] labels
  */

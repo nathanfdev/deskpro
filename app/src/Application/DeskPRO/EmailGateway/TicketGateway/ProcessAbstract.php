@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category EmailGateway
  */
 
@@ -59,13 +58,14 @@ abstract class ProcessAbstract
     protected $error_type = null;
 
     /**
-     * Indexed by blob id
+     * Indexed by blob id.
+     *
      * @var \Application\DeskPRO\Entity\Blob[]
      */
     protected $processed_blobs = null;
 
     /**
-     * Same as processed_blobs except indexed by Content-ID
+     * Same as processed_blobs except indexed by Content-ID.
      *
      * @var \Application\DeskPRO\Entity\Blob[]
      */
@@ -102,7 +102,8 @@ abstract class ProcessAbstract
     abstract public function run();
 
     /**
-     * Set the logger
+     * Set the logger.
+     *
      * @param \Orb\Log\Logger $logger
      */
     public function setLogger(Logger $logger)
@@ -284,8 +285,9 @@ abstract class ProcessAbstract
     }
 
     /**
-     * @param  string            $body
-     * @param  InlineImageTokens $inline_images
+     * @param string            $body
+     * @param InlineImageTokens $inline_images
+     *
      * @return string
      */
     public function replaceInlineAttachTokens($body, InlineImageTokens $inline_images)

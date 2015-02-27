@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -64,7 +63,8 @@ class LogRoundRobin extends DomainObject implements Loggable
     }
 
     /**
-     * todo
+     * todo.
+     *
      * @return string
      */
     public function __toString()

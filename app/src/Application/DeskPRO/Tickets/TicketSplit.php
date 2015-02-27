@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -42,7 +41,7 @@ use Application\DeskPRO\ORM\StateChange\Ticket\ChangeSplitTo;
 use Application\DeskPRO\People\PersonContextInterface;
 
 /**
- * Splits a ticket from one message and on into a new ticket
+ * Splits a ticket from one message and on into a new ticket.
  */
 class TicketSplit implements PersonContextInterface
 {
@@ -71,9 +70,9 @@ class TicketSplit implements PersonContextInterface
      */
     public function __construct(Ticket $ticket)
     {
-        $this->em = App::$container->getEm();
+        $this->em             = App::$container->getEm();
         $this->ticket_manager = App::$container->getTicketManager();
-        $this->ticket = $ticket;
+        $this->ticket         = $ticket;
     }
 
     /**
@@ -85,10 +84,12 @@ class TicketSplit implements PersonContextInterface
     }
 
     /**
-     * @param  string     $subject
-     * @param  array      $message_ids
-     * @return Ticket
+     * @param string $subject
+     * @param array  $message_ids
+     *
      * @throws \Exception
+     * @return Ticket
+     *
      */
     public function split($subject, array $message_ids)
     {
@@ -111,10 +112,12 @@ class TicketSplit implements PersonContextInterface
     }
 
     /**
-     * @param  string                    $subject
-     * @param  array                     $message_ids
-     * @return Ticket
+     * @param string $subject
+     * @param array  $message_ids
+     *
      * @throws \InvalidArgumentException
+     * @return Ticket
+     *
      */
     private function doSplit($subject, array $message_ids)
     {
@@ -184,8 +187,8 @@ class TicketSplit implements PersonContextInterface
         }
 
         if (count($messages) == 1 || !$has_owner) {
-            $message = reset($messages);
-            $new_ticket->person = $message->person;
+            $message                  = reset($messages);
+            $new_ticket->person       = $message->person;
             $new_ticket->person_email = $message->person->primary_email;
             $new_ticket->organization = $message->person->organization;
         }

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks cc address for an email
+ * Checks cc address for an email.
  *
  * @option string email
  */
@@ -65,7 +64,7 @@ class CheckEmailCcAddress extends AbstractTriggerTerm
             return false;
         }
 
-        $reader = $context->getEmailContext();
+        $reader  = $context->getEmailContext();
         $strings = array();
         foreach ($reader->getCcAddresses() as $email) {
             $strings[] = $email->getEmail();

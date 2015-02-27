@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage DBAL
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\DBAL\Logging;
@@ -65,7 +62,7 @@ class DelegateLogger implements \Doctrine\DBAL\Logging\SQLLogger
         if (isset($this->registered_loggers[$identifier])) {
             return $this->registered_loggers[$identifier];
         } else {
-            return null;
+            return;
         }
     }
 

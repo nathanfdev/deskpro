@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -53,14 +52,15 @@ class NewTicket extends ActionTypeAbstract
     }
 
     /**
-     * Get a plain array of details that'll be stored in the databaes
+     * Get a plain array of details that'll be stored in the databaes.
+     *
      * @return array
      */
     public function getDetails()
     {
         return array(
             'ticket_id' => $this->ticket['id'],
-            'subject' => $this->ticket['subject'],
+            'subject'   => $this->ticket['subject'],
         );
     }
 }

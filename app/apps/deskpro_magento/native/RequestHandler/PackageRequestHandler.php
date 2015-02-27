@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -54,7 +53,8 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
     }
 
     /**
-     * @param  ApiPackageRequestContext                   $context
+     * @param ApiPackageRequestContext $context
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function testSettingsAction(ApiPackageRequestContext $context)
@@ -81,7 +81,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             }
             $log[] = "SoapClient is ok";
 
-            return null;
+            return;
         };
 
         $tests[] = function () use (&$log) {
@@ -93,7 +93,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             }
             $log[] = "curl is ok";
 
-            return null;
+            return;
         };
 
         $get_client = function ($url) {
@@ -105,12 +105,13 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             $httpCode = @curl_getinfo($handle, CURLINFO_HTTP_CODE);
             @curl_close($handle);
             if ($httpCode != 200) {
-                return null;
+                return;
             }
 
             $v = libxml_disable_entity_loader(false);
             $c = new \Application\DeskPRO\SoapClient\SafeSoapClient($url);
             libxml_disable_entity_loader($v);
+
             return $c;
         };
 

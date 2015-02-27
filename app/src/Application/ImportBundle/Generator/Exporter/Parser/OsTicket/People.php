@@ -32,10 +32,9 @@ use DateTime;
 use Exception;
 
 /**
- * OsTicket people parser
+ * OsTicket people parser.
  *
  * Class People
- * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
 final class People extends AbstractParser
 {
@@ -70,9 +69,9 @@ final class People extends AbstractParser
             ->merge($this->exportUsers());
 
         foreach ($collection as $num => $person) {
-            /** @var Entity\Person $person */
+            /* @var Entity\Person $person */
             $person
-                ->setDestination('person_' . $num)
+                ->setDestination('person_'.$num)
                 ->setOid($num);
         }
 
@@ -80,7 +79,7 @@ final class People extends AbstractParser
     }
 
     /**
-     * Return a collection of staff
+     * Return a collection of staff.
      *
      * @return Entity\Collection
      */
@@ -100,9 +99,9 @@ final class People extends AbstractParser
                 } else {
                     $entity = new Entity\Person();
                     $entity
-                        ->setDestination('person_' . ($num + $offset))
+                        ->setDestination('person_'.($num + $offset))
                         ->setAsAgent(true)
-                        ->setName($person['firstname'] . $person['lastname'])
+                        ->setName($person['firstname'].$person['lastname'])
                         ->setFirstName($person['firstname'])
                         ->setLastName($person['lastname'])
                         ->setTimezone($this->reader->findTimezoneById($person['timezone_id']))
@@ -119,7 +118,7 @@ final class People extends AbstractParser
     }
 
     /**
-     * Return a collection of users
+     * Return a collection of users.
      *
      * @return Entity\Collection
      */
@@ -139,7 +138,7 @@ final class People extends AbstractParser
                 } else {
                     $entity = new Entity\Person();
                     $entity
-                        ->setDestination('person_' . ($num + $offset))
+                        ->setDestination('person_'.($num + $offset))
                         ->setAsUser(true)
                         ->setName($person['name'])
                         ->setDateCreated(new DateTime($person['created']))
@@ -155,9 +154,10 @@ final class People extends AbstractParser
     }
 
     /**
-     * Check if staff person has all required columns
+     * Check if staff person has all required columns.
      *
      * @param array $person
+     *
      * @return bool
      */
     private function hasRequiredStaffColumns(array $person)
@@ -166,9 +166,10 @@ final class People extends AbstractParser
     }
 
     /**
-     * Check if user has all required columns
+     * Check if user has all required columns.
      *
      * @param array $person
+     *
      * @return bool
      */
     private function hasRequiredUserColumns(array $person)

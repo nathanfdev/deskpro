@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security;
 
-use Application\DeskPRO\EntityRepository\Person as PersonRepo;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EntityRepository\Person as PersonRepo;
 use Orb\Auth\Identity;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
@@ -68,11 +65,10 @@ class DpPersonUserProvider implements UserProviderInterface
      *
      * @param string $username The username
      *
+     * @throws UsernameNotFoundException if the user is not found
      * @return UserInterface
      *
      * @see UsernameNotFoundException
-     *
-     * @throws UsernameNotFoundException if the user is not found
      *
      */
     public function loadUserByUsername($username)
@@ -96,9 +92,9 @@ class DpPersonUserProvider implements UserProviderInterface
      *
      * @param UserInterface $user
      *
+     * @throws UnsupportedUserException if the account is not supported
      * @return UserInterface
      *
-     * @throws UnsupportedUserException if the account is not supported
      */
     public function refreshUser(UserInterface $user)
     {
@@ -135,7 +131,7 @@ class DpPersonUserProvider implements UserProviderInterface
     }
 
     /**
-     * Whether this provider supports the given user class
+     * Whether this provider supports the given user class.
      *
      * @param string $class
      *

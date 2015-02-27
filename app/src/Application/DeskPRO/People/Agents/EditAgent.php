@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -99,8 +98,8 @@ class EditAgent
      */
     public function __construct(Person $person)
     {
-        $this->agent = $person;
-        $this->name = $person->name;
+        $this->agent         = $person;
+        $this->name          = $person->name;
         $this->override_name = $person->override_display_name;
         $this->primary_phone = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
 
@@ -131,7 +130,7 @@ class EditAgent
         $this->agent_groups = $person->usergroups->toArray();
 
         $this->notification_settings = array(
-            'no_allow_set_email' => (int) $person->getPref('agent_notif.no_allow_set_email'),
+            'no_allow_set_email'   => (int) $person->getPref('agent_notif.no_allow_set_email'),
             'no_allow_set_browser' => (int) $person->getPref('agent_notif.no_allow_set_browser'),
         );
 
@@ -141,7 +140,8 @@ class EditAgent
     /**
      * Saves the agent.
      *
-     * @param  EntityManager $em
+     * @param EntityManager $em
+     *
      * @return Person
      */
     public function save(EntityManager $em)
@@ -176,14 +176,14 @@ class EditAgent
         #------------------------------
 
         foreach ($agent->teams as $team) {
-            /** @var $team AgentTeam */
+            /* @var $team AgentTeam */
             $team->removePerson($agent); // unidirectional
         }
 
         $found_primary = false;
 
         foreach ($this->teams as $team) {
-            /** @var $team AgentTeam */
+            /* @var $team AgentTeam */
             $agent->addTeam($team); // bidirectional
 
             if ($team === $this->primary_team) {
@@ -222,7 +222,7 @@ class EditAgent
         $del_emails = array_diff($have_emails, $set_emails);
 
         foreach ($add_emails as $email_address) {
-            $email = new PersonEmail();
+            $email               = new PersonEmail();
             $email->person       = $agent;
             $email->email        = $email_address;
             $email->is_validated = true;

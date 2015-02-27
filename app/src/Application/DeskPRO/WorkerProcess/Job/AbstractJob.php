@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -56,7 +53,7 @@ abstract class AbstractJob
     final public function __construct(Logger $logger, array $options = null)
     {
         $this->options = new \Orb\Util\OptionsArray($options);
-        $this->logger = $logger;
+        $this->logger  = $logger;
         $this->init();
     }
 
@@ -65,7 +62,7 @@ abstract class AbstractJob
     }
 
     /**
-     * Run the task
+     * Run the task.
      */
     abstract public function run();
 
@@ -83,7 +80,7 @@ abstract class AbstractJob
     }
 
     /**
-     * Get the logger for this job
+     * Get the logger for this job.
      *
      * @return \Application\DeskPRO\Log\Logger
      */

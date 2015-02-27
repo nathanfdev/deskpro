@@ -26,42 +26,38 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\AppBundle\Twig;
 
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\Twig\LanguageExtension;
+use PhpSpec\ObjectBehavior;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\Twig\LanguageExtension
  */
 class LanguageExtensionSpec extends ObjectBehavior
 {
-    function let(LanguageManager $language_manager, Translate $translate)
+    public function let(LanguageManager $language_manager, Translate $translate)
     {
         $language_manager->getTranslator()->willReturn($translate);
 
         $this->beConstructedWith($language_manager);
     }
 
-    function it_is_a_twig_extension()
+    public function it_is_a_twig_extension()
     {
         $this->shouldHaveType('\Twig_Extension');
         $this->getName()->shouldBe('phrase_extension');
     }
 
-    function it_uses_the_translator_from_language_stack_to_resolve_phrases(
+    public function it_uses_the_translator_from_language_stack_to_resolve_phrases(
         \Twig_Environment $twig,
         Translate $translate
-    )
-    {
+    ) {
         $translate->phrase('portal.phrase.here', array('name' => 'Chris Tickner', '_context' => 'context'))
             ->willReturn('hi Chris Tickner');
 

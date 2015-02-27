@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Searcher;
 
@@ -49,7 +47,8 @@ class OrganizationSearch extends SearcherAbstract
     const TERM_EMAIL_DOMAIN         = 'org_email_domain';
 
     /**
-     * Summary of terms in phrases
+     * Summary of terms in phrases.
+     *
      * @var array
      */
     protected $summary = array();
@@ -57,7 +56,8 @@ class OrganizationSearch extends SearcherAbstract
     /**
      * Run the search and return an array of matching ID's.
      *
-     * @param  int   $limit
+     * @param int $limit
+     *
      * @return array
      */
     public function getMatches()
@@ -70,7 +70,7 @@ class OrganizationSearch extends SearcherAbstract
     }
 
     /**
-     * Get the summary of crtiera
+     * Get the summary of crtiera.
      *
      * @array
      */
@@ -82,14 +82,15 @@ class OrganizationSearch extends SearcherAbstract
     }
 
     /**
-     * Get the SQL query that'll fetch the results
+     * Get the SQL query that'll fetch the results.
+     *
      * @return string
      */
     public function getSql()
     {
         $sql = "SELECT organizations.id FROM organizations ";
 
-        $parts = $this->getSqlParts();
+        $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
         #------------------------------
@@ -148,9 +149,9 @@ class OrganizationSearch extends SearcherAbstract
         }
 
         $term_id = null;
-        $m = null;
+        $m       = null;
         if (preg_match('#^(.*?)\[(.*?)\]$#', $type, $m)) {
-            $type = $m[1];
+            $type    = $m[1];
             $term_id = $m[2];
         }
 
@@ -204,10 +205,10 @@ class OrganizationSearch extends SearcherAbstract
         $tr = App::getTranslator();
 
         $wheres = array();
-        $joins = array();
+        $joins  = array();
 
         foreach ($this->terms as $info) {
-            $join_id = Util::requestUniqueId();
+            $join_id   = Util::requestUniqueId();
             $join_name = "j_$join_id";
 
             list($term, $op, $choice) = $info;
@@ -217,7 +218,7 @@ class OrganizationSearch extends SearcherAbstract
             // $term of people_field[12] becomes $term=people_field, $term_id=12
             $m = null;
             if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
-                $term = $m[1];
+                $term    = $m[1];
                 $term_id = $m[2];
             }
 
@@ -382,7 +383,7 @@ class OrganizationSearch extends SearcherAbstract
                             break;
 
                         case 'id':
-                            $join_id = Util::requestUniqueId();
+                            $join_id    = Util::requestUniqueId();
                             $choices_in = array();
 
                             if ($choice != 'DP_NO_SELECTION') {
@@ -446,7 +447,7 @@ class OrganizationSearch extends SearcherAbstract
         }
 
         return array(
-            'joins' => $joins,
+            'joins'  => $joins,
             'wheres' => $wheres,
         );
     }

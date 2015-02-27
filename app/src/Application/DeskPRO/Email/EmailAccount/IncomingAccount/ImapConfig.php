@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -46,7 +45,8 @@ class ImapConfig implements AccountConfigInterface
     public $host;
 
     /**
-     * Pop3 default is 143, secure 993
+     * Pop3 default is 143, secure 993.
+     *
      * @var int
      */
     public $port = 143;
@@ -62,31 +62,36 @@ class ImapConfig implements AccountConfigInterface
     public $password;
 
     /**
-     * 'ssl' or 'tls'
+     * 'ssl' or 'tls'.
+     *
      * @var null|string
      */
     public $secure_mode = null;
 
     /**
-     * disable certificate validation (validate by default)
+     * disable certificate validation (validate by default).
+     *
      * @var bool
      */
     public $no_validation = false;
 
     /**
-     * 'read', 'delete', 'archive'
+     * 'read', 'delete', 'archive'.
+     *
      * @var string
      */
     public $mode = 'read';
 
     /**
      * The mailbox to read from. Default blank means inbox.
+     *
      * @var string
      */
     public $read_mailbox = null;
 
     /**
      * If using the 'archive' method, this is the mailbox name.
+     *
      * @var string
      */
     public $archive_mailbox = null;

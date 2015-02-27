@@ -26,16 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\HttpCache\Configuration;
 
 /**
- * Give the listener semantic meaning with this class name that this is a "page" response cache
+ * Give the listener semantic meaning with this class name that this is a "page" response cache.
+ *
  * @Annotation
  */
 class PageHttpCache extends PortalHttpCache
@@ -51,7 +49,7 @@ class PageHttpCache extends PortalHttpCache
     }
 
     /**
-     * Returns whether multiple annotations of this type are allowed
+     * Returns whether multiple annotations of this type are allowed.
      *
      * @return bool
      */

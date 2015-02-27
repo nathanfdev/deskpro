@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\UserRules;
@@ -42,13 +40,11 @@ class UserRules
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     /**
      * @var \Application\DeskPRO\Entity\UserRule[]
      */
-
     protected $user_rules;
 
     public function __construct(EntityManager $em)
@@ -57,9 +53,8 @@ class UserRules
     }
 
     /**
-     * Loads data from the database
+     * Loads data from the database.
      */
-
     private function preload()
     {
         if ($this->user_rules !== null) {
@@ -73,17 +68,16 @@ class UserRules
      * Resets this repository so the next time data is requested form it, it will
      * be queried again.
      */
-
     public function reset()
     {
         $this->user_rules = null;
     }
 
     /**
-     * @param  int                                  $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\UserRule
      */
-
     public function getById($id)
     {
         return $this->em->getRepository('DeskPRO:UserRule')->get($id);
@@ -94,7 +88,6 @@ class UserRules
      *
      * @return array
      */
-
     public function getWithUsergroup($id)
     {
         $user_rule = $this->em->getRepository('DeskPRO:UserRule')->get($id);
@@ -124,7 +117,6 @@ class UserRules
     /**
      * @return \Application\DeskPRO\Entity\UserRule[]
      */
-
     public function getAll()
     {
         $this->preload();
@@ -135,7 +127,6 @@ class UserRules
     /**
      * @return array
      */
-
     public function getAllAsArray()
     {
         return $this->em->getRepository('DeskPRO:UserRule')->getAllUserRulesAsArray();
@@ -144,7 +135,6 @@ class UserRules
     /**
      * @return int
      */
-
     public function count()
     {
         $this->preload();
@@ -155,7 +145,6 @@ class UserRules
     /**
      * @return \Application\DeskPRO\Entity\UserRule
      */
-
     public function createNew()
     {
         return UserRule::createUserRule();
@@ -167,12 +156,11 @@ class UserRules
      *
      * @return array
      */
-
     public function applyRuleToUsers(UserRule $user_rule, $page)
     {
         $per_page = 250;
-        $page = (int) $page;
-        $offset = $page * $per_page;
+        $page     = (int) $page;
+        $offset   = $page * $per_page;
 
         $num_pages = ceil(App::getDb()->fetchColumn("
 			SELECT COUNT(*)

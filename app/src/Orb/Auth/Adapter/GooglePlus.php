@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -58,8 +57,8 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
 
     public function __construct($cid, $cs, $domain)
     {
-        $this->cid = $cid;
-        $this->cs = $cs;
+        $this->cid    = $cid;
+        $this->cs     = $cs;
         $this->domain = $domain;
     }
 
@@ -96,7 +95,7 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
                     return new Result(
                         Result::FAILURE, null,
                         array(
-                            'error_code' => 'invalid_argument',
+                            'error_code'    => 'invalid_argument',
                             'error_message' => 'email does not match specified domain',
                         )
                     );

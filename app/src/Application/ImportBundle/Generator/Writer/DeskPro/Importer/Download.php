@@ -32,10 +32,9 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro download importer
+ * DeskPro download importer.
  *
  * Class Download
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 final class Download extends AbstractImporter implements SkipDuplicateInterface
 {
@@ -45,7 +44,7 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
     private $blob_adapter;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Mapper\Collection    $mappers
      * @param BlobAdapterInterface $blob_adapter
@@ -67,7 +66,7 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Download $entity
+     * @var Entity\Download
      *
      * todo add referred objects
      * 'total_rating'   => $dval->total_rating,
@@ -93,13 +92,14 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
             ->setNumDownloads($entity->getNumDownloads());
 
         $this->records->add($download);
+
         return $this->records;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Download $entity
+     * @var Entity\Download
      */
     public function checkAlreadyExists(Entity\EntityInterface $entity)
     {
@@ -110,12 +110,13 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
 
     /**
      * Returns an download category by title
-     * Creates a new article category if not found
+     * Creates a new article category if not found.
      *
      * @param string $title
      *
-     * @return DeskPROEntity\DownloadCategory|null
      * @throws \Exception
+     * @return DeskPROEntity\DownloadCategory|null
+     *
      */
     private function findOrCreateDownloadCategory($title)
     {
@@ -137,10 +138,11 @@ final class Download extends AbstractImporter implements SkipDuplicateInterface
     }
 
     /**
-     * Returns the download category mapper
+     * Returns the download category mapper.
      *
-     * @return Mapper\DownloadCategory
      * @throws \Exception
+     * @return Mapper\DownloadCategory
+     *
      */
     private function getDownloadCategoryMapper()
     {

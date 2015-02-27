@@ -26,29 +26,26 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeViewFactory;
+use PhpSpec\ObjectBehavior;
 
 /**
  * @mixin \DeskPRO\Bundle\PortalBundle\Theme\ThemeViewFactory
  */
 class ThemeViewFactorySpec extends ObjectBehavior
 {
-    function let(BrandStack $brand_stack)
+    public function let(BrandStack $brand_stack)
     {
         $this->beConstructedWith($brand_stack);
     }
 
-    function it_creates_theme_view_objects_with_the_brand_stack_injected()
+    public function it_creates_theme_view_objects_with_the_brand_stack_injected()
     {
         $view = $this->createView($options = array('options' => 'here'));
 

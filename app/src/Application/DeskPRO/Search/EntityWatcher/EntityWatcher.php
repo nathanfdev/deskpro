@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Search
  */
 
@@ -41,21 +40,21 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 {
     /** @var array */
     public static $watched_entities = array(
-        'Application\\DeskPRO\\Entity\\Article' => 1,
-        'Application\\DeskPRO\\Entity\\LabelArticle' => 1,
-        'Application\\DeskPRO\\Entity\\Download' => 1,
-        'Application\\DeskPRO\\Entity\\LabelDownload' => 1,
-        'Application\\DeskPRO\\Entity\\Feedback' => 1,
-        'Application\\DeskPRO\\Entity\\LabelFeedback' => 1,
-        'Application\\DeskPRO\\Entity\\News' => 1,
-        'Application\\DeskPRO\\Entity\\LabelNews' => 1,
-        'Application\\DeskPRO\\Entity\\Ticket' => 1,
-        'Application\\DeskPRO\\Entity\\TicketMessage' => 1,
-        'Application\\DeskPRO\\Entity\\Person' => 1,
-        'Application\\DeskPRO\\Entity\\PersonEmail' => 1,
-        'Application\\DeskPRO\\Entity\\Organization' => 1,
+        'Application\\DeskPRO\\Entity\\Article'          => 1,
+        'Application\\DeskPRO\\Entity\\LabelArticle'     => 1,
+        'Application\\DeskPRO\\Entity\\Download'         => 1,
+        'Application\\DeskPRO\\Entity\\LabelDownload'    => 1,
+        'Application\\DeskPRO\\Entity\\Feedback'         => 1,
+        'Application\\DeskPRO\\Entity\\LabelFeedback'    => 1,
+        'Application\\DeskPRO\\Entity\\News'             => 1,
+        'Application\\DeskPRO\\Entity\\LabelNews'        => 1,
+        'Application\\DeskPRO\\Entity\\Ticket'           => 1,
+        'Application\\DeskPRO\\Entity\\TicketMessage'    => 1,
+        'Application\\DeskPRO\\Entity\\Person'           => 1,
+        'Application\\DeskPRO\\Entity\\PersonEmail'      => 1,
+        'Application\\DeskPRO\\Entity\\Organization'     => 1,
         'Application\\DeskPRO\\Entity\\ChatConversation' => 1,
-        'Application\\DeskPRO\\Entity\\ChatMessage' => 1,
+        'Application\\DeskPRO\\Entity\\ChatMessage'      => 1,
     );
 
     /**
@@ -85,7 +84,7 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
     }
 
     /**
-     * Flushes updates and eats errors
+     * Flushes updates and eats errors.
      */
     public function flushUpdatesQuiet()
     {
@@ -96,7 +95,7 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
     }
 
     /**
-     * Flushes all updates
+     * Flushes all updates.
      */
     public function flushUpdates()
     {
@@ -132,37 +131,37 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
         $update = array();
         $delete = array();
 
-        $em = $eventArgs->getEntityManager();
+        $em  = $eventArgs->getEntityManager();
         $uow = $em->getUnitOfWork();
 
         foreach ($uow->getScheduledEntityInsertions() as $ent) {
             if (self::isWatchedEntity($ent)) {
-                $ent = $this->replaceEntity($ent);
+                $ent      = $this->replaceEntity($ent);
                 $update[] = $ent;
             }
         }
         foreach ($uow->getScheduledEntityUpdates() as $ent) {
             if (self::isWatchedEntity($ent)) {
-                $ent = $this->replaceEntity($ent);
+                $ent      = $this->replaceEntity($ent);
                 $update[] = $ent;
             }
         }
         foreach ($uow->getScheduledEntityDeletions() as $ent) {
             if (self::isWatchedEntity($ent)) {
-                $ent = $this->replaceEntity($ent);
+                $ent      = $this->replaceEntity($ent);
                 $delete[] = $ent;
             }
         }
 
         if ($update || $delete) {
             foreach ($update as $ent) {
-                $name = self::getEntityClassName($ent);
-                $id = $ent->getId();
+                $name                                  = self::getEntityClassName($ent);
+                $id                                    = $ent->getId();
                 $this->updates['updates']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
             }
             foreach ($delete as $ent) {
-                $name = self::getEntityClassName($ent);
-                $id = $ent->getId();
+                $name                                  = self::getEntityClassName($ent);
+                $id                                    = $ent->getId();
                 $this->updates['deletes']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
             }
         }
@@ -171,7 +170,8 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
     }
 
     /**
-     * @param  object $ent
+     * @param object $ent
+     *
      * @return object
      */
     private function replaceEntity($ent)
@@ -206,9 +206,10 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
     }
 
     /**
-     * Check if an entity is watched
+     * Check if an entity is watched.
      *
      * @param $entity
+     *
      * @return bool
      */
     public static function isWatchedEntity($entity)
@@ -219,7 +220,8 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
     }
 
     /**
-     * @param  object $entity
+     * @param object $entity
+     *
      * @return string
      */
     public static function getEntityClassName($entity)

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category EmailGateway
  */
 
@@ -137,10 +136,10 @@ class TicketIncomingEmailMessage
 
         if (!$this->subject) {
             $this->is_no_subject = true;
-            $this->subject = '(No Subject)';
+            $this->subject       = '(No Subject)';
         }
 
-        $inline_images = new InlineImageTokens($reader);
+        $inline_images  = new InlineImageTokens($reader);
         $inline_images2 = new InlineImageTokens($reader);
 
         if ($ticket_email->force_reply_cutter) {
@@ -161,11 +160,11 @@ class TicketIncomingEmailMessage
             $this->logMessage('[TicketIncomingEmailMessage] Note: Cutter is enabled but the pattern cutters are disabled');
         }
 
-        $orig_text = $ticket_email->email_body_text;
+        $orig_text     = $ticket_email->email_body_text;
         $did_html_trim = false;
-        $is_text = false;
-        $has_text_cut = false;
-        $has_cut = false;
+        $is_text       = false;
+        $has_text_cut  = false;
+        $has_cut       = false;
 
         $cutters_require_from = Arrays::flatten(array_map(function ($e) {
             return array($e->address, $e->other_addresses);
@@ -177,7 +176,7 @@ class TicketIncomingEmailMessage
             $this->logMessage('[TicketIncomingEmailMessage] read HTML email');
             $this->body = $ticket_email->email_body_html;
             if (!$this->body) {
-                $this->body = $ticket_email->email_body_html;
+                $this->body          = $ticket_email->email_body_html;
                 $this->charset_error = $reader->getBodyHtml()->getOriginalCharset();
             }
             $this->body_is_html = true;
@@ -236,8 +235,8 @@ class TicketIncomingEmailMessage
                     } else {
                         $this->logMessage('[TicketIncomingEmailMessage] Using cut-trimmed document');
 
-                        $did_html_trim = true;
-                        $this->body = $generic_cut;
+                        $did_html_trim      = true;
+                        $this->body         = $generic_cut;
                         $this->body_is_html = true;
                     }
                 } else {
@@ -263,35 +262,35 @@ class TicketIncomingEmailMessage
             $this->logMessage('[TicketIncomingEmailMessage] read text email');
             $txt = $ticket_email->email_body_text;
             if (!$txt && $ticket_email->email_body_text) {
-                $txt = $ticket_email->email_body_text;
+                $txt                 = $ticket_email->email_body_text;
                 $this->charset_error = $reader->getBodyText()->getOriginalCharset();
             }
 
             if (strlen($txt) > 25000) {
                 $this->logMessage('[TicketIncomingEmailMessage] Message too long, trimming');
                 $did_html_trim = true;
-                $txt = substr($txt, 0, 25000);
+                $txt           = substr($txt, 0, 25000);
             }
 
             $body_raw = @htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8');
 
-            $has_text_cut = true;
-            $this->body_raw = $txt;
+            $has_text_cut      = true;
+            $this->body_raw    = $txt;
             $this->generic_cut = $txt;
-            $this->body = $txt;
-            $this->body_full = $txt;
+            $this->body        = $txt;
+            $this->body_full   = $txt;
 
             // Always generic cut from the DP_TOP_MARK position first
             // The PatternCutter will trim off the remaining quoted headers
             if ($do_cut) {
-                $cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+                $cut         = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
                 $generic_cut = $cut->cutQuoteBlock($this->body, false);
                 if ($this->body != $generic_cut) {
                     $this->logMessage("Generic cutter matched");
-                    $this->body = $generic_cut;
-                    $this->generic_cut = $generic_cut;
+                    $this->body             = $generic_cut;
+                    $this->generic_cut      = $generic_cut;
                     $this->found_top_marker = true;
-                    $has_cut = true;
+                    $has_cut                = true;
                 } else {
                     $this->logMessage("Generic cutter did not match");
                     $this->found_top_marker = false;
@@ -330,15 +329,15 @@ class TicketIncomingEmailMessage
             $this->body_full   = Strings::utf8_bad_strip($this->body_full);
             $this->generic_cut = Strings::utf8_bad_strip($this->generic_cut);
 
-            $this->body = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($this->body, \ENT_QUOTES, 'UTF-8')));
-            $this->body_full = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($this->body_full, \ENT_QUOTES, 'UTF-8')));
-            $this->generic_cut = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($this->generic_cut, \ENT_QUOTES, 'UTF-8')));
+            $this->body         = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($this->body, \ENT_QUOTES, 'UTF-8')));
+            $this->body_full    = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($this->body_full, \ENT_QUOTES, 'UTF-8')));
+            $this->generic_cut  = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($this->generic_cut, \ENT_QUOTES, 'UTF-8')));
             $this->body_is_html = false;
         }
 
         if (!$is_text) {
             $this->body_raw = $this->body;
-            $this->body = $cleaner->clean($this->body, 'html_email_preclean');
+            $this->body     = $cleaner->clean($this->body, 'html_email_preclean');
 
             if ($did_html_trim) {
                 // We pre-trimmed, lets set the full body to the plaintext version so we always have the full message
@@ -358,16 +357,16 @@ class TicketIncomingEmailMessage
                 }
 
                 if ($this->body != $generic_cut && trim(Strings::stripTags($generic_cut))) {
-                    $this->body = $generic_cut;
-                    $this->generic_cut = $generic_cut;
+                    $this->body             = $generic_cut;
+                    $this->generic_cut      = $generic_cut;
                     $this->found_top_marker = true;
-                    $has_cut = true;
+                    $has_cut                = true;
                 } else {
                     $this->found_top_marker = false;
                 }
 
                 if ($this->body_is_html && !$ticket_email->force_no_pattern_cutter) {
-                    $cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
+                    $cutter         = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
                     $pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
                     $cutter->addPatterns($pattern_config->all());
 
@@ -400,7 +399,7 @@ class TicketIncomingEmailMessage
         }
 
         // Cut down the quoted message part to 10000 chars
-        $cut_len = strlen($this->body);
+        $cut_len  = strlen($this->body);
         $full_len = strlen($this->body_full);
 
         if (($full_len - $cut_len) > 19000) {
@@ -425,7 +424,7 @@ class TicketIncomingEmailMessage
         }
 
         // Replace inline image tags with tokens
-        $this->body = $inline_images->processTokens($this->body);
+        $this->body      = $inline_images->processTokens($this->body);
         $this->body_full = $inline_images2->processTokens($this->body_full);
 
         if ($this->body_is_html) {
@@ -438,7 +437,7 @@ class TicketIncomingEmailMessage
         }
 
         if ($token_replace_callback) {
-            $this->body = call_user_func($token_replace_callback, $this->body, $inline_images);
+            $this->body      = call_user_func($token_replace_callback, $this->body, $inline_images);
             $this->body_full = call_user_func($token_replace_callback, $this->body_full, $inline_images2);
         }
 
@@ -457,7 +456,7 @@ class TicketIncomingEmailMessage
             if (isset($this->generic_cut) && trim(strip_tags($this->generic_cut))) {
                 $this->body = $this->generic_cut;
             } else {
-                $this->body = $this->body_full;
+                $this->body      = $this->body_full;
                 $this->body_full = '';
             }
         }
@@ -473,8 +472,8 @@ class TicketIncomingEmailMessage
 
         $this->body_raw = $body_raw;
 
-        $this->body = $cleaner->clean($this->body, 'html_email_postclean');
-        $this->body_raw = $cleaner->clean($this->body_raw, 'html_email_postclean');
+        $this->body      = $cleaner->clean($this->body, 'html_email_postclean');
+        $this->body_raw  = $cleaner->clean($this->body_raw, 'html_email_postclean');
         $this->body_full = $cleaner->clean($this->body_full, 'html_email_postclean');
 
         if ($is_text && $did_html_trim) {
@@ -483,7 +482,8 @@ class TicketIncomingEmailMessage
     }
 
     /**
-     * Set the logger
+     * Set the logger.
+     *
      * @param \Orb\Log\Logger $logger
      */
     public function setLogger(Logger $logger)

@@ -26,26 +26,25 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category ContentSearch
  */
 
 namespace Application\DeskPRO\ContentSearch;
 
 /**
- * If content is searchable, it should impleemnt this interface so the indexer can work with it
+ * If content is searchable, it should impleemnt this interface so the indexer can work with it.
  */
 interface ContentSearchable
 {
     /**
-     * Get the unique ID for this item
+     * Get the unique ID for this item.
      */
     public function getSearchId();
 
     /**
-     * Get a normalized string that we should insert into the search database
+     * Get a normalized string that we should insert into the search database.
      *
      * @return string
      */

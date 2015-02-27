@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -56,7 +55,7 @@ class Result
     const FAILURE = 0;
 
     /**
-     * Success
+     * Success.
      */
     const SUCCESS = 1;
 
@@ -78,7 +77,8 @@ class Result
     const MSG_REDIRECT = 'redirect_url';
 
     /**
-     * Array of info (ie debug info etc) from the adapter
+     * Array of info (ie debug info etc) from the adapter.
+     *
      * @var array
      */
     protected $_messages = array();
@@ -91,7 +91,8 @@ class Result
     protected $_identity = null;
 
     /**
-     * Result code from the ogin attempt
+     * Result code from the ogin attempt.
+     *
      * @var int
      */
     protected $_code = 0;
@@ -106,7 +107,7 @@ class Result
      */
     public function __construct($code, \Orb\Auth\Identity $identity = null, array $messages = array())
     {
-        $this->_code = $code;
+        $this->_code     = $code;
         $this->_identity = $identity;
         $this->_messages = $messages;
     }
@@ -164,6 +165,7 @@ class Result
      * Returns an array, or if a key is supplied, that one key or null if it doesn't exist.
      *
      * @array string $key A specific key to get, or null to get the whole array
+     *
      * @return mixed
      */
     public function getMessages($key = null)

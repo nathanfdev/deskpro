@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -67,8 +66,9 @@ class Phrase extends AbstractEntityRepository
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\Language $language
-     * @param  string                               $group
+     * @param \Application\DeskPRO\Entity\Language $language
+     * @param string                               $group
+     *
      * @return array
      */
     public function getPhrasesInGroup($language, $group)

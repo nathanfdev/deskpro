@@ -3,12 +3,12 @@
 namespace Application\DeskPRO\NewSearch\Repository;
 
 /**
- * News Repository
+ * News Repository.
  */
 class NewsRepository extends AbstractRepository
 {
     /**
-     * Fields to be highlighted
+     * Fields to be highlighted.
      *
      * @var array
      */

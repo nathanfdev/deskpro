@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Sms
+ * DeskPRO.
  */
 
 namespace DpUnitTests\DeskPRO\Sms;
@@ -47,7 +44,7 @@ class DeskPROSmsSenderTest extends \DpUnitTestCase
 
         $sms = new DeskPROSmsSender(null, null, $queue);
         $sms->setDefaultFromNumber($from = '+12345678901');
-        $to = '1029384765';
+        $to   = '1029384765';
         $text = new SmsMessage('Some text message!');
 
         $sms_provider = \Mockery::mock('Orb\Sms\SmsProviderInterface');
@@ -63,14 +60,13 @@ class DeskPROSmsSenderTest extends \DpUnitTestCase
     {
         $sms = new DeskPROSmsSender(null, null, $this->getMockJobQueue(), 2);
         $sms->setDefaultFromNumber($from = '+12345678901');
-        $to = '1029384765';
+        $to   = '1029384765';
         $text = new SmsMessage(str_repeat('Some text message!', 50));
 
         $this->setExpectedException('Orb\Sms\SmsException');
 
         $sms->send($to, $text);
     }
-
 
     private function getMockJobQueue()
     {

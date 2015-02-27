@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Sms;
@@ -40,8 +37,9 @@ use Orb\Sms\Provider\TwilioSmsProvider;
 class SmsProviderFactory
 {
     /**
-     * @param                                $provider_name
-     * @param  array                         $params
+     * @param       $provider_name
+     * @param array $params
+     *
      * @return \Orb\Sms\SmsProviderInterface
      */
     public static function create($provider_name, array $params)

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,12 +38,12 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * Stores data from importing for long-term (ie unimplemented features).
- *
  */
 class ImportDataStore extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * The type of id/thing/whatever this is mapping.
+     *
      * @var string
      */
     protected $typename;

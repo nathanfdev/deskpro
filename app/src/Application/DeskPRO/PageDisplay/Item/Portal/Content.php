@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
@@ -54,7 +51,7 @@ class Content extends PortalItemAbstract
             }
 
             $html = $this->renderView($tpl, array(
-                'html' => $html,
+                'html'    => $html,
                 'section' => $this->section,
                 'options' => $this->options,
             ));

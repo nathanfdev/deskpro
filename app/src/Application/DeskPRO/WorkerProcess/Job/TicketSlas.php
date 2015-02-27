@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -41,7 +38,7 @@ use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use Application\DeskPRO\Tickets\Slas\SlaProcessor;
 
 /**
- * Handles SLA warn/fail updates
+ * Handles SLA warn/fail updates.
  */
 class TicketSlas extends AbstractJob
 {
@@ -63,7 +60,7 @@ class TicketSlas extends AbstractJob
             return $context;
         };
 
-        $count_failed = $proc->processAllFailed($context_factory, App::$container->getTicketManager());
+        $count_failed  = $proc->processAllFailed($context_factory, App::$container->getTicketManager());
         $count_warning = $proc->processAllWarning($context_factory, App::$container->getTicketManager());
 
         if ($count_warning || $count_failed) {

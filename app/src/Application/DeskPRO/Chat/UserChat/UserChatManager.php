@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Chat\UserChat;
 
@@ -107,10 +105,9 @@ class UserChatManager
     }
 
     /**
-     * Set the auto-assigner
+     * Set the auto-assigner.
      *
      * @param $assigner
-     * @return void
      */
     public function setAutoAssigner(AutoAssigner $assigner)
     {
@@ -149,7 +146,7 @@ class UserChatManager
             if (count($traps) || @$chat_options['email_address2'] != "yes") {
                 $error_code = 'person_disabled';
 
-                return null;
+                return;
             }
 
             $chat_options['name']  = empty($chat_options['name']) ? '' : $chat_options['name'];
@@ -189,7 +186,7 @@ class UserChatManager
             if ($convo->person && $convo->person->is_disabled) {
                 $error_code = 'person_disabled';
 
-                return null;
+                return;
             }
 
             // Update the visitor name/email while we have a chance,
@@ -301,7 +298,7 @@ class UserChatManager
     }
 
     /**
-     * Get an open chat for the users session
+     * Get an open chat for the users session.
      *
      * @return \Application\DeskPRO\Entity\ChatConversation
      */
@@ -352,9 +349,8 @@ class UserChatManager
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
-     * @param  \Application\DeskPRO\Entity\Person           $person
-     * @return void
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param \Application\DeskPRO\Entity\Person           $person
      */
     public function personJoined(ChatConversation $convo, Person $person)
     {
@@ -387,7 +383,7 @@ class UserChatManager
             $this->addSystemMessage(
                 $convo,
                 'message_user-joined',
-                array('name' => $person->display_name_user),
+                array('name'        => $person->display_name_user),
                 array('user_joined' => true, 'person_name' => $person->display_name_user, 'person_id' => $person->id)
             );
 
@@ -400,9 +396,8 @@ class UserChatManager
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
-     * @param  \Application\DeskPRO\Entity\Person           $who
-     * @return void
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param \Application\DeskPRO\Entity\Person           $who
      */
     public function personLeft(ChatConversation $convo, Person $person)
     {
@@ -435,7 +430,7 @@ class UserChatManager
             $this->addSystemMessage(
                 $convo,
                 'message_user-left',
-                array('name' => $person->display_name_user),
+                array('name'      => $person->display_name_user),
                 array('user_left' => true, 'person_name' => $person->display_name_user, 'person_id' => $person->id)
             );
 
@@ -448,12 +443,14 @@ class UserChatManager
     }
 
     /**
-     * Change the department of a chat
+     * Change the department of a chat.
      *
+     *
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param \Application\DeskPRO\Entity\Department|null  $dep
+     * @param \Application\DeskPRO\Entity\Person           $who
      * @throws \Exception
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
-     * @param  \Application\DeskPRO\Entity\Department|null  $dep
-     * @param  \Application\DeskPRO\Entity\Person           $who
+     *
      * @return
      */
     public function setDepartment(ChatConversation $convo, Department $dep = null, Person $who)
@@ -481,14 +478,14 @@ class UserChatManager
             $this->addSystemMessage(
                 $convo,
                 'message_set-department',
-                array('name' => $who->display_name_user, 'department' => $dep_name),
+                array('name'               => $who->display_name_user, 'department' => $dep_name),
                 array('department_changed' => true, 'new_department_id' => $convo->department_id)
             );
 
             $cm = new ClientMessage();
             $cm->fromArray(array(
-                'channel' => 'chat.depchange',
-                'data'    => array_merge($convo->getInfo(), array('old_department_id' => $old_dep_id)),
+                'channel'                                                             => 'chat.depchange',
+                'data'                                                                => array_merge($convo->getInfo(), array('old_department_id' => $old_dep_id)),
                 'created_by_client'                                                   => $this->getCurrentClientId(),
             ));
 
@@ -503,11 +500,10 @@ class UserChatManager
     }
 
     /**
-     * Assigns a chat to an agent
+     * Assigns a chat to an agent.
      *
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
      * @param $agent
-     * @return void
      */
     public function assignAgent(ChatConversation $convo, Person $agent)
     {
@@ -545,8 +541,8 @@ class UserChatManager
 
             $cm = new ClientMessage();
             $cm->fromArray(array(
-                'channel' => 'chat.reassigned',
-                'data'    => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id, 'new_agent_name' => $agent->display_name_user)),
+                'channel'                                                        => 'chat.reassigned',
+                'data'                                                           => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id, 'new_agent_name' => $agent->display_name_user)),
                 'created_by_client'                                              => $this->getCurrentClientId(),
             ));
 
@@ -561,11 +557,10 @@ class UserChatManager
     }
 
     /**
-     * Add a new user track (the page theyre viewing) message
+     * Add a new user track (the page theyre viewing) message.
      *
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
-     * @param  string                                       $url
-     * @return void
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param string                                       $url
      */
     public function addUserTrack(ChatConversation $convo, $url)
     {
@@ -587,11 +582,10 @@ class UserChatManager
     }
 
     /**
-     * Unassign the chat
+     * Unassign the chat.
      *
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
      * @param $agent
-     * @return void
      */
     public function unassignAgent(ChatConversation $convo)
     {
@@ -622,8 +616,8 @@ class UserChatManager
         if (!$convo->agent && $convo->status == 'open') {
             $cm = new ClientMessage();
             $cm->fromArray(array(
-                'channel' => 'chat.unassigned',
-                'data'    => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id)),
+                'channel'                                                        => 'chat.unassigned',
+                'data'                                                           => array_merge($convo->getInfo(), array('old_agent_id' => $old_agent_id)),
                 'created_by_client'                                              => $this->getCurrentClientId(),
             ));
             $this->em->persist($cm);
@@ -631,11 +625,11 @@ class UserChatManager
     }
 
     /**
-     * Mark an agent as timed out and unassign the chat
+     * Mark an agent as timed out and unassign the chat.
      *
+     *
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
      * @throws \Exception
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
-     * @return void
      */
     public function agentTimeout(ChatConversation $convo, Person $person)
     {
@@ -648,7 +642,7 @@ class UserChatManager
             $this->addSystemMessage(
                 $convo,
                 'message_agent-timeout',
-                array('name' => $convo->agent->display_name_user),
+                array('name'            => $convo->agent->display_name_user),
                 array('agent_timed_out' => true)
             );
 
@@ -667,10 +661,9 @@ class UserChatManager
     }
 
     /**
-     * Mark a user as timed out and end the chat
+     * Mark a user as timed out and end the chat.
      *
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
-     * @return void
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
      */
     public function userTimeout(ChatConversation $convo)
     {
@@ -693,10 +686,9 @@ class UserChatManager
     }
 
     /**
-     * Mark the chat as ended due to a wait timeout
+     * Mark the chat as ended due to a wait timeout.
      *
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
-     * @return void
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
      */
     public function waitTimeout(ChatConversation $convo)
     {
@@ -719,10 +711,9 @@ class UserChatManager
     }
 
     /**
-     * Mark the chat as ended due to a wait timeout
+     * Mark the chat as ended due to a wait timeout.
      *
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
-     * @return void
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
      */
     public function userAbandoned(ChatConversation $convo)
     {
@@ -746,7 +737,6 @@ class UserChatManager
 
     /**
      * @param $reason
-     * @return void
      */
     public function endChat(ChatConversation $convo, Person $author = null, $reason = '')
     {
@@ -790,11 +780,11 @@ class UserChatManager
     }
 
     /**
-     * The user ended the chat
+     * The user ended the chat.
      *
+     *
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
      * @throws \Exception
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
-     * @return void
      */
     public function endChatUser(ChatConversation $convo, $ended_by = null)
     {
@@ -825,7 +815,7 @@ class UserChatManager
     }
 
     /**
-     * Send a transcript of a chat to a user
+     * Send a transcript of a chat to a user.
      *
      * @param \Application\DeskPRO\Entity\ChatConversation $convo
      * @param $email
@@ -853,9 +843,10 @@ class UserChatManager
     }
 
     /**
-     * Send a chat transcript to the user who started a chat if we have an email for them
+     * Send a chat transcript to the user who started a chat if we have an email for them.
      *
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     *
      * @return bool
      */
     public function autoSendChatTranscript(ChatConversation $convo)
@@ -891,9 +882,10 @@ class UserChatManager
     /**
      * Add a new message form the user who started the chat.
      *
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
      * @param $message
-     * @param  array                                        $metadata
+     * @param array                                        $metadata
+     *
      * @return \Application\DeskPRO\Entity\ChatMessage
      */
     public function addUserMessage(ChatConversation $convo, $message, array $metadata = array())
@@ -909,11 +901,12 @@ class UserChatManager
     }
 
     /**
-     * Add a new message from a user
+     * Add a new message from a user.
      *
-     * @param  \Application\DeskPRO\Entity\Person           $author
+     * @param \Application\DeskPRO\Entity\Person           $author
      * @param $message
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     *
      * @return \Application\DeskPRO\Entity\ChatMessage
      */
     public function addMessage(ChatConversation $convo, Person $author = null, $message, array $metadata = array())
@@ -996,7 +989,8 @@ class UserChatManager
 
     /**
      * @param $message_id
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     *
      * @return \Application\DeskPRO\Entity\ChatMessage
      */
     public function addSystemMessage(ChatConversation $convo, $message_id, array $vars = array(), $metadata = array())
@@ -1074,9 +1068,8 @@ class UserChatManager
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param \Application\DeskPRO\Entity\ChatConversation $convo
      * @param $preview_string
-     * @return void
      */
     public function setUserTypingIndicator(ChatConversation $convo, $preview_string)
     {
@@ -1085,8 +1078,8 @@ class UserChatManager
         try {
             $cm = new ClientMessage();
             $cm->fromArray(array(
-                'channel' => $convo->getChannelId('usertyping'),
-                'data'    => array('preview' => $preview_string),
+                'channel'                    => $convo->getChannelId('usertyping'),
+                'data'                       => array('preview' => $preview_string),
                 'created_by_client'          => $this->getCurrentClientId(),
             ));
             $this->em->persist($cm);
@@ -1126,8 +1119,8 @@ class UserChatManager
 
             $cm = new ClientMessage();
             $cm->fromArray(array(
-                'channel' => $convo->getChannelId('ack_messages'),
-                'data'    => array('message_ids' => $message_ids),
+                'channel'                        => $convo->getChannelId('ack_messages'),
+                'data'                           => array('message_ids' => $message_ids),
                 'created_by_client'              => $this->getCurrentClientId(),
             ));
             $this->em->persist($cm);

@@ -26,15 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\EventListener\Language;
 
+use Application\DeskPRO\Entity\Language;
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
-use DeskPRO\Bundle\AppBundle\EventListener\Language\LastLanguageListener;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Routing\UrlMatcher;
 use Psr\Log\LoggerInterface;
@@ -42,7 +40,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Application\DeskPRO\Entity\Language;
 
 class LanguageStackInitializeListener implements EventSubscriberInterface
 {
@@ -59,7 +56,7 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
     public function __construct(LanguageManager $language_manager, LoggerInterface $logger)
     {
         $this->language_manager = $language_manager;
-        $this->logger = $logger;
+        $this->logger           = $logger;
     }
 
     public static function getSubscribedEvents()
@@ -75,7 +72,7 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
             return;
         }
 
-        $request = $event->getRequest();
+        $request        = $event->getRequest();
         $language_stack = $this->language_manager->getLanguageStack();
 
         $this->logger->info('finding a language to push to language stack');
@@ -104,19 +101,20 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
     protected function detectFromRequestPath(Request $request)
     {
         $pathinfo = $request->getPathInfo();
-        $matcher = new UrlMatcher();
-        $split = $matcher->extractLanguageCode($pathinfo);
+        $matcher  = new UrlMatcher();
+        $split    = $matcher->extractLanguageCode($pathinfo);
         if ($lang_code = $split['lang_url_code']) {
             $this->logger->info(sprintf('found "%s" in the uri', $lang_code));
 
             return $this->language_manager->getLanguage($lang_code);
         }
 
-        return null;
+        return;
     }
 
     /**
-     * @param  Request       $request
+     * @param Request $request
+     *
      * @return Language|null
      */
     protected function detectFromRequestCookies(Request $request)
@@ -127,7 +125,7 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
             return $this->language_manager->getLanguage($lang_code);
         }
 
-        return null;
+        return;
     }
 
     private function detectFromEsiQuery(Request $request)
@@ -140,6 +138,6 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
             }
         }
 
-        return null;
+        return;
     }
 }

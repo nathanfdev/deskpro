@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
@@ -60,7 +57,7 @@ class PermanentRedirectExceptionListener implements EventSubscriberInterface
     public function __construct(UrlGeneratorInterface $url_generator, LoggerInterface $logger)
     {
         $this->url_generator = $url_generator;
-        $this->logger = $logger;
+        $this->logger        = $logger;
     }
 
     public function onKernelException(GetResponseForExceptionEvent $event)

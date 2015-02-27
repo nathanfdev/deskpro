@@ -99,7 +99,7 @@ $files = array(
 $finder = new \Symfony\Component\Finder\Finder();
 $finder->in(DP_ROOT.'/src/Application/DeskPRO/DependencyInjection/SystemServices')->files()->name('*.php');
 foreach ($finder as $file) {
-    /** @var $file \SplFileInfo */
+    /* @var $file \SplFileInfo */
     $name = $file->getFilename();
     $name = str_replace('.php', '', $name);
 

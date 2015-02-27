@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,8 +37,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * A raw ticket message without any charset conversion into UTF-8
- *
+ * A raw ticket message without any charset conversion into UTF-8.
  */
 class TicketMessageRaw extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -49,14 +47,14 @@ class TicketMessageRaw extends \Application\DeskPRO\Domain\DomainObject
     protected $message = null;
 
     /**
-     * The raw content
+     * The raw content.
      *
      * @var string
      */
     protected $raw = '';
 
     /**
-     * The charset provided
+     * The charset provided.
      *
      * @var string
      */
@@ -74,6 +72,6 @@ class TicketMessageRaw extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(array( 'fieldName' => 'raw', 'type' => 'dpblob_file', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'raw'));
         $metadata->mapField(array( 'fieldName' => 'charset', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'charset'));
-        $metadata->mapManyToOne(array( 'fieldName' => 'message', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'message_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'message', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'message_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if now is a day of week
+ * Checks if now is a day of week.
  *
  * `days` is an int where 1=Monday, 7=Sunday (ISO 8601).
  *
@@ -70,7 +69,7 @@ class CheckDayOfWeek extends AbstractTriggerTerm
      */
     public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $op = $this->getTermOperator();
+        $op      = $this->getTermOperator();
         $options = $this->getTermOptions();
 
         try {

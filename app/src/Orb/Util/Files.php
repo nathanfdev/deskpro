@@ -26,16 +26,15 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
 namespace Orb\Util;
 
 /**
- * Helper files for working with files
+ * Helper files for working with files.
  *
  * @static
  */
@@ -46,18 +45,20 @@ class Files
     }
 
     /**
-     * @param  string|resource   $file_or_fp Path to a filename or an existing file resource
-     * @param  int               $size       How many bytes from the end to read
-     * @return string
+     * @param string|resource $file_or_fp Path to a filename or an existing file resource
+     * @param int             $size       How many bytes from the end to read
+     *
      * @throws \RuntimeException
+     * @return string
+     *
      */
     public static function readFromEnd($file_or_fp, $size)
     {
         if (is_resource($file_or_fp)) {
-            $fp = $file_or_fp;
+            $fp       = $file_or_fp;
             $did_open = false;
         } else {
-            $fp = @fopen($file_or_fp, 'r');
+            $fp       = @fopen($file_or_fp, 'r');
             $did_open = true;
 
             if (!$fp) {

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -61,7 +58,7 @@ class Build1349107085 extends AbstractBuild
             $event = str_replace('time_', 'time.', $info['event_trigger']);
 
             $update = array(
-                'event_trigger' => $event,
+                'event_trigger'         => $event,
                 'event_trigger_options' => $opt,
             );
 
@@ -83,14 +80,14 @@ class Build1349107085 extends AbstractBuild
 
         foreach ($triggers as $trigger) {
             $trigger['terms'] = unserialize($trigger['terms']);
-            $terms = null;
-            $event_trigger = '';
+            $terms            = null;
+            $event_trigger    = '';
 
             switch ($trigger['event_trigger']) {
                 case 'new_ticket':
-                    $sig_term = null;
+                    $sig_term  = null;
                     $hit_check = array();
-                    $terms = $this->snipTerm($trigger['terms'], 'creation_system', $sig_term, array('gateway_account', 'gateway_address'), $hit_check);
+                    $terms     = $this->snipTerm($trigger['terms'], 'creation_system', $sig_term, array('gateway_account', 'gateway_address'), $hit_check);
 
                     if (!$sig_term) {
                         $event_trigger = 'new.web.user';
@@ -127,16 +124,16 @@ class Build1349107085 extends AbstractBuild
 
                 case 'new_reply':
                     $sig_term = null;
-                    $terms = $this->snipTerm($trigger['terms'], 'creation_system', $sig_term);
+                    $terms    = $this->snipTerm($trigger['terms'], 'creation_system', $sig_term);
 
                     $sig_term2 = null;
-                    $terms = $this->snipTerm($terms, 'action_performer', $sig_term2);
+                    $terms     = $this->snipTerm($terms, 'action_performer', $sig_term2);
 
                     if (!$sig_term) {
                         $event_trigger = 'update';
-                        $terms[] = array(
-                            'type' => 'new_reply_user',
-                            'op' => 'is',
+                        $terms[]       = array(
+                            'type'    => 'new_reply_user',
+                            'op'      => 'is',
                             'options' => array('do' => 1),
                         );
                     } else {
@@ -145,26 +142,26 @@ class Build1349107085 extends AbstractBuild
                             case 'web.person':
                             case 'gateway.person':
                                 $event_trigger = 'update.user';
-                                $terms[] = array(
-                                    'type' => 'new_reply_user',
-                                    'op' => 'is',
+                                $terms[]       = array(
+                                    'type'    => 'new_reply_user',
+                                    'op'      => 'is',
                                     'options' => array('do' => 1),
                                 );
                                 break;
                             case 'web.agent':
                             case 'gateway.agent':
                                 $event_trigger = 'update.agent';
-                                $terms[] = array(
-                                    'type' => 'new_reply_agent',
-                                    'op' => 'is',
+                                $terms[]       = array(
+                                    'type'    => 'new_reply_agent',
+                                    'op'      => 'is',
                                     'options' => array('do' => 1),
                                 );
                                 break;
                             default:
                                 $event_trigger = 'update';
-                                $terms[] = array(
-                                    'type' => 'new_reply_user',
-                                    'op' => 'is',
+                                $terms[]       = array(
+                                    'type'    => 'new_reply_user',
+                                    'op'      => 'is',
                                     'options' => array('do' => 1),
                                 );
                         }
@@ -174,7 +171,7 @@ class Build1349107085 extends AbstractBuild
 
                 case 'property_change':
                     $sig_term = null;
-                    $terms = $this->snipTerm($trigger['terms'], 'action_performer', $sig_term);
+                    $terms    = $this->snipTerm($trigger['terms'], 'action_performer', $sig_term);
 
                     if (!$sig_term) {
                         $event_trigger = 'updated';
@@ -198,7 +195,7 @@ class Build1349107085 extends AbstractBuild
             if ($event_trigger) {
                 $this->out("-- Updated {$trigger['id']} to $event_trigger");
                 $this->container->getDb()->update('ticket_triggers', array(
-                    'terms' => serialize($terms),
+                    'terms'         => serialize($terms),
                     'event_trigger' => $event_trigger,
                 ), array('id' => $trigger['id']));
             }

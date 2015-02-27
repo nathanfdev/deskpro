@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -649,7 +646,7 @@ class PublishController extends AbstractController
         }
 
         if (!$content_validating) {
-            return null;
+            return;
         }
 
         // If we got here, just return the first
@@ -660,7 +657,7 @@ class PublishController extends AbstractController
             return $obj;
         }
 
-        return null;
+        return;
     }
 
     public function validatingMassActionsAction($action)

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Search
  */
 
@@ -37,16 +36,16 @@ namespace Application\DeskPRO\Search;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Organization;
-use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 
 /**
- * When something needs to be indexed, index it through this
+ * When something needs to be indexed, index it through this.
  */
 class SearchIndexer
 {
@@ -93,7 +92,7 @@ class SearchIndexer
                         return 'fos_elastica.object_persister.deskpro.chat_conversation';
                 }
 
-                return null;
+                return;
             };
 
             foreach ($updates as $object) {

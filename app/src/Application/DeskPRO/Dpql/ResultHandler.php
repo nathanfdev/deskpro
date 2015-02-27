@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql;
@@ -92,7 +89,7 @@ class ResultHandler
     protected $_splitColumns = array();
 
     /**
-     * List of select column IDs that should be totaled
+     * List of select column IDs that should be totaled.
      *
      * @var array
      */

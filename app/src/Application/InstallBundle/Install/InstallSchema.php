@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage InstallBundle
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Install;
@@ -40,7 +37,8 @@ use Orb\Log\Logger;
 class InstallSchema
 {
     /**
-     * Plain database connection for raw queries
+     * Plain database connection for raw queries.
+     *
      * @var \Application\DeskPRO\DBAL\Connection
      */
     protected $db;
@@ -75,16 +73,16 @@ class InstallSchema
 
         // Generate now dynamically (dev tool)
         if ($schema === null) {
-            $sc = new \Application\InstallBundle\Data\GenerateSchema(App::getOrm());
+            $sc     = new \Application\InstallBundle\Data\GenerateSchema(App::getOrm());
             $schema = array(
-                'create' => $sc->getCreates(),
-                'alter' => $sc->getAlters(),
+                'create'  => $sc->getCreates(),
+                'alter'   => $sc->getAlters(),
                 'trigger' => $sc->getTriggers(),
             );
         }
 
         $this->schema = $schema;
-        $this->build = $build;
+        $this->build  = $build;
     }
 
     /**
@@ -132,9 +130,10 @@ class InstallSchema
     }
 
     /**
-     * Run through all the queries
+     * Run through all the queries.
      *
-     * @param  bool $halt_on_error True to stop and throw an exception when an error is encountered.
+     * @param bool $halt_on_error True to stop and throw an exception when an error is encountered.
+     *
      * @return bool True on success, false on error
      */
     public function run($halt_on_error = true, $limit = 1000000, $skip = 0, $callback = null)

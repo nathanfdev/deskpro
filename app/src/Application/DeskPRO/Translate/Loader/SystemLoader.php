@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Translate
  */
 
@@ -37,12 +36,13 @@ namespace Application\DeskPRO\Translate\Loader;
 use Orb\Util\Arrays;
 
 /**
- * Loads default phrases from filesystem-based lang packs
+ * Loads default phrases from filesystem-based lang packs.
  */
 class SystemLoader implements LoaderInterface
 {
     /**
-     * Array of filepath => array
+     * Array of filepath => array.
+     *
      * @var array
      */
     protected $loaded_files = array();
@@ -86,7 +86,8 @@ class SystemLoader implements LoaderInterface
     }
 
     /**
-     * @param  string $file
+     * @param string $file
+     *
      * @return array
      */
     public function loadFile($file)

@@ -27,16 +27,13 @@
 
 namespace Application\ImportBundle\Command;
 
-use Application\ImportBundle\ImporterFactory;
-use Application\ImportBundle\ImporterStatusFnCallback;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class ResetCommand
- * @package Application\ImportBundle\Command
+ * Class ResetCommand.
  */
 class ResetCommand extends ContainerAwareCommand
 {

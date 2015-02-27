@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -69,8 +68,9 @@ class PackageInstaller
     /**
      * Install or update a package.
      *
-     * @param  Package    $package The package to installl
-     * @param  AppPackage $def     Existing package record. It will be updated. Otherwise, a new AppPackage is created instead.
+     * @param Package    $package The package to installl
+     * @param AppPackage $def     Existing package record. It will be updated. Otherwise, a new AppPackage is created instead.
+     *
      * @return AppPackage
      */
     public function installPackage(Package $package, AppPackage $def = null)
@@ -292,10 +292,11 @@ class PackageInstaller
     }
 
     /**
-     * @param  AppPackage $def
-     * @param  string     $name
-     * @param  string     $file    File path, or a string hash if $as_hash is used
-     * @param  bool       $as_hash
+     * @param AppPackage $def
+     * @param string     $name
+     * @param string     $file    File path, or a string hash if $as_hash is used
+     * @param bool       $as_hash
+     *
      * @return bool
      */
     private function isAssetBlobChanged(AppPackage $def, $name, $file, $as_hash = false)
@@ -322,11 +323,12 @@ class PackageInstaller
     }
 
     /**
-     * @param  Package                              $package
-     * @param  AppPackage                           $def
-     * @param  array                                $asset_info
+     * @param Package    $package
+     * @param AppPackage $def
+     * @param array      $asset_info
      * @param $tag
-     * @param  array                                $old_blobs
+     * @param array      $old_blobs
+     *
      * @return \Application\DeskPRO\Entity\AppAsset
      */
     private function _addAssetFromInfo(Package $package, AppPackage $def, array $asset_info, $tag, array &$old_blobs)
@@ -367,11 +369,12 @@ class PackageInstaller
     }
 
     /**
-     * @param  AppPackage                                $def
-     * @param  Blob                                      $blob
-     * @param  null                                      $tag
-     * @param  null                                      $filename
-     * @param  array                                     $old_blobs
+     * @param AppPackage $def
+     * @param Blob       $blob
+     * @param null       $tag
+     * @param null       $filename
+     * @param array      $old_blobs
+     *
      * @return \Application\DeskPRO\Entity\AppAsset|null
      */
     private function _addAssetBlob(AppPackage $def, Blob $blob, $tag = null, $filename = null, array &$old_blobs)

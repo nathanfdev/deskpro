@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category HipChat
  */
 
@@ -113,8 +112,9 @@ class HipChatAction extends AbstractContainerAwareAction implements ActionInterf
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @return string
      */
     public function renderMessage(Ticket $ticket, ExecutorContextInterface $context)

@@ -28,10 +28,9 @@
 namespace Application\ImportBundle\Entity;
 
 /**
- * Exporting entity interface
+ * Exporting entity interface.
  *
  * Interface EntityInterface
- * @package Application\ImportBundle\Entity
  */
 interface EntityInterface
 {
@@ -46,28 +45,28 @@ interface EntityInterface
     const TYPE_FEEDBACK       = 'feedback';
 
     /**
-     * Get entity type
+     * Get entity type.
      *
      * @return string
      */
     public function getType();
 
     /**
-     * Get entity oid
+     * Get entity oid.
      *
      * @return int
      */
     public function getOid();
 
     /**
-     * Get entity destination
+     * Get entity destination.
      *
      * @return string
      */
     public function getDestination();
 
     /**
-     * Convert to array
+     * Convert to array.
      *
      * @return array
      */

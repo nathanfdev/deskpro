@@ -26,107 +26,95 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
+use PhpSpec\ObjectBehavior;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
-use Zend\Session\Config\ConfigInterface;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter
  */
 class TicketsVoterSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         ContainerInterface $container,
         TokenInterface $token,
         Person $person,
         Ticket $ticket
-    )
-    {
+    ) {
         $person->getId()->willReturn(1);
         $token->getUser()->willReturn($person);
 
         $this->beConstructedWith($container);
     }
 
-    function it_abstains_from_non_ticket_votes(
+    public function it_abstains_from_non_ticket_votes(
         TokenInterface $token,
         Ticket $ticket
-    )
-    {
+    ) {
         $this->verifyAbstainVote(ContentRatingsVoter::RATE_ARTICLES, $token, $ticket);
     }
 
-    function it_denies_list_view_if_not_logged_in(
+    public function it_denies_list_view_if_not_logged_in(
         TokenInterface $unauthenticated_token,
         Ticket $ticket
-    )
-    {
+    ) {
         $unauthenticated_token->getUser()->willReturn(null);
 
         $this->verifyDeniedVote(TicketsVoter::TICKET_LIST, $unauthenticated_token, $ticket);
     }
 
-    function it_grants_list_view_if_logged_in(
+    public function it_grants_list_view_if_logged_in(
         TokenInterface $token,
         Ticket $ticket
-    )
-    {
+    ) {
         $this->verifyGrantedVote(TicketsVoter::TICKET_LIST, $token, $ticket);
     }
 
-    function it_denies_view_if_not_involved_with_ticket(
+    public function it_denies_view_if_not_involved_with_ticket(
         TokenInterface $token,
         Ticket $ticket,
         Person $person
-    )
-    {
+    ) {
         $ticket->isInvolved($person)->willReturn(false);
 
         $this->verifyDeniedVote(TicketsVoter::TICKET_VIEW, $token, $ticket);
     }
 
-    function it_grants_view_if_involved(
+    public function it_grants_view_if_involved(
         TokenInterface $token,
         Ticket $ticket,
         Person $person
-    )
-    {
+    ) {
         $ticket->isInvolved($person)->willReturn(true);
 
         $this->verifyGrantedVote(TicketsVoter::TICKET_VIEW, $token, $ticket);
     }
 
-    function it_denies_edit_if_not_involved_with_ticket(
+    public function it_denies_edit_if_not_involved_with_ticket(
         TokenInterface $token,
         Ticket $ticket,
         Person $person
-    )
-    {
+    ) {
         $ticket->isInvolved($person)->willReturn(false);
 
         $this->verifyDeniedVote(TicketsVoter::TICKET_EDIT, $token, $ticket);
     }
 
-    function it_denies_edit_if_only_a_participant(
+    public function it_denies_edit_if_only_a_participant(
         TokenInterface $token,
         Ticket $ticket,
         Person $person
-    )
-    {
+    ) {
         $ticket->isInvolved($person)->willReturn(true);
         $ticket->isParticipant($person)->willReturn(true);
         $ticket->isOwner($person)->willReturn(false);
@@ -135,12 +123,11 @@ class TicketsVoterSpec extends ObjectBehavior
         $this->verifyDeniedVote(TicketsVoter::TICKET_EDIT, $token, $ticket);
     }
 
-    function it_grants_edit_if_ticket_owner(
+    public function it_grants_edit_if_ticket_owner(
         TokenInterface $token,
         Ticket $ticket,
         Person $person
-    )
-    {
+    ) {
         $ticket->isInvolved($person)->willReturn(true);
         $ticket->isParticipant($person)->willReturn(false);
         $ticket->isOwner($person)->willReturn(true);
@@ -149,12 +136,11 @@ class TicketsVoterSpec extends ObjectBehavior
         $this->verifyGrantedVote(TicketsVoter::TICKET_EDIT, $token, $ticket);
     }
 
-    function it_grants_edit_if_organization_manager(
+    public function it_grants_edit_if_organization_manager(
         TokenInterface $token,
         Ticket $ticket,
         Person $person
-    )
-    {
+    ) {
         $ticket->isInvolved($person)->willReturn(true);
         $ticket->isParticipant($person)->willReturn(false);
         $ticket->isOwner($person)->willReturn(false);
@@ -163,11 +149,7 @@ class TicketsVoterSpec extends ObjectBehavior
         $this->verifyGrantedVote(TicketsVoter::TICKET_EDIT, $token, $ticket);
     }
 
-
-
-
-
-    function verifyGrantedVote($attribute, $token, $object)
+    public function verifyGrantedVote($attribute, $token, $object)
     {
         if (!is_array($attribute)) {
             $attribute = array($attribute);
@@ -177,7 +159,7 @@ class TicketsVoterSpec extends ObjectBehavior
             ->shouldReturn(VoterInterface::ACCESS_GRANTED);
     }
 
-    function verifyDeniedVote($attribute, $token, $object)
+    public function verifyDeniedVote($attribute, $token, $object)
     {
         if (!is_array($attribute)) {
             $attribute = array($attribute);
@@ -187,7 +169,7 @@ class TicketsVoterSpec extends ObjectBehavior
             ->shouldReturn(VoterInterface::ACCESS_DENIED);
     }
 
-    function verifyAbstainVote($attribute, $token, $object)
+    public function verifyAbstainVote($attribute, $token, $object)
     {
         if (!is_array($attribute)) {
             $attribute = array($attribute);

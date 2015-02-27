@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -65,21 +64,22 @@ class IdentityHelper
      */
     public function __construct(EntityManager $em, AbstractEntityRepository $repos)
     {
-        $this->repos = $repos;
-        $this->em = $em;
+        $this->repos       = $repos;
+        $this->em          = $em;
         $this->entity_name = $repos->getName();
     }
 
     /**
      * Find a set of records by ID.
      *
-     * @param  int[] $ids
+     * @param int[] $ids
+     *
      * @return array
      */
     public function findByIds(array $ids, $same_order = true)
     {
         $missing = array();
-        $return = array();
+        $return  = array();
 
         if (!$this->hasIdentityMap()) {
             $missing = $ids;
@@ -114,7 +114,7 @@ class IdentityHelper
     }
 
     /**
-     * Get an array of all loaded entities of this type
+     * Get an array of all loaded entities of this type.
      *
      * @return array
      */
@@ -134,7 +134,7 @@ class IdentityHelper
     }
 
     /**
-     * Check if there are any objects in the Doctrine identity map at all
+     * Check if there are any objects in the Doctrine identity map at all.
      *
      * @return bool
      */
@@ -147,12 +147,13 @@ class IdentityHelper
 
     /**
      * @param $id
+     *
      * @return array|null
      */
     public function getCollection($name)
     {
         if (!isset($this->collections[$name])) {
-            return null;
+            return;
         }
 
         $return = array();
@@ -169,19 +170,20 @@ class IdentityHelper
 
     /**
      * @param string
+     *
      * @return array
      */
     public function getCollectionIds($name)
     {
         if (!isset($this->collections[$name])) {
-            return null;
+            return;
         }
 
         return $this->collections[$name];
     }
 
     /**
-     * Add a collection
+     * Add a collection.
      *
      * @param $name
      * @param array $ids
@@ -192,7 +194,7 @@ class IdentityHelper
     }
 
     /**
-     * Adds a collection from an array result set of objects
+     * Adds a collection from an array result set of objects.
      *
      * @param $name
      * @param array $results
@@ -207,7 +209,7 @@ class IdentityHelper
     }
 
     /**
-     * Clear a collection
+     * Clear a collection.
      *
      * @param $name
      */
@@ -217,9 +219,10 @@ class IdentityHelper
     }
 
     /**
-     * Check if a collection exists
+     * Check if a collection exists.
      *
      * @param $name
+     *
      * @return bool
      */
     public function hasCollection($name)

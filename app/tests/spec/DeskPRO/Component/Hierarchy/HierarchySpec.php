@@ -9,12 +9,11 @@ use Prophecy\Argument;
 
 class HierarchySpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         HierarchyFormatterInterface $formatter,
         HierarchyNode $node1,
         HierarchyNode $node2
-    )
-    {
+    ) {
         $node1->getData()->willReturn(array('id' => 11));
         $node1->getOrder()->willReturn(1);
         $node1->setHierarchy(Argument::any())->shouldBeCalled();
@@ -28,25 +27,23 @@ class HierarchySpec extends ObjectBehavior
         $this->beConstructedWith($root_nodes, $formatter, 'data[id]');
     }
 
-    function it_always_has_a_formatter_and_its_root_nodes_are_ordered(
+    public function it_always_has_a_formatter_and_its_root_nodes_are_ordered(
         HierarchyFormatterInterface $formatter,
         HierarchyNode $node1,
         HierarchyNode $node2
-    )
-    {
+    ) {
         $this->getFormatter()->shouldReturn($formatter);
         $this->getRootNodes()->shouldBeLike(array($node2, $node1));
     }
 
-    function it_is_countable()
+    public function it_is_countable()
     {
         $this->count()->shouldReturn(2);
     }
 
-    function it_finds_a_root_node_by_id_via_the_property_path_defined_in_constructor(
+    public function it_finds_a_root_node_by_id_via_the_property_path_defined_in_constructor(
         HierarchyNode $node2
-    )
-    {
+    ) {
         $this->findNodeById(22)->shouldReturn($node2);
     }
 }

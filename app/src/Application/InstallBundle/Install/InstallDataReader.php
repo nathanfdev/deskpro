@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\InstallBundle\Install;
 
@@ -93,14 +91,14 @@ class InstallDataReader implements \IteratorAggregate, \Countable
                 continue;
             }
 
-            $desc_str = $_desc_str;
+            $desc_str  = $_desc_str;
             $_desc_str = null;
 
             // something.some_name
             // Tag: something, name: some_name
             $desc_parts = explode('.', $desc_str, 2);
             if (count($desc_parts) == 1) {
-                $tag = 'default';
+                $tag  = 'default';
                 $name = $desc_parts;
             } else {
                 list($tag, $name) = $desc_parts;

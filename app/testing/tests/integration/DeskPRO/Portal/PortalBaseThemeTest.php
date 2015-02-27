@@ -26,17 +26,12 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpIntegrationTests\DeskPRO\Portal;
 
-
 use DeskPRO\Kernel\PortalKernel;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpKernel\Client;
 
@@ -71,12 +66,12 @@ class PortalBaseThemeTest extends WebTestCase
         //$this->test200codeForPath($client, '/tickets/{ref}');
     }
 
-
     /**
      * Creates a Client.
      *
-     * @param  array  $options An array of options to pass to the createKernel class
-     * @param  array  $server  An array of server parameters
+     * @param array $options An array of options to pass to the createKernel class
+     * @param array $server  An array of server parameters
+     *
      * @return Client A Client instance
      */
     protected static function createClient(array $options = array(), array $server = array())
@@ -95,7 +90,6 @@ class PortalBaseThemeTest extends WebTestCase
 
         return new PortalKernel('test', true);
     }
-
 
     /**
      * @param $client

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -55,7 +54,8 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
     }
 
     /**
-     * @param  ApiPackageRequestContext                   $context
+     * @param ApiPackageRequestContext $context
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function checkRequirementsAction(ApiPackageRequestContext $context)
@@ -64,7 +64,8 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
     }
 
     /**
-     * @param  ApiPackageRequestContext                   $context
+     * @param ApiPackageRequestContext $context
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function testSettingsAction(ApiPackageRequestContext $context)

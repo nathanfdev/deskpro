@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -89,7 +88,8 @@ class AgentAlert extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get data. Specify $target to optionally get only data to deliver to a $target type.
      *
-     * @param  string|null $target
+     * @param string|null $target
+     *
      * @return array
      */
     public function getData($target = null)
@@ -135,7 +135,7 @@ class AgentAlert extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->setPrimaryTable(array(
-            'name' => 'agent_alerts',
+            'name'    => 'agent_alerts',
             'indexes' => array(
                 'date_created_idx' => array('columns' => array('date_created')),
                 'is_dismissed_idx' => array('columns' => array('is_dismissed', 'date_created')),
@@ -146,6 +146,6 @@ class AgentAlert extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'nullable' => false, 'columnName' => 'data'));
         $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_created' ));
         $metadata->mapField(array( 'fieldName' => 'is_dismissed', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_dismissed'));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

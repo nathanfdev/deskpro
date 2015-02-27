@@ -26,13 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Translate
  */
 
 namespace Application\DeskPRO\Translate\Loader;
+
 use Application\DeskPRO\App;
 
 /**
@@ -45,7 +45,8 @@ use Application\DeskPRO\App;
 class DbLoader implements LoaderInterface
 {
     /**
-     * Plain database connection for raw queries
+     * Plain database connection for raw queries.
+     *
      * @var \Application\DeskPRO\DBAL\Connection
      */
     protected $dbconn;

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Languages;
@@ -36,7 +34,7 @@ namespace Application\DeskPRO\Languages;
 use SimpleXMLElement;
 
 /**
- * A language pack file is simple XML that looks like this:
+ * A language pack file is simple XML that looks like this:.
  *
  * <pack>
  *     <language id="system_name">
@@ -68,15 +66,18 @@ class LanguagePackFile
 
     public function __construct(\SimpleXMLElement $xml)
     {
-        $this->xml = $xml;
+        $this->xml  = $xml;
         $this->pack = new LanguagePack();
     }
 
     /**
      * @static
-     * @param  string                                          $source
-     * @return \Application\DeskPRO\Languages\LanguagePackFile
+     *
+     * @param string $source
+     *
      * @throws \RuntimeException
+     * @return \Application\DeskPRO\Languages\LanguagePackFile
+     *
      */
     public static function newFromString($source)
     {
@@ -90,9 +91,12 @@ class LanguagePackFile
 
     /**
      * @static
-     * @param  string                                          $source
-     * @return \Application\DeskPRO\Languages\LanguagePackFile
+     *
+     * @param string $source
+     *
      * @throws \RuntimeException
+     * @return \Application\DeskPRO\Languages\LanguagePackFile
+     *
      */
     public static function newFromFile($path)
     {
@@ -173,7 +177,7 @@ class LanguagePackFile
         $this->pack->phrases = array();
 
         foreach ($this->xml->phrases->phrase as $node) {
-            $id = (string) $node['id'];
+            $id   = (string) $node['id'];
             $text = (string) $node;
 
             $this->pack->phrases[$id] = $text;

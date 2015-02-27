@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -39,12 +36,12 @@ use Application\DeskPRO\Searcher\ChatConversationSearch;
 use Orb\Util\Numbers;
 
 /**
-* @SWG\Resource(
-* 	resourcePath="/chats",
-* 	description="Operations about Chats",
-* 	basePath="/api"
-* )
-*/
+ * @SWG\Resource(
+ * 	resourcePath="/chats",
+ * 	description="Operations about Chats",
+ * 	basePath="/api"
+ * )
+ */
 class ChatController extends AbstractController
 {
     // todo: better search - ordering, more criteria
@@ -141,12 +138,12 @@ class ChatController extends AbstractController
         $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
             $terms[] = array('type' => ChatConversationSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start,
-                'date2' => $date_created_end,
+                'date1'             => $date_created_start,
+                'date2'             => $date_created_end,
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => ChatConversationSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start,
+                'date1'             => $date_created_start,
             ));
         }
 
@@ -305,7 +302,7 @@ class ChatController extends AbstractController
         $chat_manager = $this->container->getSystemObject('user_chat_manager');
         $chat_manager->personLeft($chat, $this->person);
 
-        /** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+        /* @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
         if ($chat->status == 'open') {
             switch ($this->in->getString('action')) {
                 case 'unassign':
@@ -723,9 +720,11 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @return \Application\DeskPRO\Entity\ChatConversation
+     * @param integer $id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return \Application\DeskPRO\Entity\ChatConversation
+     *
      */
     protected function _getChatOr404($id)
     {

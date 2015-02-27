@@ -26,16 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Doctrine\DBAL\Connection;
 use Application\DeskPRO\Entity;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LabelDef extends AbstractEntityRepository
@@ -91,19 +90,19 @@ class LabelDef extends AbstractEntityRepository
                 break;
         }
         $conn = $this->getEntityManager()->getConnection();
-        $sql = '
+        $sql  = '
             SELECT label, total
             FROM label_defs
             WHERE label_type = ?
             ORDER BY total DESC
         ';
         $params = array($label_type);
-        $types = array(\PDO::PARAM_STR);
+        $types  = array(\PDO::PARAM_STR);
 
         if ($limit) {
             $sql .= ' LIMIT ?';
             $params[] = $limit;
-            $types[] = \PDO::PARAM_INT;
+            $types[]  = \PDO::PARAM_INT;
         }
 
         return $conn->fetchAllKeyValue($sql, $params, $types);
@@ -113,7 +112,9 @@ class LabelDef extends AbstractEntityRepository
      * Get the name of the label entity given a type.
      *
      * @static
+     *
      * @param  $label_type
+     *
      * @return null|string
      */
     public function getLabelEntityFromType($label_type)
@@ -137,11 +138,12 @@ class LabelDef extends AbstractEntityRepository
                 return 'DeskPRO:LabelChatConversation';
         }
 
-        return null;
+        return;
     }
 
     /**
-     * @param  string      $label_type
+     * @param string $label_type
+     *
      * @return string|null
      */
     public function getLabelTableFromType($label_type)
@@ -165,13 +167,13 @@ class LabelDef extends AbstractEntityRepository
                 return 'labels_chat_conversations';
         }
 
-        return null;
+        return;
     }
 
     public function getTypeByEntityName($entityName)
     {
         if (false === $type = array_search($entityName, $this->getLabelEntities(), 1)) {
-            return null;
+            return;
         }
 
         $t = substr($type, 7);
@@ -261,18 +263,19 @@ class LabelDef extends AbstractEntityRepository
      * A tablename=>entityname array of objects that have label capabiltiies.
      *
      * @static
+     *
      * @return array
      */
     public function getLabelEntities()
     {
         return array(
-            'labels_organizations' => 'DeskPRO:LabelOrganization',
-            'labels_people'        => 'DeskPRO:LabelPerson',
-            'labels_tickets'       => 'DeskPRO:LabelTicket',
-            'labels_articles'      => 'DeskPRO:LabelArticle',
-            'labels_feedback'      => 'DeskPRO:LabelFeedback',
-            'labels_downloads'     => 'DeskPRO:LabelDownload',
-            'labels_news'          => 'DeskPRO:LabelNews',
+            'labels_organizations'      => 'DeskPRO:LabelOrganization',
+            'labels_people'             => 'DeskPRO:LabelPerson',
+            'labels_tickets'            => 'DeskPRO:LabelTicket',
+            'labels_articles'           => 'DeskPRO:LabelArticle',
+            'labels_feedback'           => 'DeskPRO:LabelFeedback',
+            'labels_downloads'          => 'DeskPRO:LabelDownload',
+            'labels_news'               => 'DeskPRO:LabelNews',
             'labels_chat_conversations' => 'DeskPRO:LabelChatConversation',
         );
     }
@@ -280,6 +283,7 @@ class LabelDef extends AbstractEntityRepository
     /**
      * @param $type
      * @param $label
+     *
      * @return mixed
      */
     public function getDefinition($type, $label)
@@ -287,7 +291,7 @@ class LabelDef extends AbstractEntityRepository
         return $this->getEntityManager()->createQuery(
             'SELECT d FROM DeskPRO:LabelDef d WHERE d.label_type = :type AND d.label = :label'
         )->setParameters(array(
-            'type' => $type,
+            'type'  => $type,
             'label' => trim($label),
         ))->getOneOrNullResult();
     }
@@ -298,10 +302,10 @@ class LabelDef extends AbstractEntityRepository
     public function getAllDefinitions()
     {
         $definitions = $this->getEntityManager()->getConnection()->fetchAll('SELECT * FROM label_defs');
-        $counts = $this->countDefUsages();
+        $counts      = $this->countDefUsages();
 
         foreach ($definitions as &$def) {
-            $label = $def['label'];
+            $label        = $def['label'];
             $def['total'] = isset($counts[$def['label_type']][$label]) ? $counts[$def['label_type']][$label] : 0;
         }
 
@@ -322,15 +326,16 @@ class LabelDef extends AbstractEntityRepository
             UPDATE IGNORE %s SET label = ? WHERE label = ?
         ", self::$types[$definition['label_type']]['table']), array($definition->label, $definition->label));
 
-        $counts = $this->countDefUsages(array($definition['label_type']));
-        $label = $definition['label'];
+        $counts              = $this->countDefUsages(array($definition['label_type']));
+        $label               = $definition['label'];
         $definition['total'] = isset($counts[$definition['label_type']][$label])
             ? $counts[$definition['label_type']][$label]
             : 0;
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\LabelDef $definition
+     * @param \Application\DeskPRO\Entity\LabelDef $definition
+     *
      * @throws \Exception
      */
     public function deleteDefinition(\Application\DeskPRO\Entity\LabelDef $definition)
@@ -376,8 +381,10 @@ class LabelDef extends AbstractEntityRepository
     /** todo cleanup! */
 
     /**
-     * Get counts for all labels used for a type
-     * @param  array $types
+     * Get counts for all labels used for a type.
+     *
+     * @param array $types
+     *
      * @return mixed
      */
     public function countDefUsages(array $types = array())
@@ -442,10 +449,11 @@ class LabelDef extends AbstractEntityRepository
     }
 
     /**
-     * @param  string                                                        $old_label
-     * @param  string                                                        $new_label
-     * @param  string                                                        $color
-     * @param  string                                                        $type
+     * @param string $old_label
+     * @param string $new_label
+     * @param string $color
+     * @param string $type
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      * @throws \Exception
      */
@@ -484,10 +492,10 @@ class LabelDef extends AbstractEntityRepository
                 if ($def_old && $def_new) {
                     $this->getEntityManager()->remove($def_old);
                 } elseif ($def_old && !$def_new || !$def_old && !$def_new) {
-                    $def_new = new Entity\LabelDef();
+                    $def_new             = new Entity\LabelDef();
                     $def_new->label_type = $type;
-                    $def_new->color = $color ?: '';
-                    $def_new->label = $new_label;
+                    $def_new->color      = $color ?: '';
+                    $def_new->label      = $new_label;
                 } elseif (!$def_old && $def_new) {
                     // nothing to do
                 }

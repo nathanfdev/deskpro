@@ -31,10 +31,9 @@ use Application\ImportBundle\Entity\EntityInterface;
 use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
 
 /**
- * Generator writer interface
+ * Generator writer interface.
  *
  * Interface WriterInterface
- * @package Application\ImportBundle\Generator\Writer
  */
 interface WriterInterface extends GeneratorConfigAwareInterface
 {
@@ -42,16 +41,17 @@ interface WriterInterface extends GeneratorConfigAwareInterface
     const TYPE_DESK_PRO = 'deskpro';
 
     /**
-     * Returns the writer type
+     * Returns the writer type.
      *
      * @return string
      */
     public function getType();
 
     /**
-     * Writes an entity to the storage
+     * Writes an entity to the storage.
      *
      * @param EntityInterface $entity
+     *
      * @return bool
      */
     public function writeData(EntityInterface $entity);

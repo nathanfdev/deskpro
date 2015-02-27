@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -80,7 +79,7 @@ class AppAsset extends DomainObject
     protected $metadata = null;
 
     /**
-     * Set metadata
+     * Set metadata.
      *
      * @param array $metadata
      */
@@ -94,7 +93,7 @@ class AppAsset extends DomainObject
     }
 
     /**
-     * Get metadata
+     * Get metadata.
      *
      * @return array
      */

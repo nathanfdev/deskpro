@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
@@ -54,9 +51,10 @@ class ArticlesDataService extends AbstractDataService
     }
 
     /**
-     * @param  ArticleCategory $category
+     * @param ArticleCategory $category
      * @param $page
      * @param $max_per_page
+     *
      * @return Pagerfanta
      */
     public function getArticlesPager(ArticleCategory $category = null, $page, $max_per_page)
@@ -94,15 +92,17 @@ class ArticlesDataService extends AbstractDataService
     }
 
     /**
-     * Takes null, a category ID, or a ArticleCategory and returns an iterable collection of ArticleCategories
+     * Takes null, a category ID, or a ArticleCategory and returns an iterable collection of ArticleCategories.
      *
      * Null means ruturn the roots.
      *
      * TODO: this is using the doctrine proxy as a method of finding children of the category. Might be able to improve that.
      *
-     * @param  int|null|ArticleCategory  $category
-     * @return ArticleCategory[]
+     * @param int|null|ArticleCategory $category
+     *
      * @throws \InvalidArgumentException
+     * @return ArticleCategory[]
+     *
      */
     public function getCategoryChildren($category)
     {
@@ -130,7 +130,8 @@ class ArticlesDataService extends AbstractDataService
     }
 
     /**
-     * @param  int|null|Article $article
+     * @param int|null|Article $article
+     *
      * @return Article|null
      */
     public function getArticle($article)
@@ -144,7 +145,7 @@ class ArticlesDataService extends AbstractDataService
             ),
             function () use ($that, $article) {
                 if (!$article) { // we need some input
-                    return null;
+                    return;
                 }
 
                 if ($article instanceof Article) { // already have what you seek
@@ -157,11 +158,12 @@ class ArticlesDataService extends AbstractDataService
     }
 
     /**
-     * Get a category based on arbirtary input
+     * Get a category based on arbirtary input.
      *
      * TODO: optimize the heck out of any possible inputs here (if it helps: cache in an array at least, cache long term if desired, should normalize cache key on lowest common denominator "id")
      *
-     * @param  int|null|ArticleCategory $category
+     * @param int|null|ArticleCategory $category
+     *
      * @return ArticleCategory|null
      */
     public function getCategory($category)
@@ -175,7 +177,7 @@ class ArticlesDataService extends AbstractDataService
             ),
             function () use ($that, $category) {
                 if (!$category) { // we need some input
-                    return null;
+                    return;
                 }
 
                 if ($category instanceof ArticleCategory) { // already have what you seek

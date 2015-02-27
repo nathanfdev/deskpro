@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
- * @subpackage Service
  * @category Highrise
  */
 
@@ -128,7 +126,8 @@ class ApiResponse implements \ArrayAccess
     }
 
     /**
-     * @param  string $id
+     * @param string $id
+     *
      * @return mixed
      */
     public function get($id, $default = null)
@@ -137,9 +136,10 @@ class ApiResponse implements \ArrayAccess
     }
 
     /**
-     * Check if a value is set
+     * Check if a value is set.
      *
-     * @param  string $id
+     * @param string $id
+     *
      * @return bool
      */
     public function has($id)

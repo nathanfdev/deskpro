@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -56,7 +55,8 @@ class PersonUsersourceAssoc extends AbstractEntityRepository
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\Person                  $person
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return \Application\DeskPRO\Entity\PersonUsersourceAssoc[]
      */
     public function getAssociationsForPerson(\Application\DeskPRO\Entity\Person $person)

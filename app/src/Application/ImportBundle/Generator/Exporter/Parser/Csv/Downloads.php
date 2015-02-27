@@ -31,10 +31,9 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 
 /**
- * Downloads csv file parser
+ * Downloads csv file parser.
  *
  * Class Downloads
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
 final class Downloads extends AbstractParser
 {
@@ -75,7 +74,6 @@ final class Downloads extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid download record `%d` found (Skipping)', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid download record `%d` found (Skipping): %s',
@@ -89,7 +87,7 @@ final class Downloads extends AbstractParser
 
     /**
      * Returns a download entity
-     * Download data contains attachment params
+     * Download data contains attachment params.
      *
      * @param int   $num
      * @param array $download
@@ -101,7 +99,7 @@ final class Downloads extends AbstractParser
         if ($this->isDownloadValid($download) && $this->isAttachmentValid($download, 'person')) {
             $entity = new Entity\Download();
             $entity
-                ->setDestination(self::DOWNLOAD_PREFIX . $num)
+                ->setDestination(self::DOWNLOAD_PREFIX.$num)
                 ->setOid($num)
                 ->setPersonEmail($download['person'])
                 ->setTitle($download['title'])
@@ -120,13 +118,14 @@ final class Downloads extends AbstractParser
             return $entity;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Check if download has all required columns
+     * Check if download has all required columns.
      *
      * @param array $download
+     *
      * @return bool
      */
     private function isDownloadValid(array $download)
@@ -147,7 +146,7 @@ final class Downloads extends AbstractParser
     }
 
     /**
-     * Returns record type reader config
+     * Returns record type reader config.
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */

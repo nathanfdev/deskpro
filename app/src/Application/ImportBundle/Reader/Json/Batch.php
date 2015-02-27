@@ -30,8 +30,7 @@ namespace Application\ImportBundle\Reader\Json;
 use DateTime;
 
 /**
- * Class Batch
- * @package Application\ImportBundle\Reader\Json
+ * Class Batch.
  */
 class Batch
 {
@@ -97,6 +96,4 @@ class Batch
     {
         $this->date_modified = $date_modified;
     }
-
-
 }

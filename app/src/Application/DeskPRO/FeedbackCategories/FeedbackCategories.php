@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\FeedbackCategories;
@@ -41,19 +39,16 @@ class FeedbackCategories
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     /**
      * @var \Application\DeskPRO\Entity\CustomDefFeedback
      */
-
     protected $parent_category;
 
     /**
      * @var \Application\DeskPRO\Entity\CustomDefFeedback[]
      */
-
     protected $feedback_categories;
 
     public function __construct(EntityManager $em)
@@ -63,9 +58,8 @@ class FeedbackCategories
     }
 
     /**
-     * Loads data from the database
+     * Loads data from the database.
      */
-
     private function preload()
     {
         if ($this->feedback_categories !== null) {
@@ -79,7 +73,6 @@ class FeedbackCategories
      * Resets this repository so the next time data is requested form it, it will
      * be queried again.
      */
-
     public function reset()
     {
         $this->feedback_categories = null;
@@ -90,7 +83,6 @@ class FeedbackCategories
      *
      * @return \Application\DeskPRO\Entity\CustomDefFeedback
      */
-
     public function getById($id)
     {
         return $this->em->getRepository('DeskPRO:CustomDefFeedback')->get($id);
@@ -99,7 +91,6 @@ class FeedbackCategories
     /**
      * @return \Application\DeskPRO\Entity\CustomDefFeedback[]
      */
-
     public function getAll()
     {
         $this->preload();
@@ -110,7 +101,6 @@ class FeedbackCategories
     /**
      * @return int
      */
-
     public function count()
     {
         $this->preload();
@@ -121,16 +111,14 @@ class FeedbackCategories
     /**
      * @return \Application\DeskPRO\Entity\CustomDefFeedback
      */
-
     public function createNew()
     {
         return CustomDefFeedback::createFeedbackCategory();
     }
 
     /**
-     * Attempts to create initial (parent) category for all hierarchy of categories
+     * Attempts to create initial (parent) category for all hierarchy of categories.
      */
-
     protected function createInitialFeedbackCategoryIfNotDefined()
     {
         $this->parent_category = $this->em->getRepository('DeskPRO:CustomDefFeedback')->getCategoryField();
@@ -150,7 +138,6 @@ class FeedbackCategories
     /**
      * @return CustomDefFeedback
      */
-
     public function getParentCategory()
     {
         if (!$this->parent_category) {
@@ -163,7 +150,6 @@ class FeedbackCategories
     /**
      * @param array $newOrders
      */
-
     public function updateDisplayOrders($newOrders)
     {
         $x = 10;

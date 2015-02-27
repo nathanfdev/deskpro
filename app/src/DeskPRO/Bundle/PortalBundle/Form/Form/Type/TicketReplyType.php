@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -47,10 +44,10 @@ class TicketReplyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('ticket_message', 'ticket_message', array(
-            'ticket'        => $options['ticket'],
-            'person'        => $options['person'],
-            'message_label' => $options['message_label'],
-            'label' => false,
+            'ticket'              => $options['ticket'],
+            'person'              => $options['person'],
+            'message_label'       => $options['message_label'],
+            'label'               => false,
             'message_constraints' => array(
                 new NotBlank(),
             ),
@@ -59,12 +56,12 @@ class TicketReplyType extends AbstractType
         $builder->add('attachments', 'ticket_message_attachment_collection', array(
             'ticket_message' => $options['ticket_message'],
             'person'         => $options['person'],
-            'label' => false,
+            'label'          => false,
         ));
 
         $builder->add('more_attachments', 'submit', array(
             'validation_groups' => false,
-            'label' => 'Add Another Attachment',
+            'label'             => 'Add Another Attachment',
         ));
 
         $builder->add('submit', 'submit', array(
@@ -76,10 +73,10 @@ class TicketReplyType extends AbstractType
 
     public function onPostSubmit(FormEvent $event)
     {
-        /** @var \Application\DeskPRO\Entity\TicketMessage $message */
-        /** @var \Application\DeskPRO\Entity\Ticket $ticket */
-        $data = $event->getData();
-        $message = $data['ticket_message'];
+        /* @var \Application\DeskPRO\Entity\TicketMessage $message */
+        /* @var \Application\DeskPRO\Entity\Ticket $ticket */
+        $data                 = $event->getData();
+        $message              = $data['ticket_message'];
         $message->attachments = $data['attachments'];
     }
 
@@ -101,7 +98,7 @@ class TicketReplyType extends AbstractType
         $resolver->setAllowedTypes(array(
             'ticket'         => 'Application\\DeskPRO\\Entity\\Ticket',
             'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
-            'settings' => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
+            'settings'       => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
             'person'         => 'Application\\DeskPRO\\Entity\\Person',
         ));
     }

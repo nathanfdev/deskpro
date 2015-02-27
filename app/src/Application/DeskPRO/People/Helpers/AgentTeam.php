@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 
 /**
- * This helps working with agent teams on a person
+ * This helps working with agent teams on a person.
  */
 class AgentTeam implements \Orb\Helper\ShortCallableInterface
 {
@@ -83,7 +82,7 @@ class AgentTeam implements \Orb\Helper\ShortCallableInterface
         }
 
         $agent_data = App::getContainer()->getAgentData();
-        $teams = array();
+        $teams      = array();
 
         foreach ($ids as $id) {
             $t = $agent_data->getTeam($id);

@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\HttpCache\EventListener;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\HttpCache\PortalCacheHelper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,9 +67,9 @@ class PortalHttpCacheListener implements EventSubscriberInterface
     public function __construct(BrandStack $brand_stack, PortalCacheHelper $cache_helper)
     {
         $this->lastModifiedDates = new \SplObjectStorage();
-        $this->etags = new \SplObjectStorage();
-        $this->brand_stack = $brand_stack;
-        $this->cache_helper = $cache_helper;
+        $this->etags             = new \SplObjectStorage();
+        $this->brand_stack       = $brand_stack;
+        $this->cache_helper      = $cache_helper;
     }
 
     /**
@@ -83,7 +80,7 @@ class PortalHttpCacheListener implements EventSubscriberInterface
         $request = $event->getRequest();
 
         $page_cache_config = $request->attributes->get('_portal_page_cache');
-        $tag_cache_config = $request->attributes->get('_portal_tag_cache');
+        $tag_cache_config  = $request->attributes->get('_portal_tag_cache');
 
         if (!$tag_cache_config && !$page_cache_config) {
             return;
@@ -102,7 +99,7 @@ class PortalHttpCacheListener implements EventSubscriberInterface
         $response = new Response();
 
         $use_last_modified = $this->getBrandSetting('portal.http_cache_last_modified');
-        $use_etags = $this->getBrandSetting('portal.http_cache_etags');
+        $use_etags         = $this->getBrandSetting('portal.http_cache_etags');
 
         $lastModifiedDate = '';
         if ($use_last_modified && $content) {
@@ -138,7 +135,7 @@ class PortalHttpCacheListener implements EventSubscriberInterface
         $request = $event->getRequest();
 
         $page_cache_config = $request->attributes->get('_portal_page_cache');
-        $tag_cache_config = $request->attributes->get('_portal_tag_cache');
+        $tag_cache_config  = $request->attributes->get('_portal_tag_cache');
 
         if (!$tag_cache_config && !$page_cache_config) {
             return;
@@ -193,7 +190,7 @@ class PortalHttpCacheListener implements EventSubscriberInterface
     {
         return array(
             KernelEvents::CONTROLLER => 'onKernelController',
-            KernelEvents::RESPONSE => 'onKernelResponse',
+            KernelEvents::RESPONSE   => 'onKernelResponse',
         );
     }
 
@@ -203,7 +200,8 @@ class PortalHttpCacheListener implements EventSubscriberInterface
     }
 
     /**
-     * @param  ContentAbstract $content
+     * @param ContentAbstract $content
+     *
      * @return \DateTime
      */
     protected function generateLastModified(ContentAbstract $content)
@@ -216,15 +214,16 @@ class PortalHttpCacheListener implements EventSubscriberInterface
     }
 
     /**
-     * @param  ContentAbstract $content
+     * @param ContentAbstract $content
+     *
      * @return string
      */
     protected function generateEtag(ContentAbstract $content)
     {
         $global_timestamp = $this->getBrandSetting('portal.global_cache_timestamp');
-        $type = $content->getContentType();
-        $id = $content->getId();
-        $last_modified = $this->generateLastModified($content);
+        $type             = $content->getContentType();
+        $id               = $content->getId();
+        $last_modified    = $this->generateLastModified($content);
 
         $etag = hash('sha256', $global_timestamp.$type.$id.$last_modified->getTimestamp());
 

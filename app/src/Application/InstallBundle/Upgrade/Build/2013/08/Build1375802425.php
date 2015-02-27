@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -59,13 +56,13 @@ class Build1375802425 extends AbstractBuild
         //------
 
         $this->out("Adding new task to send KB subs");
-        $j = new \Application\DeskPRO\Entity\WorkerJob();
-        $j['id'] = 'kb_subscriptions';
+        $j                 = new \Application\DeskPRO\Entity\WorkerJob();
+        $j['id']           = 'kb_subscriptions';
         $j['worker_group'] = 'kb_subscriptions';
-        $j['title'] = 'KB Subscriptions';
-        $j['description'] = 'Sends notifications to users who are subscribed to articles or categories';
-        $j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\KbSubscriptions';
-        $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\KbSubscriptions::DEFAULT_INTERVAL;
+        $j['title']        = 'KB Subscriptions';
+        $j['description']  = 'Sends notifications to users who are subscribed to articles or categories';
+        $j['job_class']    = 'Application\\DeskPRO\\WorkerProcess\\Job\\KbSubscriptions';
+        $j['interval']     = \Application\DeskPRO\WorkerProcess\Job\KbSubscriptions::DEFAULT_INTERVAL;
         $this->container->getEm()->persist($j);
         $this->container->getEm()->flush();
     }

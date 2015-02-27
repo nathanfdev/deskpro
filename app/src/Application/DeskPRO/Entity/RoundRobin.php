@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,7 +39,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Article
+ * Article.
  */
 class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -50,14 +49,14 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
     protected $id = null;
 
     /**
-     * Next agent in queue
+     * Next agent in queue.
      *
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $next = null;
 
     /**
-     * Agents
+     * Agents.
      *
      * @var ArrayCollection
      */
@@ -130,7 +129,7 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'set null',
-                'columnDefinition'     => NULL,
+                'columnDefinition'     => null,
             )),
         ));
 

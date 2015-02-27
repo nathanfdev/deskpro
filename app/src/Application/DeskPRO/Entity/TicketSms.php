@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,10 +38,9 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 /**
- * Ticket SMS Message
-
+ * Ticket SMS Message.
  *
-*@property int $id
+ *@property int $id
  * @property Ticket $ticket
  * @property Person $person
  * @property SmsAccount $sms_account
@@ -57,7 +55,6 @@ class TicketSms extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * @var int
-     *
      */
     protected $id = null;
 
@@ -87,7 +84,7 @@ class TicketSms extends \Application\DeskPRO\Domain\DomainObject
     protected $date_created;
 
     /**
-     * Permanent record of the phone number that sent this SMS. (Won't change even if Person changes their phone number)
+     * Permanent record of the phone number that sent this SMS. (Won't change even if Person changes their phone number).
      *
      * @var string
      */
@@ -101,14 +98,14 @@ class TicketSms extends \Application\DeskPRO\Domain\DomainObject
     protected $to_number = '';
 
     /**
-     * The SMS message
+     * The SMS message.
      *
      * @var string
      */
     protected $message;
 
     /**
-     * Just a system flag for reporting
+     * Just a system flag for reporting.
      *
      * @var string "incoming" or "outgoing"
      */

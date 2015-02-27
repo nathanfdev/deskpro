@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -66,9 +65,9 @@ class EscalationExecutor
 
     public function __construct(Connection $db, TicketManager $ticket_manager, ActionApplicatorInterface $action_applicator)
     {
-        $this->db = $db;
-        $this->ticket_manager = $ticket_manager;
-        $this->logger = new NullLogger();
+        $this->db                = $db;
+        $this->ticket_manager    = $ticket_manager;
+        $this->logger            = new NullLogger();
         $this->action_applicator = $action_applicator;
     }
 
@@ -107,7 +106,7 @@ class EscalationExecutor
         $this->ticket_manager->markAsManaged($ticket);
 
         $context = $this->ticket_manager->createSystemExecutorContext();
-        $state = $ticket->getStateChangeRecorder();
+        $state   = $ticket->getStateChangeRecorder();
         $state->setCurrentChangeMetadata(array('escalation' => $esc));
 
         $this->action_applicator->apply($esc->actions, $ticket, $context);

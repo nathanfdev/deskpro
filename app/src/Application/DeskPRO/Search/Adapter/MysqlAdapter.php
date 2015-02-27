@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Search
  */
 
@@ -40,7 +39,7 @@ use Application\DeskPRO\Search\Searcher\Mysql\ContentSearcher;
 use Orb\Util\Strings;
 
 /**
- * Search adapter
+ * Search adapter.
  */
 class MysqlAdapter extends AbstractAdapter
 {
@@ -58,10 +57,9 @@ class MysqlAdapter extends AbstractAdapter
     }
 
     /**
-     * Delete the specified docs from the index
+     * Delete the specified docs from the index.
      *
      * @param  $documents
-     * @return void
      */
     public function deleteDocumentsFromIndex(array $documents)
     {
@@ -78,10 +76,9 @@ class MysqlAdapter extends AbstractAdapter
     }
 
     /**
-     * Update the search index with the specified docs
+     * Update the search index with the specified docs.
      *
      * @param  $documents
-     * @return void
      */
     public function updateDocumentsInIndex(array $documents)
     {
@@ -117,7 +114,8 @@ class MysqlAdapter extends AbstractAdapter
      *
      * Factory method.
      *
-     * @param  string                                                       $type_name
+     * @param string $type_name
+     *
      * @return \Application\DeskPRO\Search\ContentType\ContentTypeInterface
      */
     protected function createContentType($type_name)
@@ -129,7 +127,7 @@ class MysqlAdapter extends AbstractAdapter
         $type_name = ucfirst(Strings::dashToCamelCase($type_name));
 
         $classname = 'Application\\DeskPRO\\Search\\ContentType\\Mysql\\'.$type_name;
-        $obj = new $classname();
+        $obj       = new $classname();
 
         return $obj;
     }
@@ -186,6 +184,7 @@ class MysqlAdapter extends AbstractAdapter
      * we "encode" them as these hashes, so we can search for "+lbl1232984rf" specifically.
      *
      * @param  $label
+     *
      * @return string
      */
     public static function encodeLabel($label)
@@ -197,6 +196,7 @@ class MysqlAdapter extends AbstractAdapter
 
     /**
      * @param  $label
+     *
      * @return string
      */
     public static function encodeProperty($k, $v)

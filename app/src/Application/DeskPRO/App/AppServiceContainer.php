@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -103,10 +102,12 @@ return $x; }, $app_services);
     }
 
     /**
-     * @param  string                    $name The name of the service
-     * @param  null                      $app  The app the service belongs to. If the app is a single-install app, this can be left out.
-     * @return mixed
+     * @param string $name The name of the service
+     * @param null   $app  The app the service belongs to. If the app is a single-install app, this can be left out.
+     *
      * @throws \InvalidArgumentException
+     * @return mixed
+     *
      */
     public function getService($name, $app = null)
     {

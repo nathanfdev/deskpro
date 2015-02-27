@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -93,7 +92,8 @@ class GroupsDbLoader
     }
 
     /**
-     * @param  int   $group_id
+     * @param int $group_id
+     *
      * @return array
      */
     private function getPermissions($group_id)
@@ -130,6 +130,7 @@ class GroupsDbLoader
 
     /**
      * @param $group_id
+     *
      * @return AgentPermissions
      */
     public function getGroupPermissions($group_id)
@@ -140,7 +141,8 @@ class GroupsDbLoader
     }
 
     /**
-     * @param  array            $perm_array
+     * @param array $perm_array
+     *
      * @return AgentPermissions
      */
     private function createAgentPermissions(array $perm_array)
@@ -161,7 +163,7 @@ class GroupsDbLoader
             } // unknown type
 
             $obj_name = self::$prefix_map[$type];
-            $obj = $agent_perms->$obj_name;
+            $obj      = $agent_perms->$obj_name;
             if (!isset($obj->$name)) {
                 continue;
             } // invalid;

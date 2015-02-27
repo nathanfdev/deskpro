@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ServerErrorLogs;
@@ -43,13 +41,11 @@ class ServerErrorLogs
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     /**
      * @var string
      */
-
     protected $config_hash;
 
     public function __construct(EntityManager $em)
@@ -61,7 +57,6 @@ class ServerErrorLogs
     /**
      * @return array
      */
-
     public function getAll()
     {
         $log_reader = new ErrorLogReader(dp_get_log_dir().'/error.log');
@@ -80,7 +75,6 @@ class ServerErrorLogs
      *
      * @return array|null
      */
-
     public function getById($id)
     {
         $log_reader = new ErrorLogReader(dp_get_log_dir().'/error.log');
@@ -96,7 +90,6 @@ class ServerErrorLogs
     /**
      * @return bool
      */
-
     public function clearAllErrors()
     {
         if (!is_writable(dp_get_log_dir().'/error.log')) {
@@ -113,7 +106,6 @@ class ServerErrorLogs
      *
      * @return string
      */
-
     protected function _generateUrl($url)
     {
         $result = App::getSetting('core.deskpro_url').'?'.$url;

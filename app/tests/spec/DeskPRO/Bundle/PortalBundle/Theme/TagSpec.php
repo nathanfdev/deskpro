@@ -26,23 +26,20 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
+use PhpSpec\ObjectBehavior;
 
 /**
  * @mixin \DeskPRO\Bundle\PortalBundle\Theme\Tag
  */
 class TagSpec extends ObjectBehavior
 {
-    function it_can_be_serialized()
+    public function it_can_be_serialized()
     {
         $this->beConstructedWith(
             'knowledgebase',
@@ -52,7 +49,7 @@ class TagSpec extends ObjectBehavior
         $this->shouldHaveType('\Serializable');
     }
 
-    function it_has_a_name()
+    public function it_has_a_name()
     {
         $this->beConstructedWith(
             'knowledgebase',
@@ -62,7 +59,7 @@ class TagSpec extends ObjectBehavior
         $this->getName()->shouldBe('knowledgebase');
     }
 
-    function it_has_a_controller_name()
+    public function it_has_a_controller_name()
     {
         $this->beConstructedWith(
             'knowledgebase',
@@ -72,7 +69,7 @@ class TagSpec extends ObjectBehavior
         $this->getControllerName()->shouldBe('Theme:Articles:list');
     }
 
-    function it_has_a_list_of_its_defined_options()
+    public function it_has_a_list_of_its_defined_options()
     {
         $this->beConstructedWith(
             'knowledgebase',
@@ -83,21 +80,21 @@ class TagSpec extends ObjectBehavior
         $this->getDefinedOptions()->shouldBe(array('option1', 'option2'));
     }
 
-    function it_has_an_associated_array_of_its_default_options()
+    public function it_has_an_associated_array_of_its_default_options()
     {
         $this->beConstructedWith(
             'knowledgebase',
             'Theme:Articles:list',
             array('option1', 'option2'),
             array(
-                'option1' => 'default here'
+                'option1' => 'default here',
             )
         );
 
         $this->getDefaultOptions()->shouldBe(array('option1' => 'default here'));
     }
 
-    function it_can_be_explicitely_marked_as_no_esi()
+    public function it_can_be_explicitely_marked_as_no_esi()
     {
         $this->beConstructedWith(
             'knowledgebase',
@@ -112,7 +109,7 @@ class TagSpec extends ObjectBehavior
         $this->isEsi()->shouldBe(false);
     }
 
-    function it_can_be_marked_as_esi()
+    public function it_can_be_marked_as_esi()
     {
         $this->beConstructedWith(
             'knowledgebase',
@@ -127,7 +124,7 @@ class TagSpec extends ObjectBehavior
         $this->isEsi($is_guest = true)->shouldBe(true);
     }
 
-    function it_can_be_marked_as_esi_but_you_can_turn_esi_off_for_guests()
+    public function it_can_be_marked_as_esi_but_you_can_turn_esi_off_for_guests()
     {
         $this->beConstructedWith(
             'knowledgebase',
@@ -142,7 +139,7 @@ class TagSpec extends ObjectBehavior
         $this->isEsi($is_guest = true)->shouldBe(false);
     }
 
-    function it_alows_route_params_by_default()
+    public function it_alows_route_params_by_default()
     {
         $this->beConstructedWith(
             'knowledgebase',
@@ -155,7 +152,7 @@ class TagSpec extends ObjectBehavior
         $this->allowRouteParams()->shouldBe(true);
     }
 
-    function it_can_be_marked_to_allow_route_params()
+    public function it_can_be_marked_to_allow_route_params()
     {
         // by default, _route_params are ignored when generating ESI tag urls
         // you can flag a tag to allow these to be in the url

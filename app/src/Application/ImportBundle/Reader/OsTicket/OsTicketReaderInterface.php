@@ -28,10 +28,9 @@
 namespace Application\ImportBundle\Reader\OsTicket;
 
 /**
- * Os ticket reader interface
+ * Os ticket reader interface.
  *
  * Interface OsTicketReaderInterface
- * @package Application\ImportBundle\Reader\OsTicket
  */
 interface OsTicketReaderInterface
 {
@@ -52,7 +51,7 @@ interface OsTicketReaderInterface
     public function getTicketsCount();
 
     /**
-     * Returns staff
+     * Returns staff.
      *
      * @param int $limit
      * @param int $offset
@@ -62,7 +61,7 @@ interface OsTicketReaderInterface
     public function findStaff($limit, $offset);
 
     /**
-     * Returns users
+     * Returns users.
      *
      * @param int $limit
      * @param int $offset
@@ -72,7 +71,7 @@ interface OsTicketReaderInterface
     public function findUsers($limit, $offset);
 
     /**
-     * Returns tickets
+     * Returns tickets.
      *
      * @param int $limit
      * @param int $offset
@@ -82,65 +81,73 @@ interface OsTicketReaderInterface
     public function findTickets($limit, $offset);
 
     /**
-     * Returns ticket messages
+     * Returns ticket messages.
      *
      * @param int $ticket_id
+     *
      * @return mixed
      */
     public function findMessages($ticket_id);
 
     /**
-     * Returns ticket message attachments
+     * Returns ticket message attachments.
      *
      * @param int $message_id
+     *
      * @return array
      */
     public function findMessageAttachments($message_id);
 
     /**
-     * Returns department
+     * Returns department.
      *
      * @param int $id
+     *
      * @return mixed
      */
     public function findDepartmentById($id);
 
     /**
-     * Returns staff email by id
+     * Returns staff email by id.
      *
      * @param int $id
+     *
      * @return mixed
      */
     public function findStaffEmailById($id);
 
     /**
-     * Returns user email by id
+     * Returns user email by id.
      *
      * @param int $id
+     *
      * @return mixed
      */
     public function findUserEmailById($id);
 
     /**
-     * Returns team name by id
+     * Returns team name by id.
      *
      * @param int $id
+     *
      * @return mixed
      */
     public function findTeamNameById($id);
 
     /**
-     * Returns timezone by id
+     * Returns timezone by id.
      *
      * @param int $id
+     *
      * @return mixed
      */
     public function findTimezoneById($id);
 
     /**
-     * Returns ticket message attachment by id
+     * Returns ticket message attachment by id.
      *
      * @param int $file_id
+     *
      * @return mixed
      */
     public function findAttachmentData($file_id);

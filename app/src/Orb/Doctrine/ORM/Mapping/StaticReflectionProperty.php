@@ -26,7 +26,7 @@
 \**************************************************************************/
 
 /**
- * Loader file for \Orb\Doctrine\ORM\Mapping\StaticReflectionProperty
+ * Loader file for \Orb\Doctrine\ORM\Mapping\StaticReflectionProperty.
  *
  * PHP's implementation of ReflectionProperty::getValue() is overloaded
  * (http://uk.php.net/manual/en/reflectionproperty.getvalue.php)
@@ -37,7 +37,6 @@
  * be included without this strict notice:
  * Declaration of Orb\Doctrine\ORM\Mapping\StaticReflectionProperty::getValue() should be compatible with that of ReflectionProperty::getValue()
  */
-
 if (version_compare(PHP_VERSION, '5.4', '>=')) {
     $__olde = error_reporting(E_ALL ^ E_STRICT);
 } else {

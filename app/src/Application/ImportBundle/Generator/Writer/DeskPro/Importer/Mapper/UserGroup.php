@@ -31,10 +31,9 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * User group record mapper
+ * User group record mapper.
  *
  * Class UserGroup
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class UserGroup implements MapperInterface, MapperByTitleInterface
 {
@@ -44,7 +43,7 @@ final class UserGroup implements MapperInterface, MapperByTitleInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\Usergroup $repository
      */

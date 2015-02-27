@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Controller
  */
 
@@ -60,13 +59,13 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         }
 
         switch ($prop) {
-            case 'em': $service = $this->get('doctrine.orm.entity_manager');break;
-            case 'db': $service = $this->get('database_connection');break;
-            case 'in': $service = $this->get('deskpro.core.input_reader');break;
-            case 'cleaner': $service = $this->get('deskpro.core.input_cleaner');break;
+            case 'em': $service       = $this->get('doctrine.orm.entity_manager');break;
+            case 'db': $service       = $this->get('database_connection');break;
+            case 'in': $service       = $this->get('deskpro.core.input_reader');break;
+            case 'cleaner': $service  = $this->get('deskpro.core.input_cleaner');break;
             case 'settings': $service = $this->get('deskpro.core.settings');break;
-            case 'session': $service = $this->get('session');break;
-            case 'tpl': $service = $this->get('templating');break;
+            case 'session': $service  = $this->get('session');break;
+            case 'tpl': $service      = $this->get('templating');break;
             default:
                 throw new \InvalidArgumentException("Unknown property {$prop}");
         }
@@ -85,10 +84,11 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
     }
 
     /**
-     * Checks a request token in a form
+     * Checks a request token in a form.
      *
-     * @param  string $name
-     * @param  string $field_name
+     * @param string $name
+     * @param string $field_name
+     *
      * @return bool
      */
     public function checkRequestToken($name = '', $field_name = '_dp_security_token')
@@ -142,7 +142,8 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
      * Protects against double-submitted requests. If an exact form is submitted a second time, then this method
      * returns true.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function consumeRequest($name = '')
@@ -170,7 +171,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
     }
 
     /**
-     * Just like checkRequestToken but this shows an error for you if its bad
+     * Just like checkRequestToken but this shows an error for you if its bad.
      *
      * @param string $name
      * @param string $field_name
@@ -183,7 +184,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
     }
 
     /**
-     * Just like checkRequestToken but this shows an error for you if its bad
+     * Just like checkRequestToken but this shows an error for you if its bad.
      *
      * @param string $name
      * @param string $field_name
@@ -194,10 +195,11 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
     }
 
     /**
-     * Checks a request token $token
+     * Checks a request token $token.
      *
-     * @param  string $name
-     * @param  string $token
+     * @param string $name
+     * @param string $token
+     *
      * @return bool
      */
     public function checkAuthToken($name, $token)
@@ -210,7 +212,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
     }
 
     /**
-     * Just like checkAuthToken but this shows an error for you if its bad
+     * Just like checkAuthToken but this shows an error for you if its bad.
      *
      * @param string $name
      * @param string $field_name
@@ -226,11 +228,13 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
      * Just enables 'smart view resoltion' when the at sign is used.
      *
      * When the at sign is used, the bundle and optionally the sub-directory can be inferred from the calling controller.
+     *
      * @list.html.twig will get SomeBundle:MyController:list.html.
      *
-     * @param  string                                     $view
-     * @param  array                                      $parameters
-     * @param  \Symfony\Component\HttpFoundation\Response $response
+     * @param string                                     $view
+     * @param array                                      $parameters
+     * @param \Symfony\Component\HttpFoundation\Response $response
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function render($view, array $parameters = array(), Response $response = null)
@@ -284,10 +288,11 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
     }
 
     /**
-     * Returns a RedirectResponse if SSO says it needs to redirect
+     * Returns a RedirectResponse if SSO says it needs to redirect.
      *
-     * @param  bool                                               $has_just_logged_out
-     * @param  AuthInterfaceSettings                              $authInterfaceSettings
+     * @param bool                  $has_just_logged_out
+     * @param AuthInterfaceSettings $authInterfaceSettings
+     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     protected function checkAuthSystemForResponse(
@@ -311,7 +316,8 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
     }
 
     /**
-     * @param  AuthInterfaceSettings $authInterfaceSettings
+     * @param AuthInterfaceSettings $authInterfaceSettings
+     *
      * @return null|\Orb\Auth\Result an auth result is returned if the sso redirect is enabled
      */
     protected function handleAutomaticSso(AuthInterfaceSettings $authInterfaceSettings)
@@ -320,6 +326,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
             return $authInterfaceSettings->getSsoAuthAdapter()->authenticate();
         }
 
-        return null;
+        return;
     }
 }

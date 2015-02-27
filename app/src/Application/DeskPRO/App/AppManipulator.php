@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\App;
@@ -41,7 +38,7 @@ use Application\DeskPRO\ORM\EntityManager;
 use Orb\Util\Arrays;
 
 /**
- * Manipulates apps - it knows how to update an app instance, how to properly install an app, etc
+ * Manipulates apps - it knows how to update an app instance, how to properly install an app, etc.
  *
  * This was largely moved out of the AppsController (ApiBunele) with some added features
  */

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ServerReportFile;
@@ -38,8 +36,8 @@ use Application\DeskPRO\ORM\Util\Util;
 use Application\DeskPRO\Service\ErrorReporter;
 use DeskPRO\Kernel\License;
 use Doctrine\ORM\EntityManager;
-use Orb\Util\Strings;
 use Orb\Util\Files;
+use Orb\Util\Strings;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -109,7 +107,7 @@ class ServerReportFile
 
     /**
      * Saves results of integrity file checks in some temporary space
-     * Later it will be used when generating resulting archive including report information
+     * Later it will be used when generating resulting archive including report information.
      *
      * @param string $file_check_results - string with results of integrity file checks
      */
@@ -122,7 +120,7 @@ class ServerReportFile
     }
 
     /**
-     * Actually outputs the archive as downloadable attachment
+     * Actually outputs the archive as downloadable attachment.
      */
     public function outputArchive()
     {
@@ -147,7 +145,7 @@ class ServerReportFile
     }
 
     /**
-     * Creates archive with all needed files inside it
+     * Creates archive with all needed files inside it.
      */
     public function createArchive()
     {
@@ -168,7 +166,7 @@ class ServerReportFile
     }
 
     /**
-     * This methods iterates over all of the $this->files_added_to_archive and creates all the needed files
+     * This methods iterates over all of the $this->files_added_to_archive and creates all the needed files.
      */
     protected function _addFilesToArchive()
     {
@@ -182,10 +180,9 @@ class ServerReportFile
      */
     protected function _createPhpInfoFile($file_name)
     {
-        /**
-         * @var \Application\DeskPRO\ServerPhpInfo\ServerPhpInfo $service
+        /*
+         * @var \Application\DeskPRO\ServerPhpInfo\ServerPhpInfo
          */
-
         $service = App::getSystemService('server_php_info');
         $info    = $service->getPhpInfo(true);
 
@@ -201,10 +198,9 @@ class ServerReportFile
      */
     protected function _createCliInfoFile($file_name)
     {
-        /**
-         * @var \Application\DeskPRO\ServerPhpInfo\ServerPhpInfo $service
+        /*
+         * @var \Application\DeskPRO\ServerPhpInfo\ServerPhpInfo
          */
-
         $service = App::getSystemService('server_php_info');
         $info    = $service->getPhpInfo(true);
 
@@ -397,10 +393,9 @@ class ServerReportFile
      */
     protected function _createMisc($file_name)
     {
-        /**
-         * @var \Application\DeskPRO\ServerPhpInfo\ServerPhpInfo $service
+        /*
+         * @var \Application\DeskPRO\ServerPhpInfo\ServerPhpInfo
          */
-
         $service = App::getSystemService('server_php_info');
         $vars    = $service->getPhpInfo(true);
 
@@ -452,7 +447,7 @@ class ServerReportFile
     protected function _createTemplates()
     {
         $templates = App::getDb()->fetchAll("SELECT name, template_code, date_created, date_updated FROM templates");
-        $out = array();
+        $out       = array();
 
         foreach ($templates as $t) {
             $out[] = ">>>>>>>>>>>>>>>>>>>> Template: {$t['name']} -- Created: {$t['date_created']} -- Updated: {$t['date_updated']} <<<<<<<<<<<<<<<<<<<<\n\n";
@@ -496,7 +491,7 @@ class ServerReportFile
      */
     protected function _createCronStatus($file_name)
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerCron\ServerCron $service
          */
 
@@ -596,7 +591,7 @@ class ServerReportFile
 
     /**
      * Attempts to create file in specified location with specified content
-     * Also acts as wrapper for throwing an exception in case of fail
+     * Also acts as wrapper for throwing an exception in case of fail.
      *
      * @param string $file_name
      * @param string $content
@@ -612,12 +607,13 @@ class ServerReportFile
 
     /**
      * Attempts to read a file from specified location
-     * Also acts as wrapper for throwing an exception in case of fail
+     * Also acts as wrapper for throwing an exception in case of fail.
      *
-     * @param  string $file_name
-     * @return string
+     * @param string $file_name
      *
      * @throws \Symfony\Component\Filesystem\Exception\IOException
+     * @return string
+     *
      */
     protected function _readFile($file_name)
     {

@@ -26,22 +26,20 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\FragmentRouter;
-use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\App;
+use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\Assets\RequireJsConfigGenerator;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
-use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 
 class MiscController extends AbstractController
 {
@@ -108,14 +106,14 @@ class MiscController extends AbstractController
 
         $js[] = 'window.DESKPRO_NAME_REGISTRY.status = '.json_encode(array(
             'awaiting_agent' => App::getTranslator()->phrase('agent.tickets.status_awaiting_agent'),
-            'awaiting_user' => App::getTranslator()->phrase('agent.tickets.status_awaiting_user'),
-            'hidden' => App::getTranslator()->phrase('agent.tickets.status_hidden'),
-            'resolved' => App::getTranslator()->phrase('agent.tickets.status_resolved'),
-            'archived' => App::getTranslator()->phrase('agent.tickets.status_archived'),
+            'awaiting_user'  => App::getTranslator()->phrase('agent.tickets.status_awaiting_user'),
+            'hidden'         => App::getTranslator()->phrase('agent.tickets.status_hidden'),
+            'resolved'       => App::getTranslator()->phrase('agent.tickets.status_resolved'),
+            'archived'       => App::getTranslator()->phrase('agent.tickets.status_archived'),
         )).';';
         $js[] = 'window.DESKPRO_NAME_REGISTRY.hidden_status = '.json_encode(array(
-            'deleted' => App::getTranslator()->phrase('agent.tickets.hidden_status_deleted'),
-            'spam' => App::getTranslator()->phrase('agent.tickets.hidden_status_spam'),
+            'deleted'    => App::getTranslator()->phrase('agent.tickets.hidden_status_deleted'),
+            'spam'       => App::getTranslator()->phrase('agent.tickets.hidden_status_spam'),
             'validating' => App::getTranslator()->phrase('agent.tickets.hidden_status_validating'),
         )).';';
 
@@ -137,14 +135,14 @@ class MiscController extends AbstractController
 
         $system_filters = $this->db->fetchAllKeyValue("SELECT id, sys_name FROM ticket_filters WHERE is_global=1 AND sys_name IS NOT NULL");
         $system_filters = Arrays::castToType($system_filters, 'string', 'int');
-        $js[] = 'window.DESKPRO_DATA_REGISTRY.systemFilters = '.json_encode($system_filters).';';
+        $js[]           = 'window.DESKPRO_DATA_REGISTRY.systemFilters = '.json_encode($system_filters).';';
 
         // Ticket display elements
         $layouts = $this->container->getTicketLayoutManager()->getAgentLayouts();
-        $js[] = "window.DESKPRO_TICKET_DISPLAY = ".$layouts->compileJsObj().";";
+        $js[]    = "window.DESKPRO_TICKET_DISPLAY = ".$layouts->compileJsObj().";";
 
         // Snippet short codes
-        $ticket_snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent('tickets', $this->person);
+        $ticket_snippets     = $this->em->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent('tickets', $this->person);
         $snippet_short_codes = array();
         foreach ($ticket_snippets as $snippet_cat) {
             if ($snippet_cat['snippets']) {
@@ -166,7 +164,7 @@ class MiscController extends AbstractController
         }
 
         // Snippet short codes
-        $text_snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent('chat', $this->person);
+        $text_snippets       = $this->em->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent('chat', $this->person);
         $snippet_short_codes = array();
         foreach ($text_snippets as $snippet_cat) {
             if ($snippet_cat['snippets']) {
@@ -193,15 +191,15 @@ class MiscController extends AbstractController
         $js[] = "window.DESKPRO_TICKET_PRI_MAP = ".json_encode($this->container->getDataService('TicketPriority')->getIdToPriorityMap()).';';
 
         $fragment_router = new FragmentRouter($this->get('router')->getGenerator());
-        $js[] = $fragment_router->compile();
+        $js[]            = $fragment_router->compile();
 
         /** @var \Application\DeskPRO\EntityRepository\LabelDef $labelDef */
         $labelDef = $this->em->getRepository('DeskPRO:LabelDef');
-        $js[] = "window.DESKPRO_DATA_REGISTRY.labels = ".json_encode($labelDef->getAllLabelsToTyped());
+        $js[]     = "window.DESKPRO_DATA_REGISTRY.labels = ".json_encode($labelDef->getAllLabelsToTyped());
 
         if ($this->container->getAppManager()->isPackageInstalled('deskpro_ms_translator')) {
             $ms_translator = $this->container->getAppManager()->getService('ms_translator');
-            $lang_codes = $ms_translator->getLanguagesForTranslate();
+            $lang_codes    = $ms_translator->getLanguagesForTranslate();
             try {
                 $lang_names = $ms_translator->getLanguageNames(
                     $ms_translator->getLanguagesForTranslate(),
@@ -220,8 +218,8 @@ class MiscController extends AbstractController
             }
 
             $info = array(
-                'lang_codes' => $lang_codes,
-                'lang_names' => $lang_names,
+                'lang_codes'                   => $lang_codes,
+                'lang_names'                   => $lang_names,
                 'translate_ticket_message_url' => $this->generateUrl('agent_apps_run', array('app_id' => $app_id, 'action' => 'translate-ticket-message')),
                 'translate_text_url'           => $this->generateUrl('agent_apps_run', array('app_id' => $app_id, 'action' => 'translate-text')),
             );
@@ -271,7 +269,7 @@ function Orb_Util_TimeAgo_getPhraseFor(type, num, ago)
 }
 JS;
 
-        $ls = $this->container->getLanguageData();
+        $ls     = $this->container->getLanguageData();
         $locale = null;
         if ($defaultLanguage = $ls->getDefault()) {
             $locale = $defaultLanguage['locale'];
@@ -298,7 +296,7 @@ JS;
 
             if (isset($prefs_expire[$pref_name])) {
                 try {
-                    $date = new \DateTime($prefs_expire[$pref_name]);
+                    $date              = new \DateTime($prefs_expire[$pref_name]);
                     $pref->date_expire = $date;
                 } catch (\Exception $e) {
                 }
@@ -324,7 +322,7 @@ JS;
         if ($url) {
             $used_req_url = false;
         } else {
-            $url = $this->in->getString('url');
+            $url          = $this->in->getString('url');
             $used_req_url = true;
         }
 
@@ -334,7 +332,7 @@ JS;
         }
 
         $originalMethod = $this->request->getMethod();
-        $method = $this->request->headers->get('X-DeskPRO-Proxy-Method');
+        $method         = $this->request->headers->get('X-DeskPRO-Proxy-Method');
         if (!$method) {
             $method = $originalMethod;
         }
@@ -349,11 +347,11 @@ JS;
         }
 
         switch (strtolower($method)) {
-            case 'get': $method = 'GET'; break;
-            case 'post': $method = 'POST'; break;
-            case 'put': $method = 'PUT'; break;
+            case 'get': $method    = 'GET'; break;
+            case 'post': $method   = 'POST'; break;
+            case 'put': $method    = 'PUT'; break;
             case 'delete': $method = 'DELETE'; break;
-            default: $method = 'GET';
+            default: $method       = 'GET';
         }
 
         if ($method == 'GET' && is_array($passData) && $passData) {
@@ -467,7 +465,7 @@ JS;
 
     public function ajaxLabelsAutocompleteAction($label_type)
     {
-        $search = $this->in->getString('term');
+        $search    = $this->in->getString('term');
         $statement = $this->db->executeQuery("
             SELECT label
             FROM label_defs
@@ -507,16 +505,16 @@ JS;
         if ($copy_blobauth) {
             $blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthCode($copy_blobauth);
             if (!$blob) {
-                $error = array();
+                $error               = array();
                 $error['error_code'] = 'no_file';
-                $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_no_file');
+                $error['error']      = $this->container->getTranslator()->phrase('agent.general.attach_error_no_file');
 
                 return $this->createJsonResponse($error);
             }
 
             if ($this->in->getBool('is_image') && !$blob->isImage()) {
                 $error = array(
-                    'error_code' => 'not_in_allowed_exts',
+                    'error_code'   => 'not_in_allowed_exts',
                     'error_detail' => implode(',', array('gif', 'png', 'jpg', 'jpeg')),
                 );
                 $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
@@ -524,13 +522,13 @@ JS;
                 return $this->createJsonResponse($error);
             }
 
-            $bs = $this->container->getBlobStorage();
+            $bs       = $this->container->getBlobStorage();
             $raw_file = $bs->copyBlobRecordToString($blob);
 
             $blob = $bs->createBlobRecordFromString($raw_file, $blob->filename, $blob->content_type);
             unset($raw_file);
         } else {
-            $file = $this->request->files->get('file-upload');
+            $file   = $this->request->files->get('file-upload');
             $accept = $this->container->getAttachmentAccepter();
 
             $error = $accept->getError($file, 'agent');
@@ -554,8 +552,8 @@ JS;
                 case 'article':
                     $article = $this->em->find('DeskPRO:Article', $this->in->getUint('object_id'));
 
-                    $attach = new \Application\DeskPRO\Entity\ArticleAttachment();
-                    $attach['blob'] = $blob;
+                    $attach           = new \Application\DeskPRO\Entity\ArticleAttachment();
+                    $attach['blob']   = $blob;
                     $attach['person'] = $this->person;
 
                     $article->addAttachment($attach);
@@ -569,8 +567,8 @@ JS;
                 case 'feedback':
                     $feedback = $this->em->find('DeskPRO:Feedback', $this->in->getUint('object_id'));
 
-                    $attach = new \Application\DeskPRO\Entity\FeedbackAttachment();
-                    $attach['blob'] = $blob;
+                    $attach           = new \Application\DeskPRO\Entity\FeedbackAttachment();
+                    $attach['blob']   = $blob;
                     $attach['person'] = $this->person;
 
                     $feedback->addAttachment($attach);
@@ -611,16 +609,16 @@ JS;
         if ($copy_blobauth) {
             $blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthCode($copy_blobauth);
             if (!$blob) {
-                $error = array();
+                $error               = array();
                 $error['error_code'] = 'no_file';
-                $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_no_file');
+                $error['error']      = $this->container->getTranslator()->phrase('agent.general.attach_error_no_file');
 
                 return $this->createJsonResponse($error);
             }
 
             if (!$blob->isImage()) {
                 $error = array(
-                    'error_code' => 'not_in_allowed_exts',
+                    'error_code'   => 'not_in_allowed_exts',
                     'error_detail' => implode(',', array('gif', 'png', 'jpg', 'jpeg')),
                 );
                 $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
@@ -628,14 +626,14 @@ JS;
                 return $this->createJsonResponse($error);
             }
 
-            $bs = $this->container->getBlobStorage();
+            $bs       = $this->container->getBlobStorage();
             $raw_file = $bs->copyBlobRecordToString($blob);
 
             $blob = $bs->createBlobRecordFromString($raw_file, $blob->filename, $blob->content_type);
             unset($raw_file);
         } else {
             /** @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
-            $file = $this->request->files->get('file');
+            $file   = $this->request->files->get('file');
             $accept = $this->container->getAttachmentAccepter();
 
             $filename = $this->in->getString('filename');
@@ -687,7 +685,7 @@ JS;
         $message = Strings::stripTags(Strings::html2Text($this->in->getCleanValue('message', 'string', null, array('noclean' => true))));
 
         $extras = $this->in->getCleanValueArray('extras');
-        $draft = null;
+        $draft  = null;
         if ($message) {
             $message_html = trim($this->in->getHtml('message'));
             $message_html = Strings::prepareWysiwygHtml($message_html);
@@ -720,17 +718,17 @@ JS;
                 $ticket = $this->em->getRepository('DeskPRO:Ticket')->find($content_id);
                 if ($ticket) {
                     $html = $this->renderView('AgentBundle:Ticket:ticket-message-draft.html.twig', array(
-                        'draft' => $draft,
+                        'draft'  => $draft,
                         'ticket' => $ticket,
                     ));
                 }
             }
 
             App::getDb()->insert('client_messages', array(
-                'channel' => 'agent.ticket-draft-updated',
-                'auth' => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
+                'channel'      => 'agent.ticket-draft-updated',
+                'auth'         => \Orb\Util\Strings::random(15, \Orb\Util\Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
-                'data' => serialize(array(
+                'data'         => serialize(array(
                     'ticket_id'      => $content_id,
                     'draft_html'     => $html,
                     'via_person'     => $this->person->id,
@@ -769,7 +767,6 @@ JS;
 
     /**
      * @param  $id
-     * @return void
      */
     public function dismissHelpMessageAction($id)
     {
@@ -779,7 +776,8 @@ JS;
     }
 
     /**
-     * Set away status
+     * Set away status.
+     *
      * @param  $status
      */
     public function setAgentStatusAction($status)
@@ -790,8 +788,8 @@ JS;
             $status = 'available';
         }
 
-        $sessionEnt = $this->session->getEntity();
-        $sessionEnt['active_status'] = $status;
+        $sessionEnt                      = $this->session->getEntity();
+        $sessionEnt['active_status']     = $status;
         $sessionEnt['is_chat_available'] = $this->in->getBool('is_chat_available');
 
         $this->session->set('is_chat_available', $this->in->getBool('is_chat_available'));
@@ -799,7 +797,7 @@ JS;
         $this->session->save();
 
         // Update status in all other active sessions
-        $is_chat_avail = (int) $this->in->getBool('is_chat_available');
+        $is_chat_avail     = (int) $this->in->getBool('is_chat_available');
         $is_chat_avail_old = (int) (!$this->in->getBool('is_chat_available'));
 
         // using REPLACE on the session data as a quick way to toggle the status in session data
@@ -824,10 +822,10 @@ JS;
 
         // Also send our status
         //agent.ui.user-chat-status
-        $cm = new Entity\ClientMessage();
-        $cm->channel = 'agent.ui.user-chat-status';
+        $cm             = new Entity\ClientMessage();
+        $cm->channel    = 'agent.ui.user-chat-status';
         $cm->for_person = $this->person;
-        $cm->data = array('is_online' => $this->in->getBool('is_chat_available'));
+        $cm->data       = array('is_online' => $this->in->getBool('is_chat_available'));
         $this->em->persist($cm);
         $this->em->flush();
 
@@ -850,7 +848,7 @@ JS;
         $urlinfo = parse_url($url);
 
         return $this->render('AgentBundle:Misc:redirect-external.html.twig', array(
-            'url' => $url,
+            'url'     => $url,
             'urlinfo' => $urlinfo,
         ));
     }
@@ -862,19 +860,19 @@ JS;
         $page = @file_get_contents($url);
         $info = array();
 
-        $info['title'] = Strings::extractRegexMatch('#<title>(.*?)</title>#im', $page, 1);
-        $info['ip'] = gethostbyname($urlinfo['host']);
-        $info['hostname'] = gethostbyname($info['ip']);
-        $info['size'] = strlen($page);
+        $info['title']         = Strings::extractRegexMatch('#<title>(.*?)</title>#im', $page, 1);
+        $info['ip']            = gethostbyname($urlinfo['host']);
+        $info['hostname']      = gethostbyname($info['ip']);
+        $info['size']          = strlen($page);
         $info['size_readable'] = Numbers::filesizeDisplay($info['size']);
 
-        $info['num_images'] = substr_count($page, '<img');
+        $info['num_images']  = substr_count($page, '<img');
         $info['num_scripts'] = substr_count($page, '<script');
 
         return $this->render('AgentBundle:Misc:redirect-external-info.html.twig', array(
-            'url' => $url,
+            'url'     => $url,
             'urlinfo' => $urlinfo,
-            'info' => $info,
+            'info'    => $info,
         ));
     }
 
@@ -884,7 +882,7 @@ JS;
 
         $invalid_res = $this->createJsonResponse(array('invalid' => true));
 
-        $code = $this->session->getEntity()->generateSecurityToken('password_confirm'.$this->person->secret_string);
+        $code      = $this->session->getEntity()->generateSecurityToken('password_confirm'.$this->person->secret_string);
         $valid_res = $this->createJsonResponse(array('code' => $code));
 
         #------------------------------
@@ -906,7 +904,7 @@ JS;
         $usersources = $this->em->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
         foreach ($usersources as $us) {
             foreach ($this->person->getEmailAddresses() as $email) {
-                /** @var $us \Application\DeskPRO\Entity\Usersource */
+                /* @var $us \Application\DeskPRO\Entity\Usersource */
                 $adapter = $this->_initUserSourceAdapter($us);
                 $adapter->setFormData(array(
                     'username' => $email,
@@ -969,11 +967,11 @@ JS;
         $d = \Orb\Util\Dates::makeUtcDateTime($this->person->getDateTime());
 
         return $this->createJsonResponse(array(
-            'timestamp_utc' => time(),
-            'timestamp' => $d->getTimestamp(),
+            'timestamp_utc'  => time(),
+            'timestamp'      => $d->getTimestamp(),
             'time_formatted' => $d->format('g:i a'),
-            'time_hour' => (int) $d->format('H'),
-            'time_minute' => (int) $d->format('i'),
+            'time_hour'      => (int) $d->format('H'),
+            'time_minute'    => (int) $d->format('i'),
         ));
     }
 
@@ -988,7 +986,7 @@ JS;
     public function getRequirejsLoaderAction()
     {
         $app_perms = App\AgentAppPermissions::newFromDb($this->container->getDb(), $this->container->getAppManager()->getAllApps());
-        $manager = $this->container->getAppManager()->getScopeFilter('agent', null, $app_perms->getAgentAppFilterCallable($this->person));
+        $manager   = $this->container->getAppManager()->getScopeFilter('agent', null, $app_perms->getAgentAppFilterCallable($this->person));
 
         $rjs = new RequireJsConfigGenerator();
         $rjs->setBaseUrlExpr('ASSETS_BASE_URL');
@@ -1022,12 +1020,12 @@ JS;
         $js = array();
 
         $app_perms = App\AgentAppPermissions::newFromDb($this->container->getDb(), $this->container->getAppManager()->getAllApps());
-        $manager = $this->container->getAppManager()->getScopeFilter('agent', null, $app_perms->getAgentAppFilterCallable($this->person));
+        $manager   = $this->container->getAppManager()->getScopeFilter('agent', null, $app_perms->getAgentAppFilterCallable($this->person));
 
         foreach ($manager->getAllApps() as $app) {
-            $package = $app->package;
+            $package  = $app->package;
             $appAsset = $package->getTaggedAsset('app_js');
-            $name = "{$package->name}/app";
+            $name     = "{$package->name}/app";
 
             if ($appAsset) {
                 $class_name = $name;
@@ -1136,9 +1134,9 @@ JS;
             throw $this->createNotFoundException();
         }
 
-        $read_news = $this->person->getPref('agent.ui.dp_news', array());
+        $read_news   = $this->person->getPref('agent.ui.dp_news', array());
         $read_news[] = $id;
-        $p = $this->person->setPreference('agent.ui.dp_news', $read_news);
+        $p           = $this->person->setPreference('agent.ui.dp_news', $read_news);
         $this->em->persist($p);
         $this->em->flush();
 

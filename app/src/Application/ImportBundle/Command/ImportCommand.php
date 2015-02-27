@@ -32,8 +32,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class ImportCommand
- * @package Application\ImportBundle\Command
+ * Class ImportCommand.
  */
 class ImportCommand extends AbstractExportCommand
 {
@@ -57,7 +56,7 @@ class ImportCommand extends AbstractExportCommand
 
         $config = $this->createGeneratorConfig($input, $this->importEntityTypesQueue());
         $config->setWriterType(Generator\Writer\WriterInterface::TYPE_DESK_PRO);
-        if ( ! $config->getInputPath()) {
+        if (! $config->getInputPath()) {
             throw new \Exception('Input path must be specified');
         }
 
@@ -71,11 +70,10 @@ class ImportCommand extends AbstractExportCommand
                 'Done. Importing was successful. Look at the log file `%s` to see details.',
                 $config->getLogPath()
             ));
-
         } catch (Generator\GeneratorException $e) {
             $output->writeln('');
             foreach ($e->getExceptions() as $exception) {
-                /** @var Generator\Validator\ValidatorConstraintException $exception */
+                /* @var Generator\Validator\ValidatorConstraintException $exception */
                 $logger->critical($exception);
             }
             if ($config->isVerbose() === false) {
@@ -84,7 +82,6 @@ class ImportCommand extends AbstractExportCommand
                     $config->getLogPath()
                 ));
             }
-
         } catch (\Exception $e) {
             $logger->critical($e->getMessage());
 

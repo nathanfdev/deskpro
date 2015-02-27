@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Install
  */
 
@@ -167,8 +166,8 @@ class FilterData extends AbstractDefaultData
                     continue;
                 }
 
-                $f['is_global'] = 1;
-                $f['is_enabled'] = 1;
+                $f['is_global']     = 1;
+                $f['is_enabled']    = 1;
                 $f['display_order'] = $order++;
 
                 if ($is_hold) {

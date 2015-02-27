@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -36,9 +35,9 @@ namespace Application\InstallBundle\Data;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Monolog\NullLogger;
-use Psr\Log\LoggerInterface;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Psr\Log\LoggerInterface;
 
 class DefaultDataProcessor
 {
@@ -74,7 +73,7 @@ class DefaultDataProcessor
         }
 
         $this->container = $container;
-        $this->root_dir = $root_dir;
+        $this->root_dir  = $root_dir;
 
         $this->logger = new NullLogger();
     }
@@ -88,7 +87,7 @@ class DefaultDataProcessor
     }
 
     /**
-     * Loads install data if its not already loaded
+     * Loads install data if its not already loaded.
      */
     private function initDataInfo()
     {
@@ -96,7 +95,7 @@ class DefaultDataProcessor
             return;
         }
 
-        $row = $this->container->getDb()->fetchAssoc("SELECT id, data FROM datastore WHERE name = 'sys.install.default_data' LIMIT 1");
+        $row  = $this->container->getDb()->fetchAssoc("SELECT id, data FROM datastore WHERE name = 'sys.install.default_data' LIMIT 1");
         $data = null;
         if ($row) {
             $data = @unserialize($row['data']);
@@ -113,7 +112,7 @@ class DefaultDataProcessor
     }
 
     /**
-     * Save data info
+     * Save data info.
      */
     private function flushDataInfo()
     {
@@ -126,7 +125,8 @@ class DefaultDataProcessor
     }
 
     /**
-     * @param  string $classname
+     * @param string $classname
+     *
      * @return bool
      */
     public function isInstalled($classname)
@@ -250,7 +250,7 @@ class DefaultDataProcessor
     }
 
     /**
-     * Resets data classes
+     * Resets data classes.
      *
      * @param string $specific_class Only run this specific data class
      */

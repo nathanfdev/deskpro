@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
@@ -42,7 +41,7 @@ namespace Orb\Util;
 class Urls
 {
     /**
-     * Verifies if $email is from the $domain
+     * Verifies if $email is from the $domain.
      *
      * example:
      * chris.tickner@gmail.com  and  deskpro.com  FALSE
@@ -50,10 +49,12 @@ class Urls
      * chris.tickner@support.deskpro.com and deskpro.com FALSE
      * chris.tickner@support.deskpro.com and support.deskpro.com TRUE
      *
-     * @param  string                    $email  the email that we are checking vs the domain name
-     * @param  string                    $domain just a domain name
-     * @return bool                      true if $domain is the extact domain used in the email of $email
+     * @param string $email  the email that we are checking vs the domain name
+     * @param string $domain just a domain name
+     *
      * @throws \InvalidArgumentException
+     * @return bool true if $domain is the extact domain used in the email of $email
+     *
      */
     public static function verifyEmailDomain($email, $domain)
     {

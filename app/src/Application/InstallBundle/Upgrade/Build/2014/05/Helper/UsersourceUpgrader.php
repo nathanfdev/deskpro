@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build\Helper201405;
@@ -74,7 +71,7 @@ class UsersourceUpgrader
     }
 
     /**
-     * Upgrade the usersource
+     * Upgrade the usersource.
      */
     public function upgrade()
     {
@@ -125,8 +122,9 @@ class UsersourceUpgrader
     }
 
     /**
-     * @param  string      $package_name
-     * @param  array       $app_settings
+     * @param string $package_name
+     * @param array  $app_settings
+     *
      * @return AppInstance
      */
     private function createApp($package_name, array $app_settings)
@@ -138,9 +136,9 @@ class UsersourceUpgrader
             $app_settings['enable_usersource'] = true;
         }
 
-        $app = new AppInstance();
+        $app          = new AppInstance();
         $app->package = $package;
-        $app->title = $this->us_info['title'] ?: $package->title;
+        $app->title   = $this->us_info['title'] ?: $package->title;
         $app->setSettings($app_settings);
         $this->container->getEm()->persist($app);
         $this->container->getEm()->flush();
@@ -163,16 +161,16 @@ class UsersourceUpgrader
     }
 
     /**
-     * Upgrade an ActiveDirectory source
+     * Upgrade an ActiveDirectory source.
      */
     private function upgradeActiveDirectory()
     {
-        $adapter_class = 'Application\\DeskPRO\\Usersource\\Adapter\\ActiveDirectory';
+        $adapter_class    = 'Application\\DeskPRO\\Usersource\\Adapter\\ActiveDirectory';
         $adapter_settings = $this->options;
 
         $app_package_name = 'deskpro_us_active_directory';
-        $o = new OptionsArray($adapter_settings);
-        $app_settings = array(
+        $o                = new OptionsArray($adapter_settings);
+        $app_settings     = array(
             'port'              => $o->get('port', ''),
             'host'              => $o->get('host', ''),
             'base_dn'           => $o->get('baseDn', ''),
@@ -188,11 +186,11 @@ class UsersourceUpgrader
     }
 
     /**
-     * Upgrade a custom DB source
+     * Upgrade a custom DB source.
      */
     private function upgradeCustomDb()
     {
-        $o = new OptionsArray($this->options);
+        $o             = new OptionsArray($this->options);
         $adapter_class = 'Application\\DeskPRO\\Usersource\\Adapter\\DbTablePhpPasswordCheck';
 
         $php = $o->get('password_php', '');
@@ -232,7 +230,7 @@ class UsersourceUpgrader
         }
 
         $app_package_name = 'deskpro_us_db';
-        $app_settings = array(
+        $app_settings     = array(
             'db_type'          => $adapter_settings['connection_options']['driver'],
             'db_host'          => $adapter_settings['connection_options']['host'],
             'db_port'          => $adapter_settings['connection_options']['port'],
@@ -255,17 +253,18 @@ class UsersourceUpgrader
     }
 
     /**
-     * @param  string $dsn
+     * @param string $dsn
+     *
      * @return array
      */
     private function parseDsn($dsn)
     {
         if (preg_match('#^(\w+):(.*?)$#', $dsn, $m)) {
             $driver = $m[1];
-            $info = $m[2];
+            $info   = $m[2];
         } else {
             $driver = 'mysql';
-            $info = $dsn;
+            $info   = $dsn;
         }
 
         switch ($driver) {
@@ -274,7 +273,7 @@ class UsersourceUpgrader
                 break;
         }
 
-        $params = array();
+        $params           = array();
         $params['driver'] = $driver;
 
         $parts = explode(';', $info);
@@ -283,8 +282,8 @@ class UsersourceUpgrader
                 continue;
             }
             list($name, $value) = explode('=', $p, 2);
-            $name = trim($name);
-            $value = trim($value);
+            $name               = trim($name);
+            $value              = trim($value);
 
             $params[$name] = $value;
         }
@@ -293,61 +292,61 @@ class UsersourceUpgrader
     }
 
     /**
-     * Upgrade an ezC source
+     * Upgrade an ezC source.
      */
     private function upgradeEzPublish()
     {
-        $adapter_class = 'Application\\DeskPRO\\Usersource\\Adapter\\EzPublish';
+        $adapter_class    = 'Application\\DeskPRO\\Usersource\\Adapter\\EzPublish';
         $adapter_settings = $this->options;
 
         $app_package_name = 'deskpro_us_ezpublish';
-        $app_settings = $adapter_settings;
+        $app_settings     = $adapter_settings;
 
         $app = $this->createApp($app_package_name, $app_settings);
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
     }
 
     /**
-     * Upgrade a Facebook source
+     * Upgrade a Facebook source.
      */
     private function upgradeFacebook()
     {
-        $adapter_class = 'Application\\DeskPRO\\Usersource\\Adapter\\Facebook';
+        $adapter_class    = 'Application\\DeskPRO\\Usersource\\Adapter\\Facebook';
         $adapter_settings = $this->options;
 
         $app_package_name = 'deskpro_us_facebook';
-        $app_settings = $adapter_settings;
+        $app_settings     = $adapter_settings;
 
         $app = $this->createApp($app_package_name, $app_settings);
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
     }
 
     /**
-     * Upgrade a Google source
+     * Upgrade a Google source.
      */
     private function upgradeGoogle()
     {
-        $adapter_class = 'Application\\DeskPRO\\Usersource\\Adapter\\Google';
+        $adapter_class    = 'Application\\DeskPRO\\Usersource\\Adapter\\Google';
         $adapter_settings = $this->options;
 
         $app_package_name = 'deskpro_us_google';
-        $app_settings = $adapter_settings;
+        $app_settings     = $adapter_settings;
 
         $app = $this->createApp($app_package_name, $app_settings);
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
     }
 
     /**
-     * Upgrade an LDAP source
+     * Upgrade an LDAP source.
      */
     private function upgradeLdap()
     {
-        $adapter_class = 'Application\\DeskPRO\\Usersource\\Adapter\\Ldap';
+        $adapter_class    = 'Application\\DeskPRO\\Usersource\\Adapter\\Ldap';
         $adapter_settings = $this->options;
 
         $app_package_name = 'deskpro_us_ldap';
-        $o = new OptionsArray($adapter_settings);
-        $app_settings = array(
+        $o                = new OptionsArray($adapter_settings);
+        $app_settings     = array(
             'port'              => $o->get('port', ''),
             'host'              => $o->get('host', ''),
             'base_dn'           => $o->get('baseDn', ''),
@@ -361,7 +360,7 @@ class UsersourceUpgrader
     }
 
     /**
-     * Upgrade a phpBB2 or phpBB3 source
+     * Upgrade a phpBB2 or phpBB3 source.
      */
     private function upgradePhpbb()
     {
@@ -373,81 +372,81 @@ class UsersourceUpgrader
         $adapter_settings = $this->options;
 
         $app_package_name = 'deskpro_us_phpbb';
-        $app_settings = $adapter_settings;
+        $app_settings     = $adapter_settings;
 
         $app = $this->createApp($app_package_name, $app_settings);
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
     }
 
     /**
-     * Upgrade a twitter source
+     * Upgrade a twitter source.
      */
     private function upgradeTwitter()
     {
-        $adapter_class = 'Application\\DeskPRO\\Usersource\\Adapter\\Twitter';
+        $adapter_class    = 'Application\\DeskPRO\\Usersource\\Adapter\\Twitter';
         $adapter_settings = $this->options;
 
         $app_package_name = 'deskpro_us_twitter';
-        $app_settings = $adapter_settings;
+        $app_settings     = $adapter_settings;
 
         $app = $this->createApp($app_package_name, $app_settings);
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
     }
 
     /**
-     * Upgrade a XF source
+     * Upgrade a XF source.
      */
     private function upgradeVbulletin()
     {
-        $adapter_class = 'Application\\DeskPRO\\Usersource\\Adapter\\Vbulletin';
+        $adapter_class    = 'Application\\DeskPRO\\Usersource\\Adapter\\Vbulletin';
         $adapter_settings = $this->options;
 
         $app_package_name = 'deskpro_us_vbulletin';
-        $app_settings = $adapter_settings;
+        $app_settings     = $adapter_settings;
 
         $app = $this->createApp($app_package_name, $app_settings);
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
     }
 
     /**
-     * Upgrade a XF source
+     * Upgrade a XF source.
      */
     private function upgradeXenForo()
     {
-        $adapter_class = 'Application\\DeskPRO\\Usersource\\Adapter\\Xenforo';
+        $adapter_class    = 'Application\\DeskPRO\\Usersource\\Adapter\\Xenforo';
         $adapter_settings = $this->options;
 
         $app_package_name = 'deskpro_us_xenforo';
-        $app_settings = $adapter_settings;
+        $app_settings     = $adapter_settings;
 
         $app = $this->createApp($app_package_name, $app_settings);
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
     }
 
     /**
-     * Upgrade a Joomla source
+     * Upgrade a Joomla source.
      */
     private function upgradeJoomla()
     {
-        $adapter_class = 'deskpro_us_joomla\\Usersource\\Adapter\\Joomla';
+        $adapter_class    = 'deskpro_us_joomla\\Usersource\\Adapter\\Joomla';
         $adapter_settings = array(
             'joomla_url'    => $this->container->getSetting('Joomla.joomla_url'),
             'joomla_secret' => $this->container->getSetting('Joomla.joomla_secret'),
         );
 
         $app_package_name = 'deskpro_us_joomla';
-        $app_settings = $adapter_settings;
+        $app_settings     = $adapter_settings;
 
         $app = $this->createApp($app_package_name, $app_settings);
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
     }
 
     /**
-     * Upgrade a Joomla source
+     * Upgrade a Joomla source.
      */
     private function upgradeMagento()
     {
-        $adapter_class = 'deskpro_magento\\Usersource\\Adapter\\Magento';
+        $adapter_class    = 'deskpro_magento\\Usersource\\Adapter\\Magento';
         $adapter_settings = array(
             'url'      => $this->container->getSetting('Magento.url'),
             'api_user' => $this->container->getSetting('Magento.api_user'),
@@ -458,14 +457,14 @@ class UsersourceUpgrader
         // Should already have a magento app from previous upgrade step
 
         $manager = $this->container->getAppManager();
-        $app = $manager->getPackageApp('deskpro_magento');
+        $app     = $manager->getPackageApp('deskpro_magento');
         if (!$app) {
             return;
         }
         $this->updateUsersource($adapter_class, $adapter_settings, $app);
-        $settings = $app->getSettings();
+        $settings                      = $app->getSettings();
         $settings['enable_usersource'] = true;
-        $settings['enable_sso'] = $adapter_settings['sso_js'];
+        $settings['enable_sso']        = $adapter_settings['sso_js'];
         $app->setSettings($settings);
         $this->container->getEm()->persist($app);
         $this->container->getEm()->flush($app);

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -67,7 +66,7 @@ class EmailAccountRepository
     }
 
     /**
-     * Loads account info from the db
+     * Loads account info from the db.
      */
     private function preload()
     {
@@ -122,6 +121,7 @@ class EmailAccountRepository
 
     /**
      * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\EmailAccount|null
      */
     public function getAccount($id)

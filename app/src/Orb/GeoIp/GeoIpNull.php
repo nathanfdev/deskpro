@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage GeoIp
+ * Orb.
  */
 
 namespace Orb\GeoIp;
@@ -37,8 +34,9 @@ namespace Orb\GeoIp;
 class GeoIpNull extends AbstractGeoIp
 {
     /**
-     * @param  string $host
-     * @param  array  $what
+     * @param string $host
+     * @param array  $what
+     *
      * @return array
      */
     public function lookup($host, array $what = null)

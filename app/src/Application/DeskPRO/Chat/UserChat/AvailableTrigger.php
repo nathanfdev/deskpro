@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Chat\UserChat;
@@ -39,7 +37,7 @@ use DeskPRO\Kernel\KernelErrorHandler;
 class AvailableTrigger
 {
     /**
-     * Update the chat status
+     * Update the chat status.
      *
      * @param bool|null $is_chat_available True/false to mark chat as available/unavailable, null to auto-detect with query
      */

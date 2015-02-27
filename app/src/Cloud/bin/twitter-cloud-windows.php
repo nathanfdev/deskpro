@@ -47,7 +47,7 @@ set_time_limit(0);
 require_once DP_ROOT.'/sys/load_config.php';
 dp_load_config();
 
-$file = escapeshellarg(__DIR__.'\\twitter-cloud.php');
+$file     = escapeshellarg(__DIR__.'\\twitter-cloud.php');
 $php_path = dp_get_php_path(true);
 
 // this is needed as we need a fake window to hide the process

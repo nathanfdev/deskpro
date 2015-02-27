@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -53,7 +50,7 @@ class Build1370526594 extends AbstractBuild
             $this->container->getDb()->update(
                 'ticket_triggers',
                 array('terms' => $new_terms),
-                array('id' => $tr['id'])
+                array('id'    => $tr['id'])
             );
         }
     }

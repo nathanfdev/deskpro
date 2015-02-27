@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade;
@@ -88,7 +85,7 @@ class Manager
     public function __construct(DeskproContainer $container, Logger $logger = null)
     {
         $this->container = $container;
-        $this->logger = $logger;
+        $this->logger    = $logger;
         $this->reset();
     }
 
@@ -109,10 +106,9 @@ class Manager
     }
 
     /**
-     * Runs the next build script
+     * Runs the next build script.
      *
-     * @param  int  $build_id
-     * @return void
+     * @param int $build_id
      */
     public function runBuild($build_id)
     {
@@ -133,7 +129,7 @@ class Manager
 
         if ($build->shouldRerun()) {
             $current_run = $build->getStatus('runcount', 0);
-            $next_run = $current_run+1;
+            $next_run    = $current_run+1;
             if ($this->logger) {
                 $this->logger->debug(sprintf("runBuild(%d.%d)", $build_id, $next_run));
             }
@@ -271,9 +267,10 @@ class Manager
     }
 
     /**
-     * Get the build class for a build ID
+     * Get the build class for a build ID.
      *
-     * @param  int    $build_id
+     * @param int $build_id
+     *
      * @return string
      */
     public function getBuildClass($build_id)
@@ -308,7 +305,7 @@ class Manager
     }
 
     /**
-     * Get a list of all upgrade build script available
+     * Get a list of all upgrade build script available.
      *
      * @return array
      */
@@ -318,7 +315,7 @@ class Manager
             return $this->build_list;
         }
 
-        $manifest = require DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
+        $manifest         = require DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
         $this->build_list = array_keys($manifest);
 
         array_unique($this->build_list, \SORT_NUMERIC);
@@ -328,7 +325,7 @@ class Manager
     }
 
     /**
-     * Gets the next build ID or 0 if the db is up to date
+     * Gets the next build ID or 0 if the db is up to date.
      *
      * @return int
      */
@@ -344,7 +341,7 @@ class Manager
     }
 
     /**
-     * Get the latest build id
+     * Get the latest build id.
      *
      * @return int
      */
@@ -354,9 +351,10 @@ class Manager
     }
 
     /**
-     * Formats a build ID
+     * Formats a build ID.
      *
-     * @param  int    $build_id
+     * @param int $build_id
+     *
      * @return string
      */
     public function formatBuildId($build_id)

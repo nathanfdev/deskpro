@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -50,7 +47,7 @@ class MediaBrowserController extends AbstractController
         $data = array();
 
         foreach ($files as $file) {
-            /** @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
+            /* @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
 
             $blob = $this->container->getBlobStorage()->createBlobRecordFromFile(
                 $file->getRealPath(),

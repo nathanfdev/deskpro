@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category TaskQueueJob
  */
 
@@ -50,26 +49,26 @@ class CsvExport extends AbstractJob
     protected function _getDefaultData()
     {
         return array(
-            'file' => null,
-            'offset' => 0,
-            'limit' => 50,
+            'file'    => null,
+            'offset'  => 0,
+            'limit'   => 50,
             'headers' => array(
                 'ID', 'Name', 'Title', 'Primary Email', 'Additional Emails', 'Organization', 'Org Position',
                 'Date Created', 'Date Last Login', 'Usergroup IDs', 'Timezone', 'Labels',
             ),
-            'contact_headers' => array(),
+            'contact_headers'       => array(),
             'custom_fields_headers' => array(),
         );
     }
 
     public function run($max_time)
     {
-	    $em = App::getOrm();
-	    $em->getConnection()->getConfiguration()->setSQLLogger(null);
+        $em = App::getOrm();
+        $em->getConnection()->getConfiguration()->setSQLLogger(null);
         $start_time = microtime(true);
-        $file = $this->_data['file'];
-        $delimeter = ';';
-        $enclosure = '"';
+        $file       = $this->_data['file'];
+        $delimeter  = ';';
+        $enclosure  = '"';
 
         if (!$file) {
             if (!is_dir(dp_get_tmp_dir().'/export')) {
@@ -84,7 +83,7 @@ class CsvExport extends AbstractJob
 
         if (!$this->_data['file']) {
             //select max(cnt) from (select count(person_id) as cnt from people_contact_data group by person_id) as counts
-            /**
+            /*
              *  ID
              *  Name (all three fields)
              *  TItle
@@ -109,17 +108,17 @@ class CsvExport extends AbstractJob
         $rep = $em->getRepository('DeskPRO:Person');
 
         while (microtime(true) - $start_time < $max_time) {
-
             if (!$batch = $rep->findBy(array(), array(), $this->_data['limit'], $this->_data['offset'])) {
                 break;
             }
 
             foreach ($batch as $person) {
+                if (microtime(true) >= $max_time + $start_time) {
+                    break;
+                }
 
-	            if (microtime(true) >= $max_time + $start_time) break;
-
-	            /** @var $person Person */
-	            $row = array(
+                /* @var $person Person */
+                $row = array(
                     $person['id'],
                     implode(',', array($person['name'], $person['first_name'], $person['last_name'])),
                     $person['title_prefix'],
@@ -140,9 +139,9 @@ class CsvExport extends AbstractJob
                 fputcsv($fp, $row, $delimeter, $enclosure);
 
                 $this->_data['offset']++;
-	            $em->detach($person);
-	            $person->clear();
-	            unset($person);
+                $em->detach($person);
+                $person->clear();
+                unset($person);
             }
         }
 
@@ -155,7 +154,7 @@ class CsvExport extends AbstractJob
         $task = $this->getTask();
 
         $task['run_status'] = 'Processed '.$this->_data['offset'];
-        $task['task_data'] = array_merge($task['task_data'], $this->_data);
+        $task['task_data']  = array_merge($task['task_data'], $this->_data);
 
         if (!$batch) {
             $data = TmpData::create(
@@ -173,8 +172,9 @@ class CsvExport extends AbstractJob
     }
 
     /**
-     * @return mixed
      * @throws \Doctrine\DBAL\DBALException
+     * @return mixed
+     *
      */
     protected function getContactDataHeaders()
     {
@@ -187,7 +187,7 @@ class CsvExport extends AbstractJob
         );
 
         foreach ($ch as $type) {
-            $q = 'select max(cnt) from (select count(person_id) as cnt from people_contact_data where contact_type = :type group by person_id) as counts';
+            $q   = 'select max(cnt) from (select count(person_id) as cnt from people_contact_data where contact_type = :type group by person_id) as counts';
             $res = App::getOrm()->getConnection()->executeQuery($q, array('type' => $type))->fetchColumn();
             if (!$res) {
                 continue;
@@ -212,7 +212,7 @@ class CsvExport extends AbstractJob
 
         $field_manager = App::$container->getPersonFieldManager();
         foreach ($field_manager->getFields() as $def) {
-            /** @var $def CustomDefPerson */
+            /* @var $def CustomDefPerson */
             $this->_data['custom_fields_headers'][] = $def->getTitle();
         }
 
@@ -227,7 +227,7 @@ class CsvExport extends AbstractJob
     {
         $types = array();
         foreach ($person->getContactData() as $cd) {
-            /** @var $cd PersonContactData */
+            /* @var $cd PersonContactData */
             $data = ('phone' === $cd['contact_type'] || 'mobile' === $cd['contact_type'])
                 ? $cd['field_1'].$cd['field_2']
                 : $cd->getSearchString();
@@ -236,7 +236,7 @@ class CsvExport extends AbstractJob
         }
 
         foreach ($this->_data['contact_headers'] as $type) {
-            $val = isset($types[$type]) ? array_shift($types[$type]) : false;
+            $val   = isset($types[$type]) ? array_shift($types[$type]) : false;
             $row[] = (string) $val;
         }
     }
@@ -248,9 +248,9 @@ class CsvExport extends AbstractJob
     protected function fillCustomFieldsValues(Person $person, &$row)
     {
         $field_manager = App::$container->getPersonFieldManager();
-        $data = $field_manager->getFieldDataForObject($person);
+        $data          = $field_manager->getFieldDataForObject($person);
         foreach ($field_manager->getFields() as $def) {
-            /** @var $def CustomDefPerson */
+            /* @var $def CustomDefPerson */
             $row[] = isset($data[$def['id']])
                 ? trim($def->getHandler()->renderText($data[$def['id']]))
                 : '';

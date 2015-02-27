@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\HttpCache;
 
-use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use FOS\HttpCache\UserContext\ContextProviderInterface;
 use FOS\HttpCache\UserContext\UserContext;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -60,9 +57,9 @@ class PortalUserHashContextProvider implements ContextProviderInterface
 
     public function __construct(TokenStorage $token_storage, AuthorizationChecker $auth_checker, PortalPermissionsManager $permissions_manager)
     {
-        $this->token_storage = $token_storage;
+        $this->token_storage       = $token_storage;
         $this->permissions_manager = $permissions_manager;
-        $this->auth_checker = $auth_checker;
+        $this->auth_checker        = $auth_checker;
     }
 
     /**

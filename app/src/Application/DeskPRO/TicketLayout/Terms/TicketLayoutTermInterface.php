@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -48,13 +47,15 @@ interface TicketLayoutTermInterface extends CriteriaTermInterface
     public function compileJsCheck();
 
     /**
-     * @param  Ticket $ticket
+     * @param Ticket $ticket
+     *
      * @return bool
      */
     public function isTicketMatch(Ticket $ticket);
 
     /**
-     * @param  array $data
+     * @param array $data
+     *
      * @return bool
      */
     public function isSubmittedDataMatch(array $data);

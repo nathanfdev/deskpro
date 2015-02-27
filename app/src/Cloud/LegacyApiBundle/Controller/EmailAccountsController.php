@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Cloud\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\Controller\EmailAccountsController as BaseEmailAccountsController;
 use Application\DeskPRO\Entity\EmailAccount;
+use Application\LegacyApiBundle\Controller\EmailAccountsController as BaseEmailAccountsController;
 use Orb\Util\Arrays;
 
 class EmailAccountsController extends BaseEmailAccountsController
@@ -49,7 +46,7 @@ class EmailAccountsController extends BaseEmailAccountsController
 
         // Give a default value to address_name if it was left blank
         if (empty($data['address_name']) || !$data['address_name']) {
-            $db = $this->container->getDb();
+            $db    = $this->container->getDb();
             $check = function ($addy) use ($db) {
                 return $db->fetchColumn("SELECT COUNT(*) FROM email_accounts WHERE address = ?", array($addy));
             };

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -69,7 +68,8 @@ class AppManagerFiltered implements AppManagerInterface
     }
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function hasPackage($name)
@@ -84,9 +84,11 @@ class AppManagerFiltered implements AppManagerInterface
     }
 
     /**
-     * @param  string                    $name
-     * @return AppPackage
+     * @param string $name
+     *
      * @throws \InvalidArgumentException
+     * @return AppPackage
+     *
      */
     public function getPackage($name)
     {
@@ -115,7 +117,8 @@ class AppManagerFiltered implements AppManagerInterface
     }
 
     /**
-     * @param  int  $id
+     * @param int $id
+     *
      * @return bool
      */
     public function hasApp($id)
@@ -138,9 +141,11 @@ class AppManagerFiltered implements AppManagerInterface
     }
 
     /**
-     * @param  int                       $id
-     * @return AppInstance
+     * @param int $id
+     *
      * @throws \InvalidArgumentException
+     * @return AppInstance
+     *
      */
     public function getApp($id)
     {
@@ -176,7 +181,8 @@ class AppManagerFiltered implements AppManagerInterface
     }
 
     /**
-     * @param  string        $name The package name
+     * @param string $name The package name
+     *
      * @return AppInstance[]
      */
     public function getPackageApps($name)
@@ -186,7 +192,7 @@ class AppManagerFiltered implements AppManagerInterface
         }
 
         $all_apps = $this->app_manager->getPackageApps($name);
-        $apps = array();
+        $apps     = array();
 
         foreach ($all_apps as $app) {
             if (call_user_func($this->filter, $app->package)) {

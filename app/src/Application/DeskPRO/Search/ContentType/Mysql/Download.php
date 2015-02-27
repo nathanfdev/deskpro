@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Search
  */
 
@@ -45,20 +44,20 @@ class Download extends AbstractContentType
     public function objectToDocument($download)
     {
         if ($download->status != 'published') {
-            $data = array();
-            $data['id'] = $download['id'];
+            $data                 = array();
+            $data['id']           = $download['id'];
             $data['content_type'] = 'download';
-            $data['remove'] = true;
+            $data['remove']       = true;
 
             $doc = Document::newFromArray($data);
 
             return $doc;
         }
 
-        $data = array();
-        $data['id'] = $download['id'];
+        $data                 = array();
+        $data['id']           = $download['id'];
         $data['content_type'] = 'download';
-        $data['content'] = $download['title']."\n".$download['content']."\n";
+        $data['content']      = $download['title']."\n".$download['content']."\n";
 
         foreach ($download->getLabelManager()->getLabelsArray() as $label) {
             $label = MysqlAdapter::encodeLabel($label);

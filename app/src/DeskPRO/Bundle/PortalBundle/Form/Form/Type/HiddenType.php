@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -102,12 +99,12 @@ class HiddenType extends AbstractType
     {
         $resolver->setDefaults(array(
             'auto_fill' => false,
-            'hidden' => true,
-            'label' => function (Options $options) {
+            'hidden'    => true,
+            'label'     => function (Options $options) {
                     return ! ((bool) $options->get('hidden'));
                 },
             'request_param_name' => null,
-            'cookie_param_name' => null,
+            'cookie_param_name'  => null,
         ));
     }
 }

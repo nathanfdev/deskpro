@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -102,10 +101,10 @@ class PermissionCache extends AbstractEntityRepository
                 $loaders[] = $r['perms_loader'];
             } elseif (!empty($r['perms'])) {
                 $r['perms_loader'] = @unserialize($r['perms']);
-                $r['perms'] = null;
+                $r['perms']        = null;
                 if ($r['perms_loader']) {
                     $r['perms_loader']->loaded_key = $r['usergroup_key'];
-                    $loaders[] = $r['perms_loader'];
+                    $loaders[]                     = $r['perms_loader'];
                 }
             }
         }

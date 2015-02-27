@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Usersource
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usersource\Adapter;

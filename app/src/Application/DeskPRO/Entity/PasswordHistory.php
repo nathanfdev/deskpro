@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,14 +38,13 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Password history
+ * Password history.
  *
  * @property int $id
  * @property string $password
  * @property string $password_scheme
  * @property Person $person
  * @property \DateTime $date_created
- *
  */
 class PasswordHistory extends DomainObject
 {

@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 use Application\ImportBundle\Entity;
 
 /**
- * ZenDesk downloads parser
+ * ZenDesk downloads parser.
  *
  * Class Downloads
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
 final class Downloads extends AbstractParser
 {

@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\ReportsInterfaceBundle\Controller;
 
@@ -39,6 +37,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 {
     /**
      * The currently logged in person.
+     *
      * @var \Application\DeskPRO\Entity\Person
      */
     public $person;
@@ -50,7 +49,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * Check if the global request token check is required for the request
+     * Check if the global request token check is required for the request.
      */
     public function requireRequestToken($action, $arguments = null)
     {
@@ -62,7 +61,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * Force a login
+     * Force a login.
      */
     public function preAction($action, $arguments = null)
     {
@@ -79,7 +78,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
             if ($this->request->isXmlHttpRequest()) {
                 $data = array(
-                    'error' => 'invalid_request_token',
+                    'error'          => 'invalid_request_token',
                     'redirect_login' => $this->generateUrl('agent_login'),
                 );
 
@@ -95,7 +94,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             ));
         }
 
-        return null;
+        return;
     }
 
     protected function _userHasPermissions()

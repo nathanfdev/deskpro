@@ -26,16 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\LegacyApiBundle\Controller\Helper;
 
-use Application\LegacyApiBundle\Controller\AbstractController;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\LegacyApiBundle\Controller\AbstractController;
 use Orb\Util\Util;
 
 class CustomFieldHelper
@@ -63,8 +62,9 @@ class CustomFieldHelper
     }
 
     /**
-     * @param  CustomDefAbstract $field
+     * @param CustomDefAbstract $field
      * @param $form_data
+     *
      * @throws \Exception
      */
     public function saveFormToField(CustomDefAbstract $field, array $form_data)

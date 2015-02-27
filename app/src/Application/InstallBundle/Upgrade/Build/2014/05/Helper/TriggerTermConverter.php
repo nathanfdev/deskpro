@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build\Helper201405;
@@ -62,15 +60,16 @@ class TriggerTermConverter
             $e = new \Exception("Unknown trigger term: ".$info['type']);
             KernelErrorHandler::logException($e);
 
-            return null;
+            return;
         }
 
         return $this->$func($info['type'], $info['op'], new OptionsArray($info['options']), $event_trigger);
     }
 
     /**
-     * @param  OptionsArray $options
-     * @param  string       $key
+     * @param OptionsArray $options
+     * @param string       $key
+     *
      * @return array
      */
     private function getSingleArrayValue(OptionsArray $options, $key)
@@ -171,7 +170,7 @@ class TriggerTermConverter
     private function upgradeTerm_email_account_bcc($type, $op, OptionsArray $options)
     {
         // no translation
-        return null;
+        return;
     }
 
     private function upgradeTerm_email_body($type, $op, OptionsArray $options)
@@ -217,7 +216,7 @@ class TriggerTermConverter
     private function upgradeTerm_email_header($type, $op, OptionsArray $options)
     {
         return new Terms\CheckEmailHeader($op, array(
-            'name' => $options->get('header_name', 'NO NAME'),
+            'name'  => $options->get('header_name', 'NO NAME'),
             'value' => $options->get('header_value', 'NO VALUE'),
         ));
     }
@@ -243,21 +242,21 @@ class TriggerTermConverter
     {
         // Not a criteria anymore
         // instead: mode=email
-        return null;
+        return;
     }
 
     private function upgradeTerm_is_via_email_reply($type, $op, OptionsArray $options)
     {
         // Not a criteria anymore
         // instead: event_trigger=reply, mode=email
-        return null;
+        return;
     }
 
     private function upgradeTerm_is_via_interface($type, $op, OptionsArray $options)
     {
         // Not a criteria anymore
         // instead: mode=web,form,portal,widget
-        return null;
+        return;
     }
 
     private function upgradeTerm_label($type, $op, OptionsArray $options)
@@ -275,7 +274,7 @@ class TriggerTermConverter
         $labels = Arrays::removeEmptyString($labels);
 
         if (!$labels) {
-            return null;
+            return;
         }
 
         if ($op == 'is') {
@@ -344,7 +343,7 @@ class TriggerTermConverter
     private function upgradeTerm_person_email_domain($type, $op, OptionsArray $options)
     {
         $domain = $options->get('email_domain', 'NO DOMAIN');
-        $regex = '/^(.*?)@'.preg_quote($domain, '/').'$/';
+        $regex  = '/^(.*?)@'.preg_quote($domain, '/').'$/';
 
         switch ($op) {
             case 'is': $op = 'is_regex'; break;
@@ -358,7 +357,7 @@ class TriggerTermConverter
     {
         $field_id = Strings::extractRegexMatch('#\[(\d+)\]$#', $type);
         if (!$field_id) {
-            return null;
+            return;
         }
 
         $value = Arrays::getValue($options->all(), 'custom_fields.field_'.$field_id);
@@ -448,7 +447,7 @@ class TriggerTermConverter
     {
         $field_id = Strings::extractRegexMatch('#\[(\d+)\]$#', $type);
         if (!$field_id) {
-            return null;
+            return;
         }
 
         $value = Arrays::getValue($options->all(), 'custom_fields.field_'.$field_id);

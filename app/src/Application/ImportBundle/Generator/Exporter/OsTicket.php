@@ -27,14 +27,12 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Entity;
-
 /**
- * Exporter from OsTicket service
+ * Exporter from OsTicket service.
  *
  * Class OsTicket
+ *
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
- * @package Application\ImportBundle\Generator\Exporter
  */
 final class OsTicket extends AbstractExporter
 {

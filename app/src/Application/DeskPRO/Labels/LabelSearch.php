@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Labels
  */
 
@@ -68,7 +67,7 @@ class LabelSearch
     }
 
     /**
-     * Set the types of things we want to search for
+     * Set the types of things we want to search for.
      *
      * @param array $types
      */
@@ -78,7 +77,7 @@ class LabelSearch
     }
 
     /**
-     * Set the max number of objects to fetch per type
+     * Set the max number of objects to fetch per type.
      *
      * @param $limit
      */
@@ -88,19 +87,19 @@ class LabelSearch
     }
 
     /**
-     * Do a search and get an array of results
+     * Do a search and get an array of results.
      *
      * @param $label
      */
     public function search($label, $combined = false)
     {
         $results = array(
-            'article' => array(),
-            'download' => array(),
-            'feedback' => array(),
-            'news' => array(),
-            'ticket' => array(),
-            'person' => array(),
+            'article'      => array(),
+            'download'     => array(),
+            'feedback'     => array(),
+            'news'         => array(),
+            'ticket'       => array(),
+            'person'       => array(),
             'organization' => array(),
         );
 
@@ -115,7 +114,7 @@ class LabelSearch
 
             if ($ids) {
                 /** @var \Application\DeskPRO\EntityRepository\Ticket $rep */
-                $rep = $this->em->getRepository('DeskPRO:Ticket');
+                $rep               = $this->em->getRepository('DeskPRO:Ticket');
                 $results['ticket'] = $rep->findBy(
                     array('id' => $ids, 'status' => array('awaiting_agent', 'awaiting_user', 'archived', 'resolved')),
                     array('id' => 'DESC')
@@ -134,7 +133,7 @@ class LabelSearch
 
             if ($ids) {
                 /** @var \Application\DeskPRO\EntityRepository\Person $rep */
-                $rep = $this->em->getRepository('DeskPRO:Person');
+                $rep               = $this->em->getRepository('DeskPRO:Person');
                 $results['person'] = $rep->findBy(
                     array('id' => $ids),
                     array('id' => 'DESC')
@@ -153,7 +152,7 @@ class LabelSearch
 
             if ($ids) {
                 /** @var \Application\DeskPRO\EntityRepository\Organization $rep */
-                $rep = $this->em->getRepository('DeskPRO:Organization');
+                $rep                     = $this->em->getRepository('DeskPRO:Organization');
                 $results['organization'] = $rep->findBy(
                     array('id' => $ids),
                     array('id' => 'DESC')

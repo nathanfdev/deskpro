@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Theme;
@@ -64,8 +62,9 @@ class TagRequestFactory
     }
 
     /**
-     * @param  Tag   $tag
-     * @param  array $arguments
+     * @param Tag   $tag
+     * @param array $arguments
+     *
      * @return array
      */
     private function makeQuery(Tag $tag, array $arguments)
@@ -89,8 +88,9 @@ class TagRequestFactory
     }
 
     /**
-     * @param  Tag   $tag
-     * @param  array $arguments
+     * @param Tag   $tag
+     * @param array $arguments
+     *
      * @return array
      */
     private function makeAttributes(Tag $tag, array $arguments)

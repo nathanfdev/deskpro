@@ -28,15 +28,14 @@
 namespace Application\ImportBundle\Reader\OsTicket;
 
 /**
- * Pdo connection wrapper interface
+ * Pdo connection wrapper interface.
  *
  * Interface GetConnectionInterface
- * @package Application\ImportBundle\Reader\OsTicket
  */
 interface ConnectionWrapperInterface
 {
     /**
-     * Returns pdo connection
+     * Returns pdo connection.
      *
      * @return \PDO
      */

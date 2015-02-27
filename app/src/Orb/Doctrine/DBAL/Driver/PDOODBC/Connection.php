@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * Orb
- *
- * @package    Orb
- * @subpackage Doctrine
+ * Orb.
  */
 
 namespace Orb\Doctrine\DBAL\Driver\PDOODBC;

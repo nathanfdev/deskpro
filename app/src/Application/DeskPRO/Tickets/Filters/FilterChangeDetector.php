@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -118,7 +117,8 @@ class FilterChangeDetector
     }
 
     /**
-     * @param  array $affected_filters
+     * @param array $affected_filters
+     *
      * @return array
      */
     private function buildFilterCheckList(array $affected_filters)
@@ -144,7 +144,7 @@ class FilterChangeDetector
                 $agent_scopes[] = $filter->person;
             }
 
-            $agent_scopes = array_filter($agent_scopes, function($a) { return $a->is_agent && !$a->is_deleted && !$a->is_disabled; });
+            $agent_scopes = array_filter($agent_scopes, function ($a) { return $a->is_agent && !$a->is_deleted && !$a->is_disabled; });
 
             if (!$agent_scopes) {
                 continue;
@@ -166,14 +166,15 @@ class FilterChangeDetector
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @return FilterChangeSet
      */
     public function getFilterChangeSet(Ticket $ticket, ExecutorContextInterface $context = null)
     {
         $logger = $context->getLogger();
-        $state = $ticket->getStateChangeRecorder();
+        $state  = $ticket->getStateChangeRecorder();
 
         /** @var FilterChangeSet $exist_set */
         $exist_set = null;
@@ -199,13 +200,13 @@ class FilterChangeDetector
             $logger->info(sprintf("[FilterChangeDetector] Have exist set. Will try to use cached values from last run."));
         }
 
-        $old_dep_id = null;
-        $new_dep_id = null;
+        $old_dep_id    = null;
+        $new_dep_id    = null;
         $is_dep_change = false;
         $is_new_ticket = $state->isNewTicket();
 
         if ($state->hasChangedField('department')) {
-            $old_dep = $state->getOriginalValueForField('department');
+            $old_dep       = $state->getOriginalValueForField('department');
             $is_dep_change = true;
 
             if ($old_dep) {
@@ -219,13 +220,13 @@ class FilterChangeDetector
         $orig_ticket = $ticket->getOriginalStateClone();
         $new_ticket  = $ticket;
 
-        $scope_counts = 0;
+        $scope_counts        = 0;
         $scope_cached_counts = 0;
 
         /** @var FilterChange[] $changed */
         $changed = array();
 
-        $start = microtime(true);
+        $start   = microtime(true);
         $checker = new AffectedFiltersCheck($ticket, $this->filters, $logger);
         if ($exist_set) {
             $checker->setPreviousFieldVersions($exist_set->getFieldVersions());
@@ -239,21 +240,20 @@ class FilterChangeDetector
 
         $logger->info(sprintf("[FilterChangeDetector] Affected filters took %.3fs", microtime(true)-$start));
 
-        $start = microtime(true);
+        $start         = microtime(true);
         $filter_checks = $this->buildFilterCheckList($affected_filters);
         $logger->info(sprintf("[FilterChangeDetector] Build check list took %.3fs", microtime(true)-$start));
 
-        $generic_match_cache = array();
+        $generic_match_cache  = array();
         $not_cachable_filters = array();
 
         $logger->info(sprintf("[FilterChangeDetector] Checking %d filters", count($filter_checks)));
 
         // Calculate who could actually see it
         $agent_perm_cache = array();
-        $start = microtime(true);
+        $start            = microtime(true);
         foreach ($filter_checks as $filter_check) {
             foreach ($filter_check['scopes'] as $agent) {
-
                 if (!$agent->is_agent) {
                     $agent_perm_cache[$agent->id] = array('old' => false, 'new' => false);
                 }
@@ -296,7 +296,7 @@ class FilterChangeDetector
 
             $filter_ts = microtime(true);
 
-            $filter_change = new FilterChange($filter);
+            $filter_change        = new FilterChange($filter);
             $changed[$filter->id] = $filter_change;
 
             if ($this->extended_log_info) {
@@ -322,8 +322,8 @@ class FilterChangeDetector
                 }
 
                 $orig_match_real = $new_match_real = null;
-                $pre_orig_match = $pre_new_match = null;
-                $new_match = $orig_match = false;
+                $pre_orig_match  = $pre_new_match  = null;
+                $new_match       = $orig_match       = false;
 
                 // RESULT_IS_CACHED
                 if (!$this->disable_cache && isset($generic_match_cache[$filter->id])) {
@@ -365,20 +365,20 @@ class FilterChangeDetector
                     } else {
                         $searcher = $filter->getSearcher();
                     }
-                    /** @var \Application\DeskPRO\Searcher\TicketSearch $searcher */
+                    /* @var \Application\DeskPRO\Searcher\TicketSearch $searcher */
                     $searcher->setPersonContext($agent);
 
                     $orig_match_failterm = null;
-                    $new_match_failterm = null;
+                    $new_match_failterm  = null;
 
                     if ($is_dep_change) {
                         if (!$is_new_ticket && !$agent_perm_old) {
-                            $orig_match = false;
+                            $orig_match          = false;
                             $orig_match_failterm = 'ticket.department_id';
                         }
 
                         if (!$agent_perm_new) {
-                            $new_match = false;
+                            $new_match          = false;
                             $new_match_failterm = 'ticket.department_id';
                         }
                     }
@@ -394,7 +394,7 @@ class FilterChangeDetector
                     }
 
                     if ($new_match_failterm === null) {
-                        $new_match = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm);
+                        $new_match      = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm);
                         $new_match_real = $new_match;
                     }
 
@@ -458,8 +458,8 @@ class FilterChangeDetector
                             $generic_match_cache[$filter->id] = array(
                                 'pre_orig_match' => $pre_orig_match,
                                 'pre_new_match'  => $pre_new_match,
-                                'orig_match' => $orig_match,
-                                'new_match'  => $new_match,
+                                'orig_match'     => $orig_match,
+                                'new_match'      => $new_match,
                             );
                         } else {
                             $not_cachable_filters[$filter->id] = $filter->id;
@@ -509,14 +509,14 @@ class FilterChangeDetector
         // Add changed filters from previous set
         if ($exist_set) {
             $old_changed_filters = $exist_set->getChangedFilters();
-            $copied_ids = array();
+            $copied_ids          = array();
             foreach ($checker->getAffectedFiltersWithNoChanges() as $f) {
                 if (isset($old_changed_filters[$f->id])) {
                     if (isset($changed_filters[$f->id])) {
                         $old_changed_filters[$f->id]->merge($changed_filters[$f->id]);
                     }
                     $changed_filters[$f->id] = $old_changed_filters[$f->id];
-                    $copied_ids[] = $f->id;
+                    $copied_ids[]            = $f->id;
                 }
             }
 

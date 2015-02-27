@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Orb\Auth\Adapter;
@@ -51,8 +48,9 @@ interface UserInfoFetchableInterface
      *
      * This method must return null if no match was found.
      *
-     * @param  mixed $id
-     * @param  mixed $id_type
+     * @param mixed $id
+     * @param mixed $id_type
+     *
      * @return mixed
      */
     public function getUserInfoFromIdentity($id, $id_type = null);

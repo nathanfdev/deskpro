@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Form
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Form\Captcha;
@@ -39,14 +36,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 abstract class CaptchaAbstract
 {
     /**
-     * The service container
+     * The service container.
      *
      * @var \Symfony\Component\DependencyInjection\ContainerInterface
      */
     protected $container;
 
     /**
-     * Array of options
+     * Array of options.
      *
      * @var array
      */
@@ -70,24 +67,25 @@ abstract class CaptchaAbstract
     }
 
     /**
-     * Get the captcha HTML to render into the form page
+     * Get the captcha HTML to render into the form page.
      *
      * @return string
      */
     abstract public function getHtml();
 
     /**
-     * Validate an incoming and make sure the captcha is correct
+     * Validate an incoming and make sure the captcha is correct.
      *
      * @return bool
      */
     abstract public function validate();
 
     /**
-     * Get an option
+     * Get an option.
      *
-     * @param  string $name
-     * @param  mixed  $default
+     * @param string $name
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getOption($name, $default = null)
@@ -96,10 +94,11 @@ abstract class CaptchaAbstract
     }
 
     /**
-     * Set an options
+     * Set an options.
      *
-     * @param  string $name
-     * @param  mixed  $value
+     * @param string $name
+     * @param mixed  $value
+     *
      * @return string
      */
     public function setOption($name, $value)
@@ -108,10 +107,9 @@ abstract class CaptchaAbstract
     }
 
     /**
-     * Set many options at once
+     * Set many options at once.
      *
-     * @param  array $options
-     * @return void
+     * @param array $options
      */
     public function setOptions(array $options)
     {
@@ -119,9 +117,10 @@ abstract class CaptchaAbstract
     }
 
     /**
-     * Check if an option is set
+     * Check if an option is set.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     protected function hasOption($name)
@@ -154,9 +153,11 @@ abstract class CaptchaAbstract
     }
 
     /**
+     *
+     * @param string $name         The option to try and get first
+     * @param string $setting_name If $name option doesnt exist, try to fetch it from settings
      * @throws \RunTimeException
-     * @param  string            $name         The option to try and get first
-     * @param  string            $setting_name If $name option doesnt exist, try to fetch it from settings
+     *
      * @return mixed
      */
     protected function getOptionOrSetting($name, $setting_name)

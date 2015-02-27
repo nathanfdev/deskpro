@@ -2,19 +2,19 @@
 
 namespace Application\DeskPRO\NewSearch\Manager;
 
+use Application\DeskPRO\App;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
-use Application\DeskPRO\App;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
 /**
- * Doctrine Search Manager
+ * Doctrine Search Manager.
  */
 class Doctrine extends ContainerAware implements SearchManagerInterface
 {
     /**
-     * Entity Manager
+     * Entity Manager.
      *
      * @var \Doctrine\ORM\EntityManager
      */
@@ -28,7 +28,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
     protected $person;
 
     /**
-     * DeskPRO settings
+     * DeskPRO settings.
      *
      * @var
      */
@@ -165,7 +165,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                 $where[] = "(title LIKE ".$db->quote('%'.str_replace(array('%', '_'), array('\\%', '\\_'), $w).'%').")";
             }
             $where[] = "(status != 'hidden')";
-            $where = implode(' AND ', $where);
+            $where   = implode(' AND ', $where);
 
             foreach (array(
                          'article'      => 'articles',
@@ -192,7 +192,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                 if ($type == 'ticket') {
                     $obj = $this->em->getRepository('DeskPRO:Ticket')->findTicketId($q);
                     if ($obj && $obj->getId() != $q) {
-                        $result_meta['ticket_deleted'] = $obj->getId();
+                        $result_meta['ticket_deleted']       = $obj->getId();
                         $result_meta['ticket_deleted_oldid'] = $q;
                     }
                 } else {
@@ -214,11 +214,11 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
 
                     if (preg_match('#^\S*@\S*$#', $q)) {
                         $people_top = true;
-                        $people = array();
+                        $people     = array();
 
                         // Complete email address
                         if (\Orb\Validator\StringEmail::isValueValid($q)) {
-                            $p = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
+                            $p      = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
                             $people = array();
                             if ($p) {
                                 $people[] = $p;
@@ -296,7 +296,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                     } else {
                         $people = array();
 
-                        $q = preg_replace('#\s+#', ' ', $q);
+                        $q        = preg_replace('#\s+#', ' ', $q);
                         $q_search = '%'.str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q).'%';
 
                         if ($this->settings->get('core_tablecounts.people') < 150000) {
@@ -351,7 +351,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                         $oids = array();
                         foreach ($orgs as $o) {
                             $results['organization'][$o->id] = $o;
-                            $oids[] = $o->getId();
+                            $oids[]                          = $o->getId();
                         }
 
                         if ($oids) {

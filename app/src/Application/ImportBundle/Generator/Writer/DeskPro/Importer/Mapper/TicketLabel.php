@@ -31,10 +31,9 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Ticket label record mapper
+ * Ticket label record mapper.
  *
  * Class TicketLabel
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class TicketLabel implements MapperInterface
 {
@@ -44,7 +43,7 @@ final class TicketLabel implements MapperInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\LabelTicket $repository
      */
@@ -68,7 +67,7 @@ final class TicketLabel implements MapperInterface
     {
         /** @var Entity\LabelTicket $record */
         $record = $this->repository->findOneBy($criteria);
-        if ( ! $record && $throw_exception) {
+        if (! $record && $throw_exception) {
             throw new MapperException('Ticket label not found', $criteria);
         }
 
@@ -76,13 +75,14 @@ final class TicketLabel implements MapperInterface
     }
 
     /**
-     * Returns a collection of ticket labels
+     * Returns a collection of ticket labels.
      *
      * @param int  $id
      * @param bool $throw_exception
      *
-     * @return Entity\LabelTicket[]
      * @throws MapperException
+     * @return Entity\LabelTicket[]
+     *
      */
     public function findByTicketId($id, $throw_exception = true)
     {

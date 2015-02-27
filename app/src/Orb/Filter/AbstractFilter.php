@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Filter
+ * Orb.
  */
 
 namespace Orb\Filter;

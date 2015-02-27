@@ -63,13 +63,14 @@ class ResizeFormListener extends BaseListener
     }
 
     /**
-     * @param  FormEvent                                                 $event
+     * @param FormEvent $event
+     *
      * @throws \Symfony\Component\Form\Exception\UnexpectedTypeException
      */
     public function preSubmit(FormEvent $event)
     {
-        $form = $event->getForm();
-        $data = $event->getData();
+        $form                = $event->getForm();
+        $data                = $event->getData();
         $this->newEntriesMap = array();
 
         if (null === $data || '' === $data) {
@@ -132,7 +133,8 @@ class ResizeFormListener extends BaseListener
     }
 
     /**
-     * re-map
+     * re-map.
+     *
      * @param FormEvent $event
      */
     public function postSubmit(FormEvent $event)

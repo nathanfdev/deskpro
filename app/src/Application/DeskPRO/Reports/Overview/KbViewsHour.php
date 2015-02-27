@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports\Overview;
@@ -71,7 +68,7 @@ class KbViewsHour extends AbstractTableOverviewStat
      */
     public function getTitles()
     {
-        $titles = array_combine(range(1, 23), range(1, 23));
+        $titles      = array_combine(range(1, 23), range(1, 23));
         $titles['0'] = '0';
 
         return $titles;
@@ -97,7 +94,7 @@ class KbViewsHour extends AbstractTableOverviewStat
         $offset = $date1->getTimestamp() - $this->date_start->getTimestamp();
 
         $type = PageViewLog::TYPE_ARTICLE;
-        $sql = "
+        $sql  = "
             SELECT HOUR(DATE_SUB(page_view_log.date_created, INTERVAL $offset SECOND)) AS hour, COUNT(*)
             FROM page_view_log
             WHERE page_view_log.object_type = $type AND page_view_log.date_created BETWEEN '$d1' AND '$d2'

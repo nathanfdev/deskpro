@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Statement;
@@ -53,14 +50,14 @@ class Display
     protected $_display = array('table');
 
     /**
-     * List of expressions in SELECT clause
+     * List of expressions in SELECT clause.
      *
      * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
      */
     protected $_select = array();
 
     /**
-     * Name of table to select from
+     * Name of table to select from.
      *
      * @var string
      */
@@ -74,21 +71,21 @@ class Display
     protected $_where = null;
 
     /**
-     * SPLIT BY clause expressions
+     * SPLIT BY clause expressions.
      *
      * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
      */
     protected $_splitBy = array();
 
     /**
-     * GROUP BY clause expressions
+     * GROUP BY clause expressions.
      *
      * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
      */
     protected $_groupBy = array();
 
     /**
-     * ORDER BY clause expressions
+     * ORDER BY clause expressions.
      *
      * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[]
      */
@@ -116,21 +113,21 @@ class Display
     protected $_limitOffset = null;
 
     /**
-     * SQL select object
+     * SQL select object.
      *
      * @var \Application\DeskPRO\Dpql\SqlSelect
      */
     protected $_sql;
 
     /**
-     * SQL select option for splitting, if there is a split by
+     * SQL select option for splitting, if there is a split by.
      *
      * @var \Application\DeskPRO\Dpql\SqlSelect|null
      */
     protected $_splitSql;
 
     /**
-     * Maps SQL for splitting to the ID in the result set (1-based)
+     * Maps SQL for splitting to the ID in the result set (1-based).
      *
      * @var array
      */
@@ -156,7 +153,7 @@ class Display
     protected $_prepared = false;
 
     /**
-     * List of group fill closures
+     * List of group fill closures.
      *
      * @var \Closure[]
      */
@@ -297,9 +294,9 @@ class Display
     /**
      * Gets the results from the database that match.
      *
+     * @throws \Application\DeskPRO\Dpql\Exception
      * @return \Application\DeskPRO\Dpql\Results
      *
-     * @throws \Application\DeskPRO\Dpql\Exception
      */
     public function getResults()
     {
@@ -514,7 +511,7 @@ class Display
 
     /**
      * Gets the statement back as a string of DPQL parts. Keys are:
-     * DISPLAY, SELECT, FROM, WHERE, SPLIT, GROUP, ORDER, LIMIT, OFFSET
+     * DISPLAY, SELECT, FROM, WHERE, SPLIT, GROUP, ORDER, LIMIT, OFFSET.
      *
      * @return array
      */
@@ -547,11 +544,11 @@ class Display
             'SELECT'  => implode(', ', $selectFields),
             'FROM'    => $this->_from,
             'WHERE'   => ($this->_where ? $this->_where->toDpql($this, 'where', array()) : ''),
-            'SPLIT'  => implode(', ', $splitFields),
-            'GROUP'  => implode(', ', $groupFields),
-            'ORDER'  => implode(', ', $orderFields),
-            'LIMIT'  => $this->_limitAmount,
-            'OFFSET' => $this->_limitOffset,
+            'SPLIT'   => implode(', ', $splitFields),
+            'GROUP'   => implode(', ', $groupFields),
+            'ORDER'   => implode(', ', $orderFields),
+            'LIMIT'   => $this->_limitAmount,
+            'OFFSET'  => $this->_limitOffset,
         );
     }
 
@@ -768,7 +765,7 @@ class Display
     }
 
     /**
-     * Adds a group fill handler
+     * Adds a group fill handler.
      *
      * @param \Closure $fill
      * @param $printId
@@ -793,7 +790,7 @@ class Display
     }
 
     /**
-     * Adds a select field to the SQL result
+     * Adds a select field to the SQL result.
      *
      * @param string      $select
      * @param string|bool $alias  If available, the name this column is aliased under
@@ -830,9 +827,9 @@ class Display
     /**
      * Gets the entity repository for the from table.
      *
+     * @throws \Application\DeskPRO\Dpql\Exception
      * @return \Application\DeskPRO\EntityRepository\AbstractEntityRepository|bool
      *
-     * @throws \Application\DeskPRO\Dpql\Exception
      */
     public function getFromEntityRepository()
     {
@@ -852,7 +849,7 @@ class Display
     }
 
     /**
-     * Returns true if the value is non-empty (represents something printable to SQL)
+     * Returns true if the value is non-empty (represents something printable to SQL).
      *
      * @param string $input
      *
@@ -864,7 +861,7 @@ class Display
     }
 
     /**
-     * Returns true if the stack of parent parts has forced date calculations to UTC
+     * Returns true if the stack of parent parts has forced date calculations to UTC.
      *
      * @param array $stack
      *

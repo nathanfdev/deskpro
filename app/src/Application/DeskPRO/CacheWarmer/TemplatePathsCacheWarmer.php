@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Chat
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\CacheWarmer;

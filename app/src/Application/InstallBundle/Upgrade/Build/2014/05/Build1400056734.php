@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -101,25 +98,26 @@ class Build1400056734 extends AbstractBuild
     }
 
     /**
-     * @param  array              $old_esc
+     * @param array $old_esc
+     *
      * @return TicketTrigger|null
      */
     private function processTrigger(array $old_esc)
     {
         // Default triggers just turn on depending on the status of the old default triggers
         if ($old_esc['sys_name']) {
-            return null;
+            return;
         }
 
         $old_esc['event_trigger_options'] = @unserialize($old_esc['event_trigger_options']) ?: array();
-        $old_esc['terms']     = @unserialize($old_esc['terms']) ?: array();
-        $old_esc['terms_any'] = @unserialize($old_esc['terms_any']) ?: array();
-        $old_esc['actions']   = @unserialize($old_esc['actions']) ?: array();
+        $old_esc['terms']                 = @unserialize($old_esc['terms']) ?: array();
+        $old_esc['terms_any']             = @unserialize($old_esc['terms_any']) ?: array();
+        $old_esc['actions']               = @unserialize($old_esc['actions']) ?: array();
 
         if (!$old_esc['event_trigger_options'] || empty($old_esc['event_trigger_options']['time'])) {
             $this->out("-- No or bad time option");
 
-            return null;
+            return;
         }
 
         #------------------------------
@@ -149,18 +147,18 @@ class Build1400056734 extends AbstractBuild
         if (!count($actions_set)) {
             $this->out("-- Skipping no action escalation");
 
-            return null;
+            return;
         }
 
         #------------------------------
         # Create trigger object
         #------------------------------
 
-        $esc = new TicketEscalation();
-        $esc->event_trigger = $old_esc['event_trigger'];
+        $esc                     = new TicketEscalation();
+        $esc->event_trigger      = $old_esc['event_trigger'];
         $esc->event_trigger_time = $this->getTimeSeconds($old_esc['event_trigger_options']['time']);
-        $esc->date_created  = new \DateTime();
-        $esc->date_last_run = new \DateTime();
+        $esc->date_created       = new \DateTime();
+        $esc->date_last_run      = new \DateTime();
 
         if (!empty($old_esc['date_created'])) {
             try {
@@ -186,6 +184,7 @@ class Build1400056734 extends AbstractBuild
 
     /**
      * @param $time_with_unit
+     *
      * @return int
      */
     private function getTimeSeconds($time_with_unit)

@@ -31,10 +31,9 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Person label record mapper
+ * Person label record mapper.
  *
  * Class PersonLabel
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class PersonLabel implements MapperInterface
 {
@@ -44,7 +43,7 @@ final class PersonLabel implements MapperInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\LabelPerson $repository
      */
@@ -68,7 +67,7 @@ final class PersonLabel implements MapperInterface
     {
         /** @var Entity\LabelPerson $record */
         $record = $this->repository->findOneBy($criteria);
-        if ( ! $record && $throw_exception) {
+        if (! $record && $throw_exception) {
             throw new MapperException('Person label not found', $criteria);
         }
 
@@ -76,13 +75,14 @@ final class PersonLabel implements MapperInterface
     }
 
     /**
-     * Returns a collection of person labels
+     * Returns a collection of person labels.
      *
      * @param int  $id
      * @param bool $throw_exception
      *
-     * @return Entity\LabelPerson[]
      * @throws MapperException
+     * @return Entity\LabelPerson[]
+     *
      */
     public function findByPersonId($id, $throw_exception = true)
     {

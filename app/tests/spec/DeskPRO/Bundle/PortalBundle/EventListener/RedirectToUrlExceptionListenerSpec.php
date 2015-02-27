@@ -26,44 +26,41 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\PortalBundle\EventListener;
 
+use DeskPRO\Bundle\PortalBundle\EventListener\RedirectToUrlExceptionListener;
 use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\PortalBundle\EventListener\RedirectToUrlExceptionListener;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use \RuntimeException;
 
 /**
  * @mixin \DeskPRO\Bundle\PortalBundle\EventListener\RedirectToUrlExceptionListener
  */
 class RedirectToUrlExceptionListenerSpec extends ObjectBehavior
 {
-    function let(LoggerInterface $logger)
+    public function let(LoggerInterface $logger)
     {
         $this->beConstructedWith($logger);
     }
 
-    function it_subscrbied_to_kernel_exceptions()
+    public function it_subscrbied_to_kernel_exceptions()
     {
         $this->getSubscribedEvents()->shouldReturn(array(
-            KernelEvents::EXCEPTION => array('onKernelException', 129)
+            KernelEvents::EXCEPTION => array('onKernelException', 129),
         ));
     }
 
-    function it_does_nothing_if_wrong_exception(
+    public function it_does_nothing_if_wrong_exception(
         \RuntimeException $wrong_exception,
         GetResponseForExceptionEvent $event
-    )
-    {
+    ) {
         $event->getException()->willReturn($wrong_exception);
 
         $event->setResponse(Argument::any())->shouldNotBeCalled();
@@ -71,17 +68,15 @@ class RedirectToUrlExceptionListenerSpec extends ObjectBehavior
         $this->onKernelException($event);
     }
 
-    function it_sets_a_redirect_response_if_it_is_the_right_exception(
+    public function it_sets_a_redirect_response_if_it_is_the_right_exception(
         RedirectToUrlException $correct_exception,
         GetResponseForExceptionEvent $event
-    )
-    {
+    ) {
         $event->getException()->willReturn($correct_exception);
 
         $correct_exception->getUrl()->shouldBeCalled()->willReturn('http://redirect.here');
         $event->setResponse(Argument::type('Symfony\Component\HttpFoundation\Response'))->shouldBeCalled();
         $event->stopPropagation()->shouldBeCalled();
-
 
         $this->onKernelException($event);
     }

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category DependencyInjection
  */
 
@@ -43,7 +42,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
- * Registers basic core stuff
+ * Registers basic core stuff.
  */
 class CoreExtension extends Extension
 {
@@ -130,7 +129,7 @@ class CoreExtension extends Extension
     }
 
     /**
-     * Sets up the translater
+     * Sets up the translater.
      */
     protected function loadTranslation(ContainerBuilder $container)
     {
@@ -167,7 +166,7 @@ class CoreExtension extends Extension
     }
 
     /**
-     * Sets up entity listeners
+     * Sets up entity listeners.
      */
     protected function loadEntityListeners(ContainerBuilder $container)
     {
@@ -191,7 +190,7 @@ class CoreExtension extends Extension
     }
 
     /**
-     * Sets up the settings loader
+     * Sets up the settings loader.
      */
     protected function loadSettings(ContainerBuilder $container)
     {
@@ -204,12 +203,12 @@ class CoreExtension extends Extension
 
     public function getXsdValidationBasePath()
     {
-        return null;
+        return;
     }
 
     public function getNamespace()
     {
-        return null;
+        return;
     }
 
     public function getAlias()

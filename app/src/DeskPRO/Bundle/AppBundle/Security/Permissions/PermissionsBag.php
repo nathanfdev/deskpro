@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package    DeskPRO
- * @subpackage Permissions
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security\Permissions;

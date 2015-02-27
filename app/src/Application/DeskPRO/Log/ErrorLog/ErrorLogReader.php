@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Log\ErrorLog;
@@ -90,7 +87,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
     }
 
     /**
-     * Filter the items to read
+     * Filter the items to read.
      *
      * The filter must accept two parameters:
      * - string $mode Either 'parsed' (array) or 'raw' (string)
@@ -105,7 +102,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
     }
 
     /**
-     * This sets a filter so reading only finds a specific log entry
+     * This sets a filter so reading only finds a specific log entry.
      *
      * @param string $id
      */
@@ -121,7 +118,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
     }
 
     /**
-     * Saves the raw log in the data array so it can be displayed
+     * Saves the raw log in the data array so it can be displayed.
      */
     public function enableRawLog()
     {
@@ -129,7 +126,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
     }
 
     /**
-     * Only keeps track of a count, no data is parsed
+     * Only keeps track of a count, no data is parsed.
      */
     public function enableCountMode()
     {
@@ -137,7 +134,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
     }
 
     /**
-     * Loads the log file and does the parsing
+     * Loads the log file and does the parsing.
      */
     protected function _initItems()
     {
@@ -152,7 +149,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
             return;
         }
 
-        $last_id = null;
+        $last_id   = null;
         $log_lines = array();
 
         while (($l = fgets($fp)) !== false) {
@@ -176,7 +173,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
             }
 
             $log_lines[] = $txt;
-            $last_id = $id;
+            $last_id     = $id;
         }
 
         if ($log_lines && isset($last_id)) {
@@ -187,11 +184,10 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
     }
 
     /**
-     * Handles lines of a single log entry and parses data out of it
+     * Handles lines of a single log entry and parses data out of it.
      *
-     * @param  string $id
-     * @param  array  $log_lines
-     * @return void
+     * @param string $id
+     * @param array  $log_lines
      */
     protected function _initItem($id, array $log_lines)
     {
@@ -293,7 +289,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         }
 
         $this->quick_count = 0;
-        $fp = @fopen($this->path, 'r');
+        $fp                = @fopen($this->path, 'r');
         if (!$fp) {
             return 0;
         }
@@ -331,7 +327,7 @@ class ErrorLogReader implements \Countable, \Iterator, \ArrayAccess
         $this->_initItems();
         $key = key($this->items);
         if (!$key) {
-            return null;
+            return;
         }
 
         return $this[$key];

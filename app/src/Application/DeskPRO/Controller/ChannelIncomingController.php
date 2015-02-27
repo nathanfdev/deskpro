@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Controller;
@@ -123,6 +120,7 @@ class ChannelIncomingController extends AbstractController
 
     /**
      * @param $to_number
+     *
      * @return \Application\DeskPRO\Entity\SmsAccount|null
      */
     private function findSmsAccountForNumber($to_number)

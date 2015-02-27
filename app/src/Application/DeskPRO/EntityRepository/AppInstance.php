@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -37,8 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * Class AppInstance
- * @package Application\DeskPRO\EntityRepository
+ * Class AppInstance.
  */
 class AppInstance extends EntityRepository
 {
@@ -53,7 +51,8 @@ class AppInstance extends EntityRepository
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\AppInstance $app
+     * @param \Application\DeskPRO\Entity\AppInstance $app
+     *
      * @return array
      */
     public function getPermissionsForInstance(\Application\DeskPRO\Entity\AppInstance $app)

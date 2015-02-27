@@ -30,35 +30,37 @@ namespace Application\ImportBundle\Generator\Validator;
 use Application\ImportBundle\AbstractCollection;
 
 /**
- * Collection of exporter validators exceptions
+ * Collection of exporter validators exceptions.
  *
  * Class ExceptionCollection
- * @package Application\ImportBundle\Generator\Validator
  */
 final class ExceptionCollection extends AbstractCollection
 {
     /**
-     * Add an exception
+     * Add an exception.
      *
      * @param ValidatorExceptionInterface $exception
+     *
      * @return $this
      */
     public function attach(ValidatorExceptionInterface $exception)
     {
         $this->collection[] = $exception;
+
         return $this;
     }
 
     /**
-     * Merge collection
+     * Merge collection.
      *
      * @param ExceptionCollection $collection
+     *
      * @return $this
      */
     public function merge(ExceptionCollection $collection)
     {
         foreach ($collection as $exception) {
-            /** @var ValidatorExceptionInterface $exception */
+            /* @var ValidatorExceptionInterface $exception */
             $this->attach($exception);
         }
 

@@ -26,23 +26,21 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage HttpFoundation
+ * Orb.
  */
 
 namespace Orb\HttpFoundation\Session;
 
 /**
- * A session interface
+ * A session interface.
  */
 interface SessionInterface extends \ArrayAccess, \IteratorAggregate
 {
     /**
      * Checks if a data item is defined.
      *
-     * @param  string  $name The data item name
+     * @param string $name The data item name
+     *
      * @return boolean
      */
     public function has($name);
@@ -50,8 +48,9 @@ interface SessionInterface extends \ArrayAccess, \IteratorAggregate
     /**
      * Returns a data item.
      *
-     * @param  string $name    The attribute name
-     * @param  mixed  $default The default value
+     * @param string $name    The attribute name
+     * @param mixed  $default The default value
+     *
      * @return mixed
      */
     public function get($name, $default = null);
@@ -86,7 +85,7 @@ interface SessionInterface extends \ArrayAccess, \IteratorAggregate
     public function remove($name);
 
     /**
-     * Removes all set data
+     * Removes all set data.
      */
     public function removeAllData();
 }

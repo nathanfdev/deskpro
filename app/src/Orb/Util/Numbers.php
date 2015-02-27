@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
@@ -52,7 +51,8 @@ class Numbers
      * You can't use ctype_digit or is_numeric because they'll pass other numeric
      * forms, not just integers.
      *
-     * @param  mixed $value
+     * @param mixed $value
+     *
      * @return bool
      */
     public static function isInteger($value)
@@ -73,9 +73,10 @@ class Numbers
      * This will make it $min if it's smaller than $min, and $max if it's larger
      * than $max.
      *
-     * @param  int $num The number to work with
-     * @param  int $min The minumum integer
-     * @param  int $max The maximum integer
+     * @param int $num The number to work with
+     * @param int $min The minumum integer
+     * @param int $max The maximum integer
+     *
      * @return int
      */
     public static function bound($num, $min, $max)
@@ -93,9 +94,10 @@ class Numbers
     /**
      * Check if something is somewhere within the range of two numbers.
      *
-     * @param  int  $what The thing to check
-     * @param  int  $min  The minimum number (inclusive)
-     * @param  int  $max  The maximum number (inclusive)
+     * @param int $what The thing to check
+     * @param int $min  The minimum number (inclusive)
+     * @param int $max  The maximum number (inclusive)
+     *
      * @return bool
      */
     public static function inRange($what, $min = 0, $max = 10)
@@ -114,25 +116,26 @@ class Numbers
      * echo Orb_Num::romanNumerals(42); // XLII
      * </code>
      *
-     * @param  int    $num The number to romanize
+     * @param int $num The number to romanize
+     *
      * @return string
      */
     public static function romanNumerals($num)
     {
         static $map = array(
-            'M' => 1000,
+            'M'  => 1000,
             'CM' => 900,
-            'D' => 500,
+            'D'  => 500,
             'CD' => 400,
-            'C' => 100,
+            'C'  => 100,
             'XC' => 90,
-            'L' => 50,
+            'L'  => 50,
             'XL' => 40,
-            'X' => 10,
+            'X'  => 10,
             'IX' => 9,
-            'V' => 5,
+            'V'  => 5,
             'IV' => 4,
-            'I' => 1,
+            'I'  => 1,
         );
 
         $num = intval($num);
@@ -149,14 +152,15 @@ class Numbers
     /**
      * Display a filesize in bytes in the smallest unit.
      *
-     * @param  int    $bytes
-     * @param  string $mode  'auto' or 'si' (base 10) or 'iec' (base 2). Auto will try to detect the 'cleanest' number
+     * @param int    $bytes
+     * @param string $mode  'auto' or 'si' (base 10) or 'iec' (base 2). Auto will try to detect the 'cleanest' number
+     *
      * @return string
      */
     public static function filesizeDisplay($bytes, $mode = 'auto')
     {
         if ($mode == 'auto') {
-            $parts = self::getFilesizeDisplayParts($bytes, 'si');
+            $parts           = self::getFilesizeDisplayParts($bytes, 'si');
             $parts['number'] = sprintf('%.2f', $parts['number']);
             if (!strpos($parts['number'], '.00')) {
                 $parts = self::getFilesizeDisplayParts($bytes, 'iec');
@@ -173,6 +177,7 @@ class Numbers
      * and its size. If you want a string, use filesizeDisplay().
      *
      * @param  $bytes
+     *
      * @return array
      */
     public static function getFilesizeDisplayParts($bytes, $mode = 'si')
@@ -184,8 +189,8 @@ class Numbers
         $x = $mode == 'si' ? 1000 : 1024;
 
         $all_symbols = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
-        $exp = floor(log($bytes)/log($x));
-        $val = $bytes/pow($x, floor($exp));
+        $exp         = floor(log($bytes)/log($x));
+        $val         = $bytes/pow($x, floor($exp));
 
         $sym = '';
         if (isset($all_symbols[$exp])) {
@@ -207,9 +212,10 @@ class Numbers
      * echo Orb_Num::roundToMultiple(29, 5, Orb_Num::ROUND_MULTIPLE_DOWN); // 25
      * </code>
      *
-     * @param  int|float $number   The number to round
-     * @param  int       $multiple The multiple to round to
-     * @param  int       $mode     Rounding mode to use
+     * @param int|float $number   The number to round
+     * @param int       $multiple The multiple to round to
+     * @param int       $mode     Rounding mode to use
+     *
      * @return mixed
      */
     public static function roundToMultiple($number, $multiple, $mode = self::ROUND_MULTIPLE_NEAR)
@@ -231,13 +237,14 @@ class Numbers
      * - first: int of first page (1, obviously)
      * - last: int of last page
      * - pages: range() of page numbers useful in a loop
-     * - curpage: The current page
+     * - curpage: The current page.
      *
      *
-     * @param  int   $num_results The total number of results
-     * @param  int   $page        The current page you're on
-     * @param  int   $per_page    How many results per page
-     * @param  int   $pad         How many page numbers around the current to show
+     * @param int $num_results The total number of results
+     * @param int $page        The current page you're on
+     * @param int $per_page    How many results per page
+     * @param int $pad         How many page numbers around the current to show
+     *
      * @return array
      */
     public static function getPaginationPages($num_results, $page, $per_page, $pad = 5)
@@ -250,27 +257,27 @@ class Numbers
         }
 
         $range_start = max(1, $page - floor(($pad-1) / 2));
-        $range_end = max(min($num_pages, $page + floor(($pad-1) / 2)), $pad);
+        $range_end   = max(min($num_pages, $page + floor(($pad-1) / 2)), $pad);
 
         if ($range_end > $num_pages) {
             $range_end = $num_pages;
         }
 
-        $info['per_page'] = $per_page;
-        $info['pages'] = range($range_start, $range_end);
-        $info['prev'] = ($page != 1) ? $page-1 : false;
-        $info['next'] = ($page < $num_pages) ? $page+1 : false;
-        $info['first'] = 1;
-        $info['last'] = $num_pages;
-        $info['curpage'] = $page;
+        $info['per_page']      = $per_page;
+        $info['pages']         = range($range_start, $range_end);
+        $info['prev']          = ($page != 1) ? $page-1 : false;
+        $info['next']          = ($page < $num_pages) ? $page+1 : false;
+        $info['first']         = 1;
+        $info['last']          = $num_pages;
+        $info['curpage']       = $page;
         $info['total_results'] = $num_results;
-        $info['first_result'] = (($page-1) * $per_page) + 1;
-        $info['last_result'] = (($page-1) * $per_page) + $per_page;
+        $info['first_result']  = (($page-1) * $per_page) + 1;
+        $info['last_result']   = (($page-1) * $per_page) + $per_page;
 
         $info['curpage'] = self::bound($info['curpage'], 1, $info['last']);
 
         $info['cursor'] = $page;
-        $info['limit'] = $per_page;
+        $info['limit']  = $per_page;
 
         return $info;
     }
@@ -280,11 +287,12 @@ class Numbers
      * The returned size is in bytes.
      *
      * @param $size_string
+     *
      * @return int
      */
     public static function parseIniSize($val)
     {
-        $val = trim($val);
+        $val  = trim($val);
         $last = strtoupper($val[strlen($val)-1]);
 
         // Already in bytes
@@ -320,7 +328,7 @@ class Numbers
     }
 
     /**
-     * Get the ordinal suffix for a number
+     * Get the ordinal suffix for a number.
      *
      * @param $number
      */
@@ -348,7 +356,8 @@ class Numbers
      * True if input looks like a unix timestamp.
      * "Looks like" means a positive integer that is no longer than 10 chars.
      *
-     * @param  string $input
+     * @param string $input
+     *
      * @return bool
      */
     public static function isTimestamp($input)

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -46,8 +45,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
- * Feedback status types for accepted/declined statuses
- *
+ * Feedback status types for accepted/declined statuses.
  */
 class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName, HasValidationMetadataInterface
 {
@@ -85,7 +83,6 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
     /**
      * @return FeedBackStatusCategory
      */
-
     public static function createFeedbackStatusCategory()
     {
         $status_category = new self();
@@ -96,7 +93,6 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
     /**
      * @return string
      */
-
     public function getTitle()
     {
         return $this->title;
@@ -105,7 +101,6 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
     /**
      * @return string
      */
-
     public function getStatusType()
     {
         return $this->status_type;
@@ -114,7 +109,6 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
     /**
      * @return int
      */
-
     public function getDisplayOrder()
     {
         return $this->display_order;
@@ -131,9 +125,10 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
     }
 
     /**
-     * Return a unique ID that we can use to look up translations for this object
+     * Return a unique ID that we can use to look up translations for this object.
      *
-     * @param  string $property If supplied, the property on the object we want to translate.
+     * @param string $property If supplied, the property on the object we want to translate.
+     *
      * @return string
      */
     public function getPhraseName($property = null, Translate $translate)
@@ -148,9 +143,10 @@ class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject im
     }
 
     /**
-     * Get the default value phrase for the object
+     * Get the default value phrase for the object.
      *
-     * @param  string $property If supplied, the property on the object we want to translate.
+     * @param string $property If supplied, the property on the object we want to translate.
+     *
      * @return string
      */
     public function getPhraseDefault($property = null, Translate $translate)

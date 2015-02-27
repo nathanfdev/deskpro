@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks to addresses for an email
+ * Checks to addresses for an email.
  *
  * @option string email
  */
@@ -65,7 +64,7 @@ class CheckEmailToAddress extends AbstractTriggerTerm
             return false;
         }
 
-        $reader = $context->getEmailContext();
+        $reader  = $context->getEmailContext();
         $strings = array();
         foreach ($reader->getToAddresses() as $email) {
             $strings[] = $email->getEmail();

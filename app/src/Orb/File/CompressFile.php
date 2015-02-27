@@ -28,14 +28,13 @@
 namespace Orb\File;
 
 /**
-* Orb
-*
-* @package Orb
-* @category File
-*/
+ * Orb.
+ *
+ * @category File
+ */
 
 /**
- * Will attempt to compress a file using whatever tools are available
+ * Will attempt to compress a file using whatever tools are available.
  */
 class CompressFile
 {
@@ -50,7 +49,8 @@ class CompressFile
     protected $tmpfile;
 
     /**
-     * The type of file created
+     * The type of file created.
+     *
      * @var string
      */
     protected $type;
@@ -61,7 +61,7 @@ class CompressFile
     }
 
     /**
-     * Get the temp file that the contents were saved into
+     * Get the temp file that the contents were saved into.
      *
      * @return string
      */
@@ -71,7 +71,7 @@ class CompressFile
     }
 
     /**
-     * get the type of compression algo used
+     * get the type of compression algo used.
      *
      * @return string
      */
@@ -112,13 +112,13 @@ class CompressFile
     }
 
     /**
-     * Compress using the GZ extension
+     * Compress using the GZ extension.
      */
     public function compressGz()
     {
-        $this->type = 'gz';
+        $this->type    = 'gz';
         $this->tmpfile = tempnam(sys_get_temp_dir(), 'gzfile'.mt_rand(1000, 9999));
-        $fp = @fopen($this->tmpfile, 'w');
+        $fp            = @fopen($this->tmpfile, 'w');
 
         if (!$fp) {
             throw new \RuntimeException("Could not create temp file", 1);
@@ -129,13 +129,13 @@ class CompressFile
     }
 
     /**
-     * Compress using the Bzip extension
+     * Compress using the Bzip extension.
      */
     public function compressBzip()
     {
-        $this->type = 'bzip2';
+        $this->type    = 'bzip2';
         $this->tmpfile = tempnam(sys_get_temp_dir(), 'bzipfile'.mt_rand(1000, 9999));
-        $fp = @fopen($this->tmpfile, 'w');
+        $fp            = @fopen($this->tmpfile, 'w');
 
         if (!$fp) {
             throw new \RuntimeException("Could not create temp file", 1);
@@ -146,11 +146,11 @@ class CompressFile
     }
 
     /**
-     * Compress using the Zip extension
+     * Compress using the Zip extension.
      */
     public function compressZip()
     {
-        $this->type = 'zip';
+        $this->type    = 'zip';
         $this->tmpfile = tempnam(sys_get_temp_dir(), 'zipfile'.mt_rand(1000, 9999));
 
         $zip = new \ZipArchive();
@@ -160,13 +160,13 @@ class CompressFile
     }
 
     /**
-     * Compress using the command-line by executing $gzip_path as the gzip binary
+     * Compress using the command-line by executing $gzip_path as the gzip binary.
      *
      * @param string $gzip_path
      */
     public function compressGzCommand($gzip_path)
     {
-        $this->type = 'gz';
+        $this->type    = 'gz';
         $this->tmpfile = tempnam(sys_get_temp_dir(), 'zipfile'.mt_rand(1000, 9999));
         file_put_contents($this->tmpfile, $this->file_contents);
 

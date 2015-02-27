@@ -28,24 +28,24 @@
 namespace Application\ImportBundle\Entity;
 
 /**
- * Entity person related interface
+ * Entity person related interface.
  *
  * Interface PersonAwareInterface
- * @package Application\ImportBundle\Entity
  */
 interface PersonAwareInterface
 {
     /**
-     * Person email
+     * Person email.
      *
      * @return string
      */
     public function getPersonEmail();
 
     /**
-     * Set person email
+     * Set person email.
      *
      * @param string $person_email
+     *
      * @return $this
      */
     public function setPersonEmail($person_email);

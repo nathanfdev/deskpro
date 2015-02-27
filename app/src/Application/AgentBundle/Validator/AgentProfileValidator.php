@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Validator;
@@ -46,7 +43,8 @@ class AgentProfileValidator extends AbstractValidator
     protected $profile;
 
     /**
-     * @param  \Application\AgentBundle\Form\Model\SettingsProfile $profile
+     * @param \Application\AgentBundle\Form\Model\SettingsProfile $profile
+     *
      * @return bool
      */
     protected function checkIsValid($profile)

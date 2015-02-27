@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ORM\Persisters;
@@ -41,7 +38,7 @@ class LookupBasicEntityPersister extends BasicEntityPersister
 {
     public function xload(array $criteria, $entity = null, $assoc = null, array $hints = array(), $lockMode = 0, $limit = null, array $orderBy = null)
     {
-        $uof = $this->em->getUnitOfWork();
+        $uof       = $this->em->getUnitOfWork();
         $classname = $this->class->getName();
 
         // Look for ID-based entities
@@ -77,7 +74,7 @@ class LookupBasicEntityPersister extends BasicEntityPersister
     public function xloadOneToManyCollection(array $assoc, $sourceEntity, PersistentCollection $coll)
     {
         if ($sourceEntity->__dp_is_preloaded_repos && isset($assoc['fieldName']) && $assoc['fieldName'] == 'children') {
-            $repos = $sourceEntity->__dp_is_preloaded_repos;
+            $repos    = $sourceEntity->__dp_is_preloaded_repos;
             $children = $repos->getChildren($sourceEntity);
 
             if ($children) {

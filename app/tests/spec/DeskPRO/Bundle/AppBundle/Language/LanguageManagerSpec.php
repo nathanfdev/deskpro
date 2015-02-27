@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\AppBundle\Language;
@@ -36,49 +34,44 @@ namespace spec\DeskPRO\Bundle\AppBundle\Language;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\Language\LanguageManager
  */
 class LanguageManagerSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         Translate $translate,
         \DeskPRO\Bundle\AppBundle\Language\LanguageStack $language_stack,
         LanguageRepo $language_repo
-    )
-    {
+    ) {
         $this->beConstructedWith($translate, $language_stack, $language_repo);
     }
 
-    function it_knows_if_is_multi_langauge_portal(
+    public function it_knows_if_is_multi_langauge_portal(
         LanguageRepo $language_repo
-    )
-    {
+    ) {
         $language_repo->countPortalLanguages()->willReturn(2);
 
         $this->isMultiLanguagePortal()->shouldBe(true);
     }
 
-    function it_knows_if_NOT_multi_langauge_portal(
+    public function it_knows_if_NOT_multi_langauge_portal(
         LanguageRepo $language_repo
-    )
-    {
+    ) {
         $language_repo->countPortalLanguages()->willReturn(1);
 
         $this->isMultiLanguagePortal()->shouldBe(false);
     }
 
-    function it_can_tell_you_if_a_lang_code_is_supported_by_this_portal(
+    public function it_can_tell_you_if_a_lang_code_is_supported_by_this_portal(
         LanguageRepo $language_repo,
         Language $en,
         Language $fr
-    )
-    {
+    ) {
         $language_repo->getForLangCode('en')->willReturn($en);
         $language_repo->getForLangCode('fr')->willReturn($fr);
         $language_repo->getForLangCode('it')->willReturn(null);
@@ -88,12 +81,11 @@ class LanguageManagerSpec extends ObjectBehavior
         $this->isLanguageSupported('it')->shouldReturn(false);
     }
 
-    function it_works_with_longer_language_codes_too(
+    public function it_works_with_longer_language_codes_too(
         LanguageRepo $language_repo,
         Language $en,
         Language $fr
-    )
-    {
+    ) {
         $language_repo->getForLangCode('en')->willReturn($en);
         $language_repo->getForLangCode('fr')->willReturn($fr);
         $language_repo->getForLangCode('it')->willReturn(null);
@@ -103,20 +95,18 @@ class LanguageManagerSpec extends ObjectBehavior
         $this->isLanguageSupported('fr_CA')->shouldReturn(true);
     }
 
-    function it_can_give_you_the_language_stack_its_using(
+    public function it_can_give_you_the_language_stack_its_using(
         LanguageStack $language_stack
-    )
-    {
+    ) {
         $this->getLanguageStack()->shouldReturn($language_stack);
     }
 
-    function it_will_give_you_an_array_of_all_enabled_languages(
+    public function it_will_give_you_an_array_of_all_enabled_languages(
         LanguageRepo $language_repo,
         Language $en,
         Language $fr,
         Language $it
-    )
-    {
+    ) {
         $supported = array($en, $fr, $it);
 
         $language_repo->getPortalLanguages()->willReturn($supported);
@@ -124,24 +114,22 @@ class LanguageManagerSpec extends ObjectBehavior
         $this->getEnabledLanguages()->shouldReturn($supported);
     }
 
-    function it_gives_you_a_translator_object_for_the_active_lang_on_language_stack(
+    public function it_gives_you_a_translator_object_for_the_active_lang_on_language_stack(
         Translate $translate,
         LanguageStack $language_stack,
         Language $en
-    )
-    {
+    ) {
         $language_stack->getActive()->willReturn($en);
 
         $translate->setLanguage($en)->shouldBeCalled();
         $this->getTranslator();
     }
 
-    function it_gives_you_a_translator_object_for_default_lang_if_nothing_in_stack(
+    public function it_gives_you_a_translator_object_for_default_lang_if_nothing_in_stack(
         Translate $translate,
         LanguageStack $language_stack,
         Language $en
-    )
-    {
+    ) {
         $language_stack->getActive()->willReturn(null);
         $language_stack->getDefaultLanguage()->willReturn($en);
 
@@ -149,32 +137,29 @@ class LanguageManagerSpec extends ObjectBehavior
         $this->getTranslator();
     }
 
-    function it_gets_you_a_translator_for_the_specific_lang_you_give_it(
+    public function it_gets_you_a_translator_for_the_specific_lang_you_give_it(
         Translate $translate,
         Language $en
-    )
-    {
+    ) {
         $translate->setLanguage($en)->shouldBeCalled();
         $this->getTranslator($en);
     }
 
-    function it_will_even_get_you_a_translator_for_the_lang_code_you_give_it(
+    public function it_will_even_get_you_a_translator_for_the_lang_code_you_give_it(
         Translate $translate,
         LanguageRepo $language_repo,
         Language $en
-    )
-    {
+    ) {
         $language_repo->getForLangCode('en')->willReturn($en);
 
         $translate->setLanguage($en)->shouldBeCalled();
         $this->getTranslator('en_CA');
     }
 
-    function it_will_get_you_the_lang_object_for_any_lang_code(
+    public function it_will_get_you_the_lang_object_for_any_lang_code(
         LanguageRepo $language_repo,
         Language $en
-    )
-    {
+    ) {
         $language_repo->getForLangCode('en')->willReturn($en);
         $language_repo->getForLangCode('nz')->willReturn(null);
 

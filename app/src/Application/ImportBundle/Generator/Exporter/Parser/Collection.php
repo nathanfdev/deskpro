@@ -31,32 +31,34 @@ use Application\ImportBundle\AbstractCollection;
 use Exception;
 
 /**
- * Collection of the generator exporter parsers
+ * Collection of the generator exporter parsers.
  *
  * Class Collection
- * @package Application\ImportBundle\Generator\Exporter\Parser
  */
 final class Collection extends AbstractCollection
 {
     /**
-     * Add a parser
+     * Add a parser.
      *
      * @param ParserInterface $parser
+     *
      * @return $this
      */
     public function attach(ParserInterface $parser)
     {
         $this->collection[$parser->getEntityType()] = $parser;
+
         return $this;
     }
 
     /**
-     * Returns a parser by entity type
+     * Returns a parser by entity type.
      *
      * @param string $type
      *
-     * @return ParserInterface
      * @throws Exception
+     * @return ParserInterface
+     *
      */
     public function getByEntityType($type)
     {

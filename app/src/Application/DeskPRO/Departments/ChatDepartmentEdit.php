@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Departments;
@@ -46,25 +44,21 @@ class ChatDepartmentEdit implements HasValidationMetadataInterface
     /**
      * @var \Application\DeskPRO\Entity\Department
      */
-
     public $department;
 
     /**
      * @var \Application\DeskPRO\Entity\Department
      */
-
     public $move_department;
 
     /**
      * @var array
      */
-
     public $permissions;
 
     /**
      * @var \Application\DeskPRO\Entity\Department|null
      */
-
     private $old_parent;
 
     public function __construct(Department $department)
@@ -80,7 +74,6 @@ class ChatDepartmentEdit implements HasValidationMetadataInterface
     /**
      * @param EntityManager $em
      */
-
     public function save(EntityManager $em)
     {
         $em->persist($this->department);
@@ -92,7 +85,6 @@ class ChatDepartmentEdit implements HasValidationMetadataInterface
      * @param \Application\DeskPRO\Entity\Person[]    $agents
      * @param \Application\DeskPRO\Entity\Usergroup[] $groups
      */
-
     public function savePermissions(EntityManager $em, array $agents, array $groups)
     {
         $matrix = new DepartmentPermissionMatrix($agents, $groups);
@@ -107,7 +99,6 @@ class ChatDepartmentEdit implements HasValidationMetadataInterface
     /**
      * @param ExecutionContextInterface $context
      */
-
     public function validateChangingOfParent(ExecutionContextInterface $context)
     {
         if (!$this->old_parent) {
@@ -123,7 +114,6 @@ class ChatDepartmentEdit implements HasValidationMetadataInterface
     /**
      * @param ValidatorClassMetadata $metadata
      */
-
     public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
         $metadata->addConstraint(

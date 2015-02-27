@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\AdminInterfaceBundle\Controller;
 
@@ -41,12 +39,15 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class AppsController extends AbstractController
 {
     /**
-     * creates and outputs AppPackage as *.zip
-     * @param  Request               $request
+     * creates and outputs AppPackage as *.zip.
+     *
+     * @param Request $request
      * @param $name
-     * @return BinaryFileResponse
+     *
      * @throws NotFoundHttpException
      * @throws \Exception
+     * @return BinaryFileResponse
+     *
      */
     public function downloadPackageAction(Request $request, $name)
     {
@@ -65,7 +66,7 @@ class AppsController extends AbstractController
 
         // copy package files
         foreach ($package->assets as $asset) {
-            /** @var $asset AppAsset */
+            /* @var $asset AppAsset */
             $filename = $path.'/'.$asset['name'];
             $dir      = pathinfo($filename, PATHINFO_DIRNAME);
             !file_exists($dir) && mkdir($dir, 0777, true);

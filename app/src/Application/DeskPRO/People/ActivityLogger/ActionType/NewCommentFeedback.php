@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -38,9 +37,10 @@ class NewCommentFeedback extends NewCommentAbstract
 {
     public function getDetails()
     {
-        $details = parent::getDetails();
-        $details['feedback_id'] = $this->comment->feedback['id'];
+        $details                   = parent::getDetails();
+        $details['feedback_id']    = $this->comment->feedback['id'];
         $details['feedback_title'] = $this->comment->feedback['title'];
-	    return $details;
+
+        return $details;
     }
 }

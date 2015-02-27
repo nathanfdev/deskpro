@@ -27,9 +27,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\Command;
@@ -69,7 +67,7 @@ class GenTestEmailCommand extends ContainerAwareCommand
         $mailer = $this->getContainer()->getMailer();
 
         $date = date('D, jS M Y g:ia');
-        $to = $input->getOption('to');
+        $to   = $input->getOption('to');
         $from = $input->getOption('from');
 
         if (empty($to)) {
@@ -80,7 +78,7 @@ class GenTestEmailCommand extends ContainerAwareCommand
 
         if (empty($from)) {
             $email_accounts = $this->getContainer()->getEmailAccountManager();
-            $account = $email_accounts->getDefaultOutAccount();
+            $account        = $email_accounts->getDefaultOutAccount();
             if ($account) {
                 $from = $account->getUseEmailAddress();
             }

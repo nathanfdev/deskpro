@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme\TagHandler;
@@ -40,9 +38,9 @@ use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
+use DeskPRO\Bundle\PortalBundle\Theme\TagHandler\EsiTagHandler;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\PortalBundle\Theme\TagHandler\EsiTagHandler;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,7 +51,7 @@ use Symfony\Component\HttpKernel\Fragment\EsiFragmentRenderer;
  */
 class EsiTagHandlerSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         ContainerInterface $container,
         EsiFragmentRenderer $esi_renderer,
         PortalCacheHelper $cache_helper,
@@ -61,8 +59,7 @@ class EsiTagHandlerSpec extends ObjectBehavior
         TagRequest $tag_request,
         PortalModeStorage $mode_storage,
         PortalMode $mode
-    )
-    {
+    ) {
         $container->get('fragment.renderer.esi')->willReturn($esi_renderer);
         $cache_helper->isGuestRequest()->willReturn(false);
         // phpspec doesnt like serailzied so just use the normal mode here, in reality it would be serialized()
@@ -71,42 +68,39 @@ class EsiTagHandlerSpec extends ObjectBehavior
         $this->beConstructedWith($container, $cache_helper, $mode_storage);
     }
 
-    function it_supports_tags_that_say_they_are_esi_for_guests(
+    public function it_supports_tags_that_say_they_are_esi_for_guests(
         PortalCacheHelper $cache_helper,
         Tag $tag,
         TagRequest $tag_request
-    )
-    {
+    ) {
         $cache_helper->isGuestRequest()->willReturn($is_guest = true);
         $tag->isEsi($is_guest)->willReturn(true);
 
         $this->supports($tag, $tag_request)->shouldReturn(true);
     }
 
-    function it_supports_tags_that_say_they_are_esi_for_non_guests(
+    public function it_supports_tags_that_say_they_are_esi_for_non_guests(
         PortalCacheHelper $cache_helper,
         Tag $tag,
         TagRequest $tag_request
-    )
-    {
+    ) {
         $cache_helper->isGuestRequest()->willReturn($is_guest = false);
         $tag->isEsi($is_guest)->willReturn(true);
 
         $this->supports($tag, $tag_request)->shouldReturn(true);
     }
 
-    function it_wont_support_tags_that_say_they_are_not_esi(
+    public function it_wont_support_tags_that_say_they_are_not_esi(
         PortalCacheHelper $cache_helper,
         Tag $tag,
         TagRequest $tag_request
-    )
-    {
+    ) {
         $tag->isEsi(Argument::any())->willReturn(false);
 
         $this->supports($tag, $tag_request)->shouldReturn(false);
     }
 
-    function it_filters_domain_entities_into_their_ids_removes_other_objects_and_passes_to_esi_renderer(
+    public function it_filters_domain_entities_into_their_ids_removes_other_objects_and_passes_to_esi_renderer(
         PortalCacheHelper $cache_helper,
         EsiFragmentRenderer $esi_renderer,
         Tag $tag,
@@ -117,43 +111,42 @@ class EsiTagHandlerSpec extends ObjectBehavior
         Article $article,
         News $news,
         PortalMode $mode
-    )
-    {
+    ) {
         $tag->getName()->willReturn('tag_name');
         $tag->getControllerName()->shouldBeCalled();
 
         $tag_request->attributes = $attributes;
-        $tag_request->query = $query;
+        $tag_request->query      = $query;
 
         $news->getId()->willReturn(10);
         $attributes->all()->willReturn(array(
-            'news' => $news,
-            'string' => 'string',
-            'visitor_id' => 'special key that will be removed as well',
-            'num' => 3,
-            'will_be_ignored' => new \SplStack()
+            'news'            => $news,
+            'string'          => 'string',
+            'visitor_id'      => 'special key that will be removed as well',
+            'num'             => 3,
+            'will_be_ignored' => new \SplStack(),
         ));
 
         $article->getId()->willReturn(5);
         $query->all()->willReturn(array(
             'article' => $article,
-            'param' => 'param'
+            'param'   => 'param',
         ));
 
         // we use objects in a /_proxy esi url, so they need to be filtered out
         $attributes->replace(
             array(
-                'news' => 10,
+                'news'   => 10,
                 'string' => 'string',
-                'num' => 3
+                'num'    => 3,
             )
         )->shouldBeCalled();
 
         $query->replace(
             array(
-                'article' => 5,
-                'param' => 'param',
-                PortalMode::ATTR_NAME => $mode // all tags store the mode
+                'article'             => 5,
+                'param'               => 'param',
+                PortalMode::ATTR_NAME => $mode, // all tags store the mode
             )
         )->shouldBeCalled();
 

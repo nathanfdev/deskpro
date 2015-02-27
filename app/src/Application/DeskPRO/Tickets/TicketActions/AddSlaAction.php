@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -38,7 +35,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 
 /**
- * Adds SLA
+ * Adds SLA.
  */
 class AddSlaAction extends AbstractAction
 {
@@ -51,7 +48,7 @@ class AddSlaAction extends AbstractAction
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -70,7 +67,7 @@ class AddSlaAction extends AbstractAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -90,7 +87,8 @@ class AddSlaAction extends AbstractAction
     }
 
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
@@ -106,7 +104,7 @@ class AddSlaAction extends AbstractAction
      */
     public function getDescription($as_html = true)
     {
-        $tr = App::getTranslator();
+        $tr   = App::getTranslator();
         $slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($this->sla_ids);
 
         $titles = array();

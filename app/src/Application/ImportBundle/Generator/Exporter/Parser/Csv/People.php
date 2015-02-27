@@ -32,10 +32,9 @@ use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use DateTime;
 
 /**
- * People csv file parser
+ * People csv file parser.
  *
  * Class People
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
 final class People extends AbstractParser
 {
@@ -74,7 +73,6 @@ final class People extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid person record `%d` found (Skipping)', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid person record `%d` found (Skipping): %s',
@@ -87,7 +85,7 @@ final class People extends AbstractParser
     }
 
     /**
-     * Returns a person entity
+     * Returns a person entity.
      *
      * @param int   $num
      * @param array $person
@@ -99,7 +97,7 @@ final class People extends AbstractParser
         if ($this->isPersonValid($person)) {
             $entity = new Entity\Person();
             $entity
-                ->setDestination('person_' . $num)
+                ->setDestination('person_'.$num)
                 ->setOid($num)
                 ->setAsAgent($this->isAgent($person))
                 ->setName($person['name'])
@@ -109,23 +107,25 @@ final class People extends AbstractParser
             return $entity;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Check if person has all required columns
+     * Check if person has all required columns.
      *
      * @param array $person
+     *
      * @return bool
      */
     private function isPersonValid(array $person)
     {
         $columns = array('name', 'email');
+
         return $this->hasRequiredColumns($person, $columns);
     }
 
     /**
-     * Returns record type reader config
+     * Returns record type reader config.
      *
      * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
@@ -135,9 +135,10 @@ final class People extends AbstractParser
     }
 
     /**
-     * Check if person is agent
+     * Check if person is agent.
      *
      * @param array $person
+     *
      * @return bool
      */
     private function isAgent(array $person)

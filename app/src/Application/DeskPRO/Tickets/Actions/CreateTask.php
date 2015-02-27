@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -67,7 +66,7 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
         if (-1 !== $id) {
             $person = $this->getContainer()->getEm()->find('DeskPRO:Person', $id);
             if (!($person && $person['is_agent'] && !$person['is_deleted'])) {
-                return null;
+                return;
             }
         }
 
@@ -89,7 +88,7 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
         $due_date = $this->getActionOption('date_due', '');
 
         $assigned_agent_team = null;
-        $assigned_agent = null;
+        $assigned_agent      = null;
 
         $assignee = $this->getActionOption('assignee', '');
         $context->getLogger()->debug('[CreateTask] assignee is '.$assignee);
@@ -164,13 +163,13 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
         }
 
         $loader = new AgentPermsPersonDbLoader($person, $this->getContainer()->getEm());
-        $perms = $loader->getEffectivePermissions()->toArray();
+        $perms  = $loader->getEffectivePermissions()->toArray();
 
         if (!$perms['tasks']) {
             return array('tasks');
         }
 
-        return null;
+        return;
     }
 
     /**

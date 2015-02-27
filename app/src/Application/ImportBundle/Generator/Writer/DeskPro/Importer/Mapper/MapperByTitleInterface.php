@@ -28,15 +28,14 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 
 /**
- * Mapper interface to find existing DeskPro records by title
+ * Mapper interface to find existing DeskPro records by title.
  *
  * Interface MapperByTitleInterface
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 interface MapperByTitleInterface
 {
     /**
-     * Returns the DeskPro record by title
+     * Returns the DeskPro record by title.
      *
      * @param string $title
      * @param bool   $throw_exception

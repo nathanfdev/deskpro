@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -54,7 +51,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     public $api_user;
 
     /**
-     * The API key making this request
+     * The API key making this request.
      *
      * @var \Application\DeskPRO\Entity\ApiKey|null
      */
@@ -66,37 +63,43 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     public $api_token;
 
     /**
-     * The user context (user making the request, or the one the API key says to use)
+     * The user context (user making the request, or the one the API key says to use).
+     *
      * @var \Application\DeskPRO\Entity\Person
      */
     public $person;
 
     /**
-     * Entity manager
+     * Entity manager.
+     *
      * @var \Doctrine\ORM\EntityManager
      */
     public $em;
 
     /**
-     * Plain database connection for raw queries
+     * Plain database connection for raw queries.
+     *
      * @var \Application\DeskPRO\DBAL\Connection
      */
     public $db;
 
     /**
-     * Input reader
+     * Input reader.
+     *
      * @var \Application\DeskPRO\Input\Reader
      */
     public $in;
 
     /**
-     * A generic value cleaner
+     * A generic value cleaner.
+     *
      * @var \Orb\Input\Cleaner\Cleaner
      */
     public $cleaner;
 
     /**
-     * Shared template vars
+     * Shared template vars.
+     *
      * @var \ArrayObject
      */
     public $tplvars;
@@ -107,7 +110,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     public $tpl;
 
     /**
-     * Fetch settings
+     * Fetch settings.
+     *
      * @var \Application\DeskPRO\Settings\Settings
      */
     public $settings;
@@ -231,7 +235,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             return $this->createApiErrorResponse('rate_limit_exceeded', 'Rate Limit Exceeded', 429);
         }
 
-        return null;
+        return;
     }
 
     protected function _updateRateLimit($action, $arguments = null)
@@ -248,11 +252,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * Create an API error response
+     * Create an API error response.
      *
-     * @param  string   $error_code    The short error code
-     * @param  string   $error_message The error message
-     * @param  int      $status        The HTTP status to return
+     * @param string $error_code    The short error code
+     * @param string $error_message The error message
+     * @param int    $status        The HTTP status to return
+     *
      * @return Response
      */
     public function createApiErrorResponse($error_code, $error_message, $status = 400)
@@ -264,12 +269,13 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * Create an API error response
+     * Create an API error response.
      *
-     * @param  string   $error_code    The short error code
-     * @param  string   $error_message The error message
-     * @param  array    $data          Data to return
-     * @param  int      $status        The HTTP status to return
+     * @param string $error_code    The short error code
+     * @param string $error_message The error message
+     * @param array  $data          Data to return
+     * @param int    $status        The HTTP status to return
+     *
      * @return Response
      */
     public function createApiErrorInfoResponse($error_code, $error_message, array $error_info, $status = 400)
@@ -282,8 +288,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * @param  array    $errors
-     * @param  int      $status
+     * @param array $errors
+     * @param int   $status
+     *
      * @return Response
      */
     public function createApiMultipleErrorResponse(array $errors, $status = 400)
@@ -297,8 +304,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     /**
      * Create an API response.
      *
-     * @param  array    $data
-     * @param  int      $status
+     * @param array $data
+     * @param int   $status
+     *
      * @return Response
      */
     public function createApiResponse(array $data, $status = 200)
@@ -317,7 +325,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * Creates an API success response
+     * Creates an API success response.
      *
      * @param array   $extra
      * @param integer $status
@@ -330,10 +338,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * Creates an API success response
+     * Creates an API success response.
      *
-     * @param  array    $extra
-     * @param  int      $status
+     * @param array $extra
+     * @param int   $status
+     *
      * @return Response
      */
     public function createApiSuccessResponse(array $extra = array(), $status = 200)
@@ -342,10 +351,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * Create API response for after anew resource was created
+     * Create API response for after anew resource was created.
      *
-     * @param  array    $data
+     * @param array $data
      * @param $url
+     *
      * @return Response
      */
     public function createApiCreateResponse(array $data, $url)
@@ -359,8 +369,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     /**
      * Creates an API response to return after a resource is deleted. Typically you should return the 'old id' in $extra.
      *
-     * @param  array    $extra
-     * @param  int      $status
+     * @param array $extra
+     * @param int   $status
+     *
      * @return Response
      */
     public function createApiDeleteResponse(array $extra = array(), $status = 200)
@@ -369,11 +380,13 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * @param  ConstraintViolationList|ConstraintViolationList[] $errors A violation list, or an array of violation lists keyed by some prefix.
-     * @param  array                                             $extra  Any other extra data you want to return
-     * @param  int                                               $status The HTTP status code to return
-     * @return Response
+     * @param ConstraintViolationList|ConstraintViolationList[] $errors A violation list, or an array of violation lists keyed by some prefix.
+     * @param array                                             $extra  Any other extra data you want to return
+     * @param int                                               $status The HTTP status code to return
+     *
      * @throws \InvalidArgumentException
+     * @return Response
+     *
      */
     public function createApiValidationErrorResponse($errors, array $extra = null, $status = 400)
     {
@@ -404,11 +417,13 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * @param  Form                      $form   A form to fetch errors from
-     * @param  array                     $extra  Any other extra data you want to return
-     * @param  int                       $status The HTTP status code to return
-     * @return Response
+     * @param Form  $form   A form to fetch errors from
+     * @param array $extra  Any other extra data you want to return
+     * @param int   $status The HTTP status code to return
+     *
      * @throws \InvalidArgumentException
+     * @return Response
+     *
      */
     public function createApiFormErrorResponse(Form $form, array $extra = null, $status = 400)
     {
@@ -451,7 +466,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      *
      * @return bool
      */
-
     public function isEntityValid($entity)
     {
         return sizeof($this->get('validator')->validate($entity)) == 0;
@@ -462,7 +476,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      *
      * @return string
      */
-
     public function getFormValidationErrorsString($form)
     {
         $result = array();
@@ -479,7 +492,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
     /**
      * If we have some form and data from request we get rid off unnecessary data
-     * in order not to have 'This form should not contain extra fields'
+     * in order not to have 'This form should not contain extra fields'.
      *
      * @param \Symfony\Component\Form\Form $form
      * @param array                        $requestData
@@ -487,7 +500,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      *
      * @return array
      */
-
     public function deleteExtraDataFromRequest(Form $form, array $requestData, $keys = null)
     {
         if (is_null($keys)) {
@@ -629,7 +641,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * @param  \Exception $e
+     * @param \Exception $e
+     *
      * @return Response
      */
     public function handleActionException(\Exception $e)
@@ -654,7 +667,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             ), 404);
         } elseif ($e instanceof AccessDeniedException) {
             return $this->createApiResponse(array(
-                'error_code' => 403,
+                'error_code'    => 403,
                 'error_message' => $e->getMessage() ?: 'Access Denied',
             ), 404);
         } else {
@@ -668,6 +681,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             ), 500);
         }
 
-        return null;
+        return;
     }
 }

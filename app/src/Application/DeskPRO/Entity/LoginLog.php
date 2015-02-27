@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +37,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Log of agent and admin logins
+ * Log of agent and admin logins.
  */
 class LoginLog extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -51,42 +50,42 @@ class LoginLog extends \Application\DeskPRO\Domain\DomainObject
     protected $id = null;
 
     /**
-     * Who the login log is for
+     * Who the login log is for.
      *
      * @var string
      */
     protected $person;
 
     /**
-     * Where they logged into
+     * Where they logged into.
      *
      * @var string
      */
     protected $area;
 
     /**
-     * If the login was successful or failure
+     * If the login was successful or failure.
      *
      * @var bool
      */
     protected $is_success = true;
 
     /**
-     * The IP address of the user
+     * The IP address of the user.
      *
      * @var string
      */
     protected $ip_address;
 
     /**
-     * The traced hostname of the IP address
+     * The traced hostname of the IP address.
      *
      * @var string
      */
     protected $hostname;
 
     /**
-     * The user agent of the user
+     * The user agent of the user.
      *
      * @var string
      */
@@ -103,7 +102,7 @@ class LoginLog extends \Application\DeskPRO\Domain\DomainObject
     protected $via_cookie = false;
 
     /**
-     * The date the login was attempted
+     * The date the login was attempted.
      *
      * @var \DateTime
      */
@@ -141,7 +140,7 @@ class LoginLog extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'note', 'type' => 'string', 'length' => 1000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'note'));
         $metadata->mapField(array( 'fieldName' => 'via_cookie', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'via_cookie'));
         $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

@@ -31,10 +31,9 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Download label record mapper
+ * Download label record mapper.
  *
  * Class DownloadLabel
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class DownloadLabel implements MapperInterface
 {
@@ -44,7 +43,7 @@ final class DownloadLabel implements MapperInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\LabelDownload $repository
      */
@@ -68,7 +67,7 @@ final class DownloadLabel implements MapperInterface
     {
         /** @var Entity\LabelDownload $record */
         $record = $this->repository->findOneBy($criteria);
-        if ( ! $record && $throw_exception) {
+        if (! $record && $throw_exception) {
             throw new MapperException('Download label not found', $criteria);
         }
 
@@ -76,13 +75,14 @@ final class DownloadLabel implements MapperInterface
     }
 
     /**
-     * Returns a collection of download labels
+     * Returns a collection of download labels.
      *
      * @param int  $id
      * @param bool $throw_exception
      *
-     * @return Entity\LabelDownload[]
      * @throws MapperException
+     * @return Entity\LabelDownload[]
+     *
      */
     public function findByDownloadId($id, $throw_exception = true)
     {

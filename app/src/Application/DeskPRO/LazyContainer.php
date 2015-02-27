@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO;
@@ -75,7 +73,7 @@ class LazyContainer
             return $this->items[$id];
         }
 
-        return null;
+        return;
     }
 
     public function __get($id)

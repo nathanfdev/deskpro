@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\SwiftMailer;
@@ -112,12 +109,12 @@ class Mailer extends \Swift_Mailer implements StorageTransportInterface
         }
     }
 
-
     /**
      * Queue the message so it is sent by the queue processor.
      *
-     * @param  Swift_Mime_Message $message
-     * @param  \DateTime          $send_date When to send the message. If not specified, it will be sent the next time the processor is run.
+     * @param Swift_Mime_Message $message
+     * @param \DateTime          $send_date When to send the message. If not specified, it will be sent the next time the processor is run.
+     *
      * @return int
      */
     public function queueMessage(Swift_Mime_Message $message, \DateTime $send_date = null)
@@ -136,7 +133,8 @@ class Mailer extends \Swift_Mailer implements StorageTransportInterface
     /**
      * Save the message to the DB.
      *
-     * @param  Swift_Mime_Message $message
+     * @param Swift_Mime_Message $message
+     *
      * @return int
      */
     public function insertMessage(Swift_Mime_Message $message)
@@ -153,8 +151,9 @@ class Mailer extends \Swift_Mailer implements StorageTransportInterface
     }
 
     /**
-     * @param  Swift_Mime_Message $message
-     * @param  null               $failedRecipients
+     * @param Swift_Mime_Message $message
+     * @param null               $failedRecipients
+     *
      * @return int
      */
     public function send(Swift_Mime_Message $message, &$failedRecipients = null)
@@ -165,7 +164,8 @@ class Mailer extends \Swift_Mailer implements StorageTransportInterface
     }
 
     /**
-     * @param  string                                               $service
+     * @param string $service
+     *
      * @return \Application\EmailBundle\SwiftMailer\Message\Message
      */
     public function createMessage($service = 'message')

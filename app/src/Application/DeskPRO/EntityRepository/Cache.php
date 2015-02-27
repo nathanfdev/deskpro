@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -82,7 +81,7 @@ class Cache extends AbstractEntityRepository
     }
 
     /**
-     * Clean up all expired cache entries
+     * Clean up all expired cache entries.
      */
     public function cleanExpired()
     {

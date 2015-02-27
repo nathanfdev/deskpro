@@ -26,20 +26,17 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security\Permissions\Portal;
 
-use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 
 class PortalUsergroupDecider
 {
@@ -66,20 +63,21 @@ class PortalUsergroupDecider
     public function __construct(EntityManager $em)
     {
         $this->conn = $em->getConnection();
-        $this->em = $em;
+        $this->em   = $em;
     }
 
     /**
-     * Responsible for deciding the exact set of usergroups to use for the given person
+     * Responsible for deciding the exact set of usergroups to use for the given person.
      *
-     * @param  Person $person
+     * @param Person $person
+     *
      * @return array
      */
     public function getUsergroupIdsForPerson(Person $person)
     {
         $that = $this;
         $conn = $this->conn;
-        $em = $this->em;
+        $em   = $this->em;
 
         return $this->generateAndCache(
             array(
@@ -119,7 +117,7 @@ class PortalUsergroupDecider
     }
 
     /**
-     * Responsible for delivering a set of group IDs that are to be used for guests
+     * Responsible for delivering a set of group IDs that are to be used for guests.
      */
     public function getUsergroupIdsForGuest()
     {
@@ -127,9 +125,10 @@ class PortalUsergroupDecider
     }
 
     /**
-     * Usergroup IDs for an organization (via ID)
+     * Usergroup IDs for an organization (via ID).
      *
      * @param $organizationId
+     *
      * @return array
      */
     public function getOrganizationUsergroups($organizationId)
@@ -156,7 +155,7 @@ class PortalUsergroupDecider
     }
 
     /**
-     * The usergroup IDs that EVERYONE has by default (including guests)
+     * The usergroup IDs that EVERYONE has by default (including guests).
      *
      * @return array
      */
@@ -181,8 +180,9 @@ class PortalUsergroupDecider
     }
 
     /**
-     * @param  mixed      $params   the "ArbitraryHasher" input to create cache key for this callable
-     * @param  mixed      $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable
+     * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     *
      * @return mixed|null
      */
     protected function generateAndCache($params, $callable)
@@ -203,7 +203,8 @@ class PortalUsergroupDecider
     }
 
     /**
-     * @param  mixed  $input
+     * @param mixed $input
+     *
      * @return string
      */
     protected function generateHash($input)

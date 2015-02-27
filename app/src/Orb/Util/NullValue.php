@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
@@ -61,9 +60,10 @@ class NullValue
     }
 
     /**
-     * Check if a variable is a NullValue
+     * Check if a variable is a NullValue.
      *
-     * @param  mixed $var
+     * @param mixed $var
+     *
      * @return bool
      */
     public static function is($var)

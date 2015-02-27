@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
 
 /**
- * Handles viewing of deleted items
+ * Handles viewing of deleted items.
  */
 class RecycleBinController extends AbstractController
 {

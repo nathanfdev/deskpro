@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -117,13 +116,14 @@ class TicketFilter extends DomainObject
     protected $display_order = 1000;
 
     /**
-     * Results from the last search
+     * Results from the last search.
+     *
      * @var array
      */
     protected $_results = null;
 
     /**
-     * Searcher for the filter
+     * Searcher for the filter.
      *
      * @var \Application\DeskPRO\Searcher\TicketSearch
      */
@@ -167,7 +167,7 @@ class TicketFilter extends DomainObject
     public function setAgentTeamId($id)
     {
         if ($id) {
-            $agent_team = App::getOrm()->getRepository('DeskPRO:AgentTeam')->find($id);
+            $agent_team         = App::getOrm()->getRepository('DeskPRO:AgentTeam')->find($id);
             $this['agent_team'] = $agent_team;
         } else {
             $this['agent_team'] = null;
@@ -337,7 +337,7 @@ class TicketFilter extends DomainObject
     }
 
     /**
-     * Explain criteria in the filter. Ex: Agent is Unassigned, Category is None
+     * Explain criteria in the filter. Ex: Agent is Unassigned, Category is None.
      *
      * @return string
      */
@@ -424,7 +424,7 @@ class TicketFilter extends DomainObject
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
         $metadata->setPrimaryTable(array(
-            'name' => 'ticket_filters',
+            'name'              => 'ticket_filters',
             'uniqueConstraints' => array( 'sys_name_unique' => array('columns' => array('sys_name'))),
         ));
 
@@ -502,7 +502,7 @@ class TicketFilter extends DomainObject
             'fieldName'    => 'agent_team',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
             'dpApi'        => true,
-            'joinColumns' => array(array(
+            'joinColumns'  => array(array(
                 'name'                 => 'agent_team_id',
                 'referencedColumnName' => 'id',
                 'nullable'             => true,

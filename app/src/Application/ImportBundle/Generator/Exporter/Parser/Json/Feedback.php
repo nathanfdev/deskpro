@@ -27,18 +27,16 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
-use Application\ImportBundle\Entity;
-use Orb\Util\Strings;
 use DateTime;
 
 /**
- * Feedback json file parser
+ * Feedback json file parser.
  *
  * Class Feedback
- * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
 final class Feedback extends AbstractParser
 {
@@ -77,13 +75,11 @@ final class Feedback extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid feedback record found (Skipping): %d', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid feedback record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
-
             } catch (NotArrayException $e) {
                 $this->logWarning(sprintf(
                     'Invalid feedback record `%d` found (Skipping): %s',
@@ -96,9 +92,10 @@ final class Feedback extends AbstractParser
     }
 
     /**
-     * Returns a feedback entity
+     * Returns a feedback entity.
      *
      * @param array $feedback
+     *
      * @return Entity\Feedback
      */
     private function exportFeedback(array $feedback)
@@ -106,7 +103,7 @@ final class Feedback extends AbstractParser
         if ($this->isFeedbackValid($feedback)) {
             $entity = new Entity\Feedback();
             $entity
-                ->setDestination('feedback_' . $feedback['oid'])
+                ->setDestination('feedback_'.$feedback['oid'])
                 ->setOid($feedback['oid'])
                 ->setPersonEmail($feedback['person'])
                 ->setLanguage($feedback['language'])
@@ -132,11 +129,11 @@ final class Feedback extends AbstractParser
             return $entity;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Returns record type reader config
+     * Returns record type reader config.
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
      */
@@ -146,9 +143,10 @@ final class Feedback extends AbstractParser
     }
 
     /**
-     * Check if feedback has all required columns
+     * Check if feedback has all required columns.
      *
      * @param array $feedback
+     *
      * @return bool
      */
     private function isFeedbackValid(array $feedback)

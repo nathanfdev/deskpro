@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -86,16 +83,16 @@ class FeedbackAttachmentCollectionType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'type' => 'feedback_attachment',
+                'type'    => 'feedback_attachment',
                 'options' => function (Options $options) {
                         return array(
-                            'person'         =>  $options->get('person'),
+                            'person'         => $options->get('person'),
                             'label'          => false,
                         );
                     },
-                'allow_add' => true,
+                'allow_add'    => true,
                 'allow_delete' => true,
-                'label' => false,
+                'label'        => false,
             )
         );
 

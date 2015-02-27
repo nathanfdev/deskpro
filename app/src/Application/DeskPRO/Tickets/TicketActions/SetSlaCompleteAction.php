@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -38,7 +35,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 
 /**
- * Set SLA complete
+ * Set SLA complete.
  */
 class SetSlaCompleteAction extends AbstractAction
 {
@@ -51,7 +48,7 @@ class SetSlaCompleteAction extends AbstractAction
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -87,7 +84,7 @@ class SetSlaCompleteAction extends AbstractAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -107,7 +104,8 @@ class SetSlaCompleteAction extends AbstractAction
     }
 
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
@@ -136,7 +134,7 @@ class SetSlaCompleteAction extends AbstractAction
                 // take action for all
                 $titles = null;
             } else {
-                $slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($sla_ids);
+                $slas   = App::getEntityRepository('DeskPRO:Sla')->getByIds($sla_ids);
                 $titles = array();
                 foreach ($slas as $s) {
                     $titles[$s->id] = $as_html ? htmlspecialchars($s->title) : $s->title;

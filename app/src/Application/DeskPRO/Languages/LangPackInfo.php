@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Languages;
@@ -73,7 +71,8 @@ class LangPackInfo
     }
 
     /**
-     * @param  string $id
+     * @param string $id
+     *
      * @return bool
      */
     public function hasLang($id)
@@ -94,9 +93,11 @@ class LangPackInfo
      * - has_agent: Is the pack considered agent interface complete?
      * - has_admin: Is the pack considered admin interface complete?
      *
-     * @param  string                    $id
-     * @param  string|null               $key
+     * @param string      $id
+     * @param string|null $key
+     *
      * @throws \InvalidArgumentException
+     *
      * @return mixed
      */
     public function getLangInfo($id, $key = null)
@@ -109,7 +110,7 @@ class LangPackInfo
 
         if ($key) {
             if (!isset($info[$key])) {
-                return null;
+                return;
             }
 
             return $info[$key];
@@ -119,7 +120,7 @@ class LangPackInfo
     }
 
     /**
-     * Get lang titles as id=>title
+     * Get lang titles as id=>title.
      *
      * @return array
      */
@@ -160,9 +161,11 @@ class LangPackInfo
     }
 
     /**
-     * @param  string                    $section
-     * @return array
+     * @param string $section
+     *
      * @throws \InvalidArgumentException
+     * @return array
+     *
      */
     public function getDefaultCategories($section)
     {
@@ -176,7 +179,8 @@ class LangPackInfo
     }
 
     /**
-     * @param  string                               $id
+     * @param string $id
+     *
      * @return \Application\DeskPRO\Entity\Language
      */
     public function newLanguageEntity($id)
@@ -185,7 +189,7 @@ class LangPackInfo
             throw new \InvalidArgumentException();
         }
 
-        $lang = new \Application\DeskPRO\Entity\Language();
+        $lang                = new \Application\DeskPRO\Entity\Language();
         $lang->sys_name      = $this->getLangInfo($id, 'id');
         $lang->title         = $this->getLangInfo($id, 'title');
         $lang->lang_code     = $this->getLangInfo($id, 'lang_code');

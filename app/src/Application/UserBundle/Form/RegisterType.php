@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Form;
@@ -46,7 +43,7 @@ class RegisterType extends AbstractType
     }
 
     /**
-     * Configures the person form
+     * Configures the person form.
      */
     protected function buildPersonForm(FormBuilderInterface $builder)
     {

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Func;
@@ -40,7 +37,7 @@ use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 /**
- * Handler that wraps around DAYOFWEEK() to provide a group fill
+ * Handler that wraps around DAYOFWEEK() to provide a group fill.
  */
 class DayOfWeek extends AbstractFunc
 {

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Controller
  */
 
@@ -41,7 +40,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
- * The base controller
+ * The base controller.
  */
 abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Controller
 {
@@ -51,19 +50,22 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
     protected $container;
 
     /**
-     * The request
+     * The request.
+     *
      * @var \Application\DeskPRO\HttpFoundation\Request
      */
     public $request;
 
     /**
-     * The response
+     * The response.
+     *
      * @var \Symfony\Component\HttpFoundation\Response
      */
     public $response;
 
     /**
-     * Event dispatcher
+     * Event dispatcher.
+     *
      * @var \Symfony\Component\EventDispatcher\EventDispatcher
      */
     protected $event_dispatcher;
@@ -91,7 +93,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
     }
 
     /**
-     * An empty callback function
+     * An empty callback function.
      */
     protected function init()
     {
@@ -127,8 +129,10 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
     }
 
     /**
-     * @param  \Exception                                 $e
+     * @param \Exception $e
+     *
      * @throws \Exception
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function handleActionException(\Exception $e)
@@ -152,9 +156,10 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
     /**
      * Redirect to a named route.
      *
-     * @param  string   $route
-     * @param  array    $parameters
-     * @param  int      $status
+     * @param string $route
+     * @param array  $parameters
+     * @param int    $status
+     *
      * @return Response
      */
     public function redirectRoute($route, array $parameters = array(), $status = 302)
@@ -165,10 +170,11 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
     }
 
     /**
-     * Create a regular html response
+     * Create a regular html response.
      *
-     * @param  string   $content
-     * @param  int      $status_code
+     * @param string $content
+     * @param int    $status_code
+     *
      * @return Response
      */
     public function createResponse($content, $status_code = 200)
@@ -185,8 +191,9 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
     /**
      * Create a JSON response.
      *
-     * @param  string   $content
-     * @param  int      $status_code
+     * @param string $content
+     * @param int    $status_code
+     *
      * @return Response
      */
     public function createJsonResponse($content, $status_code = 200)
@@ -217,9 +224,10 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      *
      * Remember that personal data (e.g., account info) should never be exposed via jsonp.
      *
-     * @param  string   $content
-     * @param  int      $status_code
-     * @param  string   $callback_name
+     * @param string $content
+     * @param int    $status_code
+     * @param string $callback_name
+     *
      * @return Response
      */
     public function createJsonpResponse($content, $status_code = 200, $callback_name = null)
@@ -255,9 +263,10 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
     /**
      * Render a template and create a JSON response with it.
      *
-     * @param  string   $view
-     * @param  array    $parameters
-     * @param  Response $response
+     * @param string   $view
+     * @param array    $parameters
+     * @param Response $response
+     *
      * @return Response
      */
     public function renderJson($view, array $parameters = array(), Response $response = null)

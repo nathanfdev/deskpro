@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -93,7 +92,7 @@ class PersonDbLoader
             return $this->perms;
         }
 
-        $has_all_perms = false;
+        $has_all_perms      = false;
         $has_all_safe_perms = false;
 
         $agent_group_ids = array();
@@ -126,10 +125,10 @@ class PersonDbLoader
             $names_loader = new PermissionNamesLoader();//TODO inject
 
             if ($has_all_perms) {
-                $add = $names_loader->getNames();
+                $add      = $names_loader->getNames();
                 $add_ugid = $has_all_perms;
             } else {
-                $add = $names_loader->getSafeNames();
+                $add      = $names_loader->getSafeNames();
                 $add_ugid = $has_all_safe_perms;
             }
 
@@ -162,7 +161,7 @@ class PersonDbLoader
     }
 
     /**
-     * Get effective permissions (group and overrides combined)
+     * Get effective permissions (group and overrides combined).
      *
      * @return AgentPermissions
      */
@@ -174,7 +173,7 @@ class PersonDbLoader
     }
 
     /**
-     * Get permissions defined just through overrides
+     * Get permissions defined just through overrides.
      *
      * @return AgentPermissions
      */
@@ -186,7 +185,7 @@ class PersonDbLoader
     }
 
     /**
-     * Get just group permissions (no overrides)
+     * Get just group permissions (no overrides).
      *
      * @return AgentPermissions
      */
@@ -198,7 +197,8 @@ class PersonDbLoader
     }
 
     /**
-     * @param  array            $perm_array
+     * @param array $perm_array
+     *
      * @return AgentPermissions
      */
     private function createAgentPermissions(array $perm_array)
@@ -219,7 +219,7 @@ class PersonDbLoader
             } // unknown type
 
             $obj_name = self::$prefix_map[$type];
-            $obj = $agent_perms->$obj_name;
+            $obj      = $agent_perms->$obj_name;
             if (!isset($obj->$name)) {
                 continue;
             } // invalid;

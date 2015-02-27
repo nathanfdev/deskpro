@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Scraper
+ * Orb.
  */
 
 namespace Orb\Scraper;
@@ -56,7 +53,7 @@ interface ItemInterface
     /**
      * The actual data for the item. This must always be a plain PHP array. If
      * the data returned from the resource is a single piece of information, by convention
-     * the array should contain a single key 'body',
+     * the array should contain a single key 'body',.
      */
     public function getData();
 }

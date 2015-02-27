@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage CustomFields
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\CustomFields\Handler;

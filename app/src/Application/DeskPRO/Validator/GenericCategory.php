@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Validator
+ * Orb.
  */
 
 namespace Application\DeskPRO\Validator;
@@ -40,6 +37,7 @@ class GenericCategory extends AbstractPersonContextValidator
 {
     /**
      * Allow a non-selection?
+     *
      * @var bool
      */
     protected $allow_none = true;
@@ -65,7 +63,7 @@ class GenericCategory extends AbstractPersonContextValidator
     protected $perms_loader_name = null;
 
     /**
-     * The category repository we'll check values against
+     * The category repository we'll check values against.
      *
      * @var \Application\DeskPRO\EntityRepository\AbstractCategoryRepository
      */

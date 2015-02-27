@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Form
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Form;
@@ -40,7 +37,8 @@ namespace Application\DeskPRO\Form;
 class InlineEditHandler
 {
     /**
-     * Input data
+     * Input data.
+     *
      * @var array
      */
     protected $input_data;
@@ -49,7 +47,8 @@ class InlineEditHandler
      * A flat array of names we got from input.
      * array(person => array(basic => array(fullname => xxx, nickname => xxx)))
      * becomes
-     * array(person.basic.full_name, person.basic.nickname)
+     * array(person.basic.full_name, person.basic.nickname).
+     *
      * @var array
      */
     protected $got_fields = array();
@@ -76,7 +75,7 @@ class InlineEditHandler
     }
 
     /**
-     * Apply input to a form
+     * Apply input to a form.
      *
      * @param \Orb\Form\Field\FieldGroup $form
      */

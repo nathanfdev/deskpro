@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category ORM
  */
 
@@ -77,10 +76,11 @@ class LabelDefManager
     }
 
     /**
-     * Get an array of labels and their usage counts, ordered by $order_by
+     * Get an array of labels and their usage counts, ordered by $order_by.
      *
-     * @param  mixed  $types
-     * @param  string $order_by
+     * @param mixed  $types
+     * @param string $order_by
+     *
      * @return array
      */
     public function getLabelsAndCounts($types = null, $order_by = 'alpha')
@@ -106,7 +106,7 @@ class LabelDefManager
     }
 
     /**
-     * Get defined labels
+     * Get defined labels.
      *
      * @return array
      */
@@ -137,7 +137,7 @@ class LabelDefManager
             throw new \InvalidArgumentException();
         }
 
-        $parts = array('SELECT DISTINCT(label) FROM label_defs ');
+        $parts  = array('SELECT DISTINCT(label) FROM label_defs ');
         $params = array();
         $qtypes = array();
 
@@ -151,7 +151,7 @@ class LabelDefManager
             $parts[] = 'SELECT DISTINCT(label) FROM '.$this->db->quoteIdentifier('labels_'.$t);
         }
 
-        $q = '('.implode(') UNION (', $parts).')';
+        $q      = '('.implode(') UNION (', $parts).')';
         $labels = $this->db->fetchAllCol($q, $params, $qtypes);
 
         return $labels;
@@ -198,9 +198,10 @@ class LabelDefManager
     }
 
     /**
-     * Get counts for all labels used for a type
+     * Get counts for all labels used for a type.
      *
-     * @param  null  $types
+     * @param null $types
+     *
      * @return array
      */
     public function countDefUsages($types = null)
@@ -214,7 +215,7 @@ class LabelDefManager
         }
 
         foreach ($types as $t) {
-            $info = self::$types[$t];
+            $info     = self::$types[$t];
             $query[]  = "SELECT COUNT(*) AS count, label FROM {$info['table']} GROUP BY label";
         }
 
@@ -239,7 +240,7 @@ class LabelDefManager
     }
 
     /**
-     * Count usages of a label
+     * Count usages of a label.
      *
      * @param $label
      * @param null $types
@@ -269,7 +270,7 @@ class LabelDefManager
         }
 
         $count_res = $this->db->fetchAll($query, $params);
-        $count = 0;
+        $count     = 0;
 
         foreach ($count_res as $r) {
             $count += $r['count'];
@@ -279,7 +280,7 @@ class LabelDefManager
     }
 
     /**
-     * Create a new label definition
+     * Create a new label definition.
      *
      * @param $label
      * @param null $types
@@ -343,7 +344,7 @@ class LabelDefManager
     }
 
     /**
-     * Rename a label
+     * Rename a label.
      *
      * @param $old_label
      * @param $new_label
@@ -479,7 +480,7 @@ class LabelDefManager
                         OR terms LIKE '%\"person_label\"%'
                 ");
                 foreach ($filters as $r) {
-                    $changes = array();
+                    $changes   = array();
                     $terms_new = $r['terms'];
                     if ($t == 'tickets') {
                         $terms_new = $replace_label_arr($terms_new, array('ticket_label', 'label'));

@@ -1,10 +1,10 @@
 <?php
 namespace DpFixtures\General;
 
+use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Usergroup;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
-use Application\DeskPRO\Entity\FeedbackCategory;
 
 class FeedbackTypesWithUsergroupsData extends AbstractFixture
 {

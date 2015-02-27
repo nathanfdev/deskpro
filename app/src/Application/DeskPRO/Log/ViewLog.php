@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Log;
@@ -56,16 +53,18 @@ class ViewLog
 
     public function __construct(Connection $db, Session $session = null)
     {
-        $this->db = $db;
+        $this->db      = $db;
         $this->session = $session;
     }
 
     /**
-     * Log a view on an object
+     * Log a view on an object.
      *
-     * @param  mixed                     $object
-     * @return int
+     * @param mixed $object
+     *
      * @throws \InvalidArgumentException
+     * @return int
+     *
      */
     public function view($object, $action = 1)
     {

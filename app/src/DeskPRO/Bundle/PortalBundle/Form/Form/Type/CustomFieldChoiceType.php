@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -78,7 +75,7 @@ class CustomFieldChoiceType extends AbstractType
         $hierarchy_generator = $this->hierarchy_generator;
 
         $resolver->setDefaults(array(
-            'empty_data' => null,
+            'empty_data'     => null,
             'choice_list'    => function (Options $options) use ($hierarchy_generator) {
                     return $hierarchy_generator->generateForCustomFormField($options['custom_field'])->getChoiceList();
                 },

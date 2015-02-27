@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -63,7 +62,7 @@ class TwitterAccount extends AbstractEntityRepository
             $person = App::getCurrentPerson();
         }
 
-        $output = $this->getAll();
+        $output      = $this->getAll();
         $account_ids = $person->getTwitterAccountIds();
         foreach ($output as $key => $value) {
             if (!in_array($key, $account_ids)) {

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -46,9 +45,10 @@ class Organization extends AbstractEntityRepository
 
     /**
      * @param string $name
-     * @return OrganizationEntity
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
+     * @return OrganizationEntity
+     *
      */
     public function findOneByName($name)
     {
@@ -69,7 +69,7 @@ class Organization extends AbstractEntityRepository
     public function getOrganizationNames($for_ids = null)
     {
         if ($this->_organization_names == null) {
-            $db = $this->getEntityManager()->getConnection();
+            $db                        = $this->getEntityManager()->getConnection();
             $this->_organization_names = $db->fetchAllKeyValue("
                 SELECT id, name
                 FROM organizations
@@ -119,7 +119,7 @@ class Organization extends AbstractEntityRepository
     }
 
     /**
-     * Get a count of how many orgs there are
+     * Get a count of how many orgs there are.
      *
      * @return int
      */
@@ -132,9 +132,10 @@ class Organization extends AbstractEntityRepository
     }
 
     /**
-     * Count how many people there are in an organization
+     * Count how many people there are in an organization.
      *
-     * @param  \Application\DeskPRO\Entity\Organization $org
+     * @param \Application\DeskPRO\Entity\Organization $org
+     *
      * @return int
      */
     public function countMembersFor(OrganizationEntity $org)
@@ -151,7 +152,7 @@ class Organization extends AbstractEntityRepository
     }
 
     /**
-     * Gets the list of organization managers
+     * Gets the list of organization managers.
      *
      * @param \Application\DeskPRO\Entity\Organization $org
      *
@@ -170,7 +171,8 @@ class Organization extends AbstractEntityRepository
     /**
      * Fetch an organization by its name.
      *
-     * @param  string                                   $name
+     * @param string $name
+     *
      * @return \Application\DeskPRO\Entity\Organization
      */
     public function getByName($name)
@@ -187,13 +189,14 @@ class Organization extends AbstractEntityRepository
 
     /**
      * @param $q
-     * @param  null  $limit
+     * @param null $limit
+     *
      * @return mixed
      */
     public function search($q, $limit = null, $hydrate = true)
     {
-        $q = '%'.str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q).'%';
-        $q = strtolower($q);
+        $q    = '%'.str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q).'%';
+        $q    = strtolower($q);
         $mode = $hydrate ? null : Query::HYDRATE_ARRAY;
 
         return $this->getEntityManager()->createQuery("

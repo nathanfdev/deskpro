@@ -26,23 +26,17 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
-use DeskPRO\Bundle\PortalBundle\Theme\TagHandler\EsiTagHandler;
-use DeskPRO\Bundle\PortalBundle\Theme\TagHandler\InlineTagHandler;
 use DeskPRO\Bundle\PortalBundle\Theme\TagHandlerInterface;
-use DeskPRO\Bundle\PortalBundle\Theme\TagRequestFactory;
-use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use DeskPRO\Bundle\PortalBundle\Theme\TagProcessor;
+use DeskPRO\Bundle\PortalBundle\Theme\TagRequestFactory;
+use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -50,24 +44,22 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class TagProcessorSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         TagRequestFactory $tag_request_factory,
         TagHandlerInterface $esi_handler,
         TagHandlerInterface $inline_handler
-    )
-    {
+    ) {
         $this->beConstructedWith($tag_request_factory, array($esi_handler, $inline_handler));
     }
 
-    function it_returns_the_result_of_the_first_handler_that_supports_the_tag_request(
+    public function it_returns_the_result_of_the_first_handler_that_supports_the_tag_request(
         TagRequestFactory $tag_request_factory,
         TagRequest $tag_request,
         Tag $tag,
         TagHandlerInterface $esi_handler, // esi handler was injected first
         TagHandlerInterface $inline_handler,
         Response $response
-    )
-    {
+    ) {
         $arguments = array();
         $tag_request_factory->create($tag, $arguments)->willReturn($tag_request);
 
@@ -83,14 +75,13 @@ class TagProcessorSpec extends ObjectBehavior
         $this->process($tag, $arguments)->shouldReturn('the end result');
     }
 
-    function it_returns_an_empty_string_for_failed_responses(
+    public function it_returns_an_empty_string_for_failed_responses(
         TagRequestFactory $tag_request_factory,
         TagRequest $tag_request,
         Tag $tag,
         TagHandlerInterface $esi_handler,
         Response $response
-    )
-    {
+    ) {
         $arguments = array();
         $tag_request_factory->create($tag, $arguments)->willReturn($tag_request);
 

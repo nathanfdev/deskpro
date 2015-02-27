@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -55,14 +54,13 @@ class SaveTicketLogs implements TicketSaveActionInterface
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @return void
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
      */
     public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
     {
         $ticketlog_generator = new TicketLogGenerator($ticket, $context);
-        $logs = $ticketlog_generator->getLogEntries();
+        $logs                = $ticketlog_generator->getLogEntries();
 
         foreach ($logs as $l) {
             $this->em->persist($l);

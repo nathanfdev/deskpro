@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +37,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 /**
- * A job
+ * A job.
  *
  * @property $id
  * @property $type
@@ -83,14 +82,14 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
     protected $id;
 
     /**
-     * The job type, used by the Job Router to find the right Job Processor
+     * The job type, used by the Job Router to find the right Job Processor.
      *
      * @var string
      */
     protected $type;
 
     /**
-     * The status of the job
+     * The status of the job.
      *
      * Should be one of the STATUS_* const's of this class:
      *
@@ -126,21 +125,21 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
     protected $date_touch;
 
     /**
-     * Date this job entered the "jobs" table
+     * Date this job entered the "jobs" table.
      *
      * @var \DateTime
      */
     protected $date_created;
 
     /**
-     * Last time we processed this job
+     * Last time we processed this job.
      *
      * @var \DateTime
      */
     protected $date_last_try;
 
     /**
-     * If this DateTime is in the future, it won't be selected for execution
+     * If this DateTime is in the future, it won't be selected for execution.
      *
      * @var \DateTime
      */
@@ -156,28 +155,28 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
     protected $priority;
 
     /**
-     * The number of times this job has been executed Job Processor (usually indicated failures if > 1)
+     * The number of times this job has been executed Job Processor (usually indicated failures if > 1).
      *
      * @var int
      */
     protected $num_tries;
 
     /**
-     * A human readable summary of the job's execution
+     * A human readable summary of the job's execution.
      *
      * @var string
      */
     protected $log_summary;
 
     /**
-     * A more verbose log
+     * A more verbose log.
      *
      * @var string
      */
     protected $log;
 
     /**
-     * An array of data, or payload, that the job processor needs to execute this job (stored in the db as json)
+     * An array of data, or payload, that the job processor needs to execute this job (stored in the db as json).
      *
      * This MUST always be an array, even if its an empty array
      *
@@ -186,7 +185,7 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
     protected $data;
 
     /**
-     * The last time this job was started
+     * The last time this job was started.
      *
      * @var \DateTime
      */

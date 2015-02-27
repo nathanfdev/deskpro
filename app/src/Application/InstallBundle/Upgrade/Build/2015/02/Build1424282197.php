@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -39,6 +36,6 @@ class Build1424282197 extends AbstractBuild
     public function run()
     {
         $this->out("Add sendmail_sources.options");
-		$this->execMutateSql("ALTER TABLE sendmail_sources ADD options LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)'");
+        $this->execMutateSql("ALTER TABLE sendmail_sources ADD options LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)'");
     }
 }

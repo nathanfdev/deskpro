@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,17 +38,18 @@ use Orb\Util\Strings;
 class LayoutCollection implements \Countable, \IteratorAggregate
 {
     /**
-     * Array of layouts keyed by some unique key
+     * Array of layouts keyed by some unique key.
      *
      * @var Layout[]
      */
     private $layouts;
 
     /**
-     * Adds a layout to the collection
+     * Adds a layout to the collection.
      *
-     * @param  Layout                $layout The layout to add
-     * @param  string                $key    The layout key, or null
+     * @param Layout $layout The layout to add
+     * @param string $key    The layout key, or null
+     *
      * @throws \OutOfBoundsException
      */
     public function addLayout($layout, $key)
@@ -66,7 +66,8 @@ class LayoutCollection implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @param  string $key
+     * @param string $key
+     *
      * @return bool
      */
     public function hasLayout($key)
@@ -83,9 +84,11 @@ class LayoutCollection implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @param  string                    $key
-     * @return Layout
+     * @param string $key
+     *
      * @throws \InvalidArgumentException
+     * @return Layout
+     *
      */
     public function getLayout($key)
     {
@@ -99,8 +102,9 @@ class LayoutCollection implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @return Layout
      * @throws \InvalidArgumentException
+     * @return Layout
+     *
      */
     public function getDefaultLayout()
     {
@@ -123,8 +127,8 @@ class LayoutCollection implements \Countable, \IteratorAggregate
         foreach ($this->layouts as $k => $layout) {
             $k_str = "'$k'";
 
-            $code = trim(Strings::modifyLines($layout->compileJsObj(), "\t\t\t"));
-            $bit_js = "\t\t{$k_str}: {$code}";
+            $code           = trim(Strings::modifyLines($layout->compileJsObj(), "\t\t\t"));
+            $bit_js         = "\t\t{$k_str}: {$code}";
             $layout_codes[] = $bit_js;
         }
 

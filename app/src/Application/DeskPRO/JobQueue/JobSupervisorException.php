@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage JobQueue
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\JobQueue;
@@ -37,7 +34,7 @@ namespace Application\DeskPRO\JobQueue;
 use Orb\Util\Strings;
 
 /**
- * A JobSupervisorRuleInterface was violated
+ * A JobSupervisorRuleInterface was violated.
  *
  * Default error code: 1550
  */

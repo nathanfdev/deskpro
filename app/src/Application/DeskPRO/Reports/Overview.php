@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports;
@@ -60,13 +58,14 @@ class Overview
 
     /**
      * The currently logged in person.
+     *
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $person;
 
     /**
-    * @var bool
-    */
+     * @var bool
+     */
     protected $no_data_mode = false;
 
     /**
@@ -77,7 +76,7 @@ class Overview
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
-        $logger = new Logger();
+        $logger   = new Logger();
 
         if (dp_get_config('debug.enable_reports_overview_log') && !$this->no_data_mode) {
             $wr = new Stream(dp_get_log_dir().'/reports-overview.log');
@@ -89,7 +88,8 @@ class Overview
     }
 
     /**
-     * @param  string $type
+     * @param string $type
+     *
      * @return array
      */
     public function getOverviewData($type)
@@ -100,11 +100,13 @@ class Overview
     }
 
     /**
-     * @param  string                $type
-     * @param  string                $grouping_field
-     * @param  array                 $options
-     * @return array
+     * @param string $type
+     * @param string $grouping_field
+     * @param array  $options
+     *
      * @throws NotFoundHttpException
+     * @return array
+     *
      */
     public function getStats($type, $grouping_field = null, $options = array())
     {
@@ -234,7 +236,8 @@ class Overview
     }
 
     /**
-     * @param  Person $person
+     * @param Person $person
+     *
      * @return $this
      */
     public function setPerson(Person $person)
@@ -245,10 +248,12 @@ class Overview
     }
 
     /**
-     * @param                            $type
-     * @param  array                     $options
-     * @return array
+     * @param       $type
+     * @param array $options
+     *
      * @throws \InvalidArgumentException
+     * @return array
+     *
      */
     protected function getValues($type, array $options = array())
     {

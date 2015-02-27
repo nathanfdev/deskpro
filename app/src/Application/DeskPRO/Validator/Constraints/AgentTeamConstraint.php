@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Validator
  */
 
@@ -49,13 +48,15 @@ class AgentTeamConstraint extends Constraint
     public $typeMessage = 'Invalid object type got {{type}}';
 
     /**
-     * Accepts and validates IDs (as well as actual objects)
+     * Accepts and validates IDs (as well as actual objects).
+     *
      * @var bool
      */
     public $acceptId    = true;
 
     /**
-     * If given a Usergroup, checks that its actually in the repository
+     * If given a Usergroup, checks that its actually in the repository.
+     *
      * @var bool
      */
     public $checkRepos  = true;

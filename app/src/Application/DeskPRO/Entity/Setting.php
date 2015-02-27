@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -54,14 +53,14 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
     protected $id;
 
     /**
-     * The name of the setting
+     * The name of the setting.
      *
      * @var string
      */
     protected $name;
 
     /**
-     * The value of a setting
+     * The value of a setting.
      *
      * @var string
      */

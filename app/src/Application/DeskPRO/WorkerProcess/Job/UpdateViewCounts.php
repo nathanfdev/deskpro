@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -38,7 +35,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\PageViewLog;
 
 /**
- * Updates viewcounts on articles
+ * Updates viewcounts on articles.
  */
 class UpdateViewCounts extends AbstractJob
 {
@@ -48,7 +45,7 @@ class UpdateViewCounts extends AbstractJob
     {
         // VIEW_COUNTER
         return;
-        $time = time();
+        $time      = time();
         $last_time = App::getSetting('core.last_viewcount_update');
         if (!$last_time) {
             $last_time = time() - 600;
@@ -69,7 +66,7 @@ class UpdateViewCounts extends AbstractJob
                     case PageViewLog::TYPE_DOWNLOAD: $table = 'downloads'; break;
                     case PageViewLog::TYPE_FEEDBACK: $table = 'feedback';  break;
                     case PageViewLog::TYPE_NEWS:     $table = 'news';      break;
-                    default: $table = null;
+                    default: $table                         = null;
                 }
 
                 if (!$table) {

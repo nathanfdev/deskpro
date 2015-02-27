@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,8 @@ use Application\LegacyApiBundle\ApiUser;
 class MultiPermissions implements PermissionStrategyInterface
 {
     /**
-     * Array of type => array(PermissionStrategyInterface)
+     * Array of type => array(PermissionStrategyInterface).
+     *
      * @var array
      */
     private $perms = array();

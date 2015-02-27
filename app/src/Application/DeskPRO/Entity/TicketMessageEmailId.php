@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -56,7 +55,7 @@ class TicketMessageEmailId extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 //		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketMessageEmailId';
         $metadata->setPrimaryTable(array(
-            'name' => 'tickets_message_email_id',
+            'name'    => 'tickets_message_email_id',
             'indexes' => array(
                 'email_id_idx' => array('columns' => array('email_id')),
             ),
@@ -64,24 +63,24 @@ class TicketMessageEmailId extends \Application\DeskPRO\Domain\DomainObject
 
         $metadata->mapField(array(
             'fieldName' => 'id',
-            'id' => true,
-            'type' => 'integer',
+            'id'        => true,
+            'type'      => 'integer',
         ));
 
         $metadata->mapField(array(
-            'fieldName' => 'email_id',
-            'nullable' => false,
+            'fieldName'  => 'email_id',
+            'nullable'   => false,
             'columnName' => 'email_id',
         ));
 
         $metadata->mapManyToOne(array(
-            'fieldName' => 'message',
+            'fieldName'    => 'message',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage',
-            'inversedBy' => 'email_message_id',
-            'joinColumns' => array(array(
-                'name' => 'message_id',
+            'inversedBy'   => 'email_message_id',
+            'joinColumns'  => array(array(
+                'name'                 => 'message_id',
                 'referencedColumnName' => 'id',
-                'onDelete' => 'CASCADE',
+                'onDelete'             => 'CASCADE',
             )),
         ));
     }

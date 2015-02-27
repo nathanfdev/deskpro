@@ -2,8 +2,8 @@
     exit('No access');
 }
 
-require_once DP_ROOT . '/src/Application/DeskPRO/Routing/RouteCollection.php';
-require_once DP_ROOT . '/src/Application/DeskPRO/Routing/Route.php';
+require_once DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php';
+require_once DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php';
 
 use Application\DeskPRO\Routing\RouteCollection;
 
@@ -2978,19 +2978,19 @@ $collection->create(
 
 $collection->create(
     'api_channel_sms_account_get', array(
-        'path'       => '/channel/sms/account/{id}',
+        'path'         => '/channel/sms/account/{id}',
         'requirements' => array('id' => '\d+'),
-        'controller' => 'LegacyApiBundle:ChannelSms:get',
-        'methods'    => array('GET'),
+        'controller'   => 'LegacyApiBundle:ChannelSms:get',
+        'methods'      => array('GET'),
     )
 );
 
 $collection->create(
     'api_channel_sms_account_delete', array(
-        'path'       => '/channel/sms/account/{id}',
+        'path'         => '/channel/sms/account/{id}',
         'requirements' => array('id' => '\d+'),
-        'controller' => 'LegacyApiBundle:ChannelSms:delete',
-        'methods'    => array('DELETE'),
+        'controller'   => 'LegacyApiBundle:ChannelSms:delete',
+        'methods'      => array('DELETE'),
     )
 );
 
@@ -3048,19 +3048,19 @@ $collection->create(
 
 $collection->create(
     'api_channel_facebook_page_get', array(
-        'path'       => '/channel/facebook/page/{id}',
+        'path'         => '/channel/facebook/page/{id}',
         'requirements' => array('id' => '\d+'),
-        'controller' => 'LegacyApiBundle:ChannelFacebook:get',
-        'methods'    => array('GET'),
+        'controller'   => 'LegacyApiBundle:ChannelFacebook:get',
+        'methods'      => array('GET'),
     )
 );
 
 $collection->create(
     'api_channel_facebook_page_delete', array(
-        'path'       => '/channel/facebook/page/{id}',
+        'path'         => '/channel/facebook/page/{id}',
         'requirements' => array('id' => '\d+'),
-        'controller' => 'LegacyApiBundle:ChannelFacebook:delete',
-        'methods'    => array('DELETE'),
+        'controller'   => 'LegacyApiBundle:ChannelFacebook:delete',
+        'methods'      => array('DELETE'),
     )
 );
 
@@ -3708,8 +3708,8 @@ $collection->create('api_server_mysql_sort_order', array(
 ));
 
 $collection->create('api_server_mysql_sort_order_save', array(
-    'path'       => '/server_mysql_sort_order',
-    'controller' => 'LegacyApiBundle:Server:saveMysqlSortOrder',
+    'path'        => '/server_mysql_sort_order',
+    'controller'  => 'LegacyApiBundle:Server:saveMysqlSortOrder',
     'methods'     => array('POST'),
 ));
 
@@ -4509,14 +4509,14 @@ $collection->create('api_langs_getphrase_all', array(
     'path'         => '/langs/phrases/{phrase_id}',
     'controller'   => 'LegacyApiBundle:Languages:getPhrase',
     'requirements' => array('phrase_id' => '[a-zA-Z0-9\-_\.]+'),
-    'defaults'     => array('for_lang' => '-1'),
+    'defaults'     => array('for_lang'  => '-1'),
     'methods'      => array('GET'),
 ));
 
 $collection->create('api_langs_getphrase', array(
     'path'         => '/langs/phrases/{phrase_id}/{for_lang}',
     'controller'   => 'LegacyApiBundle:Languages:getPhrase',
-    'defaults'     => array('for_lang' => '-1'),
+    'defaults'     => array('for_lang'  => '-1'),
     'requirements' => array('phrase_id' => '[a-zA-Z0-9\-_\.]+', 'for_lang' => '\d+|[a-z]+'),
     'methods'      => array('GET'),
 ));

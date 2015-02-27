@@ -5,7 +5,7 @@ namespace Application\DeskPRO\NewSearch\Repository;
 use Elastica\Filter;
 
 /**
- * Ticket Repository
+ * Ticket Repository.
  */
 class TicketRepository extends AbstractRepository implements WithLabelsInterface
 {
@@ -17,7 +17,7 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
     protected $person;
 
     /**
-     * Fields to be highlighted
+     * Fields to be highlighted.
      *
      * @var array
      */
@@ -27,7 +27,7 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
     );
 
     /**
-     * Sets the person context
+     * Sets the person context.
      *
      * @param $person
      */
@@ -37,7 +37,7 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
     }
 
     /**
-     * Constructs the filters array to handle agent permission
+     * Constructs the filters array to handle agent permission.
      *
      * @return array
      */
@@ -61,7 +61,7 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
             // cant see anything else
         } else {
             $sub_filter = new Filter\BoolAnd();
-            $any = false;
+            $any        = false;
 
             $dis_dep_ids = $this->person->getHelper('AgentPermissions')->getDisallowedDepartments();
             if ($dis_dep_ids) {

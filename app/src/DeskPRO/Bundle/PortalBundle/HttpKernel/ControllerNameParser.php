@@ -26,21 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\HttpKernel;
 
+use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
+use Application\DeskPRO\Cache\ConvenientCache;
 use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
+use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser as BaseParser;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Application\DeskPRO\Cache\ConvenientCache;
-use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 
 class ControllerNameParser extends BaseParser
 {
@@ -102,8 +99,9 @@ class ControllerNameParser extends BaseParser
     }
 
     /**
-     * @param  mixed      $params   the "ArbitraryHasher" input to create cache key for this callable
-     * @param  mixed      $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable
+     * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     *
      * @return mixed|null
      */
     protected function generateAndCache($params, $callable, array $args = array())
@@ -124,7 +122,8 @@ class ControllerNameParser extends BaseParser
     }
 
     /**
-     * @param  mixed  $input
+     * @param mixed $input
+     *
      * @return string
      */
     protected function generateHash($input)

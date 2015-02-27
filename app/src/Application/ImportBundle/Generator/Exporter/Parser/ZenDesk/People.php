@@ -33,12 +33,11 @@ use DateTime;
 use DateTimeZone;
 
 /**
- * ZenDesk people parser
+ * ZenDesk people parser.
  *
  * see https://developer.zendesk.com/rest_api/docs/core/users#time-zone
  *
  * Class People
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
 final class People extends AbstractParser implements PeopleStorageAwareInterface
 {
@@ -65,6 +64,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     public function setPeopleStorage(PeopleStorageInterface $storage)
     {
         $this->people_storage = $storage;
+
         return $this;
     }
 
@@ -95,7 +95,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
 
                 $entity = new Entity\Person();
                 $entity
-                    ->setDestination('person_' . $person['id'])
+                    ->setDestination('person_'.$person['id'])
                     ->setOid($person['id'])
                     ->setName($person['name'])
                     ->setTimezone($timezone)
@@ -117,7 +117,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
 
                 $entity->addEmail($person['email']);
 
-                $user_fields = (array)$person['user_fields'];
+                $user_fields = (array) $person['user_fields'];
                 foreach ($user_fields as $user_field) {
                     $entity->addCustomField($this->exportCustomField($user_field));
                 }
@@ -131,9 +131,10 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     }
 
     /**
-     * Exports person custom field
+     * Exports person custom field.
      *
      * @param $user_field
+     *
      * @return Entity\CustomField
      */
     private function exportCustomField($user_field)
@@ -143,7 +144,7 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
 
     /**
      * Returns a collection of people to be exported
-     * Gets a collection of people from the storage if it's defined or uses the ZenDesk reader
+     * Gets a collection of people from the storage if it's defined or uses the ZenDesk reader.
      *
      * @return array
      */
@@ -161,9 +162,10 @@ final class People extends AbstractParser implements PeopleStorageAwareInterface
     }
 
     /**
-     * Check if person has all required columns
+     * Check if person has all required columns.
      *
      * @param array $person
+     *
      * @return bool
      */
     private function hasRequiredPersonColumns(array $person)

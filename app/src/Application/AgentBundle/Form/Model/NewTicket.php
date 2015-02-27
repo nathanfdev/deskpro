@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Form\Model;
@@ -196,6 +193,7 @@ class NewTicket
 
     /**
      * @throws \Exception
+     *
      * @return \Application\DeskPRO\Entity\Ticket
      */
     public function save()

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage InstallBundle
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle;

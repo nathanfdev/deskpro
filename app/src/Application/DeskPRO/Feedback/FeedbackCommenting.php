@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Feedback;
@@ -120,7 +118,7 @@ class FeedbackCommenting implements PersonContextInterface
     }
 
     /**
-     * Send notifications to everyone involved in feedback about a new comment
+     * Send notifications to everyone involved in feedback about a new comment.
      *
      * @param \Application\DeskPRO\Feedback\FeedbackComment $comment
      */

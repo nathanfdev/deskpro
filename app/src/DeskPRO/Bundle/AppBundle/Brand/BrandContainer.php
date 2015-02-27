@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package    DeskPRO
- * @subpackage Brand
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Brand;
@@ -76,6 +73,7 @@ class BrandContainer
     /**
      * @param $setting_name
      * @param $default
+     *
      * @return mixed
      */
     public function getSetting($setting_name, $default = null)
@@ -109,6 +107,7 @@ class BrandContainer
 
     /**
      * @param $controller
+     *
      * @return null|string
      */
     public function resolveController($controller)
@@ -118,6 +117,7 @@ class BrandContainer
 
     /**
      * @param $name
+     *
      * @return string|null
      */
     public function resolveTemplatePath($name)

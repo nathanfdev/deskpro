@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -118,7 +117,7 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
      */
     public function getOld()
     {
-        return null;
+        return;
     }
 
     /**
@@ -136,7 +135,7 @@ class ChangeEmailLog implements ChangeInterface, NonStateTrackingInterface
             'from_email'         => $this->from_email,
             'template'           => $this->template,
             'sendmail_source_id' => $this->sendmail_source_id,
-            'id_after'           => $this->sendmail_source_id
+            'id_after'           => $this->sendmail_source_id,
         );
     }
 

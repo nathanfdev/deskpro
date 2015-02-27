@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Auth;
@@ -97,7 +94,7 @@ class AuthInterfaceSettings
     }
 
     /**
-     * a URL or null, if null we use system wide default
+     * a URL or null, if null we use system wide default.
      *
      * @return string|null
      */
@@ -141,7 +138,7 @@ class AuthInterfaceSettings
     }
 
     /**
-     * Just a convenience method to give us the SSO Usersource's Adapters' Auth Adapter (heh)
+     * Just a convenience method to give us the SSO Usersource's Adapters' Auth Adapter (heh).
      */
     public function getSsoAuthAdapter($displayContext = null)
     {

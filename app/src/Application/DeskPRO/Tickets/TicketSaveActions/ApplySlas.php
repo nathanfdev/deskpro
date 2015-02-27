@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -53,7 +52,7 @@ class ApplySlas implements TicketSaveActionInterface
     private $em;
 
     /**
-     * @var $cm_sender
+     * @var
      */
     private $cm_sender;
 
@@ -70,9 +69,8 @@ class ApplySlas implements TicketSaveActionInterface
     }
 
     /**
-     * @param  Ticket                   $ticket
-     * @param  ExecutorContextInterface $context
-     * @return void
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
      */
     public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
     {

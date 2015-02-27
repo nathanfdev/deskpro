@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Addons
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Publish;
@@ -41,7 +38,7 @@ use Application\DeskPRO\Entity\NewsCategory;
 use Orb\Util\Arrays;
 
 /**
- * Helps fetch info related to structure of Publish
+ * Helps fetch info related to structure of Publish.
  */
 class CategoryEdit
 {
@@ -50,11 +47,13 @@ class CategoryEdit
     const NEWS      = 'news';
 
     /**
-     * Add a new category to the systme
+     * Add a new category to the systme.
      *
-     * @throws \InvalidArgumentException
+     *
      * @param $type
      * @param $title
+     * @throws \InvalidArgumentException
+     *
      * @return \Application\DeskPRO\Entity\ArticleCategory|\Application\DeskPRO\Entity\DownloadCategory|\Application\DeskPRO\Entity\NewsCategory|array
      */
     public static function addCategory($type, $title)
@@ -93,10 +92,11 @@ class CategoryEdit
     }
 
     /**
-     * Update titles for categoryes. $titles is id=>title
+     * Update titles for categoryes. $titles is id=>title.
      *
      * @param $type
-     * @param  array $titles
+     * @param array $titles
+     *
      * @return array
      */
     public static function updateTitles($type, array $titles)
@@ -137,9 +137,9 @@ class CategoryEdit
 
     public static function update($type, $category_id, $title, array $usergroup_ids)
     {
-        $entity = self::getEntityNameFor($type);
+        $entity     = self::getEntityNameFor($type);
         $perm_table = App::getEntityRepository($entity)->getPermissionTableName();
-        $cat = App::getOrm()->find($entity, $category_id);
+        $cat        = App::getOrm()->find($entity, $category_id);
 
         if (!$cat) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -159,7 +159,7 @@ class CategoryEdit
 
                 foreach ($usergroup_ids as $uid) {
                     App::getDb()->insert($perm_table, array(
-                        'category_id' => $cat->id,
+                        'category_id'  => $cat->id,
                         'usergroup_id' => $uid,
                     ));
                 }
@@ -181,8 +181,7 @@ class CategoryEdit
      * Update orders. $orders is an array of ID's in the order you want them.
      *
      * @param $type
-     * @param  array $orders
-     * @return void
+     * @param array $orders
      */
     public static function updateOrders($type, array $orders)
     {
@@ -228,10 +227,11 @@ class CategoryEdit
     }
 
     /**
-     * Update the structure based off a map of ids to categories
+     * Update the structure based off a map of ids to categories.
      *
      * @param $type
-     * @param  array $map
+     * @param array $map
+     *
      * @return array
      */
     public static function updateStructure($type, array $map, array $check_map = null)
@@ -246,8 +246,8 @@ class CategoryEdit
         // If theres a check map then we want to verify that the current tree is the same,
         // or else error out
         if ($check_map) {
-            $conn = App::getDb();
-            $table = App::getOrm()->getRepository($entity)->getTableName();
+            $conn         = App::getDb();
+            $table        = App::getOrm()->getRepository($entity)->getTableName();
             $current_tree = $conn->fetchAllKeyValue("SELECT id, parent_id FROM ".$conn->quoteIdentifier($table));
 
             $accurate = true;
@@ -302,16 +302,16 @@ class CategoryEdit
     /**
      * Deletes a category and all its children if they are empty.
      *
-     * @throws \InvalidArgumentException
+     *
      * @param $type
      * @param $category_id
-     * @return void
+     * @throws \InvalidArgumentException
      */
     public static function deleteCategory($type, $category_id)
     {
         $entity = self::getEntityNameFor($type);
         $repos  = App::getOrm()->getRepository($entity);
-        $cat = $repos->find($category_id);
+        $cat    = $repos->find($category_id);
 
         if (!$cat) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -383,11 +383,14 @@ class CategoryEdit
     }
 
     /**
-     * Get the content entity for a publish type
+     * Get the content entity for a publish type.
      *
      * @static
-     * @throws \InvalidArgumentException
+     *
+     *
      * @param $type
+     * @throws \InvalidArgumentException
+     *
      * @return string
      */
     public static function getEntityNameFor($type)

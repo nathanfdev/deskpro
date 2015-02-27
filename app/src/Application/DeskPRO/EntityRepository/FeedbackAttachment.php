@@ -3,7 +3,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 /**
- * FeedbackAttachment
+ * FeedbackAttachment.
  */
 class FeedbackAttachment extends AbstractEntityRepository
 {

@@ -10,26 +10,27 @@ require_once 'AbstractEntityCheckTest.php';
 class CheckOrgUsergroupTest extends AbstractEntityCheckTest
 {
     /**
-     * @param  int    $id
+     * @param int $id
      * @param $object
+     *
      * @return Ticket
      */
     public function createTicket($id, $object)
     {
         if ($object === null) {
             // no test for nulls
-            return null;
+            return;
         }
 
         $org = new Organization();
 
-        $bogus = new Usergroup();
+        $bogus     = new Usergroup();
         $bogus->id = $id + 100;
         $org->usergroups->add($bogus);
         $org->usergroups->add($object);
 
-        $ticket = new Ticket();
-        $ticket->id = $id;
+        $ticket               = new Ticket();
+        $ticket->id           = $id;
         $ticket->organization = $org;
 
         return $ticket;
@@ -52,7 +53,8 @@ class CheckOrgUsergroupTest extends AbstractEntityCheckTest
     }
 
     /**
-     * The entity class we are checking
+     * The entity class we are checking.
+     *
      * @return string
      */
     public function getEntityClass()

@@ -2,15 +2,14 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
-use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use Application\DeskPRO\Entity\Person;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
@@ -20,7 +19,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
  */
 class ContentRatingsVoterSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         ContainerInterface $container,
         PortalPermissionsManager $permissions_manager,
         BrandStack $brand_stack,
@@ -30,8 +29,7 @@ class ContentRatingsVoterSpec extends ObjectBehavior
         TokenInterface $guest_token,
         PermissionsBag $person_permission_bag,
         PermissionsBag $guest_permission_bag
-    )
-    {
+    ) {
         $person->getId()->willReturn(1);
         $token->getUser()->willReturn($person);
         $guest_token->getUser()->willReturn(null);
@@ -44,30 +42,27 @@ class ContentRatingsVoterSpec extends ObjectBehavior
         $this->beConstructedWith($container);
     }
 
-    function it_abstains_from_non_rating_attributes(
+    public function it_abstains_from_non_rating_attributes(
         BrandContainer $brand_container,
         TokenInterface $token
-    )
-    {
+    ) {
         $this->vote($token, null, array(ContentCommentVoter::COMMENT_ARTICLES))->shouldBe(VoterInterface::ACCESS_ABSTAIN);
     }
 
-    function it_will_deny_if_guest_and_interact_require_login_setting(
+    public function it_will_deny_if_guest_and_interact_require_login_setting(
         BrandContainer $brand_container,
         TokenInterface $guest_token
-    )
-    {
+    ) {
         $brand_container->getSetting('core.interact_require_login', false)->willReturn(true);
 
         $this->vote($guest_token, null, array(ContentRatingsVoter::RATE_ARTICLES))->shouldBe(VoterInterface::ACCESS_DENIED);
     }
 
-    function it_will_deny_guest_comments_if_permissions_fail(
+    public function it_will_deny_guest_comments_if_permissions_fail(
         BrandContainer $brand_container,
         TokenInterface $guest_token,
         PermissionsBag $guest_permission_bag
-    )
-    {
+    ) {
         $brand_container->getSetting('core.interact_require_login', false)->willReturn(false);
 
         $guest_permission_bag->get('articles.rate')->willReturn(false);
@@ -83,12 +78,11 @@ class ContentRatingsVoterSpec extends ObjectBehavior
         $this->vote($guest_token, null, array(ContentRatingsVoter::RATE_NEWS))->shouldBe(VoterInterface::ACCESS_DENIED);
     }
 
-    function it_will_grant_guest_comments_if_permissions_pass(
+    public function it_will_grant_guest_comments_if_permissions_pass(
         BrandContainer $brand_container,
         TokenInterface $guest_token,
         PermissionsBag $guest_permission_bag
-    )
-    {
+    ) {
         $brand_container->getSetting('core.interact_require_login', false)->willReturn(false);
 
         $guest_permission_bag->get('articles.rate')->willReturn(true);
@@ -104,12 +98,11 @@ class ContentRatingsVoterSpec extends ObjectBehavior
         $this->vote($guest_token, null, array(ContentRatingsVoter::RATE_NEWS))->shouldBe(VoterInterface::ACCESS_GRANTED);
     }
 
-    function it_will_deny_user_comments_if_permissions_fail(
+    public function it_will_deny_user_comments_if_permissions_fail(
         BrandContainer $brand_container,
         TokenInterface $token,
         PermissionsBag $person_permission_bag
-    )
-    {
+    ) {
         $person_permission_bag->get('articles.rate')->willReturn(false);
         $this->vote($token, null, array(ContentRatingsVoter::RATE_ARTICLES))->shouldBe(VoterInterface::ACCESS_DENIED);
 
@@ -123,12 +116,11 @@ class ContentRatingsVoterSpec extends ObjectBehavior
         $this->vote($token, null, array(ContentRatingsVoter::RATE_NEWS))->shouldBe(VoterInterface::ACCESS_DENIED);
     }
 
-    function it_will_grant_user_comments_if_permissions_pass(
+    public function it_will_grant_user_comments_if_permissions_pass(
         BrandContainer $brand_container,
         TokenInterface $token,
         PermissionsBag $person_permission_bag
-    )
-    {
+    ) {
         $person_permission_bag->get('articles.rate')->willReturn(true);
         $this->vote($token, null, array(ContentRatingsVoter::RATE_ARTICLES))->shouldBe(VoterInterface::ACCESS_GRANTED);
 

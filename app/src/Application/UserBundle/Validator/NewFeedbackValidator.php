@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Validator;
@@ -61,7 +58,8 @@ class NewFeedbackValidator extends AbstractValidator
     /**
      * Check $value to see if its valid.
      *
-     * @param  \Application\DeskPRO\Feedback\NewFeedback $newfeedback
+     * @param \Application\DeskPRO\Feedback\NewFeedback $newfeedback
+     *
      * @return bool
      */
     protected function checkIsValid($newfeedback)
@@ -87,7 +85,7 @@ class NewFeedbackValidator extends AbstractValidator
             $this->addError('category_id.invalid');
         }
 
-        $cf_man = App::getSystemService('FeedbackFieldsManager');
+        $cf_man                = App::getSystemService('FeedbackFieldsManager');
         $newfeedback_cat_field = $cf_man->getSystemField('cat');
         if (!$newfeedback_cat_field || !$cf_man->getFieldChildren($newfeedback_cat_field)) {
             $newfeedback_cat_field = null;
@@ -100,7 +98,7 @@ class NewFeedbackValidator extends AbstractValidator
 
             // Specifid but may be invalid option
             } else {
-                $children = $cf_man->getFieldChildren($newfeedback_cat_field);
+                $children    = $cf_man->getFieldChildren($newfeedback_cat_field);
                 $selected_id = $newfeedback->custom_fields['field_'.$newfeedback_cat_field->getId()];
 
                 if (!isset($children[$selected_id])) {

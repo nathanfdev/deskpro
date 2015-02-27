@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Import
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\People\PasswordScheme;
@@ -52,7 +49,7 @@ class Bcrypt implements PasswordSchemeInterface
 
     public function hashPassword(Person $person, $plain_password)
     {
-        $hasher = new \PasswordHash(self::ITERATIONS, false);
+        $hasher  = new \PasswordHash(self::ITERATIONS, false);
         $pw_hash = $hasher->HashPassword($plain_password);
 
         return $pw_hash;

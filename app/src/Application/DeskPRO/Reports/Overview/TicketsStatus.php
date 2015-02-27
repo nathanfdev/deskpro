@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reports\Overview;
@@ -58,7 +55,7 @@ class TicketsStatus extends AbstractTableOverviewStat
 
         $return = array();
         foreach ($s as $k => $v) {
-            $return[$k] = $v;
+            $return[$k]         = $v;
             $return[$k.'_hold'] = $v.' (On Hold)';
         }
 

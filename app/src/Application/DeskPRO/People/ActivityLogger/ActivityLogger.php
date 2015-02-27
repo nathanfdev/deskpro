@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -53,19 +52,20 @@ class ActivityLogger
     }
 
     /**
-     * Save any action details
+     * Save any action details.
      *
-     * @param  \Application\DeskPRO\Entity\Person               $person
-     * @param  string                                           $action_type
-     * @param  array                                            $details
+     * @param \Application\DeskPRO\Entity\Person $person
+     * @param string                             $action_type
+     * @param array                              $details
+     *
      * @return \Application\DeskPRO\Entity\PersonActivity|array
      */
     public function saveActionDetails(Person $person, $action_type, array $details)
     {
-        $activity = new PersonActivity();
-        $activity->person = $person;
+        $activity                = new PersonActivity();
+        $activity->person        = $person;
         $activity['action_type'] = $action_type;
-        $activity['details'] = $details;
+        $activity['details']     = $details;
 
         $this->em->getConnection()->beginTransaction();
         try {
@@ -81,10 +81,11 @@ class ActivityLogger
     }
 
     /**
-     * Save an action object
+     * Save an action object.
      *
-     * @param  \Application\DeskPRO\Entity\Person                            $person
-     * @param  \Application\DeskPRO\People\ActivityLogger\ActionTypeAbstract $action
+     * @param \Application\DeskPRO\Entity\Person                            $person
+     * @param \Application\DeskPRO\People\ActivityLogger\ActionTypeAbstract $action
+     *
      * @return \Application\DeskPRO\Entity\PersonActivity|array
      */
     public function saveAction(ActionTypeAbstract $action)
@@ -93,8 +94,9 @@ class ActivityLogger
         $action_type = Strings::camelCaseToUnderscore($action_type);
 
         $details = $action->getDetails();
+
         return $this->saveActionDetails($action->getPersonContext(), $action_type, $details);
 
-        return null;
+        return;
     }
 }

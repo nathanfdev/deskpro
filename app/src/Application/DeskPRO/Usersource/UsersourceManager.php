@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Usersource
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usersource;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
-use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Adapter\IdentityFinderInterface;
 use Doctrine\ORM\EntityManager;
 
@@ -64,7 +61,7 @@ class UsersourceManager
      */
     public function __construct(EntityManager $em, App\AppManipulator $app_manipulator)
     {
-        $this->em = $em;
+        $this->em              = $em;
         $this->app_manipulator = $app_manipulator;
     }
 
@@ -94,7 +91,8 @@ class UsersourceManager
     /**
      * Find a person in a USER usersource based on an email address.
      *
-     * @param  string                             $input this can actually be any input (but is usually email)
+     * @param string $input this can actually be any input (but is usually email)
+     *
      * @return \Application\DeskPRO\Entity\Person
      */
     public function findPersonByEmail($input)
@@ -123,13 +121,14 @@ class UsersourceManager
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Get all installed usersources
+     * Get all installed usersources.
      *
      * @return \Application\DeskPRO\Entity\Usersource[]
+     *
      * @deprecated use getAll() and filter with UsersourceCollection as needed
      */
     public function getUsersources()
@@ -144,9 +143,10 @@ class UsersourceManager
     }
 
     /**
-     * Get all usersources for the agent/admin area
+     * Get all usersources for the agent/admin area.
      *
-     * @param  bool                                                                                          $active if true only returns enabled usersources
+     * @param bool $active if true only returns enabled usersources
+     *
      * @return \Application\DeskPRO\Entity\Usersource[]|\Application\DeskPRO\Usersource\UsersourceCollection
      */
     public function getAll()
@@ -157,8 +157,10 @@ class UsersourceManager
     }
 
     /**
-     * @param  string                                   $type
+     * @param string $type
+     *
      * @return \Application\DeskPRO\Entity\Usersource[]
+     *
      * @deprecated use getAll() and filter with UsersourceCollection as needed
      */
     public function getUsersourcesOfType($type)
@@ -177,9 +179,12 @@ class UsersourceManager
     }
 
     /**
-     * Get usersources with a certain capability
+     * Get usersources with a certain capability.
+     *
      * @param $capability
+     *
      * @return \Application\DeskPRO\Entity\Usersource[]
+     *
      * @deprecated use getAll() and filter with UsersourceCollection as needed
      */
     public function getWithCapability($capability)
@@ -196,6 +201,7 @@ class UsersourceManager
 
     /**
      * @return string
+     *
      * @deprecated this shouldn't be used anymore, try to eliminate it form the codebase and use twig extension instead
      */
     public function renderView(Usersource $usersource, $type, array $params = array())
@@ -203,7 +209,7 @@ class UsersourceManager
         $params['usersource'] = $usersource;
 
         $name = $usersource->getAdapter()->getTypename();
-        $tpl = "DeskPRO:Auth:".$name."-".$type.".html.twig";
+        $tpl  = "DeskPRO:Auth:".$name."-".$type.".html.twig";
 
         if (!isset($params['type'])) {
             $params['type'] = 'user';

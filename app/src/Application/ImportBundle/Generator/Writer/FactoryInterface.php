@@ -28,15 +28,14 @@
 namespace Application\ImportBundle\Generator\Writer;
 
 /**
- * Generator writer factory interface
+ * Generator writer factory interface.
  *
  * Interface FactoryInterface
- * @package Application\ImportBundle\Generator\Writer
  */
 interface FactoryInterface
 {
     /**
-     * Returns a writer
+     * Returns a writer.
      *
      * @return WriterInterface
      */

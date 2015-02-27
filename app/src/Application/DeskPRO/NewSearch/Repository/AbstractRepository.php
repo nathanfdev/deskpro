@@ -3,40 +3,40 @@
 namespace Application\DeskPRO\NewSearch\Repository;
 
 use Elastica\Query;
+use Elastica\Util as ElasticaUtil;
 use FOS\ElasticaBundle\Repository;
 use Orb\Util\Strings;
-use Elastica\Util as ElasticaUtil;
 
 /**
- * Abstract Repository
+ * Abstract Repository.
  */
 abstract class AbstractRepository extends Repository
 {
     const MAX_LEN = 315;
 
     /**
-     * Tag to be placed before highlight
+     * Tag to be placed before highlight.
      *
      * @var string
      */
     protected $highlightPreTag = '<em class="highlight">';
 
     /**
-     * Tab to be placed after highlight
+     * Tab to be placed after highlight.
      *
      * @var string
      */
     protected $highlightPostTag = '</em>';
 
     /**
-     * Fields to be highlighted
+     * Fields to be highlighted.
      *
      * @var array
      */
     protected $highlightFields = array();
 
     /**
-     * Find
+     * Find.
      *
      * Prepares an updated query object and passes back to parent function
      * for actual execution.
@@ -77,9 +77,10 @@ abstract class AbstractRepository extends Repository
     }
 
     /**
-     * Constructs the raw query
+     * Constructs the raw query.
      *
      * @param $q
+     *
      * @return Query
      */
     protected function getQuery($q)
@@ -120,9 +121,10 @@ abstract class AbstractRepository extends Repository
     }
 
     /**
-     * Makes sure a "query" var is formatted for use with QueryString
+     * Makes sure a "query" var is formatted for use with QueryString.
      *
-     * @param  string $q
+     * @param string $q
+     *
      * @return string
      */
     protected function escapeQueryStringTerm($q)
@@ -134,9 +136,10 @@ abstract class AbstractRepository extends Repository
     }
 
     /**
-     * Constructs the query string
+     * Constructs the query string.
      *
      * @param $q
+     *
      * @return Query\QueryString|Query\MultiMatch
      */
     protected function getQueryString($q)
@@ -170,7 +173,7 @@ abstract class AbstractRepository extends Repository
     }
 
     /**
-     * Constructs the filters array (override as needed)
+     * Constructs the filters array (override as needed).
      *
      * @return array
      */
@@ -180,7 +183,7 @@ abstract class AbstractRepository extends Repository
     }
 
     /**
-     * Set any highlight requirement
+     * Set any highlight requirement.
      *
      * @param Query $query
      */

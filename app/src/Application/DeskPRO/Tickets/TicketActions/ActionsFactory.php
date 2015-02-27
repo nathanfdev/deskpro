@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -40,7 +37,7 @@ use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
- * Creates action objects
+ * Creates action objects.
  */
 class ActionsFactory
 {
@@ -59,16 +56,17 @@ class ActionsFactory
      * These are generally just an action name and a single value to represent the actions
      * new value.
      *
-     * @param  string $name
-     * @param  mixed  $value
+     * @param string $name
+     * @param mixed  $value
+     *
      * @return object
      */
     public function createFromForm($name, $value)
     {
         $name_id = null;
-        $m = null;
+        $m       = null;
         if (preg_match('#^(.*?)\[(.*?)\]$#', $name, $m)) {
-            $name = $m[1];
+            $name    = $m[1];
             $name_id = $m[2];
         }
 
@@ -109,7 +107,7 @@ class ActionsFactory
                 $options['subject'] = $value['subject'];
                 break;
             case 'urgency_set':
-                $options['num'] = $value['num'];
+                $options['num']         = $value['num'];
                 $options['allow_lower'] = isset($value['allow_lower']) && $value['allow_lower'] ? true : false;
                 break;
             case 'workflow':
@@ -139,7 +137,7 @@ class ActionsFactory
                 break;
             case 'reply':
                 if (empty($value['reply_text']) || !trim(strip_tags($value['reply_text']))) {
-                    return null;
+                    return;
                 }
                 $options['reply_text'] = $value['reply_text'];
                 $options['attach_ids'] = !empty($value['attach_ids']) && is_array($value['attach_ids']) ? $value['attach_ids'] : array();
@@ -148,7 +146,7 @@ class ActionsFactory
                 break;
             case 'reply_snippet':
                 $options['snippet_id'] = $value['snippet_id'];
-                $options['reply_pos'] = !empty($value['reply_pos']) ? $value['reply_pos'] : 'prepend';
+                $options['reply_pos']  = !empty($value['reply_pos']) ? $value['reply_pos'] : 'prepend';
                 break;
             case 'add_participants':
                 $options['add_participants'] = !empty($value['add_participants']) && is_array($value['add_participants']) ? $value['add_participants'] : array();
@@ -161,23 +159,23 @@ class ActionsFactory
                 break;
             case 'ticket_field':
                 $field_manager = App::getSystemService('ticket_fields_manager');
-                $field = $field_manager->getFieldFromId($name_id);
+                $field         = $field_manager->getFieldFromId($name_id);
 
                 if (!$field) {
-                    return null;
+                    return;
                 }
 
                 $options['field_manager'] = $field_manager;
-                $options['field_def'] = $field;
-                $options['set_value'] = $value;
+                $options['field_def']     = $field;
+                $options['set_value']     = $value;
                 break;
             case 'people_field':
                 $field_manager = App::getSystemService('person_fields_manager');
-                $field = $field_manager->getFieldFromId($name_id);
+                $field         = $field_manager->getFieldFromId($name_id);
 
                 $options['field_manager'] = $field_manager;
-                $options['field_def'] = $field;
-                $options['set_value'] = $value;
+                $options['field_def']     = $field;
+                $options['set_value']     = $value;
                 break;
 
             case 'set_gateway_address':
@@ -202,9 +200,9 @@ class ActionsFactory
                 break;
 
             case 'set_initial_from_name':
-                $options['pattern'] = $value['from_name'];
+                $options['pattern']  = $value['from_name'];
                 $options['to_agent'] = true;
-                $options['to_user'] = true;
+                $options['to_user']  = true;
                 if (isset($value['to_whom']) && $value['to_whom']) {
                     if ($value['to_whom'] == 'agent') {
                         $options['to_user'] = false;
@@ -285,7 +283,7 @@ class ActionsFactory
             default:
                 if (strpos($name, 'set_email_template_') !== false) {
                     $options = array(
-                        'tpl' => $value['tpl'],
+                        'tpl'      => $value['tpl'],
                         'tpl_type' => isset($value['tpl_type']) ? $value['tpl_type'] : '',
                     );
                 } else {
@@ -309,7 +307,7 @@ class ActionsFactory
 
         $options = array_merge($this->global_options, $options);
 
-        $action_class = $class.'Action';
+        $action_class   = $class.'Action';
         $modifier_class = $class.'Modifier';
 
         if (class_exists($action_class)) {
@@ -321,7 +319,7 @@ class ActionsFactory
         $plugin_action = $this->getPluginAction($name);
         if ($plugin_action) {
             $action_class = $plugin_action['action_class'];
-            $options = $plugin_action->getSetupObject()->filterActionOptions($options);
+            $options      = $plugin_action->getSetupObject()->filterActionOptions($options);
 
             return $this->createActionObject($action_class, $options);
         }
@@ -332,7 +330,7 @@ class ActionsFactory
     public function createActionObject($action_class, array $options)
     {
         $method_refl = new \ReflectionMethod($action_class, '__construct');
-        $args = Util::getFunctionParamsFromArray($method_refl, $options);
+        $args        = Util::getFunctionParamsFromArray($method_refl, $options);
 
         $obj = Util::callUserConstructorArray($action_class, $args);
 
@@ -342,7 +340,7 @@ class ActionsFactory
     public function createModifierObject($action_class, array $options)
     {
         $method_refl = new \ReflectionMethod($action_class, '__construct');
-        $args = Util::getFunctionParamsFromArray($method_refl, $options);
+        $args        = Util::getFunctionParamsFromArray($method_refl, $options);
 
         $obj = Util::callUserConstructorArray($action_class, $args);
 

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Input
  */
 
@@ -100,20 +99,20 @@ class BasicXss implements CleanerPlugin
  *
  * @link http://codeigniter.com/
  */
-class __DP_CI_Security {
-
+class __DP_CI_Security
+{
     protected $_xss_hash = '';
 
     protected $_never_allowed_str = array(
-        'document.cookie'	=> 'document,cookie',
-        'document.write'	=> 'document,write',
-        '.parentNode'		=> ',parentNode',
-        '.innerHTML'		=> ',innerHTML',
-        '-moz-binding'		=> '',
-        '<!--'				=> '&lt;!--',
-        '-->'				=> '--&gt;',
-        '<![CDATA['			=> '&lt;![CDATA[',
-        '<comment>'			=> '&lt;comment&gt;'
+        'document.cookie'      => 'document,cookie',
+        'document.write'       => 'document,write',
+        '.parentNode'          => ',parentNode',
+        '.innerHTML'           => ',innerHTML',
+        '-moz-binding'         => '',
+        '<!--'                 => '&lt;!--',
+        '-->'                  => '--&gt;',
+        '<![CDATA['            => '&lt;![CDATA[',
+        '<comment>'            => '&lt;comment&gt;',
     );
 
     protected $_never_allowed_regex = array(
@@ -125,15 +124,13 @@ class __DP_CI_Security {
         'jscript\s*:', // IE
         'vbs\s*:', // IE
         'Redirect\s+30\d:',
-        "([\"'])?data\s*:[^\\1]*?base64[^\\1]*?,[^\\1]*?\\1?"
+        "([\"'])?data\s*:[^\\1]*?base64[^\\1]*?,[^\\1]*?\\1?",
     );
 
-    public function xss_clean($str, $is_image = FALSE)
+    public function xss_clean($str, $is_image = false)
     {
-        if (is_array($str))
-        {
-            while (list($key) = each($str))
-            {
+        if (is_array($str)) {
+            while (list($key) = each($str)) {
                 $str[$key] = $this->xss_clean($str[$key]);
             }
 
@@ -142,11 +139,9 @@ class __DP_CI_Security {
 
         $str = Strings::removeInvisibleCharacters($str);
 
-        do
-        {
+        do {
             $str = rawurldecode($str);
-        }
-        while (preg_match('/%[0-9a-f]{2,}/i', $str));
+        } while (preg_match('/%[0-9a-f]{2,}/i', $str));
 
         $str = preg_replace_callback("/[^a-z0-9>]+[a-z0-9]+=([\'\"]).*?\\1/si", array($this, '_convert_attribute'), $str);
         $str = preg_replace_callback('/<\w+.*/si', array($this, '_decode_entity'), $str);
@@ -159,54 +154,45 @@ class __DP_CI_Security {
 
         $str = $this->_do_never_allowed($str);
 
-        if ($is_image === TRUE)
-        {
+        if ($is_image === true) {
             $str = preg_replace('/<\?(php)/i', '&lt;?\\1', $str);
-        }
-        else
-        {
+        } else {
             $str = str_replace(array('<?', '?'.'>'), array('&lt;?', '?&gt;'), $str);
         }
 
         $words = array(
             'javascript', 'expression', 'vbscript', 'jscript', 'wscript',
             'vbs', 'script', 'base64', 'applet', 'alert', 'document',
-            'write', 'cookie', 'window', 'confirm', 'prompt'
+            'write', 'cookie', 'window', 'confirm', 'prompt',
         );
 
-        foreach ($words as $word)
-        {
+        foreach ($words as $word) {
             $word = implode('\s*', str_split($word)).'\s*';
-            $str = preg_replace_callback('#('.substr($word, 0, -3).')(\W)#is', array($this, '_compact_exploded_words'), $str);
+            $str  = preg_replace_callback('#('.substr($word, 0, -3).')(\W)#is', array($this, '_compact_exploded_words'), $str);
         }
 
-        do
-        {
+        do {
             $original = $str;
 
-            if (preg_match('/<a/i', $str))
-            {
+            if (preg_match('/<a/i', $str)) {
                 $str = preg_replace_callback('#<a[^a-z0-9>]+([^>]*?)(?:>|$)#si', array($this, '_js_link_removal'), $str);
             }
 
-            if (preg_match('/<img/i', $str))
-            {
+            if (preg_match('/<img/i', $str)) {
                 $str = preg_replace_callback('#<img[^a-z0-9]+([^>]*?)(?:\s?/?>|$)#si', array($this, '_js_img_removal'), $str);
             }
 
-            if (preg_match('/script|xss/i', $str))
-            {
+            if (preg_match('/script|xss/i', $str)) {
                 $str = preg_replace('#</*(?:script|xss).*?>#si', '[script]', $str);
             }
-        }
-        while($original !== $str);
+        } while ($original !== $str);
 
         unset($original);
 
         $str = $this->_remove_evil_attributes($str, $is_image);
 
         $naughty = 'alert|prompt|confirm|applet|audio|basefont|base|behavior|bgsound|blink|body|embed|expression|form|frameset|frame|head|html|ilayer|iframe|input|button|select|isindex|layer|link|meta|keygen|object|plaintext|style|script|textarea|title|math|video|svg|xml|xss';
-        $str = preg_replace_callback('#<(/*\s*)('.$naughty.')([^><]*)([><]*)#is', array($this, '_sanitize_naughty_html'), $str);
+        $str     = preg_replace_callback('#<(/*\s*)('.$naughty.')([^><]*)([><]*)#is', array($this, '_sanitize_naughty_html'), $str);
 
         $str = preg_replace(
             '#(alert|prompt|confirm|cmd|passthru|eval|exec|expression|system|fopen|fsockopen|file|file_get_contents|readfile|unlink)(\s*)\((.*?)\)#si',
@@ -216,17 +202,16 @@ class __DP_CI_Security {
 
         $str = $this->_do_never_allowed($str);
 
-        if ($is_image === TRUE)
-        {
+        if ($is_image === true) {
             return ($str === $converted_string);
         }
+
         return $str;
     }
 
     public function xss_hash()
     {
-        if ($this->_xss_hash == '')
-        {
+        if ($this->_xss_hash == '') {
             mt_srand();
             $this->_xss_hash = md5(time() + mt_rand(0, 1999999999));
         }
@@ -236,8 +221,7 @@ class __DP_CI_Security {
 
     public function entity_decode($str)
     {
-        if (strpos($str, '&') === FALSE)
-        {
+        if (strpos($str, '&') === false) {
             return $str;
         }
 
@@ -247,14 +231,11 @@ class __DP_CI_Security {
 
         $flag = version_compare(PHP_VERSION, '5.4', '>=') ? ENT_COMPAT | ENT_HTML5 : ENT_COMPAT;
 
-        do
-        {
+        do {
             $str_compare = $str;
 
-            if ($c = preg_match_all('/&[a-z]{2,}(?![a-z;])/i', $str, $matches))
-            {
-                if ( ! isset($_entities))
-                {
+            if ($c = preg_match_all('/&[a-z]{2,}(?![a-z;])/i', $str, $matches)) {
+                if (! isset($_entities)) {
                     $_entities = array_map(
                         'strtolower',
                         version_compare(PHP_VERSION, '5.3.4', '>=')
@@ -262,11 +243,10 @@ class __DP_CI_Security {
                             : get_html_translation_table(HTML_ENTITIES, $flag)
                     );
 
-                    if ($flag === ENT_COMPAT)
-                    {
-                        $_entities[':'] = '&colon;';
-                        $_entities['('] = '&lpar;';
-                        $_entities[')'] = '&rpar';
+                    if ($flag === ENT_COMPAT) {
+                        $_entities[':']  = '&colon;';
+                        $_entities['(']  = '&lpar;';
+                        $_entities[')']  = '&rpar';
                         $_entities["\n"] = '&newline;';
                         $_entities["\t"] = '&tab;';
                     }
@@ -274,11 +254,9 @@ class __DP_CI_Security {
 
                 $replace = array();
                 $matches = array_values(array_unique(array_map('strtolower', $matches[0])));
-                $c = count($matches);
-                for ($i = 0; $i < $c; $i++)
-                {
-                    if (($char = array_search($matches[$i].';', $_entities, TRUE)) !== FALSE)
-                    {
+                $c       = count($matches);
+                for ($i = 0; $i < $c; $i++) {
+                    if (($char = array_search($matches[$i].';', $_entities, true)) !== false) {
                         $replace[$matches[$i]] = $char;
                     }
                 }
@@ -292,8 +270,8 @@ class __DP_CI_Security {
                 $flag,
                 $charset
             );
-        }
-        while ($str_compare !== $str);
+        } while ($str_compare !== $str);
+
         return $str;
     }
 
@@ -307,8 +285,7 @@ class __DP_CI_Security {
         // All javascript event handlers (e.g. onload, onclick, onmouseover), style, and xmlns
         $evil_attributes = array('on\w*', 'style', 'xmlns', 'formaction', 'form', 'xlink:href');
 
-        if ($is_image === TRUE)
-        {
+        if ($is_image === true) {
             /*
              * Adobe Photoshop puts XML metadata into JFIF images,
              * including namespacing, so we have to allow this for images.
@@ -323,14 +300,14 @@ class __DP_CI_Security {
                 $attribs = array();
 
                 // find occurrences of illegal attribute strings with quotes (042 and 047 are octal quotes)
-                preg_match_all('/(?<!\w)(' . implode('|', $evil_attributes) . ')\s*=\s*(\042|\047)([^\\2]*?)(\\2)/is', $str, $matches, PREG_SET_ORDER);
+                preg_match_all('/(?<!\w)('.implode('|', $evil_attributes).')\s*=\s*(\042|\047)([^\\2]*?)(\\2)/is', $str, $matches, PREG_SET_ORDER);
 
                 foreach ($matches as $attr) {
                     $attribs[] = $attr[0];
                 }
 
                 // find occurrences of illegal attribute strings without quotes
-                preg_match_all('/(?<!\w)(' . implode('|', $evil_attributes) . ')\s*=\s*([^\s>]*)/is', $str, $matches, PREG_SET_ORDER);
+                preg_match_all('/(?<!\w)('.implode('|', $evil_attributes).')\s*=\s*([^\s>]*)/is', $str, $matches, PREG_SET_ORDER);
 
                 foreach ($matches as $attr) {
                     $attribs[] = $attr[0];
@@ -349,10 +326,11 @@ class __DP_CI_Security {
 
         // remaining evil attr OUTSIDE of tags we should just mangle
         // eg onerror= becomes "on error="
-        $str = preg_replace_callback('/(' . implode('|', $evil_attributes) . ')(\s*=\s*(\042|\047|\w))/is', function($m) {
+        $str = preg_replace_callback('/('.implode('|', $evil_attributes).')(\s*=\s*(\042|\047|\w))/is', function ($m) {
             $harmless = $m[1];
-            $harmless = substr($harmless, 0, 2) . ' ' . substr($harmless, 2);
-            return $harmless . $m[2];
+            $harmless = substr($harmless, 0, 2).' '.substr($harmless, 2);
+
+            return $harmless.$m[2];
         }, $str);
 
         return $str;
@@ -362,7 +340,7 @@ class __DP_CI_Security {
     {
         return '&lt;'.$matches[1].$matches[2].$matches[3] // encode opening brace
         // encode captured opening or closing brace to prevent recursive vectors:
-        .str_replace(array('>', '<'), array('&gt;', '&lt;'), $matches[4]);
+.str_replace(array('>', '<'), array('&gt;', '&lt;'), $matches[4]);
     }
 
     protected function _js_link_removal($match)
@@ -400,10 +378,8 @@ class __DP_CI_Security {
     {
         $out = '';
 
-        if (preg_match_all('#\s*[a-z\-]+\s*=\s*(\042|\047)([^\\1]*?)\\1#is', $str, $matches))
-        {
-            foreach ($matches[0] as $match)
-            {
+        if (preg_match_all('#\s*[a-z\-]+\s*=\s*(\042|\047)([^\\1]*?)\\1#is', $str, $matches)) {
+            foreach ($matches[0] as $match) {
                 $out .= preg_replace("#/\*.*?\*/#s", '', $match);
             }
         }
@@ -429,8 +405,7 @@ class __DP_CI_Security {
     {
         $str = str_replace(array_keys($this->_never_allowed_str), $this->_never_allowed_str, $str);
 
-        foreach ($this->_never_allowed_regex as $regex)
-        {
+        foreach ($this->_never_allowed_regex as $regex) {
             $str = preg_replace('#'.$regex.'#is', '[removed]', $str);
         }
 

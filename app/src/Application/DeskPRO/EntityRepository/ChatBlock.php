@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,12 +38,13 @@ use Application\DeskPRO\Entity\Visitor as VisitorEntity;
 class ChatBlock extends AbstractEntityRepository
 {
     /**
-     * How long a block stays in place
+     * How long a block stays in place.
      */
     const BLOCK_TIMEOUT = 86400;
 
     /**
-     * @param  \Application\DeskPRO\Entity\Visitor   $visitor
+     * @param \Application\DeskPRO\Entity\Visitor $visitor
+     *
      * @return \Application\DeskPRO\Entity\ChatBlock
      */
     public function getBlockForVisitor(VisitorEntity $visitor = null)
@@ -69,7 +69,8 @@ class ChatBlock extends AbstractEntityRepository
     }
 
     /**
-     * @param  string                                $ip_address
+     * @param string $ip_address
+     *
      * @return \Application\DeskPRO\Entity\ChatBlock
      */
     public function getBlockForIp($ip_address)
@@ -86,8 +87,9 @@ class ChatBlock extends AbstractEntityRepository
     }
 
     /**
-     * @param  string                              $ip_address
-     * @param  \Application\DeskPRO\Entity\Visitor $visitor
+     * @param string                              $ip_address
+     * @param \Application\DeskPRO\Entity\Visitor $visitor
+     *
      * @return bool
      */
     public function isBlocked($ip_address, VisitorEntity $visitor = null)
@@ -107,14 +109,14 @@ class ChatBlock extends AbstractEntityRepository
     }
 
     /**
-     * Deletes blocks older than BLOCK_TIMEOUT
+     * Deletes blocks older than BLOCK_TIMEOUT.
      *
      * @return int
      */
     public function cleanupBlocks()
     {
         $datecut = new \DateTime('-'.self::BLOCK_TIMEOUT.' seconds');
-        $count = $this->_em->getConnection()->executeUpdate("
+        $count   = $this->_em->getConnection()->executeUpdate("
             DELETE FROM chat_blocks
             WHERE date_created < ?
         ", array($datecut->format('Y-m-d H:i:s')));

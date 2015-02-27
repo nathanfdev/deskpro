@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Controller\Helper;
@@ -88,16 +85,15 @@ class ContentRating
      */
     public function __construct(ContentAbstract $content_object, Person $person, Visitor $visitor = null)
     {
-        $this->person = $person;
-        $this->visitor = $visitor;
+        $this->person         = $person;
+        $this->visitor        = $visitor;
         $this->content_object = $content_object;
 
         $this->em = App::getOrm();
     }
 
     /**
-     * @param  \Symfony\Component\HttpFoundation\Request $request
-     * @return void
+     * @param \Symfony\Component\HttpFoundation\Request $request
      */
     public function setRequest(Request $request)
     {
@@ -106,7 +102,7 @@ class ContentRating
     }
 
     /**
-     * Get this users existing rating
+     * Get this users existing rating.
      *
      * @return \Application\DeskPRO\Entity\Rating
      */
@@ -114,9 +110,9 @@ class ContentRating
     {
         if ($this->rating !== null) {
             if ($this->rating) {
-                return null;
+                return;
             } else {
-                return null;
+                return;
             }
         }
 
@@ -168,19 +164,19 @@ class ContentRating
         } else {
             $this->rating = false;
 
-            return null;
+            return;
         }
     }
 
     /**
-     * Get a search log ID that sholud be recorded if the user were to vote on the next page
+     * Get a search log ID that sholud be recorded if the user were to vote on the next page.
      *
      * @return int
      */
     public function getSearchLogId()
     {
         if ($this->request and $this->session and $this->session->has('last_searchlog_id')) {
-            $ref = $this->request->server->get('HTTP_REFERER');
+            $ref        = $this->request->server->get('HTTP_REFERER');
             $search_url = App::getRouter()->generate('user', array(), true).'search';
             $search_url = preg_replace('#^https?://#', '', $search_url);
 
@@ -193,15 +189,16 @@ class ContentRating
     }
 
     /**
-     * Set the user rating on this
+     * Set the user rating on this.
      *
      * @param $user_rating
+     *
      * @return \Application\DeskPRO\Entity\Rating|
      */
     public function setRating($user_rating, $search_log_id = 0)
     {
         if (!$user_rating) {
-            return null;
+            return;
         }
 
         $rating = $this->getRating();
@@ -216,7 +213,7 @@ class ContentRating
             $searchlog = App::findEntity('DeskPRO:SearchLog', $search_log_id);
         } else {
             if ($this->session->get('from_search')) {
-                $searchlog = App::findEntity('DeskPRO:SearchLog', $this->session->get('last_searchlog_id'));
+                $searchlog         = App::findEntity('DeskPRO:SearchLog', $this->session->get('last_searchlog_id'));
                 $rating->searchlog = $searchlog;
 
                 $this->session->remove('from_search');

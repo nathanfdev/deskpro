@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Types
  */
 
@@ -54,9 +53,10 @@ class NoValue
     }
 
     /**
-     * Check if a value is a NoValue object
+     * Check if a value is a NoValue object.
      *
-     * @param  mixed $v
+     * @param mixed $v
+     *
      * @return bool
      */
     public static function is($v)

@@ -26,14 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Brand
+ * DeskPRO.
  */
 
 namespace DpUnitTests\DeskPRO\Application\Brand;
-
 
 use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 
@@ -54,7 +50,7 @@ class BrandStackTest extends \PHPUnit_Framework_TestCase
         $mockFactory->shouldReceive('create')->with($mockBrand1)->andReturn($mockContainer1);
         $mockFactory->shouldReceive('create')->with($mockBrand2)->andReturn($mockContainer2);
 
-        /**
+        /*
          * As demonstrated below, the BrandStack lets you seamlessly move between different brand "containers" (eg. contexts)
          * through runtime. You can push(Brand entity) and pop() in an out of these container contexts.
          */

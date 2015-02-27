@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Captcha;
@@ -51,7 +48,7 @@ class CaptchaDecider
 
     public function __construct(BrandStack $brand_stack, AuthorizationChecker $authorization_checker)
     {
-        $this->brand_stack = $brand_stack;
+        $this->brand_stack           = $brand_stack;
         $this->authorization_checker = $authorization_checker;
     }
 

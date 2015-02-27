@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -77,7 +76,8 @@ class TicketChecker extends AbstractChecker
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return bool
      */
     public function canView(Ticket $ticket)
@@ -132,7 +132,8 @@ class TicketChecker extends AbstractChecker
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return bool
      */
     public function canDelete(Ticket $ticket)
@@ -203,7 +204,8 @@ class TicketChecker extends AbstractChecker
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return bool
      */
     public function canReply(Ticket $ticket)
@@ -275,7 +277,8 @@ class TicketChecker extends AbstractChecker
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return bool
      */
     public function canModify(Ticket $ticket, $op)
@@ -324,7 +327,7 @@ class TicketChecker extends AbstractChecker
     }
 
     /**
-     * Check if the user can modify (or delete) a message
+     * Check if the user can modify (or delete) a message.
      *
      * @param Ticket $ticket
      */
@@ -390,8 +393,9 @@ class TicketChecker extends AbstractChecker
     /**
      * Check if two tickets can be merged. To be able to merge, both tickets must give try for the 'merge' permission.
      *
-     * @param  Ticket $ticket1
-     * @param  Ticket $ticket2
+     * @param Ticket $ticket1
+     * @param Ticket $ticket2
+     *
      * @return bool
      */
     public function canMerge(Ticket $ticket1, Ticket $ticket2)

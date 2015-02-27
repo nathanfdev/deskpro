@@ -3,15 +3,15 @@
 namespace Application\DeskPRO\NewSearch\Transformer;
 
 use Application\DeskPRO\App;
-use Elastica\Document;
 use Application\DeskPRO\Entity\Download;
+use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
 
 class DownloadToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Transform
+     * Transform.
      *
      * @param Download $object
      * @param array    $fields

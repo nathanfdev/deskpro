@@ -26,23 +26,19 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentAccessVoter;
-use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
-use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentAccessVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
+use PhpSpec\ObjectBehavior;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
@@ -52,7 +48,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
  */
 class ContentAccessVoterSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         ContainerInterface $container,
         PortalPermissionsManager $permissions_manager,
         BrandStack $brand_stack,
@@ -62,8 +58,7 @@ class ContentAccessVoterSpec extends ObjectBehavior
         TokenInterface $guest_token,
         PermissionsBag $person_permission_bag,
         PermissionsBag $guest_permission_bag
-    )
-    {
+    ) {
         $person->getId()->willReturn(1);
         $token->getUser()->willReturn($person);
         $guest_token->getUser()->willReturn(null);
@@ -76,17 +71,15 @@ class ContentAccessVoterSpec extends ObjectBehavior
         $this->beConstructedWith($container);
     }
 
-    function it_abstains_from_non_access_votes(
+    public function it_abstains_from_non_access_votes(
         TokenInterface $token
-    )
-    {
+    ) {
         $this->verifyAbstainVote(ContentCommentVoter::COMMENT_NEWS, $token);
     }
 
-    function it_always_grants_access(
+    public function it_always_grants_access(
         TokenInterface $token
-    )
-    {
+    ) {
         $this->verifyGrantedVote(
             array(
                 ContentAccessVoter::DOWNLOAD_DOWNLOAD,
@@ -96,16 +89,13 @@ class ContentAccessVoterSpec extends ObjectBehavior
                 ContentAccessVoter::VIEW_ARTICLE_CATEGORY,
                 ContentAccessVoter::VIEW_NEWS,
                 ContentAccessVoter::VIEW_NEWS_CATEGORY,
-                ContentAccessVoter::VIEW_FEEDBACK
+                ContentAccessVoter::VIEW_FEEDBACK,
             ),
             $token
         );
     }
 
-
-
-
-    function verifyGrantedVote($attribute, $token)
+    public function verifyGrantedVote($attribute, $token)
     {
         if (!is_array($attribute)) {
             $attribute = array($attribute);
@@ -115,7 +105,7 @@ class ContentAccessVoterSpec extends ObjectBehavior
             ->shouldReturn(VoterInterface::ACCESS_GRANTED);
     }
 
-    function verifyDeniedVote($attribute, $token)
+    public function verifyDeniedVote($attribute, $token)
     {
         if (!is_array($attribute)) {
             $attribute = array($attribute);
@@ -125,7 +115,7 @@ class ContentAccessVoterSpec extends ObjectBehavior
             ->shouldReturn(VoterInterface::ACCESS_DENIED);
     }
 
-    function verifyAbstainVote($attribute, $token)
+    public function verifyAbstainVote($attribute, $token)
     {
         if (!is_array($attribute)) {
             $attribute = array($attribute);

@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Searcher;
 
@@ -44,8 +42,8 @@ use Orb\Util\Util;
 
 class PersonSearch extends SearcherAbstract
 {
-    const MODE_ANY = 'any';
-    const MODE_USER = 'user';
+    const MODE_ANY   = 'any';
+    const MODE_USER  = 'user';
     const MODE_AGENT = 'agent';
 
     // These are all prefixed with person_ because this searcher
@@ -78,13 +76,15 @@ class PersonSearch extends SearcherAbstract
     const TERM_IP_ADDRESS         = 'person_ip';
 
     /**
-     * From getSqlParts()
+     * From getSqlParts().
+     *
      * @var array
      */
     protected $sql_parts = null;
 
     /**
-     * Summary of terms in phrases
+     * Summary of terms in phrases.
+     *
      * @var array
      */
     protected $summary = array();
@@ -97,21 +97,22 @@ class PersonSearch extends SearcherAbstract
     /**
      * Run the search and return an array of matching ID's.
      *
-     * @param  int   $limit
+     * @param int $limit
+     *
      * @return array
      */
     public function getMatches()
     {
         $db = App::getDbRead('search.filter.people');
 
-        $sql = $this->getSql();
+        $sql        = $this->getSql();
         $people_ids = $db->fetchAllCol($sql);
 
         return $people_ids;
     }
 
     /**
-     * Get the summary of crtiera
+     * Get the summary of crtiera.
      *
      * @array
      */
@@ -131,14 +132,15 @@ class PersonSearch extends SearcherAbstract
     }
 
     /**
-     * Get the SQL query that'll fetch the results
+     * Get the SQL query that'll fetch the results.
+     *
      * @return string
      */
     public function getSql()
     {
         $sql = "SELECT people.id FROM people ";
 
-        $parts = $this->getSqlParts();
+        $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
         #------------------------------
@@ -196,9 +198,9 @@ class PersonSearch extends SearcherAbstract
         }
 
         $term_id = null;
-        $m = null;
+        $m       = null;
         if (preg_match('#^(.*?)\[(.*?)\]$#', $type, $m)) {
-            $type = $m[1];
+            $type    = $m[1];
             $term_id = $m[2];
         }
 
@@ -279,10 +281,10 @@ class PersonSearch extends SearcherAbstract
         $tr = App::getTranslator();
 
         $wheres = array();
-        $joins = array();
+        $joins  = array();
 
         foreach ($this->terms as $info) {
-            $join_id = Util::requestUniqueId();
+            $join_id   = Util::requestUniqueId();
             $join_name = "j_$join_id";
 
             list($term, $op, $choice) = $info;
@@ -292,7 +294,7 @@ class PersonSearch extends SearcherAbstract
             // $term of people_field[12] becomes $term=people_field, $term_id=12
             $m = null;
             if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
-                $term = $m[1];
+                $term    = $m[1];
                 $term_id = $m[2];
             }
 
@@ -507,10 +509,10 @@ class PersonSearch extends SearcherAbstract
                         $choice = $choice['phone'];
                     }
 
-                    $choice = preg_replace('#[^0-9]#', '', $choice);
+                    $choice  = preg_replace('#[^0-9]#', '', $choice);
                     $joins[] = array(
                         'phone_numbers',
-                        "JOIN phone_numbers AS $join_name ON ($join_name.person_id = people.id)"
+                        "JOIN phone_numbers AS $join_name ON ($join_name.person_id = people.id)",
                     );
                     $wheres[] = $this->_stringMatch("$join_name.number", $op, $choice, false, true);
 
@@ -685,7 +687,7 @@ class PersonSearch extends SearcherAbstract
                             break;
 
                         case 'id':
-                            $join_id = Util::requestUniqueId();
+                            $join_id    = Util::requestUniqueId();
                             $choices_in = array();
 
                             if ($choice != 'DP_NO_SELECTION') {
@@ -806,7 +808,7 @@ class PersonSearch extends SearcherAbstract
         $wheres[] = 'people.is_deleted = 0';
 
         $this->sql_parts = array(
-            'joins' => $joins,
+            'joins'  => $joins,
             'wheres' => $wheres,
         );
 
@@ -814,8 +816,9 @@ class PersonSearch extends SearcherAbstract
     }
 
     /**
-     * @param  Entity\Person $person
-     * @param  Entity\Ticket $ticket
+     * @param Entity\Person $person
+     * @param Entity\Ticket $ticket
+     *
      * @return bool
      */
     public function doesPersontMatch(Entity\Person $person, Entity\Ticket $ticket = null)
@@ -1010,7 +1013,7 @@ class PersonSearch extends SearcherAbstract
                     break;
 
                 case self::TERM_ORGANIZATION:
-                    $name = $person->organization ? $person->organization->name : '';
+                    $name   = $person->organization ? $person->organization->name : '';
                     $choice = isset($choice['name']) ? (array) $choice['name'] : array();
                     if (!$this->_testStringMatch($name, $op, $choice)) {
                         return false;
@@ -1020,8 +1023,12 @@ class PersonSearch extends SearcherAbstract
 
                 case self::TERM_CONTACT_ADDRESS:
                 case self::TERM_CONTACT_IM:
-                    if ($term == self::TERM_CONTACT_ADDRESS) $field = 'addresss';
-                    if ($term == self::TERM_CONTACT_IM)      $field = 'instant_message';
+                    if ($term == self::TERM_CONTACT_ADDRESS) {
+                        $field = 'addresss';
+                    }
+                    if ($term == self::TERM_CONTACT_IM) {
+                        $field = 'instant_message';
+                    }
 
                     $any = false;
                     foreach ($person->getContactData($field) as $cd) {
@@ -1038,22 +1045,22 @@ class PersonSearch extends SearcherAbstract
                     }
                     break;
 
-	            case self::TERM_CONTACT_PHONE:
-					$any = false;
-					foreach ($person->phone_numbers as $pn) {
-						/** @var $pn Entity\PhoneNumber */
-						if (substr($pn['number'], 0, 1) === preg_replace('/[^0-9]/', '', $choice)) {
-							$any = true;
-							if ($op == self::OP_NOTCONTAINS) {
-								return false;
-							}
-						}
-					}
-		            if ($op == self::OP_CONTAINS AND !$any) {
-			            return false;
-		            }
+                case self::TERM_CONTACT_PHONE:
+                    $any = false;
+                    foreach ($person->phone_numbers as $pn) {
+                        /* @var $pn Entity\PhoneNumber */
+                        if (substr($pn['number'], 0, 1) === preg_replace('/[^0-9]/', '', $choice)) {
+                            $any = true;
+                            if ($op == self::OP_NOTCONTAINS) {
+                                return false;
+                            }
+                        }
+                    }
+                    if ($op == self::OP_CONTAINS and !$any) {
+                        return false;
+                    }
 
-		            break;
+                    break;
 
                 case self::TERM_LABEL:
 
@@ -1063,7 +1070,7 @@ class PersonSearch extends SearcherAbstract
                             $choice['labels'] = explode(',', $choice['labels']);
                         }
                         foreach ($choice['labels'] as $l) {
-                            $l = Strings::utf8_strtolower($l);
+                            $l                 = Strings::utf8_strtolower($l);
                             $choice_labels[$l] = trim($l);
                         }
                     }

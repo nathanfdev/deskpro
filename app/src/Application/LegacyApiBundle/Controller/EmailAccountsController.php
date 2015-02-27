@@ -26,17 +26,11 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\EditEmailAccount;
 use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\EditEmailAccountType;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\IncomingAccountTester;
@@ -44,6 +38,9 @@ use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Settings\EmailAccountsSettings;
 use Application\EmailBundle\Queue\QueueProc;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Orb\Util\Env;
 use Orb\Validator\StringEmail;
 
@@ -146,7 +143,7 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         }
 
         if ($data['incoming_type'] == 'office365') {
-            $data['outgoing_type']     = 'office365';
+            $data['outgoing_type']         = 'office365';
             $data['out_office365_account'] = $data['in_office365_account'];
         }
 
@@ -168,7 +165,8 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
     }
 
     /**
-     * @param  EmailAccount $account
+     * @param EmailAccount $account
+     *
      * @return array
      */
     protected function getSaveFormData(EmailAccount $account = null)
@@ -284,7 +282,7 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         $logger->info('Begin send test');
 
         $failed = array();
-        $sent = $raw_tr->sendRawMessage(
+        $sent   = $raw_tr->sendRawMessage(
             $this->in->getString('test_email.from'),
             array($this->in->getString('test_email.to')),
             $fp,

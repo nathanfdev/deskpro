@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -76,7 +75,8 @@ class FilterTerms implements \Serializable, FilterTermInterface
     }
 
     /**
-     * @param  FilterTermInterface       $term
+     * @param FilterTermInterface $term
+     *
      * @throws \InvalidArgumentException
      */
     public function addTerm(FilterTermInterface $term)
@@ -89,7 +89,8 @@ class FilterTerms implements \Serializable, FilterTermInterface
     }
 
     /**
-     * @param  array                     $term_info
+     * @param array $term_info
+     *
      * @throws \InvalidArgumentException
      */
     public function addTermFromArray(array $term_info)
@@ -109,7 +110,8 @@ class FilterTerms implements \Serializable, FilterTermInterface
     }
 
     /**
-     * @param  array                     $term_info
+     * @param array $term_info
+     *
      * @throws \InvalidArgumentException
      */
     private function getTermFromArray(array $term_info)
@@ -118,7 +120,8 @@ class FilterTerms implements \Serializable, FilterTermInterface
     }
 
     /**
-     * @param  ExecutorContextInterface                                    $context
+     * @param ExecutorContextInterface $context
+     *
      * @return \Application\DeskPRO\Tickets\Filters\Terms\FilterQuery|null
      */
     public function getFilterQuery(ExecutorContextInterface $context = null)
@@ -134,7 +137,7 @@ class FilterTerms implements \Serializable, FilterTermInterface
         $data = array();
 
         $data['version']  = 1;
-        $data['terms'] = array();
+        $data['terms']    = array();
         foreach ($this->criteria->getAll() as $criteria) {
             if ($criteria instanceof FilterTermComposite) {
                 $set_terms = array();

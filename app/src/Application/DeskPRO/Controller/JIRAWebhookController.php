@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Controller;
 
@@ -42,14 +40,16 @@ use Symfony\Component\HttpFoundation\Response;
 class JIRAWebhookController extends AbstractController
 {
     /**
-     * JIRA webhook endpoint
-     * @param  Request  $request
+     * JIRA webhook endpoint.
+     *
+     * @param Request $request
+     *
      * @return Response
      */
     public function handleAction(Request $request)
     {
         $response = new Response();
-        $content = $request->getContent();
+        $content  = $request->getContent();
 
         /** @var JIRA $js */
         $js = $this->get(JIRA::NAME);

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\Mail\RawTransport;
@@ -59,7 +56,7 @@ class RawSwiftmailerTransport implements RawTransportInterface
      */
     public function __construct(\Swift_Transport $tr, RawMessageDecoderInterface $decoder)
     {
-        $this->tr = $tr;
+        $this->tr      = $tr;
         $this->decoder = $decoder;
     }
 
@@ -82,9 +79,10 @@ class RawSwiftmailerTransport implements RawTransportInterface
     }
 
     /**
-     * @param  string         $from
-     * @param  array          $send_tos
-     * @param  resource       $raw_fp
+     * @param string   $from
+     * @param array    $send_tos
+     * @param resource $raw_fp
+     *
      * @return \Swift_Message
      */
     private function recreateSwiftMessage($from, array $send_tos = null, $raw_fp)

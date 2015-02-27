@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category EmailGateway
  */
 
@@ -76,9 +75,11 @@ class ProcessReply extends ProcessAbstract
     }
 
     /**
-     * @param  string                                                     $context
-     * @return \Application\DeskPRO\Mail\Message|mixed|null|TicketMessage
+     * @param string $context
+     *
      * @throws \Exception
+     * @return \Application\DeskPRO\Mail\Message|mixed|null|TicketMessage
+     *
      */
     public function run($context = 'user')
     {
@@ -149,14 +150,14 @@ class ProcessReply extends ProcessAbstract
 
             App::getMailer()->send($message);
 
-            return null;
+            return;
         }
 
         if ($this->ticket_email->is_bounce) {
             $executor_context->getVars()->set('is_bounce_message', true);
         }
 
-        $message = new TicketMessage($this->reader->getId());
+        $message               = new TicketMessage($this->reader->getId());
         $message->email_reader = $this->reader;
         if ($this->reader->hasProperty('email_source')) {
             $message['email_source'] = $this->reader->getProperty('email_source');
@@ -170,14 +171,14 @@ class ProcessReply extends ProcessAbstract
 
         $message['ticket'] = $this->ticket;
         $message['person'] = $this->person;
-        $message['email'] = $this->reader->getFromAddress()->getEmail();
+        $message['email']  = $this->reader->getFromAddress()->getEmail();
 
-        $message['message'] = $email_info->body;
+        $message['message']      = $email_info->body;
         $message['message_full'] = $email_info->body_full;
-        $message['message_raw'] = $email_info->body_raw;
+        $message['message_raw']  = $email_info->body_raw;
 
         $message['show_full_hint'] = false;
-        $inline_reply_detector = new DetectInlineReply(App::getOrm(), $this->reader);
+        $inline_reply_detector     = new DetectInlineReply(App::getOrm(), $this->reader);
         if ($this->getLogger()) {
             $inline_reply_detector->setLogger($this->getLogger());
         }
@@ -187,7 +188,7 @@ class ProcessReply extends ProcessAbstract
         }
 
         if (isset($this->ticket_email->reply_actions['is_note'])) {
-            $message['is_agent_note'] = true;
+            $message['is_agent_note']          = true;
             $this->ticket->email_reader_action = 'agent_note';
         }
 
@@ -197,8 +198,8 @@ class ProcessReply extends ProcessAbstract
                 continue;
             }
 
-            $attach = new TicketAttachment();
-            $attach['blob'] = $blob;
+            $attach           = new TicketAttachment();
+            $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
             if (isset($this->inline_blobs[$blob->getId()])) {
@@ -238,7 +239,7 @@ class ProcessReply extends ProcessAbstract
                 App::getOrm()->detach($message);
 
                 foreach ($ticket_attach as $a) {
-                    $a->ticket = null;
+                    $a->ticket  = null;
                     $a->message = null;
                     App::getOrm()->detach($a);
                 }
@@ -271,8 +272,8 @@ class ProcessReply extends ProcessAbstract
         #------------------------------
 
         if ($this->ticket_email->reply_actions) {
-            $reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
-            $reply_actions_context = new ReplyActionsContext();
+            $reply_actions_apply           = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
+            $reply_actions_context         = new ReplyActionsContext();
             $reply_actions_context->ticket = $this->ticket;
             if ($did_add_message) {
                 $reply_actions_context->message = $message;

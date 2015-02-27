@@ -1,4 +1,6 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 
 require DP_ROOT.'/sys/load_config.php';
 dp_load_config();
@@ -17,9 +19,9 @@ if (empty($_GET['f'])) {
 
 function get_test_file_path($path)
 {
-    $path = realpath(DP_WEB_ROOT. '/web/' . trim($path, '/'));
+    $path = realpath(DP_WEB_ROOT.'/web/'.trim($path, '/'));
     if (!$path || !is_file($path) || strpos($path, DP_WEB_ROOT) !== 0) {
-        return null;
+        return;
     }
 
     return $path;
@@ -51,7 +53,7 @@ function process_content_replacements($content)
         if ($path) {
             return process_content_replacements(file_get_contents($path));
         } else {
-            return '<!-- include error -- unknown file: ' . htmlspecialchars($m[1]) . ' -->';
+            return '<!-- include error -- unknown file: '.htmlspecialchars($m[1]).' -->';
         }
     }, $content);
 }

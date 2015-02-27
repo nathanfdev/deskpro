@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller\Helper;
@@ -41,7 +38,7 @@ use Application\DeskPRO\Searcher\TicketSearch;
 use Orb\Util\Arrays;
 
 /**
- * Handles ticket searches
+ * Handles ticket searches.
  */
 class TicketResults
 {
@@ -82,7 +79,8 @@ class TicketResults
 
     /**
      * @param $controller
-     * @param  TicketFilter  $filter
+     * @param TicketFilter $filter
+     *
      * @return TicketResults
      */
     public static function newFromFilter($controller, TicketFilter $filter)
@@ -109,7 +107,8 @@ class TicketResults
 
     /**
      * @param $controller
-     * @param  ResultCache   $result_cache
+     * @param ResultCache $result_cache
+     *
      * @return TicketResults
      */
     public static function newFromResultCache($controller, ResultCache $result_cache)
@@ -138,7 +137,8 @@ class TicketResults
     }
 
     /**
-     * Set ticket IDs for the search results
+     * Set ticket IDs for the search results.
+     *
      * @param array $ticket_ids
      */
     public function setTicketIds(array $ticket_ids)
@@ -147,7 +147,7 @@ class TicketResults
     }
 
     /**
-     * Get ticket IDs
+     * Get ticket IDs.
      *
      * @return array
      */
@@ -157,7 +157,7 @@ class TicketResults
     }
 
     /**
-     * Get total number of matches
+     * Get total number of matches.
      *
      * @return int
      */
@@ -167,7 +167,7 @@ class TicketResults
     }
 
     /**
-     * Get ticket IDs that match the current group
+     * Get ticket IDs that match the current group.
      *
      * @return array
      */
@@ -200,7 +200,8 @@ class TicketResults
 
     /**
      * @param $page
-     * @param  int   $per_page
+     * @param int $per_page
+     *
      * @return array
      */
     public function getTicketsForPage($page, $per_page = 50)
@@ -210,7 +211,8 @@ class TicketResults
 
     /**
      * @param $cursor_start
-     * @param  int   $per_page
+     * @param int $per_page
+     *
      * @return mixed
      */
     public function getTicketsForCursorPage($cursor_start, $per_page = 50)
@@ -221,7 +223,8 @@ class TicketResults
     /**
      * @param $field_id
      * @param $page
-     * @param  int   $per_page
+     * @param int $per_page
+     *
      * @return array
      */
     public function getGroupedTicketsForPage($field_id, $page, $per_page = 50)
@@ -232,7 +235,8 @@ class TicketResults
     /**
      * @param $field_id
      * @param $page
-     * @param  int   $per_page
+     * @param int $per_page
+     *
      * @return array
      */
     public function getGroupedTicketsForCursorPage($field_id, $page, $per_page = 50)
@@ -241,9 +245,10 @@ class TicketResults
     }
 
     /**
-     * @param  array $ticket_ids
+     * @param array $ticket_ids
      * @param $page
      * @param $per_page
+     *
      * @return array
      */
     protected function _getPageFromTicketIds(array $ticket_ids, $page, $per_page)
@@ -265,9 +270,10 @@ class TicketResults
     }
 
     /**
-     * @param  array $ticket_ids
+     * @param array $ticket_ids
      * @param $cursor_start
      * @param $per_page
+     *
      * @return array
      */
     protected function _getCursorPageFromTicketIds(array $ticket_ids, $cursor_start, $per_page)
@@ -289,7 +295,7 @@ class TicketResults
     }
 
     /**
-     * Set the grouping field
+     * Set the grouping field.
      *
      * @param string $field
      */
@@ -299,7 +305,7 @@ class TicketResults
     }
 
     /**
-     * Get the grouping field
+     * Get the grouping field.
      *
      * @return null|string
      */
@@ -320,7 +326,7 @@ class TicketResults
     }
 
     /**
-     * Get counts and titles for the grouping options
+     * Get counts and titles for the grouping options.
      *
      * @return array
      */
@@ -330,7 +336,7 @@ class TicketResults
             return $this->group_display_info;
         }
         if ($this->group_field === null) {
-            return null;
+            return;
         }
 
         $grouper = new \Application\DeskPRO\Tickets\GroupingCounter();
@@ -346,7 +352,7 @@ class TicketResults
     }
 
     /**
-     * Get the grouping field phrase
+     * Get the grouping field phrase.
      *
      * @return string
      */
@@ -360,7 +366,8 @@ class TicketResults
     }
 
     /**
-     * Do we have enough info to run grouping? aka if we havea group_field set
+     * Do we have enough info to run grouping? aka if we havea group_field set.
+     *
      * @return bool
      */
     public function isGroupable()

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Translate;
@@ -38,7 +36,7 @@ use Orb\Util\Arrays;
 class JsExporter
 {
     /**
-     * @var \Application\DeskPRO\Translate\Translate $tr
+     * @var \Application\DeskPRO\Translate\Translate
      */
     protected $tr;
 
@@ -69,7 +67,8 @@ class JsExporter
     }
 
     /**
-     * @param  array  $phrase_ids
+     * @param array $phrase_ids
+     *
      * @return string
      */
     public function exportToJson(array $phrase_ids)

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -56,7 +53,7 @@ class CleanupDaily extends AbstractJob
         $last_id = App::getDb()->fetchColumn("SELECT id FROM log_items ORDER BY id DESC LIMIT 1");
         if ($last_id) {
             $delete_before_id = $last_id - 25000; // approx 10 days worth of cron logs
-            $num = App::getDb()->executeUpdate("DELETE FROM log_items WHERE id < $delete_before_id");
+            $num              = App::getDb()->executeUpdate("DELETE FROM log_items WHERE id < $delete_before_id");
 
             if ($num) {
                 $this->logStatus("Cleaned up $num cron log items");
@@ -69,7 +66,7 @@ class CleanupDaily extends AbstractJob
 
         if ($maxage = App::getSetting('agent.alerts_cleanup_time_always')) {
             $datetime = date('Y-m-d H:i:s', time() - $maxage);
-            $num = App::getDb()->executeUpdate("
+            $num      = App::getDb()->executeUpdate("
 				DELETE FROM agent_alerts
 				WHERE date_created < ?
 			", array($datetime));
@@ -81,7 +78,7 @@ class CleanupDaily extends AbstractJob
 
         if ($maxage = App::getSetting('agent.alerts_cleanup_time')) {
             $datetime = date('Y-m-d H:i:s', time() - $maxage);
-            $num = App::getDb()->executeUpdate("
+            $num      = App::getDb()->executeUpdate("
 				DELETE FROM agent_alerts
 				WHERE date_created < ? AND is_dismissed = 1
 			", array($datetime));
@@ -96,7 +93,7 @@ class CleanupDaily extends AbstractJob
         #------------------------------
 
         $datecut = date('Y-m-d H:i:s', time() - 86400);
-        $num = App::getDb()->executeUpdate("
+        $num     = App::getDb()->executeUpdate("
             DELETE FROM result_cache
             WHERE date_created < ?
         ", array($datecut));
@@ -109,9 +106,9 @@ class CleanupDaily extends AbstractJob
         # Task queue logs Items
         #------------------------------
 
-        $cutoff = 86400 * 14; // 15 days
+        $cutoff  = 86400 * 14; // 15 days
         $datecut = date('Y-m-d H:i:s', time() - $cutoff);
-        $num = App::getDb()->executeUpdate("
+        $num     = App::getDb()->executeUpdate("
             DELETE FROM task_queue
             WHERE status = 'completed' AND date_completed < ?
         ", array($datecut));
@@ -124,9 +121,9 @@ class CleanupDaily extends AbstractJob
         # ref_reserve
         #------------------------------
 
-        $cutoff = 86400; // 1 day
+        $cutoff  = 86400; // 1 day
         $datecut = date('Y-m-d H:i:s', time() - $cutoff);
-        $num = App::getDb()->executeUpdate("
+        $num     = App::getDb()->executeUpdate("
             DELETE FROM ref_reserve
             WHERE date_created < ?
         ", array($datecut));
@@ -140,9 +137,9 @@ class CleanupDaily extends AbstractJob
         #------------------------------
 
         if (App::getSetting('agent.ip_security.enabled')) {
-            $cutoff = App::getSetting('agent.ip_security.whitelist_lifetime');
+            $cutoff  = App::getSetting('agent.ip_security.whitelist_lifetime');
             $datecut = date('Y-m-d H:i:s', time() - $cutoff);
-            $num = App::getDb()->executeUpdate("
+            $num     = App::getDb()->executeUpdate("
                 DELETE FROM white_listed_ips
                 WHERE date_created < ?
             ", array($datecut));
@@ -161,7 +158,7 @@ class CleanupDaily extends AbstractJob
 
         $cleanup_list = array();
 
-        $tmpdir = dp_get_tmp_dir();
+        $tmpdir       = dp_get_tmp_dir();
         $tmpdir_swift = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'swiftmailer-cache';
 
         if (is_dir($tmpdir) && is_readable($tmpdir)) {
@@ -226,7 +223,7 @@ class CleanupDaily extends AbstractJob
 
         if ($cleanup_list) {
             $file_util = new \Symfony\Component\Filesystem\Filesystem();
-            $x = 0;
+            $x         = 0;
             foreach ($cleanup_list as $f) {
                 try {
                     $file_util->remove($f);
@@ -252,7 +249,7 @@ class CleanupDaily extends AbstractJob
         $num = 0;
 
         foreach ($q->getResult() as $entry) {
-            /** @var $entry TmpData */
+            /* @var $entry TmpData */
             $file = $entry->getData('file');
             if (!file_exists($file)) {
                 continue;

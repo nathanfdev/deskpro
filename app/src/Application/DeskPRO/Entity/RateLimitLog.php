@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -92,7 +91,7 @@ class RateLimitLog extends DomainObject
         $metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\RateLimitLog';
 
         $metadata->setPrimaryTable(array(
-            'name' => 'rate_limit_log',
+            'name'    => 'rate_limit_log',
             'indexes' => array(
                 'search_idx' => array(
                     'columns' => array('action', 'date_created', 'ip'),

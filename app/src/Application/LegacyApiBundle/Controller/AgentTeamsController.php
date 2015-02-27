@@ -26,19 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Person;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
-use Application\DeskPRO\Entity\AgentTeam;
-use Application\DeskPRO\Entity\Person;
 use Orb\Util\Arrays;
 
 class AgentTeamsController extends AbstractController implements ProtectedControllerInterface
@@ -169,7 +166,7 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
         $members = $this->em->getRepository('DeskPRO:Person')->findBy(array('id' => $new_members));
         $team->members->clear();
         foreach ($members as $person) {
-            /** @var $person Person */
+            /* @var $person Person */
             $person->addTeam($team); // bidirectional
         }
 

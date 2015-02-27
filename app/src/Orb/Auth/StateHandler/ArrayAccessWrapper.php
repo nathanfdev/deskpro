@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -47,19 +46,22 @@ namespace Orb\Auth\StateHandler;
 class ArrayAccessWrapper implements StateHandlerInterface
 {
     /**
-     * The array-like state object
+     * The array-like state object.
+     *
      * @var ArrayAccess
      */
     protected $_state_obj;
 
     /**
      * The method on the state object that we can call to clear state.
+     *
      * @var string
      */
     protected $_clear_state_method = null;
 
     /**
-     * A prefix to prefix all keys with
+     * A prefix to prefix all keys with.
+     *
      * @var string
      */
     protected $_prefix = '';
@@ -73,10 +75,9 @@ class ArrayAccessWrapper implements StateHandlerInterface
     }
 
     /**
-     * Set the key prefix
+     * Set the key prefix.
      *
-     * @param  string $prefix
-     * @return void
+     * @param string $prefix
      */
     public function setPrefix($prefix)
     {
@@ -89,8 +90,7 @@ class ArrayAccessWrapper implements StateHandlerInterface
      *
      * Optionally $method can be a callback
      *
-     * @param  string $method The name of the method on the state object to call when clearing state
-     * @return void
+     * @param string $method The name of the method on the state object to call when clearing state
      */
     public function setClearStateMethod($method)
     {
@@ -109,8 +109,6 @@ class ArrayAccessWrapper implements StateHandlerInterface
 
     /**
      * Clears all state data, or resets back into its initial state.
-     *
-     * @return void
      */
     public function clearState()
     {

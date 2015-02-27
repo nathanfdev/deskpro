@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\People\Agents\Type;
@@ -50,12 +48,12 @@ class EditAgentType extends AbstractType
         $builder->add('name', 'text', array('required' => true));
         $builder->add('override_name', 'text', array('required' => false));
 
-	    $builder->add('primary_phone', new PhoneNumberType());
+        $builder->add('primary_phone', new PhoneNumberType());
 
         $builder->add('emails', 'collection', array(
-            'type'         => 'email',
-            'allow_add'    => true,
-            'allow_delete' => true,
+            'type'            => 'email',
+            'allow_add'       => true,
+            'allow_delete'    => true,
             'invalid_message' => 'Invalid Email.',
         ));
 
@@ -66,9 +64,9 @@ class EditAgentType extends AbstractType
         ));
 
         $builder->add('teams', 'entity', array(
-            'class'    => 'DeskPRO:AgentTeam',
-            'required' => false,
-            'multiple' => true,
+            'class'           => 'DeskPRO:AgentTeam',
+            'required'        => false,
+            'multiple'        => true,
             'invalid_message' => 'Invalid Team.',
         ));
 
@@ -83,8 +81,8 @@ class EditAgentType extends AbstractType
         ));
 
         $builder->add('primary_team', 'entity', array(
-            'class'         => 'DeskPRO:AgentTeam',
-            'required'      => false,
+            'class'           => 'DeskPRO:AgentTeam',
+            'required'        => false,
             'invalid_message' => 'Invalid Agent Team.',
         ));
 

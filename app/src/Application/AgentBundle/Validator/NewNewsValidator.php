@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Validator;
@@ -40,7 +37,8 @@ use Orb\Validator\AbstractValidator;
 class NewNewsValidator extends AbstractValidator
 {
     /**
-     * @param  \Application\AgentBundle\Form\Model\NewNews $news
+     * @param \Application\AgentBundle\Form\Model\NewNews $news
+     *
      * @return bool
      */
     protected function checkIsValid($news)

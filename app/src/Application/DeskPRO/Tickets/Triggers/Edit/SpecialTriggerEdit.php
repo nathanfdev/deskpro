@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\Triggers\Edit;
@@ -43,7 +41,7 @@ use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 
 class SpecialTriggerEdit
 {
-    const TYPE_DEPARTMENT = 'Department';
+    const TYPE_DEPARTMENT    = 'Department';
     const TYPE_EMAIL_ACCOUNT = 'EmailAccount';
 
     /**
@@ -62,7 +60,8 @@ class SpecialTriggerEdit
     private $event;
 
     /**
-     * @param  Department         $department
+     * @param Department $department
+     *
      * @return SpecialTriggerEdit
      */
     public static function createWithDepartment(Department $department, $event)
@@ -71,7 +70,8 @@ class SpecialTriggerEdit
     }
 
     /**
-     * @param  EmailAccount       $account
+     * @param EmailAccount $account
+     *
      * @return SpecialTriggerEdit
      */
     public static function createWithEmailAccount(EmailAccount $account)
@@ -115,7 +115,7 @@ class SpecialTriggerEdit
         $trigger->department    = $this->obj;
         $trigger->email_account = null;
 
-        $terms = new TriggerTerms();
+        $terms     = new TriggerTerms();
         $terms_set = new TriggerTermComposite();
 
         if ($this->event == TicketTrigger::EVENT_TYPE_UPDATE) {
@@ -145,7 +145,7 @@ class SpecialTriggerEdit
         $trigger->email_account = $this->obj;
         $trigger->department    = null;
 
-        $terms = new TriggerTerms();
+        $terms     = new TriggerTerms();
         $terms_set = new TriggerTermComposite();
         $terms_set->add(new CheckEmailAccount('is', array('email_account_ids' => array($this->obj->id))));
         $terms->addTerm($terms_set);

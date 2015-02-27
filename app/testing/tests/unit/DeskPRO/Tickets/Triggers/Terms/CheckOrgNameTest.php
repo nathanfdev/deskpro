@@ -9,18 +9,19 @@ require_once 'AbstractStringCheckTest.php';
 class CheckOrgNameTest extends AbstractStringCheckTest
 {
     /**
-     * @param  int    $id
-     * @param  string $test_string
+     * @param int    $id
+     * @param string $test_string
+     *
      * @return Ticket
      */
     public function createTicket($id, $test_string)
     {
-        $org = new Organization();
-        $org->id = $id;
+        $org       = new Organization();
+        $org->id   = $id;
         $org->name = $test_string;
 
-        $ticket = new Ticket();
-        $ticket->id = $id;
+        $ticket               = new Ticket();
+        $ticket->id           = $id;
         $ticket->organization = $org;
 
         return $ticket;

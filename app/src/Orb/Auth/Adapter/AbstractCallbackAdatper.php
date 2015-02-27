@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -44,17 +43,19 @@ use Orb\Log\Logger;
  */
 abstract class AbstractCallbackAdatper implements AdapterInterface, SessionStateInterface, CallbackInterface, Loggable
 {
-    const DISLPAY_CONTEXT_PAGE = 'page';
+    const DISLPAY_CONTEXT_PAGE  = 'page';
     const DISLPAY_CONTEXT_POPUP = 'popup';
 
     /**
-     * If in callback context, then an array of callback data
+     * If in callback context, then an array of callback data.
+     *
      * @var array
      */
     protected $callback_data = null;
 
     /**
-     * State handler to store session data
+     * State handler to store session data.
+     *
      * @var \Orb\Auth\StateHandler\StateHandlerInterface;
      */
     protected $state;
@@ -65,7 +66,8 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
     protected $logger;
 
     /**
-     * The callback URL
+     * The callback URL.
+     *
      * @var string
      */
     protected $callback_url = null;
@@ -78,8 +80,7 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
     /**
      * Switches the adapter to the callback context using form data $data.
      *
-     * @param  array $data Form data or other callback data
-     * @return void
+     * @param array $data Form data or other callback data
      */
     public function setCallbackContext(array $data)
     {
@@ -87,7 +88,7 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
     }
 
     /**
-     * Set the URL the user is returned to
+     * Set the URL the user is returned to.
      *
      * @param string $url
      */
@@ -97,9 +98,10 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
     }
 
     /**
-     * Get the callback URL
+     * Get the callback URL.
      *
      * @throws \RuntimeException
+     *
      * @return string
      */
     public function getCallbackUrl()
@@ -153,8 +155,9 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
      * Process the callback and return a final result.
      *
      *
-     * @param  array                 $callback_data
-     * @param  StateHandlerInterface $state
+     * @param array                 $callback_data
+     * @param StateHandlerInterface $state
+     *
      * @return \Orb\Auth\Result
      */
     abstract protected function authenticateCallback(array $callback_data, StateHandlerInterface $state);
@@ -162,7 +165,8 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
     /**
      * Initialize the auth process by setting state, and returning a redirect result.
      *
-     * @param  StateHandlerInterface $state
+     * @param StateHandlerInterface $state
+     *
      * @return \Orb\Auth\Result
      */
     abstract protected function authenticateInitialize(StateHandlerInterface $state);
@@ -170,8 +174,7 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
     /**
      * Set the state handler.
      *
-     * @param  \Orb\Auth\StateHandler\StateHandlerInterface $state The state handler
-     * @return void
+     * @param \Orb\Auth\StateHandler\StateHandlerInterface $state The state handler
      */
     public function setStateHandler(StateHandlerInterface $state)
     {
@@ -193,7 +196,7 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
     }
 
     /**
-     * Set the logger
+     * Set the logger.
      *
      * @param \Orb\Log\Logger $logger
      */

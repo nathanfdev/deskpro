@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -42,8 +39,8 @@ class ReportsAgentHoursController extends AbstractController
 
     public function listAction($date1, $date2)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\AgentHours $reports_agent_hours
+        /*
+         * @var \Application\DeskPRO\Reports\AgentHours
          */
         $reports_agent_hours = $this->container->getSystemService('reports_agent_hours');
         $html_vars           = $reports_agent_hours->getVarsForHtmlView($date1, $date2);

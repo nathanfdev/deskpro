@@ -32,10 +32,9 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro article importer
+ * DeskPro article importer.
  *
  * Class Article
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 final class Article extends AbstractImporter implements SkipDuplicateInterface
 {
@@ -55,7 +54,7 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
      * $record['num_comments'] = $kbval->num_comments;
      * $record['num_ratings']  = $kbval->num_ratings;
      *
-     * @var Entity\Article $entity
+     * @var Entity\Article
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
@@ -79,13 +78,14 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
         }
 
         $this->records->add($article);
+
         return $this->records;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Article $entity
+     * @var Entity\Article
      */
     public function checkAlreadyExists(Entity\EntityInterface $entity)
     {
@@ -101,12 +101,13 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
 
     /**
      * Returns an article category by title
-     * Creates a new article category if not found
+     * Creates a new article category if not found.
      *
      * @param string $title
      *
-     * @return DeskPROEntity\ArticleCategory|null
      * @throws \Exception
+     * @return DeskPROEntity\ArticleCategory|null
+     *
      */
     private function findOrCreateArticleCategory($title)
     {
@@ -128,10 +129,11 @@ final class Article extends AbstractImporter implements SkipDuplicateInterface
     }
 
     /**
-     * Returns the article category mapper
+     * Returns the article category mapper.
      *
-     * @return Mapper\ArticleCategory
      * @throws \Exception
+     * @return Mapper\ArticleCategory
+     *
      */
     private function getArticleCategoryMapper()
     {

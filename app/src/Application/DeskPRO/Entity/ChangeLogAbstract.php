@@ -26,23 +26,20 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\Entity;
 
 /**
- * Tracks changes on objects
- *
+ * Tracks changes on objects.
  */
 abstract class ChangeLogAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * @var int
-     *
      */
     protected $id = null;
 

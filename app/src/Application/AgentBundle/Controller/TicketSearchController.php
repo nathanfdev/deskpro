@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -47,7 +44,7 @@ use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
 /**
- * Handles ticket searches
+ * Handles ticket searches.
  */
 class TicketSearchController extends AbstractController
 {
@@ -74,7 +71,7 @@ class TicketSearchController extends AbstractController
         // Summary of terms for all filters
         $filters_summary = array();
         foreach ($all_filters as $filter) {
-            $searcher = $filter->getSearcher();
+            $searcher                       = $filter->getSearcher();
             $filters_summary[$filter['id']] = $searcher->getSummary();
         }
 
@@ -90,47 +87,47 @@ class TicketSearchController extends AbstractController
         #------------------------------
 
         $sla_filter = $this->person->getPref('agent.ui.sla.ticket-filter', 'all');
-        $slas = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
+        $slas       = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
         $sla_counts = $this->em->getRepository('DeskPRO:TicketSla')->getTicketSlaCountsForAgentInterface($slas, $sla_filter);
 
         #------------------------------
         # Misc
         #------------------------------
 
-        $flags = array('blue','green','orange','pink','purple','red','yellow');
+        $flags       = array('blue','green','orange','pink','purple','red','yellow');
         $flag_counts = $this->em->getRepository('DeskPRO:TicketFlagged')->getCountsForPerson($this->person);
 
         $label_lister = new \Application\DeskPRO\Labels\LabelLister('tickets');
-        $index = $label_lister->getIndexList();
+        $index        = $label_lister->getIndexList();
 
         $label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('ticket', 25);
-        $cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
-        $cloud = $cloud_gen->getCloud();
+        $cloud_gen    = new \Application\DeskPRO\UI\TagCloud($label_counts);
+        $cloud        = $cloud_gen->getCloud();
 
         $initial_inbox_grouping = $this->em->getRepository('DeskPRO:PersonPref')->getPrefgroupForPersonId('agent.ui.ticket-source-grouping', $this->person->id);
 
         $term_options = App::getApi('tickets')->getTicketOptions($this->person);
 
-        $ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-        $custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
+        $ticket_field_defs                    = App::getApi('custom_fields.tickets')->getEnabledFields();
+        $custom_fields                        = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
         $term_options['custom_ticket_fields'] = $custom_fields;
 
         $data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', array(
-            'sys_filters' => $sys_filters,
-            'sys_filters_hold' => $sys_filters_hold,
-            'archive_filters' => $archive_filters,
-            'archive_filter_counts' => $archive_filter_counts,
-            'filter_id_matches' => $filter_id_matches,
-            'filters_summary' => $filters_summary,
-            'custom_filters' => $custom_filters,
-            'flags' => $flags,
-            'flag_counts' => $flag_counts,
-            'filter_show_options' => $filter_show_options,
-            'labels_index' => $index,
-            'labels_cloud' => $cloud,
+            'sys_filters'            => $sys_filters,
+            'sys_filters_hold'       => $sys_filters_hold,
+            'archive_filters'        => $archive_filters,
+            'archive_filter_counts'  => $archive_filter_counts,
+            'filter_id_matches'      => $filter_id_matches,
+            'filters_summary'        => $filters_summary,
+            'custom_filters'         => $custom_filters,
+            'flags'                  => $flags,
+            'flag_counts'            => $flag_counts,
+            'filter_show_options'    => $filter_show_options,
+            'labels_index'           => $index,
+            'labels_cloud'           => $cloud,
             'initial_inbox_grouping' => $initial_inbox_grouping,
 
-            'slas' => $slas,
+            'slas'       => $slas,
             'sla_counts' => $sla_counts,
             'sla_filter' => $sla_filter,
 
@@ -168,11 +165,11 @@ class TicketSearchController extends AbstractController
     public function getLabelsSectionAction()
     {
         $label_lister = new \Application\DeskPRO\Labels\LabelLister('tickets');
-        $index = $label_lister->getIndexList();
+        $index        = $label_lister->getIndexList();
 
         $label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('ticket', 25);
-        $cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
-        $cloud = $cloud_gen->getCloud();
+        $cloud_gen    = new \Application\DeskPRO\UI\TagCloud($label_counts);
+        $cloud        = $cloud_gen->getCloud();
 
         return $this->render('AgentBundle:TicketSearch:pane-labels-index.html.twig', array(
             'labels_index' => $index,
@@ -190,22 +187,22 @@ class TicketSearchController extends AbstractController
     public function getSlaCountsAction()
     {
         $sla_filter = $this->person->getPref('agent.ui.sla.ticket-filter', 'all');
-        $slas = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
+        $slas       = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
         $sla_counts = $this->em->getRepository('DeskPRO:TicketSla')->getTicketSlaCountsForAgentInterface($slas, $sla_filter);
 
         return $this->createJsonResponse(array(
-            'counts' => $sla_counts,
+            'counts'     => $sla_counts,
             'sla_filter' => $sla_filter,
         ));
     }
 
     public function getFlaggedSectionAction()
     {
-        $flags = array('blue','green','orange','pink','purple','red','yellow');
+        $flags       = array('blue','green','orange','pink','purple','red','yellow');
         $flag_counts = $this->em->getRepository('DeskPRO:TicketFlagged')->getCountsForPerson($this->person);
 
         return $this->render('AgentBundle:TicketSearch:window-flagged.html.twig', array(
-            'flags' => $flags,
+            'flags'       => $flags,
             'flag_counts' => $flag_counts,
         ));
     }
@@ -323,11 +320,11 @@ class TicketSearchController extends AbstractController
             }
         }
 
-        $all_custom_fields = array();
+        $all_custom_fields      = array();
         $user_all_custom_fields = array();
 
         if ($has_t_fields || $has_u_fields) {
-            $field_manager = $this->container->getSystemService('ticket_fields_manager');
+            $field_manager      = $this->container->getSystemService('ticket_fields_manager');
             $user_field_manager = $this->container->getSystemService('person_fields_manager');
 
             foreach ($tickets as $t) {
@@ -336,7 +333,7 @@ class TicketSearchController extends AbstractController
                 }
 
                 if ($has_u_fields) {
-                    $p = $t->person;
+                    $p                              = $t->person;
                     $user_all_custom_fields[$p->id] = $user_field_manager->getDisplayArrayForObject($p);
                 }
             }
@@ -345,12 +342,12 @@ class TicketSearchController extends AbstractController
         // Accept changes to apply for previewing
         // - We just apply the changes but dont save them, they'll be
         //   properly displayed in the listing.
-        $collection = null;
+        $collection     = null;
         $changed_fields = array();
 
         if ($macro_id = $this->in->getUint('run_macro_id')) {
-            $macro = $this->em->find('DeskPRO:TicketMacro', $macro_id);
-            $actions = null;
+            $macro      = $this->em->find('DeskPRO:TicketMacro', $macro_id);
+            $actions    = null;
             $collection = $macro->getActionsCollection();
 
             foreach ($collection->getActions() as $action) {
@@ -364,7 +361,7 @@ class TicketSearchController extends AbstractController
 
         if (($actions || $collection) && $tickets) {
             if (!$collection) {
-                $factory = new ActionsFactory();
+                $factory    = new ActionsFactory();
                 $collection = new ActionsCollection();
                 foreach ($actions as $name => $opt) {
                     $action = $factory->createFromForm($name, $opt);
@@ -388,7 +385,7 @@ class TicketSearchController extends AbstractController
                     $ticket_changed_fields = array();
                     foreach ($ticket_changes as $change) {
                         $ticket_changed_fields[$change['action']] = true;
-                        $changed_fields[$t['id']] = $ticket_changed_fields;
+                        $changed_fields[$t['id']]                 = $ticket_changed_fields;
                     }
                 }
             }
@@ -436,10 +433,10 @@ class TicketSearchController extends AbstractController
     public function groupTicketsAction()
     {
         $ticket_batches = $this->in->getArrayValue('batches');
-        $batches = array();
+        $batches        = array();
 
         $save_pref = $this->in->getBool('save_pref');
-        $prefs = array();
+        $prefs     = array();
 
         foreach ($ticket_batches as $batch_id => $ticket_batch) {
             if ($save_pref) {
@@ -497,7 +494,7 @@ class TicketSearchController extends AbstractController
 
     public function getFlaggedSectionDataAction()
     {
-        $data = array();
+        $data                = array();
         $data['flag_counts'] = $this->em->getRepository('DeskPRO:TicketFlagged')->getCountsForPerson($this->person);
 
         return $this->createJsonResponse($data);
@@ -516,16 +513,16 @@ class TicketSearchController extends AbstractController
             $searcher = $filter->getSearcher();
             $searcher->setPerson($this->person);
 
-            $set_group_term = null;
+            $set_group_term   = null;
             $set_group_option = null;
             if ($this->in->getString('set_group_term')) {
-                $set_group_term = $this->in->getString('set_group_term');
+                $set_group_term   = $this->in->getString('set_group_term');
                 $set_group_option = $this->in->getString('set_group_option');
 
                 $term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
                 if ($term) {
-                    $type = $term['type'];
-                    $op = $term['op'];
+                    $type   = $term['type'];
+                    $op     = $term['op'];
                     $choice = $term;
                     unset($choice['type'], $choice['op']);
 
@@ -561,13 +558,13 @@ class TicketSearchController extends AbstractController
 
             $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA_COMPLETED, 'is', array(
                 'is_completed' => 0,
-                'sla_id' => $sla_id,
+                'sla_id'       => $sla_id,
             ));
 
             if ($sla_status = $this->in->getString('sla_status')) {
                 $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA_STATUS, 'is', array(
                     'sla_status' => $sla_status,
-                    'sla_id' => $sla_id,
+                    'sla_id'     => $sla_id,
                 ));
             }
 
@@ -579,16 +576,16 @@ class TicketSearchController extends AbstractController
                 $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_STATUS, 'is', array('awaiting_agent', 'awaiting_user'));
             }
 
-            $set_group_term = null;
+            $set_group_term   = null;
             $set_group_option = null;
             if ($this->in->getString('set_group_term')) {
-                $set_group_term = $this->in->getString('set_group_term');
+                $set_group_term   = $this->in->getString('set_group_term');
                 $set_group_option = $this->in->getString('set_group_option');
 
                 $term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
                 if ($term) {
-                    $type = $term['type'];
-                    $op = $term['op'];
+                    $type   = $term['type'];
+                    $op     = $term['op'];
                     $choice = $term;
                     unset($choice['type'], $choice['op']);
 
@@ -632,7 +629,7 @@ class TicketSearchController extends AbstractController
 
         $do_run = false;
 
-        $terms = array();
+        $terms    = array();
         $order_by = $this->person->getPref('agent.ui.ticket-basic-order-by.general');
         $group_by = $this->in->getString('group_by');
         $searcher = null;
@@ -643,7 +640,7 @@ class TicketSearchController extends AbstractController
 
         if (!$result_cache) {
             $term_rules = RuleBuilder::newTermsBuilder();
-            $terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw', 'discard'));
+            $terms      = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw', 'discard'));
 
             $set_terms_map = array(
                 'department'    => array('op' => 'contains', 'options' => array()),
@@ -663,7 +660,7 @@ class TicketSearchController extends AbstractController
             foreach ($set_terms_map as $name => $info) {
                 $in_val = $this->container->getIn()->getCleanValueArray('set_term.'.$name, 'raw', 'discard');
                 if ($in_val) {
-                    $new_term = $info;
+                    $new_term            = $info;
                     $new_term['options'] = $in_val;
                     Arrays::unshiftAssoc($new_term, 'type', $name);
                     $terms[] = $new_term;
@@ -716,23 +713,23 @@ class TicketSearchController extends AbstractController
             // Search form: search_assigned
             if ($search_term = $this->in->getCleanValueArray('search_assigned', 'raw', 'discard')) {
                 $agent_ids = array();
-                $team_ids = array();
+                $team_ids  = array();
 
                 foreach ($search_term as $t) {
                     if (strpos($t, 'team.') === 0) {
                         $t = Strings::extractRegexMatch('#^team\.(\d+)$#', $t);
                         if ($t !== "") {
-                            $t = (int) $t;
+                            $t          = (int) $t;
                             $team_ids[] = $t;
                         }
                     } else {
-                        $t = (int) $t;
+                        $t           = (int) $t;
                         $agent_ids[] = $t;
                     }
                 }
 
                 $agent_ids = array_unique($agent_ids);
-                $team_ids = array_unique($team_ids);
+                $team_ids  = array_unique($team_ids);
 
                 if ($agent_ids) {
                     $terms[] = array('type' => 'agent', 'op' => 'is', 'options' => array('agent_ids' => $agent_ids));
@@ -807,7 +804,7 @@ class TicketSearchController extends AbstractController
         #------------------------------
 
         if ($result_cache && $order_by && $result_cache->getExtraData('order_by') != $order_by) {
-            $terms = $result_cache['criteria'];
+            $terms  = $result_cache['criteria'];
             $do_run = true;
         }
 
@@ -856,14 +853,14 @@ class TicketSearchController extends AbstractController
             $results = Arrays::castToType($results, 'integer');
 
             if (!$result_cache) {
-                $result_cache = new \Application\DeskPRO\Entity\ResultCache();
+                $result_cache         = new \Application\DeskPRO\Entity\ResultCache();
                 $result_cache->person = $this->person;
             }
 
             $needs_urgency = $searcher->needsUrgency();
 
-            $result_cache->results = $results;
-            $result_cache->criteria = $terms;
+            $result_cache->results     = $results;
+            $result_cache->criteria    = $terms;
             $result_cache->num_results = count($results);
             $result_cache->setExtraData('order_by', $order_by);
             $result_cache->setExtraData('needs_urgency', $needs_urgency);
@@ -948,16 +945,16 @@ class TicketSearchController extends AbstractController
             $searcher->setLimit(0);
         }
 
-        $set_group_term = null;
+        $set_group_term   = null;
         $set_group_option = null;
         if ($this->in->getString('set_group_term')) {
-            $set_group_term = $this->in->getString('set_group_term');
+            $set_group_term   = $this->in->getString('set_group_term');
             $set_group_option = $this->in->getString('set_group_option');
 
             $term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
             if ($term) {
-                $type = $term['type'];
-                $op = $term['op'];
+                $type   = $term['type'];
+                $op     = $term['op'];
                 $choice = $term;
                 unset($choice['type'], $choice['op']);
 
@@ -998,15 +995,15 @@ class TicketSearchController extends AbstractController
         $needs_urgency = $searcher->needsUrgency();
 
         $vars = array(
-            'filter' => $filter,
-            'filter_id' => $filter['id'],
-            'needs_urgency' => $needs_urgency,
+            'filter'           => $filter,
+            'filter_id'        => $filter['id'],
+            'needs_urgency'    => $needs_urgency,
             'order_by_summary' => $searcher->getOrderBySummary(),
-            'terms_summary' => $searcher->getSummary(),
-            'set_group_term' => $set_group_term,
+            'terms_summary'    => $searcher->getSummary(),
+            'set_group_term'   => $set_group_term,
             'set_group_option' => $set_group_option,
-            'ticket_ids' => $results,
-            'order_by' => $searcher->getOrderBy(),
+            'ticket_ids'       => $results,
+            'order_by'         => $searcher->getOrderBy(),
         );
 
         $pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.'.$filter['id']);
@@ -1018,7 +1015,7 @@ class TicketSearchController extends AbstractController
         }
 
         $search_form = array(
-            'terms' => $filter['terms'],
+            'terms'    => $filter['terms'],
             'order_by' => $filter['order_by'],
         );
         $vars['search_form'] = $search_form;
@@ -1059,13 +1056,13 @@ class TicketSearchController extends AbstractController
 
         $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA_COMPLETED, 'is', array(
             'is_completed' => 0,
-            'sla_id' => $sla_id,
+            'sla_id'       => $sla_id,
         ));
 
         if ($sla_status) {
             $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA_STATUS, 'is', array(
                 'sla_status' => $sla_status,
-                'sla_id' => $sla_id,
+                'sla_id'     => $sla_id,
             ));
         }
 
@@ -1090,16 +1087,16 @@ class TicketSearchController extends AbstractController
             $searcher->setLimit(0);
         }
 
-        $set_group_term = null;
+        $set_group_term   = null;
         $set_group_option = null;
         if ($this->in->getString('set_group_term')) {
-            $set_group_term = $this->in->getString('set_group_term');
+            $set_group_term   = $this->in->getString('set_group_term');
             $set_group_option = $this->in->getString('set_group_option');
 
             $term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
             if ($term) {
-                $type = $term['type'];
-                $op = $term['op'];
+                $type   = $term['type'];
+                $op     = $term['op'];
                 $choice = $term;
                 unset($choice['type'], $choice['op']);
 
@@ -1134,17 +1131,17 @@ class TicketSearchController extends AbstractController
         $needs_urgency = $searcher->needsUrgency();
 
         $vars = array(
-            'sla' => $sla,
-            'sla_id' => $sla->id,
-            'sla_status' => $sla_status,
-            'sla_filter' => $sla_filter,
-            'needs_urgency' => $needs_urgency,
+            'sla'              => $sla,
+            'sla_id'           => $sla->id,
+            'sla_status'       => $sla_status,
+            'sla_filter'       => $sla_filter,
+            'needs_urgency'    => $needs_urgency,
             'order_by_summary' => $searcher->getOrderBySummary(),
-            'terms_summary' => $searcher->getSummary(),
-            'set_group_term' => $set_group_term,
+            'terms_summary'    => $searcher->getSummary(),
+            'set_group_term'   => $set_group_term,
             'set_group_option' => $set_group_option,
-            'ticket_ids' => $results,
-            'order_by' => $searcher->getOrderBy(),
+            'ticket_ids'       => $results,
+            'order_by'         => $searcher->getOrderBy(),
         );
 
         $pref_display_fields = $this->person->getPref('agent.ui.ticket-sla-display-fields.'.$sla['id']);
@@ -1169,10 +1166,10 @@ class TicketSearchController extends AbstractController
         }
 
         $is_partial = false;
-        $tpl = 'AgentBundle:TicketSearch:filter-results-'.$view_type.'.html.twig';
+        $tpl        = 'AgentBundle:TicketSearch:filter-results-'.$view_type.'.html.twig';
         if ($this->in->getBool('partial')) {
             $is_partial = true;
-            $tpl = 'AgentBundle:TicketSearch:part-results-'.$view_type.'.html.twig';
+            $tpl        = 'AgentBundle:TicketSearch:part-results-'.$view_type.'.html.twig';
         }
 
         $per_page = 50;
@@ -1205,7 +1202,7 @@ class TicketSearchController extends AbstractController
 
         if (!$this->in->checkIsset('grouping_option') || $this->in->getString('grouping_option') == '-1' || $this->in->getString('grouping_option') == 'DP_NOT_SET') {
             // User looking at all results
-            $is_grouping = false;
+            $is_grouping     = false;
             $grouping_option = 'DP_NOT_SET';
             if ($view_type != 'csv') {
                 if ($cursor) {
@@ -1216,7 +1213,7 @@ class TicketSearchController extends AbstractController
             }
         } else {
             // User looking at just a group of results
-            $is_grouping = true;
+            $is_grouping     = true;
             $grouping_option = $this->in->getString('grouping_option');
             if ($grouping_option == 'DP_NOT_SET') {
                 $grouping_option = -1;
@@ -1251,19 +1248,19 @@ class TicketSearchController extends AbstractController
             $vars['display_fields'] = array('date_created', 'department');
         }
 
-        $macros = null;
+        $macros         = null;
         $ticket_options = null;
         if (!$is_partial) {
-            $macros = $this->em->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
+            $macros         = $this->em->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
             $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
-            $ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-            $custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
+            $ticket_field_defs                      = App::getApi('custom_fields.tickets')->getEnabledFields();
+            $custom_fields                          = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
             $ticket_options['custom_ticket_fields'] = $custom_fields;
 
             // People stuff
             $ticket_options['people_organizations'] = $this->em->getRepository('DeskPRO:Organization')->getOrganizationNames();
-            $people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+            $people_field_defs                      = App::getApi('custom_fields.people')->getEnabledFields();
             $ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
         }
 
@@ -1275,7 +1272,7 @@ class TicketSearchController extends AbstractController
 
         $pageinfo = Numbers::getPaginationPages($results_helper->getCount(), $page, $per_page);
 
-        $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+        $agents      = $this->em->getRepository('DeskPRO:Person')->getAgents();
         $agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
         $has_t_fields = false;
@@ -1290,11 +1287,11 @@ class TicketSearchController extends AbstractController
             }
         }
 
-        $all_custom_fields = array();
+        $all_custom_fields      = array();
         $user_all_custom_fields = array();
 
         if ($has_t_fields || $has_u_fields) {
-            $field_manager = $this->container->getSystemService('ticket_fields_manager');
+            $field_manager      = $this->container->getSystemService('ticket_fields_manager');
             $user_field_manager = $this->container->getSystemService('person_fields_manager');
 
             foreach ($tickets as $t) {
@@ -1303,7 +1300,7 @@ class TicketSearchController extends AbstractController
                 }
 
                 if ($has_u_fields) {
-                    $p = $t->person;
+                    $p                              = $t->person;
                     $user_all_custom_fields[$p->id] = $user_field_manager->getDisplayArrayForObject($p);
                 }
             }
@@ -1319,30 +1316,30 @@ class TicketSearchController extends AbstractController
         }
 
         $vars = array_merge($vars, array(
-            'agents'             => $agents,
-            'agent_teams'        => $agent_teams,
-            'type'               => $type,
-            'type_id'            => $type_id,
-            'ticket_display'     => $ticket_display,
-            'tickets'            => $tickets,
-            'all_ticket_ids'     => $is_grouping ? $results_helper->getGroupTicketIds($grouping_option) : $results_helper->getTicketIds(),
-            'count'              => $results_helper->getCount(),
-            'flagged_tickets'    => $flagged_tickets,
-            'ticket_options'     => $ticket_options,
-            'page'               => $page,
-            'pageinfo'           => $pageinfo,
-            'per_page'           => $per_page,
-            'macros'             => $macros,
-            'show_flag'          => true,
-            'grouped_info'       => $grouped_info,
-            'group_by'           => $results_helper->getGroupField(),
-            'grouping_option'    => $grouping_option,
-            'grouping_summary'   => $results_helper->getGroupingSummary(),
-            'is_grouped_result'  => $is_grouping,
-            'ticket_field_defs'  => $ticket_field_defs,
-            'person_field_defs'  => $person_field_defs,
-            'load_first'         => $this->in->getBool('load_first'),
-            'all_custom_fields'  => $all_custom_fields,
+            'agents'                  => $agents,
+            'agent_teams'             => $agent_teams,
+            'type'                    => $type,
+            'type_id'                 => $type_id,
+            'ticket_display'          => $ticket_display,
+            'tickets'                 => $tickets,
+            'all_ticket_ids'          => $is_grouping ? $results_helper->getGroupTicketIds($grouping_option) : $results_helper->getTicketIds(),
+            'count'                   => $results_helper->getCount(),
+            'flagged_tickets'         => $flagged_tickets,
+            'ticket_options'          => $ticket_options,
+            'page'                    => $page,
+            'pageinfo'                => $pageinfo,
+            'per_page'                => $per_page,
+            'macros'                  => $macros,
+            'show_flag'               => true,
+            'grouped_info'            => $grouped_info,
+            'group_by'                => $results_helper->getGroupField(),
+            'grouping_option'         => $grouping_option,
+            'grouping_summary'        => $results_helper->getGroupingSummary(),
+            'is_grouped_result'       => $is_grouping,
+            'ticket_field_defs'       => $ticket_field_defs,
+            'person_field_defs'       => $person_field_defs,
+            'load_first'              => $this->in->getBool('load_first'),
+            'all_custom_fields'       => $all_custom_fields,
             'user_all_custom_fields'  => $user_all_custom_fields,
             'agent_signature'         => $this->person->getSignature(),
             'agent_signature_html'    => $this->person->getSignatureHtml(),
@@ -1430,7 +1427,7 @@ class TicketSearchController extends AbstractController
         }
 
         $temp = fopen('php://memory', 'rw');
-        $row = array();
+        $row  = array();
 
         foreach ($display_fields as $display_field) {
             switch ($display_field) {
@@ -1473,7 +1470,7 @@ class TicketSearchController extends AbstractController
         $response->setContent(fgets($temp));
         ftruncate($temp, 0);
         $chunk_size = 1024;
-        $page = 1;
+        $page       = 1;
 
         // This behaves unexpectly. If the total number of tickets is less than the page size it will always return all
         // of the tickets regardless of the page setting.
@@ -1484,9 +1481,9 @@ class TicketSearchController extends AbstractController
         }
 
         while (!empty($tickets)) {
-            $ticket = array_shift($tickets);
+            $ticket           = array_shift($tickets);
             $custom_text_data = $field_manager->getRenderedToTextForObject($ticket);
-            $row = array();
+            $row              = array();
 
             foreach ($display_fields as $display_field) {
                 switch ($display_field) {
@@ -1499,7 +1496,7 @@ class TicketSearchController extends AbstractController
                     case 'email_account_id':
                         preg_match('/^(.*)_id$/', $display_field, $matches);
                         list(, $name) = $matches;
-                        $entity = null;
+                        $entity       = null;
 
                         if (isset($ticket[$name])) {
                             $entity = $ticket->{$name};
@@ -1521,7 +1518,7 @@ class TicketSearchController extends AbstractController
                     case 'agent_id':
                         preg_match('/^(.*)_id$/', $display_field, $matches);
                         list(, $name) = $matches;
-                        $entity = $ticket->{$name};
+                        $entity       = $ticket->{$name};
 
                         if ($entity) {
                             $row[] = $entity->id;
@@ -1535,7 +1532,7 @@ class TicketSearchController extends AbstractController
                     case 'organization_id':
                         preg_match('/^(.*)_id$/', $display_field, $matches);
                         list(, $name) = $matches;
-                        $entity = $ticket->{$name};
+                        $entity       = $ticket->{$name};
 
                         if ($entity) {
                             $row[] = $entity->id;
@@ -1549,7 +1546,7 @@ class TicketSearchController extends AbstractController
                     case 'person_email_validating_id':
                         preg_match('/^(.*)_id$/', $display_field, $matches);
                         list(, $name) = $matches;
-                        $entity = $ticket->{$name};
+                        $entity       = $ticket->{$name};
 
                         if ($entity) {
                             $row[] = $entity->email;
@@ -1569,7 +1566,7 @@ class TicketSearchController extends AbstractController
                             }
                         } elseif (preg_match('/^(.*)_id$/', $display_field, $matches)) {
                             list(, $name) = $matches;
-                            $entity = $ticket->{$name};
+                            $entity       = $ticket->{$name};
 
                             if ($entity) {
                                 $row[] = $entity->id;
@@ -1613,14 +1610,14 @@ class TicketSearchController extends AbstractController
     public function getTicketRowsAction()
     {
         $ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
-        $tickets = $this->em->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids, true);
+        $tickets    = $this->em->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids, true);
 
         $display_fields = array();
         $changed_fields = array();
 
         if ($macro_id = $this->in->getUint('run_macro_id')) {
-            $macro = $this->em->find('DeskPRO:TicketMacro', $macro_id);
-            $actions = null;
+            $macro      = $this->em->find('DeskPRO:TicketMacro', $macro_id);
+            $actions    = null;
             $collection = $macro->getActionsCollection();
 
             foreach ($collection->getActions() as $action) {
@@ -1629,13 +1626,13 @@ class TicketSearchController extends AbstractController
                 }
             }
         } else {
-            $actions = $this->in->getCleanValueArray('actions', 'raw', 'string');
+            $actions    = $this->in->getCleanValueArray('actions', 'raw', 'string');
             $collection = null;
         }
 
         if (($actions || $collection) && $tickets) {
             if (!$collection) {
-                $factory = new ActionsFactory();
+                $factory    = new ActionsFactory();
                 $collection = new ActionsCollection();
                 foreach ($actions as $name => $opt) {
                     $action = $factory->createFromForm($name, $opt);
@@ -1659,7 +1656,7 @@ class TicketSearchController extends AbstractController
                     $ticket_changed_fields = array();
                     foreach ($ticket_changes as $change) {
                         $ticket_changed_fields[$change['action']] = true;
-                        $changed_fields[$t['id']] = $ticket_changed_fields;
+                        $changed_fields[$t['id']]                 = $ticket_changed_fields;
                     }
                 }
             }
@@ -1688,25 +1685,25 @@ class TicketSearchController extends AbstractController
     public function getSingleTicketRowAction($content_type, $content_id)
     {
         if ($content_type == 'sla') {
-            $sla = $this->em->getRepository('DeskPRO:Sla')->find($content_id);
+            $sla    = $this->em->getRepository('DeskPRO:Sla')->find($content_id);
             $filter = null;
         } else {
             $filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($content_id);
-            $sla = null;
+            $sla    = null;
         }
 
         $ticket_id = $this->in->getUint('ticket_id');
-        $ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
+        $ticket    = $this->em->find('DeskPRO:Ticket', $ticket_id);
 
         if (!$ticket) {
             return $this->createResponse('');
         }
 
         $vars = array(
-            'page' => -1,
+            'page'    => -1,
             'tickets' => array($ticket),
-            'filter' => $filter,
-            'sla' => $sla,
+            'filter'  => $filter,
+            'sla'     => $sla,
         );
 
         $view_type = $this->in->getString('view_type');
@@ -1773,7 +1770,7 @@ class TicketSearchController extends AbstractController
     public function ajaxReleaseLocksAction()
     {
         $ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
-        $tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+        $tickets    = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
 
         $this->em->beginTransaction();
 
@@ -1795,7 +1792,7 @@ class TicketSearchController extends AbstractController
     public function ajaxDeleteTicketsAction()
     {
         $ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
-        $tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+        $tickets    = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
 
         $deleted_tickets = array();
 
@@ -1817,9 +1814,9 @@ class TicketSearchController extends AbstractController
     public function ajaxGetMacroAction()
     {
         $macro_id = $this->in->getUint('macro_id');
-        $macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
+        $macro    = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 
-        $data = array();
+        $data                = array();
         $data['raw_actions'] = array();
 
         $raw_actions = $macro->getActionsArray();
@@ -1833,7 +1830,7 @@ class TicketSearchController extends AbstractController
     public function ajaxGetMacroActionsAction()
     {
         $macro_id = $this->in->getUint('macro_id');
-        $macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
+        $macro    = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 
         $descriptions = $macro->getActionDescriptions();
 
@@ -1854,7 +1851,7 @@ class TicketSearchController extends AbstractController
         $actions = $this->in->getCleanValueArray('actions', 'raw', 'string');
 
         $actions_builder = RuleBuilder::newTermsBuilder();
-        $actions_set = $actions_builder->readForm($this->in->getCleanValueArray('actions_set', 'raw', 'raw'));
+        $actions_set     = $actions_builder->readForm($this->in->getCleanValueArray('actions_set', 'raw', 'raw'));
 
         $tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsResultsFromIds($ticket_ids);
 
@@ -1864,7 +1861,7 @@ class TicketSearchController extends AbstractController
         }
 
         $permission_errors = array();
-        $success = array();
+        $success           = array();
 
         if (($actions || $actions_set || $macro) && $tickets) {
             if ($macro) {
@@ -1888,15 +1885,15 @@ class TicketSearchController extends AbstractController
                     }
                 }
             } else {
-                $factory = new ActionsFactory();
+                $factory    = new ActionsFactory();
                 $collection = new ActionsCollection();
 
                 foreach ($actions as $name => $opt) {
                     // Cleanup RTE markup
                     if ($name == 'reply') {
-                        $new_message = $this->cleaner->clean(@$opt['reply_text'] ?: '', 'html_core');
-                        $new_message = Strings::trimHtml($new_message);
-                        $new_message = Strings::prepareWysiwygHtml($new_message);
+                        $new_message       = $this->cleaner->clean(@$opt['reply_text'] ?: '', 'html_core');
+                        $new_message       = Strings::trimHtml($new_message);
+                        $new_message       = Strings::prepareWysiwygHtml($new_message);
                         $opt['reply_text'] = $new_message;
                     }
 
@@ -1954,15 +1951,15 @@ class TicketSearchController extends AbstractController
             $ticket_display->setPersonContext($this->person);
 
             $json_renderer = new TicketListRenderer($ticket_display);
-            $ticket_data = $json_renderer->renderTicketDisplayArray();
+            $ticket_data   = $json_renderer->renderTicketDisplayArray();
         }
 
         return $this->createJsonResponse(array(
             'success'          => true,
-            'success_tickets' => $success,
-            'failed_tickets'  => $permission_errors,
-            'client_messages' => $client_messages,
-            'ticket_data'     => $ticket_data,
+            'success_tickets'  => $success,
+            'failed_tickets'   => $permission_errors,
+            'client_messages'  => $client_messages,
+            'ticket_data'      => $ticket_data,
         ));
     }
 }

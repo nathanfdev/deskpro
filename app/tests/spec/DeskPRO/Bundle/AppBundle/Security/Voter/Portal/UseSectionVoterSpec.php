@@ -26,25 +26,20 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
-use Application\DeskPRO\NewSettings\SettingsBag;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentAccessVoter;
-use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
-use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentAccessVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
+use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
@@ -54,7 +49,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
  */
 class UseSectionVoterSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         ContainerInterface $container,
         PortalPermissionsManager $permissions_manager,
         BrandStack $brand_stack,
@@ -64,8 +59,7 @@ class UseSectionVoterSpec extends ObjectBehavior
         TokenInterface $guest_token,
         PermissionsBag $person_permission_bag,
         PermissionsBag $guest_permission_bag
-    )
-    {
+    ) {
         $person->getId()->willReturn(1);
         $token->getUser()->willReturn($person);
         $guest_token->getUser()->willReturn(null);
@@ -78,18 +72,16 @@ class UseSectionVoterSpec extends ObjectBehavior
         $this->beConstructedWith($container);
     }
 
-    function it_abstains_from_non_section_votes(
+    public function it_abstains_from_non_section_votes(
         TokenInterface $token
-    )
-    {
+    ) {
         $this->verifyAbstainVote(ContentAccessVoter::VIEW_FEEDBACK, $token);
     }
 
-    function it_denies_use_if_brand_disabled(
+    public function it_denies_use_if_brand_disabled(
         TokenInterface $token,
         BrandContainer $brand_container
-    )
-    {
+    ) {
         $brand_container->getSetting('core.apps_kb', Argument::any())->willReturn(false);
         $brand_container->getSetting('core.apps_feedback', Argument::any())->willReturn(false);
         $brand_container->getSetting('core.apps_chat', Argument::any())->willReturn(false);
@@ -102,19 +94,18 @@ class UseSectionVoterSpec extends ObjectBehavior
                 UseSectionVoter::USE_FEEDBACK,
                 UseSectionVoter::USE_CHAT,
                 UseSectionVoter::USE_DOWNLOADS,
-                UseSectionVoter::USE_NEWS
+                UseSectionVoter::USE_NEWS,
             ),
             $token
         );
     }
 
-    function it_grants_tickets_if_token_user_has_permission(
+    public function it_grants_tickets_if_token_user_has_permission(
         TokenInterface $token,
         PermissionsBag $person_permission_bag,
         TokenInterface $guest_token,
         PermissionsBag $guest_permission_bag
-    )
-    {
+    ) {
         $person_permission_bag->get('tickets.use')->willReturn(true);
         $this->verifyGrantedVote(UseSectionVoter::USE_TICKETS, $token);
 
@@ -122,13 +113,12 @@ class UseSectionVoterSpec extends ObjectBehavior
         $this->verifyGrantedVote(UseSectionVoter::USE_TICKETS, $guest_token);
     }
 
-    function it_denies_tickets_if_token_user_has_no_permission(
+    public function it_denies_tickets_if_token_user_has_no_permission(
         TokenInterface $token,
         PermissionsBag $person_permission_bag,
         TokenInterface $guest_token,
         PermissionsBag $guest_permission_bag
-    )
-    {
+    ) {
         $person_permission_bag->get('tickets.use')->willReturn(false);
         $this->verifyDeniedVote(UseSectionVoter::USE_TICKETS, $token);
 
@@ -136,14 +126,13 @@ class UseSectionVoterSpec extends ObjectBehavior
         $this->verifyDeniedVote(UseSectionVoter::USE_TICKETS, $guest_token);
     }
 
-    function it_grants_chat_if_token_user_has_permission(
+    public function it_grants_chat_if_token_user_has_permission(
         TokenInterface $token,
         PermissionsBag $person_permission_bag,
         TokenInterface $guest_token,
         PermissionsBag $guest_permission_bag,
         BrandContainer $brand_container
-    )
-    {
+    ) {
         $brand_container->getSetting('core.apps_chat', Argument::any())->willReturn(true);
 
         $person_permission_bag->get('chat.use')->willReturn(true);
@@ -153,14 +142,13 @@ class UseSectionVoterSpec extends ObjectBehavior
         $this->verifyGrantedVote(UseSectionVoter::USE_CHAT, $guest_token);
     }
 
-    function it_denies_chat_if_token_user_has_no_permission(
+    public function it_denies_chat_if_token_user_has_no_permission(
         TokenInterface $token,
         PermissionsBag $person_permission_bag,
         TokenInterface $guest_token,
         PermissionsBag $guest_permission_bag,
         BrandContainer $brand_container
-    )
-    {
+    ) {
         $brand_container->getSetting('core.apps_chat', Argument::any())->willReturn(true);
 
         $person_permission_bag->get('chat.use')->willReturn(false);
@@ -170,14 +158,13 @@ class UseSectionVoterSpec extends ObjectBehavior
         $this->verifyDeniedVote(UseSectionVoter::USE_CHAT, $guest_token);
     }
 
-    function it_denies_content_if_token_user_has_no_permission(
+    public function it_denies_content_if_token_user_has_no_permission(
         TokenInterface $token,
         PermissionsBag $person_permission_bag,
         TokenInterface $guest_token,
         PermissionsBag $guest_permission_bag,
         BrandContainer $brand_container
-    )
-    {
+    ) {
         $brand_container->getSetting('core.apps_kb', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_feedback', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_downloads', Argument::any())->willReturn(true);
@@ -204,14 +191,13 @@ class UseSectionVoterSpec extends ObjectBehavior
         $this->verifyDeniedVote(UseSectionVoter::USE_NEWS, $guest_token);
     }
 
-    function it_grants_content_if_token_user_has_permission(
+    public function it_grants_content_if_token_user_has_permission(
         TokenInterface $token,
         PermissionsBag $person_permission_bag,
         TokenInterface $guest_token,
         PermissionsBag $guest_permission_bag,
         BrandContainer $brand_container
-    )
-    {
+    ) {
         $brand_container->getSetting('core.apps_kb', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_feedback', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_downloads', Argument::any())->willReturn(true);
@@ -238,8 +224,7 @@ class UseSectionVoterSpec extends ObjectBehavior
         $this->verifyGrantedVote(UseSectionVoter::USE_NEWS, $guest_token);
     }
 
-
-    function verifyGrantedVote($attribute, $token)
+    public function verifyGrantedVote($attribute, $token)
     {
         if (!is_array($attribute)) {
             $attribute = array($attribute);
@@ -249,7 +234,7 @@ class UseSectionVoterSpec extends ObjectBehavior
             ->shouldReturn(VoterInterface::ACCESS_GRANTED);
     }
 
-    function verifyDeniedVote($attribute, $token)
+    public function verifyDeniedVote($attribute, $token)
     {
         if (!is_array($attribute)) {
             $attribute = array($attribute);
@@ -259,7 +244,7 @@ class UseSectionVoterSpec extends ObjectBehavior
             ->shouldReturn(VoterInterface::ACCESS_DENIED);
     }
 
-    function verifyAbstainVote($attribute, $token)
+    public function verifyAbstainVote($attribute, $token)
     {
         if (!is_array($attribute)) {
             $attribute = array($attribute);

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage JobQueue
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\JobQueue;
@@ -66,7 +63,7 @@ class JobWorker
     public function __construct(Connection $connection, JobRouter $jobRouter, JobQueue $queue)
     {
         $this->connection = $connection;
-        $this->queue = $queue;
+        $this->queue      = $queue;
 
         // a unique ID for this particular worker
         $this->workerId = uniqid();
@@ -105,6 +102,7 @@ class JobWorker
      * Note that this is not following the normal JobQueue rules. Use at your own risk.
      *
      * @param $id
+     *
      * @return bool
      */
     public function executeJobById($id)
@@ -115,7 +113,7 @@ class JobWorker
     }
 
     /**
-     * Pop the next job, mark it as processing, and attempt to handle it
+     * Pop the next job, mark it as processing, and attempt to handle it.
      *
      * @return bool whether there was a job process attempt made
      */
@@ -129,11 +127,12 @@ class JobWorker
     /**
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
-     * @return array|null                   an array of the job, or null if none available to work on
+     *
+     * @return array|null an array of the job, or null if none available to work on
      */
     protected function popJob()
     {
-        /**
+        /*
          * Reserve the next available job
          */
         $this->connection->executeUpdate(
@@ -162,7 +161,7 @@ class JobWorker
             )
         );
 
-        /**
+        /*
          * Fetch the next job reserved for me
          */
         $job = $this->connection->fetchAssoc(
@@ -187,6 +186,7 @@ class JobWorker
 
     /**
      * @param $job
+     *
      * @return bool
      */
     protected function executeJob($job)
@@ -217,9 +217,10 @@ class JobWorker
     }
 
     /**
-     * Worker calls this before executing a job
+     * Worker calls this before executing a job.
      *
-     * @param  array                        $job the job row from the dbal
+     * @param array $job the job row from the dbal
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
@@ -251,6 +252,7 @@ class JobWorker
 
     /**
      * @param $id
+     *
      * @return array|null
      */
     protected function getJobById($id)
@@ -271,7 +273,8 @@ class JobWorker
     }
 
     /**
-     * @param  mixed $job
+     * @param mixed $job
+     *
      * @return bool
      */
     protected function looksLikeAJobArray($job)

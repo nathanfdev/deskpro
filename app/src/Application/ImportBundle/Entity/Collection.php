@@ -30,33 +30,35 @@ namespace Application\ImportBundle\Entity;
 use Application\ImportBundle\AbstractCollection;
 
 /**
- * Exporting collection of entities
+ * Exporting collection of entities.
  *
  * Class Collection
- * @package Application\ImportBundle\Entity
  */
 final class Collection extends AbstractCollection
 {
     /**
      * @param EntityInterface $entity
+     *
      * @return $this
      */
     public function attach(EntityInterface $entity)
     {
         $this->collection[] = $entity;
+
         return $this;
     }
 
     /**
-     * Merge another entity collection
+     * Merge another entity collection.
      *
      * @param Collection $collection
+     *
      * @return $this
      */
     public function merge(Collection $collection)
     {
         foreach ($collection as $entity) {
-            /** @var EntityInterface $entity */
+            /* @var EntityInterface $entity */
             $this->attach($entity);
         }
 

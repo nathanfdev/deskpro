@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Exception\ValidationException;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
-use Application\DeskPRO\Exception\ValidationException;
 
 class FeedbackCategoriesController extends AbstractController implements ProtectedControllerInterface
 {
@@ -59,10 +56,9 @@ class FeedbackCategoriesController extends AbstractController implements Protect
 
     public function listAction()
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
+        /*
+         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories
          */
-
         $feedback_categories = $this->container->getSystemService('feedback_categories');
 
         return $this->createApiResponse(
@@ -78,10 +74,9 @@ class FeedbackCategoriesController extends AbstractController implements Protect
 
     public function getAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
+        /*
+         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories
          */
-
         $feedback_categories = $this->container->getSystemService('feedback_categories');
         $feedback_category   = $feedback_categories->getById($id);
 
@@ -104,10 +99,9 @@ class FeedbackCategoriesController extends AbstractController implements Protect
 
     public function saveAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
+        /*
+         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories
          */
-
         $feedback_categories = $this->container->getSystemService('feedback_categories');
 
         if ($id) {
@@ -158,10 +152,9 @@ class FeedbackCategoriesController extends AbstractController implements Protect
 
     public function removeAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
+        /*
+         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories
          */
-
         $feedback_categories = $this->container->getSystemService('feedback_categories');
         $feedback_category   = $feedback_categories->getById($id);
 
@@ -217,10 +210,9 @@ class FeedbackCategoriesController extends AbstractController implements Protect
     {
         $display_orders = $this->in->getArrayOfUInts('display_orders');
 
-        /**
-         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
+        /*
+         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories
          */
-
         $feedback_categories = $this->container->getSystemService('feedback_categories');
         $feedback_categories->updateDisplayOrders($display_orders);
 

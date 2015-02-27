@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -46,7 +43,7 @@ class Build1404985598 extends AbstractBuild
         $db->update('usergroups', array('title' => '[Custom] All Permissions'), array('title' => 'All Permissions'));
         $db->update('usergroups', array('title' => '[Custom] All Non-Destructive Permissions'), array('title' => 'All Non-Destructive Permissions'));
 
-        $g = new Usergroup();
+        $g                 = new Usergroup();
         $g->title          = 'All Permissions';
         $g->note           = 'Special agent group which always has all permissions enabled.';
         $g->is_agent_group = true;
@@ -54,7 +51,7 @@ class Build1404985598 extends AbstractBuild
         $g->is_enabled     = true;
         $em->persist($g);
 
-        $g = new Usergroup();
+        $g                 = new Usergroup();
         $g->title          = 'All Non-Destructive Permissions';
         $g->note           = 'Special agent group which always has all permissions enabled except those that can be desctructive (e.g., deleting).';
         $g->is_agent_group = true;

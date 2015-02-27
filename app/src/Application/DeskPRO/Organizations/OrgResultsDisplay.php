@@ -26,11 +26,9 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Organizations
+ * DeskPRO.
  */
+
 namespace Application\DeskPRO\Organizations;
 
 use Application\DeskPRO\App;
@@ -85,9 +83,9 @@ class OrgResultsDisplay
      */
     public function __construct(array $orgs)
     {
-        $this->orgs = $orgs;
+        $this->orgs       = $orgs;
         $this->orgs_count = count($orgs);
-        $this->org_ids = Arrays::flattenToIndex($this->orgs, 'id');
+        $this->org_ids    = Arrays::flattenToIndex($this->orgs, 'id');
 
         $this->em = App::getOrm();
         $this->db = $this->em->getConnection();
@@ -136,9 +134,10 @@ class OrgResultsDisplay
     }
 
     /**
-     * Get an array of labels applied to an org
+     * Get an array of labels applied to an org.
      *
-     * @param  \Application\DeskPRO\Entity\Organization $org
+     * @param \Application\DeskPRO\Entity\Organization $org
+     *
      * @return array
      */
     public function getOrgLabels(Organization $org)
@@ -149,9 +148,10 @@ class OrgResultsDisplay
     }
 
     /**
-     * Check if an org has labels
+     * Check if an org has labels.
      *
-     * @param  \Application\DeskPRO\Entity\Organization $org
+     * @param \Application\DeskPRO\Entity\Organization $org
+     *
      * @return bool
      */
     public function hasOrgLabels(Organization $org)
@@ -183,7 +183,8 @@ class OrgResultsDisplay
     /**
      * Get the number of tickets submitted by a user.
      *
-     * @param  \Application\DeskPRO\Entity\Organization $org
+     * @param \Application\DeskPRO\Entity\Organization $org
+     *
      * @return int
      */
     public function getOrgMemberCount(Organization $org)

@@ -26,21 +26,21 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Input
  */
 
 namespace Orb\Input\Reader\Source;
 
 /**
- * A reader source that reads data from a normal array or array-like object
+ * A reader source that reads data from a normal array or array-like object.
  */
 class ArrayVal implements SourceInterface
 {
     /**
      * The array set.
+     *
      * @var array
      */
     protected $array;
@@ -56,10 +56,11 @@ class ArrayVal implements SourceInterface
     }
 
     /**
-     * Get the value of some variable
+     * Get the value of some variable.
      *
-     * @param  string|array $name    The name of the variable
-     * @param  mixed        $options Any options there may be
+     * @param string|array $name    The name of the variable
+     * @param mixed        $options Any options there may be
+     *
      * @return mixed
      */
     public function getValue($name, $options = null)
@@ -67,7 +68,7 @@ class ArrayVal implements SourceInterface
         $parts = array();
         if (is_array($name)) {
             $parts = $name;
-            $name = array_shift($parts);
+            $name  = array_shift($parts);
         }
 
         if (isset($this->array[$name])) {
@@ -93,8 +94,9 @@ class ArrayVal implements SourceInterface
     /**
      * Check if a value of some variable is set.
      *
-     * @param  string|array $name    The name of the variable
-     * @param  mixed        $options Any options there may be
+     * @param string|array $name    The name of the variable
+     * @param mixed        $options Any options there may be
+     *
      * @return bool
      */
     public function checkIsset($name, $options = null)
@@ -115,8 +117,7 @@ class ArrayVal implements SourceInterface
     /**
      * Set the array value.
      *
-     * @param  array $array
-     * @return void
+     * @param array $array
      */
     public function setArray($array)
     {

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Filter
+ * Orb.
  */
 
 namespace Orb\Filter;
@@ -37,13 +34,14 @@ namespace Orb\Filter;
 class FilterChain extends AbstractFilter implements \Countable, \IteratorAggregate
 {
     /**
-     * An array of filters
+     * An array of filters.
+     *
      * @var array
      */
     protected $_filters = array();
 
     /**
-     * Add a new filter to the chain
+     * Add a new filter to the chain.
      *
      * @param \Zend\Filter\FilterInterface $filter
      */
@@ -65,7 +63,8 @@ class FilterChain extends AbstractFilter implements \Countable, \IteratorAggrega
     /**
      * Filter a value.
      *
-     * @param  mixed $value
+     * @param mixed $value
+     *
      * @return mixed
      */
     public function filter($value)

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Mail
  */
 
@@ -51,7 +50,7 @@ class PersonEditManager implements PersonContextInterface
     protected $db;
 
     /**
-     * Who is performing these edits
+     * Who is performing these edits.
      *
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -80,14 +79,14 @@ class PersonEditManager implements PersonContextInterface
     }
 
     /**
-     * Save general notification preferences
+     * Save general notification preferences.
      *
      * $prefs is an array(pref=>true, pref=>true)
      *
+     *
+     * @param \Application\DeskPRO\Entity\Person $person
+     * @param array                              $prefs
      * @throws \Exception
-     * @param  \Application\DeskPRO\Entity\Person $person
-     * @param  array                              $prefs
-     * @return void
      */
     public function saveNotificationPreferences(Person $person, array $prefs)
     {
@@ -130,9 +129,9 @@ class PersonEditManager implements PersonContextInterface
                     continue;
                 }
 
-                $pref = new \Application\DeskPRO\Entity\PersonPref();
-                $pref->person = $person;
-                $pref->name = "agent_notif.{$name}";
+                $pref            = new \Application\DeskPRO\Entity\PersonPref();
+                $pref->person    = $person;
+                $pref->name      = "agent_notif.{$name}";
                 $pref->value_str = "1";
 
                 $this->em->persist($pref);
@@ -153,9 +152,11 @@ class PersonEditManager implements PersonContextInterface
      *
      * $subs is array(filter_id => array(type=>true, type=>true, type=>true)
      *
+     *
+     * @param \Application\DeskPRO\Entity\Person $person
+     * @param array                              $subs
      * @throws \Exception
-     * @param  \Application\DeskPRO\Entity\Person $person
-     * @param  array                              $subs
+     *
      * @return array
      */
     public function saveFilterSubscriptions(Person $person, array $subs)
@@ -219,7 +220,7 @@ class PersonEditManager implements PersonContextInterface
             }
 
             if ($props) {
-                $sub = new \Application\DeskPRO\Entity\TicketFilterSubscription();
+                $sub         = new \Application\DeskPRO\Entity\TicketFilterSubscription();
                 $sub->filter = $filter;
                 $sub->person = $person;
 
@@ -239,7 +240,7 @@ class PersonEditManager implements PersonContextInterface
     }
 
     /**
-     * Set the context (who is making these edits)
+     * Set the context (who is making these edits).
      *
      * @param Person $person
      */

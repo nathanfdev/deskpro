@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Templating\Templates;
@@ -58,12 +56,13 @@ class TemplateSet
      */
     public function __construct(EntityManager $em, Twig_Environment $twig)
     {
-        $this->em = $em;
+        $this->em   = $em;
         $this->twig = $twig;
     }
 
     /**
-     * @param  string                      $name
+     * @param string $name
+     *
      * @return TemplateCustom|TemplateFile
      */
     public function getTemplate($name)
@@ -85,7 +84,8 @@ class TemplateSet
      * a TemplateFile if the template isn't custom (e.g., we are saving a customised version of a file
      * template for the fist time.)
      *
-     * @param  string         $name
+     * @param string $name
+     *
      * @return TemplateCustom
      */
     public function getCustomTemplate($name)
@@ -95,9 +95,9 @@ class TemplateSet
             return $template;
         }
 
-        $entity = new TemplateEntity();
+        $entity       = new TemplateEntity();
         $entity->name = $name;
-        $custom = null;
+        $custom       = null;
 
         if ($entity->name) {
             $custom = TemplateCustom::createFromEntity($entity);
@@ -113,7 +113,8 @@ class TemplateSet
     }
 
     /**
-     * @param  string         $name
+     * @param string $name
+     *
      * @return TemplateCustom
      */
     public function createCustomTemplate($name)
@@ -125,13 +126,13 @@ class TemplateSet
     }
 
     /**
-     * Persists code saved in the template_code
+     * Persists code saved in the template_code.
      *
      * @param TemplateCustom $template
      */
     public function saveTemplate(TemplateCustom $template)
     {
-        $entity = $template->getEntity();
+        $entity       = $template->getEntity();
         $entity->name = $template->getName();
         $entity->setTemplate(
             $template->getTemplateCode()->getCode(),
@@ -144,7 +145,7 @@ class TemplateSet
     }
 
     /**
-     * Delete a template
+     * Delete a template.
      *
      * @param TemplateCustom $template
      */
@@ -157,7 +158,8 @@ class TemplateSet
     }
 
     /**
-     * @param  Template $template
+     * @param Template $template
+     *
      * @return string
      */
     public function compileTemplate(Template $template)
@@ -169,7 +171,7 @@ class TemplateSet
 
         $template_code = $template->getTemplateCode();
         if ($template_code instanceof EmailTemplateCode) {
-            $proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
+            $proc         = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
             $compile_code = $proc->process($template_code->getCode(), $template->getName());
         } else {
             $compile_code = $template_code->getCode();
@@ -186,6 +188,7 @@ class TemplateSet
 
     /**
      * @param $code
+     *
      * @return mixed
      */
     private function preProcessCustomTemplate($code)
@@ -196,12 +199,13 @@ class TemplateSet
     }
 
     /**
-     * @param  Template $template
+     * @param Template $template
+     *
      * @return array
      */
     public function exportTemplateToArray(Template $template, Translate $tr = null, $replace_phrases = false)
     {
-        $data = array();
+        $data                          = array();
         $data['name']                  = $template->getName();
         $data['base_name']             = $data['name'];
         $data['type']                  = $template->getType();
@@ -232,13 +236,13 @@ class TemplateSet
 
         if ($tr) {
             if (preg_match('#^DeskPRO:email#', $data['name']) && !preg_match('#^DeskPRO:emails_custom#', $data['name'])) {
-                $tpl_desc = new EmailTemplatesDesc();
-                $info = $tpl_desc->getTplDisplayInfo(array('name' => $data['name']), $tr);
+                $tpl_desc                    = new EmailTemplatesDesc();
+                $info                        = $tpl_desc->getTplDisplayInfo(array('name' => $data['name']), $tr);
                 $data['display_title']       = $info['title'];
                 $data['display_description'] = $info['desc'];
             } else {
-                $name = Strings::extractRegexMatch('#^DeskPRO:.*?:(.*?).html.twig$#', $data['name'], 1).'.html';
-                $key = 'admin.emailtpl_desc.'.strtolower(str_replace(array(':', '.'), '_', $data['base_name']));
+                $name                        = Strings::extractRegexMatch('#^DeskPRO:.*?:(.*?).html.twig$#', $data['name'], 1).'.html';
+                $key                         = 'admin.emailtpl_desc.'.strtolower(str_replace(array(':', '.'), '_', $data['base_name']));
                 $data['display_title']       = $tr->hasPhrase($key.'_title') ? $tr->phrase($key.'_title') : $name;
                 $data['display_description'] = $tr->hasPhrase($key.'_desc') ? $tr->phrase($key.'_desc')   : null;
             }
@@ -254,10 +258,11 @@ class TemplateSet
     }
 
     /**
-     * Replace phrase tags with actual language
+     * Replace phrase tags with actual language.
      *
-     * @param  string    $code
-     * @param  Translate $tr
+     * @param string    $code
+     * @param Translate $tr
+     *
      * @return string
      */
     public function resolvePhraseTags($code, Translate $tr)

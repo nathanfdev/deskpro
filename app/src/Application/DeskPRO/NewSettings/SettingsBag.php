@@ -26,17 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage NewSettings
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\NewSettings;
 
 /**
  * The SettingsBag acts like an immutable array, and also offers an API with methods like has('key') and get('key', 'default').
- *
  */
 class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Serializable
 {
@@ -150,8 +146,9 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
      *
      * array('core.register' => 1)
      *
-     * @param  string $group the group prefix
-     * @param  bool   $short true to cut the group name out of the result array keys
+     * @param string $group the group prefix
+     * @param bool   $short true to cut the group name out of the result array keys
+     *
      * @return array
      */
     public function getGroup($group, $short = true)

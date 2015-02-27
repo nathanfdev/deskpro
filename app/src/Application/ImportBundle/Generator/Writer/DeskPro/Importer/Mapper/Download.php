@@ -31,10 +31,9 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Download record mapper
+ * Download record mapper.
  *
  * Class Download
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class Download implements MapperInterface, MapperByTitleInterface
 {
@@ -44,7 +43,7 @@ final class Download implements MapperInterface, MapperByTitleInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\Download $repository
      */

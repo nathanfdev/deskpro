@@ -8,13 +8,11 @@ class DepartmentEntityTest extends \DpUnitTestCase
     /**
      * @var \Application\DeskPRO\Entity\Department
      */
-
     private $entity;
 
     /**
      * @var \Symfony\Component\Validator\Validator
      */
-
     private $validator;
 
     public function runBefore()
@@ -87,15 +85,15 @@ class DepartmentEntityTest extends \DpUnitTestCase
 
     public function testDepartmentChildrenAndParentHierarchy()
     {
-        $parent = new Department();
+        $parent        = new Department();
         $parent->title = 'parent';
 
-        $child1 = new Department();
-        $child1->title = 'child 1';
+        $child1                = new Department();
+        $child1->title         = 'child 1';
         $child1->display_order = 100;
 
-        $child2 = new Department();
-        $child2->title = 'child 2';
+        $child2                = new Department();
+        $child2->title         = 'child 2';
         $child2->display_order = 20;
 
         $parent->addChild($child1);

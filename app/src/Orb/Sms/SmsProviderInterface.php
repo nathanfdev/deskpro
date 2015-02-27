@@ -26,21 +26,16 @@
  * \**************************************************************************/
 
 /**
- * Orb
- *
- * @package    Orb
- * @subpackage Sms
+ * Orb.
  */
 
 namespace Orb\Sms;
 
 /**
- * Interface SmsProviderInterface
+ * Interface SmsProviderInterface.
  *
  * An interface that defines an SMS Provider in the system. All SMS Providers that are used in this package
  * must implement this interface.
- *
- * @package Orb\Sms
  */
 interface SmsProviderInterface
 {
@@ -50,6 +45,7 @@ interface SmsProviderInterface
      * @param SmsMessageChunk $textMessage     the message chunk to be sent to the given number
      *
      * @throws \Orb\Sms\SmsException
+     *
      * @return \Orb\Sms\SmsResult
      */
     public function sendMessage($toPhoneNumber, SmsMessageChunk $textMessage, $fromPhoneNumber);

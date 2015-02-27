@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Data
+ * Orb.
  */
 
 namespace Orb\Data;
 
 /**
- * Source: http://www.itu.int/dms_pub/itu-t/opb/sp/T-SP-E.164D-2009-PDF-E.pdf
+ * Source: http://www.itu.int/dms_pub/itu-t/opb/sp/T-SP-E.164D-2009-PDF-E.pdf.
  */
 class CountryCallingCodes
 {
@@ -280,7 +277,7 @@ class CountryCallingCodes
     );
 
     /**
-     * Gets a full raw data array where each item is array(country name, country code, calling code)
+     * Gets a full raw data array where each item is array(country name, country code, calling code).
      *
      * @return array
      */
@@ -290,7 +287,7 @@ class CountryCallingCodes
     }
 
     /**
-     * Gets a map of countrycode=>callingcode
+     * Gets a map of countrycode=>callingcode.
      *
      * @return array
      */

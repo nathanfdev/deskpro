@@ -26,14 +26,12 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
 namespace Orb\Util;
-
 
 /**
  * String utility functions.
@@ -42,7 +40,9 @@ namespace Orb\Util;
  */
 class Strings
 {
-    private function __construct() { /* No instances allowed */ }
+    private function __construct()
+    { /* No instances allowed */
+    }
 
     /**#@+
      * Strings of some common character ranges.
@@ -61,42 +61,41 @@ class Strings
     const CHARS_KEY_NUM      = '23456789';
     /**#@-*/
 
-
     /**#@+
      * End of line characters.
      * @see Strings::standardEol()
      */
-    const EOL_LF = "\n";
+    const EOL_LF   = "\n";
     const EOL_CRLF = "\r\n";
-    const EOL_CR = "\r";
+    const EOL_CR   = "\r";
     /**#@-*/
-
 
     /**#@+
      * Flags for use with the boundary function.
      * @see Strings::getBetweenBoundary()
      */
     const BOUNDARY_APPEND = 1;
-    const BOUNDARY_ARRAY = 2;
-    const BOUNDARY_FIRST = 3;
+    const BOUNDARY_ARRAY  = 2;
+    const BOUNDARY_FIRST  = 3;
     /**#@-*/
 
     /**#@+
      * Some helpful Unicode characters
      */
     const ZERO_WIDTH_SPACE = "\xE2\x80\x8B";
-    const SOFT_HYPHEN = "\xC2\xAD";
+    const SOFT_HYPHEN      = "\xC2\xAD";
     /**#@-*/
 
     /**
      * When a dupe key is encountered, overwrite the old key.
+     *
      * @see see Strings::parseEqualsLines()
      */
     const EQUALSLINES_DUPE_OVERWRITE = 1;
 
-
     /**
      * When a dupe key is encountered, overwrite the old key.
+     *
      * @see see Strings::parseEqualsLines()
      */
     const EQUALSLINES_DUPE_ADD_ARRAY = 2;
@@ -109,8 +108,6 @@ class Strings
      */
     protected static $php_utf8_dir = null;
 
-
-
     /**
      * Add slashes to a string to be used within Javascript with quotes and newlines properly
      * escaped.
@@ -121,7 +118,8 @@ class Strings
      * echo '<script type="text/javascript">var js_string = "' . Strings::addslashesJs($str) . '";</script>';
      * </code>
      *
-     * @param  string $string The string to escape
+     * @param string $string The string to escape
+     *
      * @return string
      */
     public static function addslashesJs($string)
@@ -135,8 +133,6 @@ class Strings
 
         return $str;
     }
-
-
 
     /**
      * Generate a random string.
@@ -154,7 +150,7 @@ class Strings
             $chars = self::CHARS_ALPHANUM;
         }
 
-        $string = '';
+        $string    = '';
         $max_range = strlen($chars) - 1;
 
         for ($i = 0; $i < $len; $i++) {
@@ -164,16 +160,15 @@ class Strings
         return $string;
     }
 
-
-
     /**
      * Generate a random string made up of "pronouncable" bits. Examples:
      * - bacrimo
      * - drestaw
-     * - swuclew
+     * - swuclew.
      *
-     * @param  int    $len      The maximum length of the string
-     * @param  int    $dash_len Insert dashes after this many chars
+     * @param int $len      The maximum length of the string
+     * @param int $dash_len Insert dashes after this many chars
+     *
      * @return string
      */
     public static function randomPronounceable($len = 10, $dash_len = 0)
@@ -182,9 +177,9 @@ class Strings
 
         if (!$vowels) {
             $vowels = array('a', 'e', 'i', 'o', 'u');
-            $cons = array(
+            $cons   = array(
                 'b', 'c', 'd', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'u', 'v', 'w', 'tr',
-                'cr', 'br', 'fr', 'th', 'dr', 'ch', 'ph', 'wr', 'st', 'sp', 'sw', 'pr', 'sl', 'cl'
+                'cr', 'br', 'fr', 'th', 'dr', 'ch', 'ph', 'wr', 'st', 'sp', 'sw', 'pr', 'sl', 'cl',
             );
 
             $num_vowels = count($vowels);
@@ -192,8 +187,8 @@ class Strings
         }
 
         $string = '';
-        for($i = -1; $i < $len; $i++){
-            $string .= $cons[mt_rand(0, $num_cons - 1)] . $vowels[mt_rand(0, $num_vowels - 1)];
+        for ($i = -1; $i < $len; $i++) {
+            $string .= $cons[mt_rand(0, $num_cons - 1)].$vowels[mt_rand(0, $num_vowels - 1)];
         }
 
         if ($dash_len) {
@@ -209,13 +204,12 @@ class Strings
         return $string;
     }
 
-
-
     /**
      * Standarize the end-of-line character in a string.
      *
-     * @param  string $string The string to work on
-     * @param  string $eol    The end of line character to use
+     * @param string $string The string to work on
+     * @param string $eol    The end of line character to use
+     *
      * @return string
      */
     public static function standardEol($string, $eol = self::EOL_LF)
@@ -223,11 +217,11 @@ class Strings
         return preg_replace('#\n|\r\n|\r#', $eol, $string);
     }
 
-
     /**
-     * Replaces all line breaks with a space character, making it a single line of text
+     * Replaces all line breaks with a space character, making it a single line of text.
      *
-     * @param  string $string The string to work on
+     * @param string $string The string to work on
+     *
      * @return string
      */
     public static function removeLineBreaks($string)
@@ -235,11 +229,11 @@ class Strings
         return preg_replace('#\n|\r\n|\r#', ' ', $string);
     }
 
-
     /**
      * Replace all whitespace with a single space.
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public static function collapseWhitespace($string)
@@ -247,11 +241,11 @@ class Strings
         return preg_replace("#\\s+#", ' ', $string);
     }
 
-
     /**
      * Return the first line of a string.
      *
-     * @param  string $string The string to work on
+     * @param string $string The string to work on
+     *
      * @return string
      */
     public static function getFirstLine($string)
@@ -265,12 +259,11 @@ class Strings
         return $string;
     }
 
-
-
     /**
      * Return the last line of a string.
      *
-     * @param  string $string The string to work on
+     * @param string $string The string to work on
+     *
      * @return string
      */
     public static function getLastLine($string)
@@ -282,16 +275,15 @@ class Strings
         return array_pop($lines);
     }
 
-
-
     /**
      * Check if $needle is anywhere in $haystack. If $needle is an array,
      * then all strings in the array must be found in $haystack for
      * this function to return true.
      *
-     * @param  string|array $needle     The string to search for
-     * @param  string       $haystack   The string to search in
-     * @param  bool         $any_needle If using array $needle, return true for any found needle instead of requiring all
+     * @param string|array $needle     The string to search for
+     * @param string       $haystack   The string to search in
+     * @param bool         $any_needle If using array $needle, return true for any found needle instead of requiring all
+     *
      * @return bool
      */
     public static function isIn($needle, $haystack, $any_needle = false)
@@ -315,13 +307,12 @@ class Strings
         return (strpos($haystack, $needle) !== false);
     }
 
-
-
     /**
-     * Check if $needle is at the beginning of $haystack
+     * Check if $needle is at the beginning of $haystack.
      *
-     * @param  string $needle   The string to search for
-     * @param  string $haystack The string to search in
+     * @param string $needle   The string to search for
+     * @param string $haystack The string to search in
+     *
      * @return bool
      */
     public static function startsWith($needle, $haystack)
@@ -336,20 +327,19 @@ class Strings
             return false;
         }
 
-        if ($needle == $haystack OR $haystack == '') {
+        if ($needle == $haystack or $haystack == '') {
             return true;
         }
 
         return (strpos($haystack, $needle) === 0);
     }
 
-
-
     /**
-     * Check if $needle is at the end of $haystack
+     * Check if $needle is at the end of $haystack.
      *
-     * @param  string $needle   The string to search for
-     * @param  string $haystack The string to search in
+     * @param string $needle   The string to search for
+     * @param string $haystack The string to search in
+     *
      * @return bool
      */
     public static function endsWith($needle, $haystack)
@@ -367,13 +357,12 @@ class Strings
         return Strings::startsWith(strrev($needle), strrev($haystack));
     }
 
-
-
     /**
      * Get characters from the beginning of a string.
      *
-     * @param  string $string The string to work on
-     * @param  int    $num    The number of characters to get
+     * @param string $string The string to work on
+     * @param int    $num    The number of characters to get
+     *
      * @return string
      */
     public static function getFromStart($string, $num = 1)
@@ -381,13 +370,12 @@ class Strings
         return substr($string, 0, $num);
     }
 
-
-
     /**
      * Get characters from the end of a string.
      *
-     * @param  string $string The string to work on
-     * @param  int    $num    The number of characters to get
+     * @param string $string The string to work on
+     * @param int    $num    The number of characters to get
+     *
      * @return string
      */
     public static function getFromEnd($string, $num = 1)
@@ -395,13 +383,12 @@ class Strings
         return substr($string, strlen($string) - $num);
     }
 
-
-
     /**
      * Trim characters off of the end of a string.
      *
-     * @param  string $string The string to work on
-     * @param  int    $num    How many characters to remove
+     * @param string $string The string to work on
+     * @param int    $num    How many characters to remove
+     *
      * @return string
      */
     public static function delFromEnd($string, $num = 1)
@@ -409,13 +396,12 @@ class Strings
         return substr($string, 0, strlen($string) - $num);
     }
 
-
-
     /**
      * Trim characters off of the start of a string.
      *
-     * @param  string $string The string to work on
-     * @param  int    $num    How many characters to remove
+     * @param string $string The string to work on
+     * @param int    $num    How many characters to remove
+     *
      * @return string
      */
     public static function delFromStart($string, $num = 1)
@@ -423,14 +409,13 @@ class Strings
         return substr($string, $num);
     }
 
-
-
     /**
      * Get a string from a character index. Like substr, but doesn't works with
      * indexes instead of lengths.
      *
-     * @param  int    $index_start The start index inclusive
-     * @param  int    $index_end   The end index, exclusive. Null means end of the string
+     * @param int $index_start The start index inclusive
+     * @param int $index_end   The end index, exclusive. Null means end of the string
+     *
      * @return string
      */
     public static function getFromIndex($string, $index_start = 0, $index_end = null)
@@ -453,8 +438,9 @@ class Strings
      * // -> 'Christopher smacks David around a bit with a big large trout
      * </code>
      *
-     * @param  string $string   The string to work on
-     * @param  mixed  $value... The value(s) to replace each token with
+     * @param string $string   The string to work on
+     * @param mixed  $value... The value(s) to replace each token with
+     *
      * @return string
      */
     public static function format()
@@ -471,7 +457,7 @@ class Strings
         $string = str_replace('%', '%%', $string);
 
         // Replace {1} with %1$s
-        $count = 0;
+        $count  = 0;
         $string = preg_replace('#\{([0-9]+)\}#', '%\\1$s', $string, -1, $count);
 
         if (!$count) {
@@ -482,7 +468,6 @@ class Strings
         // or else vsprintf will throw errors
         $args = array_pad($args, $count, '');
 
-
         #------------------------------
         # Return the string with placeholders replaces
         #------------------------------
@@ -490,13 +475,12 @@ class Strings
         return vsprintf($string, $args);
     }
 
-
-
     /**
      * Get the exention from a string. This is the last bits after the
      * '.', i.e. as part of a path.
      *
-     * @param  string $string The string to work on
+     * @param string $string The string to work on
+     *
      * @return string
      */
     public static function getExtension($string)
@@ -508,8 +492,6 @@ class Strings
 
         return '';
     }
-
-
 
     /**
      * Get all text above a boundary within a string.
@@ -523,19 +505,21 @@ class Strings
      * echo Strings::getAboveBoundary($text, "======= BOUNDARY ======="); // "Testing 123"
      * </code>
      *
-     * @param  string $string   The string to operate on
-     * @param  string $boundary The boundary to look for
+     * @param string $string   The string to operate on
+     * @param string $boundary The boundary to look for
+     *
      * @return string
      */
     public static function getAboveBoundary($string, $boundary)
     {
         $pos = strpos($string, $boundary);
 
-        if ($pos === false) return '';
+        if ($pos === false) {
+            return '';
+        }
+
         return substr($string, 0, $pos);
     }
-
-
 
     /**
      * Get all text below a boundary within a string.
@@ -549,19 +533,21 @@ class Strings
      * echo Strings::getBelowBoundary($text, "======= BOUNDARY ======="); // "More text"
      * </code>
      *
-     * @param  string $string   The string to operate on
-     * @param  string $boundary The boundary to look for
+     * @param string $string   The string to operate on
+     * @param string $boundary The boundary to look for
+     *
      * @return string
      */
     public static function getBelowBoundary($string, $boundary)
     {
         $pos = strpos($string, $boundary);
 
-        if ($pos === false) return '';
+        if ($pos === false) {
+            return '';
+        }
+
         return substr($string, $pos+strlen($boundary));
     }
-
-
 
     /**
      * Get all the text between two boundaries in a string.
@@ -582,19 +568,22 @@ class Strings
      * echo Strings::getBetweenBoundary($text, "======= BOUNDARY_START =======", "======= BOUNDARY_END ======="); // "More text"
      * </code>
      *
-     * @param  string       $string         The string to operate on
-     * @param  string       $boundary_start The beginning boundary
-     * @param  string       $boundary_end   The end boundary
-     * @param  int          $mode           How to handle multiple results
+     * @param string $string         The string to operate on
+     * @param string $boundary_start The beginning boundary
+     * @param string $boundary_end   The end boundary
+     * @param int    $mode           How to handle multiple results
+     *
      * @return string|array
      */
     public static function getBetweenBoundary($string, $boundary_start, $boundary_end = null, $mode = self::BOUNDARY_APPEND)
     {
-        if (!$boundary_end) $boundary_end = $boundary_start;
+        if (!$boundary_end) {
+            $boundary_end = $boundary_start;
+        }
 
         $boundary_start = preg_quote($boundary_start, '#');
-        $boundary_end = preg_quote($boundary_end, '#');
-        $regex = "#$boundary_start(.*?)$boundary_end#ms";
+        $boundary_end   = preg_quote($boundary_end, '#');
+        $regex          = "#$boundary_start(.*?)$boundary_end#ms";
 
         $matches = array();
         if (!preg_match_all($regex, $string, $matches)) {
@@ -624,19 +613,18 @@ class Strings
         return implode('', $res);
     }
 
-
-
     /**
      * Converts a dashed string into a camelCase string. Example:
-     * this-dash-string becomes thisDashString
+     * this-dash-string becomes thisDashString.
      *
-     * @param  string $str
+     * @param string $str
+     *
      * @return string
      */
     public static function dashToCamelCase($str)
     {
         $new_str = '';
-        $str = strtolower($str);
+        $str     = strtolower($str);
 
         // Convert some-string to someController
         $do_upper = false;
@@ -654,12 +642,12 @@ class Strings
         return $new_str;
     }
 
-
     /**
      * Converts an underscored string into a camelCase string.
-     * Example: this_underscore_string becomes thisUnderscoreString
+     * Example: this_underscore_string becomes thisUnderscoreString.
      *
-     * @param  string $str
+     * @param string $str
+     *
      * @return string
      */
     public static function underscoreToCamelCase($str)
@@ -667,12 +655,12 @@ class Strings
         return self::dashToCamelCase(str_replace('_', '-', $str));
     }
 
-
     /**
      * Converts a camelCase string to a dashed-string. Example:
-     * thisDashString becoems this-dash-string
+     * thisDashString becoems this-dash-string.
      *
-     * @param  string $str The string to work on
+     * @param string $str The string to work on
+     *
      * @return string
      */
     public static function camelCaseToDash($str)
@@ -680,13 +668,12 @@ class Strings
         return strtolower(preg_replace('#([a-z0-9])([A-Z])#', '$1-$2', $str));
     }
 
-
-
     /**
      * Converts a camelCase string to a underscored-string. Example:
-     * thisDashString becoems this_dash_string
+     * thisDashString becoems this_dash_string.
      *
-     * @param  string $str The string to work on
+     * @param string $str The string to work on
+     *
      * @return string
      */
     public static function camelCaseToUnderscore($str)
@@ -694,14 +681,13 @@ class Strings
         return strtolower(preg_replace('#([a-z0-9])([A-Z])#', '$1_$2', $str));
     }
 
-
-
     /**
      * Parse a simple 'key=value' string into an array.
      *
-     * @param  string $str       The string to parse, or an array of lines
-     * @param  int    $dupe_mode What to do when dupe keys are found
-     * @param  string $sep_str   The character to separate keys from values (usually '=' or ':', but can be anthing, e.g. '=>')
+     * @param string $str       The string to parse, or an array of lines
+     * @param int    $dupe_mode What to do when dupe keys are found
+     * @param string $sep_str   The character to separate keys from values (usually '=' or ':', but can be anthing, e.g. '=>')
+     *
      * @return array
      */
     public static function parseEqualsLines($str, $dupe_mode = self::EQUALSLINES_DUPE_OVERWRITE, $sep_str = '=')
@@ -716,19 +702,25 @@ class Strings
         foreach ($str as $line) {
 
             // No line
-            if (!$line) continue;
+            if (!$line) {
+                continue;
+            }
 
             // Ignore 'comments'
-            if ($line[0] == '#') continue;
+            if ($line[0] == '#') {
+                continue;
+            }
 
             $vals = explode($sep_str, $line, 2);
-            if (!isset($vals[1])) continue; // wrong array size, should be two items
+            if (!isset($vals[1])) {
+                continue;
+            } // wrong array size, should be two items
 
             $key = trim($vals[0]);
             $val = trim($vals[1]);
 
             if (Numbers::isInteger($val)) {
-                $val = (int)$val;
+                $val = (int) $val;
             }
 
             // We can just overwrite
@@ -752,35 +744,34 @@ class Strings
         return $values;
     }
 
-
-
     /**
      * Encode a string as quoted-printable.
      *
      * @param $input
      * @param $line_max
+     *
      * @return string
      */
     public static function quotedPrintableEncode($input, $line_max = 75)
     {
-        $hex = array('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F');
-        $lines = preg_split("/(?:\r\n|\r|\n)/", $input);
+        $hex       = array('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F');
+        $lines     = preg_split("/(?:\r\n|\r|\n)/", $input);
         $linebreak = "=0D=0A=\r\n";
 
-        $line_max = $line_max - strlen($linebreak);
-        $escape = "=";
-        $output = "";
-        $cur_conv_line = "";
-        $length = 0;
+        $line_max       = $line_max - strlen($linebreak);
+        $escape         = "=";
+        $output         = "";
+        $cur_conv_line  = "";
+        $length         = 0;
         $whitespace_pos = 0;
-        $addtl_chars = 0;
+        $addtl_chars    = 0;
 
-        for ($j=0; $j<count($lines); $j++) {
-            $line = $lines[$j];
+        for ($j = 0; $j<count($lines); $j++) {
+            $line   = $lines[$j];
             $linlen = strlen($line);
 
             for ($i = 0; $i < $linlen; $i++) {
-                $c = substr($line, $i, 1);
+                $c   = substr($line, $i, 1);
                 $dec = ord($c);
 
                 $length++;
@@ -792,11 +783,12 @@ class Strings
                         $length += 2;
                     }
 
-                    $addtl_chars = 0;
+                    $addtl_chars    = 0;
                     $whitespace_pos = $i;
-                } elseif ( ($dec == 61) || ($dec < 32 ) || ($dec > 126) ) {
-                    $h2 = floor($dec/16); $h1 = floor($dec%16);
-                    $c = $escape . $hex["$h2"] . $hex["$h1"];
+                } elseif (($dec == 61) || ($dec < 32) || ($dec > 126)) {
+                    $h2 = floor($dec/16);
+                    $h1 = floor($dec%16);
+                    $c  = $escape.$hex["$h2"].$hex["$h1"];
                     $length += 2;
                     $addtl_chars += 2;
                 }
@@ -808,7 +800,7 @@ class Strings
                     // read only up to the whitespace for the current line
                     $whitesp_diff = $i - $whitespace_pos + $addtl_chars;
                     $output .= substr($cur_conv_line, 0,
-                    (strlen($cur_conv_line) - $whitesp_diff)) .
+                    (strlen($cur_conv_line) - $whitesp_diff)).
                     $linebreak;
 
                     /* the text after the whitespace will have to be read
@@ -816,8 +808,8 @@ class Strings
                      * existence as a result of the encoding process after the whitespace) */
                     $i =  $i - $whitesp_diff + $addtl_chars;
 
-                    $cur_conv_line = "";
-                    $length = 0;
+                    $cur_conv_line  = "";
+                    $length         = 0;
                     $whitespace_pos = 0;
                 } else {
                     // length for wordwrap not reached, continue reading
@@ -825,12 +817,12 @@ class Strings
                 }
             } // end of for
 
-            $length = 0;
+            $length         = 0;
             $whitespace_pos = 0;
             $output .= $cur_conv_line;
             $cur_conv_line = "";
 
-            if ($j<=count($lines)-1) {
+            if ($j <= count($lines)-1) {
                 $output .= $linebreak;
             }
         }
@@ -838,28 +830,27 @@ class Strings
         return trim($output);
     }
 
-
-
     /**
      * Executes regex on a string and returns the match at index $index.
      *
      * If no matches were found, or if the index doesn't exist, null is returned.
      *
-     * @param  string $regex  Regex to run
-     * @param  string $string The string to run it on
-     * @param  int    $index  The index to return, same rules. Or if -1 or null, all matches.
-     * @param  int    $flags  Flags to pass to preg_match
-     * @param  int    $offset Offset to pass to preg_match
+     * @param string $regex  Regex to run
+     * @param string $string The string to run it on
+     * @param int    $index  The index to return, same rules. Or if -1 or null, all matches.
+     * @param int    $flags  Flags to pass to preg_match
+     * @param int    $offset Offset to pass to preg_match
+     *
      * @return string
      */
     public static function extractRegexMatch($regex, $string, $index = 1, $flags = null, $offset = null)
     {
         $matches = null;
         if (!preg_match($regex, $string, $matches, $flags, $offset)) {
-            return null;
+            return;
         }
 
-        if ($index == -1 OR $index === null) {
+        if ($index == -1 or $index === null) {
             return $matches;
         }
 
@@ -874,10 +865,11 @@ class Strings
      *
      * UTF-8 safe.
      *
-     * @param  string $string      The string to work on
-     * @param  int    $length      The max length of a word before it wraps
-     * @param  string $break       The character to insert at break points
-     * @param  string $split_cahrs The characters that separate words
+     * @param string $string      The string to work on
+     * @param int    $length      The max length of a word before it wraps
+     * @param string $break       The character to insert at break points
+     * @param string $split_cahrs The characters that separate words
+     *
      * @return string
      */
     public static function smartWordWrap($string, $max_len = 75, $break = ' ', $split_chars = " \t\n")
@@ -885,8 +877,8 @@ class Strings
         $string = self::standardEol($string);
 
         $r_split_chars = preg_quote($split_chars, '#');
-        $segs = preg_split('#([' . $r_split_chars . '])#', $string, -1, \PREG_SPLIT_DELIM_CAPTURE);
-        $string = '';
+        $segs          = preg_split('#(['.$r_split_chars.'])#', $string, -1, \PREG_SPLIT_DELIM_CAPTURE);
+        $string        = '';
 
         foreach ($segs as $seg) {
             if (strlen($seg) > $max_len && self::utf8_strlen($seg) > $max_len) {
@@ -894,18 +886,17 @@ class Strings
                 $chars = array_chunk($chars, $max_len);
 
                 foreach ($chars as $chunk) {
-                    $string .= implode('', $chunk) . $break;
+                    $string .= implode('', $chunk).$break;
                 }
             } else {
                 $string .= $seg;
             }
         }
 
-        $string = preg_replace('#' . $r_split_chars . '$#', '', $string);
+        $string = preg_replace('#'.$r_split_chars.'$#', '', $string);
 
         return $string;
     }
-
 
     /**
      * Like str_replace but lets you specify the max number of times
@@ -914,11 +905,12 @@ class Strings
      * If $search/$replace are arrays, then each string will be tried once.
      * So the total number of actual replacements may be the number of items in the arrays.
      *
-     * @param  string $search  The string to search for
-     * @param  string $replace The string to replace with
-     * @param  string $subject The string to apply changes to
-     * @param  int    $limit   How many replacements to make
-     * @param  bool   $reverse Replace from end of the string instead
+     * @param string $search  The string to search for
+     * @param string $replace The string to replace with
+     * @param string $subject The string to apply changes to
+     * @param int    $limit   How many replacements to make
+     * @param bool   $reverse Replace from end of the string instead
+     *
      * @return string
      */
     public static function strReplaceLimit($search, $replace, $subject, $limit = 1, $reverse = false)
@@ -941,7 +933,9 @@ class Strings
                 } else {
                     $pos = strpos($subject, $search);
                 }
-                if ($pos === false) break;
+                if ($pos === false) {
+                    break;
+                }
                 $subject = substr_replace($subject, $replace, $pos, strlen($search));
             }
         }
@@ -949,13 +943,13 @@ class Strings
         return $subject;
     }
 
-
     /**
-     * Cuts a section of a string out
+     * Cuts a section of a string out.
      *
-     * @param  string $string    The string to work on
-     * @param  int    $cut_start The index to start cutting (inclusive)
-     * @param  int    $cut_end   The index to stop the cut (exclusive)
+     * @param string $string    The string to work on
+     * @param int    $cut_start The index to start cutting (inclusive)
+     * @param int    $cut_end   The index to stop the cut (exclusive)
+     *
      * @return string
      */
     public static function cut($string, $cut_start, $cut_end)
@@ -964,12 +958,11 @@ class Strings
             return substr($string, $cut_end);
         }
 
-        return substr($string, 0, $cut_start) . substr($string, $cut_end);
+        return substr($string, 0, $cut_start).substr($string, $cut_end);
     }
 
-
     /**
-     * Injects a string into the position at $inject_at
+     * Injects a string into the position at $inject_at.
      *
      * @param string $string
      * @param string $inject_string
@@ -978,28 +971,27 @@ class Strings
     public static function inject($string, $inject_string, $inject_at)
     {
         if ($inject_at == 0) {
-            return $inject_string . $string;
+            return $inject_string.$string;
         } elseif ($inject_at > 0 && !isset($string[$inject_at])) {
-            return $string . $inject_string;
+            return $string.$inject_string;
         }
 
-        return substr($string, 0, $inject_at) . $inject_string . substr($string, $inject_at);
+        return substr($string, 0, $inject_at).$inject_string.substr($string, $inject_at);
     }
-
-
 
     /**
      * Tries to verify and fix a regular expression, usually used to turn a regex inputted into a
      * form into a real regex with delims.
      *
-     * @param  string $input
+     * @param string $input
+     *
      * @return string
      */
     public static function getInputRegexPattern($input)
     {
         // Might be missing delims
         if (@preg_match($input, 'test') === false) {
-            $input = "/" . str_replace('/', '\\/', $input) . "/";
+            $input = "/".str_replace('/', '\\/', $input)."/";
         }
 
         // Check if its still invalid
@@ -1031,13 +1023,12 @@ class Strings
         return $input;
     }
 
-
-
     /**
      * Turns a string into an acceptable URL slug.
-     * "My Great Title!" becomes "my-great-title"
+     * "My Great Title!" becomes "my-great-title".
      *
-     * @param  string $string The string title to work on
+     * @param string $string The string title to work on
+     *
      * @return string
      */
     public static function slugifyTitle($string)
@@ -1051,30 +1042,28 @@ class Strings
         return $string;
     }
 
-
-
     /**
      * Converts newlines to paragraphs and breaks. Two consecutive newlines are paragrpahs, all else
      * are breaks.
      *
-     * @param  string $string The string to work on
+     * @param string $string The string to work on
+     *
      * @return stirng
      */
     public static function nl2p($string)
     {
-        $string = '<p>' . preg_replace('#([\r\n]\s*?[\r\n]){2,}#', '</p><p>', $string) . '</p>';
+        $string = '<p>'.preg_replace('#([\r\n]\s*?[\r\n]){2,}#', '</p><p>', $string).'</p>';
         $string = str_replace('<p></p>', '', $string);
         $string = nl2br($string);
 
         return $string;
     }
 
-
-
     /**
      * Like urlencode() but encodes all characters, not just special ones.
      *
-     * @param  string $string The string to encode
+     * @param string $string The string to encode
+     *
      * @return string
      */
     public static function urlencodeFull($string)
@@ -1084,7 +1073,7 @@ class Strings
         for ($i = 0; $i < $len; $i++) {
             $hex = hexdec(ord($string[$i]));
             if ($hex) {
-                $ret .= isset($hex[1]) ? '%' . strtoupper($hex) : '%0' . strtoupper($hex);
+                $ret .= isset($hex[1]) ? '%'.strtoupper($hex) : '%0'.strtoupper($hex);
             } else {
                 $ret .= rawurlencode($string[$i]);
             }
@@ -1093,12 +1082,12 @@ class Strings
         return $ret;
     }
 
-
     /**
-     * Turn links in text to HTML anchors
+     * Turn links in text to HTML anchors.
      *
-     * @param  string $text
-     * @param  bool   $short True to shorten off the part after the, like google.com/...
+     * @param string $text
+     * @param bool   $short True to shorten off the part after the, like google.com/...
+     *
      * @return string
      */
     public static function autoLink($text, $short = true)
@@ -1107,13 +1096,13 @@ class Strings
         $callback = function ($matches) use ($short) {
             $url       = array_shift($matches);
 
-            $text = parse_url($url, PHP_URL_HOST) . parse_url($url, PHP_URL_PATH);
+            $text = parse_url($url, PHP_URL_HOST).parse_url($url, PHP_URL_PATH);
             $text = preg_replace("/^www./", "", $text);
 
             if ($short) {
                 $last = -(strlen(strrchr($text, "/"))) + 1;
                 if ($last < 0) {
-                   $text = substr($text, 0, $last) . "&hellip;";
+                    $text = substr($text, 0, $last)."&hellip;";
                 }
             }
 
@@ -1123,13 +1112,12 @@ class Strings
         return preg_replace_callback($pattern, $callback, $text);
     }
 
-
-
     /**
      * Like htmlentities() but encodes all characters, not just special ones.
      * Useful for email addresses since most bots are stupid.
      *
-     * @param  string $string The string to encode
+     * @param string $string The string to encode
+     *
      * @return string
      */
     public static function htmlentitiesFull($string)
@@ -1139,19 +1127,18 @@ class Strings
 
         for ($i = 0; $i < $len; $i++) {
             $enc = htmlentities($string[$i], ENT_QUOTES);
-            $ret .= $string[$i] == $enc[0] ? '&#' . ord($string[$i]) : $enc;
+            $ret .= $string[$i] == $enc[0] ? '&#'.ord($string[$i]) : $enc;
         }
 
         return $ret;
     }
 
-
-
     /**
      * Creates a string of k="v", suitable for use as HTML tag attributes.
      *
-     * @param  array  $attributes The attributes to string together
-     * @param  bool   $do_escape  Escape values?
+     * @param array $attributes The attributes to string together
+     * @param bool  $do_escape  Escape values?
+     *
      * @return string
      */
     public static function htmlAttributes(array $attributes, $do_escape = true)
@@ -1159,21 +1146,19 @@ class Strings
         $attr = array();
 
         foreach ($attributes as $k => $v) {
-            if ($v === false OR $v === null OR ($v === '' AND $k != 'value')) {
+            if ($v === false or $v === null or ($v === '' and $k != 'value')) {
                 continue;
             }
 
             if ($v === true) {
                 $attr[] = "$k=\"$k\"";
             } else {
-                $attr[] = $k . '="' . ($do_escape ? htmlspecialchars((string)$v, ENT_QUOTES) : $v) . '"';
+                $attr[] = $k.'="'.($do_escape ? htmlspecialchars((string) $v, ENT_QUOTES) : $v).'"';
             }
         }
 
         return implode(' ', $attr);
     }
-
-
 
     /**
      * Just like explode() except its meant to be used with a limit where the explode happens
@@ -1187,19 +1172,20 @@ class Strings
      *
      * @param  $delim
      * @param  $string
-     * @param  int   $count
+     * @param int $count
+     *
      * @return array
      */
     public static function rexplode($delim, $string, $count = 2)
     {
         $parts = explode($delim, $string);
-        $len = count($parts);
+        $len   = count($parts);
         if ($len <= $count) {
             return $parts;
         }
 
         $offset = $len - $count + 1;
-        $parts = array_merge(
+        $parts  = array_merge(
             array(implode($delim, array_slice($parts, 0, $offset))),
             array_slice($parts, $offset)
         );
@@ -1207,17 +1193,16 @@ class Strings
         return $parts;
     }
 
-
-
     /**
      * Test a "star" wildcard match. This is a simplified sort of regex
      * match where a star in the pattern is a non-greedy dot.
      *
      * Example: test-*@example.com is the regex test\-(.*?)@example\.com
      *
-     * @param  string $pattern The pattern that has the star wildcard character in it
-     * @param  string $test    The string to test
-     * @param  mixed  $matches A variable to put matches into
+     * @param string $pattern The pattern that has the star wildcard character in it
+     * @param string $test    The string to test
+     * @param mixed  $matches A variable to put matches into
+     *
      * @return string
      */
     public static function isStarMatch($pattern, $test, &$matches = null)
@@ -1234,11 +1219,11 @@ class Strings
         return preg_match($pattern, $test, $matches);
     }
 
-
     /**
-     * Trims whitespace and whitespace-like HTML from beginning/end of a string
+     * Trims whitespace and whitespace-like HTML from beginning/end of a string.
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public static function trimHtml($string)
@@ -1284,12 +1269,12 @@ class Strings
         return $string;
     }
 
-
     /**
      * More advanced version of trimHtml is able to better detect empty elements to trim them out,
      * and replaces empty divs or ps with simple newlines.
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public static function trimHtmlAdvanced($html)
@@ -1299,7 +1284,7 @@ class Strings
 
         // Always wrap with body, or else in an attempt to fix structure
         // we'll end up with superfluous <p> wrappers around some top-level text nodes
-        $html = '<body>' . $html . '</body>';
+        $html = '<body>'.$html.'</body>';
 
         do {
             $changed = false;
@@ -1309,7 +1294,7 @@ class Strings
 
             if ($newhtml != $html) {
                 $changed = true;
-                $html = $newhtml;
+                $html    = $newhtml;
             }
         } while ($changed);
 
@@ -1321,7 +1306,7 @@ class Strings
             $qp->top()->find('div');
             foreach ($qp as $div) {
                 if (!trim($div->text())) {
-                    $changed = true;
+                    $changed  = true;
                     $children = $div->branch();
                     $children->children();
                     foreach ($children as $child) {
@@ -1342,15 +1327,15 @@ class Strings
 
         // Unwrap outer divs, p's, spans
         do {
-            $qp = \QueryPath::withHTML($html, null, array('convert_to_encoding' => null));
+            $qp      = \QueryPath::withHTML($html, null, array('convert_to_encoding' => null));
             $changed = false;
 
             /** @var $div \QueryPath\DOMQuery */
             $div = $qp->top()->find('body > *');
             if ($div->length == 1 && ($div->first() && ($div->tag() == 'div' || $div->tag() == 'p' || $div->tag() == 'span')) && !trim($div->textBefore().$div->textAfter())) {
                 $changed = true;
-                $html = $div->html();
-                $html = trim($html);
+                $html    = $div->html();
+                $html    = trim($html);
 
                 if ($div->tag() == 'div') {
                     $html = preg_replace('#^<div.*?>#', '', $html);
@@ -1364,11 +1349,11 @@ class Strings
                 }
 
                 $html = Strings::extractBodyTag($html);
-                $html = '<body>' . $html . '</body>';
+                $html = '<body>'.$html.'</body>';
             }
 
             $qp->top();
-        } while($changed);
+        } while ($changed);
 
         ob_start();
         $qp->writeXHTML();
@@ -1378,7 +1363,7 @@ class Strings
         $html = str_replace('<br></br>', '<br />', $html);
 
         $html_before = $html;
-        $html = self::trimHtml($html);
+        $html        = self::trimHtml($html);
 
         if (!$html) {
             $html = $html_before;
@@ -1390,41 +1375,44 @@ class Strings
         return $html;
     }
 
-
     /**
-     * Linkfy in a string
+     * Linkfy in a string.
      *
      * @static
-     * @param  string $text
-     * @param  string $attr
+     *
+     * @param string $text
+     * @param string $attr
+     *
      * @return string
      */
     public static function linkify($text, $attr = '')
     {
         $search_replace = array();
 
-        $text = preg_replace_callback('#(?<!\=(\'|")mailto:)([a-zA-Z0-9\-\._]+)@([a-zA-Z0-9\-\.]+)\.([a-zA-Z]+)\b#iu',function ($m) use (&$search_replace, $attr) {
-            $email = $m[2] . '@' . $m[3] . '.' . $m[4];
-            $key = md5(mt_rand(0,9999) . microtime());
-            $search_replace[$key] = '<a href="mailto:' . $email . '" '.$attr.'>' . htmlspecialchars($email, \ENT_QUOTES, 'UTF-8') . '</a>';
+        $text = preg_replace_callback('#(?<!\=(\'|")mailto:)([a-zA-Z0-9\-\._]+)@([a-zA-Z0-9\-\.]+)\.([a-zA-Z]+)\b#iu', function ($m) use (&$search_replace, $attr) {
+            $email = $m[2].'@'.$m[3].'.'.$m[4];
+            $key = md5(mt_rand(0, 9999).microtime());
+            $search_replace[$key] = '<a href="mailto:'.$email.'" '.$attr.'>'.htmlspecialchars($email, \ENT_QUOTES, 'UTF-8').'</a>';
 
             return $key;
         }, $text);
 
-        $text = preg_replace_callback('#(?<!\=(\'|"))(https?:\/\/[^\s<>]+([a-zA-Z0-9\?_\-]))#iu',function ($m) use (&$search_replace, $attr) {
+        $text = preg_replace_callback('#(?<!\=(\'|"))(https?:\/\/[^\s<>]+([a-zA-Z0-9\?_\-]))#iu', function ($m) use (&$search_replace, $attr) {
             $url = str_replace('&amp;', '&', $m[2]);
-            $key = md5(mt_rand(0,9999) . microtime());
-            $search_replace[$key] = '<a href="' . $url . '" '.$attr.'>' . htmlspecialchars($m[2], \ENT_QUOTES, 'UTF-8') . '</a>';
+            $key = md5(mt_rand(0, 9999).microtime());
+            $search_replace[$key] = '<a href="'.$url.'" '.$attr.'>'.htmlspecialchars($m[2], \ENT_QUOTES, 'UTF-8').'</a>';
 
             return $key;
         }, $text);
 
-        $text = preg_replace_callback('#(?<!\=(\'|"))(https?://|mailto:)?([a-zA-Z0-9\.\-]+\.(com|net|org|co\.uk)(?:[^\s<>]*[^\.\)\s\"\'])?)#iu',function ($m) use (&$search_replace, $attr) {
-            if ($m[2]) return $m[0];
+        $text = preg_replace_callback('#(?<!\=(\'|"))(https?://|mailto:)?([a-zA-Z0-9\.\-]+\.(com|net|org|co\.uk)(?:[^\s<>]*[^\.\)\s\"\'])?)#iu', function ($m) use (&$search_replace, $attr) {
+            if ($m[2]) {
+                return $m[0];
+            }
 
-            $url = str_replace('&amp;', '&', ($m[2] ? $m[2] : 'http://') . $m[3]);
-            $key = md5(mt_rand(0,9999) . microtime());
-            $search_replace[$key] = '<a href="' . $url . '" '.$attr.'>' . htmlspecialchars($m[3], \ENT_QUOTES, 'UTF-8') . '</a>';
+            $url = str_replace('&amp;', '&', ($m[2] ? $m[2] : 'http://').$m[3]);
+            $key = md5(mt_rand(0, 9999).microtime());
+            $search_replace[$key] = '<a href="'.$url.'" '.$attr.'>'.htmlspecialchars($m[3], \ENT_QUOTES, 'UTF-8').'</a>';
 
             return $key;
         }, $text);
@@ -1435,11 +1423,13 @@ class Strings
     }
 
     /**
-     * Linkify in HTML
+     * Linkify in HTML.
      *
      * @static
-     * @param  string $html
-     * @param  string $attr
+     *
+     * @param string $html
+     * @param string $attr
+     *
      * @return string
      */
     public static function linkifyHtml($html, $new_window = false)
@@ -1476,7 +1466,7 @@ class Strings
 
             if ($origText != $newText) {
                 $frag = new DOMDocument('1.0', 'UTF-8');
-                $frag->loadHTML('<?xml encoding="UTF-8" version="1.0" ?><body>' . $newText . '</body>');
+                $frag->loadHTML('<?xml encoding="UTF-8" version="1.0" ?><body>'.$newText.'</body>');
                 $xpath2 = new \DOMXPath($frag);
 
                 foreach ($xpath2->query('body')->item(0)->childNodes as $node) {
@@ -1505,12 +1495,12 @@ class Strings
         return $html;
     }
 
-
     /**
      * In older versions of libxml (<2.7), DOMDocument can screw around with entities. So the easiest solution
      * is to just encode non-ascii characters as our own ascii sequences, and then reverse them again after.
      *
-     * @param  string $string A UTF-8 string
+     * @param string $string A UTF-8 string
+     *
      * @return string
      */
     public static function preDomDocument($string)
@@ -1527,10 +1517,11 @@ class Strings
         return $string;
     }
 
-
     /**
      * @see preDomDocument
-     * @param  string $string
+     *
+     * @param string $string
+     *
      * @return string
      */
     public static function postDomDocument($string)
@@ -1545,11 +1536,11 @@ class Strings
         return $string;
     }
 
-
     /**
      * Converts 4-byte chars in $string to HTML entities.
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public static function convert4ByteCharsToHtmlEntities($string)
@@ -1565,10 +1556,10 @@ class Strings
         return $string;
     }
 
-
     /**
-     * @param  string $string
-     * @param  string $replace_with Replace with a string (e.g., '?') instead of stripping
+     * @param string $string
+     * @param string $replace_with Replace with a string (e.g., '?') instead of stripping
+     *
      * @return mixed
      */
     public static function strip4ByteChars($string, $replace_with = '')
@@ -1582,11 +1573,11 @@ class Strings
         return $string;
     }
 
-
     /**
-     * Get text between the body tags in an html doc
+     * Get text between the body tags in an html doc.
      *
-     * @param  string $value
+     * @param string $value
+     *
      * @return string
      */
     public static function extractBodyTag($value)
@@ -1606,13 +1597,13 @@ class Strings
                 $pos = strpos($value, "<body");
                 if ($pos !== false) {
                     $changed = true;
-                    $value = substr($value, $pos);
+                    $value   = substr($value, $pos);
 
                     // Cut out the rest of the body tag too, eg if it was <body class="abc"> we're finding the ">" part of that
-                    $pos = strpos($value, ">");
+                    $pos   = strpos($value, ">");
                     $value = substr($value, $pos+1);
                 }
-            } while($changed);
+            } while ($changed);
 
             $pos = strpos($value, '</body>');
             if ($pos !== false) {
@@ -1638,7 +1629,8 @@ class Strings
      *
      * PHP's strip_tags() doesn't strip style or script tags (amongst others) very well, so this attempts to strip them out completely.
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public static function stripTags($string)
@@ -1662,8 +1654,9 @@ class Strings
      * If $raw is enabled the format changes slightly:
      *    array('string' => $string, 'files' => array(array('token' => 'xxx', 'raw_data' => 'xxx')));
      *
-     * @param  string  $string The string to process
-     * @param  boolean $raw    Dont base64 decode the images, return the raw string
+     * @param string  $string The string to process
+     * @param boolean $raw    Dont base64 decode the images, return the raw string
+     *
      * @return array
      */
     public static function parseImageDataUrls($string, $raw = false)
@@ -1681,7 +1674,7 @@ class Strings
                 continue;
             }
 
-            $tok = '__DP_TOK_' . self::random(20, self::CHARS_ALPHANUM_IU) . '__';
+            $tok = '__DP_TOK_'.self::random(20, self::CHARS_ALPHANUM_IU).'__';
 
             $new_str = str_replace($url_m[1], $tok, $m[0]);
 
@@ -1694,14 +1687,14 @@ class Strings
             if ($raw) {
                 $files[] = array(
                     'token'    => $tok,
-                    'raw_data' => $url_m[1]
+                    'raw_data' => $url_m[1],
                 );
             } else {
-                $info = self::decodeDataUrl($url_m[1]);
+                $info    = self::decodeDataUrl($url_m[1]);
                 $files[] = array(
                     'token' => $tok,
                     'type'  => $info['type'],
-                    'data'  => $info['data']
+                    'data'  => $info['data'],
                 );
                 unset($info);
             }
@@ -1709,10 +1702,9 @@ class Strings
 
         return array(
             'string' => $string,
-            'files'  => $files
+            'files'  => $files,
         );
     }
-
 
     /**
      * Takes a data url and returns array('type' => 'mime/type', 'data' => 'binary_data').
@@ -1721,7 +1713,8 @@ class Strings
      * Data URLs look like:
      *     data:image/png;base64,datahere
      *
-     * @param  string     $data_url
+     * @param string $data_url
+     *
      * @return array|null
      */
     public static function decodeDataUrl($data_url)
@@ -1737,18 +1730,18 @@ class Strings
         $colon_pos  = strpos($data_url, ';');
         $comma_pos  = strpos($data_url, ',');
         $mime_type  = substr($data_url, 0, $colon_pos);
-        $data      = substr($data_url, $comma_pos+1);
-        $data      = @base64_decode($data);
+        $data       = substr($data_url, $comma_pos+1);
+        $data       = @base64_decode($data);
 
         return array('type' => $mime_type, 'data' => $data);
     }
-
 
     /**
      * Just like explode() except it runs each item through trim as well.
      *
      * @param $string
      * @param $delim
+     *
      * @return array
      */
     public static function explodeTrim($delim, $string, $limit = null)
@@ -1759,12 +1752,12 @@ class Strings
         return $array;
     }
 
-
     /**
      * Removes "invisible" characters from strings, except for legit ones like newlines
      * and tabs.
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public static function removeInvisibleCharacters($string)
@@ -1774,12 +1767,12 @@ class Strings
         return $string;
     }
 
-
     /**
-     * Try to convert a string from one encoding into UTF-8
+     * Try to convert a string from one encoding into UTF-8.
      *
-     * @param  string $string
-     * @param  string $from_charset
+     * @param string $string
+     * @param string $from_charset
+     *
      * @return string
      */
     public static function convertToUtf8($string, $from_charset, $_mode = null)
@@ -1787,7 +1780,7 @@ class Strings
         // Some missing aliases in iconv
         static $charset_map = array(
             'KS_C_5601-1987' => 'CP949',
-            'ISO-8859-8-I'   => 'ISO-8859-8'
+            'ISO-8859-8-I'   => 'ISO-8859-8',
         );
 
         $from_charset_u = strtoupper($from_charset);
@@ -1805,7 +1798,7 @@ class Strings
 
         // Fix charsets with a country prepended like en_US.ISO-8859-1
         if (strpos($from_charset, '.')) {
-            $parts = explode('.', $from_charset, 2);
+            $parts        = explode('.', $from_charset, 2);
             $from_charset = $parts[1];
         }
 
@@ -1822,7 +1815,7 @@ class Strings
                 if ($from_charset_u == 'US-ASCII') {
                     return self::convertToUtf8($string, 'ISO-8859-1', $_mode);
                 } else {
-                    $_mode = $_mode ? : array();
+                    $_mode   = $_mode ?: array();
                     $_mode[] = 'skip_iconv';
 
                     return self::convertToUtf8($string, $from_charset, $_mode);
@@ -1834,7 +1827,7 @@ class Strings
                 if ($from_charset_u == 'US-ASCII') {
                     return self::convertToUtf8($string, 'ISO-8859-1', $_mode);
                 } else {
-                    $_mode = $_mode ?: array();
+                    $_mode   = $_mode ?: array();
                     $_mode[] = 'skip_mbstring';
 
                     return self::convertToUtf8($string, $from_charset, $_mode);
@@ -1849,16 +1842,16 @@ class Strings
         return $new;
     }
 
-
     /**
      * Just like chr() except works with UTF-8 code points too.
      *
      * @param $code
+     *
      * @return string
      */
     public static function chrUtf8($code)
     {
-        $code = (int)$code;
+        $code = (int) $code;
 
         // Invalid code
         if ($code < 0) {
@@ -1872,49 +1865,86 @@ class Strings
 
         // Remove Windows Illegals Cars
         if ($code < 160) {
-            if ($code==128) $code=8364;
-            elseif ($code==129) $code=160; // not affected
-            elseif ($code==130) $code=8218;
-            elseif ($code==131) $code=402;
-            elseif ($code==132) $code=8222;
-            elseif ($code==133) $code=8230;
-            elseif ($code==134) $code=8224;
-            elseif ($code==135) $code=8225;
-            elseif ($code==136) $code=710;
-            elseif ($code==137) $code=8240;
-            elseif ($code==138) $code=352;
-            elseif ($code==139) $code=8249;
-            elseif ($code==140) $code=338;
-            elseif ($code==141) $code=160; // not affected
-            elseif ($code==142) $code=381;
-            elseif ($code==143) $code=160; // not affected
-            elseif ($code==144) $code=160; // not affected
-            elseif ($code==145) $code=8216;
-            elseif ($code==146) $code=8217;
-            elseif ($code==147) $code=8220;
-            elseif ($code==148) $code=8221;
-            elseif ($code==149) $code=8226;
-            elseif ($code==150) $code=8211;
-            elseif ($code==151) $code=8212;
-            elseif ($code==152) $code=732;
-            elseif ($code==153) $code=8482;
-            elseif ($code==154) $code=353;
-            elseif ($code==155) $code=8250;
-            elseif ($code==156) $code=339;
-            elseif ($code==157) $code=160; // not affected
-            elseif ($code==158) $code=382;
-            elseif ($code==159) $code=376;
+            if ($code == 128) {
+                $code = 8364;
+            } elseif ($code == 129) {
+                $code = 160;
+            } // not affected
+            elseif ($code == 130) {
+                $code = 8218;
+            } elseif ($code == 131) {
+                $code = 402;
+            } elseif ($code == 132) {
+                $code = 8222;
+            } elseif ($code == 133) {
+                $code = 8230;
+            } elseif ($code == 134) {
+                $code = 8224;
+            } elseif ($code == 135) {
+                $code = 8225;
+            } elseif ($code == 136) {
+                $code = 710;
+            } elseif ($code == 137) {
+                $code = 8240;
+            } elseif ($code == 138) {
+                $code = 352;
+            } elseif ($code == 139) {
+                $code = 8249;
+            } elseif ($code == 140) {
+                $code = 338;
+            } elseif ($code == 141) {
+                $code = 160;
+            } // not affected
+            elseif ($code == 142) {
+                $code = 381;
+            } elseif ($code == 143) {
+                $code = 160;
+            } // not affected
+            elseif ($code == 144) {
+                $code = 160;
+            } // not affected
+            elseif ($code == 145) {
+                $code = 8216;
+            } elseif ($code == 146) {
+                $code = 8217;
+            } elseif ($code == 147) {
+                $code = 8220;
+            } elseif ($code == 148) {
+                $code = 8221;
+            } elseif ($code == 149) {
+                $code = 8226;
+            } elseif ($code == 150) {
+                $code = 8211;
+            } elseif ($code == 151) {
+                $code = 8212;
+            } elseif ($code == 152) {
+                $code = 732;
+            } elseif ($code == 153) {
+                $code = 8482;
+            } elseif ($code == 154) {
+                $code = 353;
+            } elseif ($code == 155) {
+                $code = 8250;
+            } elseif ($code == 156) {
+                $code = 339;
+            } elseif ($code == 157) {
+                $code = 160;
+            } // not affected
+            elseif ($code == 158) {
+                $code = 382;
+            } elseif ($code == 159) {
+                $code = 376;
+            }
         }
 
         if ($code < 2048) {
-            return chr(192 | ($code >> 6)) . chr(128 | ($code & 63));
+            return chr(192 | ($code >> 6)).chr(128 | ($code & 63));
         } elseif ($code < 65536) {
-            return chr(224 | ($code >> 12)) . chr(128 | (($code >> 6) & 63)) . chr(128 | ($code & 63));
+            return chr(224 | ($code >> 12)).chr(128 | (($code >> 6) & 63)).chr(128 | ($code & 63));
         } else {
-            return chr(240 | ($code >> 18)) . chr(128 | (($code >> 12) & 63)) . chr(128 | (($code >> 6) & 63)) . chr(128 | ($code & 63));
+            return chr(240 | ($code >> 18)).chr(128 | (($code >> 12) & 63)).chr(128 | (($code >> 6) & 63)).chr(128 | ($code & 63));
         }
     }
-
 
     /**
      * Takes a string with HTML entities and decodes them into their real UTF-8 characters.
@@ -1922,8 +1952,9 @@ class Strings
      * Note that the string is expected to already be UTF-8 or in a charset that it doesn't matter (ie ascii).
      * This doesn't do actual charset conversion, it just reverses entities.
      *
-     * @param  string $string
-     * @param  bool   $escape_html True to pass result through htmlspecialchars again to escape HTML
+     * @param string $string
+     * @param bool   $escape_html True to pass result through htmlspecialchars again to escape HTML
+     *
      * @return string
      */
     public static function htmlEntityDecodeUtf8($string, $escape_html = false)
@@ -1951,15 +1982,15 @@ class Strings
         return $string;
     }
 
-
     /**
      * Takes a unicode string and encodes multi-byte characters as HTML entities.
      *
      * Use $encodeString to use a pattern other than &#<code>;. (Used when you need to mark
      * the unicode points with something other than entities). Use %s as the placeholder.
      *
-     * @param  string $string
-     * @param  bool   $encodeString
+     * @param string $string
+     * @param bool   $encodeString
+     *
      * @return string
      */
     public static function htmlEntityEncodeUtf8($string, $encodeString = null)
@@ -1992,7 +2023,7 @@ class Strings
                 if ($encodeString) {
                     return sprintf($encodeString, $code);
                 } else {
-                    return '&#' . $code . ';';
+                    return '&#'.$code.';';
                 }
             } else {
                 return '?';
@@ -2006,16 +2037,16 @@ class Strings
         return $new_string;
     }
 
-
     /**
      * Like str_replace() except it only does the first.
      *
      * @see Strings::strReplaceLimit
      *
-     * @param  string $find
-     * @param  string $replace
-     * @param  string $string
-     * @param  bool   $reverse
+     * @param string $find
+     * @param string $replace
+     * @param string $string
+     * @param bool   $reverse
+     *
      * @return string
      */
     public static function strReplaceOne($find, $replace, $string, $reverse = false)
@@ -2023,11 +2054,11 @@ class Strings
         return self::strReplaceLimit($find, $replace, $string, 1, $reverse);
     }
 
-
     /**
-     * Trims every line in a string
+     * Trims every line in a string.
      *
      * @param $string
+     *
      * @return string
      */
     public static function trimLines($string, $chars = null, $mode = 'trim')
@@ -2038,7 +2069,9 @@ class Strings
 
         $string = explode("\n", $string);
         if ($chars !== null) {
-            foreach ($string as &$l) $l = $mode($l, $chars);
+            foreach ($string as &$l) {
+                $l = $mode($l, $chars);
+            }
         } else {
             foreach ($string as &$l) {
                 $l = $mode($l);
@@ -2057,11 +2090,11 @@ class Strings
         return implode("\n", $string);
     }
 
-
     /**
      * Reduces a mutli-line string to a single line.
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public static function implodeLines($string)
@@ -2071,7 +2104,6 @@ class Strings
 
         return $string;
     }
-
 
     /**
      * Does a "real" trim, triming other whitespace like non-breaking spaces.
@@ -2086,11 +2118,11 @@ class Strings
         return $string;
     }
 
-
     /**
-     * Attempts to turn HTML into plaintext
+     * Attempts to turn HTML into plaintext.
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public static function html2Text($string)
@@ -2110,9 +2142,10 @@ class Strings
     }
 
     /**
-     * Remove all empty lines in a string
+     * Remove all empty lines in a string.
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public static function removeEmptyLines($string)
@@ -2132,7 +2165,8 @@ class Strings
     }
 
     /**
-     * Adds a prefix and/or suffix to every line
+     * Adds a prefix and/or suffix to every line.
+     *
      * @param $string
      * @param $prefix
      */
@@ -2140,24 +2174,25 @@ class Strings
     {
         $string = explode("\n", $string);
         foreach ($string as &$l) {
-            $l = $prefix . ($trim ? trim($l) : $l) . $suffix;
+            $l = $prefix.($trim ? trim($l) : $l).$suffix;
         }
 
         return implode("\n", $string);
     }
 
     /**
-     * Create an ASCII table around a key=>value array
+     * Create an ASCII table around a key=>value array.
      *
-     * @param  string $array
-     * @param  string $key_title
-     * @param  string $val_title
+     * @param string $array
+     * @param string $key_title
+     * @param string $val_title
+     *
      * @return string
      */
     public static function asciiTable($array, array $titles = null, $line_sep = false)
     {
         $lines = array();
-        $lens = array();
+        $lens  = array();
 
         if ($titles) {
             foreach ($titles as $idx => $t) {
@@ -2183,7 +2218,7 @@ class Strings
                 $l[] = str_repeat('-', $len);
             }
 
-            return '+-' . implode('-+-', $l) . '-+';
+            return '+-'.implode('-+-', $l).'-+';
         };
 
         $fn_line = function ($cells) use ($lens) {
@@ -2192,7 +2227,7 @@ class Strings
                 $l[] = Strings::utf8_str_pad($t, $lens[$idx], ' ');
             }
 
-            return '| ' . implode(' | ', $l) . ' |';
+            return '| '.implode(' | ', $l).' |';
         };
 
         if ($titles) {
@@ -2220,7 +2255,7 @@ class Strings
     }
 
     /**
-     * Make an ascii table from a keyvalue pair
+     * Make an ascii table from a keyvalue pair.
      *
      * @param array  $array
      * @param string $key_title
@@ -2246,16 +2281,17 @@ class Strings
     /**
      * Takes a path with relative segments and returns a full, true path with those expanded.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return string
      */
     public static function canonicalPath($path)
     {
-        $path = preg_replace('#\b./\b#', '', $path);
-        $parts = explode('/', $path);
+        $path         = preg_replace('#\b./\b#', '', $path);
+        $parts        = explode('/', $path);
         $relative_idx = array_keys($parts, '..');
 
-        foreach($relative_idx AS $pos => $idx) {
+        foreach ($relative_idx as $pos => $idx) {
             array_splice($parts, $idx - ($pos * 2 + 1), 2);
         }
 
@@ -2266,7 +2302,7 @@ class Strings
 
     /**
      * Prepares WYSIWYG HTML where <p> tags only take up one line
-     * by translating into <divs> or replacing with a simple <br>
+     * by translating into <divs> or replacing with a simple <br>.
      *
      * @param $html
      *
@@ -2282,7 +2318,7 @@ class Strings
         $html = preg_replace('#<div[^>]*>\s*(<br\s*/?>)?\s*</div>\s*#i', "<br />\n", $html);
         do {
             $original = $html;
-            $html = preg_replace('#<div>(.*)</div>\s*?#siU', "\\1<br />\n", $html);
+            $html     = preg_replace('#<div>(.*)</div>\s*?#siU', "\\1<br />\n", $html);
             // need to loop to handle nested divs - may not be perfect
         } while ($original != $html);
 
@@ -2309,7 +2345,7 @@ class Strings
     }
 
     /**
-     * Compares 2 HTML strings to see if they the same (or nearly the same)
+     * Compares 2 HTML strings to see if they the same (or nearly the same).
      *
      * @param string $html1
      * @param string $html2
@@ -2325,8 +2361,8 @@ class Strings
     {
         $replace = array(
             '<br />' => '<br>',
-            '<div' => '<p',
-            '</div>' => '</p>'
+            '<div'   => '<p',
+            '</div>' => '</p>',
         );
         $html = str_replace(array_keys($replace), $replace, $html);
 
@@ -2342,9 +2378,10 @@ class Strings
     }
 
     /**
-     * Splits a UTF-8 string into words
+     * Splits a UTF-8 string into words.
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return array
      */
     public static function splitWords($string)
@@ -2361,9 +2398,10 @@ class Strings
     }
 
     /**
-     * Decodes entities that are whitespace into their UTF-8 characters
+     * Decodes entities that are whitespace into their UTF-8 characters.
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public static function decodeWhitespaceHtmlEntities($string)
@@ -2387,9 +2425,10 @@ class Strings
     }
 
     /**
-     * Just like html_entity_decode but decodes UTF-8 entities too.s
+     * Just like html_entity_decode but decodes UTF-8 entities too.s.
      *
-     * @param  string $html
+     * @param string $html
+     *
      * @return mixed
      */
     public static function decodeHtmlEntities($html)
@@ -2403,9 +2442,10 @@ class Strings
     }
 
     /**
-     * Remove the byte order mark from the beginning of a file string
+     * Remove the byte order mark from the beginning of a file string.
      *
-     * @param  string $string
+     * @param string $string
+     *
      * @return string
      */
     public static function removeBom($string)
@@ -2426,7 +2466,8 @@ class Strings
     /**
      * Decodes unicode html entities into their actual characters.
      *
-     * @param  string $html
+     * @param string $html
+     *
      * @return mixed
      */
     public static function decodeUnicodeEntities($html)
@@ -2461,11 +2502,11 @@ class Strings
         return $html;
     }
 
-
     /**
-     * Like chr() but works with UTF-8 codepoints
+     * Like chr() but works with UTF-8 codepoints.
      *
-     * @param  string $val
+     * @param string $val
+     *
      * @return string
      */
     public static function chrUni($val)
@@ -2474,19 +2515,19 @@ class Strings
         switch ($val) {
             case 0: return chr(0);
             case ($val & 0x7F): return chr($val);
-            case ($val & 0x7FF): return chr(0xC0 | (($val >> 6) & 0x1F)) . chr(0x80 | ($val & 0x3F));
-            case ($val & 0xFFFF): return chr(0xE0 | (($val >> 12) & 0x0F)) . chr(0x80 | (($val >> 6) & 0x3F)) . chr (0x80 | ($val & 0x3F));
-            case ($val & 0x1FFFFF): return chr(0xF0 | ($val >> 18)) . chr(0x80 | (($val >> 12) & 0x3F)) . chr(0x80 | (($val >> 6) & 0x3F)) . chr(0x80 | ($val & 0x3F));
+            case ($val & 0x7FF): return chr(0xC0 | (($val >> 6) & 0x1F)).chr(0x80 | ($val & 0x3F));
+            case ($val & 0xFFFF): return chr(0xE0 | (($val >> 12) & 0x0F)).chr(0x80 | (($val >> 6) & 0x3F)).chr(0x80 | ($val & 0x3F));
+            case ($val & 0x1FFFFF): return chr(0xF0 | ($val >> 18)).chr(0x80 | (($val >> 12) & 0x3F)).chr(0x80 | (($val >> 6) & 0x3F)).chr(0x80 | ($val & 0x3F));
         }
 
         return '';
     }
 
-
     /**
      * Strips out invalid UTF-8 characters from strings.
      *
      * @param $string
+     *
      * @return string
      */
     public static function utf8_bad_strip($string)
@@ -2511,26 +2552,25 @@ class Strings
         } elseif (function_exists('mb_convert_encoding')) {
             return @mb_convert_encoding($string, 'UTF-8', 'UTF-8');
         } else {
-
             $time = time();
 
             // see app/vendor-src/php-utf8/utils/bad.php
             $UTF8_BAD =
-                '([\x00-\x7F]'.                          # ASCII (including control chars)
-                '|[\xC2-\xDF][\x80-\xBF]'.               # non-overlong 2-byte
-                '|\xE0[\xA0-\xBF][\x80-\xBF]'.           # excluding overlongs
-                '|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}'.    # straight 3-byte
-                '|\xED[\x80-\x9F][\x80-\xBF]'.           # excluding surrogates
-                '|\xF0[\x90-\xBF][\x80-\xBF]{2}'.        # planes 1-3
-                '|[\xF1-\xF3][\x80-\xBF]{3}'.            # planes 4-15
-                '|\xF4[\x80-\x8F][\x80-\xBF]{2}'.        # plane 16
+                '([\x00-\x7F]'.# ASCII (including control chars)
+                '|[\xC2-\xDF][\x80-\xBF]'.# non-overlong 2-byte
+                '|\xE0[\xA0-\xBF][\x80-\xBF]'.# excluding overlongs
+                '|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}'.# straight 3-byte
+                '|\xED[\x80-\x9F][\x80-\xBF]'.# excluding surrogates
+                '|\xF0[\x90-\xBF][\x80-\xBF]{2}'.# planes 1-3
+                '|[\xF1-\xF3][\x80-\xBF]{3}'.# planes 4-15
+                '|\xF4[\x80-\x8F][\x80-\xBF]{2}'.# plane 16
                 '|(.{1}))';                              # invalid byte
             ob_start();
             while (preg_match('/'.$UTF8_BAD.'/S', $string, $matches)) {
-                if ( !isset($matches[2])) {
+                if (!isset($matches[2])) {
                     echo $matches[0];
                 }
-                $string = substr($string,strlen($matches[0]));
+                $string = substr($string, strlen($matches[0]));
 
                 // Going too long, the string is clearly corrupt!
                 if (time() - $time > 6) {
@@ -2544,13 +2584,11 @@ class Strings
         }
     }
 
-
     /**
      * Set the path to the php-utf8 library functions, and thereby enable
      * dynamic calling of utf8_xxx calls on this string class.
      *
-     * @param  string $dir
-     * @return void
+     * @param string $dir
      */
     public static function setPhpUtf8Dir($dir)
     {
@@ -2558,7 +2596,7 @@ class Strings
     }
 
     /**
-     * Check if php_utf8 support is enabled
+     * Check if php_utf8 support is enabled.
      *
      * @return bool
      */
@@ -2624,9 +2662,9 @@ class Strings
         );
 
         if (isset($funcmap[$name])) {
-            require_once(self::$php_utf8_dir . '/ORB_LOAD.php');
+            require_once self::$php_utf8_dir.'/ORB_LOAD.php';
             if ($funcmap[$name] !== '__CORE__') {
-                require_once(self::$php_utf8_dir . '/' . $funcmap[$name]);
+                require_once self::$php_utf8_dir.'/'.$funcmap[$name];
             }
 
             return call_user_func_array($name, $args);
@@ -2635,15 +2673,15 @@ class Strings
         }
     }
 
-
     /**
      * Takes a string and chops it into multiple string after a given $maxLength while preserving words.
      *
      * Input string is trimmed to start, and each element in the array is trimmed in the result array.
      *
-     * @param  string $string    the input message that might be above $maxLength and need splitting
-     * @param  int    $maxLength the maximum length of each element in the returned array
-     * @return array  the result array of the pieces of the string that were split
+     * @param string $string    the input message that might be above $maxLength and need splitting
+     * @param int    $maxLength the maximum length of each element in the returned array
+     *
+     * @return array the result array of the pieces of the string that were split
      */
     public static function splitStringIntoArray($string, $maxLength)
     {

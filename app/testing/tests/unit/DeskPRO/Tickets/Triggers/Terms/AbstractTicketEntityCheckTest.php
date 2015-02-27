@@ -8,21 +8,23 @@ require_once 'AbstractEntityCheckTest.php';
 abstract class AbstractTicketEntityCheckTest extends AbstractEntityCheckTest
 {
     /**
-     * The property on the ticket that is being checked
+     * The property on the ticket that is being checked.
+     *
      * @return string
      */
     abstract public function getTicketPropertyName();
 
     /**
-     * @param  int    $id
-     * @param  object $object
+     * @param int    $id
+     * @param object $object
+     *
      * @return Ticket
      */
     public function createTicket($id, $object)
     {
         $prop_name = $this->getTicketPropertyName();
 
-        $ticket = new Ticket();
+        $ticket     = new Ticket();
         $ticket->id = $id;
 
         if ($object !== null) {

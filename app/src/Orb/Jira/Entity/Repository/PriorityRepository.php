@@ -5,20 +5,19 @@ namespace Orb\Jira\Entity\Repository;
 use Orb\Jira\Repository;
 
 /**
- * Issue Priority Repository
+ * Issue Priority Repository.
  *
  * @author Abhinav Kumar <work@abhinavkumar.in>
  */
 class PriorityRepository extends Repository
 {
     /**
-     *
      * @var String Entity Class
      */
     protected $_entityClass = 'Priority';
 
     /**
-     * Entity REST endpoint
+     * Entity REST endpoint.
      *
      * @var String the REST endpoint
      */

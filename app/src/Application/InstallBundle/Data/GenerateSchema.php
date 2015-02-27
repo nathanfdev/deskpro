@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage InstallBundle
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Data;
@@ -122,7 +119,7 @@ class GenerateSchema
     }
 
     /**
-     * Loads the schema
+     * Loads the schema.
      */
     protected function load()
     {
@@ -131,7 +128,7 @@ class GenerateSchema
         }
 
         $this->creates = array();
-        $this->alters = array();
+        $this->alters  = array();
 
         #------------------------------
         # Load SQL
@@ -140,9 +137,9 @@ class GenerateSchema
         $em = $this->em;
         /** @var $metadata \Doctrine\ORM\Mapping\ClassMetadata[] */
         $metadata = $em->getMetadataFactory()->getAllMetadata();
-        $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
-        $sm = $this->em->getConnection()->getSchemaManager();
-        $all_sql = $tool->getCreateSchemaSql($metadata);
+        $tool     = new \Doctrine\ORM\Tools\SchemaTool($em);
+        $sm       = $this->em->getConnection()->getSchemaManager();
+        $all_sql  = $tool->getCreateSchemaSql($metadata);
 
         #------------------------------
         # Non-entity tables
@@ -178,12 +175,12 @@ SQL;
                 $s_ex = var_export($s, true);
 
                 $this->triggers[] = $s;
-                $php_triggers[] = "\$queries['trigger'][$xt] = $s_ex;";
+                $php_triggers[]   = "\$queries['trigger'][$xt] = $s_ex;";
                 $xt++;
 
             // Alter
             } elseif (preg_match('#^ALTER#', $s)) {
-                $s = str_replace(array("\r\n", "\n"), ' ', $s);
+                $s              = str_replace(array("\r\n", "\n"), ' ', $s);
                 $this->alters[] = $s;
 
             // Create
@@ -198,7 +195,7 @@ SQL;
                 $s_ex = var_export($s, true);
 
                 $this->creates[] = $s;
-                $php_creates[] = "\$queries['create'][$xc] = $s_ex;";
+                $php_creates[]   = "\$queries['create'][$xc] = $s_ex;";
                 $xc++;
             }
         }
@@ -206,7 +203,7 @@ SQL;
         $this->alters = self::combineAlters($this->alters);
 
         foreach ($this->alters as $s) {
-            $s_ex = var_export($s, true);
+            $s_ex         = var_export($s, true);
             $php_alters[] = "\$queries['alter'][$xa] = $s_ex;";
             $xa++;
         }
@@ -216,9 +213,9 @@ SQL;
         #------------------------------
 
         $this->indexes = array();
-        $this->fks = array();
-        $php_indexes = array();
-        $php_fks = array();
+        $this->fks     = array();
+        $php_indexes   = array();
+        $php_fks       = array();
 
         $schema = $tool->getSchemaFromMetadata($metadata);
         /** @var $tables \Doctrine\DBAL\Schema\Table[] */
@@ -227,10 +224,10 @@ SQL;
             $t = $table->getName();
 
             $this->indexes[$t] = array();
-            $this->fks[$t] = array();
+            $this->fks[$t]     = array();
 
             $indexes = $table->getIndexes();
-            $fkeys = $table->getForeignKeys();
+            $fkeys   = $table->getForeignKeys();
 
             if (count($indexes) > 0) {
                 $php_indexes[] = "\$queries['index']['$t'] = array(";
@@ -240,13 +237,13 @@ SQL;
             }
 
             foreach ($indexes as $idx) {
-                $sql = $sm->getDatabasePlatform()->getCreateIndexSQL($idx, $t);
+                $sql                                = $sm->getDatabasePlatform()->getCreateIndexSQL($idx, $t);
                 $this->indexes[$t][$idx->getName()] = $sql;
 
                 $php_indexes[] = "\t'{$idx->getName()}' => '".addslashes($sql)."',";
             }
             foreach ($fkeys as $fk) {
-                $sql = $sm->getDatabasePlatform()->getCreateForeignKeySQL($fk, $t);
+                $sql                           = $sm->getDatabasePlatform()->getCreateForeignKeySQL($fk, $t);
                 $this->fks[$t][$fk->getName()] = $sql;
 
                 $php_fks[] = "\t'{$fk->getName()}' => '".addslashes($sql)."',";
@@ -308,7 +305,7 @@ SQL;
                 throw new \InvalidArgumentException("Invalid ALTER query: $sql");
             }
 
-            $table = $m[1];
+            $table     = $m[1];
             $alter_seg = trim($m[2], ' ,');
 
             if (!isset($segments[$table])) {

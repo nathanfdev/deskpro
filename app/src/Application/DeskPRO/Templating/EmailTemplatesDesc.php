@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Templating
  */
 
@@ -64,7 +63,8 @@ class EmailTemplatesDesc
     }
 
     /**
-     * @param  Translate $tr
+     * @param Translate $tr
+     *
      * @return array
      */
     public function getManifestWithDescriptions(Translate $tr)
@@ -79,8 +79,9 @@ class EmailTemplatesDesc
     }
 
     /**
-     * @param  array     $tpl
-     * @param  Translate $tr
+     * @param array     $tpl
+     * @param Translate $tr
+     *
      * @return string
      */
     public function getTplDisplayInfo(array $tpl, Translate $tr)
@@ -88,10 +89,10 @@ class EmailTemplatesDesc
         $title_id = $this->_getTplPhraseId($tpl['name']).'_title';
         $desc_id  = $this->_getTplPhraseId($tpl['name']).'_desc';
 
-        $show_name = $tpl['name'];
-        $show_name = str_replace('DeskPRO:', '', $show_name);
-        $show_name = str_replace(':', '/', $show_name);
-        $show_name = str_replace('.twig', '', $show_name);
+        $show_name       = $tpl['name'];
+        $show_name       = str_replace('DeskPRO:', '', $show_name);
+        $show_name       = str_replace(':', '/', $show_name);
+        $show_name       = str_replace('.twig', '', $show_name);
         $tpl['showName'] = $show_name;
 
         $tpl['title'] = $tr->hasPhrase($title_id) ? $tr->phrase($title_id) : $title_id;
@@ -103,7 +104,8 @@ class EmailTemplatesDesc
     /**
      * Gets a list of tempaltes grouped by type and group, with translated titles and descriptions.
      *
-     * @param  Translate $tr
+     * @param Translate $tr
+     *
      * @return array
      */
     public function getProcessedList(Translate $tr)
@@ -138,7 +140,8 @@ class EmailTemplatesDesc
     }
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return string
      */
     private function _getTplPhraseId($name)

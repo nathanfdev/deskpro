@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -58,16 +57,16 @@ class PermissionNamesLoader
     {
         $cache_path = DP_ROOT.'/sys/Resources/agent-perm-names.php';
         if ($this->debug || !file_exists($cache_path)) {
-            $scanner = new AgentGroupPermScanner();
+            $scanner    = new AgentGroupPermScanner();
             $perm_names = array(
-                'all' => $scanner->getNames(),
+                'all'  => $scanner->getNames(),
                 'safe' => $scanner->getSafeNames(),
             );
         } else {
             $perm_names = require $cache_path;
         }
 
-        $this->all_names = $perm_names['all'];
+        $this->all_names      = $perm_names['all'];
         $this->all_safe_names = $perm_names['safe'];
     }
 
@@ -96,7 +95,8 @@ class PermissionNamesLoader
     }
 
     /**
-     * @param  Usergroup|string $group Usergroup or string sys_name
+     * @param Usergroup|string $group Usergroup or string sys_name
+     *
      * @return array
      */
     public function getEnabledForGroup($group)

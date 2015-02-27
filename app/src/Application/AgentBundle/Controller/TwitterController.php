@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -39,7 +36,7 @@ use Application\DeskPRO\Entity\TwitterAccount;
 use Application\DeskPRO\Entity\TwitterAccountSearch;
 
 /**
- * Handles creating/editing of Twitter Accounts
+ * Handles creating/editing of Twitter Accounts.
  */
 class TwitterController extends AbstractController
 {
@@ -108,10 +105,10 @@ class TwitterController extends AbstractController
         $data = $this->em->getRepository('DeskPRO:TwitterAccountStatus')->getGroupedSectionCount($account, $type, $group);
 
         return $this->createJsonResponse(array(
-            'account_id' => $account->id,
-            'type'       => $type,
-            'group'      => $group,
-            'html'       => $this->renderView('AgentBundle:Twitter:window-sub-grouping.html.twig', array(
+            'account_id'       => $account->id,
+            'type'             => $type,
+            'group'            => $group,
+            'html'             => $this->renderView('AgentBundle:Twitter:window-sub-grouping.html.twig', array(
                 'account'      => $account,
                 'section_type' => $type,
                 'group_by'     => $group,
@@ -260,10 +257,12 @@ class TwitterController extends AbstractController
     /**
      * Check account security.
      *
-     * @param  integer                                                          $id The account id.
-     * @return \Application\DeskPRO\Entity\TwitterAccount
+     * @param integer $id The account id.
+     *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return \Application\DeskPRO\Entity\TwitterAccount
+     *
      */
     protected function getAccount($id)
     {
@@ -316,7 +315,8 @@ class TwitterController extends AbstractController
     }
 
     /**
-     * @param  array                                      $statuses
+     * @param array $statuses
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     protected function renderList(array $statuses, $template, $total_count, $page, $sort_by_date = null)

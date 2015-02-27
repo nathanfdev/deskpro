@@ -62,7 +62,7 @@ class GenBuildManifest
         $builds = array();
 
         foreach ($finder as $file) {
-            /** @var $file \SplFileInfo */
+            /* @var $file \SplFileInfo */
 
             $build_id = Strings::extractRegexMatch('/^Build(\\d+)\.php$/', $file->getFilename());
             if (!$build_id) {
@@ -104,7 +104,7 @@ class GenBuildManifest
      */
     public function getContents()
     {
-        $file = array();
+        $file   = array();
         $file[] = '<?php return array(';
 
         foreach ($this->getBuildsArray() as $build_id => $build_info) {

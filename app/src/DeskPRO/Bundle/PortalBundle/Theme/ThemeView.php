@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Theme;
@@ -51,7 +48,7 @@ class ThemeView
     public function __construct(BrandStack $brand_stack, array $default_options)
     {
         $this->default_options = $default_options;
-        $this->brand_stack = $brand_stack;
+        $this->brand_stack     = $brand_stack;
     }
 
     public function __call($tag_name, array $explicit_options)

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DpBehat\Page\Portal;
@@ -37,7 +35,7 @@ use DpBehat\Page\BasePage;
 
 class Home extends BasePage
 {
-    protected $path = '/';
+    protected $path       = '/';
     protected $parameters = array('base_url' => '/');
 
     public function sidebarLogin($username, $password)

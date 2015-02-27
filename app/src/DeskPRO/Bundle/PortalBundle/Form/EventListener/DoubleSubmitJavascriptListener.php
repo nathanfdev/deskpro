@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\EventListener;
@@ -44,7 +41,7 @@ class DoubleSubmitJavascriptListener implements EventSubscriberInterface
     public function onKernelResponse(FilterResponseEvent $event)
     {
         $response = $event->getResponse();
-        $request = $event->getRequest();
+        $request  = $event->getRequest();
 
         if (!$event->isMasterRequest()) {
             return;
@@ -68,7 +65,7 @@ class DoubleSubmitJavascriptListener implements EventSubscriberInterface
     private function injectScript(Response $response)
     {
         $content = $response->getContent();
-        $pos = strripos($content, '</body>');
+        $pos     = strripos($content, '</body>');
 
         if (false !== $pos) {
             $script = "\n<script>"

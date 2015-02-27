@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -107,7 +106,7 @@ class SetPriority extends AbstractContainerAwareAction implements ActionInterfac
             return array('fields');
         }
 
-        return null;
+        return;
     }
 
     /**

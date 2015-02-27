@@ -26,20 +26,17 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\FeedbackTypes\FeedbackTypeEdit;
 use Application\DeskPRO\FeedbackTypes\Form\Type\FeedbackTypeType;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Orb\Util\Arrays;
 
 class FeedbackTypesController extends AbstractController implements ProtectedControllerInterface
@@ -62,10 +59,9 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
 
     public function listAction()
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+        /*
+         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
-
         $feedback_types = $this->container->getSystemService('feedback_types');
 
         return $this->createApiResponse(
@@ -81,10 +77,9 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
 
     public function getAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+        /*
+         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
-
         $feedback_types = $this->container->getSystemService('feedback_types');
         $feedback_type  = $feedback_types->getById($id);
 
@@ -108,10 +103,9 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
 
     public function saveAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+        /*
+         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
-
         $feedback_types = $this->container->getSystemService('feedback_types');
 
         if ($id) {
@@ -151,10 +145,9 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
 
     public function removeAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+        /*
+         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
-
         $feedback_types  = $this->container->getSystemService('feedback_types');
         $feedback_type   = $feedback_types->getById($id);
 
@@ -209,10 +202,9 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
     {
         $display_orders = $this->in->getArrayOfUInts('display_orders');
 
-        /**
-         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes $feedback_types
+        /*
+         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
          */
-
         $feedback_types = $this->container->getSystemService('feedback_types');
         $feedback_types->updateDisplayOrders($display_orders);
 

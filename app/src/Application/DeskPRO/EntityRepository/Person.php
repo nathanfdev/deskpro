@@ -26,17 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\BigMode;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
@@ -54,7 +53,7 @@ class Person extends AbstractEntityRepository
         $phone_number = $this->getEntityManager()->getRepository('DeskPRO:PhoneNumber')->findByNumber($from_number);
 
         if (!$phone_number) {
-            return null; // didnt find the number in the db
+            return; // didnt find the number in the db
         }
 
         $query = $this->getEntityManager()->createQuery(
@@ -118,7 +117,7 @@ class Person extends AbstractEntityRepository
     }
 
     /**
-     * Gets a count of active agents (suitable for license checks)
+     * Gets a count of active agents (suitable for license checks).
      *
      * @return int
      */
@@ -169,7 +168,7 @@ class Person extends AbstractEntityRepository
                 WHERE CONCAT(first_name, ' ', last_name) LIKE ?1 AND p.is_deleted = false
             ")->setParameter(1, "%$name%")->getSingleResult();
         } catch (\Exception $e) {
-            return null;
+            return;
         }
 
         return $priority;
@@ -183,13 +182,14 @@ class Person extends AbstractEntityRepository
             return $all[$id];
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Get agent names
+     * Get agent names.
      *
-     * @param  null  $for_ids
+     * @param null $for_ids
+     *
      * @return mixed
      */
     public function getAgentNames($for_ids = null)
@@ -233,7 +233,8 @@ class Person extends AbstractEntityRepository
     /**
      * Get all online and active (not away) agents.
      *
-     * @param  bool  $ids_only
+     * @param bool $ids_only
+     *
      * @return array
      */
     public function getActiveAgents($ids_only = false)
@@ -295,7 +296,8 @@ class Person extends AbstractEntityRepository
     /**
      * Find a person by their email address.
      *
-     * @param  string $email
+     * @param string $email
+     *
      * @return PersonEntity
      */
     public function findOneByEmail($email, $for_write = false)
@@ -434,7 +436,7 @@ class Person extends AbstractEntityRepository
 
     public function getOrganizationMemberIds(OrganizationEntity $org)
     {
-        $ids = array();
+        $ids     = array();
         $results = $this->getEntityManager()->createQuery("
             SELECT p.id
             FROM DeskPRO:Person p
@@ -468,7 +470,6 @@ class Person extends AbstractEntityRepository
     }
 
     /**
-     * @return void
      */
     public function getChatAgentRoundRobin()
     {
@@ -518,7 +519,7 @@ class Person extends AbstractEntityRepository
     }
 
     /**
-     * Get a count of how many people there are
+     * Get a count of how many people there are.
      *
      * @param boolean $only_users
      *
@@ -540,7 +541,7 @@ class Person extends AbstractEntityRepository
     }
 
     /**
-     * Get the count of users awaiting validation by agents
+     * Get the count of users awaiting validation by agents.
      *
      * @return int
      */
@@ -554,7 +555,7 @@ class Person extends AbstractEntityRepository
     }
 
     /**
-     * Get the count of users awaiting validation by agents
+     * Get the count of users awaiting validation by agents.
      *
      * @return int
      */
@@ -568,9 +569,10 @@ class Person extends AbstractEntityRepository
     }
 
     /**
-     * Count the number of things the user owns
+     * Count the number of things the user owns.
      *
-     * @param  \Application\DeskPRO\Entity\Person $person
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return array
      */
     public function getPersonObjectCounts(PersonEntity $person)
@@ -586,23 +588,25 @@ class Person extends AbstractEntityRepository
     }
 
     /**
-     * moved from AgentBundle/Controller/PeopleSearchController::performQuickSearch
-     * @param  null  $q          search query
-     * @param  bool  $startWith  ?
-     * @param  bool  $withAgents include agents
-     * @param  int   $excludeOrg exclude org
-     * @param  int   $limit      limit
+     * moved from AgentBundle/Controller/PeopleSearchController::performQuickSearch.
+     *
+     * @param null $q          search query
+     * @param bool $startWith  ?
+     * @param bool $withAgents include agents
+     * @param int  $excludeOrg exclude org
+     * @param int  $limit      limit
+     *
      * @return array
      */
     public function quickSearch($q = null, $startWith = false, $withAgents = true, $excludeOrg = 0, $limit = 10)
     {
-        $startWith = (bool) $startWith;
+        $startWith  = (bool) $startWith;
         $withAgents = (bool) $withAgents;
         $excludeOrg = abs($excludeOrg);
-        $limit = max(10, min($limit, 100));
-        $agent_sql = $withAgents ? '' : ' p.is_agent = 0 AND ';
-        $db = $this->getEntityManager()->getConnection();
-        $q = strtolower($q);
+        $limit      = max(10, min($limit, 100));
+        $agent_sql  = $withAgents ? '' : ' p.is_agent = 0 AND ';
+        $db         = $this->getEntityManager()->getConnection();
+        $q          = strtolower($q);
 
         if (BigMode::isBigMode(BigMode::PERSON_AUTOCOMPLETE)) {
             if (!strlen($q) && $startWith) {
@@ -672,11 +676,11 @@ class Person extends AbstractEntityRepository
         // todo we don't need to hydrate entities here (by getAgents()), but before we should move all helpers outside of Person entity
 
         foreach ($this->getAgents() as $agent) {
-            /** @var $agent \Application\DeskPRO\Entity\Person */
+            /* @var $agent \Application\DeskPRO\Entity\Person */
             $ret[] = array(
-                'id' => $agent['id'],
+                'id'           => $agent['id'],
                 'display_name' => $agent->getDisplayName(),
-                'picture_url' => $agent->getPictureUrl(16),
+                'picture_url'  => $agent->getPictureUrl(16),
             );
         }
 

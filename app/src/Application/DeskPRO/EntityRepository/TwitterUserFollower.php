@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -42,14 +41,14 @@ class TwitterUserFollower extends AbstractEntityRepository
             return array();
         }
 
-        $output = array();
+        $output  = array();
         $results = $this->getEntityManager()->createQuery("
             SELECT f, u
             FROM   DeskPRO:TwitterUserFollower f
             INNER JOIN f.follower_user u
             WHERE  f.user = :user AND f.follower_user IN (:follower)
         ")->setParameters(array(
-            'user' => $user_id,
+            'user'     => $user_id,
             'follower' => $follower_ids,
         ))->execute();
         foreach ($results as $result) {

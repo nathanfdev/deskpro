@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway;
@@ -78,10 +76,10 @@ class RunnerExecSource
      */
     public function __construct(EmailSource $source, AbstractReader $reader = null, EmailAccountManager $account_manager, Logger $logger = null)
     {
-        $this->source  = $source;
-        $this->account = $source->email_account;
-        $this->reader  = $reader;
-        $this->logger  = $logger ?: new Logger();
+        $this->source          = $source;
+        $this->account         = $source->email_account;
+        $this->reader          = $reader;
+        $this->logger          = $logger ?: new Logger();
         $this->account_manager = $account_manager;
     }
 
@@ -222,7 +220,7 @@ class RunnerExecSource
             );
         } else {
             return array(
-                'status' => $pre_processor->getErrorType() ?: 'error',
+                'status'     => $pre_processor->getErrorType() ?: 'error',
                 'error_code' => $pre_processor->getErrorCode(),
             );
         }
@@ -240,7 +238,7 @@ class RunnerExecSource
         );
         if (!$proc) {
             return array(
-                'status' => 'rejected',
+                'status'     => 'rejected',
                 'error_code' => 'invalid_address',
             );
         }
@@ -249,14 +247,14 @@ class RunnerExecSource
 
         if ($proc->isValid()) {
             return array(
-                'status' => 'okay',
+                'status'              => 'okay',
                 'created_object_type' => $proc->getCreatedObjectType(),
                 'created_object_id'   => $proc->getCreatedObjectId(),
                 'created_object_info' => $proc->getCreatedObjectInfo(),
             );
         } else {
             return array(
-                'status' => $proc->getErrorType() ?: 'error',
+                'status'     => $proc->getErrorType() ?: 'error',
                 'error_code' => $proc->getErrorCode(),
             );
         }

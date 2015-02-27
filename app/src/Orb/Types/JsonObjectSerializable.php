@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Types
  */
 
@@ -47,7 +46,8 @@ interface JsonObjectSerializable
     /**
      * Takes an array of data that was serialized with serializeJsonArray() and re-constructs the PHP object from it.
      *
-     * @param  array $data
+     * @param array $data
+     *
      * @return this
      */
     public static function unserializeJsonArray(array $data);

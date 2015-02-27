@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Translate
  */
 
@@ -54,8 +53,8 @@ class ObjectPhraseNamer
 
         if ($id) {
             $baseclass = Util::getBaseClassname($object);
-            $prefix = 'obj_'.strtolower($baseclass).'.';
-            $name = $prefix.$id;
+            $prefix    = 'obj_'.strtolower($baseclass).'.';
+            $name      = $prefix.$id;
             if ($property) {
                 $name .= '_'.$property;
             }
@@ -63,7 +62,7 @@ class ObjectPhraseNamer
             return $name;
         }
 
-        return null;
+        return;
     }
 
     public function getPhraseDefault($object, $property = null)
@@ -84,6 +83,6 @@ class ObjectPhraseNamer
             }
         }
 
-        return null;
+        return;
     }
 }

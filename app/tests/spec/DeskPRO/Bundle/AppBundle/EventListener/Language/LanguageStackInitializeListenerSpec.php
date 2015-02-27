@@ -26,33 +26,30 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\AppBundle\EventListener\Language;
 
 use Application\DeskPRO\Entity\Language;
+use DeskPRO\Bundle\AppBundle\EventListener\Language\LanguageStackInitializeListener;
 use DeskPRO\Bundle\AppBundle\EventListener\Language\LastLanguageListener;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\AppBundle\EventListener\Language\LanguageStackInitializeListener;
-use Symfony\Component\HttpFoundation\HeaderBag;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Psr\Log\LoggerInterface;
 
 /**
  * @mixin \DeskPRO\Bundle\AppBundle\EventListener\Language\LanguageStackInitializeListener
  */
 class LanguageStackInitializeListenerSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         LanguageStack $language_stack,
         LanguageManager $language_manager,
         GetResponseEvent $event,
@@ -60,30 +57,28 @@ class LanguageStackInitializeListenerSpec extends ObjectBehavior
         ParameterBag $cookies,
         ParameterBag $query,
         LoggerInterface $logger
-    )
-    {
+    ) {
         $event->isMasterRequest()->willReturn(true);
         $request->cookies = $cookies;
-        $request->query = $query;
+        $request->query   = $query;
         $event->getRequest()->willReturn($request);
         $language_manager->getLanguageStack()->willReturn($language_stack);
 
         $this->beConstructedWith($language_manager, $logger);
     }
 
-    function it_is_a_request_listener_with_very_high_priority()
+    public function it_is_a_request_listener_with_very_high_priority()
     {
         $this->shouldImplement('Symfony\Component\EventDispatcher\EventSubscriberInterface');
         $this->getSubscribedEvents()->shouldReturn(array(
-            KernelEvents::REQUEST => array('onRequest', 512)
+            KernelEvents::REQUEST => array('onRequest', 512),
         ));
     }
 
-    function it_only_listens_to_master_request(
+    public function it_only_listens_to_master_request(
         GetResponseEvent $event,
         LanguageStack $language_stack
-    )
-    {
+    ) {
         $event->isMasterRequest()->willReturn(false);
 
         $language_stack->push(Argument::any())->shouldNotBeCalled();
@@ -92,14 +87,13 @@ class LanguageStackInitializeListenerSpec extends ObjectBehavior
         $this->onRequest($event);
     }
 
-    function it_pushes_lang_from_uri_first_if_exists(
+    public function it_pushes_lang_from_uri_first_if_exists(
         LanguageStack $language_stack,
         LanguageManager $language_manager,
         Language $en,
         GetResponseEvent $event,
         Request $request
-    )
-    {
+    ) {
         $language_manager->getLanguage('en')->willReturn($en);
         $language_stack->push($en)->shouldBeCalled();
 
@@ -107,14 +101,13 @@ class LanguageStackInitializeListenerSpec extends ObjectBehavior
         $this->onRequest($event);
     }
 
-    function it_wont_push_from_uri_if_lang_code_is_misplaced_or_malformed(
+    public function it_wont_push_from_uri_if_lang_code_is_misplaced_or_malformed(
         LanguageStack $language_stack,
         LanguageManager $language_manager,
         Language $en,
         GetResponseEvent $event,
         Request $request
-    )
-    {
+    ) {
         $language_manager->getLanguage('en')->willReturn($en);
         $language_stack->push($en)->shouldNotBeCalled();
         $language_stack->pushDefault()->shouldBeCalled();
@@ -126,15 +119,14 @@ class LanguageStackInitializeListenerSpec extends ObjectBehavior
         $this->onRequest($event);
     }
 
-    function it_pushes_the_last_lang_cookie_if_it_exists(
+    public function it_pushes_the_last_lang_cookie_if_it_exists(
         LanguageStack $language_stack,
         LanguageManager $language_manager,
         Language $fr,
         GetResponseEvent $event,
         Request $request,
         ParameterBag $cookies
-    )
-    {
+    ) {
         $cookies->get(\DeskPRO\Bundle\AppBundle\EventListener\Language\LastLanguageListener::COOKIE_NAME)->willReturn('fr');
         $language_manager->getLanguage('fr')->willReturn($fr);
 
@@ -143,15 +135,14 @@ class LanguageStackInitializeListenerSpec extends ObjectBehavior
         $this->onRequest($event);
     }
 
-    function it_pushes_the_get_variable_from_esi_calls_if_exists_and_no_cookie(
+    public function it_pushes_the_get_variable_from_esi_calls_if_exists_and_no_cookie(
         LanguageStack $language_stack,
         LanguageManager $language_manager,
         Language $fr,
         GetResponseEvent $event,
         Request $request,
         ParameterBag $query
-    )
-    {
+    ) {
         $query->get('lang_url_code')->willReturn('fr');
         $request->getPathInfo()->willReturn('/_proxy?some=params&lang_url_code=fr');
         $language_manager->getLanguage('fr')->willReturn($fr);
@@ -161,15 +152,14 @@ class LanguageStackInitializeListenerSpec extends ObjectBehavior
         $this->onRequest($event);
     }
 
-    function it_does_not_push_the_special_query_param_if_not_a_proxy_request(
+    public function it_does_not_push_the_special_query_param_if_not_a_proxy_request(
         LanguageStack $language_stack,
         LanguageManager $language_manager,
         Language $fr,
         GetResponseEvent $event,
         Request $request,
         ParameterBag $query
-    )
-    {
+    ) {
         $query->get('lang_url_code')->willReturn('fr');
         $request->getPathInfo()->willReturn('/articles');
         $language_manager->getLanguage('fr')->willReturn($fr);
@@ -180,11 +170,10 @@ class LanguageStackInitializeListenerSpec extends ObjectBehavior
         $this->onRequest($event);
     }
 
-    function it_pushes_default_if_no_other_info_to_get_lang_from(
+    public function it_pushes_default_if_no_other_info_to_get_lang_from(
         LanguageStack $language_stack,
         GetResponseEvent $event
-    )
-    {
+    ) {
         $language_stack->pushDefault()->shouldBeCalled();
 
         $this->onRequest($event);

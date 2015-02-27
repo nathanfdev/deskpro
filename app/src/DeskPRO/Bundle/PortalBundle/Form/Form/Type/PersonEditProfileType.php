@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\ORM\EntityManager;
-use DeskPRO\Bundle\PortalBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\PortalBundle\Form\Form\FormFieldManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -68,10 +65,10 @@ class PersonEditProfileType extends AbstractType
 
     public function __construct(FormFieldManager $field_manager, LanguageManager $language_manager, DeskproBlobStorage $blob_storage, EntityManager $em)
     {
-        $this->field_manager = $field_manager;
+        $this->field_manager    = $field_manager;
         $this->language_manager = $language_manager;
-        $this->blob_storage = $blob_storage;
-        $this->em = $em;
+        $this->blob_storage     = $blob_storage;
+        $this->em               = $em;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -88,7 +85,7 @@ class PersonEditProfileType extends AbstractType
         }
 
         $blob_storage = $this->blob_storage;
-        $em = $this->em;
+        $em           = $this->em;
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($blob_storage, $em) {
             /** @var \Application\DeskPRO\Entity\Person $person */
             $person = $event->getData();
@@ -142,10 +139,10 @@ class PersonEditProfileType extends AbstractType
                     'deskpro_custom_data_person',
                     array(
                         'custom_data_field' => $field_def,
-                        'person' => $event->getData(),
-                        'property_path' => sprintf('getCustomDataCollection[%s]', $id),
-                        'agent_interface' => false,
-                        'label' => false,
+                        'person'            => $event->getData(),
+                        'property_path'     => sprintf('getCustomDataCollection[%s]', $id),
+                        'agent_interface'   => false,
+                        'label'             => false,
                     )
                 );
             }

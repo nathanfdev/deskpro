@@ -26,23 +26,20 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
+use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use Symfony\Component\HttpFoundation\Request;
 
 class NewsController extends AbstractController
 {
@@ -66,7 +63,7 @@ class NewsController extends AbstractController
             );
 
             return $this->render('PortalBundle:News:feed.rss.twig', array(
-                'pager' => $pager,
+                'pager'    => $pager,
                 'category' => null,
             ));
         }
@@ -77,7 +74,7 @@ class NewsController extends AbstractController
         return $this->renderThemeView(
             'Theme:News:index.html.twig',
             array(
-                'page' => $page,
+                'page'  => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
             )
         );
@@ -104,7 +101,7 @@ class NewsController extends AbstractController
             );
 
             return $this->render('PortalBundle:News:feed.rss.twig', array(
-                'pager' => $pager,
+                'pager'    => $pager,
                 'category' => $category,
             ));
         }
@@ -115,9 +112,9 @@ class NewsController extends AbstractController
         return $this->renderThemeView(
             'Theme:News:browse.html.twig',
             array(
-                'category' => $category,
-                'page' => $page,
-                'count' => $this->getBrandSetting('portal.per_page_content'),
+                'category'        => $category,
+                'page'            => $page,
+                'count'           => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination' => true,
             )
         );
@@ -157,10 +154,10 @@ class NewsController extends AbstractController
         return $this->renderThemeView(
             'Theme:News:view.html.twig',
             array(
-                'post' => $post,
-                'category' => $post->category,
-                'content_id' => $post->getId(),
-                'content_type' => News::CONTENT_TYPE,
+                'post'             => $post,
+                'category'         => $post->category,
+                'content_id'       => $post->getId(),
+                'content_type'     => News::CONTENT_TYPE,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
             )
         );
@@ -217,7 +214,7 @@ class NewsController extends AbstractController
      */
     public function newsSubscriptionAction(News $post)
     {
-        $person = $this->getUser();
+        $person               = $this->getUser();
         $subscriptions_helper = $this->getSubscriptionsHelper();
 
         if ($subscriptions_helper->isSubscribedContent($post, $person)) {
@@ -238,7 +235,7 @@ class NewsController extends AbstractController
      */
     public function newsCategorySubscriptionAction(NewsCategory $category)
     {
-        $person = $this->getUser();
+        $person               = $this->getUser();
         $subscriptions_helper = $this->getSubscriptionsHelper();
 
         if ($subscriptions_helper->isSubscribedCategory($category, $person)) {

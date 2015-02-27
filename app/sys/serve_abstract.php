@@ -26,16 +26,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DeskPRO\Kernel;
 
-abstract class LoaderAbstract
+abstract class serve_abstract
 {
     /**
      * @var string
@@ -88,18 +85,18 @@ abstract class LoaderAbstract
         spl_autoload_register(function ($class) {
             switch ($class) {
                 case 'Orb\\Util\\Util':
-                    require(DP_ROOT . '/src/Orb/Util/Util.php');
+                    require DP_ROOT.'/src/Orb/Util/Util.php';
 
                     return;
                 case 'Orb\\Util\\Strings':
-                    require(DP_ROOT . '/src/Orb/Util/Strings.php');
+                    require DP_ROOT.'/src/Orb/Util/Strings.php';
 
                     return;
             }
 
             if (strpos($class, 'Orb\\') === 0) {
-                $path = DP_ROOT . '/src/' . str_replace('\\', '/', $class) . '.php';
-                require($path);
+                $path = DP_ROOT.'/src/'.str_replace('\\', '/', $class).'.php';
+                require $path;
             }
         });
 
@@ -135,7 +132,7 @@ abstract class LoaderAbstract
         # Serve 503 if helpdesk is offline
         #------------------------------
 
-        if (is_file(dp_get_data_dir() . '/helpdesk-offline.trigger') || is_file(DP_WEB_ROOT.'/auto-update-is-running.trigger')) {
+        if (is_file(dp_get_data_dir().'/helpdesk-offline.trigger') || is_file(DP_WEB_ROOT.'/auto-update-is-running.trigger')) {
             header('HTTP/1.1 503 Service Unavailable');
             echo HelpdeskOfflineMessage::getOfflineMessage();
             exit(1);
@@ -152,15 +149,13 @@ abstract class LoaderAbstract
         }
     }
 
-
     /**
      * @return mixed
      */
     abstract protected function runAction();
 
-
     /**
-     * Handle a fatal exception
+     * Handle a fatal exception.
      *
      * @param \Exception $e
      */
@@ -181,7 +176,6 @@ abstract class LoaderAbstract
         exit(1);
     }
 
-
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
@@ -191,15 +185,15 @@ abstract class LoaderAbstract
 
         if (!$container) {
             global $DP_CONFIG;
-            $env = 'prod';
+            $env   = 'prod';
             $debug = false;
 
             if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
-                $env = 'dev';
+                $env   = 'dev';
                 $debug = true;
             }
 
-            require DP_ROOT . '/sys/KernelBooter.php';
+            require DP_ROOT.'/sys/KernelBooter.php';
             \DeskPRO\Kernel\KernelBooter::bootstrapLib(true);
 
             $kernel_class = 'DeskPRO\\Kernel\\DpKernel';
@@ -212,13 +206,12 @@ abstract class LoaderAbstract
             $container = $kernel->getContainer();
 
             // Set PDO now that we are connected...
-            $this->pdo = $container->getDb();
+            $this->pdo      = $container->getDb();
             $this->pdo_read = $container->getDb();
         }
 
         return $container;
     }
-
 
     /**
      * @return \PDO
@@ -231,8 +224,8 @@ abstract class LoaderAbstract
 
         global $DP_CONFIG;
 
-        $port = '';
-        $dbhost = isset($DP_CONFIG['db']['host']) ? $DP_CONFIG['db']['host'] : '';
+        $port        = '';
+        $dbhost      = isset($DP_CONFIG['db']['host']) ? $DP_CONFIG['db']['host'] : '';
         $unix_socket = null;
 
         $m = null;
@@ -262,7 +255,6 @@ abstract class LoaderAbstract
         return $this->pdo;
     }
 
-
     /**
      * @return \PDO
      */
@@ -280,8 +272,8 @@ abstract class LoaderAbstract
             return $this->getPdo();
         }
 
-        $port = '';
-        $dbhost = isset($DP_CONFIG[$key]['host']) ? $DP_CONFIG[$key]['host'] : '';
+        $port        = '';
+        $dbhost      = isset($DP_CONFIG[$key]['host']) ? $DP_CONFIG[$key]['host'] : '';
         $unix_socket = null;
 
         $m = null;
@@ -311,7 +303,6 @@ abstract class LoaderAbstract
         return $this->pdo_read;
     }
 
-
     /**
      * @return array
      */
@@ -335,11 +326,9 @@ abstract class LoaderAbstract
         return $this->settings;
     }
 
-
     /**
-     * @param  string $name
-     * @param  null   $default
-     * @return null
+     * @param string $name
+     * @param null   $default
      */
     public function getSetting($name, $default = null)
     {
@@ -349,7 +338,6 @@ abstract class LoaderAbstract
 
         return isset($this->settings[$name]) ? $this->settings[$name] : $default;
     }
-
 
     ####################################################################################################################
     # Request Helpers
@@ -384,11 +372,10 @@ abstract class LoaderAbstract
             return $requestUri;
         }
 
-        $this->path_info = (string)$pathInfo;
+        $this->path_info = (string) $pathInfo;
 
         return $this->path_info;
     }
-
 
     /**
      * @see \Symfony\Component\HttpFoundation\Request
@@ -467,7 +454,6 @@ abstract class LoaderAbstract
 
         return $this->base_url;
     }
-
 
     /**
      * @see \Symfony\Component\HttpFoundation\Request
@@ -569,14 +555,13 @@ abstract class LoaderAbstract
     public static function formatBacktrace(array $backtrace)
     {
         $trace = '';
-        foreach($backtrace as $k=>$v){
-
+        foreach ($backtrace as $k => $v) {
             $line = "#$k ";
 
             if (isset($v['object'])) {
-                $line .= get_class($v['object']) . "::";
+                $line .= get_class($v['object'])."::";
             } elseif (isset($v['class'])) {
-                $line .= $v['class'] . "::";
+                $line .= $v['class']."::";
             }
 
             $line .= "{$v['function']}(";

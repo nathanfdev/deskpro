@@ -2,8 +2,8 @@
 
 namespace DpIntegrationTests\DeskPRO\NewSettings\Loader;
 
-use Application\DeskPRO\EntityRepository\Setting as SettingRepo;
 use Application\DeskPRO\EntityRepository\Brand as BrandRepo;
+use Application\DeskPRO\EntityRepository\Setting as SettingRepo;
 use Application\DeskPRO\NewSettings\SettingsResolver as Resolver;
 
 class BrandSettingsTest extends \DpIntegrationTestCase
@@ -27,8 +27,8 @@ class BrandSettingsTest extends \DpIntegrationTestCase
     {
         $this->helper->enableDatabaseSet('EmptyDb');
         $this->helper->loadFixtures('General/SimpleSettingsData');
-        $this->rep = $this->helper->getSymfonyContainer()->getEm()->getRepository('DeskPRO:Setting');
-        $this->brands_repo = $this->helper->getSymfonyContainer()->getEm()->getRepository('DeskPRO:Brand');
+        $this->rep               = $this->helper->getSymfonyContainer()->getEm()->getRepository('DeskPRO:Setting');
+        $this->brands_repo       = $this->helper->getSymfonyContainer()->getEm()->getRepository('DeskPRO:Brand');
         $this->settings_resolver = $this->helper->getSymfonyContainer()->getSystemService('settings_resolver');
     }
 
@@ -43,7 +43,7 @@ class BrandSettingsTest extends \DpIntegrationTestCase
 
     public function testBrandSettingsByBrandId()
     {
-        $brand = $this->brands_repo->findOneBy(array('name' => 'some_name'));
+        $brand    = $this->brands_repo->findOneBy(array('name' => 'some_name'));
         $settings = $this->settings_resolver->getBrandSettings($brand->id);
 
         // "456 key" would be "val2" if we fetched the global settingbag
@@ -53,7 +53,7 @@ class BrandSettingsTest extends \DpIntegrationTestCase
 
     public function testBrandSettingsByBrandEntity()
     {
-        $brand = $this->brands_repo->findOneBy(array('name' => 'some_name'));
+        $brand    = $this->brands_repo->findOneBy(array('name' => 'some_name'));
         $settings = $this->settings_resolver->getBrandSettings($brand);
 
         // "456 key" would be "val2" if we fetched the global settingbag

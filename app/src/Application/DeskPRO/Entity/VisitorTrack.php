@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +37,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Tracks pages a user has been on
+ * Tracks pages a user has been on.
  */
 class VisitorTrack extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -70,28 +69,28 @@ class VisitorTrack extends \Application\DeskPRO\Domain\DomainObject
     protected $ref_page_url = '';
 
     /**
-     * The users user agent string
+     * The users user agent string.
      *
      * @var string
      */
     protected $user_agent = '';
 
     /**
-     * The users user agent string
+     * The users user agent string.
      *
      * @var string
      */
     protected $user_browser = '';
 
     /**
-     * The users user agent string
+     * The users user agent string.
      *
      * @var string
      */
     protected $user_os = '';
 
     /**
-     * The users IP address
+     * The users IP address.
      *
      * @var string
      */
@@ -166,7 +165,7 @@ class VisitorTrack extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\VisitorTrack';
         $metadata->setPrimaryTable(array(
-            'name' => 'visitor_tracks',
+            'name'    => 'visitor_tracks',
             'indexes' => array(
                 'idx1' => array(
                     'columns' => array('date_created', 'is_new_visit'),

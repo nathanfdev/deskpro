@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -52,7 +49,7 @@ class SubjectAction extends AbstractAction
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -60,14 +57,14 @@ class SubjectAction extends AbstractAction
     {
         $subject_text = $this->subject;
 
-        $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+        $formatter    = new SnippetFormatter(App::getContainer()->get('twig'));
         $subject_text = $formatter->formatText($subject_text, $ticket);
 
         $ticket['subject'] = $subject_text;
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -87,7 +84,8 @@ class SubjectAction extends AbstractAction
     }
 
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
@@ -102,7 +100,7 @@ class SubjectAction extends AbstractAction
     {
         if ($as_html) {
             $html = htmlspecialchars($this->subject, \ENT_QUOTES);
-            $ret = 'Set subject: <span class="with-set-subject">'.$html.'</span>';
+            $ret  = 'Set subject: <span class="with-set-subject">'.$html.'</span>';
         } else {
             $ret = 'Set subject: '.$this->subject;
         }

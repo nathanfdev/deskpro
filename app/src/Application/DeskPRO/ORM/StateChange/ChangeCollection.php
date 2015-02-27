@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -71,8 +70,9 @@ class ChangeCollection implements ChangeInterface
     private $del_elements = array();
 
     /**
-     * @param  string           $field_id
-     * @param  Collection       $coll
+     * @param string     $field_id
+     * @param Collection $coll
+     *
      * @return ChangeCollection
      */
     public static function newFromPersistedCollection($field_id, Collection $coll, $old = array())

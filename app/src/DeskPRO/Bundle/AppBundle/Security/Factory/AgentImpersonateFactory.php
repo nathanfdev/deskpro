@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Auth
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security\Factory;
@@ -50,10 +47,10 @@ class AgentImpersonateFactory extends AbstractFactory
 
     protected $defaultSuccessHandlerOptions = array(
         'always_use_default_target_path' => true,
-        'default_target_path' => '/',
-        'login_path' => '/login',
-        'target_path_parameter' => '_target_path',
-        'use_referer' => false,
+        'default_target_path'            => '/',
+        'login_path'                     => '/login',
+        'target_path_parameter'          => '_target_path',
+        'use_referer'                    => false,
     );
 
     public function getPosition()

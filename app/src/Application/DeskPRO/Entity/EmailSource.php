@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Raw email sources
+ * Raw email sources.
  */
 class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -50,7 +49,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     const STATUS_ERROR      = 'error';
     const STATUS_REJECTED   = 'rejected';
 
-    const OBJ_TYPE_TICKET = 'ticket';
+    const OBJ_TYPE_TICKET         = 'ticket';
     const OBJ_TYPE_TICKET_MESSAGE = 'ticketmessage';
 
     const ERR_SERVER_ERROR      = 'server_error';
@@ -84,7 +83,6 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var int
-     *
      */
     protected $id = null;
 
@@ -134,7 +132,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     protected $from_email = '';
 
     /**
-     * Just the headers portion of the email
+     * Just the headers portion of the email.
      *
      * @var string
      */
@@ -160,7 +158,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
      * - inserted: Only inserted
      * - processing: Currently processing
      * - complete: Fully processed
-     * - error: Tried to process but there was some kind of error (see error_code)
+     * - error: Tried to process but there was some kind of error (see error_code).
      *
      * @var string
      */
@@ -198,6 +196,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * How many times the email has been processed.
+     *
      * @var int
      */
     protected $exec_count = 0;
@@ -229,9 +228,10 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get the full raw source of the email
+     * Get the full raw source of the email.
      *
      * @deprecated
+     *
      * @return string
      */
     public function getRawSource()
@@ -262,7 +262,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Clears local cache of raw source
+     * Clears local cache of raw source.
      */
     public function clearRawSource()
     {
@@ -359,7 +359,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\EmailSource';
         $metadata->setPrimaryTable(array(
-            'name' => 'email_sources',
+            'name'    => 'email_sources',
             'indexes' => array(
                 'date_created' => array('columns' => array('date_created')),
                 'object_idx'   => array('columns' => array('object_type', 'object_id')),

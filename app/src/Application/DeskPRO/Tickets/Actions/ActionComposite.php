@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -70,8 +69,9 @@ class ActionComposite implements ActionInterface, DeskproContainerAwareInterface
         /**
          * Gets the set container.
          *
-         * @return DeskproContainer
          * @throws \RuntimeException When no container has been set yet
+         * @return DeskproContainer
+         *
          */
         protected function getContainer()
         {

@@ -26,21 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Person;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\People\PersonGuest;
-use DeskPRO\Bundle\AppBundle\Person\Events\PersonCreateEvent;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
+use DeskPRO\Bundle\AppBundle\Person\Events\PersonCreateEvent;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -63,8 +60,8 @@ class PersonFactory
 
     public function __construct(EntityManager $em, EventDispatcherInterface $event_dispatcher, BrandStack $brand_stack)
     {
-        $this->em = $em;
-        $this->brand_stack = $brand_stack;
+        $this->em               = $em;
+        $this->brand_stack      = $brand_stack;
         $this->event_dispatcher = $event_dispatcher;
     }
 
@@ -83,7 +80,7 @@ class PersonFactory
 
         $person->addEmailAddress($email);
 
-        $email->is_validated = true;
+        $email->is_validated  = true;
         $person->is_confirmed = true;
 
         $this->event_dispatcher->dispatch(Person::EVENT_PRE_CREATE, new PersonCreateEvent($person, $context));
@@ -98,8 +95,8 @@ class PersonFactory
 
     public function saveNewPerson(Person $person, CreatePersonContext $context)
     {
-        $email = $person->getPrimaryEmail();
-        $email->is_validated = true;
+        $email                = $person->getPrimaryEmail();
+        $email->is_validated  = true;
         $person->is_confirmed = true;
 
         $this->event_dispatcher->dispatch(Person::EVENT_PRE_CREATE, new PersonCreateEvent($person, $context));
@@ -124,7 +121,8 @@ class PersonFactory
      * $guest->primary_email = new EmailAddress('chris.tickner@gmail.com')
      * $new_person = $person_factory->createPersonFromGuest($guest);
      *
-     * @param  PersonGuest $guest
+     * @param PersonGuest $guest
+     *
      * @return Person
      */
     public function createPersonFromGuest(PersonGuest $guest)
@@ -144,7 +142,7 @@ class PersonFactory
         // might require the user to log in (in which case the ticket is a temp ticket for a bit)
         if ($email) {
             if ($settings->get('core.existing_account_login')) {
-                $person = $email->person;
+                $person        = $email->person;
                 $require_login = true; // TODO: redirect to login page.. but do we ignore the ticket? We dont have "temp" ones atm in new portal.
             } else {
                 $person = $email->person;

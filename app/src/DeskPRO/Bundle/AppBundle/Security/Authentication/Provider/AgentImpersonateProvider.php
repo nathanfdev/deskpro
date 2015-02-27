@@ -26,24 +26,21 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Portal
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security\Authentication\Provider;
 
-use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
-use DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider;
 use Application\DeskPRO\Auth\AuthenticationManager;
 use Application\DeskPRO\Auth\AuthenticationManager as DpAuthManager;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
+use DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Application\DeskPRO\Entity\Person;
 
 class AgentImpersonateProvider implements AuthenticationProviderInterface
 {
@@ -71,8 +68,8 @@ class AgentImpersonateProvider implements AuthenticationProviderInterface
     {
         $this->dp_auth_manager    = $dp_auth_manager;
         $this->dp_person_provider = $dp_person_provider;
-        $this->session = $session;
-        $this->em = $em;
+        $this->session            = $session;
+        $this->em                 = $em;
     }
 
     /**
@@ -80,9 +77,9 @@ class AgentImpersonateProvider implements AuthenticationProviderInterface
      *
      * @param AgentImpersonateToken $token The TokenInterface instance to authenticate
      *
+     * @throws AuthenticationException if the authentication fails
      * @return AgentImpersonateToken An authenticated TokenInterface instance, never null
      *
-     * @throws AuthenticationException if the authentication fails
      */
     public function authenticate(TokenInterface $token)
     {
@@ -91,9 +88,9 @@ class AgentImpersonateProvider implements AuthenticationProviderInterface
         }
 
         // get the auth code and extract the impersonating agent and person
-        $auth = $token->getAuth();
+        $auth                       = $token->getAuth();
         list($agent_id, $person_id) = $this->getAgentAndPersonIds($auth);
-        list($agent, $person) = $this->getPersonEntities($agent_id, $person_id);
+        list($agent, $person)       = $this->getPersonEntities($agent_id, $person_id);
 
         $token->setUser($person);
         $token->setAgent($agent);
@@ -117,7 +114,8 @@ class AgentImpersonateProvider implements AuthenticationProviderInterface
     }
 
     /**
-     * @param  string $auth
+     * @param string $auth
+     *
      * @return array
      */
     private function getAgentAndPersonIds($auth)
@@ -127,7 +125,7 @@ class AgentImpersonateProvider implements AuthenticationProviderInterface
         if (!$tmp) {
             throw new AuthenticationException();
         }
-        $agent_id = $tmp->getData('agent_id');
+        $agent_id  = $tmp->getData('agent_id');
         $person_id = $tmp->getData('person_id');
         if (!$agent_id || !$person_id) {
             throw new AuthenticationException();
@@ -139,13 +137,14 @@ class AgentImpersonateProvider implements AuthenticationProviderInterface
     /**
      * @param $agent_id
      * @param $person_id
+     *
      * @return Person[]
      */
     private function getPersonEntities($agent_id, $person_id)
     {
         $agent_repo = $this->em->getRepository('DeskPRO:Person');
-        $agent = $agent_repo->find($agent_id);
-        $person = $agent_repo->find($person_id);
+        $agent      = $agent_repo->find($agent_id);
+        $person     = $agent_repo->find($person_id);
         if (!$agent || !$person) {
             throw new AuthenticationException();
         }

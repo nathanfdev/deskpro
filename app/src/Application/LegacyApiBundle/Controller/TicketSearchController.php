@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -530,7 +527,7 @@ class TicketSearchController extends AbstractController
     }
 
     /**
-     * Get array of filters and counts
+     * Get array of filters and counts.
      */
     public function getFilterCountsAction()
     {

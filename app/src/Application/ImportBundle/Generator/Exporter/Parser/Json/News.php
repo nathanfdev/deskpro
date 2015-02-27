@@ -27,17 +27,16 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\Exporter\Parser\NoColumnException;
 use Application\ImportBundle\Generator\Exporter\Parser\NotArrayException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
-use Application\ImportBundle\Entity;
 use DateTime;
 
 /**
- * News json file parser
+ * News json file parser.
  *
  * Class News
- * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
 final class News extends AbstractParser
 {
@@ -76,13 +75,11 @@ final class News extends AbstractParser
                 } else {
                     $this->logWarning(sprintf('Invalid news record found (Skipping): %d', $num));
                 }
-
             } catch (NoColumnException $e) {
                 $this->logWarning(sprintf(
                     'Invalid news record `%d` found (Skipping): %s',
                     $num, $e->getMessage()
                 ));
-
             } catch (NotArrayException $e) {
                 $this->logWarning(sprintf(
                     'Invalid news record `%d` found (Skipping): %s',
@@ -95,9 +92,10 @@ final class News extends AbstractParser
     }
 
     /**
-     * Returns a news entity
+     * Returns a news entity.
      *
      * @param array $news
+     *
      * @return Entity\News
      */
     private function exportNews(array $news)
@@ -105,7 +103,7 @@ final class News extends AbstractParser
         if ($this->isNewsValid($news)) {
             $entity = new Entity\News();
             $entity
-                ->setDestination('news_' . $news['oid'])
+                ->setDestination('news_'.$news['oid'])
                 ->setOid($news['oid'])
                 ->setPersonEmail($news['person'])
                 ->setLanguage($news['language'])
@@ -131,11 +129,11 @@ final class News extends AbstractParser
             return $entity;
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Returns record type reader config
+     * Returns record type reader config.
      *
      * @return \Application\ImportBundle\Reader\Json\JsonConfig
      */
@@ -145,9 +143,10 @@ final class News extends AbstractParser
     }
 
     /**
-     * Check if news has all required columns
+     * Check if news has all required columns.
      *
      * @param array $news
+     *
      * @return bool
      */
     private function isNewsValid(array $news)

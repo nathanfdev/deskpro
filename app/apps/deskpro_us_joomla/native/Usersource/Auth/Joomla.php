@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace deskpro_us_joomla\Usersource\Auth;
@@ -131,9 +128,10 @@ class Joomla implements Adapter\FormLoginInterface,    Adapter\UserInfoFetchable
     }
 
     /**
-     * Get an Identity from a userinfo array
+     * Get an Identity from a userinfo array.
      *
-     * @param  array              $userinfo
+     * @param array $userinfo
+     *
      * @return \Orb\Auth\Identity
      */
     public function getIdentityFromUserInfo(array $userinfo)
@@ -146,8 +144,9 @@ class Joomla implements Adapter\FormLoginInterface,    Adapter\UserInfoFetchable
     }
 
     /**
-     * @param  mixed       $id
-     * @param  string|null $id_type
+     * @param mixed       $id
+     * @param string|null $id_type
+     *
      * @return array
      */
     public function getUserInfoFromIdentity($id, $id_type = null)
@@ -178,6 +177,7 @@ class Joomla implements Adapter\FormLoginInterface,    Adapter\UserInfoFetchable
 
     /**
      * @param $id
+     *
      * @return array|null
      */
     public function getUserInfoForEmail($email)
@@ -187,11 +187,12 @@ class Joomla implements Adapter\FormLoginInterface,    Adapter\UserInfoFetchable
             return $record['user_info'];
         }
 
-        return null;
+        return;
     }
 
     /**
      * @param $id
+     *
      * @return array|null
      */
     public function getUserInfoForUsername($username)
@@ -201,11 +202,12 @@ class Joomla implements Adapter\FormLoginInterface,    Adapter\UserInfoFetchable
             return $record['user_info'];
         }
 
-        return null;
+        return;
     }
 
     /**
      * @param $id
+     *
      * @return array|null
      */
     public function getUserInfoForId($id)
@@ -215,7 +217,7 @@ class Joomla implements Adapter\FormLoginInterface,    Adapter\UserInfoFetchable
             return $record['user_info'];
         }
 
-        return null;
+        return;
     }
 
     public function getSsoShareSessionHtml($user_id)
@@ -233,6 +235,7 @@ class Joomla implements Adapter\FormLoginInterface,    Adapter\UserInfoFetchable
 
     /**
      * @param $id
+     *
      * @return array
      */
     public function _callJoomlaPlugin(array $params)

@@ -3,16 +3,15 @@
 namespace spec\DeskPRO\Bundle\PortalBundle\Mode;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class PortalModeFactorySpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory');
     }
 
-    function it_remains_normal_if_does_not_match_a_mode()
+    public function it_remains_normal_if_does_not_match_a_mode()
     {
         $mode = $this->createMode($path = '/admin-mode-invalid/en/tickets');
 
@@ -21,7 +20,7 @@ class PortalModeFactorySpec extends ObjectBehavior
         $mode->getInternalPath()->shouldReturn($path);
     }
 
-    function it_creates_admin_mode()
+    public function it_creates_admin_mode()
     {
         $mode = $this->createMode($path = '/admin-mode/en/tickets');
 
@@ -32,7 +31,7 @@ class PortalModeFactorySpec extends ObjectBehavior
         $mode->getModePath()->shouldReturn('/admin-mode');
     }
 
-    function it_creates_admin_mode_on_homepage()
+    public function it_creates_admin_mode_on_homepage()
     {
         $mode = $this->createMode($path = '/admin-mode');
 
@@ -43,7 +42,7 @@ class PortalModeFactorySpec extends ObjectBehavior
         $mode->getModePath()->shouldReturn('/admin-mode');
     }
 
-    function it_creates_brand_mode()
+    public function it_creates_brand_mode()
     {
         $mode = $this->createMode($path = '/brand-4/en/ticket/67');
 
@@ -54,7 +53,7 @@ class PortalModeFactorySpec extends ObjectBehavior
         $mode->getModePath()->shouldReturn('/brand-4');
     }
 
-    function it_creates_brand_mode_on_homepage()
+    public function it_creates_brand_mode_on_homepage()
     {
         $mode = $this->createMode($path = '/brand-4');
 
@@ -65,7 +64,7 @@ class PortalModeFactorySpec extends ObjectBehavior
         $mode->getModePath()->shouldReturn('/brand-4');
     }
 
-    function it_creates_embed_mode()
+    public function it_creates_embed_mode()
     {
         $mode = $this->createMode($path = '/embed-142/en/ticket/67');
 
@@ -76,7 +75,7 @@ class PortalModeFactorySpec extends ObjectBehavior
         $mode->getModePath()->shouldReturn('/embed-142');
     }
 
-    function it_creates_embed_mode_on_homepage()
+    public function it_creates_embed_mode_on_homepage()
     {
         $mode = $this->createMode($path = '/embed-142');
 

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usersource\Adapter;
@@ -75,7 +72,8 @@ class ActiveDirectory extends AbstractAdapter
     /**
      * Find a user identity just by an email address.
      *
-     * @param  string                  $id_input Username or email address
+     * @param string $id_input Username or email address
+     *
      * @return \Orb\Auth\Identity|null
      */
     public function findIdentityByInput($id_input)
@@ -205,7 +203,7 @@ class ActiveDirectory extends AbstractAdapter
             return $identity;
         }
 
-        return null;
+        return;
     }
 
     /**

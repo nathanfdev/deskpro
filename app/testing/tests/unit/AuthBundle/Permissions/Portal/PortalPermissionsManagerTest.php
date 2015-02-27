@@ -26,14 +26,10 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpUnitTests\AuthBundle\Permissions\Portal;
-
 
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 
@@ -42,13 +38,13 @@ class PortalPermissionsManagerTest extends \DpUnitTestCase
     public function testCacheKeyFromPerson()
     {
         $mockSettingsResolver = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsResolver');
-        $mockSettingsBag = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsBag');
+        $mockSettingsBag      = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsBag');
         $mockSettingsResolver->shouldReceive('getGlobalSettings')->andReturn($mockSettingsBag);
         $mockSettingsBag->shouldReceive('get')->with(PortalPermissionsManager::CACHE_TIMESTAMP_SETTING_NAME)->andReturn(time());
-        $mockConn = \Mockery::mock('Doctrine\DBAL\Connection');
+        $mockConn  = \Mockery::mock('Doctrine\DBAL\Connection');
         $mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
 
-        $mockPerson = \Mockery::mock('Application\DeskPRO\Entity\Person');
+        $mockPerson     = \Mockery::mock('Application\DeskPRO\Entity\Person');
         $mockUsergroup1 = \Mockery::mock('Application\DeskPRO\Entity\Usergroup');
         $mockUsergroup1->shouldReceive('offsetGet')->andReturn(1);
         $mockUsergroup2 = \Mockery::mock('Application\DeskPRO\Entity\Usergroup');

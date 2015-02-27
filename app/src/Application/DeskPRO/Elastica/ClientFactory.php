@@ -33,11 +33,8 @@ use Orb\Util\Arrays;
 use Orb\Util\OptionsArray;
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
-
 class ClientFactory
 {
     /**
@@ -54,7 +51,8 @@ class ClientFactory
     }
 
     /**
-     * @param  array  $config
+     * @param array $config
+     *
      * @return Client
      */
     public function createSystemClientByConfig(array $config)
@@ -67,7 +65,8 @@ class ClientFactory
     }
 
     /**
-     * @param  string $id
+     * @param string $id
+     *
      * @return Client
      */
     public function createClientById($id)
@@ -93,9 +92,11 @@ class ClientFactory
     }
 
     /**
-     * @param  string                                                       $url
-     * @return array
+     * @param string $url
+     *
      * @throws \Application\DeskPRO\Exception\MissingConfigurationException
+     * @return array
+     *
      */
     public static function createConfigFromUrl($url)
     {
@@ -132,7 +133,8 @@ class ClientFactory
     }
 
     /**
-     * @param  array  $config
+     * @param array $config
+     *
      * @return Client
      */
     public function createClientByConfig(array $config)

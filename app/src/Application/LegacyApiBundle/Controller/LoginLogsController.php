@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\LoginLogs\LoginLogs;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 
 class LoginLogsController extends AbstractController implements ProtectedControllerInterface
 {

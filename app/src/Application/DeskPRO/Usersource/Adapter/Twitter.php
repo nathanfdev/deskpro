@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Usersource
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usersource\Adapter;
@@ -44,11 +41,11 @@ class Twitter extends AbstractAdapter
         $info = $identity->getRawData();
 
         return array(
-            'name' => $info['fullname'] ?: $info['identity_friendly'],
+            'name'    => $info['fullname'] ?: $info['identity_friendly'],
             'twitter' => array(
-                'screen_name' => $info['identity_friendly'],
-                'user_id' => $info['identity'],
-                'oauth_token' => $info['access_token'],
+                'screen_name'        => $info['identity_friendly'],
+                'user_id'            => $info['identity'],
+                'oauth_token'        => $info['access_token'],
                 'oauth_token_secret' => $info['access_token_secret'],
             ),
         );
@@ -88,7 +85,8 @@ class Twitter extends AbstractAdapter
     }
 
     /**
-     * @param  mixed $capability
+     * @param mixed $capability
+     *
      * @return bool
      */
     public function isCapable($capability)

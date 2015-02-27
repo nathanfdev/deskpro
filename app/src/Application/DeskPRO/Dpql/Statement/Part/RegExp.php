@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
@@ -53,7 +50,7 @@ class RegExp extends AbstractPart
     public $rhs;
 
     /**
-     * True = REGEXP, false = NOT REGEXP
+     * True = REGEXP, false = NOT REGEXP.
      *
      * @var bool
      */

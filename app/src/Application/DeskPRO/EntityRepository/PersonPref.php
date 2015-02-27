@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,18 +39,19 @@ class PersonPref extends AbstractEntityRepository
 {
     /**
      * Fetch all preferences in a related group. A group is defined by some common
-     * prefix and a dot. For example: some.group.mysetting, some.group.myothersetting
+     * prefix and a dot. For example: some.group.mysetting, some.group.myothersetting.
      *
      * Supply some.group to get an array of mysetting and myothersetting.
      *
-     * @param  string $pref_group        The pref group
-     * @param  int    $person_id
-     * @param  bool   $trim_group_prefix Trim off the group prefix in the array keys
+     * @param string $pref_group        The pref group
+     * @param int    $person_id
+     * @param bool   $trim_group_prefix Trim off the group prefix in the array keys
+     *
      * @return array
      */
     public function getPrefgroupForPersonId($pref_group, $person_id, $trim_group_prefix = true)
     {
-        $pref_group = rtrim($pref_group, '.'); // incase it was supplied with dot
+        $pref_group     = rtrim($pref_group, '.'); // incase it was supplied with dot
         $pref_group_len = strlen($pref_group) + 1; // used with trimming below
 
         $statement = $this->getEntityManager()->getConnection()->executeQuery("
@@ -87,23 +87,24 @@ class PersonPref extends AbstractEntityRepository
                 WHERE p.name = ?1 AND p.person = ?2
             ")->setParameter(1, $pref_name)->setParameter(2, $person)->getSingleResult();
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
     /**
      * Get the value of a specific setting.
      *
-     * @param  string|array $pref_name A pref name or array of names
-     * @param  int          $person_id
+     * @param string|array $pref_name A pref name or array of names
+     * @param int          $person_id
+     *
      * @return mixed
      */
     public function getPrefForPersonId($pref_name, $person_id)
     {
         if (is_array($pref_name)) {
             $is_single = false;
-            $args = array($person_id);
-            $args = array_merge($args, $pref_name);
+            $args      = array($person_id);
+            $args      = array_merge($args, $pref_name);
 
             $in_str = implode(',', array_fill(0, count($pref_name), '?'));
 
@@ -118,14 +119,14 @@ class PersonPref extends AbstractEntityRepository
             }
         } else {
             $is_single = true;
-            $pref = $this->getEntityManager()->getConnection()->fetchAssoc("
+            $pref      = $this->getEntityManager()->getConnection()->fetchAssoc("
                 SELECT value_str, value_array
                 FROM people_prefs
                 WHERE person_id = ? AND name = ?
             ", array($person_id, $pref_name));
 
             if (!$pref) {
-                return null;
+                return;
             }
 
             $prefs = array($pref_name => $pref);
@@ -152,7 +153,6 @@ class PersonPref extends AbstractEntityRepository
     /**
      * @param $pref_name
      * @param $person_id
-     * @return void
      */
     public function deletePrefForPersonId($pref_name, $person_id)
     {
@@ -167,9 +167,9 @@ class PersonPref extends AbstractEntityRepository
         $pref = $person->setPreference($pref_id, $value);
 
         App::getDb()->replace('people_prefs', array(
-            'person_id' => $person->getId(),
-            'name' => $pref['name'],
-            'value_str' => $pref['value_str'],
+            'person_id'   => $person->getId(),
+            'name'        => $pref['name'],
+            'value_str'   => $pref['value_str'],
             'value_array' => $pref['value_array'],
             'date_expire' => $pref['date_expire'],
         ));

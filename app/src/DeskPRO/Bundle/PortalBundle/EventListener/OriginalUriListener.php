@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
@@ -40,7 +37,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Stick the master URI in the request attributes so it propogates down to ESI calls
+ * Stick the master URI in the request attributes so it propogates down to ESI calls.
  */
 class OriginalUriListener implements EventSubscriberInterface
 {

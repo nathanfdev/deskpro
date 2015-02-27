@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -45,9 +42,9 @@ class JobQueueExecutor extends AbstractJob
     {
         // the old job "WorkerProcess" system wasn't designed with DI in mind, using the globals
         $connection = App::getDb();
-        $router = App::$container->getSystemService('job_router');
-        $queue = App::$container->getSystemService('job_queue');
-        $worker = new JobWorker($connection, $router, $queue);
+        $router     = App::$container->getSystemService('job_router');
+        $queue      = App::$container->getSystemService('job_queue');
+        $worker     = new JobWorker($connection, $router, $queue);
 
         $worker->work(25);
     }

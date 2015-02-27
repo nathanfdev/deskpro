@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller\Helper;
@@ -66,10 +63,11 @@ class DownloadResults
      * $options can have:
      * - default_terms: For when viewing the page that you havent submitted
      * - specific_terms: Always added to the search
-     * - default_order_by: The default order by for a page you havent submitted
+     * - default_order_by: The default order by for a page you havent submitted.
      *
      * @param  $controller
-     * @param  array                                                      $options
+     * @param array $options
+     *
      * @return \Application\AgentBundle\Controller\Helper\DownloadResults
      */
     public static function newFromRequest($controller, array $options = array())

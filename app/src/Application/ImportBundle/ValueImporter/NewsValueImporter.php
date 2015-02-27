@@ -27,14 +27,13 @@
 
 namespace Application\ImportBundle\ValueImporter;
 
-use Application\ImportBundle\Value\NewsValue;
 use Application\ImportBundle\Exception\BadDataException;
 use Application\ImportBundle\Exception\DuplicateValueException;
+use Application\ImportBundle\Value\NewsValue;
 use Orb\Validator\StringEmail;
 
 /**
- * Class NewsValueImporter
- * @package Application\ImportBundle\ValueImporter
+ * Class NewsValueImporter.
  */
 class NewsValueImporter extends AbstractValueImporter
 {
@@ -46,7 +45,7 @@ class NewsValueImporter extends AbstractValueImporter
      */
     public function importValue($nval)
     {
-//        if (!($nval instanceof NewsValue)) {
+        //        if (!($nval instanceof NewsValue)) {
 //            throw new \InvalidArgumentException("This importer can only import News Items");
 //        }
 

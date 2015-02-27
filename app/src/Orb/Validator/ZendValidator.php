@@ -26,17 +26,15 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Validator
+ * Orb.
  */
 
 namespace Orb\Validator;
 
-use \Orb\Util\Util;
+use Orb\Util\Util;
+
 /**
- * A simple adapter that lets you use any ZF validator
+ * A simple adapter that lets you use any ZF validator.
  */
 class ZendValidator extends AbstractValidator
 {
@@ -59,8 +57,9 @@ class ZendValidator extends AbstractValidator
      * $v = ZendValidator::factory('Alnum', true);
      * </code>
      *
-     * @param  string                      $name     The Zend validator classname
-     * @param  mixed                       $param... Any parameters to pass to the validator constructor
+     * @param string $name     The Zend validator classname
+     * @param mixed  $param... Any parameters to pass to the validator constructor
+     *
      * @return Orb\Validator\ZendValidator
      */
     public static function factory($name)
@@ -95,7 +94,7 @@ class ZendValidator extends AbstractValidator
             return true;
         }
 
-        $this->errors = $this->zend_validator->getErrors();
+        $this->errors      = $this->zend_validator->getErrors();
         $this->errors_info = $this->zend_validator->getMessages();
 
         return false;

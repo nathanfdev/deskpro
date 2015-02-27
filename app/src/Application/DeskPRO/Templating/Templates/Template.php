@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Templating\Templates;
@@ -120,7 +118,7 @@ abstract class Template
     public function getOriginalTemplateCode()
     {
         if (!$this->isCustom()) {
-            return null;
+            return;
         }
 
         if ($this->orig_template_code !== null) {

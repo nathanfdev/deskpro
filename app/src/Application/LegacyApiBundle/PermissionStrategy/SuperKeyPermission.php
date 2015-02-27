@@ -26,21 +26,20 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\LegacyApiBundle\PermissionStrategy;
 
-use Application\LegacyApiBundle\ApiUser;
 use Application\DeskPRO\Entity\ApiKey;
+use Application\LegacyApiBundle\ApiUser;
 
 /**
  * The AdminManage permission is applied to APIs that:
  * - Have an admin user logged in (eg they have a session tied to their key)
- * - Their API key has a 'admin_manage' flag
+ * - Their API key has a 'admin_manage' flag.
  */
 class SuperKeyPermission implements PermissionStrategyInterface
 {

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -41,12 +40,13 @@ use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
 class Template extends AbstractEntityRepository
 {
     /**
-     * @var array of loaded db templates by brand id. example: $loadedTemplates[$brand_id][$theme_id][$template_name]
+     * @var array of loaded db templates by brand id. example:[$brand_id][$theme_id][$template_name]
      */
     protected $loadedTemplates;
 
     /**
      * @param $name
+     *
      * @return null|\Application\DeskPRO\Entity\Template
      */
     public function getTemplateByName($name)
@@ -55,8 +55,9 @@ class Template extends AbstractEntityRepository
     }
 
     /**
-     * @param             $template_name
-     * @param  null       $style
+     * @param      $template_name
+     * @param null $style
+     *
      * @return mixed|null
      * @depreated - still in use so cant delete, but styles dont exist anymore so will always return null
      */
@@ -81,13 +82,15 @@ class Template extends AbstractEntityRepository
 
             return $r;
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
     /**
      * @param $style
+     *
      * @return array
+     *
      * @deprecated
      */
     public function getCustomTemplateNamesInStyle($style)
@@ -97,7 +100,9 @@ class Template extends AbstractEntityRepository
 
     /**
      * @param $style
+     *
      * @return array
+     *
      * @deprecated
      */
     public function getCustomTemplateInfoInStyle($style)
@@ -106,20 +111,21 @@ class Template extends AbstractEntityRepository
     }
 
     /**
-     * @param                      $name
-     * @param  BrandEntity         $brand
-     * @param  ThemeInterface      $theme
+     * @param                $name
+     * @param BrandEntity    $brand
+     * @param ThemeInterface $theme
+     *
      * @return null|TemplateEntity
      */
     public function getBrandTemplate($name, BrandEntity $brand, ThemeInterface $theme)
     {
-        $loaded = $this->getLoadedTemplatesForBrand($brand);
+        $loaded   = $this->getLoadedTemplatesForBrand($brand);
         $theme_id = $theme->getId();
         if (isset($loaded[$theme_id])) {
             return isset($loaded[$theme_id][(string) $name]) ? $loaded[$theme_id][(string) $name] : null;
         }
 
-        return null;
+        return;
     }
 
     public function getLoadedTemplatesForBrand(BrandEntity $brand)

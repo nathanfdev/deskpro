@@ -26,21 +26,20 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\Migrations;
 
-if (!defined('DP_ROOT')) exit('No access');
+if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 
 /**
- * Runs migrations
+ * Runs migrations.
  */
-class RunMigrations
+class dev_run_migrations
 {
     public function run()
     {
@@ -59,7 +58,7 @@ class RunMigrations
         echo "<p>Running migrations may take some time. For simple changes, it will take around 10 seconds.</p>";
         echo "<p>You can also run migrations from the command-line:<br /><code>php app/cmd.php dpdev:do-migrations</code></p>";
 
-        $url = $_SERVER['PHP_SELF'] . '?' . (!empty($_SERVER['QUERY_STRING']) ? str_replace('&', '&amp;', $_SERVER['QUERY_STRING']) : '') . '&amp;run';
+        $url = $_SERVER['PHP_SELF'].'?'.(!empty($_SERVER['QUERY_STRING']) ? str_replace('&', '&amp;', $_SERVER['QUERY_STRING']) : '').'&amp;run';
 
         echo "<p>When you are ready to proceed, click the button below.<br /><a href=\"$url\">Click here to run the migration scripts now</a></p>";
 
@@ -75,16 +74,26 @@ class RunMigrations
             $DP_CONFIG = array();
         }
 
-        if (!isset($DP_CONFIG['db'])) $DP_CONFIG['db'] = array();
-        if (!isset($DP_CONFIG['db']['host']))      $DP_CONFIG['db']['host']      = DP_DATABASE_HOST;
-        if (!isset($DP_CONFIG['db']['user']))      $DP_CONFIG['db']['user']      = DP_DATABASE_USER;
-        if (!isset($DP_CONFIG['db']['password']))  $DP_CONFIG['db']['password']  = DP_DATABASE_PASSWORD;
-        if (!isset($DP_CONFIG['db']['dbname']))    $DP_CONFIG['db']['dbname']    = DP_DATABASE_NAME;
+        if (!isset($DP_CONFIG['db'])) {
+            $DP_CONFIG['db'] = array();
+        }
+        if (!isset($DP_CONFIG['db']['host'])) {
+            $DP_CONFIG['db']['host']      = DP_DATABASE_HOST;
+        }
+        if (!isset($DP_CONFIG['db']['user'])) {
+            $DP_CONFIG['db']['user']      = DP_DATABASE_USER;
+        }
+        if (!isset($DP_CONFIG['db']['password'])) {
+            $DP_CONFIG['db']['password']  = DP_DATABASE_PASSWORD;
+        }
+        if (!isset($DP_CONFIG['db']['dbname'])) {
+            $DP_CONFIG['db']['dbname']    = DP_DATABASE_NAME;
+        }
 
-        $env = 'dev';
+        $env   = 'dev';
         $debug = true;
 
-        require DP_ROOT . '/sys/KernelBooter.php';
+        require DP_ROOT.'/sys/KernelBooter.php';
         $app = \DeskPRO\Kernel\KernelBooter::getCliApp($env, $debug);
 
         $argv = $_SERVER['argv'];

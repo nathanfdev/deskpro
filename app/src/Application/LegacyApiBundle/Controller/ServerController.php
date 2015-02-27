@@ -26,22 +26,20 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Log\ErrorLog\ErrorLogReader;
+use Application\DeskPRO\Server\ApcStatus;
+use Application\DeskPRO\Server\CronStatus;
 use Application\DeskPRO\ServerFileCheck\ServerFileCheck;
 use Application\DeskPRO\ServerMysqlInfo\ServerMysqlInfo;
 use Application\DeskPRO\ServerMysqlSortOrder\ServerMysqlSortOrder;
 use Application\DeskPRO\ServerReportFile\ServerReportFile;
-use Application\DeskPRO\Server\ApcStatus;
-use Application\DeskPRO\Server\CronStatus;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 
 class ServerController extends AbstractController implements ProtectedControllerInterface
 {
@@ -59,10 +57,9 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getServerReqsAction()
     {
-        /**
-         * @var \Application\DeskPRO\ServerReqs\ServerReqs $server_reqs
+        /*
+         * @var \Application\DeskPRO\ServerReqs\ServerReqs
          */
-
         $server_reqs = $this->container->getSystemService('server_reqs');
 
         return $this->createApiResponse(
@@ -81,10 +78,9 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getPhpInfoAction()
     {
-        /**
-         * @var \Application\DeskPRO\ServerPhpInfo\ServerPhpInfo $server_php_info
+        /*
+         * @var \Application\DeskPRO\ServerPhpInfo\ServerPhpInfo
          */
-
         $server_php_info = $this->container->getSystemService('server_php_info');
 
         return $this->createApiResponse(
@@ -100,7 +96,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getMysqlInfoAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerMysqlInfo\ServerMysqlInfo $server_mysql_info
          */
         $mysql_info = new ServerMysqlInfo($this->db);
@@ -110,7 +106,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getMysqlSchemaDiffAction()
     {
-        /**
+        /*
          * @var \Application\DeskPRO\ServerMysqlInfo\ServerMysqlInfo $server_mysql_info
          */
         $mysql_info = new ServerMysqlInfo($this->db);
@@ -124,10 +120,9 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getMysqlStatusAction()
     {
-        /**
-         * @var \Application\DeskPRO\ServerMysqlStatus\ServerMysqlStatus $server_mysql_status
+        /*
+         * @var \Application\DeskPRO\ServerMysqlStatus\ServerMysqlStatus
          */
-
         $server_mysql_status = $this->container->getSystemService('server_mysql_status');
 
         return $this->createApiResponse(
@@ -183,10 +178,9 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function listErrorLogsAction()
     {
-        /**
-         * @var \Application\DeskPRO\ServerErrorLogs\ServerErrorLogs $server_error_logs
+        /*
+         * @var \Application\DeskPRO\ServerErrorLogs\ServerErrorLogs
          */
-
         $server_error_logs = $this->container->getSystemService('server_error_logs');
 
         return $this->createApiResponse(
@@ -202,10 +196,9 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getErrorLogsAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\ServerErrorLogs\ServerErrorLogs $server_error_logs
+        /*
+         * @var \Application\DeskPRO\ServerErrorLogs\ServerErrorLogs
          */
-
         $server_error_logs = $this->container->getSystemService('server_error_logs');
         $server_error_log  = $server_error_logs->getById($id);
 
@@ -226,8 +219,8 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function removeErrorLogsAction()
     {
-        /**
-         * @var \Application\DeskPRO\ServerErrorLogs\ServerErrorLogs $server_error_logs
+        /*
+         * @var \Application\DeskPRO\ServerErrorLogs\ServerErrorLogs
          */
         $server_error_logs = $this->container->getSystemService('server_error_logs');
 
@@ -244,10 +237,9 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getTaskQueueAction()
     {
-        /**
-         * @var \Application\DeskPRO\ServerTaskQueue\ServerTaskQueue $server_task_queue
+        /*
+         * @var \Application\DeskPRO\ServerTaskQueue\ServerTaskQueue
          */
-
         $server_task_queue = $this->container->getSystemService('server_task_queue');
 
         return $this->createApiResponse(
@@ -263,10 +255,9 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function listCronAction()
     {
-        /**
-         * @var \Application\DeskPRO\ServerCron\ServerCron $server_cron
+        /*
+         * @var \Application\DeskPRO\ServerCron\ServerCron
          */
-
         $server_cron = $this->container->getSystemService('server_cron');
 
         $returned_data         = $server_cron->getTimes();
@@ -285,10 +276,9 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function logsCronAction()
     {
-        /**
-         * @var \Application\DeskPRO\ServerCron\ServerCron $server_cron
+        /*
+         * @var \Application\DeskPRO\ServerCron\ServerCron
          */
-
         $server_cron = $this->container->getSystemService('server_cron');
 
         $priority = $this->in->getUint('priority');
@@ -322,10 +312,9 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function removeCronAction()
     {
-        /**
-         * @var \Application\DeskPRO\ServerCron\ServerCron $server_cron
+        /*
+         * @var \Application\DeskPRO\ServerCron\ServerCron
          */
-
         $server_cron = $this->container->getSystemService('server_cron');
         $server_cron->clearAllLogs();
 
@@ -338,10 +327,9 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getFileUploadsAction()
     {
-        /**
-         * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads $server_file_uploads
+        /*
+         * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads
          */
-
         $server_file_uploads = $this->container->getSystemService('server_file_uploads');
 
         $returned_data['php_vars']                  = $server_file_uploads->getPhpVars();
@@ -370,10 +358,9 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function testFileUploadAction()
     {
-        /**
-         * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads $server_file_uploads
+        /*
+         * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads
          */
-
         $server_file_uploads = $this->container->getSystemService('server_file_uploads');
 
         $file = $this->request->files->get('file');
@@ -389,8 +376,8 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function switchFileStorageAction()
     {
-        /**
-         * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads $server_file_uploads
+        /*
+         * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads
          */
         $server_file_uploads = $this->container->getSystemService('server_file_uploads');
         $server_file_uploads->switchStorage($this->in->getArrayValue('options'));
@@ -404,10 +391,9 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function switchFileStorageStatusAction()
     {
-        /**
-         * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads $server_file_uploads
+        /*
+         * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads
          */
-
         $server_file_uploads = $this->container->getSystemService('server_file_uploads');
 
         $server_file_uploads->switchStorageStatus();

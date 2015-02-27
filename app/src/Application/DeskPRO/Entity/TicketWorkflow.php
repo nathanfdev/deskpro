@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -41,14 +40,12 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Ticket workflows
- *
+ * Ticket workflows.
  */
 class TicketWorkflow extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
     /**
      * @var int
-     *
      */
     protected $id = null;
 
@@ -87,7 +84,8 @@ class TicketWorkflow extends \Application\DeskPRO\Domain\DomainObject implements
     }
 
     /**
-     * @param  string $property
+     * @param string $property
+     *
      * @return string
      */
     public function getPhraseName($property = null, Translate $translate)
@@ -101,7 +99,8 @@ class TicketWorkflow extends \Application\DeskPRO\Domain\DomainObject implements
     }
 
     /**
-     * @param  string $property
+     * @param string $property
+     *
      * @return string
      */
     public function getPhraseDefault($property = null, Translate $translate)

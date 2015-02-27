@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -112,11 +109,11 @@ class Build1400056701 extends AbstractBuild
         # because we insert them manually
         #-------------------------
 
-        $row = $this->container->getDb()->fetchAssoc("SELECT id, data FROM datastore WHERE name = 'sys.install.default_data' LIMIT 1");
-        $data = null;
+        $row            = $this->container->getDb()->fetchAssoc("SELECT id, data FROM datastore WHERE name = 'sys.install.default_data' LIMIT 1");
+        $data           = null;
         $loaded_data_id = null;
         if ($row) {
-            $data = @unserialize($row['data']);
+            $data           = @unserialize($row['data']);
             $loaded_data_id = $row['id'];
         }
         if (!$data) {

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -71,7 +68,7 @@ class UsersourcesController extends AbstractController
                 if ($package->isUsersource()) {
                     /** @var \Application\DeskPRO\Entity\Usersource $source */
                     foreach ($sources as $source) {
-                        /** @var \Application\DeskPRO\Entity\AppInstance $app */
+                        /* @var \Application\DeskPRO\Entity\AppInstance $app */
                         if ($app = $source->app) {
                             if ($app->package->name === $package->name && $package->is_single) {
                                 return false;
@@ -263,6 +260,7 @@ class UsersourcesController extends AbstractController
     /**
      * @param $id
      * @param $type
+     *
      * @return Usersource|null
      */
     protected function findUsersourceOfType($id, $type)

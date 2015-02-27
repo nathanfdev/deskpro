@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Validator;
 use Application\ImportBundle\Entity;
 
 /**
- * Kb entities validator
+ * Kb entities validator.
  *
  * Class Article
- * @package Application\ImportBundle\Generator\Validator
  */
 final class Articles extends AbstractConstraintValidator
 {
@@ -48,7 +47,7 @@ final class Articles extends AbstractConstraintValidator
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Article $entity
+     * @var Entity\Article
      */
     public function validate(Entity\EntityInterface $entity)
     {

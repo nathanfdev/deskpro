@@ -28,10 +28,9 @@
 namespace Application\ImportBundle\Generator\Writer\Json\Destination;
 
 /**
- * Entity destination interface
+ * Entity destination interface.
  *
  * Interface DestinationInterface
- * @package Application\ImportBundle\Generator\Writer\Json\Destination
  */
 interface DestinationInterface
 {
@@ -43,14 +42,14 @@ interface DestinationInterface
     const ENTITY_NEWS_PATH     = 'news/';
 
     /**
-     * Referred entity type
+     * Referred entity type.
      *
      * @return string
      */
     public function getEntityType();
 
     /**
-     * Relative entity output path
+     * Relative entity output path.
      *
      * @return string
      */

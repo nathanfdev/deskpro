@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Php;
 
 /**
- * This looks at a PHP source file and replaces private variables and methods with protected ones
+ * This looks at a PHP source file and replaces private variables and methods with protected ones.
  */
 class UnprivateClass
 {
@@ -52,7 +49,7 @@ class UnprivateClass
     }
 
     /**
-     * Strip comments as well
+     * Strip comments as well.
      */
     public function enableStripComments()
     {
@@ -78,7 +75,7 @@ class UnprivateClass
             }
 
             $token_name = $token[0];
-            $token_str = $token[1];
+            $token_str  = $token[1];
 
             if (($this->strip_comments && ($token_name == T_DOC_COMMENT || $token_name == T_COMMENT)) || $token_name == T_FINAL) {
                 continue;

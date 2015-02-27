@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Twig
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Twig;
@@ -81,7 +78,7 @@ class Environment extends \Twig_Environment
         if ($this->ext_dirty) {
             $this->ext_dirty = false;
 
-            $set_ext = array();
+            $set_ext    = array();
             $append_ext = array();
 
             foreach ($this->extensions as $k => $ext) {
@@ -110,7 +107,7 @@ class Environment extends \Twig_Environment
             try {
                 return $this->doLoadTemplate($name, $index);
             } catch (\Exception $e) {
-                $errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+                $errinfo                  = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
                 $errinfo['no_send_error'] = true;
                 \DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($errinfo);
 
@@ -145,7 +142,7 @@ class Environment extends \Twig_Environment
                 } else {
                     if (!is_file($cache) || ($this->isAutoReload() && !$this->isTemplateFresh($name, filemtime($cache)))) {
                         $fallback = false;
-                        $e = null;
+                        $e        = null;
                         try {
                             $this->writeCacheFile($cache, $this->compileSource($this->loader->getSource($name), $name));
                             require_once $cache;
@@ -192,6 +189,7 @@ class Environment extends \Twig_Environment
      * we'll try and use the default template instead.
      *
      * @param $name
+     *
      * @return string
      */
     public function markCustomTemplateAsCrashed($name)
@@ -202,9 +200,10 @@ class Environment extends \Twig_Environment
     }
 
     /**
-     * Check if a particular template is a custom template
+     * Check if a particular template is a custom template.
      *
      * @param $name
+     *
      * @return mixed
      */
     public function isCustomTemplate($name)
@@ -236,9 +235,11 @@ class Environment extends \Twig_Environment
 
     /**
      * @param $template_code
-     * @param  array           $vars
-     * @return null|string
+     * @param array $vars
+     *
      * @throws \Exception|null
+     * @return null|string
+     *
      */
     public function renderStringTemplate($template_code, array $vars = array())
     {
@@ -252,7 +253,7 @@ class Environment extends \Twig_Environment
         $this->setLoader($arr_loader);
         $this->setCache(false);
 
-        $result = null;
+        $result    = null;
         $exception = null;
         try {
             $result = $this->render('template', $vars);

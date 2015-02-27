@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -60,7 +59,7 @@ class FilterQuery
     private $params = array();
 
     /**
-     * Array of string replacements to do on the resulting query parts
+     * Array of string replacements to do on the resulting query parts.
      *
      * @var array
      */
@@ -68,10 +67,11 @@ class FilterQuery
 
     /**
      * Appends a unique string to the end of a name to make it unique.
-     * Eg: "name_param" becomes "name_param_dp_a"
+     * Eg: "name_param" becomes "name_param_dp_a".
      *
-     * @param  string $base
-     * @param  string $type
+     * @param string $base
+     * @param string $type
+     *
      * @return string
      */
     private function getUniqueName($base, $type)
@@ -90,11 +90,11 @@ class FilterQuery
      */
     public function addJoin($fromAlias, $join, $alias, $condition = null)
     {
-        $m = null;
+        $m           = null;
         $input_alias = $alias;
-        $alias = null;
+        $alias       = null;
         if (preg_match('#unique:([0-9a-zA-Z_]+])#', $alias, $m)) {
-            $alias = $this->getUniqueName($m[1], 'join');
+            $alias                                       = $this->getUniqueName($m[1], 'join');
             $this->var_renamed["{table.{$input_alias}}"] = $alias;
         }
 
@@ -116,7 +116,7 @@ class FilterQuery
     }
 
     /**
-     * Generates the proper 'where in(?,?,?)' code
+     * Generates the proper 'where in(?,?,?)' code.
      *
      * @param $field_name
      * @param array $params
@@ -145,7 +145,7 @@ class FilterQuery
     }
 
     /**
-     * Generates the proper 'where in(?,?,?)' code
+     * Generates the proper 'where in(?,?,?)' code.
      *
      * @param $field_name
      * @param array $params
@@ -191,7 +191,7 @@ class FilterQuery
         $input_name = $name;
 
         if ($rename) {
-            $name = $this->getUniqueName($input_name, 'param');
+            $name                                       = $this->getUniqueName($input_name, 'param');
             $this->var_renamed["{param.{$input_name}}"] = $name;
         }
 

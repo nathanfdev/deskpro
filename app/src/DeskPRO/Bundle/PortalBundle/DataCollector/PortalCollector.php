@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\DataCollector;
@@ -59,9 +56,9 @@ class PortalCollector extends DataCollector
 
     public function __construct(BrandStack $brand_stack, LanguageStack $language_stack, PortalModeStorage $mode_storage)
     {
-        $this->brand_stack = $brand_stack;
+        $this->brand_stack    = $brand_stack;
         $this->language_stack = $language_stack;
-        $this->mode_storage = $mode_storage;
+        $this->mode_storage   = $mode_storage;
     }
 
     /**
@@ -70,13 +67,14 @@ class PortalCollector extends DataCollector
      * @param Request    $request   A Request instance
      * @param Response   $response  A Response instance
      * @param \Exception $exception An Exception instance
+     *
      * @api
      */
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
         $brandContainer = $this->brand_stack->getActive();
-        $language = $this->language_stack->getActive();
-        $mode = $this->mode_storage->getMode();
+        $language       = $this->language_stack->getActive();
+        $mode           = $this->mode_storage->getMode();
         $this->data     = array(
             'route_name'          => $request->attributes->get('_route'),
             'executed_controller' => $request->attributes->get('_controller'),

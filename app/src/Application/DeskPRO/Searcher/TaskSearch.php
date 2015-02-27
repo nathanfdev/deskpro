@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Searcher;
 
@@ -63,14 +61,15 @@ class TaskSearch extends SearcherAbstract
     }
 
     /**
-     * Get the SQL query that'll fetch the results
+     * Get the SQL query that'll fetch the results.
+     *
      * @return string
      */
     public function getSql()
     {
         $sql = "SELECT tasks.id FROM tasks ";
 
-        $parts = $this->getSqlParts();
+        $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
         #------------------------------
@@ -199,7 +198,7 @@ class TaskSearch extends SearcherAbstract
         $tr = App::getTranslator();
 
         $wheres = array();
-        $joins = array();
+        $joins  = array();
 
         foreach ($this->terms as $info) {
             list($term, $op, $choice) = $info;
@@ -213,7 +212,7 @@ class TaskSearch extends SearcherAbstract
 
             switch ($term) {
                 case self::TERM_ID:
-                    $wheres[] = $this->_rangeMatch("$org_table.id", $op, $choice, true);
+                    $wheres[]        = $this->_rangeMatch("$org_table.id", $op, $choice, true);
                     $this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
                     break;
 
@@ -222,33 +221,33 @@ class TaskSearch extends SearcherAbstract
                     break;
 
                 case self::TERM_PERSON_ID:
-                    $wheres[] = $this->_rangeMatch("tasks.person_id", $op, $choice, true);
+                    $wheres[]        = $this->_rangeMatch("tasks.person_id", $op, $choice, true);
                     $this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.person_id'), $op, $choice);
                     break;
 
                 case self::TERM_ASSIGNED_AGENT_ID:
-                    $wheres[] = $this->_rangeMatch("tasks.assigned_agent_id", $op, $choice, true);
+                    $wheres[]        = $this->_rangeMatch("tasks.assigned_agent_id", $op, $choice, true);
                     $this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.assigned_agent_id'), $op, $choice);
                     break;
 
                 case self::TERM_ASSIGNED_AGENT_TEAM_ID:
-                    $wheres[] = $this->_rangeMatch("tasks.assigned_agent_team_id", $op, $choice, true);
+                    $wheres[]        = $this->_rangeMatch("tasks.assigned_agent_team_id", $op, $choice, true);
                     $this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.assigned_agent_id'), $op, $choice);
                     break;
 
                 case self::TERM_DATE_CREATED:
                     $this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_created'), $op, $choice);
-                    $wheres[] = $this->_dateMatch("tasks.date_created", $op, $choice);
+                    $wheres[]        = $this->_dateMatch("tasks.date_created", $op, $choice);
                     break;
 
                 case self::TERM_DATE_COMPLETED:
                     $this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_completed'), $op, $choice);
-                    $wheres[] = $this->_dateMatch("tasks.date_completed", $op, $choice);
+                    $wheres[]        = $this->_dateMatch("tasks.date_completed", $op, $choice);
                     break;
 
                 case self::TERM_DATE_DUE:
                     $this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_due'), $op, $choice);
-                    $wheres[] = $this->_dateMatch("tasks.date_due", $op, $choice);
+                    $wheres[]        = $this->_dateMatch("tasks.date_due", $op, $choice);
                     break;
 
                 case self::TERM_IS_COMPLETED:
@@ -284,7 +283,7 @@ class TaskSearch extends SearcherAbstract
         $joins = array_unique($joins);
 
         return array(
-            'joins' => $joins,
+            'joins'  => $joins,
             'wheres' => $wheres,
         );
     }

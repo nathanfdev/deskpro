@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -51,10 +49,9 @@ class WidgetSelectionsController extends AbstractController implements Protected
 
     public function getAction()
     {
-        /**
-         * @var \Application\DeskPRO\WidgetSelections\WidgetSelections $widget_selections
+        /*
+         * @var \Application\DeskPRO\WidgetSelections\WidgetSelections
          */
-
         $widget_selections = $this->container->getSystemService('widget_selections');
 
         return $this->createApiResponse(
@@ -70,10 +67,9 @@ class WidgetSelectionsController extends AbstractController implements Protected
     {
         $selections = $this->in->getCleanValueArray('selections', 'raw', 'raw');
 
-        /**
-         * @var \Application\DeskPRO\WidgetSelections\WidgetSelections $widget_selections
+        /*
+         * @var \Application\DeskPRO\WidgetSelections\WidgetSelections
          */
-
         $widget_selections = $this->container->getSystemService('widget_selections');
         $widget_selections->saveSelections($selections);
 

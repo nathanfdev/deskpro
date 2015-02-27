@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\EditTicket;
@@ -37,13 +34,13 @@ namespace Application\DeskPRO\Tickets\EditTicket;
 use Application\DeskPRO\Entity\Ticket;
 
 /**
- * This wraps up the 'ticket' data of a newticket
+ * This wraps up the 'ticket' data of a newticket.
  */
 class EditTicketProps implements \ArrayAccess
 {
     /** @var array */
     protected static $prop_names = array(
-        'subject' => 1, 'department_id' => 1, 'category_id' => 1,
+        'subject'     => 1, 'department_id' => 1, 'category_id' => 1,
         'priority_id' => 1, 'product_id' => 1, 'cc_emails' => 1, 'remove_ccs' => 1,
     );
 

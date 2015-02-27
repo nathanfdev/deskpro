@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Reader;
@@ -135,7 +133,7 @@ class VCard extends \File_IMC
 
                 if (isset($vc['N'])) {
                     $fields['name']['firstname'] = @$vc['N'][0]['value'][1][0];
-                    $fields['name']['lastname'] = @$vc['N'][0]['value'][0][0];
+                    $fields['name']['lastname']  = @$vc['N'][0]['value'][0][0];
                 }
 
 //                if(isset($vc['FN'])

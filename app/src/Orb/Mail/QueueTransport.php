@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Mail
+ * Orb.
  */
 
 namespace Orb\Mail;
 
-use \Orb\Mail\QueueProcessor\QueueProcessorInterface;
+use Orb\Mail\QueueProcessor\QueueProcessorInterface;
 
 /**
- * Queue mail transport
+ * Queue mail transport.
  */
 class QueueTransport extends \Orb\Mail\Transport\QueueTransport
 {
@@ -61,7 +58,8 @@ class QueueTransport extends \Orb\Mail\Transport\QueueTransport
     }
 
     /**
-     * @param  QueueProcessorInterface $queue_processor
+     * @param QueueProcessorInterface $queue_processor
+     *
      * @return QueueTransport
      */
     public static function newInstance(QueueProcessorInterface $queue_processor)

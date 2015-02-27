@@ -26,11 +26,11 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Twilio
  */
+
 namespace deskpro_clickatell_sms\Ticket\Actions\ActionDef;
 
 use Application\DeskPRO\Tickets\Actions\ActionDef\AbstractActionDef;

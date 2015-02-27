@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Service;
@@ -78,7 +75,7 @@ class ErrorReporter
                     $db = null;
                 }
                 $stats_fetcher = new \Application\InstallBundle\Data\ServerStats($db);
-                $all_stats = $stats_fetcher->getStats();
+                $all_stats     = $stats_fetcher->getStats();
             } else {
                 $all_stats = array();
             }
@@ -136,7 +133,7 @@ class ErrorReporter
                 $info['is_demo']    = \DeskPRO\Kernel\License::getLicense()->isDemo();
             } catch (\Exception $e) {
                 $info['license_id'] = '';
-                $info['is_demo'] = false;
+                $info['is_demo']    = false;
             }
         }
 
@@ -153,6 +150,7 @@ class ErrorReporter
      * too many times. The system sends at most one report a day.
      *
      * @static
+     *
      * @param $hash
      */
     public static function shouldThrottleReport($hash)
@@ -162,7 +160,7 @@ class ErrorReporter
         }
 
         try {
-            $db = App::getDb();
+            $db         = App::getDb();
             $exist_date = $db->fetchColumn("
                 SELECT date_expire
                 FROM tmp_data
@@ -189,6 +187,7 @@ class ErrorReporter
      * and KernelErrorHandler::getErrorInfo.
      *
      * @static
+     *
      * @param array $errinfo
      */
     public static function reportPhpError(array $errinfo)
@@ -267,9 +266,10 @@ class ErrorReporter
     }
 
     /**
-     * Submits a JS error. $errinfo is a standard error info array from \Application\DeskPRO\Controller\DataController::logJsErrorAction
+     * Submits a JS error. $errinfo is a standard error info array from \Application\DeskPRO\Controller\DataController::logJsErrorAction.
      *
      * @static
+     *
      * @param array $errinfo
      */
     public static function reportJsError(array $errinfo)
@@ -336,6 +336,7 @@ class ErrorReporter
      * to ensure the report isn't re-sent too many times (once every 24 hours).
      *
      * @static
+     *
      * @param $service
      * @param array $data
      * @param int   $timeout
@@ -391,7 +392,7 @@ class ErrorReporter
     }
 
     /**
-     * Sends a heartbeat
+     * Sends a heartbeat.
      */
     public static function sendHeartbeat()
     {
@@ -403,18 +404,18 @@ class ErrorReporter
 
         if (!App::getSetting('core.enable_reduced_lic_reports')) {
             $database_stats = new \Application\DeskPRO\DBAL\DatabaseStats(App::getDb());
-            $data = array_merge($data, $database_stats->getStats());
+            $data           = array_merge($data, $database_stats->getStats());
 
-            $data['setting_core_rewrite_urls'] = App::getSetting('core.rewrite_urls');
-            $data['setting_core_site_url'] = App::getSetting('core.site_url');
-            $data['setting_core_install_time'] = App::getSetting('core.install_time');
+            $data['setting_core_rewrite_urls']       = App::getSetting('core.rewrite_urls');
+            $data['setting_core_site_url']           = App::getSetting('core.site_url');
+            $data['setting_core_install_time']       = App::getSetting('core.install_time');
             $data['setting_core_filestorage_method'] = App::getSetting('core.filestorage_method');
         }
 
         $data['setting_elastica_enabled'] = App::getSetting('elastica.enabled');
         $data['setting_core_deskpro_url'] = App::getSetting('core.deskpro_url');
-        $data['db_id_hash'] = md5(DP_DATABASE_HOST.DP_DATABASE_NAME.DP_DATABASE_USER);
-        $data['license_code'] = App::getSetting('core.license');
+        $data['db_id_hash']               = md5(DP_DATABASE_HOST.DP_DATABASE_NAME.DP_DATABASE_USER);
+        $data['license_code']             = App::getSetting('core.license');
 
         try {
             $client = new \Zend\Http\Client(null, array('timeout' => 20, 'strictredirects' => true, 'sslverifypeer' => false));
@@ -427,7 +428,7 @@ class ErrorReporter
         } catch (\Exception $e) {
             error_log(sprintf("sendHeartbeat %s %s", $e->getCode(), $e->getMessage()));
 
-            return null;
+            return;
         }
     }
 
@@ -440,7 +441,7 @@ class ErrorReporter
     {
         $data = array(
             'install_token' => App::getSetting('core.install_token'),
-            'step' => $step,
+            'step'          => $step,
         );
 
         try {
@@ -456,6 +457,7 @@ class ErrorReporter
 
     /**
      * @static
+     *
      * @param $person
      * @param $message
      */
@@ -489,6 +491,7 @@ class ErrorReporter
 
     /**
      * @static
+     *
      * @param $person
      * @param $message
      */

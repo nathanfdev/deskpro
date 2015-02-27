@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DeskPRO\Kernel;
@@ -39,7 +37,7 @@ class HelpdeskOfflineMessage
 {
     public static function getOfflinePage($message = null)
     {
-        $page_html = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/views/helpdesk-disabled.html');
+        $page_html = file_get_contents(DP_ROOT.'/src/Application/DeskPRO/Resources/views/helpdesk-disabled.html');
 
         if ($message === null) {
             $page_html = str_replace('{{ OFFLINE_MESSAGE }}', self::getOfflineMessage(), $page_html);
@@ -55,44 +53,44 @@ class HelpdeskOfflineMessage
         $vars = array(
             'type'        => $type,
             'base_url'    => $base_url,
-            'asset_url'   => str_replace('/index.php', '', $base_url) . '/web',
-            'billing_url' => $base_url . '/admin/#/license',
+            'asset_url'   => str_replace('/index.php', '', $base_url).'/web',
+            'billing_url' => $base_url.'/admin/#/license',
             'license_id'  => License::getLicense()->getLicenseId(),
             'title'       => 'License Error',
-            'message'     => ''
+            'message'     => '',
         );
 
         $title = $message = null;
 
         $subtype = null;
         if (strpos($type, '.') !== false) {
-            list ($type, $subtype) = explode('.', $type, 2);
+            list($type, $subtype) = explode('.', $type, 2);
         }
 
         switch ($type) {
             case 'agents':
                 $tpl_file = 'license-error';
-                $message = 'You have more agents than your license allows.';
+                $message  = 'You have more agents than your license allows.';
                 break;
 
             case 'copyright':
                 $tpl_file = 'license-error';
-                $message = 'You are not allowed to remove the copyright without copyright removal.';
+                $message  = 'You are not allowed to remove the copyright without copyright removal.';
                 break;
 
             case 'expired':
                 $tpl_file = 'license-error';
-                $title = 'License Expired';
+                $title    = 'License Expired';
 
                 if (License::getLicense()->isDemo()) {
-                    $title = 'Demo Expired';
+                    $title    = 'Demo Expired';
                     $tpl_file = 'demo-license-error';
                 }
                 $days = License::getLicense()->isPastExpireDate();
                 if ($days == 1) {
                     $message = 'Your license has expired 1 day ago.';
                 } else {
-                    $message = 'Your license has expired ' . $days . ' days ago.';
+                    $message = 'Your license has expired '.$days.' days ago.';
                 }
                 break;
 
@@ -100,21 +98,21 @@ class HelpdeskOfflineMessage
             case 'cloud_off_agent':
             case 'cloud_off_admin':
                 $tpl_file = 'cloud-off';
-                $title = 'Offline';
-                $message = DPC_OFF_REASON;
+                $title    = 'Offline';
+                $message  = DPC_OFF_REASON;
                 break;
 
             case 'cloud_billfail_admin':
             case 'cloud_billfail_agent':
             case 'cloud_billfail_user':
                 $tpl_file = 'cloud-billfail';
-                $title = 'Billing Failed';
+                $title    = 'Billing Failed';
                 break;
 
             case 'cloud_demo_expired':
                 $tpl_file = 'cloud-demo-expired';
-                $now  = new \DateTime('now');
-                $date = new \DateTime('@' . DPC_DEMO_EXPIRE);
+                $now      = new \DateTime('now');
+                $date     = new \DateTime('@'.DPC_DEMO_EXPIRE);
 
                 $days = $date->diff($now)->format('%a');
                 if ($days == 1) {
@@ -126,16 +124,18 @@ class HelpdeskOfflineMessage
                 }
 
                 $message = "Your demo expired $days.";
-                $title = "Demo Expired";
+                $title   = "Demo Expired";
                 break;
 
             case 'sys_disabled':
-                $title = 'Account Offline';
-                $message = $subtype;
+                $title    = 'Account Offline';
+                $message  = $subtype;
                 $tpl_file = 'cloud-sys-disabled';
                 break;
 
-            default: trigger_error('getLicenseErrorPage called with bad $type: ' . $type, E_USER_ERROR); return '';
+            default: trigger_error('getLicenseErrorPage called with bad $type: '.$type, E_USER_ERROR);
+
+return '';
         }
 
         if ($title) {
@@ -156,7 +156,7 @@ class HelpdeskOfflineMessage
             }
 
             ob_start();
-            include(DP_ROOT . '/src/Application/DeskPRO/Resources/views/offline_pages/' . $tpl_file . '.html.php');
+            include DP_ROOT.'/src/Application/DeskPRO/Resources/views/offline_pages/'.$tpl_file.'.html.php';
             $page_html = ob_get_clean();
 
             return $page_html;
@@ -170,12 +170,13 @@ class HelpdeskOfflineMessage
     public static function getOfflineMessage()
     {
         $offline_message = null;
-        if (file_exists(dp_get_data_dir() . '/helpdesk-offline-message.txt')) {
-            $offline_message = file_get_contents(dp_get_data_dir() . '/helpdesk-offline-message.txt');
+        if (file_exists(dp_get_data_dir().'/helpdesk-offline-message.txt')) {
+            $offline_message = file_get_contents(dp_get_data_dir().'/helpdesk-offline-message.txt');
         } elseif (class_exists('Application\DeskPRO\App', false)) {
             try {
                 $offline_message = \Application\DeskPRO\App::getSetting('core.helpdesk_disabled_message');
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         if (!$offline_message) {

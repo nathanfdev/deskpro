@@ -5,9 +5,9 @@ namespace DpUnitTests\Orb\Types;
 use Orb\Types\JsonObjectSerializable;
 
 /**
- * TestObject
+ * TestObject.
  */
-class TestObject implements JsonObjectSerializable
+class JsonObjectSerializableData implements JsonObjectSerializable
 {
     public $a;
     public $b;
@@ -17,9 +17,9 @@ class TestObject implements JsonObjectSerializable
 
     public function __construct($a, $b, $c, $y = null, $z = null)
     {
-        $this->a = $a;
-        $this->b = $b;
-        $this->c = $c;
+        $this->a  = $a;
+        $this->b  = $b;
+        $this->c  = $c;
         $this->_y = $y;
         $this->_z = $z;
     }

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\SourceMapper\PendingQueuer;
@@ -60,10 +57,10 @@ class RedisPendingQueuer implements PendingQueuerInterface
     public function __construct(Predis\Client $client, $key)
     {
         $this->client = $client;
-        $this->key = $key;
+        $this->key    = $key;
 
         $me = $this;
-        register_shutdown_function(function() use ($me) {
+        register_shutdown_function(function () use ($me) {
             try {
                 $me->pushAll();
             } catch (\Exception $e) {
@@ -73,7 +70,7 @@ class RedisPendingQueuer implements PendingQueuerInterface
     }
 
     /**
-     * Pushes all pendning rows to the server
+     * Pushes all pendning rows to the server.
      */
     public function pushAll()
     {

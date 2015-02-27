@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\CustomFields;
 
@@ -70,13 +68,15 @@ class FieldManager
     protected $options;
 
     /**
-     * Array of top-level fields for the current interface
+     * Array of top-level fields for the current interface.
+     *
      * @var array
      */
     protected $fields = null;
 
     /**
-     * Array of top-level fields
+     * Array of top-level fields.
+     *
      * @var array
      */
     protected $real_fields = null;
@@ -102,7 +102,8 @@ class FieldManager
     protected $real_all_fields = null;
 
     /**
-     * person context
+     * person context.
+     *
      * @var Person
      */
     protected $person;
@@ -169,7 +170,7 @@ class FieldManager
     public function createNewDefEntity()
     {
         $class = $this->options->get('entity_class');
-        $obj = new $class();
+        $obj   = new $class();
 
         return $obj;
     }
@@ -179,7 +180,7 @@ class FieldManager
     }
 
     /**
-     * Get a collection of all top-level (parent) fields
+     * Get a collection of all top-level (parent) fields.
      *
      * @return array
      */
@@ -243,9 +244,10 @@ class FieldManager
     }
 
     /**
-     * Get a named system field
+     * Get a named system field.
      *
-     * @param  string $sys_name
+     * @param string $sys_name
+     *
      * @return mixed
      */
     public function getSystemField($sys_name)
@@ -256,11 +258,12 @@ class FieldManager
             }
         }
 
-        return null;
+        return;
     }
 
     /**
      * @param $field_def
+     *
      * @return array
      */
     public function getFieldChildren($field_def)
@@ -274,9 +277,10 @@ class FieldManager
     }
 
     /**
-     * Get a field from an ID
+     * Get a field from an ID.
      *
      * @param $field_id
+     *
      * @return \Application\DeskPRO\Entity\CustomDefAbstract
      */
     public function getFieldFromId($field_id)
@@ -287,17 +291,18 @@ class FieldManager
     }
 
     /**
-     * Get a display array for rendering a field
+     * Get a display array for rendering a field.
      *
-     * @param  array $field_data  An array of structured data from the database
-     * @param  null  $field_group Optionally a form group to add form fields to
+     * @param array $field_data  An array of structured data from the database
+     * @param null  $field_group Optionally a form group to add form fields to
+     *
      * @return array
      */
     public function getDisplayArray($field_data = array(), $field_group = null, $use_default = false)
     {
         $custom_fields = array();
         foreach ($this->getFields() as $f_def) {
-            $display = new FieldDisplayArray($this, $f_def, $field_data, $field_group, $use_default);
+            $display                     = new FieldDisplayArray($this, $f_def, $field_data, $field_group, $use_default);
             $custom_fields[$f_def['id']] = $display;
         }
 
@@ -309,6 +314,7 @@ class FieldManager
      * Useful when re-creating objects to pass through a validator.
      *
      * @param $object
+     *
      * @return array
      */
     public function createFormArrayForObject($object)
@@ -344,7 +350,8 @@ class FieldManager
     /**
      * Render field data to their 'text values.
      *
-     * @param  array $field_data
+     * @param array $field_data
+     *
      * @return array
      */
     public function getRenderedToText($field_data = array())
@@ -373,23 +380,25 @@ class FieldManager
     }
 
     /**
-     * return field title and value for CustomData
-     * @param  CustomDataAbstract $data
+     * return field title and value for CustomData.
+     *
+     * @param CustomDataAbstract $data
+     *
      * @return array
      */
     public function renderTextForData(CustomDataAbstract $data)
     {
         $field = $data->root_field ?: $data->field;
         $value = !$data->root_field || $data->root_field === $data->field
-            ? array('value' => $data->getData())
-            : array('value' => null, 'children' => array(
+            ? array('value'        => $data->getData())
+            : array('value'        => null, 'children' => array(
                 $data->field['id'] => array('value' => $data->getData(), 'children' => null),
             ));
 
         $val = trim($field->getHandler()->renderText($value));
 
         return array(
-            'id' => $field['id'],
+            'id'    => $field['id'],
             'title' => $field['title'],
             'value' => $val,
         );
@@ -399,6 +408,7 @@ class FieldManager
      * Render field data form an object to their text values.
      *
      * @param $object
+     *
      * @return array
      */
     public function getRenderedToTextForObject($object)
@@ -409,10 +419,11 @@ class FieldManager
     }
 
     /**
-     * Create a field display array from an object
+     * Create a field display array from an object.
      *
      * @param $object
-     * @param  null  $field_group
+     * @param null $field_group
+     *
      * @return array
      */
     public function getDisplayArrayForObject($object, $field_group = null)
@@ -430,7 +441,7 @@ class FieldManager
     }
 
     /**
-     * Create field display arrays for a collection of objects and their field object (raw values for their fields)
+     * Create field display arrays for a collection of objects and their field object (raw values for their fields).
      *
      * $objects are the actual objects you want to process. For example $tickets of types Ticket
      * $field_objects are all those records custom field objects. For example, $ticket_custom_data of types CustomDataTicket
@@ -439,6 +450,7 @@ class FieldManager
      *
      * @param $object
      * @param $field_group
+     *
      * @return array
      */
     public function getDisplayArraysForObjectCollection(array $objects, array $field_objects)
@@ -450,7 +462,7 @@ class FieldManager
                 continue;
             }
 
-            $field_data = $this->createFieldDataFromArray($object, $field_objects[$object->getId()]);
+            $field_data             = $this->createFieldDataFromArray($object, $field_objects[$object->getId()]);
             $data[$object->getId()] = $this->getDisplayArray($field_data, null);
         }
 
@@ -461,6 +473,7 @@ class FieldManager
      * Take custom field data from an obejct and return a field data array.
      *
      * @param $object
+     *
      * @return array
      */
     public function getFieldDataForObject($object)
@@ -485,6 +498,7 @@ class FieldManager
      * complex fields that have multiple levels, like a choice.
      *
      * @param $field_datas
+     *
      * @return array
      */
     public function createFieldDataFromArray($field_datas)
@@ -524,11 +538,10 @@ class FieldManager
     }
 
     /**
-     * Save a posted form of custom field data to an object
+     * Save a posted form of custom field data to an object.
      *
-     * @param  array $form_data
+     * @param array $form_data
      * @param $object
-     * @return void
      */
     public function saveFormToObject(array $form, $object, $only_set = false)
     {
@@ -577,7 +590,7 @@ class FieldManager
     }
 
     /**
-     * Returns an array of data objects of type $data_class based on form input
+     * Returns an array of data objects of type $data_class based on form input.
      *
      * @return \Application\DeskPRO\Entity\CustomDataAbstract[]
      */
@@ -610,8 +623,8 @@ class FieldManager
                     continue;
                 }
 
-                $data = new $data_class();
-                $data->field = $set_field;
+                $data              = new $data_class();
+                $data->field       = $set_field;
                 $data[$value_type] = $value;
 
                 $structured_data[] = $data;
@@ -623,8 +636,9 @@ class FieldManager
 
     /**
      * @param $object
-     * @param  \Application\DeskPRO\Entity\CustomDefAbstract $field_def
-     * @param  array                                         $in_data
+     * @param \Application\DeskPRO\Entity\CustomDefAbstract $field_def
+     * @param array                                         $in_data
+     *
      * @return array|null
      */
     public function setCustomDataOnObject($object, CustomDefAbstract $field_def, array $in_data)
@@ -652,26 +666,26 @@ class FieldManager
             // maybe better set CustomData's value to null?
             $this->removeCustomDataOnObject($object, $field_def);
 
-            return null;
+            return;
         }
 
         $custom_data = $object->getCustomDataForField($set_field);
 
         if (!$custom_data) {
-            $custom_data = $this->createDataClass();
-            $custom_data->field = $set_field;
-            $custom_data->root_field = $field_def;
+            $custom_data              = $this->createDataClass();
+            $custom_data->field       = $set_field;
+            $custom_data->root_field  = $field_def;
             $custom_data[$value_type] = $value;
 
             $object->addCustomData($custom_data);
         } elseif (method_exists($object, 'getStateChangeRecorder')) {
-            $old_custom_data = clone $custom_data;
+            $old_custom_data          = clone $custom_data;
             $custom_data[$value_type] = $value;
-            $state = $object->getStateChangeRecorder();
+            $state                    = $object->getStateChangeRecorder();
 
-            $field = $set_field;
+            $field     = $set_field;
             $parent_id = null;
-            $field_id = $field['id'];
+            $field_id  = $field['id'];
             if ($field->parent) {
                 $parent_id = $field->parent['id'];
             }
@@ -688,8 +702,7 @@ class FieldManager
 
     /**
      * @param $object
-     * @param  \Application\DeskPRO\Entity\CustomDefAbstract $field_def
-     * @return void
+     * @param \Application\DeskPRO\Entity\CustomDefAbstract $field_def
      */
     public function removeCustomDataOnObject($object, CustomDefAbstract $field_def)
     {

@@ -26,28 +26,25 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
+use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Zend\Feed\Writer\Extension\ITunes\Renderer\Feed;
-use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 
 class FeedbackController extends AbstractController
 {
@@ -65,11 +62,11 @@ class FeedbackController extends AbstractController
         //
         if ('rss' === $_format) {
             $filter = new FeedbackFilter(array(
-                'status' => $request->query->get('status', 'all'),
+                'status'            => $request->query->get('status', 'all'),
                 'status_categories' => $request->query->get('status_categories', array()),
-                'types' => $request->query->get('types', array()),
-                'sort' => $request->query->get('sort', 'date'),
-                'sort_direction' => $request->query->get('sort_direction', 'desc'),
+                'types'             => $request->query->get('types', array()),
+                'sort'              => $request->query->get('sort', 'date'),
+                'sort_direction'    => $request->query->get('sort_direction', 'desc'),
             ));
 
             $pager = $this->getFeedbackDataService()->getItemsPager(
@@ -79,7 +76,7 @@ class FeedbackController extends AbstractController
             );
 
             return $this->render('PortalBundle:Feedback:feed.rss.twig', array(
-                'pager' => $pager,
+                'pager'    => $pager,
                 'category' => null,
             ));
         }
@@ -87,7 +84,7 @@ class FeedbackController extends AbstractController
         //
         // NEW FEEDBACK FORM
         //
-        $person = $this->getUser() ?: new PersonGuest();
+        $person       = $this->getUser() ?: new PersonGuest();
         $new_feedback = new Feedback();
         $new_feedback->setPerson($person);
         $form = $this->createForm('new_feedback', $new_feedback, array(
@@ -130,17 +127,18 @@ class FeedbackController extends AbstractController
         return $this->renderThemeView(
             'Theme:Feedback:index.html.twig',
             array(
-                'page' => $page,
-                'count' => $this->getBrandSetting('portal.per_page_content'),
+                'page'            => $page,
+                'count'           => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination' => true,
-                'form' => $form->createView(),
-                'user' => $this->getUser(),
+                'form'            => $form->createView(),
+                'user'            => $this->getUser(),
             )
         );
     }
 
     /**
      * @Route("/feedback/browse/{filter_uri}", name="portal_feedback_browse", defaults={"query_path":""}, requirements={"filter_uri":".*"})
+     *
      * @Method("GET")
      * @Security("is_granted('USE_FEEDBACK')")
      * @PageHttpCache()
@@ -151,7 +149,7 @@ class FeedbackController extends AbstractController
 
         try {
             $uri_helper = new FeedbackFilterUriHelper();
-            $filter = $uri_helper->extractFeedbackFilter($filter_uri);
+            $filter     = $uri_helper->extractFeedbackFilter($filter_uri);
         } catch (\InvalidArgumentException $e) {
             throw $this->createNotFoundException('filter_uri could not be parsed');
         }
@@ -162,14 +160,14 @@ class FeedbackController extends AbstractController
         }
 
         $page_options = array(
-            'page' => $page,
-            'count' => $this->getBrandSetting('portal.per_page_content'),
-            'show_pagination' => true,
-            'status' => $filter->getStatus(),
+            'page'              => $page,
+            'count'             => $this->getBrandSetting('portal.per_page_content'),
+            'show_pagination'   => true,
+            'status'            => $filter->getStatus(),
             'status_categories' => $filter->getStatusCategories(),
-            'types' => $filter->getTypes(),
-            'sort' => $filter->getSort(),
-            'sort_direction' => $filter->getSortDirection(),
+            'types'             => $filter->getTypes(),
+            'sort'              => $filter->getSort(),
+            'sort_direction'    => $filter->getSortDirection(),
         );
 
         if ($request->isXmlHttpRequest()) {
@@ -180,7 +178,7 @@ class FeedbackController extends AbstractController
         }
 
         // setup and render an initial form that posts to /feedback
-        $person = $this->getUser() ?: new PersonGuest();
+        $person       = $this->getUser() ?: new PersonGuest();
         $new_feedback = new Feedback();
         $new_feedback->setPerson($person);
         $form = $this->createForm('new_feedback', $new_feedback, array(
@@ -236,9 +234,9 @@ class FeedbackController extends AbstractController
         return $this->renderThemeView(
             'Theme:Feedback:view.html.twig',
             array(
-                'item' => $item,
-                'content_id' => $item->getId(),
-                'content_type' => Feedback::CONTENT_TYPE,
+                'item'             => $item,
+                'content_id'       => $item->getId(),
+                'content_type'     => Feedback::CONTENT_TYPE,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
             )
         );
@@ -269,7 +267,7 @@ class FeedbackController extends AbstractController
     protected function getDefaultStatusCategory()
     {
         $default_status_category_id = $this->getBrandSetting('portal.default_feedback_status_category_id');
-        $default_status_category = $this->getFeedbackDataService()->getFeedbackStatusCategory($default_status_category_id);
+        $default_status_category    = $this->getFeedbackDataService()->getFeedbackStatusCategory($default_status_category_id);
 
         return $default_status_category;
     }

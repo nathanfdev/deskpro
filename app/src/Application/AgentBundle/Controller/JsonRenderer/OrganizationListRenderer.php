@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller\JsonRenderer;
@@ -63,8 +61,9 @@ class OrganizationListRenderer
     }
 
     /**
-     * @param  OrgResultsDisplay $display
-     * @param  null              $fn_visitor
+     * @param OrgResultsDisplay $display
+     * @param null              $fn_visitor
+     *
      * @return array
      */
     public function renderArray(OrgResultsDisplay $display, $fn_visitor = null)
@@ -93,7 +92,8 @@ class OrganizationListRenderer
     }
 
     /**
-     * @param  OrgResultsDisplay $display
+     * @param OrgResultsDisplay $display
+     *
      * @return string
      */
     public function renderJson(OrgResultsDisplay $display)

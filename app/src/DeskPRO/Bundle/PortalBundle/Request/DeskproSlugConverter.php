@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Request;
 
-use DeskPRO\Bundle\AppBundle\Content\ContentSlugManager;
 use Application\DeskPRO\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\Content\ContentSlugManager;
 use DeskPRO\Bundle\PortalBundle\HttpKernel\Exception\PermanentRedirectException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
@@ -43,7 +40,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Used to keep legacy slug urls working (1-slug-here) and forward them to the new (slug-here)
+ * Used to keep legacy slug urls working (1-slug-here) and forward them to the new (slug-here).
  */
 class DeskproSlugConverter implements ParamConverterInterface
 {
@@ -59,18 +56,18 @@ class DeskproSlugConverter implements ParamConverterInterface
 
     public function __construct(EntityManager $em, ContentSlugManager $slug_manager)
     {
-        $this->em = $em;
+        $this->em           = $em;
         $this->slug_manager = $slug_manager;
     }
 
     public function apply(Request $request, ParamConverter $configuration)
     {
-        $param_name       = $configuration->getName();
-        $param_class      = $configuration->getClass();
-        $param_options    = $this->getOptions($configuration);
+        $param_name          = $configuration->getName();
+        $param_class         = $configuration->getClass();
+        $param_options       = $this->getOptions($configuration);
         $slug_attribute_name = $param_options['slug_route_param'];
-        $slug_input = $request->attributes->get($slug_attribute_name);
-        $slug_col         = $param_options['slug_col']; // this will always be "slug" (for now)
+        $slug_input          = $request->attributes->get($slug_attribute_name);
+        $slug_col            = $param_options['slug_col']; // this will always be "slug" (for now)
 
         if ($param_name === 'tag_request') {
             return;
@@ -149,7 +146,7 @@ class DeskproSlugConverter implements ParamConverterInterface
     {
         return array_replace(
             array(
-                'slug_col' => 'slug',
+                'slug_col'         => 'slug',
                 'slug_route_param' => 'slug',
             ), $configuration->getOptions()
         );

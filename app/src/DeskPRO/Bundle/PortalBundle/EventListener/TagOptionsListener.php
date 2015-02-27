@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
@@ -69,7 +66,7 @@ class TagOptionsListener implements EventSubscriberInterface
 
     public function __construct(FileCacheReader $reader, Container $container)
     {
-        $this->reader = $reader;
+        $this->reader    = $reader;
         $this->container = $container;
     }
 
@@ -80,7 +77,7 @@ class TagOptionsListener implements EventSubscriberInterface
         }
 
         /** @var \DeskPRO\Bundle\PortalBundle\Request\TagRequest $tag_request */
-        $tag_request = $event->getRequest();
+        $tag_request    = $event->getRequest();
         $request_backup = false;
 
         if (!$tag_request instanceof TagRequest) {
@@ -88,12 +85,12 @@ class TagOptionsListener implements EventSubscriberInterface
                 return;
             }
             $request_backup = $tag_request;
-            $tag_request = $tag_request->attributes->get('tag_request');
+            $tag_request    = $tag_request->attributes->get('tag_request');
         }
 
         $className = ClassUtils::getClass($controller[0]);
-        $object = new \ReflectionClass($className);
-        $method = $object->getMethod($controller[1]);
+        $object    = new \ReflectionClass($className);
+        $method    = $object->getMethod($controller[1]);
 
         $annotations = $this->reader->getMethodAnnotations($method);
 

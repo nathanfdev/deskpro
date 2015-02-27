@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -77,7 +74,7 @@ class FeedbackAttachmentType extends AbstractType
 
     public function preSubmit(FormEvent $event)
     {
-        $form = $event->getForm();
+        $form          = $event->getForm();
         $submittedData = $event->getData();
         if (array_key_exists('blob_auth', $submittedData)) {
             if (!$form->getData()) {
@@ -113,8 +110,8 @@ class FeedbackAttachmentType extends AbstractType
     {
         /** @var \Application\DeskPRO\Entity\TicketAttachment $attachment */
         $attachment = $event->getData() instanceof FeedbackAttachment ? $event->getData() : new FeedbackAttachment();
-        $form = $event->getForm();
-        $person = $form->getConfig()->getOption('person');
+        $form       = $event->getForm();
+        $person     = $form->getConfig()->getOption('person');
 
         if ($form->has('upload')) {
             $file = $form->get('upload')->getData();

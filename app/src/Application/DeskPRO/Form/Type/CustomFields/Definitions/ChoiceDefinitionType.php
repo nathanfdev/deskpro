@@ -56,18 +56,18 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
 
         $builder
             ->add('_children', new DpCategoryBuilderType(), array(
-                'type' => new SimpleDefinitionType(),
-                'label' => false,
-                'allow_add' => true,
+                'type'         => new SimpleDefinitionType(),
+                'label'        => false,
+                'allow_add'    => true,
                 'allow_delete' => true,
-                'required' => false,
-                'data' => $children ?: new ArrayCollection(),
-                'mapped' => false,
-                'persister' => $options['persister'],
-                'options' => array(
-                    'label' => false,
+                'required'     => false,
+                'data'         => $children ?: new ArrayCollection(),
+                'mapped'       => false,
+                'persister'    => $options['persister'],
+                'options'      => array(
+                    'label'   => false,
                     'context' => $options['context'],
-                    'parent' => $options['data'],
+                    'parent'  => $options['data'],
                 ),
             ))
         ;
@@ -81,7 +81,7 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
         parent::setDefaultOptions($resolver);
         $resolver
             ->setDefaults(array(
-                'children_only' => false,
+                'children_only'       => false,
                 'children_collection' => null,
             ))
             ->setOptional(array(

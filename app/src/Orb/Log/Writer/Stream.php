@@ -26,35 +26,34 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Log
+ * Orb.
  */
 
 namespace Orb\Log\Writer;
 
-use \Orb\Log\LogItem;
+use Orb\Log\LogItem;
 
 /**
- * This writer writes to any stream
+ * This writer writes to any stream.
  */
 class Stream extends AbstractWriter
 {
     /**
      * Holds the PHP stream to log to.
+     *
      * @var null|stream
      */
     protected $_stream = null;
 
     /**
-     * If we opened the stream ourselves
+     * If we opened the stream ourselves.
+     *
      * @var bool
      */
     protected $_did_open_stream = false;
 
     /**
-     * Chmod the file if we created it
+     * Chmod the file if we created it.
      *
      * @var null
      */
@@ -111,7 +110,7 @@ class Stream extends AbstractWriter
 
             $this->_stream = $stream_or_url;
         } else {
-            $this->stream_url = $stream_or_url;
+            $this->stream_url  = $stream_or_url;
             $this->stream_mode = $mode;
         }
 
@@ -123,9 +122,9 @@ class Stream extends AbstractWriter
     public function getStream()
     {
         if (!$this->_stream) {
-            $mode = $this->stream_mode;
+            $mode          = $this->stream_mode;
             $stream_or_url = $this->stream_url;
-            $is_made = false;
+            $is_made       = false;
             if (!file_exists($stream_or_url)) {
                 $is_made = true;
             }
@@ -148,7 +147,7 @@ class Stream extends AbstractWriter
     {
         if ($this->_did_open_stream and is_resource($this->_stream)) {
             fclose($this->_stream);
-            $this->_stream = null;
+            $this->_stream          = null;
             $this->_did_open_stream = false;
         }
     }

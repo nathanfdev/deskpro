@@ -28,44 +28,44 @@
 namespace Application\ImportBundle\Reader\ZenDesk;
 
 /**
- * ZenDesk reader interface
+ * ZenDesk reader interface.
  *
  * Interface ZenDeskReaderInterface
- * @package Application\ImportBundle\Reader\ZenDesk
  */
 interface ZenDeskReaderInterface
 {
     /**
-     * Returns total users count
+     * Returns total users count.
      *
      * @return int
      */
     public function getPeopleCount();
 
     /**
-     * Returns batch of the users collection
+     * Returns batch of the users collection.
      *
      * @return array
      */
     public function getPeople();
 
     /**
-     * Returns batch of the users collection of certain ids
+     * Returns batch of the users collection of certain ids.
      *
      * @param array $ids
+     *
      * @return array
      */
     public function getPeopleByIds(array $ids);
 
     /**
-     * Returns total tickets count
+     * Returns total tickets count.
      *
      * @return int
      */
     public function getTicketsCount();
 
     /**
-     * Returns batch tickets collection
+     * Returns batch tickets collection.
      *
      * @return array
      */

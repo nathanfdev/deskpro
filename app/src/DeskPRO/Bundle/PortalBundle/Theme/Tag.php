@@ -26,16 +26,13 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 /**
- * Contains the configuration for a theme tag
+ * Contains the configuration for a theme tag.
  */
 class Tag implements \Serializable
 {
@@ -65,26 +62,26 @@ class Tag implements \Serializable
         $always_guest_inline = false,
         $allow_route_params = true
     ) {
-        $this->name = $name;
-        $this->controller_name = $controller_name;
-        $this->defined_options = $defined_options;
-        $this->default_options = $default_options;
-        $this->esi = $esi;
+        $this->name                = $name;
+        $this->controller_name     = $controller_name;
+        $this->defined_options     = $defined_options;
+        $this->default_options     = $default_options;
+        $this->esi                 = $esi;
         $this->always_guest_inline = $always_guest_inline;
-        $this->allow_route_params = $allow_route_params;
+        $this->allow_route_params  = $allow_route_params;
     }
 
     public function serialize()
     {
         return serialize(
             array(
-                'name' => $this->name,
-                'controller_name' => $this->controller_name,
-                'defined_options' => $this->defined_options,
-                'default_options' => $this->default_options,
-                'esi' => $this->esi,
+                'name'                => $this->name,
+                'controller_name'     => $this->controller_name,
+                'defined_options'     => $this->defined_options,
+                'default_options'     => $this->default_options,
+                'esi'                 => $this->esi,
                 'always_guest_inline' => $this->always_guest_inline,
-                'allow_route_params' => $this->allow_route_params,
+                'allow_route_params'  => $this->allow_route_params,
             )
         );
     }
@@ -93,13 +90,13 @@ class Tag implements \Serializable
     {
         $unserialized = unserialize($serialized);
 
-        $this->name = $unserialized['name'];
-        $this->controller_name = $unserialized['controller_name'];
-        $this->defined_options = $unserialized['defined_options'];
-        $this->default_options = $unserialized['default_options'];
-        $this->esi = $unserialized['esi'];
+        $this->name                = $unserialized['name'];
+        $this->controller_name     = $unserialized['controller_name'];
+        $this->defined_options     = $unserialized['defined_options'];
+        $this->default_options     = $unserialized['default_options'];
+        $this->esi                 = $unserialized['esi'];
         $this->always_guest_inline = $unserialized['always_guest_inline'];
-        $this->allow_route_params = $unserialized['allow_route_params'];
+        $this->allow_route_params  = $unserialized['allow_route_params'];
     }
 
     /**

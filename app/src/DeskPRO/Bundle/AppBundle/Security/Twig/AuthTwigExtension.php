@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security\Twig;
 
-use DeskPRO\Bundle\AppBundle\Security\Handler\LogoutHandler;
 use Application\DeskPRO\Usersource\UsersourceInfo;
+use DeskPRO\Bundle\AppBundle\Security\Handler\LogoutHandler;
 use Orb\Auth\Adapter\IframeSsoInterface;
 use Orb\Auth\Adapter\JsSsoInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
@@ -126,6 +123,7 @@ class AuthTwigExtension extends \Twig_Extension
 
     /**
      * @param $interface
+     *
      * @return string
      */
     protected function legacyMagentoPluginCode($interface)
@@ -138,7 +136,7 @@ class AuthTwigExtension extends \Twig_Extension
         }
 
         /** @var \Application\DeskPRO\Auth\AuthenticationManager $auth_manager */
-        /** @var \Application\DeskPRO\Usersource\UsersourceManager $us_manager */
+        /* @var \Application\DeskPRO\Usersource\UsersourceManager $us_manager */
         $auth_manager = $this->container->get('dp_authentication_manager.user');
         $us_manager   = $auth_manager->getUsersourceManager();
         $sources      = $us_manager->getAll()->forInterface($interface)->withCapability(

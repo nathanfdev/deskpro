@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\UserBundle\Controller;
 
@@ -43,6 +41,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 {
     /**
      * The currently logged in person.
+     *
      * @var \Application\DeskPRO\Entity\Person
      */
     public $person;
@@ -71,7 +70,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * Check if the global request token check is required for the request
+     * Check if the global request token check is required for the request.
      */
     public function requireRequestToken($action, $arguments = null)
     {
@@ -276,7 +275,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
             if ($this->request->isXmlHttpRequest()) {
                 $data = array(
-                    'error' => 'invalid_request_token',
+                    'error'          => 'invalid_request_token',
                     'redirect_login' => $this->generateUrl('agent_login'),
                 );
 
@@ -320,8 +319,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     /**
      * Render a standard error message.
      *
-     * @param  string   $error_message
-     * @param  string   $error_title
+     * @param string $error_message
+     * @param string $error_title
+     *
      * @return Response
      */
     public function renderStandardError($error_message = '', $error_title = '', $code = 200, array $vars = array())
@@ -338,10 +338,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * @param  string                                     $error_message
-     * @param  string                                     $error_title
-     * @param  int                                        $code
-     * @param  array                                      $vars
+     * @param string $error_message
+     * @param string $error_title
+     * @param int    $code
+     * @param array  $vars
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function standardErrorResponse($error_message = '', $error_title = '', $code = 200, array $vars = array())

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -51,10 +49,9 @@ class ChatSetupController extends AbstractController implements ProtectedControl
 
     public function chatSetupAction()
     {
-        /**
-         * @var \Application\DeskPRO\ChatSetup\ChatSetup $chat_setup
+        /*
+         * @var \Application\DeskPRO\ChatSetup\ChatSetup
          */
-
         $chat_setup = $this->container->getSystemService('chat_setup');
 
         return $this->createApiResponse(
@@ -70,10 +67,9 @@ class ChatSetupController extends AbstractController implements ProtectedControl
 
     public function toggleChatAction($is_enabled)
     {
-        /**
-         * @var \Application\DeskPRO\ChatSetup\ChatSetup $chat_setup
+        /*
+         * @var \Application\DeskPRO\ChatSetup\ChatSetup
          */
-
         $chat_setup = $this->container->getSystemService('chat_setup');
         $chat_setup->setChatEnabled($is_enabled);
 

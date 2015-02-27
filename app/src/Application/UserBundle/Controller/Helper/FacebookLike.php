@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Controller\Helper;
@@ -44,10 +41,11 @@ class FacebookLike
     protected $entity;
 
     /**
-     * Creates a new instance of this helper
+     * Creates a new instance of this helper.
      *
      * @param  $page_url
      * @param  $entity
+     *
      * @return Comments
      */
     public static function create($entity)
@@ -64,7 +62,7 @@ class FacebookLike
     }
 
     /**
-     * Get the HTML block from the adapter
+     * Get the HTML block from the adapter.
      *
      * @return string
      */

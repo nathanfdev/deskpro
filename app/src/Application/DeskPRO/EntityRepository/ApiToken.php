@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\App;
 class ApiToken extends AbstractEntityRepository
 {
     /**
-     * Find an API key based off of a key string. A key string is: "id:code"
+     * Find an API key based off of a key string. A key string is: "id:code".
      *
      * @param string $api_string
      *
@@ -48,17 +47,17 @@ class ApiToken extends AbstractEntityRepository
     public function findByTokenString($token_string)
     {
         if (strpos($token_string, ':') === false) {
-            return null;
+            return;
         }
 
         list($id, $token) = explode(':', $token_string, 2);
 
         $token_obj = $this->find($id);
         if (!$token_obj) {
-            return null;
+            return;
         }
         if ($token_obj->token != $token) {
-            return null;
+            return;
         }
 
         return $token_obj;
@@ -90,10 +89,10 @@ class ApiToken extends AbstractEntityRepository
         $interval = (int) App::getSetting('core.api_rate_limit_interval');
         if (!$rate_limit || $rate_limit['reset_stamp'] <= time()) {
             $rate_limit = array(
-                'api_token_id' => $api_token->id,
-                'hits' => 0,
+                'api_token_id'  => $api_token->id,
+                'hits'          => 0,
                 'created_stamp' => time(),
-                'reset_stamp' => time() + $interval,
+                'reset_stamp'   => time() + $interval,
             );
         }
 

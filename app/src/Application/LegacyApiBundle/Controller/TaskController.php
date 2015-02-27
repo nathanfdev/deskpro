@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -40,12 +37,12 @@ use Application\DeskPRO\Searcher\TaskSearch;
 use Orb\Util\Numbers;
 
 /**
-* @SWG\Resource(
-* 	resourcePath="/tasks",
-* 	description="Operations about Tasks",
-* 	basePath="/api"
-* )
-*/
+ * @SWG\Resource(
+ * 	resourcePath="/tasks",
+ * 	description="Operations about Tasks",
+ * 	basePath="/api"
+ * )
+ */
 class TaskController extends AbstractController
 {
     /**
@@ -190,12 +187,12 @@ class TaskController extends AbstractController
         $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start,
-                'date2' => $date_created_end,
+                'date1'             => $date_created_start,
+                'date2'             => $date_created_end,
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start,
+                'date1'             => $date_created_start,
             ));
         }
 
@@ -203,12 +200,12 @@ class TaskController extends AbstractController
         $date_completed_end   = $this->in->getUint('date_completed_end');
         if ($date_completed_end) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_COMPLETED, 'op' => 'between', 'options' => array(
-                'date1' => $date_completed_start,
-                'date2' => $date_completed_end,
+                'date1'             => $date_completed_start,
+                'date2'             => $date_completed_end,
             ));
         } elseif ($date_completed_start) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_COMPLETED, 'op' => 'between', 'options' => array(
-                'date1' => $date_completed_start,
+                'date1'             => $date_completed_start,
             ));
         }
 
@@ -216,12 +213,12 @@ class TaskController extends AbstractController
         $date_due_end   = $this->in->getUint('date_due_end');
         if ($date_due_end) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_DUE, 'op' => 'between', 'options' => array(
-                'date1' => $date_due_start,
-                'date2' => $date_due_end,
+                'date1'             => $date_due_start,
+                'date2'             => $date_due_end,
             ));
         } elseif ($date_due_start) {
             $terms[] = array('type' => TaskSearch::TERM_DATE_DUE, 'op' => 'between', 'options' => array(
-                'date1' => $date_due_start,
+                'date1'             => $date_due_start,
             ));
         }
 
@@ -1043,9 +1040,11 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @return \Application\DeskPRO\Entity\Task
+     * @param integer $id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return \Application\DeskPRO\Entity\Task
+     *
      */
     protected function _getTaskOr404($id)
     {

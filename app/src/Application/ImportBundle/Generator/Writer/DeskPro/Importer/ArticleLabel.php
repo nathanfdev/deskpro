@@ -32,10 +32,9 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro article labels importer
+ * DeskPro article labels importer.
  *
  * Class ArticleLabel
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 final class ArticleLabel extends AbstractImporter
 {
@@ -50,7 +49,7 @@ final class ArticleLabel extends AbstractImporter
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Article $entity
+     * @var Entity\Article
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
@@ -78,9 +77,10 @@ final class ArticleLabel extends AbstractImporter
     }
 
     /**
-     * Returns a new article label entity
+     * Returns a new article label entity.
      *
      * @param string $label
+     *
      * @return DeskPROEntity\LabelArticle
      */
     private function createArticleLabel($label)
@@ -89,16 +89,18 @@ final class ArticleLabel extends AbstractImporter
         $entity->setLabel($label);
 
         $this->records->add($entity);
+
         return $entity;
     }
 
     /**
-     * Returns a collection of existing article label names
+     * Returns a collection of existing article label names.
      *
      * @param int $id
      *
-     * @return array
      * @throws Mapper\MapperException
+     * @return array
+     *
      */
     private function getExistingLabelsNames($id)
     {
@@ -113,10 +115,11 @@ final class ArticleLabel extends AbstractImporter
     }
 
     /**
-     * Returns the article label mapper
+     * Returns the article label mapper.
      *
-     * @return Mapper\ArticleLabel
      * @throws \Exception
+     * @return Mapper\ArticleLabel
+     *
      */
     private function getArticleLabelMapper()
     {

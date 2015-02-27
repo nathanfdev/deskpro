@@ -42,7 +42,8 @@ class WebhookHandler
     }
 
     /**
-     * @param  array $data
+     * @param array $data
+     *
      * @return bool
      */
     public function handle(array $data)
@@ -71,7 +72,8 @@ class WebhookHandler
     }
 
     /**
-     * @param  array      $data
+     * @param array $data
+     *
      * @throws \Exception
      */
     public function onIssueUpdated(array $data)
@@ -81,13 +83,13 @@ class WebhookHandler
         }
 
         $manager = $this->container->getTicketManager();
-        $em = $this->container->getEm();
-        $issues = $em->getRepository('DeskPRO:JiraIssue')->findBy(array('issue_id' => $data['issue']['id']));
-        $meta = $this->container->get(JIRA::NAME)->getMeta();
+        $em      = $this->container->getEm();
+        $issues  = $em->getRepository('DeskPRO:JiraIssue')->findBy(array('issue_id' => $data['issue']['id']));
+        $meta    = $this->container->get(JIRA::NAME)->getMeta();
 
         foreach ($issues as $issue) {
-            /** @var $issue JiraIssue */
-            $state = $issue->ticket->getStateChangeRecorder();
+            /* @var $issue JiraIssue */
+            $state   = $issue->ticket->getStateChangeRecorder();
             $context = $manager->createAppExecutorContext($app, 'issue_update');
 
             if (isset($data['comment']) && $meta->getApiUsername() !== $data['comment']['author']['name']) {
@@ -120,7 +122,8 @@ class WebhookHandler
     }
 
     /**
-     * @param  array      $data
+     * @param array $data
+     *
      * @throws \Exception
      */
     public function onIssueDeleted(array $data)
@@ -130,8 +133,8 @@ class WebhookHandler
         }
 
         $manager = $this->container->getTicketManager();
-        $em = $this->container->getEm();
-        $issues = $em->getRepository('DeskPRO:JiraIssue')->findBy(array('issue_id' => $data['issue']['id']));
+        $em      = $this->container->getEm();
+        $issues  = $em->getRepository('DeskPRO:JiraIssue')->findBy(array('issue_id' => $data['issue']['id']));
 
         foreach ($issues as $issue) {
             $ticket = $issue->ticket;

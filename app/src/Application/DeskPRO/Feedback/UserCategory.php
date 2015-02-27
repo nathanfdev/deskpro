@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Feedback;
@@ -50,7 +47,7 @@ class UserCategory
 
     public function __construct(CustomDefFeedback $field, CustomDefFeedback $sub_field = null)
     {
-        $this->field = $field;
+        $this->field     = $field;
         $this->sub_field = $sub_field;
     }
 
@@ -71,7 +68,7 @@ class UserCategory
     }
 
     /**
-     * Get the category ID
+     * Get the category ID.
      *
      * @return mixed
      */
@@ -85,14 +82,15 @@ class UserCategory
     }
 
     /**
-     * Get the category title
+     * Get the category title.
      *
-     * @param  string $sep
+     * @param string $sep
+     *
      * @return string
      */
     public function getTitle($sep = ' > ')
     {
-        $parts = array();
+        $parts   = array();
         $parts[] = $this->field->getTitle();
 
         if ($this->sub_field) {

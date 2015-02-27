@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\AgentBundle\Controller;
 
@@ -40,6 +38,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 {
     /**
      * The currently logged in person.
+     *
      * @var \Application\DeskPRO\Entity\Person
      */
     public $person;
@@ -57,7 +56,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * Check if the global request token check is required for the request
+     * Check if the global request token check is required for the request.
      */
     protected function requireRequestToken($action, $arguments = null)
     {
@@ -65,7 +64,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * Force a login
+     * Force a login.
      */
     public function preAction($action, $arguments = null)
     {
@@ -76,7 +75,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         if (!$this->person['id']) {
             if ($this->request->isXmlHttpRequest()) {
                 $data = array(
-                    'error' => 'session_expired',
+                    'error'          => 'session_expired',
                     'redirect_login' => $this->generateUrl('agent_login'),
                 );
 
@@ -101,7 +100,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
             if ($this->request->isXmlHttpRequest()) {
                 $data = array(
-                    'error' => 'invalid_request_token',
+                    'error'          => 'invalid_request_token',
                     'redirect_login' => $this->generateUrl('agent_login'),
                 );
 
@@ -139,7 +138,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     /**
      * Create a reponse that indicates a permissions error.
      *
-     * @param  string   $message The message to show the user
+     * @param string $message The message to show the user
+     *
      * @return Response
      */
     protected function createPermissionErrorResponse($message)

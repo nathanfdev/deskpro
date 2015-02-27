@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -40,7 +39,7 @@ use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Send an email to the user
+ * Send an email to the user.
  *
  * @option bool template       The template to send
  * @option bool from_name      Who to send the email from

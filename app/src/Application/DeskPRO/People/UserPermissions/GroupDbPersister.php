@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -59,10 +58,12 @@ class GroupDbPersister
     }
 
     /**
-     * @param  Usergroup       $group
-     * @param  UserPermissions $perms
-     * @return bool
+     * @param Usergroup       $group
+     * @param UserPermissions $perms
+     *
      * @throws \Exception
+     * @return bool
+     *
      */
     public function savePerms(Usergroup $group, UserPermissions $perms)
     {

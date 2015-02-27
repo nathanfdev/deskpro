@@ -28,10 +28,8 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
 /**
- * Class ImporterException
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
+ * Class ImporterException.
  */
 final class ImporterException extends \Exception
 {
-
 }

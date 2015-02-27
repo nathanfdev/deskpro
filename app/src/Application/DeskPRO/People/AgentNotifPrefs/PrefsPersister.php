@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -64,7 +63,8 @@ class PrefsPersister
     }
 
     /**
-     * @param  Prefs      $prefs
+     * @param Prefs $prefs
+     *
      * @throws \Exception
      */
     public function savePrefs(Prefs $prefs)
@@ -78,10 +78,10 @@ class PrefsPersister
 
         $filter_subs = array();
 
-        $person = $this->person;
+        $person     = $this->person;
         $fn_get_sub = function ($filter_id) use (&$filter_subs, $person, $filters) {
             if (!isset($filter_subs[$filter_id])) {
-                $filter_subs[$filter_id] = new TicketFilterSubscription();
+                $filter_subs[$filter_id]         = new TicketFilterSubscription();
                 $filter_subs[$filter_id]->filter = $filters[$filter_id];
                 $filter_subs[$filter_id]->person = $person;
             }

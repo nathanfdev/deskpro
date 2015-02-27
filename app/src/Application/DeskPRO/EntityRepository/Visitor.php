@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,19 +37,20 @@ class Visitor extends AbstractEntityRepository
 {
     /**
      * @return Visitor
+     *
      * @deprecated
      */
     public function getVisitorFromCode($vis_code)
     {
         if (!strpos($vis_code, '-')) {
-            return null;
+            return;
         }
 
         list($visitor_id, $auth) = explode('-', $vis_code, 2);
 
         $visitor = $this->find($visitor_id);
         if (!$visitor or !$visitor->checkVisitorCode($vis_code)) {
-            return null;
+            return;
         }
 
         return $visitor;
@@ -58,6 +58,7 @@ class Visitor extends AbstractEntityRepository
 
     /**
      * @return Visitor
+     *
      * @deprecated
      */
     public function getVisitorForPerson($person)
@@ -74,6 +75,7 @@ class Visitor extends AbstractEntityRepository
 
     /**
      * @param string $user_token
+     *
      * @deprecated
      */
     public function getVisitorFromUserToken($user_token)

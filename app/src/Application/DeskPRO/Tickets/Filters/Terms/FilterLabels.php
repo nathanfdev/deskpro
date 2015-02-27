@@ -26,20 +26,19 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Orb\Util\CheckedOptionsArray;
 use Application\DeskPRO\Util as DeskPROUtil;
+use Orb\Util\CheckedOptionsArray;
 
 /**
- * Filters based on ticket labels
+ * Filters based on ticket labels.
  *
  * @option string[] labels
  */

@@ -26,24 +26,21 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Themes\DevTest\Controller;
 
+use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
+use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Symfony\Component\HttpFoundation\Response;
-use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
-use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 
 class TestController extends AbstractController
 {
     /**
-     * // these are an exmaple of two tags that only apply to this theme (we simply created this method and used them in a tempalate)
+     * // these are an exmaple of two tags that only apply to this theme (we simply created this method and used them in a tempalate).
      *
      * @Tag(name="hello_henry", default_options={"name":"Henry!"})
      * @Tag(name="hello_world")

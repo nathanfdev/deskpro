@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ServerFileCheck;
@@ -41,13 +39,11 @@ class ServerFileCheck
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     /**
      * @var \Application\DeskPRO\Distribution\VerifyChecksums
      */
-
     protected $verify;
 
     public function __construct(EntityManager $em)
@@ -60,7 +56,6 @@ class ServerFileCheck
     /**
      * @return array
      */
-
     public function getCount()
     {
         return array(
@@ -73,7 +68,6 @@ class ServerFileCheck
      *
      * @return array
      */
-
     public function getById($id)
     {
         return $this->verify->compareChunk($id);

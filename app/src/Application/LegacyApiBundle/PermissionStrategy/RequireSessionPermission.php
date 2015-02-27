@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -37,7 +36,7 @@ namespace Application\LegacyApiBundle\PermissionStrategy;
 use Application\LegacyApiBundle\ApiUser;
 
 /**
- * Strategy that says we require an active session
+ * Strategy that says we require an active session.
  */
 class RequireSessionPermission implements PermissionStrategyInterface
 {

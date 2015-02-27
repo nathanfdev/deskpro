@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -46,8 +44,8 @@ class ReportsBuilderController extends AbstractController
 
     public function listAction()
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+        /*
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 
@@ -62,8 +60,8 @@ class ReportsBuilderController extends AbstractController
 
     public function listCustomAction()
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+        /*
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 
@@ -78,8 +76,8 @@ class ReportsBuilderController extends AbstractController
 
     public function listBuiltInAction()
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+        /*
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 
@@ -94,8 +92,8 @@ class ReportsBuilderController extends AbstractController
 
     public function getGroupParamsAction()
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+        /*
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 
@@ -108,8 +106,8 @@ class ReportsBuilderController extends AbstractController
 
     public function getAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+        /*
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
         $report          = $reports_builder->getById($id);
@@ -135,8 +133,8 @@ class ReportsBuilderController extends AbstractController
 
     public function saveAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+        /*
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 
@@ -187,8 +185,8 @@ class ReportsBuilderController extends AbstractController
 
     public function cloneAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+        /*
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
         $report          = $reports_builder->getById($id);
@@ -233,8 +231,8 @@ class ReportsBuilderController extends AbstractController
 
     public function deleteAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+        /*
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
         $report          = $reports_builder->getById($id);
@@ -258,8 +256,8 @@ class ReportsBuilderController extends AbstractController
 
     public function testAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+        /*
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 
@@ -280,8 +278,8 @@ class ReportsBuilderController extends AbstractController
 
     public function parseAction()
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+        /*
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 
@@ -294,8 +292,8 @@ class ReportsBuilderController extends AbstractController
 
     public function downloadAction($id, $type)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Builder $reports_builder
+        /*
+         * @var \Application\DeskPRO\Reports\Builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
 

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Settings
  */
 
@@ -38,7 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 
 /**
- * DEPRECEATED way of getting settings
+ * DEPRECEATED way of getting settings.
  *
  * This class fethces settings
  *
@@ -58,7 +57,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
     private $default_settings;
 
     /**
-     * @var \Application\DeskPRO\NewSettings\SettingsResolver $new_settings_resolver
+     * @var \Application\DeskPRO\NewSettings\SettingsResolver
      */
     private $new_settings_resolver;
 
@@ -68,7 +67,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
     private $db;
 
     /**
-     * DEPRECEATED way of getting settings
+     * DEPRECEATED way of getting settings.
      *
      * @deprecated get the "settings_resolver" system service and fetch the SettingsBag you want from it instead.
      *             this exists only for BC.
@@ -79,9 +78,9 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
     public function __construct($default_settings_file, Connection $db = null)
     {
         $this->new_settings_resolver = App::getSystemService('settings_resolver');
-        $this->settings         = $this->new_settings_resolver->getGlobalSettings();
-        $this->default_settings = $this->new_settings_resolver->getDefaultSettings();
-        $this->db = $db;
+        $this->settings              = $this->new_settings_resolver->getGlobalSettings();
+        $this->default_settings      = $this->new_settings_resolver->getDefaultSettings();
+        $this->db                    = $db;
     }
 
     /**
@@ -95,10 +94,11 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
-     * Get the value of a setting
+     * Get the value of a setting.
      *
      * @param $name
-     * @param  null       $default
+     * @param null $default
+     *
      * @return mixed|null
      */
     public function get($name, $default = null)
@@ -112,10 +112,10 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
-     * This loads the default for a value as defined in the setting file
+     * This loads the default for a value as defined in the setting file.
      *
-     * @param  string                       $name
-     * @return null
+     * @param string $name
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
@@ -125,13 +125,15 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
-     * Get the default values for an entire group
+     * Get the default values for an entire group.
      *
-     * @param  string                       $group
-     * @param  bool                         $short True to strip off the group name, false to include the group name in the key
-     * @return array
+     * @param string $group
+     * @param bool   $short True to strip off the group name, false to include the group name in the key
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
+     * @return array
+     *
      */
     public function getDefaultGroup($group, $short = true)
     {
@@ -139,12 +141,14 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
-     * Get all settings in a group
+     * Get all settings in a group.
      *
-     * @param  string                       $group
-     * @return array
+     * @param string $group
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
+     * @return array
+     *
      */
     public function getGroup($group)
     {
@@ -156,7 +160,8 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      * temporary, they are NOT persisted. This is mainly useful for code overrides
      * or the like.
      *
-     * @param  array                        $settings
+     * @param array $settings
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
@@ -169,12 +174,14 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
-     * Persist a new value for a setting, and update this as well
+     * Persist a new value for a setting, and update this as well.
      *
-     * @param  string                       $setting
-     * @param  string                       $value
+     * @param string $setting
+     * @param string $value
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
+     *
      * @deprecated don't do this going forard. instead change the source of the setting and use the "settings_resolver" system service
      */
     public function setSetting($setting, $value)

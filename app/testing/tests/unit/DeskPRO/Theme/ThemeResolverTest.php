@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpUnitTests\DeskPRO\Theme;
@@ -37,7 +34,7 @@ namespace DpUnitTests\DeskPRO\Theme;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 
 /**
- * NOTE: this test suite depends on the real "Base" theme
+ * NOTE: this test suite depends on the real "Base" theme.
  */
 class ThemeResolverTest extends \DpUnitTestCase
 {

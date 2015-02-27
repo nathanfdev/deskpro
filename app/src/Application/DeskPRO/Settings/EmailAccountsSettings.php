@@ -38,12 +38,12 @@ class EmailAccountsSettings
 
     /** @var array  */
     protected $values = array(
-        'attach_agent_maxsize'   => 26214400,
-        'attach_agent_must_exts' => array(),
-        'attach_agent_not_exts'  => array(),
-        'attach_user_maxsize'    => 26214400,
-        'attach_user_must_exts'  => array(),
-        'attach_user_not_exts'   => array(),
+        'attach_agent_maxsize'     => 26214400,
+        'attach_agent_must_exts'   => array(),
+        'attach_agent_not_exts'    => array(),
+        'attach_user_maxsize'      => 26214400,
+        'attach_user_must_exts'    => array(),
+        'attach_user_not_exts'     => array(),
         'sendemail_attach_maxsize' => 7340032,
 
         'rate_count'    => 15,
@@ -52,7 +52,7 @@ class EmailAccountsSettings
     );
 
     protected $other_values = array(
-        'core_tickets.enable_dupe_checking' => true,
+        'core_tickets.enable_dupe_checking'          => true,
         'core_tickets.enable_exact_subject_matching' => false,
     );
 
@@ -98,7 +98,7 @@ class EmailAccountsSettings
             if (is_int($this->values[$k])) {
                 $storeValue = $v = (int) $v;
             } elseif (is_array($this->values[$k])) {
-                $v = (array) $v;
+                $v          = (array) $v;
                 $storeValue = implode(',', $v);
             }
             $this->values[$k] = $v;

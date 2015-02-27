@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage CustomFields
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\CustomFields\Handler;
@@ -54,7 +51,8 @@ class DisplayEvent extends DataEvent implements FilterPluginInterface
     }
 
     /**
-     * @param  Plugin $plugins
+     * @param Plugin $plugins
+     *
      * @return bool
      */
     public function filterPlugins($plugin)

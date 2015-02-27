@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category TaskQueueJob
  */
 
@@ -48,11 +47,11 @@ class CsvImport extends AbstractJob
     /** @var array */
     protected static $options = array(
         'delimeter' => array(
-            'comma' => ',',
+            'comma'     => ',',
             'semicolon' => ';',
         ),
         'enclosure' => array(
-            'none' => null,
+            'none'      => null,
             'semicolon' => '"',
         ),
     );
@@ -91,23 +90,23 @@ class CsvImport extends AbstractJob
     protected function _getDefaultData()
     {
         return array(
-            'blob_id' => false,
-            'field_maps' => false,
-            'new_custom_map' => false,
-            'skip_first' => true,
-	        'update_if_exists' => true,
-            'welcome_email' => false,
-            'welcome_from_name' => '',
+            'blob_id'            => false,
+            'field_maps'         => false,
+            'new_custom_map'     => false,
+            'skip_first'         => true,
+            'update_if_exists'   => true,
+            'welcome_email'      => false,
+            'welcome_from_name'  => '',
             'welcome_from_email' => '',
-            'welcome_subject' => '',
-            'welcome_message' => '',
-            'imported' => 0,
-            'failed' => 0,
-            'lines_done' => 0,
-            'fseek' => 0,
-            'user_filename' => '',
-            'log_blob_id' => 0,
-            'log' => array(),
+            'welcome_subject'    => '',
+            'welcome_message'    => '',
+            'imported'           => 0,
+            'failed'             => 0,
+            'lines_done'         => 0,
+            'fseek'              => 0,
+            'user_filename'      => '',
+            'log_blob_id'        => 0,
+            'log'                => array(),
         );
     }
 
@@ -134,7 +133,7 @@ class CsvImport extends AbstractJob
         $start_time = microtime(true);
 
         $options = self::getOptions($this->_data['options']);
-        $fp = fopen($csv_file, 'r');
+        $fp      = fopen($csv_file, 'r');
         fseek($fp, $this->_data['fseek']);
 
         if ($this->_data['fseek'] == 0 && $this->_data['skip_first']) {
@@ -173,7 +172,7 @@ class CsvImport extends AbstractJob
             $this->getLogger()->logDebug("Imported $imported people");
         }
 
-        $task = $this->getTask();
+        $task               = $this->getTask();
         $task['run_status'] = "Processed ".$this->_data['lines_done']
             ." entries, imported ".$this->_data['imported']." people";
         $task['task_data'] = array_merge($task['task_data'], $this->_data);
@@ -224,8 +223,8 @@ class CsvImport extends AbstractJob
                 continue;
             }
             if ($info['map'] == 'new_custom') {
-                $field = new \Application\DeskPRO\Entity\CustomDefPerson();
-                $field->title = $info['title'];
+                $field                = new \Application\DeskPRO\Entity\CustomDefPerson();
+                $field->title         = $info['title'];
                 $field->handler_class = $info['handler_class'];
                 $field->display_order = $column_id;
 
@@ -255,12 +254,12 @@ class CsvImport extends AbstractJob
 
         $person = new Person();
 
-        $primary_email = false;
-        $password = false;
+        $primary_email    = false;
+        $password         = false;
         $secondary_emails = array();
-        $addresses = array();
-        $errors = array();
-	    $old = null;
+        $addresses        = array();
+        $errors           = array();
+        $old              = null;
 
         foreach ($field_maps as $column_id => $info) {
             if (empty($info['map'])) {
@@ -287,11 +286,11 @@ class CsvImport extends AbstractJob
                 }
 
                 if ($old = $person_em->findOneByEmail($column_value)) {
-	                if (!$this->_data['update_if_exists']) {
-		                $errors[] = sprintf('Email %s already exist', $column_value);
-		                continue;
-	                }
-	                $person = $old;
+                    if (!$this->_data['update_if_exists']) {
+                        $errors[] = sprintf('Email %s already exist', $column_value);
+                        continue;
+                    }
+                    $person = $old;
                 }
 
                 $primary_email = strtolower($column_value);
@@ -305,11 +304,11 @@ class CsvImport extends AbstractJob
                     break;
                 }
                 if ($old = $person_em->findOneByEmail($column_value)) {
-	                if (!$this->_data['update_if_exists']) {
-		                $errors[] = sprintf('Email %s already exist', $column_value);
-		                break;
-	                }
-	                $person = $old;
+                    if (!$this->_data['update_if_exists']) {
+                        $errors[] = sprintf('Email %s already exist', $column_value);
+                        break;
+                    }
+                    $person = $old;
                 }
 
                 $secondary_emails[] = strtolower($column_value);
@@ -322,10 +321,11 @@ class CsvImport extends AbstractJob
 
         if (!$primary_email && !$person['id']) {
             $this->log($errors);
+
             return false;
         }
 
-	    $emails = array_flip($person->getEmailAddresses());
+        $emails = array_flip($person->getEmailAddresses());
         !isset($emails[$primary_email]) && $person->addEmailAddressString($primary_email);
 
         array_unique($secondary_emails);
@@ -333,7 +333,7 @@ class CsvImport extends AbstractJob
             if ($secondary_email == $primary_email) {
                 continue;
             }
-	        !isset($emails[$secondary_email]) && $person->addEmailAddressString($secondary_email);
+            !isset($emails[$secondary_email]) && $person->addEmailAddressString($secondary_email);
         }
 
         foreach ($field_maps as $column_id => $info) {
@@ -346,8 +346,8 @@ class CsvImport extends AbstractJob
                 continue;
             }
 
-            $map_field = $info['map'];
-            $label = isset($info['label']) ? $info['label'] : '';
+            $map_field     = $info['map'];
+            $label         = isset($info['label']) ? $info['label'] : '';
             $info['label'] = $label;
 
             switch ($map_field) {
@@ -368,7 +368,7 @@ class CsvImport extends AbstractJob
                     if ($organization) {
                         $person->setOrganization($organization);
                     } elseif (!empty($info['create_auto'])) {
-                        $organization = new \Application\DeskPRO\Entity\Organization();
+                        $organization       = new \Application\DeskPRO\Entity\Organization();
                         $organization->name = $column_value;
 
                         $em->persist($organization);
@@ -420,32 +420,32 @@ class CsvImport extends AbstractJob
                     $addresses[$info['label']][$map_field] = $column_value;
                     break;
 
-	            case 'language':
-					$language = is_numeric($column_value)
-						? $em->find('DeskPRO:Language', $column_value)
-						: $em->getRepository('DeskPRO:Language')->getByTitle($column_value);
+                case 'language':
+                    $language = is_numeric($column_value)
+                        ? $em->find('DeskPRO:Language', $column_value)
+                        : $em->getRepository('DeskPRO:Language')->getByTitle($column_value);
 
-					if ($language) {
-						$person->language = $language;
-					}
+                    if ($language) {
+                        $person->language = $language;
+                    }
 
-		            break;
+                    break;
 
                 default:
                     $custom_field_id = false;
                     if (preg_match('/^custom_(\d+)$/', $map_field, $match)) {
                         $custom_field_id = $match[1];
-                        $new_on_unknown = !empty($info['new_on_unknown']);
+                        $new_on_unknown  = !empty($info['new_on_unknown']);
                     } elseif ($map_field == 'new_custom') {
                         $custom_field_id = $this->_data['new_custom_map'][$column_id];
-                        $new_on_unknown = true;
+                        $new_on_unknown  = true;
                     }
 
                     if ($custom_field_id && isset($this->_custom_fields[$custom_field_id])) {
                         $custom_field = $this->_custom_fields[$custom_field_id];
                         if ($custom_field->isChoiceType()) {
                             $selected_child = false;
-                            $test_value = strtolower($column_value);
+                            $test_value     = strtolower($column_value);
 
                             // find an existing option by title
                             foreach ($custom_field->getAllChildren() as $child_field) {
@@ -457,8 +457,8 @@ class CsvImport extends AbstractJob
 
                             // create a new one if necessary
                             if (!$selected_child && $new_on_unknown) {
-                                $selected_child = new \Application\DeskPRO\Entity\CustomDefPerson();
-                                $selected_child->title = $column_value;
+                                $selected_child                = new \Application\DeskPRO\Entity\CustomDefPerson();
+                                $selected_child->title         = $column_value;
                                 $selected_child->display_order = count($custom_field->getAllChildren()) + 1;
                                 $custom_field->addChild($selected_child);
 
@@ -467,11 +467,11 @@ class CsvImport extends AbstractJob
 
                             // associate it
                             if ($selected_child) {
-                                $custom_data = new \Application\DeskPRO\Entity\CustomDataPerson();
-                                $custom_data->person = $person;
-                                $custom_data->field = $selected_child;
+                                $custom_data             = new \Application\DeskPRO\Entity\CustomDataPerson();
+                                $custom_data->person     = $person;
+                                $custom_data->field      = $selected_child;
                                 $custom_data->root_field = $custom_field;
-                                $custom_data->value = 1;
+                                $custom_data->value      = 1;
 
                                 $em->persist($custom_data);
                                 $person->addCustomData($custom_data);
@@ -495,22 +495,22 @@ class CsvImport extends AbstractJob
                             }
 
                             if ($set_field) {
-                                $custom_data = new \Application\DeskPRO\Entity\CustomDataPerson();
-                                $custom_data->person = $person;
-                                $custom_data->field = $custom_field;
+                                $custom_data             = new \Application\DeskPRO\Entity\CustomDataPerson();
+                                $custom_data->person     = $person;
+                                $custom_data->field      = $custom_field;
                                 $custom_data->root_field = $custom_field;
-                                $custom_data->value = $column_value;
+                                $custom_data->value      = $column_value;
 
                                 $em->persist($custom_data);
                                 $person->addCustomData($custom_data);
                             }
                         } else {
-                            $custom_data = new \Application\DeskPRO\Entity\CustomDataPerson();
-                            $custom_data->person = $person;
-                            $custom_data->field = $custom_field;
+                            $custom_data             = new \Application\DeskPRO\Entity\CustomDataPerson();
+                            $custom_data->person     = $person;
+                            $custom_data->field      = $custom_field;
                             $custom_data->root_field = $custom_field;
-                            $custom_data->value = 0;
-                            $custom_data->input = $column_value;
+                            $custom_data->value      = 0;
+                            $custom_data->input      = $column_value;
 
                             $em->persist($custom_data);
                             $person->addCustomData($custom_data);
@@ -569,20 +569,19 @@ class CsvImport extends AbstractJob
             $data['comment'] = $comment;
         }
 
-        $contact = new \Application\DeskPRO\Entity\PersonContactData();
+        $contact               = new \Application\DeskPRO\Entity\PersonContactData();
         $contact->contact_type = $type;
         $contact->applyFormData($data);
 
+        foreach ($person->contact_data as $cd) {
+            // todo?
+            /* @var $cd PersonContactData */
+            if (mb_strtolower($cd->getSearchString()) === mb_strtolower($contact->getSearchString())) {
+                return;
+            }
+        }
 
-	    foreach ($person->contact_data as $cd) {
-		    // todo?
-		    /** @var $cd PersonContactData */
-		    if (mb_strtolower($cd->getSearchString()) === mb_strtolower($contact->getSearchString())) {
-			    return;
-		    }
-	    }
-
-	    $contact->person = $person;
+        $contact->person = $person;
         App::getOrm()->persist($contact);
 
         return $contact;

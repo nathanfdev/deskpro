@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -37,8 +36,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 
 /**
- * Basic ratings
- *
+ * Basic ratings.
  */
 abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
 {

@@ -26,17 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DpBehat;
 
-
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
-use Behat\Behat\Tester\Exception\PendingException;
 
 class TicketsContext extends BasePortalContext
 {
@@ -99,5 +95,4 @@ class TicketsContext extends BasePortalContext
     {
         $this->getPage('Ticket')->open(array('id' => $this->last_ticket->getId()));
     }
-
 }

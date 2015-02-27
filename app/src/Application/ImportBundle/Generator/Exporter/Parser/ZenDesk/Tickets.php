@@ -27,16 +27,15 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
-use Application\ImportBundle\Entity;
 use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\ImportBundle\Entity;
 use DateTime;
 use Exception;
 
 /**
- * ZenDesk tickets parser
+ * ZenDesk tickets parser.
  *
  * Class Tickets
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
 final class Tickets extends AbstractParser implements PeopleStorageAwareInterface
 {
@@ -66,6 +65,7 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
     public function setPeopleStorage(PeopleStorageInterface $storage)
     {
         $this->people_storage = $storage;
+
         return $this;
     }
 
@@ -107,7 +107,7 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
 
                 $entity = new Entity\Ticket();
                 $entity
-                    ->setDestination('ticket_' . $ticket['id'])
+                    ->setDestination('ticket_'.$ticket['id'])
                     ->setOid($ticket['id'])
                     ->setRef($ticket['id'])
                     ->setPersonEmail($person_email)
@@ -143,7 +143,7 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
     }
 
     /**
-     * Exports the ticket message
+     * Exports the ticket message.
      *
      * @param array  $ticket
      * @param string $person_email
@@ -163,9 +163,10 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
     }
 
     /**
-     * Check if ticket has all required columns
+     * Check if ticket has all required columns.
      *
      * @param array $ticket
+     *
      * @return bool
      */
     private function hasRequiredTicketColumns(array $ticket)
@@ -186,9 +187,10 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
     }
 
     /**
-     * Returns all unique people ids of the found ZenDesk tickets
+     * Returns all unique people ids of the found ZenDesk tickets.
      *
      * @param array $tickets
+     *
      * @return array
      */
     private function getTicketsPeopleIds(array $tickets)
@@ -207,16 +209,17 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
     }
 
     /**
-     * Returns people from reader by ids
+     * Returns people from reader by ids.
      *
      * @param array $ids
+     *
      * @return array
      */
     private function getPeople($ids)
     {
         $request_ids = $this->people_storage ? $this->people_storage->getNotContainsIds($ids) : $ids;
-        $result = $this->reader->getPeopleByIds($request_ids);
-        $people = array();
+        $result      = $this->reader->getPeopleByIds($request_ids);
+        $people      = array();
 
         foreach ($result as $person) {
             $people[$person['id']] = $person;
@@ -229,12 +232,13 @@ final class Tickets extends AbstractParser implements PeopleStorageAwareInterfac
     }
 
     /**
-     * Get DeskPro status by ZenDesk status
+     * Get DeskPro status by ZenDesk status.
      *
      * @param string $status
      *
-     * @return string
      * @throws Exception
+     * @return string
+     *
      */
     private function getStatus($status)
     {

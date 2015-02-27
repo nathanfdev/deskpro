@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use Application\DeskPRO\EntityRepository\Brand;
 use Application\DeskPRO\Entity\Brand as BrandEntity;
+use Application\DeskPRO\EntityRepository\Brand;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Psr\Log\LoggerInterface;
@@ -84,12 +81,12 @@ class BrandDetectionListener implements EventSubscriberInterface
 
     public function __construct(BrandStack $brand_stack, SettingsResolver $settings_resolver, Brand $brand_repository, BrandEntity $default_brand, PortalModeStorage $mode_storage, LoggerInterface $logger)
     {
-        $this->brand_stack = $brand_stack;
+        $this->brand_stack       = $brand_stack;
         $this->settings_resolver = $settings_resolver;
-        $this->brand_repository = $brand_repository;
-        $this->default_brand = $default_brand;
-        $this->mode_storage = $mode_storage;
-        $this->logger = $logger;
+        $this->brand_repository  = $brand_repository;
+        $this->default_brand     = $default_brand;
+        $this->mode_storage      = $mode_storage;
+        $this->logger            = $logger;
     }
 
     public function onKernelRequest(GetResponseEvent $event)
@@ -100,7 +97,7 @@ class BrandDetectionListener implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
-        $brand = null;
+        $brand   = null;
 
         if ($mode = $this->mode_storage->getMode()) {
             $brand = $this->detectBrandMode($mode);
@@ -122,7 +119,7 @@ class BrandDetectionListener implements EventSubscriberInterface
             try {
                 return $this->brand_repository->find($mode->getData());
             } catch (\Exception $e) {
-                return null;
+                return;
             }
         }
     }

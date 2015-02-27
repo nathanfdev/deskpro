@@ -26,17 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Translate
  */
 
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Language as LanguageEntity;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Language as LanguageEntity;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EventDispatcher\DataEvent;
 use Application\DeskPRO\HttpFoundation\Session;
@@ -66,44 +65,51 @@ class Translate implements PersonContextInterface
     const EVENT_NO_PHRASE = 'DeskPRO_onTranslateNoPhrase';
 
     /**
-     * The phrases loaded so far
+     * The phrases loaded so far.
+     *
      * @var array
      */
     protected $_phrases = array();
 
     /**
-     * An array of groups that we need to load in the next batch
+     * An array of groups that we need to load in the next batch.
+     *
      * @var array
      */
     protected $_pending_groups = array();
 
     /**
-     * An array of groups we've already loaded
+     * An array of groups we've already loaded.
+     *
      * @var array
      */
     protected $_loaded_groups = array();
 
     /**
-     * An array of id=>entity of languages we've handled so far
+     * An array of id=>entity of languages we've handled so far.
+     *
      * @var \Application\DeskPRO\Entity\Language[]
      */
     protected $_loaded_languages = array();
 
     /**
      * The default language, used when calling setLanguage with no argument
-     * This is the first language set
+     * This is the first language set.
+     *
      * @var \Application\DeskPRO\Entity\Language
      */
     protected $_default_language = null;
 
     /**
-     * Set the language we're using right now by default
+     * Set the language we're using right now by default.
+     *
      * @var \Application\DeskPRO\Entity\Language
      */
     protected $_language = null;
 
     /**
-     * See getCountPhraseSelector()
+     * See getCountPhraseSelector().
+     *
      * @var \Symfony\Component\Translation\MessageSelector
      */
     protected $_phrase_selector = null;
@@ -214,16 +220,18 @@ class Translate implements PersonContextInterface
      * Call $func with the language set to $person. When the call is done,
      * the language is reset back to default.
      *
-     * @param  Person     $person
-     * @param             $func
-     * @return mixed
+     * @param Person $person
+     * @param        $func
+     *
      * @throws \Exception
+     * @return mixed
+     *
      */
     public function callWithPersonContext(Person $person, $func)
     {
         $this->setPersonContext($person);
 
-        $e = null;
+        $e   = null;
         $ret = null;
         try {
             $ret = $func($this, $person->getLanguage());
@@ -240,7 +248,7 @@ class Translate implements PersonContextInterface
     }
 
     /**
-     * Reset to the default person context
+     * Reset to the default person context.
      */
     public function resetToDefaultPersonContext()
     {
@@ -248,7 +256,7 @@ class Translate implements PersonContextInterface
     }
 
     /**
-     * Sets the default person context
+     * Sets the default person context.
      *
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -258,7 +266,7 @@ class Translate implements PersonContextInterface
     }
 
     /**
-     * Get the current person context
+     * Get the current person context.
      *
      * @return \Application\DeskPRO\Entity\Person
      */
@@ -274,9 +282,8 @@ class Translate implements PersonContextInterface
      * $load_previous_groups means that all the phrase groups loaded so far are loaded for this
      * new language. Thought being that this group will probably need the same phrases as the other.
      *
-     * @param  LanguageEntity $language
-     * @param  bool           $load_previous_groups
-     * @return void
+     * @param LanguageEntity $language
+     * @param bool           $load_previous_groups
      */
     public function setLanguage(LanguageEntity $language = null, $load_previous_groups = true)
     {
@@ -294,7 +301,7 @@ class Translate implements PersonContextInterface
             $last_id = $this->_language['id'];
         }
 
-        $this->_language = $language;
+        $this->_language                          = $language;
         $this->_loaded_languages[$language['id']] = $language;
 
         if ($last_id and $load_previous_groups and isset($this->_loaded_groups[$last_id])) {
@@ -343,16 +350,18 @@ class Translate implements PersonContextInterface
      * Call a function with the language set ot $language. After the call,
      * the language is reset back to the default.
      *
-     * @param  Language   $language
-     * @param             $func
-     * @return mixed
+     * @param Language $language
+     * @param          $func
+     *
      * @throws \Exception
+     * @return mixed
+     *
      */
     public function callWithLanguage(LanguageEntity $language = null, $func)
     {
         $this->setLanguage($language);
 
-        $e = null;
+        $e   = null;
         $ret = null;
         try {
             $func($this, $language);
@@ -452,7 +461,8 @@ class Translate implements PersonContextInterface
      * Get the phrase group from the name of a phrase. The phrase "deskpro.example_phrase"
      * has the group named "deskpro".
      *
-     * @param  string $phrase_name The name of the phrase
+     * @param string $phrase_name The name of the phrase
+     *
      * @return string
      */
     public function getPhraseGroupFromName($phrase_name)
@@ -474,8 +484,9 @@ class Translate implements PersonContextInterface
     /**
      * Get the phrase text for a given name.
      *
-     * @param  string       $phrase_name The phrase you want to fetch
-     * @param  Language|int $language    The Language entity to use, or its id
+     * @param string       $phrase_name The phrase you want to fetch
+     * @param Language|int $language    The Language entity to use, or its id
+     *
      * @return string
      */
     public function getPhraseText($phrase_name, $language = null, $null_on_notfound = false)
@@ -511,7 +522,7 @@ class Translate implements PersonContextInterface
             }
 
             if ($null_on_notfound) {
-                return null;
+                return;
             } else {
                 if (strpos($phrase_name, 'obj') === false && strpos($phrase_name, 'custom') === false && preg_match('#^(user|agent|admin)\.#', $phrase_name)) {
                     $e = new \InvalidArgumentException("Missing phrase: $phrase_name");
@@ -534,7 +545,7 @@ class Translate implements PersonContextInterface
     {
         if (count(self::$_missing_phrases)) {
             try {
-                $logger = App::createNewLogger('missing_phrase_logger', null);
+                $logger  = App::createNewLogger('missing_phrase_logger', null);
                 $message = "'The following phrases are missing:\n";
 
                 foreach (self::$_missing_phrases as $phrase) {
@@ -592,7 +603,7 @@ class Translate implements PersonContextInterface
 
         $phrase_texts = array();
         foreach ($phrase_ids as $phrase_name) {
-            $text = $this->getPhraseText($phrase_name, $language, true);
+            $text                       = $this->getPhraseText($phrase_name, $language, true);
             $phrase_texts[$phrase_name] = $text;
         }
 
@@ -619,8 +630,9 @@ class Translate implements PersonContextInterface
      * Called when there is no such phrase name. By default this simply
      * returns null. But an event might change this.
      *
-     * @param  string   $phrase_name
-     * @param  Language $language
+     * @param string   $phrase_name
+     * @param Language $language
+     *
      * @return string
      */
     protected function _noPhrase($phrase_name, $language)
@@ -634,8 +646,8 @@ class Translate implements PersonContextInterface
         if ($this->_event_dispatcher) {
             $evdata = new DataEvent(array(
                 'phrase_name' => $phrase_name,
-                'language' => $language,
-                'return' => $phrase,
+                'language'    => $language,
+                'return'      => $phrase,
             ));
             $this->_event_dispatcher->dispatch(self::EVENT_NO_PHRASE, $evdata);
 
@@ -649,16 +661,17 @@ class Translate implements PersonContextInterface
      * Same as getPhraseText, except we run the phrase through the selector
      * to fetch the correct plural phrase for the given $count.
      *
-     * @param  string       $phrase_name The phrase you want to fetch
-     * @param  int          $count       The count
-     * @param  Language|int $language    The Language entity to use, or its id
+     * @param string       $phrase_name The phrase you want to fetch
+     * @param int          $count       The count
+     * @param Language|int $language    The Language entity to use, or its id
+     *
      * @return string
      */
     public function getPhraseTextCount($phrase_name, $count, $language = null)
     {
         $phrase_text = $this->getPhraseText($phrase_name);
         if (!$phrase_text) {
-            return null;
+            return;
         }
 
         if ($language === null) {
@@ -689,10 +702,11 @@ class Translate implements PersonContextInterface
      * $property may be null, in which case it's expected to be a 'title' or 'name',
      * or the only item on the object that is translatable.
      *
-     * @param  mixed        $object           The object to get a phrase for
-     * @param  string       $property         A specific thing in the object to translate
-     * @param  Language|int $language         The Language entity to use, or its id
-     * @param  bool         $fallback_default
+     * @param mixed        $object           The object to get a phrase for
+     * @param string       $property         A specific thing in the object to translate
+     * @param Language|int $language         The Language entity to use, or its id
+     * @param bool         $fallback_default
+     *
      * @return string
      */
     public function getPhraseObject($object, $property = null, $language = null, $fallback_default = true)
@@ -705,8 +719,8 @@ class Translate implements PersonContextInterface
             return $object->getPhrase($this, $language);
         } elseif ($object instanceof HasPhraseName) {
             $phrase_name_raw = $object->getPhraseName($property, $this);
-            $phrase_text = false;
-            $phrase_name = false;
+            $phrase_text     = false;
+            $phrase_name     = false;
 
             if (!is_array($phrase_name_raw)) {
                 $phrase_name_raw = array($phrase_name_raw);
@@ -739,7 +753,7 @@ class Translate implements PersonContextInterface
         # Phrase namer inspects objects..
         #------------------------------
 
-        $namer = $this->getObjectPhraseNamer();
+        $namer       = $this->getObjectPhraseNamer();
         $phrase_name = $namer->getPhraseName($object, $property);
         $phrase_text = false;
 
@@ -773,9 +787,10 @@ class Translate implements PersonContextInterface
      * echo $translate->phrase('core.welcome_back_x', array('name' => 'Christopher'));
      * </code>
      *
-     * @param  string       $phrase_name The phrase to fetch
-     * @param  array        $vars        Variables to place into the phrase
-     * @param  Language|int $language    The Language entity to use, or its id
+     * @param string       $phrase_name The phrase to fetch
+     * @param array        $vars        Variables to place into the phrase
+     * @param Language|int $language    The Language entity to use, or its id
+     *
      * @return string
      */
     public function phrase($phrase_name, array $vars = array(), $language = null)
@@ -784,7 +799,7 @@ class Translate implements PersonContextInterface
             if (is_array($phrase_name)) {
                 list($object, $property) = $phrase_name;
             } else {
-                $object = $phrase_name;
+                $object   = $phrase_name;
                 $property = null;
             }
 
@@ -815,7 +830,7 @@ class Translate implements PersonContextInterface
                     continue;
                 } //prevent loops
                 $sub_phrase_text = $this->phrase($sub_phrase_name, $vars, $language);
-                $phrase_text = str_replace("{{phrase.$sub_phrase_name}}", $sub_phrase_text, $phrase_text);
+                $phrase_text     = str_replace("{{phrase.$sub_phrase_name}}", $sub_phrase_text, $phrase_text);
             }
         }
 
@@ -834,7 +849,8 @@ class Translate implements PersonContextInterface
      * Replaces {{vars}} form $vars in $phrase_text.
      *
      * @param $phrase_text
-     * @param  array  $vars
+     * @param array $vars
+     *
      * @return string
      */
     public function replaceVarsInString($phrase_text, array $vars = array())
@@ -913,9 +929,9 @@ class Translate implements PersonContextInterface
         // M: Jan
 
         $format = preg_replace('#(?<!\\\\)([DlFMP])#', '\\\\D\\\\P-\\\\$1', $format);
-        $date = date($format, $ts);
+        $date   = date($format, $ts);
 
-        $tr = $this;
+        $tr   = $this;
         $date = preg_replace_callback('#DP\-([DlFMP])#', function ($m) use ($prefix, $tr, $ts, $tz_offset) {
 
             switch ($m[1]) {
@@ -945,9 +961,10 @@ class Translate implements PersonContextInterface
     }
 
     /**
-     * Check to see if a phrase exists
+     * Check to see if a phrase exists.
      *
-     * @param  string $phrase_name
+     * @param string $phrase_name
+     *
      * @return bool
      */
     public function hasPhrase($phrase_name, $language = null)
@@ -994,9 +1011,10 @@ class Translate implements PersonContextInterface
      * Or you can pass multiple values (variable number of args) and all
      * trailing args will be considered lang Ids.
      *
-     * @param  mixed  $object
-     * @param  string $property
-     * @param  array  $lang_priority
+     * @param mixed  $object
+     * @param string $property
+     * @param array  $lang_priority
+     *
      * @return string
      */
     public function objectChoosePhraseText($object, $property, $lang_priority)

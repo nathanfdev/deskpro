@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -266,7 +265,8 @@ class TicketSearchActive extends DomainObject
     /**
      * Given a ticket, get a raw database array we can copy into the search active table.
      *
-     * @param  Ticket $ticket
+     * @param Ticket $ticket
+     *
      * @return array
      */
     public static function copyTicketDbArray(Ticket $ticket)
@@ -277,7 +277,7 @@ class TicketSearchActive extends DomainObject
             $prop = $field;
             if (substr($prop, -3) == '_id') {
                 $prop = substr($prop, 0, -3);
-                $val = $ticket->$prop;
+                $val  = $ticket->$prop;
             } else {
                 $val = $ticket->$field;
             }

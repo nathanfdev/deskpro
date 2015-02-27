@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailGateway
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EventDispatcher;
@@ -55,6 +52,7 @@ class DataEvent extends Event
 
     /**
      * @param  $name
+     *
      * @return array
      */
     public function __get($name)
@@ -65,7 +63,6 @@ class DataEvent extends Event
     /**
      * @param  $name
      * @param  $value
-     * @return void
      */
     public function __set($name, $value)
     {
@@ -74,6 +71,7 @@ class DataEvent extends Event
 
     /**
      * @param  $name
+     *
      * @return bool
      */
     public function __isset($name)

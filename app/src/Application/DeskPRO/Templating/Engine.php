@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Templating;
@@ -45,7 +43,7 @@ class Engine extends BaseEngine
     protected $_template_files_map;
 
     /**
-     * List of templates who are allowed to have variants
+     * List of templates who are allowed to have variants.
      *
      * @var array
      */
@@ -70,7 +68,7 @@ class Engine extends BaseEngine
             return;
         }
 
-        $tf = new TemplateFiles(true);
+        $tf                        = new TemplateFiles(true);
         $this->_template_files_map = $tf->getTemplateMap();
     }
 
@@ -87,7 +85,8 @@ class Engine extends BaseEngine
     /**
      * Checks to see if a template is a template shipped with DeskPRO.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function isDefaultTemplate($name)
@@ -98,9 +97,10 @@ class Engine extends BaseEngine
     }
 
     /**
-     * Check if a template is custom
+     * Check if a template is custom.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function isCustomTemplate($name)
@@ -116,9 +116,10 @@ class Engine extends BaseEngine
     }
 
     /**
-     * Get the default source code for a template
+     * Get the default source code for a template.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return string
      */
     public function getDefaultSource($name)
@@ -137,7 +138,8 @@ class Engine extends BaseEngine
      * Get the source code for a template. This will return the custom source
      * if its been customised, or the default if not.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return string
      */
     public function getSource($name)
@@ -157,7 +159,8 @@ class Engine extends BaseEngine
     }
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return array
      */
     public function getSplitSource($name)
@@ -168,7 +171,8 @@ class Engine extends BaseEngine
     }
 
     /**
-     * @param  string $source
+     * @param string $source
+     *
      * @return array
      */
     public function splitSource($source)
@@ -179,7 +183,7 @@ class Engine extends BaseEngine
 
         if (preg_match('#<dp:subject>(.*?)</dp:subject>#is', $source, $m)) {
             $parts['subject'] = trim($m[1]);
-            $parts['body'] = trim(str_replace($m[0], '', $source));
+            $parts['body']    = trim(str_replace($m[0], '', $source));
         }
 
         return $parts;
@@ -194,14 +198,15 @@ class Engine extends BaseEngine
     }
 
     /**
-     * @param  mixed $name
+     * @param mixed $name
+     *
      * @return bool
      */
     public function exists($name)
     {
         try {
             $GLOBALS['DP_NOLOG_TPL_CACHE_ERR'] = true;
-            $ret = parent::exists($name);
+            $ret                               = parent::exists($name);
             $GLOBALS['DP_NOLOG_TPL_CACHE_ERR'] = false;
 
             return $ret;

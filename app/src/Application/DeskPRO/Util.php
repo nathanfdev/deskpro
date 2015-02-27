@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Util
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO;
@@ -49,10 +46,11 @@ class Util
     }
 
     /**
-     * Create a new object
+     * Create a new object.
      *
-     * @param  string $classname_spec The classname, static factory method, or array callback
-     * @param  array  $options        Options to pass to the factory or constructor
+     * @param string $classname_spec The classname, static factory method, or array callback
+     * @param array  $options        Options to pass to the factory or constructor
+     *
      * @return object
      */
     public static function simpleObjectFactory($classname_spec, array $options = null)
@@ -73,9 +71,10 @@ class Util
 
     /**
      * Fixes quirky handling of UTF8 errors in native json_encode.
-     * See http://stackoverflow.com/q/4663743/18802
+     * See http://stackoverflow.com/q/4663743/18802.
      *
-     * @param  mixed  $data
+     * @param mixed $data
+     *
      * @return string
      */
     public static function jsonEncode($data)
@@ -105,31 +104,32 @@ class Util
      * Tries to build an array of person data using an arbitrary array.
      * This is used in the default usersource handlers and scraper handlers.
      *
-     * @param  array $misc_data
+     * @param array $misc_data
+     *
      * @return array
      */
     public function getPersonData(array $misc_data)
     {
         $person_data = array(
             'standard_fields' => array(),
-            'emails' => array(),
-            'fields' => array(),
+            'emails'          => array(),
+            'fields'          => array(),
         );
 
         $keymap = array(
-            'full_name' => 'name',
-            'name' => 'name',
-            'fullname' => 'name',
-            'nickname' => 'name',
-            'nick_name' => 'name',
-            'username' => 'name',
-            'user_name' => 'name',
+            'full_name'   => 'name',
+            'name'        => 'name',
+            'fullname'    => 'name',
+            'nickname'    => 'name',
+            'nick_name'   => 'name',
+            'username'    => 'name',
+            'user_name'   => 'name',
             'screen_name' => 'name',
-            'screenname' => 'name',
-            'first_name' => 'first_name',
-            'firstname' => 'first_name',
-            'last_name' => 'last_name',
-            'lastname' => 'last_name',
+            'screenname'  => 'name',
+            'first_name'  => 'first_name',
+            'firstname'   => 'first_name',
+            'last_name'   => 'last_name',
+            'lastname'    => 'last_name',
         );
 
         foreach ($keymap as $findkey => $personkey) {
@@ -157,8 +157,7 @@ class Util
     }
 
     /**
-     * @param  array $ordered_ids
-     * @return void
+     * @param array $ordered_ids
      */
     public static function updateDisplayOrders(array $ordered_ids, $table)
     {
@@ -184,8 +183,8 @@ class Util
         $max_unit_list = array(
             'seconds' => 1,
             'minutes' => 2,
-            'hours' => 3,
-            'days' => 4,
+            'hours'   => 3,
+            'days'    => 4,
         );
         $max_unit_val = $max_unit && isset($max_unit_list[$max_unit]) ? $max_unit_list[$max_unit] : end($max_unit_list);
 
@@ -231,7 +230,8 @@ class Util
     }
 
     /**
-     * @param  string $format PHP date format
+     * @param string $format PHP date format
+     *
      * @return string The momentjs format
      */
     public static function momentJsDateFormat($format)
@@ -275,7 +275,7 @@ class Util
             } else {
                 if ($escaping) {
                     $new_format[] = "'";
-                    $escaping = false;
+                    $escaping     = false;
                 }
                 if (isset($php_sym[$char])) {
                     $new_format[] = $php_sym[$char];
@@ -289,7 +289,8 @@ class Util
     }
 
     /**
-     * @param  string|array $labels
+     * @param string|array $labels
+     *
      * @return array
      */
     public static function labelsArrayFromString($labels)
@@ -300,11 +301,11 @@ class Util
 
         $labels = array_map(function ($v) {
             if (!is_scalar($v)) {
-                return null;
+                return;
             }
             $v = trim($v);
             if ($v === "") {
-                return null;
+                return;
             }
 
             $v = strtolower($v);

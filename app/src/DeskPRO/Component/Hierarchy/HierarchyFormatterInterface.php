@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Component\Hierarchy;
@@ -37,9 +34,10 @@ namespace DeskPRO\Component\Hierarchy;
 interface HierarchyFormatterInterface
 {
     /**
-     * Must turn the node into a string
+     * Must turn the node into a string.
      *
-     * @param  HierarchyNode $node
+     * @param HierarchyNode $node
+     *
      * @return string
      */
     public function format(HierarchyNode $node);

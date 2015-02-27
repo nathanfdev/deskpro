@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category File
  */
 
@@ -80,7 +79,7 @@ class ChecksumChecker
     }
 
     /**
-     * Ignore a filename
+     * Ignore a filename.
      *
      * @param string $file
      */
@@ -90,7 +89,7 @@ class ChecksumChecker
     }
 
     /**
-     * Ignore a directory
+     * Ignore a directory.
      *
      * @param string $dir
      */
@@ -100,7 +99,7 @@ class ChecksumChecker
     }
 
     /**
-     * Go through and load checks
+     * Go through and load checks.
      *
      * @param callback $progress_callback
      */
@@ -115,7 +114,7 @@ class ChecksumChecker
 
             $file_contents = $this->normalizeFileString(file_get_contents($file->getRealPath()));
 
-            $hash = md5($file_contents);
+            $hash                   = md5($file_contents);
             $this->checksums[$path] = $hash;
 
             if ($progress_callback) {
@@ -125,7 +124,8 @@ class ChecksumChecker
     }
 
     /**
-     * @param  string $file_contents
+     * @param string $file_contents
+     *
      * @return string
      */
     protected function normalizeFileString($file_contents)
@@ -154,7 +154,7 @@ class ChecksumChecker
     }
 
     /**
-     * Get an array of filename => checksum for all found files
+     * Get an array of filename => checksum for all found files.
      *
      * @return array
      */
@@ -168,7 +168,7 @@ class ChecksumChecker
     }
 
     /**
-     * Get an array of files
+     * Get an array of files.
      *
      * @return array
      */
@@ -178,7 +178,7 @@ class ChecksumChecker
     }
 
     /**
-     * Compare newly generated checksums (generated right now) with those in an array
+     * Compare newly generated checksums (generated right now) with those in an array.
      *
      * @param array $with_checksums
      */
@@ -187,7 +187,7 @@ class ChecksumChecker
         $this->getChecksums();
 
         $results = array(
-            'added' => array(),
+            'added'   => array(),
             'removed' => array(),
             'changed' => array(),
         );
@@ -206,9 +206,10 @@ class ChecksumChecker
     }
 
     /**
-     * Same as compare() except it fetches checksums from a file
+     * Same as compare() except it fetches checksums from a file.
      *
      * @param $file
+     *
      * @throws \InvalidArgumentException
      */
     public function compareWithDump($file)

@@ -26,14 +26,10 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Component\Hierarchy;
-
 
 class HierarchyNode implements \IteratorAggregate, \Countable
 {
@@ -74,9 +70,9 @@ class HierarchyNode implements \IteratorAggregate, \Countable
      */
     public function __construct($data, $depth = 0, $order = 0)
     {
-        $this->depth = $depth;
-        $this->order = $order;
-        $this->data = $data;
+        $this->depth    = $depth;
+        $this->order    = $order;
+        $this->data     = $data;
         $this->children = array();
     }
 
@@ -156,10 +152,11 @@ class HierarchyNode implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Able to recursively find a child with a given ID (ID as defined by the hierarchy property accessor)
+     * Able to recursively find a child with a given ID (ID as defined by the hierarchy property accessor).
      *
      * @param $node_id
-     * @param  bool               $recursive
+     * @param bool $recursive
+     *
      * @return HierarchyNode|null
      */
     public function findChildById($node_id, $recursive = false)
@@ -178,7 +175,7 @@ class HierarchyNode implements \IteratorAggregate, \Countable
             }
         }
 
-        return null;
+        return;
     }
 
     private function setParent(HierarchyNode $node)

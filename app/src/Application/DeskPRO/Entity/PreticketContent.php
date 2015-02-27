@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -41,7 +40,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Tickets that were in the process of being created but were never finished,
  * or that were solved with auto-search.
- *
  */
 class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -71,27 +69,26 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
     protected $name = null;
 
     /**
-     * The department ID the ticket was in
-     *
+     * The department ID the ticket was in.
      */
     protected $department_id = 0;
 
     /**
-     * The subject
+     * The subject.
      *
      * @var string
      */
     protected $subject = '';
 
     /**
-     * The message
+     * The message.
      *
      * @var string
      */
     protected $message = '';
 
     /**
-     * Other raw form data
+     * Other raw form data.
      *
      * @var string
      */
@@ -141,8 +138,10 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @static
-     * @param  Person                                      $person
-     * @param  bool                                        $use_request not used?
+     *
+     * @param Person $person
+     * @param bool   $use_request not used?
+     *
      * @return \Application\DeskPRO\Entity\CommentAbstract
      */
     public static function newForPerson(Person $person, $use_request = true)
@@ -172,7 +171,7 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setPrimaryTable(array(
             'name'    => 'pretickets_content',
             'indexes' => array(
-                'email_idx' => array('columns' => array('email')),
+                'email_idx'  => array('columns' => array('email')),
                 'object_idx' => array('columns' => array('object_type', 'object_id')),
             ),
         ));
@@ -191,6 +190,6 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'object_id'));
         $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
     }
 }

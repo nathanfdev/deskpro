@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Auth
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security\Factory;

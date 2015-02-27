@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -80,7 +79,7 @@ class TicketChangeTracker
 
     public function getApplyingTrigger()
     {
-        return null;
+        return;
     }
 
     public function setApplyingSla()
@@ -90,12 +89,12 @@ class TicketChangeTracker
 
     public function getApplyingSla()
     {
-        return null;
+        return;
     }
 
     public function getApplyingSlaStatus()
     {
-        return null;
+        return;
     }
 
     public function getTicket()

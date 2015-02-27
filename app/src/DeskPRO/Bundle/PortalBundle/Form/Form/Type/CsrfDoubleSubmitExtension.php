@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -74,7 +71,7 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
 
             $csrfForm = $factory->createNamed($options['csrf_double_submit_cookie_name'], 'hidden', '', array(
                 'mapped' => false,
-                'label' => false,
+                'label'  => false,
             ));
 
             $view->children[$options['csrf_double_submit_cookie_name']] = $csrfForm->createView($view);
@@ -87,8 +84,8 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
         $data = $event->getData();
 
         if ($form->isRoot() && $form->getConfig()->getOption('compound')) {
-            $form_config = $form->getConfig();
-            $cookie_name = $form_config->getOption('csrf_double_submit_cookie_name');
+            $form_config  = $form->getConfig();
+            $cookie_name  = $form_config->getOption('csrf_double_submit_cookie_name');
             $cookie_value = $this->request_stack->getMasterRequest()->cookies->get($cookie_name, null);
 
             // token must be present in submitted data, and exactly equal to the request cookie value
@@ -119,15 +116,15 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
         // calling-code can always turn this off and the other back on
         $resolver->setDefaults(
             array(
-                'csrf_protection' => false,
-                'csrf_double_submit_protection' => true,
-                'csrf_double_submit_cookie_name' => '_dp_csrf_token',
+                'csrf_protection'                  => false,
+                'csrf_double_submit_protection'    => true,
+                'csrf_double_submit_cookie_name'   => '_dp_csrf_token',
                 'csrf_double_submit_error_message' => 'You did not submit a valid token. For security reasons, please ensure javascript is enabled, and cookies are enabled.',
             )
         )->setAllowedTypes(
             array(
-                'csrf_double_submit_protection' => 'bool',
-                'csrf_double_submit_cookie_name' => 'string',
+                'csrf_double_submit_protection'    => 'bool',
+                'csrf_double_submit_cookie_name'   => 'string',
                 'csrf_double_submit_error_message' => 'string',
             )
         );

@@ -32,10 +32,7 @@ use Doctrine\DBAL\Driver\DriverException;
 use Doctrine\DBAL\Platforms\SQLServer2008Platform;
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 class DbalSessionHandler implements \SessionHandlerInterface
 {
@@ -72,9 +69,9 @@ class DbalSessionHandler implements \SessionHandlerInterface
      */
     public function __construct(Connection $con, $tableName = 'session')
     {
-        $this->con   = $con;
-        $this->table = $tableName;
-        $this->idCol = 'sess_id';
+        $this->con     = $con;
+        $this->table   = $tableName;
+        $this->idCol   = 'sess_id';
         $this->dataCol = 'sess_data';
         $this->timeCol = 'sess_time';
     }

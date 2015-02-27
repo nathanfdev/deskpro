@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -54,7 +53,7 @@ class ChangeData implements ChangeInterface
     public function __construct($field_id, array $data = array())
     {
         $this->field_id = $field_id;
-        $this->data = $data;
+        $this->data     = $data;
     }
 
     /**
@@ -70,7 +69,7 @@ class ChangeData implements ChangeInterface
      */
     public function getOld()
     {
-        return null;
+        return;
     }
 
     /**

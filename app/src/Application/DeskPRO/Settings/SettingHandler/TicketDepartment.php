@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Settings\SettingHandler;
@@ -51,7 +49,7 @@ class TicketDepartment
     public function __construct(SettingsHandler $settings, Connection $db)
     {
         $this->settings = $settings;
-        $this->db = $db;
+        $this->db       = $db;
     }
 
     /**
@@ -69,7 +67,8 @@ class TicketDepartment
     }
 
     /**
-     * @param  array      $set_settings
+     * @param array $set_settings
+     *
      * @throws \Exception
      */
     public function setSettings(array $set_settings)
@@ -103,10 +102,10 @@ class TicketDepartment
             $phrase_plural_c   = ucwords($phrase_plural);
 
             $groups_reader = new \Application\DeskPRO\ResourceScanner\LanguagePhrases();
-            $phrases = $groups_reader->getAllUserPhrases();
+            $phrases       = $groups_reader->getAllUserPhrases();
 
             $batch = array();
-            $ids = array();
+            $ids   = array();
 
             $d = date('Y-m-d H:i:s');
 
@@ -118,7 +117,7 @@ class TicketDepartment
                 );
 
                 if ($new_phrase != $phrase_text) {
-                    $group = \Orb\Util\Strings::extractRegexMatch('#^(.*)\.([^.]+)$#', $phrase_id, 1);
+                    $group   = \Orb\Util\Strings::extractRegexMatch('#^(.*)\.([^.]+)$#', $phrase_id, 1);
                     $batch[] = array(
                         'language_id' => 1,
                         'name'        => $phrase_id,

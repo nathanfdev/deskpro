@@ -26,15 +26,14 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
 namespace Orb\Helper;
 
-use \Orb\Util\Util;
+use Orb\Util\Util;
 
 /**
  * An object that keeps track of "helpers".
@@ -42,18 +41,19 @@ use \Orb\Util\Util;
 class HelperManager
 {
     /**
-     * An array of helpers
+     * An array of helpers.
+     *
      * @var array
      */
     protected $_helpers = array();
 
     /**
-     * An array of short callable names
+     * An array of short callable names.
      */
     protected $_callable_names = array();
 
     /**
-     * Add a helper object
+     * Add a helper object.
      *
      * @param Object $object
      * @param string $name   The name of the helper. Defaults to strtolower of the base classname
@@ -92,8 +92,9 @@ class HelperManager
     /**
      * Check to see if a helper of a specific type has been registerd.
      *
-     * @param  string $typename
-     * @param  bool   $exact    Check for exact class, discount any children
+     * @param string $typename
+     * @param bool   $exact    Check for exact class, discount any children
+     *
      * @return bool
      */
     public function findHelperOfType($typename, $exact = false)
@@ -128,9 +129,10 @@ class HelperManager
     }
 
     /**
-     * Get a helper
+     * Get a helper.
      *
-     * @param  <type> $name
+     * @param <type> $name
+     *
      * @return <type>
      */
     public function getHelper($name)
@@ -144,10 +146,9 @@ class HelperManager
     }
 
     /**
-     * Remove a helper
+     * Remove a helper.
      *
-     * @param  string $name
-     * @return void
+     * @param string $name
      */
     public function removeHelper($name)
     {
@@ -162,7 +163,8 @@ class HelperManager
     /**
      * Is a certain name callable given our helpers?
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function isNameCallable($name)
@@ -175,10 +177,11 @@ class HelperManager
     }
 
     /**
-     * Call a certain callable
+     * Call a certain callable.
      *
-     * @param  string $name
-     * @param  array  $args
+     * @param string $name
+     * @param array  $args
+     *
      * @return mixed
      */
     public function callName($name, array $args)

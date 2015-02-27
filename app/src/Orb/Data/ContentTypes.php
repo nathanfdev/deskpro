@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Data
+ * Orb.
  */
 
 namespace Orb\Data;
@@ -252,7 +249,7 @@ class ContentTypes
     }
 
     /**
-     * Get an array of ext=>contenttype
+     * Get an array of ext=>contenttype.
      *
      * @return array
      */
@@ -266,7 +263,8 @@ class ContentTypes
      *
      * Returns null if no contenttype could be found.
      *
-     * @param  string $ext The file extension
+     * @param string $ext The file extension
+     *
      * @return string
      */
     public static function getContentTypeFromExtension($ext)
@@ -274,7 +272,7 @@ class ContentTypes
         $ext = strtolower(rtrim($ext, '.'));
 
         if (!isset(self::$ext_to_contenttype[$ext])) {
-            return null;
+            return;
         }
 
         return self::$ext_to_contenttype[$ext];
@@ -285,14 +283,15 @@ class ContentTypes
      *
      * Returns null if no contenttype could be found.
      *
-     * @param  string $filename The filename
+     * @param string $filename The filename
+     *
      * @return string
      */
     public static function getContentTypeFromFilename($filename)
     {
         $dot_pos = strrpos($filename, '.');
         if (!$dot_pos) {
-            return null;
+            return;
         }
 
         $ext = substr($filename, $dot_pos+1);
@@ -307,8 +306,9 @@ class ContentTypes
      * first one will be returned unless $find_all is true, in which case an array
      * of all suitable extensions are returned.
      *
-     * @param  string $content_type The content-type to look up
-     * @param  bool   $find_all     When true, an array of extensions will be returned.
+     * @param string $content_type The content-type to look up
+     * @param bool   $find_all     When true, an array of extensions will be returned.
+     *
      * @return string
      */
     public static function findExtensionForContentType($content_type, $find_all = false)
@@ -345,7 +345,7 @@ class ContentTypes
     }
 
     /**
-     * Get an array of image types
+     * Get an array of image types.
      *
      * @return array
      */
@@ -361,9 +361,10 @@ class ContentTypes
     }
 
     /**
-     * Check to see if a content type is an image type
+     * Check to see if a content type is an image type.
      *
      * @param $content_type
+     *
      * @return bool
      */
     public static function isImageContentType($content_type)
@@ -373,8 +374,10 @@ class ContentTypes
 
     /**
      * @static
+     *
      * @param $content_type
-     * @param  bool $safe
+     * @param bool $safe
+     *
      * @return bool
      */
     public static function isInlineContentType($content_type, $safe = true)

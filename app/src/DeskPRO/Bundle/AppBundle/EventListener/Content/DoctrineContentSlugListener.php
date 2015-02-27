@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\EventListener\Content;
 
-use DeskPRO\Bundle\AppBundle\Content\ContentSlugManager;
 use Application\DeskPRO\Entity\ContentAbstract;
+use DeskPRO\Bundle\AppBundle\Content\ContentSlugManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
@@ -82,7 +79,7 @@ class DoctrineContentSlugListener implements EventSubscriber
         $this->ensureValidSlug($content, $args->getObjectManager());
 
         // updates require a signal to the UOW to recalculate its changeset
-        $em = $args->getObjectManager();
+        $em  = $args->getObjectManager();
         $uow = $em->getUnitOfWork();
         $uow->recomputeSingleEntityChangeSet(
             $em->getClassMetadata(get_class($content)),

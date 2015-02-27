@@ -27,16 +27,15 @@
 
 namespace Application\ImportBundle\Reader\Json;
 
+use Exception;
 use RecursiveIteratorIterator;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 use Symfony\Component\Finder\SplFileInfo;
-use Exception;
 
 /**
- * Json data parser
+ * Json data parser.
  *
  * Class JsonReader
- * @package Application\ImportBundle\Reader\Json
  */
 class JsonReader implements JsonReaderInterface
 {
@@ -45,10 +44,10 @@ class JsonReader implements JsonReaderInterface
      */
     public function getDirectoryFilesCount(JsonConfig $config)
     {
-        $count = 0;
+        $count    = 0;
         $iterator = $this->getIterator($config->getPath(), $config->isExcludeDone());
         foreach ($iterator as $file) {
-            /** @var SplFileInfo $file */
+            /* @var SplFileInfo $file */
             $content = @json_decode($file->getContents(), true);
             if (is_array($content)) {
                 $count++;
@@ -63,10 +62,10 @@ class JsonReader implements JsonReaderInterface
      */
     public function getData(JsonConfig $config)
     {
-        $data = array();
+        $data     = array();
         $iterator = $this->getIterator($config->getPath(), $config->isExcludeDone());
         foreach ($iterator as $file) {
-            /** @var SplFileInfo $file */
+            /* @var SplFileInfo $file */
             $content = @json_decode($file->getContents(), true);
             if (is_array($content)) {
                 $data[] = $content;
@@ -77,13 +76,14 @@ class JsonReader implements JsonReaderInterface
     }
 
     /**
-     * Returns directory json files iterator
+     * Returns directory json files iterator.
      *
      * @param string $path
      * @param bool   $exclude_done
      *
-     * @return RecursiveIteratorIterator
      * @throws Exception
+     * @return RecursiveIteratorIterator
+     *
      */
     public function getIterator($path, $exclude_done)
     {

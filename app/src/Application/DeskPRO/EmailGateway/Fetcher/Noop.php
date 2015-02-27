@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
@@ -42,7 +40,7 @@ class Noop extends AbstractFetcher
 
     protected function _readNext()
     {
-        return null;
+        return;
     }
 
     protected function _doneRead($id)

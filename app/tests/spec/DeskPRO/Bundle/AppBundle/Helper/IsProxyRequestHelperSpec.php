@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\AppBundle\Helper;
 
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
+use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -43,11 +40,10 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class IsProxyRequestHelperSpec extends ObjectBehavior
 {
-    function it_tells_you_if_the_request_object_is_a_proxy_request(
+    public function it_tells_you_if_the_request_object_is_a_proxy_request(
         Request $proxy_request,
         Request $not_proxy_request
-    )
-    {
+    ) {
         $proxy_request->getPathInfo()->willReturn('/_proxy?params=foo');
         $not_proxy_request->getPathInfo()->willReturn('/articles');
 

@@ -28,15 +28,15 @@
 namespace Application\ImportBundle\Generator;
 
 /**
- * Interface GeneratorConfigAwareInterface
- * @package Application\ImportBundle\Generator
+ * Interface GeneratorConfigAwareInterface.
  */
 interface GeneratorConfigAwareInterface
 {
     /**
-     * Set service configuration
+     * Set service configuration.
      *
      * @param GeneratorConfig $config
+     *
      * @return $this
      */
     public function setConfig(GeneratorConfig $config);

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,8 +37,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Attributes or various other fields that are searchable on some type
- *
+ * Attributes or various other fields that are searchable on some type.
  */
 class ContentSearchAttribute extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -54,14 +52,12 @@ class ContentSearchAttribute extends \Application\DeskPRO\Domain\DomainObject
     protected $object_id = null;
 
     /**
-     * The name of the attribute like "somefield"
-     *
+     * The name of the attribute like "somefield".
      */
     protected $attribute_id;
 
     /**
-     * The searchable content of the attribuet
-     *
+     * The searchable content of the attribuet.
      */
     protected $content;
 

@@ -26,19 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\PortalBundle\Routing;
 
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
+use DeskPRO\Bundle\PortalBundle\Routing\PortalRequestInfo;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use DeskPRO\Bundle\PortalBundle\Routing\PortalRequestInfo;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Matcher\Dumper\MatcherDumperInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -46,18 +43,16 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class PortalRequestInfoSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         Request $request,
         RouterInterface $router
-    )
-    {
+    ) {
         $this->beConstructedWith($request);
     }
 
-    function it_finds_the_lang_code_in_the_url(
+    public function it_finds_the_lang_code_in_the_url(
         Request $request
-    )
-    {
+    ) {
         $request->getPathInfo()->willReturn('/en/articles');
         $this->getLanguageUrlCode()->shouldReturn('en');
 
@@ -77,10 +72,9 @@ class PortalRequestInfoSpec extends ObjectBehavior
         $this->getLanguageUrlCode()->shouldReturn(null);
     }
 
-    function it_finds_the_routable_path_in_the_url(
+    public function it_finds_the_routable_path_in_the_url(
         Request $request
-    )
-    {
+    ) {
         $request->getPathInfo()->willReturn('/en/articles');
         $this->getRoutablePath()->shouldReturn('/articles');
 
@@ -100,11 +94,10 @@ class PortalRequestInfoSpec extends ObjectBehavior
         $this->getRoutablePath()->shouldReturn('/admin-mode');
     }
 
-    function it_will_use_the_modes_internal_path_instead_of_the_request_pathinfo_if_given(
+    public function it_will_use_the_modes_internal_path_instead_of_the_request_pathinfo_if_given(
         Request $request,
         PortalMode $mode
-    )
-    {
+    ) {
         $request->getPathInfo()->willReturn('/admin-mode/en/articles');
         $mode->getInternalPath()->willReturn('/en/articles');
 
@@ -112,7 +105,6 @@ class PortalRequestInfoSpec extends ObjectBehavior
 
         $this->getLanguageUrlCode()->shouldReturn('en');
         $this->getRoutablePath()->shouldReturn('/articles');
-
 
         $mode->getInternalPath()->willReturn('/en/');
         $this->getLanguageUrlCode()->shouldReturn('en');
@@ -123,10 +115,9 @@ class PortalRequestInfoSpec extends ObjectBehavior
         $this->getRoutablePath()->shouldReturn('/articles');
     }
 
-    function it_will_report_a_proxy_url_as_special(
+    public function it_will_report_a_proxy_url_as_special(
         Request $request
-    )
-    {
+    ) {
         $request->getPathInfo()->willReturn('/_proxy?something=bar');
         $this->isSpecialPath()->shouldReturn(true);
 
@@ -146,10 +137,9 @@ class PortalRequestInfoSpec extends ObjectBehavior
         $this->isSpecialPath()->shouldReturn(false);
     }
 
-    function it_will_report_any_url_starting_with_underscore_as_special(
+    public function it_will_report_any_url_starting_with_underscore_as_special(
         Request $request
-    )
-    {
+    ) {
         $request->getPathInfo()->willReturn('/_profile');
         $this->isSpecialPath()->shouldReturn(true);
 
@@ -175,11 +165,10 @@ class PortalRequestInfoSpec extends ObjectBehavior
         $this->isSpecialPath()->shouldReturn(false);
     }
 
-    function it_uses_the_router_to_see_if_a_url_is_of_a_special_route(
+    public function it_uses_the_router_to_see_if_a_url_is_of_a_special_route(
         Request $request,
         RouterInterface $router
-    )
-    {
+    ) {
         $special_routes = array(
             'saml_sls',
             'saml_metadata',
@@ -192,7 +181,7 @@ class PortalRequestInfoSpec extends ObjectBehavior
             'portal_login_usersource_sso',
             'portal_login_callback',
             'portal_login_authenticate',
-            'portal_login_submit'
+            'portal_login_submit',
         );
 
         $this->setRouter($router);

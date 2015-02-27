@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,6 @@ class CustomDefFeedback extends CustomDefAbstract
     /**
      * @return \Application\DeskPRO\Entity\CustomDefFeedback|null
      */
-
     public function getCategoryField()
     {
         return $this->_em->createQuery("
@@ -54,7 +52,6 @@ class CustomDefFeedback extends CustomDefAbstract
      *
      * @return array
      */
-
     public function getAllFlatData(\Application\DeskPRO\Entity\CustomDefFeedback $parent_category)
     {
         $hierarchy = array();

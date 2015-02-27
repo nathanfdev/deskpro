@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -41,14 +40,12 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Ticket priorities
- *
+ * Ticket priorities.
  */
 class TicketPriority extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
     /**
      * @var int
-     *
      */
     protected $id = null;
 
@@ -84,14 +81,16 @@ class TicketPriority extends \Application\DeskPRO\Domain\DomainObject implements
     }
 
     /**
-     * Set real title
+     * Set real title.
      *
      * @param string $title
+     *
      * @return $this
      */
     public function setRealTitle($title)
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -104,7 +103,8 @@ class TicketPriority extends \Application\DeskPRO\Domain\DomainObject implements
     }
 
     /**
-     * @param  string $property
+     * @param string $property
+     *
      * @return string
      */
     public function getPhraseName($property = null, Translate $translate)
@@ -118,7 +118,8 @@ class TicketPriority extends \Application\DeskPRO\Domain\DomainObject implements
     }
 
     /**
-     * @param  string $property
+     * @param string $property
+     *
      * @return string
      */
     public function getPhraseDefault($property = null, Translate $translate)

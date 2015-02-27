@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -39,7 +36,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Orb\Util\Arrays;
 
 /**
- * Sends article and category notifications to users with subscriptions
+ * Sends article and category notifications to users with subscriptions.
  */
 class KbSubscriptions extends AbstractJob
 {
@@ -93,7 +90,7 @@ class KbSubscriptions extends AbstractJob
         #------------------------------
 
         $structure = App::getContainer()->getSystemService('publish_structure');
-        $helper = $structure->getArticleCategoryHelper();
+        $helper    = $structure->getArticleCategoryHelper();
 
         $category_ids = array();
         $article_ids  = array();
@@ -108,7 +105,7 @@ class KbSubscriptions extends AbstractJob
         }
 
         $category_ids = array_unique($category_ids);
-        $article_ids = array_unique($article_ids);
+        $article_ids  = array_unique($article_ids);
 
         $cat_subs     = array();
         $article_subs = array();
@@ -151,7 +148,7 @@ class KbSubscriptions extends AbstractJob
         foreach ($cat_subs as $person_id => $cids) {
             foreach ($published as $article) {
                 foreach ($article->categories as $cat) {
-                    $path = $helper->getPathIds($cat);
+                    $path   = $helper->getPathIds($cat);
                     $path[] = $cat->getId();
 
                     if (Arrays::isIn($path, $cids)) {
@@ -197,10 +194,10 @@ class KbSubscriptions extends AbstractJob
         ", array(), 'category_id', null, 'usergroup_id');
 
         $all_user_to_articles = $user_to_articles;
-        $user_to_articles = array();
+        $user_to_articles     = array();
 
         foreach ($all_user_to_articles as $person_id => $articles) {
-            $person_ugs = isset($user_groupmembers[$person_id]) ? $user_groupmembers[$person_id] : array();
+            $person_ugs   = isset($user_groupmembers[$person_id]) ? $user_groupmembers[$person_id] : array();
             $person_ugs[] = 1; // Everyone
 
             foreach ($articles as $article) {

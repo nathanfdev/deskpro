@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -79,7 +78,7 @@ class DownloadCategory extends AbstractCategoryRepository
     }
 
     /**
-     * Get an array of categories
+     * Get an array of categories.
      *
      * @return array
      */
@@ -113,7 +112,7 @@ class DownloadCategory extends AbstractCategoryRepository
     {
         $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
         if (!$id) {
-            return null;
+            return;
         }
 
         return $this->find($id);

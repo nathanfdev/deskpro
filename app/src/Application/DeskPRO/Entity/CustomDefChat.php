@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,23 +37,20 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * A custom field definition
- *
+ * A custom field definition.
  */
 class CustomDefChat extends CustomDefAbstract
 {
     /**
      * @var CustomDefChat
      */
-
     protected $parent = null;
 
     /**
-     * Field children
+     * Field children.
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-
     protected $children = null;
 
     ############################################################################
@@ -222,9 +218,9 @@ class CustomDefChat extends CustomDefAbstract
         );
         $metadata->mapOneToMany(
             array(
-                 'fieldName'    => 'children',
-                 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefChat',
-                 'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                 'fieldName'               => 'children',
+                 'targetEntity'            => 'Application\\DeskPRO\\Entity\\CustomDefChat',
+                 'cascade'                 => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
                  'mappedBy'                => 'parent',
                  'orderBy'                 => array('display_order' => 'ASC'),
             )

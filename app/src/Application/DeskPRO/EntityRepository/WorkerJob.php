@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -41,7 +40,6 @@ class WorkerJob extends AbstractEntityRepository
     /**
      * @return mixed
      */
-
     public function getAll()
     {
         return $this->getEntityManager()->createQuery("
@@ -54,7 +52,6 @@ class WorkerJob extends AbstractEntityRepository
     /**
      *
      */
-
     public function clearAllLogs()
     {
         App::getDb()->exec("DELETE FROM log_items WHERE log_name LIKE 'worker_job.%'");

@@ -55,9 +55,9 @@ class RawExchangeTransport implements RawTransportInterface
 
     public function __construct(ExchangeConfig $config, RawMessageDecoderInterface $decoder, LoggerInterface $logger)
     {
-        $this->config = $config;
+        $this->config  = $config;
         $this->decoder = $decoder;
-        $this->logger = $logger;
+        $this->logger  = $logger;
     }
 
     /**
@@ -163,12 +163,12 @@ class RawExchangeTransport implements RawTransportInterface
 //		}
 //
 
-        $msg->MimeContent = new \EWSType_MimeContentType();
+        $msg->MimeContent    = new \EWSType_MimeContentType();
         $msg->MimeContent->_ = base64_encode(stream_get_contents($raw_fp, -1, 0));
 
-        $msgRequest = new \EWSType_CreateItemType();
-        $msgRequest->Items = new \EWSType_NonEmptyArrayOfAllItemsType();
-        $msgRequest->Items->Message = $msg;
+        $msgRequest                     = new \EWSType_CreateItemType();
+        $msgRequest->Items              = new \EWSType_NonEmptyArrayOfAllItemsType();
+        $msgRequest->Items->Message     = $msg;
         $msgRequest->MessageDisposition = 'SendOnly';
 
         $this->logger->info('[RawExchangeTransport] Sending raw mail');

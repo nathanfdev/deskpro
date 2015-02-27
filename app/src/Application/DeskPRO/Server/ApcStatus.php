@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -60,7 +59,7 @@ class ApcStatus
 
         if ($this->is_enabled) {
             $this->cacheinfo = @apc_cache_info('opcode');
-            $this->meminfo = @apc_sma_info();
+            $this->meminfo   = @apc_sma_info();
 
             if (!$this->cacheinfo || !$this->meminfo) {
                 $this->is_enabled = false;
@@ -125,7 +124,7 @@ class ApcStatus
     }
 
     /**
-     * How much memory is currently available (free)
+     * How much memory is currently available (free).
      *
      * @return int
      */
@@ -135,7 +134,7 @@ class ApcStatus
     }
 
     /**
-     * How much memory is available for use
+     * How much memory is available for use.
      *
      * @return int
      */
@@ -149,7 +148,8 @@ class ApcStatus
     }
 
     /**
-     * Get how much moeor
+     * Get how much moeor.
+     *
      * @return int
      */
     public function getMemUsed()
@@ -188,29 +188,31 @@ class ApcStatus
     }
 
     /**
-     * Get the URL to the apc hitmiss chart
+     * Get the URL to the apc hitmiss chart.
      *
      * @todo this is using App and DP_CONFIG_FILE, perhaps nicer way to do it?
+     *
      * @return string
      */
     public function getHitMissChartUrl()
     {
         $config_hash = md5_file(DP_CONFIG_FILE);
-        $url = App::getSetting('core.deskpro_url').'?_sys=apc&_='.Util::generateStaticSecurityToken($config_hash.'apc', 86400).'&IMG=1&'.time();
+        $url         = App::getSetting('core.deskpro_url').'?_sys=apc&_='.Util::generateStaticSecurityToken($config_hash.'apc', 86400).'&IMG=1&'.time();
 
         return $url;
     }
 
     /**
-     * Get the URL to the apc memory chart
+     * Get the URL to the apc memory chart.
      *
      * @todo this is using App and DP_CONFIG_FILE, perhaps nicer way to do it?
+     *
      * @return string
      */
     public function getMemChartUrl()
     {
         $config_hash = md5_file(DP_CONFIG_FILE);
-        $url = App::getSetting('core.deskpro_url').'?_sys=apc&_='.Util::generateStaticSecurityToken($config_hash.'apc', 86400).'&IMG=1&'.time();
+        $url         = App::getSetting('core.deskpro_url').'?_sys=apc&_='.Util::generateStaticSecurityToken($config_hash.'apc', 86400).'&IMG=1&'.time();
 
         return $url;
     }

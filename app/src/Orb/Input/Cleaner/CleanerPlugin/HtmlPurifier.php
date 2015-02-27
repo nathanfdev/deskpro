@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Input
  */
 
@@ -39,7 +38,7 @@ use Orb\Input\Cleaner\Cleaner;
 use Orb\Util\Strings;
 
 /**
- * Uses HTMLPurifier to clean HTML input
+ * Uses HTMLPurifier to clean HTML input.
  */
 class HtmlPurifier implements CleanerPlugin
 {
@@ -167,9 +166,9 @@ class HtmlPurifier implements CleanerPlugin
 
             // Replace Wingdings characters with UTF-8 characters
             $map = array(
-                'J' => ':)',
-                'L' => ':(',
-                'K' => ':|',
+                'J'  => ':)',
+                'L'  => ':(',
+                'K'  => ':|',
                 'ß' => '<-',
                 'ç' => '<=',
                 'ó' => '<=>',
@@ -208,7 +207,7 @@ class HtmlPurifier implements CleanerPlugin
         require_once DP_ROOT.'/vendor-src/htmlpurifier/HTMLPurifier.standalone.php';
 
         $purifier = new \HTMLPurifier();
-        $config = $this->getConfigForType($type);
+        $config   = $this->getConfigForType($type);
 
         if ($type == 'html_email') {
             // Cut to the body, also cuts out multiple xml decls
@@ -234,7 +233,8 @@ class HtmlPurifier implements CleanerPlugin
     }
 
     /**
-     * @param  string               $type
+     * @param string $type
+     *
      * @return \HTMLPurifier_Config
      */
     public function getConfigForType($type)

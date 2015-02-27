@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\Queue;
@@ -37,7 +34,6 @@ namespace Application\EmailBundle\Queue;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\EmailBundle\Mail\RawTransport\RawTransportException;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 use Psr\Log\LoggerInterface;
@@ -67,8 +63,8 @@ class SourceSender
     public function __construct(EmailAccountManager $email_accounts, DeskproBlobStorage $bs, LoggerInterface $logger)
     {
         $this->email_accounts = $email_accounts;
-        $this->bs = $bs;
-        $this->logger = $logger;
+        $this->bs             = $bs;
+        $this->logger         = $logger;
     }
 
     /**
@@ -78,8 +74,9 @@ class SourceSender
      * So exceptions = unexpected failure.
      * Return 0 = error that is unlikely to be temporary
      *
-     * @param  array $sendmail
-     * @return int   Number of emails sent
+     * @param array $sendmail
+     *
+     * @return int Number of emails sent
      */
     public function send(array $sendmail)
     {
@@ -120,7 +117,7 @@ class SourceSender
 
         try {
             $failed = array();
-            $sent = $raw_tr->sendRawMessage(
+            $sent   = $raw_tr->sendRawMessage(
                 $sendmail['from_email'],
                 Arrays::removeFalsey(array_merge(
                     explode(',', $sendmail['to_emails'] ?: ''),

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage HttpKernel
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\HttpKernel\Config;

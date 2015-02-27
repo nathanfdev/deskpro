@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Settings;
@@ -128,7 +126,7 @@ class PortalSettings
     }
 
     /**
-     * Persists settings
+     * Persists settings.
      */
     public function saveSettings()
     {

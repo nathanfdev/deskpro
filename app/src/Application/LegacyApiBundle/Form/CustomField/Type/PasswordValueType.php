@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AdminBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Form\CustomField\Type;
@@ -42,7 +39,6 @@ use Symfony\Component\Form\FormView;
 /**
  * A password field, that actually retains it's value as instructed.
  */
-
 class PasswordValueType extends AbstractType
 {
     /**

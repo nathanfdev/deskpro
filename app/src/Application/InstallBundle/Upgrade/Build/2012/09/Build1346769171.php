@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -40,16 +37,16 @@ class Build1346769171 extends AbstractBuild
     {
         $this->out("Fix missing cascade on ticket_logs");
 
-        $db = $this->container->getDb();
+        $db     = $this->container->getDb();
         $schema = $db->getSchemaManager();
 
         $log_table = $schema->listTableDetails('tickets_logs');
 
         $make = false;
         $drop = false;
-        $has = false;
+        $has  = false;
         foreach ($log_table->getForeignKeys() as $name => $fk) {
-            /** @var $fk \Doctrine\DBAL\Schema\ForeignKeyConstraint */
+            /* @var $fk \Doctrine\DBAL\Schema\ForeignKeyConstraint */
             $cols = $fk->getColumns();
             if (count($cols) == 1 && $cols[0] == 'ticket_id') {
                 $has = true;

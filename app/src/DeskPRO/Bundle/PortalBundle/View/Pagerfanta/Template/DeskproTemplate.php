@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\View\Pagerfanta\Template;
@@ -79,7 +77,7 @@ class DeskproTemplate extends Template
     public function previousDisabled()
     {
         $class = $this->previousDisabledClass();
-        $text = $this->option('prev_message');
+        $text  = $this->option('prev_message');
 
         return $this->spanLi($class, $text);
     }
@@ -91,7 +89,7 @@ class DeskproTemplate extends Template
 
     public function previousEnabled($page)
     {
-        $text = $this->option('prev_message');
+        $text  = $this->option('prev_message');
         $class = $this->option('css_prev_class');
 
         return $this->pageWithTextAndClass($page, $text, $class);
@@ -100,7 +98,7 @@ class DeskproTemplate extends Template
     public function nextDisabled()
     {
         $class = $this->nextDisabledClass();
-        $text = $this->option('next_message');
+        $text  = $this->option('next_message');
 
         return $this->spanLi($class, $text);
     }
@@ -112,7 +110,7 @@ class DeskproTemplate extends Template
 
     public function nextEnabled($page)
     {
-        $text = $this->option('next_message');
+        $text  = $this->option('next_message');
         $class = $this->option('css_next_class');
 
         return $this->pageWithTextAndClass($page, $text, $class);
@@ -130,7 +128,7 @@ class DeskproTemplate extends Template
 
     public function current($page)
     {
-        $text = trim($page.' '.$this->option('active_suffix'));
+        $text  = trim($page.' '.$this->option('active_suffix'));
         $class = $this->option('css_active_class');
 
         return $this->spanLi($class, $text);
@@ -139,7 +137,7 @@ class DeskproTemplate extends Template
     public function separator()
     {
         $class = $this->option('css_dots_class');
-        $text = $this->option('dots_message');
+        $text  = $this->option('dots_message');
 
         return $this->spanLi($class, $text);
     }

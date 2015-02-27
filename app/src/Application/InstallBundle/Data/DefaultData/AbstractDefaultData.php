@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Install
  */
 
@@ -63,7 +62,7 @@ class AbstractDefaultData
     public function __construct(DeskproContainer $container, LoggerInterface $logger)
     {
         $this->container = $container;
-        $this->logger = $logger;
+        $this->logger    = $logger;
     }
 
     /**

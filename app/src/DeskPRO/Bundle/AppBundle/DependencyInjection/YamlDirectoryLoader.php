@@ -26,13 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\DependencyInjection;
-
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -52,7 +49,7 @@ class YamlDirectoryLoader
     }
 
     /**
-     * Loads all .yml files into the container from this directory
+     * Loads all .yml files into the container from this directory.
      *
      * @param $services_dir
      */

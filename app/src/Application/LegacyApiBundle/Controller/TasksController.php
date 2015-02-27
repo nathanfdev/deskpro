@@ -26,18 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\People\AgentPermissions\AgentPermissions;
 use Application\DeskPRO\People\AgentPermissions\GroupDbPersister;
 use Application\DeskPRO\People\AgentPermissions\GroupsDbLoader;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 
 class TasksController extends AbstractController implements ProtectedControllerInterface
 {
@@ -53,7 +51,7 @@ class TasksController extends AbstractController implements ProtectedControllerI
     }
 
     /**
-     * get tasks settings
+     * get tasks settings.
      *
      * @return Response
      */
@@ -98,7 +96,7 @@ class TasksController extends AbstractController implements ProtectedControllerI
     }
 
     /**
-     * update tasks settings
+     * update tasks settings.
      */
     public function updateSettingsAction()
     {

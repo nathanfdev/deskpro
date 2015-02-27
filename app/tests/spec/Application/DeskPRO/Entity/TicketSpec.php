@@ -26,34 +26,30 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketParticipant;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\Person;
 
 /**
  * @mixin \Application\DeskPRO\Entity\Ticket
  */
 class TicketSpec extends ObjectBehavior
 {
-    function it_knows_if_a_given_person_is_involved_with_ticket(
+    public function it_knows_if_a_given_person_is_involved_with_ticket(
         Person $bob,
         Person $alice,
         Person $colin,
         Person $dimitri,
         Person $walmart_employee_but_not_manager,
         Organization $walmart
-    )
-    {
+    ) {
         $bob->getId()->willReturn(1);
         $bob->getPrimaryEmail()->willReturn(null);
         $bob->getOrganization()->willReturn($walmart);
@@ -90,24 +86,22 @@ class TicketSpec extends ObjectBehavior
         $this->isInvolved($walmart_employee_but_not_manager)->shouldBe(false);
     }
 
-    function it_knows_if_a_given_person_is_the_owner_or_not(
+    public function it_knows_if_a_given_person_is_the_owner_or_not(
         Person $bob,
         Person $alice
-    )
-    {
+    ) {
         $this->setPerson($bob);
 
         $this->isOwner($bob)->shouldBe(true);
         $this->isOwner($alice)->shouldBe(false);
     }
 
-    function it_knows_if_a_given_person_is_a_participant_or_not(
+    public function it_knows_if_a_given_person_is_a_participant_or_not(
         Person $bob,
         Person $alice,
         TicketParticipant $part
 
-    )
-    {
+    ) {
         $bob->getId()->willReturn(1);
         $bob->getPrimaryEmail()->willReturn(null);
         $alice->getId()->willReturn(2);
@@ -118,13 +112,12 @@ class TicketSpec extends ObjectBehavior
         $this->isParticipant($alice)->shouldBe(false);
     }
 
-    function it_knows_if_a_given_person_is_an_organization_manager_for_the_ticket_or_not(
+    public function it_knows_if_a_given_person_is_an_organization_manager_for_the_ticket_or_not(
         Person $bob,
         Person $alice,
         Person $colin,
         Organization $walmart
-    )
-    {
+    ) {
         $bob->getOrganization()->willReturn($walmart);
         $bob->isOrganizationManager()->willReturn(true);
 

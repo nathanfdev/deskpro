@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\NewTicket;
@@ -48,7 +45,7 @@ class PersonProps implements \ArrayAccess
 
     /**
      * A real person object, represents a logged in user
-     * if the user is logged in. Otherwise this should be null for a guest
+     * if the user is logged in. Otherwise this should be null for a guest.
      *
      * @var \Application\DeskPRO\Entity\Person
      */

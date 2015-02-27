@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -41,12 +40,11 @@ use Orb\Util\Util;
 /**
  * A cache of various permissions for a given set of usergroups. For example,
  * a computed array of category ID's 1,3,5 has access to.
- *
  */
 class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
-     * The type of permissions cache
+     * The type of permissions cache.
      *
      * @var string
      */
@@ -61,14 +59,14 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
     protected $usergroup_key;
 
     /**
-     * A comma-separated list of usergroup_ids this cache applies to
+     * A comma-separated list of usergroup_ids this cache applies to.
      *
      * @var string
      */
     protected $usergroup_ids = '';
 
     /**
-     * Permission data
+     * Permission data.
      *
      * @var bool
      */
@@ -122,7 +120,9 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
      * will always generate the same key.
      *
      * @static
-     * @param  array  $usergroup_ids
+     *
+     * @param array $usergroup_ids
+     *
      * @return string
      */
     public static function generateUsergroupSetKey(array $usergroup_ids)

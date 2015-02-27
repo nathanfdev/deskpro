@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ServerPhpInfo;
@@ -43,13 +41,11 @@ class ServerPhpInfo
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     /**
      * @var string
      */
-
     protected $config_hash;
 
     public function __construct(EntityManager $em)
@@ -63,7 +59,6 @@ class ServerPhpInfo
      *
      * @return array
      */
-
     public function getPhpInfo($noencode = false)
     {
         return $this->_getInfo($noencode);
@@ -74,7 +69,6 @@ class ServerPhpInfo
      *
      * @return array
      */
-
     protected function _getInfo($noencode = false)
     {
         $config_hash = md5_file(DP_CONFIG_FILE);

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
@@ -44,7 +41,7 @@ class SerializerService
 {
     public static function create(DeskproContainer $container)
     {
-        /**
+        /*
          * Recall that the ORDER matters in the registry. First added, first checked.
          * Put more specific serializers at the top, and more generic at the bottom.
          */

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -107,7 +106,7 @@ class SetProduct extends AbstractContainerAwareAction implements ActionInterface
             return array('fields');
         }
 
-        return null;
+        return;
     }
 
     /**

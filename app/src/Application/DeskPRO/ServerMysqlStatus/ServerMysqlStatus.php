@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ServerMysqlStatus;
@@ -41,7 +39,6 @@ class ServerMysqlStatus
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     public function __construct(EntityManager $em)
@@ -52,7 +49,6 @@ class ServerMysqlStatus
     /**
      * @return array
      */
-
     public function getMysqlStatus()
     {
         return $this->_getInfo();
@@ -61,7 +57,6 @@ class ServerMysqlStatus
     /**
      * @return array
      */
-
     protected function _getInfo()
     {
         try {

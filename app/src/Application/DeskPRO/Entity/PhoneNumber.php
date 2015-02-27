@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -36,8 +35,8 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Orb\Util\PhoneNumbers;
 use libphonenumber\PhoneNumberUtil;
+use Orb\Util\PhoneNumbers;
 
 /**
  * A Phone Number that is registered somewhere in the system (people can have many phone numbers).
@@ -68,14 +67,14 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
     protected $person;
 
     /**
-     * The number, stored in E.164 string format, ie. +19021111111
+     * The number, stored in E.164 string format, ie. +19021111111.
      *
      * @var string
      */
     protected $number;
 
     /**
-     * The ISO 3166-1 country/region code of the phone number (2 char)
+     * The ISO 3166-1 country/region code of the phone number (2 char).
      *
      * @var string
      */
@@ -140,7 +139,7 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         try {
             return $phone_util->parse($this->number, null);
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 

@@ -32,10 +32,9 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro person importer
+ * DeskPro person importer.
  *
  * Class Person
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 final class Person extends AbstractImporter
 {
@@ -50,7 +49,7 @@ final class Person extends AbstractImporter
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Person $entity
+     * @var Entity\Person
      *
      * todo is_user is false by default and it = true in the setPassword method, can we set it = true without a password
      */
@@ -100,17 +99,19 @@ final class Person extends AbstractImporter
         }
 
         $this->records->add($person);
+
         return $this->records;
     }
 
     /**
      * Returns a person entity
-     * Creates a new person if not found
+     * Creates a new person if not found.
      *
      * @param array $emails
      *
-     * @return DeskPROEntity\Person
      * @throws \Exception
+     * @return DeskPROEntity\Person
+     *
      */
     private function findOrCreatePerson(array $emails)
     {
@@ -134,9 +135,10 @@ final class Person extends AbstractImporter
     }
 
     /**
-     * Returns a person email entity
+     * Returns a person email entity.
      *
      * @param string $email_string
+     *
      * @return DeskPROEntity\PersonEmail
      */
     private function findOrCreatePersonEmail($email_string)
@@ -161,12 +163,13 @@ final class Person extends AbstractImporter
     }
 
     /**
-     * Returns custom def person entity
+     * Returns custom def person entity.
      *
      * @param Entity\CustomField $importing_entity
      *
-     * @return DeskPROEntity\CustomDataPerson
      * @throws ImporterException
+     * @return DeskPROEntity\CustomDataPerson
+     *
      */
     private function createCustomData(Entity\CustomField $importing_entity)
     {
@@ -214,14 +217,16 @@ final class Person extends AbstractImporter
         }
 
         $this->records->add($entity);
+
         return $entity;
     }
 
     /**
-     * Returns the person email mapper
+     * Returns the person email mapper.
      *
-     * @return Mapper\PersonEmail
      * @throws \Exception
+     * @return Mapper\PersonEmail
+     *
      */
     private function getPersonEmailMapper()
     {
@@ -229,10 +234,11 @@ final class Person extends AbstractImporter
     }
 
     /**
-     * Returns the email account mapper
+     * Returns the email account mapper.
      *
-     * @return Mapper\EmailAccount
      * @throws \Exception
+     * @return Mapper\EmailAccount
+     *
      */
     private function getEmailAccountMapper()
     {
@@ -240,10 +246,11 @@ final class Person extends AbstractImporter
     }
 
     /**
-     * Returns the user group mapper
+     * Returns the user group mapper.
      *
-     * @return Mapper\UserGroup
      * @throws \Exception
+     * @return Mapper\UserGroup
+     *
      */
     private function getUserGroupMapper()
     {
@@ -251,10 +258,11 @@ final class Person extends AbstractImporter
     }
 
     /**
-     * Returns the custom def person mapper
+     * Returns the custom def person mapper.
      *
-     * @return Mapper\CustomDefPerson
      * @throws \Exception
+     * @return Mapper\CustomDefPerson
+     *
      */
     private function getCustomDefPersonMapper()
     {

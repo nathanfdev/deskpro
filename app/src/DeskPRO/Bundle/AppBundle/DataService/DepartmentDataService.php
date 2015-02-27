@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
-use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use Doctrine\ORM\EntityManager;
 
 class DepartmentDataService extends AbstractDataService
@@ -52,14 +49,14 @@ class DepartmentDataService extends AbstractDataService
 
     public function __construct(EntityManager $em, PortalPermissionsManager $portal_permissions_manager)
     {
-        $this->em = $em;
+        $this->em                         = $em;
         $this->portal_permissions_manager = $portal_permissions_manager;
     }
 
     public function getAuthorizedDepartmentsForPersonInPortal(Person $person)
     {
         $portal_permissions_manager = $this->portal_permissions_manager;
-        $em = $this->em;
+        $em                         = $this->em;
 
         return $this->generateAndCache(
             array(

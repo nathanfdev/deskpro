@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,26 +38,26 @@ use Application\DeskPRO\App;
 class ApiKey extends AbstractEntityRepository
 {
     /**
-     * Find an API key based off of a key string. A key string is: "id:code"
+     * Find an API key based off of a key string. A key string is: "id:code".
      *
-     * @param  string $key_string
+     * @param string $key_string
+     *
      * @return ApiKey
      */
-
     public function findByKeyString($key_string)
     {
         if (strpos($key_string, ':') === false) {
-            return null;
+            return;
         }
 
         list($id, $code) = explode(':', $key_string, 2);
 
         $apikey = $this->find($id);
         if (!$apikey) {
-            return null;
+            return;
         }
         if ($apikey['code'] != $code) {
-            return null;
+            return;
         }
 
         return $apikey;
@@ -67,7 +66,6 @@ class ApiKey extends AbstractEntityRepository
     /**
      * @return ApiKey[]
      */
-
     public function getAllApiKeys()
     {
         return $this->_em->createQuery('
@@ -83,7 +81,6 @@ class ApiKey extends AbstractEntityRepository
      *
      * @return array
      */
-
     public function getApiKeyTitles(array $ids = null)
     {
         $output = array();
@@ -100,7 +97,6 @@ class ApiKey extends AbstractEntityRepository
     /**
      * @return mixed
      */
-
     public function countApiKeys()
     {
         return App::getDb()->fetchColumn('
@@ -114,7 +110,6 @@ class ApiKey extends AbstractEntityRepository
      *
      * @return array
      */
-
     public function getRateLimitInfo(\Application\DeskPRO\Entity\ApiKey $api_key)
     {
         $rate_limit = App::getDb()->fetchAssoc(
@@ -151,10 +146,9 @@ class ApiKey extends AbstractEntityRepository
     /**
      * @param \Application\DeskPRO\Entity\ApiKey $api_key
      */
-
     public function updateRateLimit(\Application\DeskPRO\Entity\ApiKey $api_key)
     {
-        $time = time();
+        $time     = time();
         $interval = (int) App::getSetting('core.api_rate_limit_interval');
 
         App::getDb()->executeUpdate(

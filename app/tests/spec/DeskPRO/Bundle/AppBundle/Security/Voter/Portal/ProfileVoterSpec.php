@@ -26,22 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
-use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
-use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
-use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Application\DeskPRO\Entity\Person;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ProfileVoter;
+use PhpSpec\ObjectBehavior;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
@@ -51,33 +44,30 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
  */
 class ProfileVoterSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         ContainerInterface $container,
         Person $person,
         TokenInterface $token,
         Person $person2
-    )
-    {
+    ) {
         $this->beConstructedWith($container);
     }
 
-    function it_allows_if_token_represents_this_user(
+    public function it_allows_if_token_represents_this_user(
         TokenInterface $token,
         Person $person
-    )
-    {
+    ) {
         $person->getId()->willReturn(1);
         $token->getUser()->willReturn($person);
 
         $this->verifyGrantedVote(ProfileVoter::EDIT_PROFILE, $token, $person);
     }
 
-    function it_denies_others(
+    public function it_denies_others(
         TokenInterface $token,
         Person $person,
         Person $person2
-    )
-    {
+    ) {
         $person->getId()->willReturn(1);
         $token->getUser()->willReturn($person);
 
@@ -86,22 +76,17 @@ class ProfileVoterSpec extends ObjectBehavior
         $this->verifyDeniedVote(ProfileVoter::EDIT_PROFILE, $token, $person2);
     }
 
-    function it_abstains_from_non_profile_votes(
+    public function it_abstains_from_non_profile_votes(
         TokenInterface $token,
         Person $person
-    )
-    {
+    ) {
         $person->getId()->willReturn(1);
         $token->getUser()->willReturn($person);
 
         $this->verifyAbstainVote(ContentRatingsVoter::RATE_ARTICLES, $token, $person);
     }
 
-
-
-
-
-    function verifyGrantedVote($attribute, $token, $object)
+    public function verifyGrantedVote($attribute, $token, $object)
     {
         if (!is_array($attribute)) {
             $attribute = array($attribute);
@@ -111,7 +96,7 @@ class ProfileVoterSpec extends ObjectBehavior
             ->shouldReturn(VoterInterface::ACCESS_GRANTED);
     }
 
-    function verifyDeniedVote($attribute, $token, $object)
+    public function verifyDeniedVote($attribute, $token, $object)
     {
         if (!is_array($attribute)) {
             $attribute = array($attribute);
@@ -121,7 +106,7 @@ class ProfileVoterSpec extends ObjectBehavior
             ->shouldReturn(VoterInterface::ACCESS_DENIED);
     }
 
-    function verifyAbstainVote($attribute, $token, $object)
+    public function verifyAbstainVote($attribute, $token, $object)
     {
         if (!is_array($attribute)) {
             $attribute = array($attribute);

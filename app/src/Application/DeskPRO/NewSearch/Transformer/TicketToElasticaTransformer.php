@@ -2,13 +2,13 @@
 
 namespace Application\DeskPRO\NewSearch\Transformer;
 
-use Elastica\Document;
 use Application\DeskPRO\Entity\Ticket;
+use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
 
 /**
- * Ticket To Elastica Transformer
+ * Ticket To Elastica Transformer.
  *
  * Transforms a Ticket entity to Elasticsearch document with the right
  * field mappings. Need this instead of the standard mapping to handle
@@ -17,7 +17,7 @@ use Orb\Util\Arrays;
 class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * Transform
+     * Transform.
      *
      * @param Ticket $object
      * @param array  $fields
@@ -67,7 +67,7 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
 
         $dates = array($object->date_created, $object->date_status, $object->date_last_agent_reply, $object->date_last_user_reply);
         $dates = Arrays::removeFalsey($dates);
-        $d = max($dates);
+        $d     = max($dates);
         $document->set('date_active', $d->format('Y-m-d H:i:s'));
 
         return $document;

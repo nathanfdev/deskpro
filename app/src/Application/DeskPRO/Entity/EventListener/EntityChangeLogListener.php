@@ -27,7 +27,6 @@
 
 namespace Application\DeskPRO\Entity\EventListener;
 
-use Application\LegacyApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\LogEvent;
@@ -36,6 +35,7 @@ use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\Log\Event\Base as BaseLogEvent;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
 use Application\DeskPRO\People\PersonGuest;
+use Application\LegacyApiBundle\Request\RequestAuth;
 use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 
 abstract class EntityChangeLogListener
@@ -70,7 +70,7 @@ abstract class EntityChangeLogListener
 
         // don't even return a PersonGuest
         if (!$person || $person instanceof PersonGuest) {
-            return null;
+            return;
         }
 
         return $person;
@@ -82,7 +82,7 @@ abstract class EntityChangeLogListener
     protected function tryToGetPersonFromContext()
     {
         $c = $this->container;
-        /** @var RequestAuth $auth */
+        /* @var RequestAuth $auth */
         try {
             if ($c->has('deskpro.api.request_auth') && ($auth = $c->get('deskpro.api.request_auth'))) {
                 if ($apiUser = $auth->getApiUser()) {
@@ -93,7 +93,7 @@ abstract class EntityChangeLogListener
             }
 
             if ($c->has('session') && ($sess = $c->get('session')) && $sess instanceof Session) {
-                /** @var $sess Session */
+                /* @var $sess Session */
                 if ($person = $sess->getPerson()) {
                     return $person;
                 }
@@ -108,7 +108,7 @@ abstract class EntityChangeLogListener
     protected function tryToGetApiKeyFromContext()
     {
         $c = $this->container;
-        /** @var RequestAuth $auth */
+        /* @var RequestAuth $auth */
         try {
             if ($c->has('deskpro.api.request_auth') && ($auth = $c->get('deskpro.api.request_auth'))) {
                 if ($apiUser = $auth->getApiUser()) {
@@ -120,7 +120,8 @@ abstract class EntityChangeLogListener
     }
 
     /**
-     * @param  DomainObject $entity
+     * @param DomainObject $entity
+     *
      * @return array
      */
     protected function getChangesForEntity(DomainObject $entity)

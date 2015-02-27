@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,9 +38,10 @@ use Application\DeskPRO\Tickets\Filters\Terms\FilterQuery;
 class TicketQueryBuilder
 {
     /**
-     * @param  array       $fields
-     * @param  FilterQuery $query
-     * @return array       array('sql' => '...', 'params' => array(...))
+     * @param array       $fields
+     * @param FilterQuery $query
+     *
+     * @return array array('sql' => '...', 'params' => array(...))
      */
     public function getSelectQuery(array $fields, FilterQuery $query)
     {
@@ -70,7 +70,7 @@ class TicketQueryBuilder
         }
 
         $ret_params = array();
-        $query = preg_replace_callback('#__dpparam_.*?__#', function ($m) use (&$ret_params, $param_map) {
+        $query      = preg_replace_callback('#__dpparam_.*?__#', function ($m) use (&$ret_params, $param_map) {
             $ret_params[] = $param_map[$m[0]];
 
             return '?';
@@ -86,8 +86,9 @@ class TicketQueryBuilder
     }
 
     /**
-     * @param  FilterQuery $query
-     * @return array       array('sql' => '...', 'params' => array(...))
+     * @param FilterQuery $query
+     *
+     * @return array array('sql' => '...', 'params' => array(...))
      */
     public function getCountQuery(FilterQuery $query)
     {
@@ -116,7 +117,7 @@ class TicketQueryBuilder
         }
 
         $ret_params = array();
-        $query = preg_replace_callback('#__dpparam_.*?__#', function ($m) use (&$ret_params, $param_map) {
+        $query      = preg_replace_callback('#__dpparam_.*?__#', function ($m) use (&$ret_params, $param_map) {
             $ret_params[] = $param_map[$m[0]];
 
             return '?';

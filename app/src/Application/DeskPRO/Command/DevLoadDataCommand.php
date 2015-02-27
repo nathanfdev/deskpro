@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Command;
@@ -539,7 +537,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
         $person['primary_email_id'] = $email['id'];
         $db->update('people',
             array('primary_email_id' => $email['id']),
-            array('id' => $person['id'])
+            array('id'               => $person['id'])
         );
 
         $this->_applyLabelsDb('person', $person['id']);
@@ -827,15 +825,15 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
     protected function _loadTicketFilter()
     {
         $possible_terms = array(
-            0 => array('type' => 'subject', 'op' => 'contains', 'options' => array('subject' => 'test')),
-            1                                                                                => array('type' => 'urgency', 'op' => 'gte', 'options' => array('num' => '5')),
-            2                                                                                                                                                      => array('type' => 'label', 'op' => 'is', 'options' => array('labels' => array('test'))),
-            3 => array('type' => 'person_email_domain', 'op' => 'is', 'options' => array('email_domain' => 'example.com')),
-            4                                                                                           => array('type' => 'person_contact_phone', 'op' => 'contains', 'options' => array('phone' => '123')),
-            5                                                                                                                                                                                     => array('type' => 'org_label', 'op' => 'is', 'options' => array('label' => 'organization')),
-            6                                                                                                                                                                                                                                                              => array('type' => 'org_email_domain', 'op' => 'is', 'options' => array('email_domain' => 'example.com')),
-            7                                                                                                                                                                                                                                                                                                                                                     => array('type' => 'agent', 'op' => 'is', 'options' => array('agent' => '0')),
-            8                                                                                                                                                                                                                                                                                                                                                                                                                          => array('type' => 'organization', 'op' => 'is', 'options' => array('organization' => $this->_getRandomOrgId())),
+            0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             => array('type' => 'subject', 'op' => 'contains', 'options' => array('subject' => 'test')),
+            1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             => array('type' => 'urgency', 'op' => 'gte', 'options' => array('num' => '5')),
+            2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             => array('type' => 'label', 'op' => 'is', 'options' => array('labels' => array('test'))),
+            3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             => array('type' => 'person_email_domain', 'op' => 'is', 'options' => array('email_domain' => 'example.com')),
+            4                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             => array('type' => 'person_contact_phone', 'op' => 'contains', 'options' => array('phone' => '123')),
+            5                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             => array('type' => 'org_label', 'op' => 'is', 'options' => array('label' => 'organization')),
+            6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             => array('type' => 'org_email_domain', 'op' => 'is', 'options' => array('email_domain' => 'example.com')),
+            7                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             => array('type' => 'agent', 'op' => 'is', 'options' => array('agent' => '0')),
+            8                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             => array('type' => 'organization', 'op' => 'is', 'options' => array('organization' => $this->_getRandomOrgId())),
             9                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             => array(
                 'type'    => 'date_created',
                 'op'      => 'lte',
@@ -1169,7 +1167,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             'date_created' => $this->_getRandomDate('string'),
             'status'       => 'published',
             'person_id'    => $this->_getRandomAgent(true),
-            'category_id'  =>  $this->_getRandomFromCache('news_categories', 'id'),
+            'category_id'  => $this->_getRandomFromCache('news_categories', 'id'),
         );
 
         $ent  = new Entity\News();
@@ -1214,7 +1212,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             'date_created' => $this->_getRandomDate('string'),
             'status'       => 'published',
             'person_id'    => $this->_getRandomAgent(true),
-            'category_id'  =>  $this->_getRandomFromCache('download_categories', 'id'),
+            'category_id'  => $this->_getRandomFromCache('download_categories', 'id'),
         );
 
         $ent      = new Entity\Download();
@@ -1457,7 +1455,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
     protected function _getRandomFromCache($key, $obj_field = null)
     {
         if (!isset($this->_data_cache[$key]) || empty($this->_data_cache[$key])) {
-            return null;
+            return;
         }
 
         $rand = array_rand($this->_data_cache[$key]);
@@ -1484,13 +1482,13 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
     }
 
     protected $_label_type_map = array(
-        'article' => array('labels_articles', 'article_id'),
-        'download' => array('labels_downloads', 'download_id'),
-        'feedback' => array('labels_feedback', 'feedback_id'),
-        'news' => array('labels_news', 'news_id'),
+        'article'      => array('labels_articles', 'article_id'),
+        'download'     => array('labels_downloads', 'download_id'),
+        'feedback'     => array('labels_feedback', 'feedback_id'),
+        'news'         => array('labels_news', 'news_id'),
         'organization' => array('labels_organizations', 'organization_id'),
-        'person' => array('labels_people', 'person_id'),
-        'ticket' => array('labels_tickets', 'ticket_id'),
+        'person'       => array('labels_people', 'person_id'),
+        'ticket'       => array('labels_tickets', 'ticket_id'),
     );
 
     protected function _applyLabelsDb($type, $id)

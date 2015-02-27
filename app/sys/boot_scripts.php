@@ -1,4 +1,6 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 
 $is_authed = false;
 if ((isset($_GET['_']) || isset($_COOKIE['dp_sysscript_'.$_GET['_sys']])) && file_exists(DP_CONFIG_FILE)) {
@@ -11,7 +13,7 @@ if ((isset($_GET['_']) || isset($_COOKIE['dp_sysscript_'.$_GET['_sys']])) && fil
         list($expire_time_enc, $rand_str, $hash) = explode('-', $token, 3);
 
         // Check the hash first
-        $check_hash = sha1($secret . $expire_time_enc . $rand_str);
+        $check_hash = sha1($secret.$expire_time_enc.$rand_str);
 
         if ($check_hash != $hash) {
             return false;
@@ -29,12 +31,12 @@ if ((isset($_GET['_']) || isset($_COOKIE['dp_sysscript_'.$_GET['_sys']])) && fil
     };
 
     if (isset($_GET['_'])) {
-        $is_authed = $check_fn($_GET['_'], md5_file(DP_CONFIG_FILE) . $_GET['_sys']);
+        $is_authed = $check_fn($_GET['_'], md5_file(DP_CONFIG_FILE).$_GET['_sys']);
         if ($is_authed) {
-            setcookie('dp_sysscript_' . $_GET['_sys'], $_GET['_'], time() + 18000, '/');
+            setcookie('dp_sysscript_'.$_GET['_sys'], $_GET['_'], time() + 18000, '/');
         }
     } elseif (isset($_COOKIE['dp_sysscript_'.$_GET['_sys']])) {
-        $is_authed = $check_fn($_COOKIE['dp_sysscript_'.$_GET['_sys']], md5_file(DP_CONFIG_FILE) . $_GET['_sys']);
+        $is_authed = $check_fn($_COOKIE['dp_sysscript_'.$_GET['_sys']], md5_file(DP_CONFIG_FILE).$_GET['_sys']);
     }
 }
 
@@ -43,94 +45,132 @@ switch ($_GET['_sys']) {
         break;
 
     case 'memtest':
-        if (defined('DPC_IS_CLOUD')) exit;
-        if (!$is_authed) die('Invalid auth code.');
-        require DP_ROOT . '/sys/scripts/memtest.php';
+        if (defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+        if (!$is_authed) {
+            die('Invalid auth code.');
+        }
+        require DP_ROOT.'/sys/scripts/memtest.php';
         break;
 
     case 'errorlog':
-        if (defined('DPC_IS_CLOUD')) exit;
-        if (!$is_authed) die('Invalid auth code.');
-        require DP_ROOT . '/sys/scripts/errorlog.php';
+        if (defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+        if (!$is_authed) {
+            die('Invalid auth code.');
+        }
+        require DP_ROOT.'/sys/scripts/errorlog.php';
         break;
 
     case 'check':
-        if (defined('DPC_IS_CLOUD')) exit;
-        require DP_ROOT . '/sys/scripts/check.php';
+        if (defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+        require DP_ROOT.'/sys/scripts/check.php';
         break;
 
     case 'phpinfo':
-        if (defined('DPC_IS_CLOUD')) exit;
-        require DP_ROOT . '/sys/scripts/phpinfo.php';
+        if (defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+        require DP_ROOT.'/sys/scripts/phpinfo.php';
         break;
 
     case 'apc':
-        if (defined('DPC_IS_CLOUD')) exit;
-        if (!$is_authed) die('Invalid auth code.');
-        require DP_ROOT . '/sys/scripts/apc.php';
+        if (defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+        if (!$is_authed) {
+            die('Invalid auth code.');
+        }
+        require DP_ROOT.'/sys/scripts/apc.php';
         break;
 
     case 'opcache':
-        if (defined('DPC_IS_CLOUD')) exit;
-        if (!$is_authed) die('Invalid auth code.');
-        require DP_ROOT . '/sys/scripts/opcache.php';
+        if (defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+        if (!$is_authed) {
+            die('Invalid auth code.');
+        }
+        require DP_ROOT.'/sys/scripts/opcache.php';
         break;
 
     case 'apcclear':
-        if (defined('DPC_IS_CLOUD')) exit;
-        if (!$is_authed) die('Invalid auth code.');
-        require DP_ROOT . '/sys/scripts/apcclear.php';
+        if (defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+        if (!$is_authed) {
+            die('Invalid auth code.');
+        }
+        require DP_ROOT.'/sys/scripts/apcclear.php';
         break;
 
     case 'wincache':
-        if (defined('DPC_IS_CLOUD')) exit;
-        if (!$is_authed) die('Invalid auth code.');
-        require DP_ROOT . '/sys/scripts/wincache.php';
+        if (defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+        if (!$is_authed) {
+            die('Invalid auth code.');
+        }
+        require DP_ROOT.'/sys/scripts/wincache.php';
         break;
 
     case 'checkurl':
-        if (defined('DPC_IS_CLOUD')) exit;
-        require DP_ROOT . '/sys/scripts/checkurl.php';
+        if (defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+        require DP_ROOT.'/sys/scripts/checkurl.php';
         break;
 
     case 'checkurlpath':
-        if (defined('DPC_IS_CLOUD')) exit;
-        require DP_ROOT . '/sys/scripts/checkurlpath.php';
+        if (defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+        require DP_ROOT.'/sys/scripts/checkurlpath.php';
         break;
 
     case 'check_http_method':
-        if (defined('DPC_IS_CLOUD')) exit;
-        require DP_ROOT . '/sys/scripts/check_http_method.php';
+        if (defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+        require DP_ROOT.'/sys/scripts/check_http_method.php';
         break;
 
     case 'dev_run_migrations':
-        if (defined('DPC_IS_CLOUD')) exit;
-        if (!$is_authed) die('Invalid auth code.');
-        require DP_ROOT . '/sys/scripts/dev_run_migrations.php';
+        if (defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+        if (!$is_authed) {
+            die('Invalid auth code.');
+        }
+        require DP_ROOT.'/sys/scripts/dev_run_migrations.php';
         break;
 
     case 'savemail':
-        require DP_ROOT . '/sys/scripts/savemail.php';
+        require DP_ROOT.'/sys/scripts/savemail.php';
         break;
 
     case 'save_failed_sendmail':
-        require DP_ROOT . '/sys/scripts/failed_sendmail_job.php';
+        require DP_ROOT.'/sys/scripts/failed_sendmail_job.php';
         break;
 
     case 'chat_status':
-        require DP_ROOT . '/sys/scripts/chat_status.php';
+        require DP_ROOT.'/sys/scripts/chat_status.php';
         break;
 
     case 'ping':
-        require DP_ROOT . '/sys/scripts/ping.php';
+        require DP_ROOT.'/sys/scripts/ping.php';
         break;
 
     case 'rewrite_loop_detected':
-        require DP_ROOT . '/sys/scripts/rewrite_loop_detected.php';
+        require DP_ROOT.'/sys/scripts/rewrite_loop_detected.php';
         break;
 
     case 'licinfo':
-        require DP_ROOT . '/sys/scripts/licinfo.php';
+        require DP_ROOT.'/sys/scripts/licinfo.php';
         break;
 
     case 'smtp_event':

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,26 +37,23 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Custom data
+ * Custom data.
  */
 class CustomDataFeedback extends CustomDataAbstract
 {
     /**
      * @var \Application\DeskPRO\Entity\Feedback
      */
-
     protected $feedback;
 
     /**
      * @var \Application\DeskPRO\Entity\CustomDefFeedback
      */
-
     protected $field = null;
 
     /**
      * @var \Application\DeskPRO\Entity\CustomDefFeedback
      */
-
     protected $root_field = null;
 
     public function getFeedbackId()
@@ -77,7 +73,7 @@ class CustomDataFeedback extends CustomDataAbstract
             array(
                  'name'    => 'custom_data_feedback',
                  'indexes' => array(
-                     'obj_id_idx'   => array('columns' => array(0 => 'feedback_id')),
+                     'obj_id_idx'                                 => array('columns' => array(0 => 'feedback_id')),
                      'field_id_idx'                               => array('columns' => array(0 => 'field_id', 1 => 'feedback_id')),
                  ),
             )

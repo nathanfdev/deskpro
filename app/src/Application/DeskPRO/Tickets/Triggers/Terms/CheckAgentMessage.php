@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks the agent-added message
+ * Checks the agent-added message.
  *
  * @option string message
  * @option bool disable_full Do not check the full, raw message, only the cleaned cut one
@@ -63,7 +62,7 @@ class CheckAgentMessage extends AbstractTriggerTerm
     public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
     {
         $options = $this->getTermOptions();
-        $state = $ticket->getStateChangeRecorder();
+        $state   = $ticket->getStateChangeRecorder();
 
         if (!$state->hasNewAgentReply()) {
             if ($this->getTermOperator() == 'not_isset') {

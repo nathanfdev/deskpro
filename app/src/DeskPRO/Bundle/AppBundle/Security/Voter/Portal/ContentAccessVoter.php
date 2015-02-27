@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
@@ -41,14 +38,14 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
  */
 class ContentAccessVoter extends AbstractVoter
 {
-    const VIEW_DOWNLOAD = 'VIEW_DOWNLOAD';
+    const VIEW_DOWNLOAD          = 'VIEW_DOWNLOAD';
     const VIEW_DOWNLOAD_CATEGORY = 'VIEW_DOWNLOAD_CATEGORY';
-    const DOWNLOAD_DOWNLOAD = 'DOWNLOAD_DOWNLOAD';
+    const DOWNLOAD_DOWNLOAD      = 'DOWNLOAD_DOWNLOAD';
 
-    const VIEW_ARTICLE = 'VIEW_ARTICLE';
+    const VIEW_ARTICLE          = 'VIEW_ARTICLE';
     const VIEW_ARTICLE_CATEGORY = 'VIEW_ARTICLE_CATEGORY';
 
-    const VIEW_NEWS = 'VIEW_NEWS';
+    const VIEW_NEWS          = 'VIEW_NEWS';
     const VIEW_NEWS_CATEGORY = 'VIEW_NEWS_CATEGORY';
 
     const VIEW_FEEDBACK = 'VIEW_FEEDBACK';
@@ -87,7 +84,7 @@ class ContentAccessVoter extends AbstractVoter
     }
 
     /**
-     * Return an array of supported classes. This will be called by supportsClass
+     * Return an array of supported classes. This will be called by supportsClass.
      *
      * @return array an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
      */

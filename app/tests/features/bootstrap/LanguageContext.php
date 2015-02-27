@@ -26,24 +26,17 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpBehat;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
 use Application\DeskPRO\Languages\LangPackInfo;
+use Behat\Gherkin\Node\TableNode;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
-use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
-use Behat\Gherkin\Node\TableNode;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 class LanguageContext extends BasePortalContext
 {
@@ -69,12 +62,11 @@ class LanguageContext extends BasePortalContext
         EntityManager $em,
         LanguageRepo $lang_repo,
         LanguageStack $lang_stack
-    )
-    {
+    ) {
         $this->language_manager = $language_manager;
-        $this->em = $em;
-        $this->lang_repo = $lang_repo;
-        $this->lang_stack = $lang_stack;
+        $this->em               = $em;
+        $this->lang_repo        = $lang_repo;
+        $this->lang_stack       = $lang_stack;
     }
 
     /**
@@ -98,7 +90,7 @@ class LanguageContext extends BasePortalContext
 
         // add new if not existing
         $langpacks = new LangPackInfo();
-        foreach($langs as $lang) {
+        foreach ($langs as $lang) {
             if (!$this->language_manager->getLanguageBySystemName($lang)) {
                 $new_lang = $langpacks->newLanguageEntity($lang);
                 $this->em->persist($new_lang);

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Search
  */
 
@@ -48,7 +47,8 @@ interface ContentTypeInterface
     /**
      * Convert a result from a search into the real content object.
      *
-     * @param  \Application\DeskPRO\Search\SearcherResult\ResultInterface $result
+     * @param \Application\DeskPRO\Search\SearcherResult\ResultInterface $result
+     *
      * @return mixed
      */
     public function resultToObject(ResultInterface $result);
@@ -61,7 +61,8 @@ interface ContentTypeInterface
      *
      * IMPORTANT: Array should be keyed by the object ID.
      *
-     * @param  \Application\DeskPRO\Search\SearcherResult\ResultInterface[] $result
+     * @param \Application\DeskPRO\Search\SearcherResult\ResultInterface[] $result
+     *
      * @return array
      */
     public function resultsToObjects(array $results);
@@ -69,7 +70,8 @@ interface ContentTypeInterface
     /**
      * Transforms an object into a document, suitable for indexing.
      *
-     * @param  mixed                                                 $object
+     * @param mixed $object
+     *
      * @return \Application\DeskPRO\Search\Indexer\DocumentInterface
      */
     public function objectToDocument($object);

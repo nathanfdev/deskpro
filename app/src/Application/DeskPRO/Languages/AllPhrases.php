@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Languages;
@@ -36,7 +34,7 @@ namespace Application\DeskPRO\Languages;
 use Symfony\Component\Finder\Finder;
 
 /**
- * This is a simple fileystem reader that loads all phrases from all files under a directory
+ * This is a simple fileystem reader that loads all phrases from all files under a directory.
  */
 class AllPhrases
 {
@@ -91,7 +89,7 @@ class AllPhrases
         $finder = Finder::create()->files()->name('*.php')->in(array($this->dir));
 
         foreach ($finder as $file) {
-            /** @var $file \SplFileInfo */
+            /* @var $file \SplFileInfo */
             $path = $file->getRealPath();
 
             $phrase_group = include $path;

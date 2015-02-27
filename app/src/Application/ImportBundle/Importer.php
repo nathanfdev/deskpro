@@ -28,32 +28,31 @@
 namespace Application\ImportBundle;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\ImportBundle\ArrayParser\DownloadArrayParser;
+use Application\ImportBundle\ArrayParser\FeedbackArrayParser;
+use Application\ImportBundle\ArrayParser\KbArrayParser;
+use Application\ImportBundle\ArrayParser\NewsArrayParser;
+use Application\ImportBundle\ArrayParser\PersonArrayParser;
+use Application\ImportBundle\ArrayParser\TicketArrayParser;
 use Application\ImportBundle\Exception\BadDataException;
 use Application\ImportBundle\Exception\DuplicateValueException;
 use Application\ImportBundle\Exception\MissingMappingException;
 use Application\ImportBundle\Exception\MultipleMappingException;
+use Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper\MapperInterface;
 use Application\ImportBundle\JsonReader\JsonReader;
 use Application\ImportBundle\JsonReader\JsonReaderInterface;
 use Application\ImportBundle\RecordMapper\CommonRecordMapper;
-use Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper\MapperInterface;
+use Application\ImportBundle\RecordMapper\CustomDefTicketRecordMapper;
+use Application\ImportBundle\RecordMapper\PersonRecordMapper;
 use Application\ImportBundle\RecordMapper\RecordMapperRegistry;
 use Application\ImportBundle\RecordMapper\TicketDepartmentRecordMapper;
-use Application\ImportBundle\RecordMapper\TicketStatusRecordMapper;
-use Application\ImportBundle\RecordMapper\PersonRecordMapper;
-use Application\ImportBundle\RecordMapper\CustomDefTicketRecordMapper;
-use Application\ImportBundle\ArrayParser\PersonArrayParser;
-use Application\ImportBundle\ArrayParser\TicketArrayParser;
-use Application\ImportBundle\ArrayParser\KbArrayParser;
-use Application\ImportBundle\ArrayParser\NewsArrayParser;
-use Application\ImportBundle\ArrayParser\FeedbackArrayParser;
-use Application\ImportBundle\ArrayParser\DownloadArrayParser;
 use Application\ImportBundle\ValueImporter\AbstractValueImporter;
-use Application\ImportBundle\ValueImporter\PersonValueImporter;
-use Application\ImportBundle\ValueImporter\TicketValueImporter;
+use Application\ImportBundle\ValueImporter\DownloadValueImporter;
+use Application\ImportBundle\ValueImporter\FeedbackValueImporter;
 use Application\ImportBundle\ValueImporter\KbValueImporter;
 use Application\ImportBundle\ValueImporter\NewsValueImporter;
-use Application\ImportBundle\ValueImporter\FeedbackValueImporter;
-use Application\ImportBundle\ValueImporter\DownloadValueImporter;
+use Application\ImportBundle\ValueImporter\PersonValueImporter;
+use Application\ImportBundle\ValueImporter\TicketValueImporter;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -61,8 +60,7 @@ use Orb\Util\Util;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class Importer
- * @package Application\ImportBundle
+ * Class Importer.
  *
  * @deprecated Use DeskPro import generator writer instead
  */
@@ -111,7 +109,7 @@ class Importer
     private $json_reader;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param DeskproContainer $container
      * @param ImporterConfig   $config
@@ -150,9 +148,9 @@ class Importer
             $logger = new Logger('importer');
         }
         if ($config->log_path) {
-            $logger->pushHandler(new StreamHandler($config->log_path . '.full.log', Logger::INFO));
-            $logger->pushHandler(new StreamHandler($config->log_path . '.notice.log', Logger::NOTICE));
-            $logger->pushHandler(new StreamHandler($config->log_path . '.error.log', Logger::ERROR));
+            $logger->pushHandler(new StreamHandler($config->log_path.'.full.log', Logger::INFO));
+            $logger->pushHandler(new StreamHandler($config->log_path.'.notice.log', Logger::NOTICE));
+            $logger->pushHandler(new StreamHandler($config->log_path.'.error.log', Logger::ERROR));
         }
 
         $this->logger = $logger;
@@ -172,8 +170,8 @@ class Importer
     public function resetDoneMarkers()
     {
         foreach ($this->json_reader->getIterator($this->config->data_path, false) as $file) {
-            if (file_exists($file->getPath() . '.done')) {
-                unlink(@file_exists($file->getPath() . '.done'));
+            if (file_exists($file->getPath().'.done')) {
+                unlink(@file_exists($file->getPath().'.done'));
 
                 if ($this->status_callback) {
                     $this->status_callback->postResetDoneMarker($this, $file);
@@ -235,8 +233,8 @@ class Importer
     }
 
     /**
-     * @param  string                $dir
-     * @param  AbstractValueImporter $value_importer
+     * @param string                $dir
+     * @param AbstractValueImporter $value_importer
      * @param  $callback
      *
      * @throws \Exception
@@ -248,26 +246,26 @@ class Importer
         }
 
         $step_start = microtime(true);
-        $it = $this->json_reader->getIterator($this->config->data_path . '/' . $dir, true);
+        $it         = $this->json_reader->getIterator($this->config->data_path.'/'.$dir, true);
 
         $count = 0;
         foreach ($it as $file) {
             $count++;
-            /** @var \SplFileInfo $file */
+            /* @var \SplFileInfo $file */
             $json = @file_get_contents($file->getRealPath());
 
             if ($this->status_callback) {
                 $this->status_callback->preImportValueRead($this, $value_importer, $file, $count);
             }
             if (!$json) {
-                $this->getLogger()->warning("File is not readable or empty: " . $file->getRealPath());
+                $this->getLogger()->warning("File is not readable or empty: ".$file->getRealPath());
                 continue;
             }
 
             $data = json_decode($json, true);
             unset($json);
             if (!$data) {
-                $this->getLogger()->warning("Invalid JSON data file: " . $file->getRealPath());
+                $this->getLogger()->warning("Invalid JSON data file: ".$file->getRealPath());
                 continue;
             }
 
@@ -310,31 +308,26 @@ class Importer
                 if ($this->status_callback) {
                     $this->status_callback->postImportValue($this, $value_importer, $file, $count, $data, microtime(true) - $start);
                 }
-
             } catch (BadDataException $ex) {
                 $this->getLogger()->warning(sprintf(
                     "Invalid or missing data in file (@%s) -- %s",
                     $file->getRealPath(), $ex->getMessage()
                 ));
-
             } catch (DuplicateValueException $ex) {
                 $this->getLogger()->warning(sprintf(
                     "Duplicate value detected (@%s) -- %s",
                     $file->getRealPath(), $ex->getMessage()
                 ));
-
             } catch (MissingMappingException $ex) {
                 $this->getLogger()->warning(sprintf(
                     "Invalid mapping detected (@%s) -- %s",
                     $file->getRealPath(), $ex->getMessage()
                 ));
-
             } catch (MultipleMappingException $ex) {
                 $this->getLogger()->warning(sprintf(
                     "Multiple candidate mappings detected (@%s) -- %s",
                     $file->getRealPath(), $ex->getMessage()
                 ));
-
             } catch (\Exception $ex) {
                 $this->getLogger()->critical(sprintf(
                     "Unhandled exception while processing (@%s) -- %s\n%s",

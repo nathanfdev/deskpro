@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tools
+ * DeskPRO.
  */
 
 namespace DeskPRO\Tools;
@@ -184,12 +181,14 @@ class Upgrade
 
     /**
      * @var array
+     *
      * @see getLatestVersion()
      */
     protected $latest_version = null;
 
     /**
      * @var resource
+     *
      * @see log
      */
     protected $log_fh;
@@ -206,7 +205,8 @@ class Upgrade
 
     /**
      * 'files' to revert files
-     * 'db' to revert files and db
+     * 'db' to revert files and db.
+     *
      * @var string
      */
     protected $revert_checkpoint;
@@ -321,9 +321,10 @@ class Upgrade
     }
 
     /**
-     * Log a message
+     * Log a message.
      *
      * @param $string
+     *
      * @throws \Exception
      */
     public function log($string)
@@ -353,7 +354,7 @@ class Upgrade
     }
 
     /**
-     * Log an exception
+     * Log an exception.
      *
      * @param \Exception $e
      */
@@ -1087,13 +1088,13 @@ class Upgrade
         }
 
         $fileutil->removeUnknownFiles(
-            $tmp_dir    . str_replace('/', DIRECTORY_SEPARATOR, '/web/bower_components/'),
-            DP_WEB_ROOT . str_replace('/', DIRECTORY_SEPARATOR, '/web/bower_components/'),
+            $tmp_dir.str_replace('/', DIRECTORY_SEPARATOR, '/web/bower_components/'),
+            DP_WEB_ROOT.str_replace('/', DIRECTORY_SEPARATOR, '/web/bower_components/'),
             array(),
             $failures
         );
         if ($failures) {
-            $this->outAndLog("Failed to delete these old files:\n" . implode("\n", $failures));
+            $this->outAndLog("Failed to delete these old files:\n".implode("\n", $failures));
         }
 
         $this->registerCleanupParam('unlink_scratch_dir', null);
@@ -1322,7 +1323,7 @@ class Upgrade
     }
 
     /**
-     * Drops everything from the current database, then installs dump
+     * Drops everything from the current database, then installs dump.
      *
      * @param string $zip_path
      */
@@ -1555,6 +1556,7 @@ class Upgrade
      * into the backups directory.
      *
      * @param $save_path
+     *
      * @return string The path it was saved to
      */
     public function downloadLatest($save_path = null, $_attempt = 0)
@@ -1754,7 +1756,7 @@ class Upgrade
     }
 
     /**
-     * Copy of KernelErrorHandler::getExceptionInfo
+     * Copy of KernelErrorHandler::getExceptionInfo.
      */
     public static function getExceptionInfo(\Exception $exception)
     {
@@ -1814,7 +1816,7 @@ class Upgrade
     }
 
     /**
-     * Copy of KernelErrorHandler::formatBacktrace
+     * Copy of KernelErrorHandler::formatBacktrace.
      */
     public static function formatBacktrace(array $backtrace)
     {
@@ -1852,7 +1854,7 @@ class Upgrade
     }
 
     /**
-     * Copy of KernelErrorHandler::varToString
+     * Copy of KernelErrorHandler::varToString.
      */
     public static function varToString($var, $_depth = 0)
     {
@@ -1919,9 +1921,10 @@ class Upgrade
     /**
      * Executes a $command in $dir, puts the output in $out, and returns the status of the command.
      *
-     * @param  string $command
-     * @param  string $dir
-     * @param  array  $out
+     * @param string $command
+     * @param string $dir
+     * @param array  $out
+     *
      * @return int
      */
     public function execCommand($command, $dir = null, &$out = null)
@@ -1980,9 +1983,10 @@ class Upgrade
     }
 
     /**
-     * Formats a build as a time
+     * Formats a build as a time.
      *
      * @param $build
+     *
      * @return string
      */
     public function formatBuild($build)
@@ -1991,10 +1995,11 @@ class Upgrade
     }
 
     /**
-     * Call a DeskPRO service
+     * Call a DeskPRO service.
      *
-     * @param  string $endpoint
-     * @param  array  $post_data
+     * @param string $endpoint
+     * @param array  $post_data
+     *
      * @return array
      */
     public function callService($endpoint, array $post_data = array(), $url = null)
@@ -2009,8 +2014,9 @@ class Upgrade
     }
 
     /**
-     * @param  string $url
-     * @param  array  $post_data
+     * @param string $url
+     * @param array  $post_data
+     *
      * @return array
      */
     public function fetchServiceResult($url, array $post_data = array())
@@ -2036,7 +2042,7 @@ class Upgrade
     }
 
     /**
-     * Register a cleanup param
+     * Register a cleanup param.
      *
      * @param string $name
      * @param string $value
@@ -2057,7 +2063,9 @@ class Upgrade
 
     /**
      * @static
-     * @param  int    $bytes
+     *
+     * @param int $bytes
+     *
      * @return string
      */
     public static function getFilesizeDisplay($bytes)
@@ -2486,7 +2494,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
             $decorated = false;
         }
         $this->outputFormatter = new \Symfony\Component\Console\Formatter\OutputFormatter($decorated, array(
-            'title' => new \Symfony\Component\Console\Formatter\OutputFormatterStyle('white', 'blue', array('bold')),
+            'title'  => new \Symfony\Component\Console\Formatter\OutputFormatterStyle('white', 'blue', array('bold')),
             'note'   => new \Symfony\Component\Console\Formatter\OutputFormatterStyle('yellow', null),
             'prompt' => new \Symfony\Component\Console\Formatter\OutputFormatterStyle('cyan', 'black'),
         ));
@@ -2695,7 +2703,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
     }
 
     /**
-     * Download and install updates
+     * Download and install updates.
      */
     public function runAction_downloadAndInstallChoice()
     {
@@ -2880,7 +2888,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
     }
 
     /**
-     * Running just the upgrade against currently file sources
+     * Running just the upgrade against currently file sources.
      */
     public function runAction_checkAndUpgrade()
     {
@@ -3050,7 +3058,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
     }
 
     /**
-     * Infinite spinner
+     * Infinite spinner.
      */
     public function spinner($message = '')
     {
@@ -3089,7 +3097,7 @@ class UpgradeInteractive implements \Symfony\Component\Console\Output\OutputInte
     }
 
     /**
-     * Clear the spinner form the line
+     * Clear the spinner form the line.
      */
     public function clearSpinner()
     {
@@ -3254,15 +3262,17 @@ interface DpZip
      * If a directory, the ZIP should be created at the root. E.g., extracting
      * should extract into the cwd.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return string
      */
     public function compressFile($path);
 
     /**
-     * Decompress a zip file
+     * Decompress a zip file.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return string
      */
     public function decompressZip($path, $to = null);
@@ -3424,12 +3434,12 @@ class Zip_PclZip implements DpZip
 ########################################################################################################################
 
 /**
- * Exception thrown when trying to request a DeskPRO service
+ * Exception thrown when trying to request a DeskPRO service.
  */
 class ServiceCallException extends \Exception
 {
     /**
-     * An empty response from the server
+     * An empty response from the server.
      */
     const NO_RESPONSE      = 100;
 
@@ -3440,106 +3450,106 @@ class ServiceCallException extends \Exception
 }
 
 /**
- * Exception thrown when trying to perform a MySQL backup
+ * Exception thrown when trying to perform a MySQL backup.
  */
 class MysqlBackupException extends \Exception
 {
     /**
-     * We dont know where mysqldump is
+     * We dont know where mysqldump is.
      */
     const NO_MYSQLDUMP = 100;
 
     /**
-     * The dump target file already exists
+     * The dump target file already exists.
      */
     const FILE_EXISTS  = 200;
 
     /**
-     * mysqldump exited with an error status
+     * mysqldump exited with an error status.
      */
     const DUMP_ERROR   = 300;
 }
 
 /**
- * Exception thrown when trying to perform a MySQL backup
+ * Exception thrown when trying to perform a MySQL backup.
  */
 class MysqlRestoreException extends \Exception
 {
     /**
-     * We dont know where mysql is
+     * We dont know where mysql is.
      */
     const NO_MYSQL = 100;
 
     /**
-     * The dump file doesnt exist
+     * The dump file doesnt exist.
      */
     const BAD_ZIP = 200;
 
     /**
-     * mysqldump exited with an error status
+     * mysqldump exited with an error status.
      */
     const RESTORE_ERROR   = 300;
 
     /**
-     * There was a problem trying to extract the zip
+     * There was a problem trying to extract the zip.
      */
     const EXTRACT_ERROR = 400;
 }
 
 /**
- * Exception thrown when trying to perform a file backup
+ * Exception thrown when trying to perform a file backup.
  */
 class FileBackupException extends \Exception
 {
     /**
-     * The target backup dir exists
+     * The target backup dir exists.
      */
     const FILE_EXISTS = 100;
 
     /**
-     * There was an error to do with permissions
+     * There was an error to do with permissions.
      */
     const PERM_ERROR  = 200;
 }
 
 /**
- * Exception thrown when trying to download latest distro
+ * Exception thrown when trying to download latest distro.
  */
 class DownloadException extends \Exception
 {
     /**
-     * The target file already exists
+     * The target file already exists.
      */
     const FILE_EXISTS = 100;
 
     /**
-     * The target directory to put the distro into doesnt exist
+     * The target directory to put the distro into doesnt exist.
      */
     const NO_DIR      = 200;
 
     /**
-     * Couldnt write the distro to the target
+     * Couldnt write the distro to the target.
      */
     const PERM_ERROR  = 300;
 
     /**
-     * The distro appears to be corrupted
+     * The distro appears to be corrupted.
      */
     const BAD_FILE    = 400;
 }
 
 /**
- * Exception thrown when trying to upgrade files on the filesystem from a zip
+ * Exception thrown when trying to upgrade files on the filesystem from a zip.
  */
 class UpgradeFilesException extends \Exception
 {
     /**
-     * The zip doesnt exist or appears to be invalid
+     * The zip doesnt exist or appears to be invalid.
      */
     const BAD_ZIP       = 100;
 
     /**
-     * There was a problem trying to extract the zip
+     * There was a problem trying to extract the zip.
      */
     const EXTRACT_ERROR = 200;
 
@@ -3551,12 +3561,12 @@ class UpgradeFilesException extends \Exception
 }
 
 /**
- * Exception thrown when trying to upgrade files on the filesystem from a zip
+ * Exception thrown when trying to upgrade files on the filesystem from a zip.
  */
 class ZipException extends \Exception
 {
     /**
-     * No way to create zips
+     * No way to create zips.
      */
     const NO_STRATEGY       = 100;
 }

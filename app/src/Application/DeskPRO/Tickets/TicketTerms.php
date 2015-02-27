@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Tickets;
 
@@ -109,9 +107,10 @@ class TicketTerms
     }
 
     /**
-     * Check if there is a certain term in this collection
+     * Check if there is a certain term in this collection.
      *
-     * @param  string $type
+     * @param string $type
+     *
      * @return bool
      */
     public function hasTicketTerm($type)
@@ -120,8 +119,9 @@ class TicketTerms
     }
 
     /**
-     * @param  string $type
-     * @param  bool   $first
+     * @param string $type
+     * @param bool   $first
+     *
      * @return array
      */
     public function getTicketTerm($type, $first = true)
@@ -148,7 +148,8 @@ class TicketTerms
     /**
      * Check a specific ticket against these terms to see if it matches.
      *
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return bool
      */
     public function doesTicketMatch(Entity\Ticket $ticket)
@@ -163,7 +164,7 @@ class TicketTerms
                 continue;
             }
 
-            $op = $info['op'];
+            $op     = $info['op'];
             $choice = $info['options'];
 
             if (strpos($op, 'changed') !== false) {
@@ -185,7 +186,8 @@ class TicketTerms
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return bool
      */
     public function doesTicketMatchAny(Entity\Ticket $ticket)
@@ -200,7 +202,7 @@ class TicketTerms
                 continue;
             }
 
-            $op = $info['op'];
+            $op     = $info['op'];
             $choice = $info['options'];
 
             if (strpos($op, 'changed') !== false) {
@@ -220,10 +222,11 @@ class TicketTerms
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
-     * @param  string                             $term
-     * @param  string                             $op
-     * @param  mixed                              $choice
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * @param string                             $term
+     * @param string                             $op
+     * @param mixed                              $choice
+     *
      * @return bool
      */
     public function testChangedTerm(Entity\Ticket $ticket, $term, $op, $choice)
@@ -269,10 +272,11 @@ class TicketTerms
     }
 
     /**
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
-     * @param  string                             $term
-     * @param  string                             $op
-     * @param  mixed                              $choice
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * @param string                             $term
+     * @param string                             $op
+     * @param mixed                              $choice
+     *
      * @return bool
      */
     public function testTerm(Entity\Ticket $ticket, $term, $op, $choice)
@@ -280,10 +284,10 @@ class TicketTerms
         $tracker = $this->tracker;
 
         // $term of people_field[12] becomes $term=people_field, $term_id=12 etc
-        $m = null;
+        $m       = null;
         $term_id = null;
         if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
-            $term = $m[1];
+            $term    = $m[1];
             $term_id = $m[2];
         }
 
@@ -368,7 +372,7 @@ class TicketTerms
                     }
                 } else {
                     $agent_ids = $choice['agent_ids'];
-                    $any = false;
+                    $any       = false;
                     foreach ($agent_ids as $id) {
                         if ($person->getId() == $id) {
                             $any = true;
@@ -499,7 +503,7 @@ class TicketTerms
 
                 $check = strtolower($choice['email_address']);
 
-                $tos = $ticket->email_reader->getToAddresses();
+                $tos   = $ticket->email_reader->getToAddresses();
                 $match = false;
                 foreach ($tos as $to) {
                     $to = $to->getEmail();
@@ -523,7 +527,7 @@ class TicketTerms
 
                 $check = strtolower($choice['name']);
 
-                $tos = $ticket->email_reader->getToAddresses();
+                $tos   = $ticket->email_reader->getToAddresses();
                 $match = false;
                 foreach ($tos as $to) {
                     $to = $to->getName();
@@ -547,7 +551,7 @@ class TicketTerms
 
                 $check = strtolower($choice['email_address']);
 
-                $tos = $ticket->email_reader->getCcAddresses();
+                $tos   = $ticket->email_reader->getCcAddresses();
                 $match = false;
                 foreach ($tos as $to) {
                     $to = $to->getEmail();
@@ -571,7 +575,7 @@ class TicketTerms
 
                 $check = strtolower($choice['name']);
 
-                $tos = $ticket->email_reader->getCcAddresses();
+                $tos   = $ticket->email_reader->getCcAddresses();
                 $match = false;
                 foreach ($tos as $to) {
                     $to = $to->getName();
@@ -716,7 +720,7 @@ class TicketTerms
             case 'day_created':
 
                 $days = isset($choice['days']) ? (array) $choice['days'] : array();
-                $day = $ticket->person->getDateForTime('@'.$ticket->date_created->getTimestamp())->format('w');
+                $day  = $ticket->person->getDateForTime('@'.$ticket->date_created->getTimestamp())->format('w');
 
                 if (!in_array($day, $days)) {
                     return false;
@@ -758,7 +762,7 @@ class TicketTerms
             case 'current_day':
 
                 $days = isset($choice['days']) ? (array) $choice['days'] : array();
-                $day = $ticket->person->getDateForTime('@'.time())->format('w');
+                $day  = $ticket->person->getDateForTime('@'.time())->format('w');
 
                 if (!in_array($day, $days)) {
                     return false;
@@ -1023,7 +1027,7 @@ class TicketTerms
                 $choice = array_pop($choice);
 
                 $choice = strtolower($choice);
-                $has = $ticket->hasSentToAddress($choice);
+                $has    = $ticket->hasSentToAddress($choice);
 
                 switch ($op) {
                     case self::OP_IS:
@@ -1176,7 +1180,7 @@ class TicketTerms
 
             case TicketSearch::TERM_SLA_STATUS:
                 $sla_status = $choice['sla_status'];
-                $sla_id = $choice['sla_id'];
+                $sla_id     = $choice['sla_id'];
 
                 if ($op == self::OP_IS) {
                     $op = self::OP_CONTAINS;
@@ -1250,7 +1254,7 @@ class TicketTerms
                     $choice = array_pop($choice);
                 }
 
-                $name = $org ? strtolower($org->name) : '';
+                $name   = $org ? strtolower($org->name) : '';
                 $choice = strtolower($choice);
 
                 switch ($op) {
@@ -1393,7 +1397,7 @@ class TicketTerms
                     }
                 } else {
                     $managers = App::getEntityRepository('DeskPRO:Organization')->getManagers($org);
-                    $exists = count($managers) > 0;
+                    $exists   = count($managers) > 0;
 
                     if ($op == self::OP_IS && !$exists) {
                         return false;
@@ -1414,24 +1418,25 @@ class TicketTerms
     }
 
     /**
-     * @param  string    $type    The custom field type: CustomDefTicket or CustomDefPerson
-     * @param  int       $term_id The field ID
-     * @param  string    $op      The test operation
-     * @param  mixed     $choice  The value to test against
-     * @param  mixed     $obj     The ticket or person object
+     * @param string $type    The custom field type: CustomDefTicket or CustomDefPerson
+     * @param int    $term_id The field ID
+     * @param string $op      The test operation
+     * @param mixed  $choice  The value to test against
+     * @param mixed  $obj     The ticket or person object
+     *
      * @return bool|null
      */
     protected function testCustomField($type, $term_id, $op, $choice, $obj)
     {
         $field = App::getEntityRepository('DeskPRO:'.$type)->find($term_id);
         if (!$field) {
-            return null;
+            return;
         }
 
         $search_type = $field->getHandler()->getSearchType();
 
         if (!isset($choice['custom_fields']['field_'.$term_id])) {
-            return null;
+            return;
         }
 
         $choice = $choice['custom_fields']['field_'.$term_id];
@@ -1514,9 +1519,10 @@ class TicketTerms
     }
 
     /**
-     * @param  mixed  $value
-     * @param  string $op
-     * @param  mixed  $choice
+     * @param mixed  $value
+     * @param string $op
+     * @param mixed  $choice
+     *
      * @return bool
      */
     protected function _testChoiceMatch($value, $op, $choice)
@@ -1539,11 +1545,12 @@ class TicketTerms
     }
 
     /**
-     * @param  mixed  $value
-     * @param  string $op
-     * @param  mixed  $choice
-     * @param  bool   $suffix_only
-     * @param  bool   $force_like
+     * @param mixed  $value
+     * @param string $op
+     * @param mixed  $choice
+     * @param bool   $suffix_only
+     * @param bool   $force_like
+     *
      * @return bool
      */
     protected function _testStringMatch($value, $op, $choice, $suffix_only = false, $force_like = false)
@@ -1615,9 +1622,10 @@ class TicketTerms
     }
 
     /**
-     * @param  string $value
-     * @param  string $op
-     * @param  string $choice
+     * @param string $value
+     * @param string $op
+     * @param string $choice
+     *
      * @return bool
      */
     protected function _testDateMatch($value, $op, $choice)
@@ -1718,7 +1726,8 @@ class TicketTerms
      * Note that this just generates the tests, so any implementation still has to wrap it in a function
      * body etc.
      *
-     * @param  string $mode 'all' or 'any'
+     * @param string $mode 'all' or 'any'
+     *
      * @return string
      */
     public function compileTermsToJavascript($mode = 'all')
@@ -1726,16 +1735,16 @@ class TicketTerms
         $js = array();
 
         if ($mode == 'all') {
-            $test_pass = '';
-            $test_fail = 'return false;';
+            $test_pass   = '';
+            $test_fail   = 'return false;';
             $test_bottom = 'return true;';
         } else {
-            $test_pass = 'return true;';
-            $test_fail = '';
+            $test_pass   = 'return true;';
+            $test_fail   = '';
             $test_bottom = 'return false;';
         }
 
-        $rb = \Application\DeskPRO\UI\RuleBuilder::newTermsBuilder();
+        $rb    = \Application\DeskPRO\UI\RuleBuilder::newTermsBuilder();
         $terms = $rb->readForm($this->terms);
 
         foreach ($terms as $info) {
@@ -1745,7 +1754,7 @@ class TicketTerms
                 continue;
             }
 
-            $op = $info['op'];
+            $op     = $info['op'];
             $choice = $info['options'];
 
             if (count($choice) == 1) {
@@ -1803,9 +1812,10 @@ class TicketTerms
     }
 
     /**
-     * @param  mixed  $value
-     * @param  string $op
-     * @param  string $choice
+     * @param mixed  $value
+     * @param string $op
+     * @param string $choice
+     *
      * @return string
      */
     protected function _compileJsChoiceTermCondition($value, $op, $choice)
@@ -1866,7 +1876,7 @@ class TicketTerms
                 continue;
             }
 
-            $op = $info['op'];
+            $op     = $info['op'];
             $choice = $info['options'];
 
             if (strpos($op, 'changed') !== false) {
@@ -1888,11 +1898,12 @@ class TicketTerms
     }
 
     /**
-     * Compiles a term into an english phrase to describe the test
+     * Compiles a term into an english phrase to describe the test.
      *
-     * @param  string $term
-     * @param  string $op
-     * @param  mixed  $choice
+     * @param string $term
+     * @param string $op
+     * @param mixed  $choice
+     *
      * @return string
      */
     public function getTermDescription($term, $op, $choice, $as_html = false)

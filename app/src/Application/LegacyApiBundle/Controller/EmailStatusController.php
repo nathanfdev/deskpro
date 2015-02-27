@@ -26,20 +26,17 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\Email\EmailSource\Finder as EmailSourceFinder;
 use Application\DeskPRO\Email\EmailSource\FinderFilter as EmailSourceFinderFilter;
 use Application\DeskPRO\Email\SendmailSource\Finder as SendmailSourceFinder;
 use Application\DeskPRO\Email\SendmailSource\FinderFilter as SendmailSourceFinderFilter;
 use Application\DeskPRO\EmailGateway\Runner;
+use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Strings;
 
@@ -63,9 +60,9 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         # Filter options
         #------------------------------
 
-        $filter = new EmailSourceFinderFilter();
+        $filter       = new EmailSourceFinderFilter();
         $filter_input = $this->in->getArrayValue('filter');
-        $form = $this->createFormBuilder($filter)
+        $form         = $this->createFormBuilder($filter)
             ->add('page', 'text')
             ->add('statuses', 'choice', array(
                 'choices'  => array_combine($filter->getValidStatuses(), $filter->getValidStatuses()),
@@ -74,15 +71,15 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             ))
             ->add('date_start', 'date', array(
                 'view_timezone' => $this->person->getTimezone(),
-                'widget' => 'single_text',
-                'input' => 'datetime',
-                'required' => false,
+                'widget'        => 'single_text',
+                'input'         => 'datetime',
+                'required'      => false,
             ))
             ->add('date_end', 'date', array(
                 'view_timezone' => $this->person->getTimezone(),
-                'widget' => 'single_text',
-                'input' => 'datetime',
-                'required' => false,
+                'widget'        => 'single_text',
+                'input'         => 'datetime',
+                'required'      => false,
             ))
             ->add('subject', 'text', array(
                 'required' => false,
@@ -141,9 +138,9 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         # Filter options
         #------------------------------
 
-        $filter = new SendmailSourceFinderFilter();
+        $filter       = new SendmailSourceFinderFilter();
         $filter_input = $this->in->getArrayValue('filter');
-        $form = $this->createFormBuilder($filter)
+        $form         = $this->createFormBuilder($filter)
             ->add('page', 'text')
             ->add('statuses', 'choice', array(
                 'choices'  => array_combine($filter->getValidStatuses(), $filter->getValidStatuses()),
@@ -152,15 +149,15 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             ))
             ->add('date_start', 'date', array(
                 'view_timezone' => $this->person->getTimezone(),
-                'widget' => 'single_text',
-                'input' => 'datetime',
-                'required' => false,
+                'widget'        => 'single_text',
+                'input'         => 'datetime',
+                'required'      => false,
             ))
             ->add('date_end', 'date', array(
                 'view_timezone' => $this->person->getTimezone(),
-                'widget' => 'single_text',
-                'input' => 'datetime',
-                'required' => false,
+                'widget'        => 'single_text',
+                'input'         => 'datetime',
+                'required'      => false,
             ))
             ->add('subject', 'text', array(
                 'required' => false,
@@ -209,7 +206,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
         $info = array();
 
-        $info['source'] = $this->getApiData($source);
+        $info['source']     = $this->getApiData($source);
         $info['source_log'] = null;
 
         if ($source->log_blob) {
@@ -374,7 +371,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             throw $this->createNotFoundException();
         }
 
-        $source['status'] = 'inserted';
+        $source['status']     = 'inserted';
         $source['error_code'] = null;
 
         $runner = new Runner();
@@ -510,7 +507,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
                 break;
 
             case 'delete':
-                $bs = $this->container->getBlobStorage();
+                $bs   = $this->container->getBlobStorage();
                 $recs = $this->db->fetchAll("
                     SELECT sendmail_sources.id AS sendmail_sources_id, blobs.*
                     FROM sendmail_sources
@@ -547,13 +544,13 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         switch ($action) {
             case 'reprocess':
                 $this->db->updateIn('email_sources', array(
-                    'status' => 'retry',
+                    'status'     => 'retry',
                     'error_code' => null,
                 ), $ids);
                 break;
 
             case 'delete':
-                $bs = $this->container->getBlobStorage();
+                $bs   = $this->container->getBlobStorage();
                 $recs = $this->db->fetchAll("
                     SELECT email_sources.id AS email_sources_id, email_sources.log_blob_id AS email_sources_log_blob_id, blobs.*
                     FROM email_sources

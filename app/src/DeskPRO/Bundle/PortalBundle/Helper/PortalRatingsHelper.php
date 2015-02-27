@@ -26,17 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
 use Application\DeskPRO\Entity\ContentAbstract;
-use Application\DeskPRO\Entity\Rating;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Rating;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -54,7 +51,7 @@ class PortalRatingsHelper
 
     public function __construct(EntityManager $em, RequestStack $request_stack)
     {
-        $this->em = $em;
+        $this->em            = $em;
         $this->request_stack = $request_stack;
     }
 
@@ -110,14 +107,15 @@ class PortalRatingsHelper
     }
 
     /**
-     * @param  ContentAbstract $content
-     * @param  Person          $person
+     * @param ContentAbstract $content
+     * @param Person          $person
+     *
      * @return Rating|null
      */
     public function findPersonRating(ContentAbstract $content, Person $person = null)
     {
         if (!$person) {
-            return null;
+            return;
         }
 
         $res = $this->em->createQuery("
@@ -136,18 +134,19 @@ class PortalRatingsHelper
             return $res[0];
         }
 
-        return null;
+        return;
     }
 
     /**
-     * @param  ContentAbstract $content
+     * @param ContentAbstract $content
      * @param $visitor_id
+     *
      * @return Rating|null
      */
     public function findVisitorRating(ContentAbstract $content, $visitor_id)
     {
         if (!$visitor_id) {
-            return null;
+            return;
         }
 
         $res = $this->em->createQuery("
@@ -166,7 +165,7 @@ class PortalRatingsHelper
             return $res[0];
         }
 
-        return null;
+        return;
     }
 
     public function getPersonRating(ContentAbstract $content, Person $person = null)

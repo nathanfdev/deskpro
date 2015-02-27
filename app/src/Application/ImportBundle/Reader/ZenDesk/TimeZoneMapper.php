@@ -30,20 +30,20 @@ namespace Application\ImportBundle\Reader\ZenDesk;
 use Exception;
 
 /**
- * ZenDesk timezone mapper
+ * ZenDesk timezone mapper.
  *
  * Class TimeZoneMapper
- * @package Application\ImportBundle\Reader\ZenDesk
  */
 class TimeZoneMapper
 {
     /**
-     * Returns DateTimeZone name by friendly name from ZenDesk object
+     * Returns DateTimeZone name by friendly name from ZenDesk object.
      *
      * @param string $friendly_name
      *
-     * @return string
      * @throws Exception
+     * @return string
+     *
      */
     public static function getTimeZoneName($friendly_name)
     {
@@ -56,7 +56,7 @@ class TimeZoneMapper
     }
 
     /**
-     * Returns the mapping from friendly name to DateTimeZone name
+     * Returns the mapping from friendly name to DateTimeZone name.
      *
      * @return array
      */

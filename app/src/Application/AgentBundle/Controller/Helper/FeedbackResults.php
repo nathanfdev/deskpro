@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller\Helper;
@@ -65,10 +62,11 @@ class FeedbackResults
      * $options can have:
      * - default_terms: For when viewing the page that you havent submitted
      * - specific_terms: Always added to the search
-     * - default_order_by: The default order by for a page you havent submitted
+     * - default_order_by: The default order by for a page you havent submitted.
      *
      * @param  $controller
-     * @param  array                                                      $options
+     * @param array $options
+     *
      * @return \Application\AgentBundle\Controller\Helper\FeedbackResults
      */
     public static function newFromRequest($controller, array $options = array())
@@ -179,7 +177,8 @@ class FeedbackResults
     }
 
     /**
-     * Set ticket IDs for the search results
+     * Set ticket IDs for the search results.
+     *
      * @param array $feedback_ids
      */
     public function setFeedbackIds(array $feedback_ids)
@@ -188,7 +187,7 @@ class FeedbackResults
     }
 
     /**
-     * Get ticket IDs
+     * Get ticket IDs.
      *
      * @return array
      */
@@ -198,7 +197,7 @@ class FeedbackResults
     }
 
     /**
-     * Get tickets for a particular page
+     * Get tickets for a particular page.
      *
      * @return array
      */

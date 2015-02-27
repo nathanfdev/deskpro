@@ -26,21 +26,18 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
+use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 
 /**
  * If anyone throws a RedirectToUrlException, we catch it here to return a redirect response to the kernel.

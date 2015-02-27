@@ -26,22 +26,19 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Departments\ChatDepartmentEdit;
 use Application\DeskPRO\Departments\ChatDepartmentEditor;
 use Application\DeskPRO\Departments\Form\Type\ChatDepartmentType;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Exception\ValidationException;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 
 class ChatDepsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -134,10 +131,9 @@ class ChatDepsController extends AbstractController implements ProtectedControll
 
     public function getAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\Departments\ChatDepartments $chat_deps
+        /*
+         * @var \Application\DeskPRO\Departments\ChatDepartments
          */
-
         $chat_deps = $this->container->getSystemService('chat_departments');
         $dep       = $chat_deps->getById($id);
 
@@ -163,10 +159,9 @@ class ChatDepsController extends AbstractController implements ProtectedControll
     public function saveAction($id)
     {
         if ($id) {
-            /**
-             * @var \Application\DeskPRO\Departments\ChatDepartments $chat_deps
+            /*
+             * @var \Application\DeskPRO\Departments\ChatDepartments
              */
-
             $chat_deps = $this->container->getSystemService('chat_departments');
             $dep       = $chat_deps->getById($id);
 
@@ -211,10 +206,9 @@ class ChatDepsController extends AbstractController implements ProtectedControll
 
     public function removeAction($id)
     {
-        /**
-         * @var \Application\DeskPRO\Departments\ChatDepartments $chat_deps
+        /*
+         * @var \Application\DeskPRO\Departments\ChatDepartments
          */
-
         $chat_deps = $this->container->getSystemService('chat_departments');
         $editor    = $this->_getDepartmentEditor();
         $dep       = $chat_deps->getById($id);
@@ -251,7 +245,6 @@ class ChatDepsController extends AbstractController implements ProtectedControll
     /**
      * @return ChatDepartmentEditor
      */
-
     private function _getDepartmentEditor()
     {
         $editor = new ChatDepartmentEditor($this->em);

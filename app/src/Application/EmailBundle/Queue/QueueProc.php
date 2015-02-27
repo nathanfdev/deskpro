@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\Queue;
@@ -58,7 +55,9 @@ class QueueProc
 
     /**
      * Used by the logger context to mark which log lines are for which messages.
+     *
      * @var array
+     *
      * @internal
      */
     public static $__dp_current_sendmail = null;
@@ -70,7 +69,7 @@ class QueueProc
      */
     public function __construct(SourceMapperInterface $source_mapper, SourceSender $source_sender, LoggerInterface $logger)
     {
-        $this->logger = $logger;
+        $this->logger        = $logger;
         $this->source_mapper = $source_mapper;
         $this->source_sender = $source_sender;
     }
@@ -139,7 +138,8 @@ class QueueProc
     }
 
     /**
-     * @param  array          $sendmail
+     * @param array $sendmail
+     *
      * @return \DateTime|null
      */
     private function getNextRetry(array $sendmail)
@@ -167,7 +167,7 @@ class QueueProc
                 break;
 
             default:
-                return null;
+                return;
         }
 
         return new \DateTime("+$time_offset seconds");

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -82,13 +81,12 @@ class SendmailSource implements NotifyPropertyChanged
 
     /**
      * Indicates a problem while queueing an email with an external service.
-     * (Used when ExternalPendingQueue is used in source mapper)
+     * (Used when ExternalPendingQueue is used in source mapper).
      */
     const ERR_ENQUEUE_FAILED = 'enqueue_failed';
 
     /**
      * @var int
-     *
      */
     protected $id = null;
 
@@ -123,7 +121,7 @@ class SendmailSource implements NotifyPropertyChanged
     protected $context_info = null;
 
     /**
-     * Just the headers portion of the email
+     * Just the headers portion of the email.
      *
      * @var string
      */
@@ -208,6 +206,7 @@ class SendmailSource implements NotifyPropertyChanged
 
     /**
      * How many times the email has been processed.
+     *
      * @var int
      */
     protected $exec_count = 0;
@@ -610,6 +609,7 @@ class SendmailSource implements NotifyPropertyChanged
     /**
      * @param string $k
      * @param mixed  $default
+     *
      * @return mixed
      */
     public function getOption($k, $default = null)
@@ -656,10 +656,10 @@ class SendmailSource implements NotifyPropertyChanged
 
         foreach (array('date_created', 'date_status', 'date_sent', 'date_next_attempt') as $date_field) {
             if ($this->$date_field) {
-                $data[$date_field] = $this->$date_field->format('Y-m-d H:i:s');
+                $data[$date_field]        = $this->$date_field->format('Y-m-d H:i:s');
                 $data["{$date_field}_ts"] = $this->$date_field->getTimestamp();
             } else {
-                $data[$date_field] = null;
+                $data[$date_field]        = null;
                 $data["{$date_field}_ts"] = null;
             }
         }
@@ -767,7 +767,7 @@ class SendmailSource implements NotifyPropertyChanged
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\EmailBundle\EntityRepository\SendmailSourceRepository';
         $metadata->setPrimaryTable(array(
-            'name' => 'sendmail_sources',
+            'name'    => 'sendmail_sources',
             'indexes' => array(
                 'status_idx'       => array('columns' => array('status')),
                 'date_created_idx' => array('columns' => array('date_created')),

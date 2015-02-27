@@ -26,17 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Placeholder;
 
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 
 /**
@@ -51,23 +48,23 @@ abstract class AbstractPlaceholder
      * @var array
      */
     protected static $_placeholderMap = array(
-        'EVER' => 'Ever',
-        'LAST_MONTH' => 'LastMonth',
-        'LAST_WEEK' => 'LastWeek',
-        'LAST_YEAR' => 'LastYear',
-        'PAST_24_HOURS' => 'Past24Hours',
-        'PAST_12_HOURS' => 'Past12Hours',
-        'PAST_HOUR' => 'PastHour',
-        'PAST_7_DAYS' => 'Past7Days',
-        'PAST_30_DAYS' => 'Past30Days',
-        'PAST_6_MONTHS' => 'Past6Months',
+        'EVER'           => 'Ever',
+        'LAST_MONTH'     => 'LastMonth',
+        'LAST_WEEK'      => 'LastWeek',
+        'LAST_YEAR'      => 'LastYear',
+        'PAST_24_HOURS'  => 'Past24Hours',
+        'PAST_12_HOURS'  => 'Past12Hours',
+        'PAST_HOUR'      => 'PastHour',
+        'PAST_7_DAYS'    => 'Past7Days',
+        'PAST_30_DAYS'   => 'Past30Days',
+        'PAST_6_MONTHS'  => 'Past6Months',
         'PAST_12_MONTHS' => 'Past12Months',
-        'THIS_MONTH' => 'ThisMonth',
-        'THIS_WEEK' => 'ThisWeek',
-        'THIS_YEAR' => 'ThisYear',
-        'TODAY' => 'Today',
-        'TOMORROW' => 'Tomorrow',
-        'YESTERDAY' => 'Yesterday',
+        'THIS_MONTH'     => 'ThisMonth',
+        'THIS_WEEK'      => 'ThisWeek',
+        'THIS_YEAR'      => 'ThisYear',
+        'TODAY'          => 'Today',
+        'TOMORROW'       => 'Tomorrow',
+        'YESTERDAY'      => 'Yesterday',
     );
 
     /**
@@ -160,12 +157,12 @@ abstract class AbstractPlaceholder
     }
 
     /**
-     * Creates the placeholder with the specific name
+     * Creates the placeholder with the specific name.
      *
      * @param string $name
      *
      * @throws \Application\DeskPRO\Dpql\Exception
-
+     *
      * @return \Application\DeskPRO\Dpql\Placeholder\AbstractPlaceholder
      */
     public static function create($name)

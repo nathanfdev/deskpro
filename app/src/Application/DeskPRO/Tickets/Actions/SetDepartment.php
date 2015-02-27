@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -64,7 +63,7 @@ class SetDepartment extends AbstractContainerAwareAction implements ActionInterf
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
         $set_dep_id = $this->getActionOption('department_id');
-        $dep = $this->getContainer()->getTicketDepartments()->getSettableById($set_dep_id);
+        $dep        = $this->getContainer()->getTicketDepartments()->getSettableById($set_dep_id);
 
         if (!$dep) {
             return;
@@ -114,7 +113,7 @@ class SetDepartment extends AbstractContainerAwareAction implements ActionInterf
             return array('department');
         }
 
-        return null;
+        return;
     }
 
     /**

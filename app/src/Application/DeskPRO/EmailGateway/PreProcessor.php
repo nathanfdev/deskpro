@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway;
@@ -65,7 +63,7 @@ class PreProcessor extends AbstractGatewayProcessor
 
         if ($id = $this->reader->getId()) {
             if ($old = $this->getEm()->getRepository('DeskPRO:TicketMessage')->getDupeByMessageID($id)) {
-                /** @var $old TicketMessage */
+                /* @var $old TicketMessage */
                 $this->source_info[] = 'Ticket ID: '.$old->message->ticket['id'];
                 $this->source_info[] = 'Email Message ID: '.$id;
 
@@ -154,7 +152,8 @@ class PreProcessor extends AbstractGatewayProcessor
     }
 
     /**
-     * 'error' or 'rejected'
+     * 'error' or 'rejected'.
+     *
      * @return string
      */
     public function getErrorType()
@@ -170,7 +169,7 @@ class PreProcessor extends AbstractGatewayProcessor
     public function getSourceInfo()
     {
         if (!$this->source_info) {
-            return null;
+            return;
         }
 
         if (!is_array($this->source_info)) {

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage JobQueue
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\JobQueue;
@@ -39,7 +36,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Job;
 
 /**
- * The Job Router is responsible for instantiating the JobProcessor for a job and executing it
+ * The Job Router is responsible for instantiating the JobProcessor for a job and executing it.
  */
 class JobRouter
 {
@@ -73,7 +70,7 @@ class JobRouter
     }
 
     /**
-     * Add a processor to the router
+     * Add a processor to the router.
      *
      * @param JobProcessorInterface $processor
      */
@@ -83,9 +80,10 @@ class JobRouter
     }
 
     /**
-     * Does the actual job array -> job processor mapping and returns an instantiated JobProcessorInterface
+     * Does the actual job array -> job processor mapping and returns an instantiated JobProcessorInterface.
      *
      * @throws JobQueueException
+     *
      * @return JobProcessorInterface
      */
     private function findProcessor(array $job)
@@ -104,7 +102,8 @@ class JobRouter
      *
      * Processors are encouraged to handle their own errors gracefully.
      *
-     * @param  array                        $job the job row from the dbal
+     * @param array $job the job row from the dbal
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */

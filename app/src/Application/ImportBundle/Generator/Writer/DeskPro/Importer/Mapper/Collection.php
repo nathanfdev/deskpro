@@ -30,32 +30,34 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 use Application\ImportBundle\AbstractCollection;
 
 /**
- * Generator collection of mappers
+ * Generator collection of mappers.
  *
  * Class Collection
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class Collection extends AbstractCollection
 {
     /**
-     * Add a record mapper
+     * Add a record mapper.
      *
      * @param MapperInterface $mapper
+     *
      * @return $this
      */
     public function attach(MapperInterface $mapper)
     {
         $this->collection[$mapper->getType()] = $mapper;
+
         return $this;
     }
 
     /**
-     * Returns mapper by type
+     * Returns mapper by type.
      *
      * @param string $type
      *
-     * @return MapperInterface
      * @throws \Exception
+     * @return MapperInterface
+     *
      */
     public function getMapperByType($type)
     {

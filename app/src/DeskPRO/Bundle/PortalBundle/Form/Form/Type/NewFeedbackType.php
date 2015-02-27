@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -69,26 +66,26 @@ class NewFeedbackType extends AbstractType
         ));
         $builder->add('more_attachments', 'submit', array(
             'validation_groups' => false,
-            'label' => 'Add Another Attachment',
+            'label'             => 'Add Another Attachment',
         ));
 
         if (!$options['person'] || $options['person'] instanceof PersonGuest) {
             $builder->add('name', 'text', array(
-                'constraints' => new Length(array('min' => 2)),
+                'constraints'   => new Length(array('min' => 2)),
                 'property_path' => 'person.name',
             ));
             $builder->add('email', 'deskpro_person_email', array(
-                'label' => false,
+                'label'         => false,
                 'property_path' => 'person.primary_email',
-                'email_label' => false,
+                'email_label'   => false,
             ));
         }
 
         if ($this->captcha_decider->shouldRequireContentCaptchaForCurrentUser()) {
             $builder->add('captcha', 'deskpro_captcha', array(
-                'mapped' => false,
+                'mapped'         => false,
                 'error_bubbling' => false,
-                'constraints' => array(
+                'constraints'    => array(
                     new ValidCaptcha(),
                 ),
             ));
@@ -111,7 +108,7 @@ class NewFeedbackType extends AbstractType
             )
             ->setDefaults(
                 array(
-                    'data_class' => 'Application\DeskPRO\Entity\Feedback',
+                    'data_class'      => 'Application\DeskPRO\Entity\Feedback',
                     'agent_interface' => false,
                 )
             )

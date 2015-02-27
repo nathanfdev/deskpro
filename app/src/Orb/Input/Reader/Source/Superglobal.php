@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Input
  */
 
@@ -43,13 +42,15 @@ use Orb\Util\Web;
 class Superglobal implements SourceInterface, ResetSourceInterface
 {
     /**
-     * The superglobal name
+     * The superglobal name.
+     *
      * @var string
      */
     protected $superglobal;
 
     /**
-     * Array of data
+     * Array of data.
+     *
      * @var array
      */
     protected $array = null;
@@ -68,11 +69,10 @@ class Superglobal implements SourceInterface, ResetSourceInterface
     public function __construct($sg_name, array $options = null)
     {
         $this->superglobal = $sg_name;
-        $this->options = new OptionsArray($options ?: array());
+        $this->options     = new OptionsArray($options ?: array());
     }
 
     /**
-     * @return void
      */
     public function resetSource()
     {
@@ -80,7 +80,7 @@ class Superglobal implements SourceInterface, ResetSourceInterface
     }
 
     /**
-     * Get all data
+     * Get all data.
      *
      * @return array|null
      */
@@ -92,10 +92,11 @@ class Superglobal implements SourceInterface, ResetSourceInterface
     }
 
     /**
-     * Get the value of some variable
+     * Get the value of some variable.
      *
-     * @param  string|array $name    The name of the variable
-     * @param  mixed        $options Any options there may be
+     * @param string|array $name    The name of the variable
+     * @param mixed        $options Any options there may be
+     *
      * @return mixed
      */
     public function getValue($name, $options = null)
@@ -105,13 +106,13 @@ class Superglobal implements SourceInterface, ResetSourceInterface
         $parts = array();
         if (is_array($name)) {
             $parts = $name;
-            $name = array_shift($parts);
+            $name  = array_shift($parts);
         }
 
         if (isset($this->array[$name])) {
             $value = $this->array[$name];
         } else {
-            return null;
+            return;
         }
 
         if ($parts) {
@@ -165,8 +166,9 @@ class Superglobal implements SourceInterface, ResetSourceInterface
     /**
      * Check if a value of some variable is set.
      *
-     * @param  string|array $name    The name of the variable
-     * @param  mixed        $options Any options there may be
+     * @param string|array $name    The name of the variable
+     * @param mixed        $options Any options there may be
+     *
      * @return bool
      */
     public function checkIsset($name, $options = null)

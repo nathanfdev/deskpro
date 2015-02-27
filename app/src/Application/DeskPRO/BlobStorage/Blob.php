@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\BlobStorage;
@@ -143,8 +141,7 @@ class Blob
 
     /**
      * @param $id
-     * @param  null $default
-     * @return null
+     * @param null $default
      */
     public function getMeta($id, $default = null)
     {

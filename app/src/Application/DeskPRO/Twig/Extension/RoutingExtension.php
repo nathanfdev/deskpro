@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Templating
  */
 
@@ -44,11 +43,13 @@ class RoutingExtension extends BaseRoutingExtension
      * This is because people can screw up their site if they edit templates and then try to render
      * a malformed link. In that scenario, better to not fatal error.
      *
-     * @param  string     $name
-     * @param  array      $parameters
-     * @param  bool       $relative
-     * @return string
+     * @param string $name
+     * @param array  $parameters
+     * @param bool   $relative
+     *
      * @throws \Exception
+     * @return string
+     *
      */
     public function getPath($name, $parameters = array(), $relative = false)
     {

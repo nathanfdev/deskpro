@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Chat\UserChat;
@@ -142,6 +139,7 @@ class GroupingCounter
      *
      * @param $field
      * @param $select_name
+     *
      * @return string
      */
     public function makeTimeFieldSelect($field, $select_name)

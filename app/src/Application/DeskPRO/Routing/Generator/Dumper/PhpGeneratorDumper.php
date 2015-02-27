@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Routing\Generator\Dumper;
@@ -44,16 +42,16 @@ class PhpGeneratorDumper extends BasePhpGeneratorDumper
     public function dump(array $options = array())
     {
         $this->className = $options['class'];
-        $class = trim(parent::dump($options));
+        $class           = trim(parent::dump($options));
 
         list($var_code, $method_code) = $this->getClassCode();
 
         // First opening brace, as in class {
-        $pos = strpos($class, '{') + 1;
+        $pos   = strpos($class, '{') + 1;
         $class = Strings::inject($class, "\n".$var_code."\n", $pos);
 
         // Last closing brace, as in } at the end of the class
-        $pos = strrpos($class, '}');
+        $pos   = strrpos($class, '}');
         $class = Strings::inject($class, "\n".$method_code."\n", $pos);
 
         $class = str_replace("\$this->context = \$context;", "\$this->setContext(\$context);", $class);
@@ -76,16 +74,16 @@ class PhpGeneratorDumper extends BasePhpGeneratorDumper
             if ($a_name) {
                 $fragment_names[$a_name]  = $name;
                 $fragment_types[$a_name]  = $a_type ? $a_type : 'page';
-                $route_fragments[$name] = $a_name;
+                $route_fragments[$name]   = $a_name;
             }
         }
 
-        $var_code = array();
-        $var_code['routePatterns'] = 'static private $routePatterns = '.var_export($route_patterns, true).';';
-        $var_code['routeFragments'] = 'static private $routeFragments = '.var_export($route_fragments, true).';';
+        $var_code                    = array();
+        $var_code['routePatterns']   = 'static private $routePatterns = '.var_export($route_patterns, true).';';
+        $var_code['routeFragments']  = 'static private $routeFragments = '.var_export($route_fragments, true).';';
         $var_code['fragmentNames']   = 'static private $fragmentNames = '.var_export($fragment_names, true).';';
         $var_code['fragmentTypes']   = 'static private $fragmentTypes = '.var_export($fragment_types, true).';';
-        $var_code = implode("\n", $var_code);
+        $var_code                    = implode("\n", $var_code);
 
         if (preg_match('#DevUrlGenerator$#', $this->className)) {
             $env = 'dev';

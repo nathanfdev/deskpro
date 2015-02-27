@@ -26,17 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Monolog\Logger;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
+use Application\DeskPRO\Monolog\Logger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Escalations\EscalationExecutor;
 use Application\DeskPRO\Tickets\Escalations\EscalationsRunner;
@@ -44,7 +41,7 @@ use Application\DeskPRO\Tickets\Escalations\EscalationTicketMatcher;
 use Application\DeskPRO\Tickets\Escalations\EscalationTicketMatcherTest;
 
 /**
- * Executes escalations
+ * Executes escalations.
  */
 class TicketEscalations extends AbstractJob
 {
@@ -61,11 +58,11 @@ class TicketEscalations extends AbstractJob
         $time_limit = 200;
 
         $orb_adapter = new OrbLoggerAdapterHandler($this->getLogger());
-        $logger = new Logger('TicketTriggers');
+        $logger      = new Logger('TicketTriggers');
         $logger->pushHandler($orb_adapter);
 
         if ($this->options->has('testEscalation')) {
-            $find_id = $this->options->get('testEscalation');
+            $find_id     = $this->options->get('testEscalation');
             $escalations = App::$container->getEm()->getRepository('DeskPRO:TicketEscalation')->getByIds(array($find_id));
             if (!count($escalations)) {
                 $logger->warn("testEscalation: Escalation #$find_id does not exist");

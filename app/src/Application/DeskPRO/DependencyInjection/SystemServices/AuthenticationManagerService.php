@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage DependencyInection
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
@@ -47,10 +44,10 @@ class AuthenticationManagerService
         /** @var \Application\DeskPRO\Auth\AuthSettings $as */
         $as = $container->getSystemService('auth_settings');
 
-        /** @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $as */
+        /* @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $as */
         $aaf = $container->getSystemService('usersource_auth_adapter_factory');
 
-        /** @var \Application\DeskPRO\NewSettings\SettingsBag $as */
+        /* @var \Application\DeskPRO\NewSettings\SettingsBag $as */
         $app_settings = $container->getSettingsResolver()->getGlobalSettings();
 
         return new AuthenticationManager(

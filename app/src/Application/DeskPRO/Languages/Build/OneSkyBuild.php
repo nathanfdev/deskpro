@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Languages\Build;
@@ -37,7 +35,7 @@ use Guzzle\Http\Client as HttpClient;
 
 class OneSkyBuild extends AbstractBuild
 {
-    const API_URL = 'http://api.oneskyapp.com/2';
+    const API_URL        = 'http://api.oneskyapp.com/2';
     const API_SECURE_URL = 'https://api.oneskyapp.com/2';
 
     /**
@@ -66,13 +64,13 @@ class OneSkyBuild extends AbstractBuild
      */
     public function __construct($api_key, $secret_key)
     {
-        $this->api_url = self::API_URL;
-        $this->api_key = $api_key;
+        $this->api_url    = self::API_URL;
+        $this->api_key    = $api_key;
         $this->secret_key = $secret_key;
     }
 
     /**
-     * Enable secure API usage over HTTPS
+     * Enable secure API usage over HTTPS.
      */
     public function enableSecureApiUrl()
     {
@@ -80,7 +78,7 @@ class OneSkyBuild extends AbstractBuild
     }
 
     /**
-     * Set a specific API url
+     * Set a specific API url.
      *
      * @param string $url
      */
@@ -90,7 +88,7 @@ class OneSkyBuild extends AbstractBuild
     }
 
     /**
-     * Get the API url
+     * Get the API url.
      *
      * @return string
      */
@@ -100,18 +98,20 @@ class OneSkyBuild extends AbstractBuild
     }
 
     /**
-     * @param  string                       $id
+     * @param string $id
      * @param $section
      * @param $category
-     * @return array
+     *
      * @throws \Exception|\RuntimeException
+     * @return array
+     *
      */
     public function getCategoryWords($id, $section, $category)
     {
         $locale = $this->getLangPackInfo()->getLangInfo($id, 'locale');
 
         $platform_id = $this->getPlatformId($section);
-        $tag = $category.'.php';
+        $tag         = $category.'.php';
 
         try {
             $words = $this->restGet('string/download', array(
@@ -149,17 +149,19 @@ class OneSkyBuild extends AbstractBuild
     }
 
     /**
-     * Update the tracked project on OneSky with the phrases from the source file
+     * Update the tracked project on OneSky with the phrases from the source file.
      *
-     * @param  string                    $section
-     * @param  string                    $category
-     * @param  string                    $source_file If not specified, the default file is the default lang file for the category
-     * @return array
+     * @param string $section
+     * @param string $category
+     * @param string $source_file If not specified, the default file is the default lang file for the category
+     *
      * @throws \InvalidArgumentException
+     * @return array
+     *
      */
     public function updateSourcePhrases($section, $category, $source_file = null)
     {
-        $tag = "$category.php";
+        $tag          = "$category.php";
         $platform_id  = $this->getPlatformId($section);
 
         if (!$source_file) {
@@ -179,12 +181,12 @@ class OneSkyBuild extends AbstractBuild
         # Generate post data for source phrases
         #-------------------------
 
-        $phrases = include $source_file;
+        $phrases        = include $source_file;
         $source_phrases = array();
 
         foreach ($phrases as $phrase_id => $phrasetext) {
             $source_phrases[] = array(
-                'string' => $phrasetext,
+                'string'     => $phrasetext,
                 'string-key' => $phrase_id,
             );
         }
@@ -194,11 +196,11 @@ class OneSkyBuild extends AbstractBuild
         #-------------------------
 
         // First send along the full file of strings
-        $post_data = array();
-        $post_data['platform-id'] = $platform_id;
-        $post_data['tag'] = $tag;
+        $post_data                    = array();
+        $post_data['platform-id']     = $platform_id;
+        $post_data['tag']             = $tag;
         $post_data['is-allow-update'] = 1;
-        $post_data['input'] = $source_phrases;
+        $post_data['input']           = $source_phrases;
 
         $input_result = $this->restPost('string/input', $post_data);
 
@@ -219,9 +221,9 @@ class OneSkyBuild extends AbstractBuild
             if ($delete_phrase_ids) {
                 $this->getLogger()->logDebug("$section.$category removing old phrases: ".implode(', ', $delete_phrase_ids));
 
-                $post_data = array();
+                $post_data                = array();
                 $post_data['platform-id'] = $platform_id;
-                $post_data['to-delete'] = array();
+                $post_data['to-delete']   = array();
 
                 foreach ($delete_phrase_ids as $phrase_id) {
                     $post_data['to-delete'][] = array(
@@ -237,9 +239,11 @@ class OneSkyBuild extends AbstractBuild
     }
 
     /**
-     * @param  string            $path
-     * @return array
+     * @param string $path
+     *
      * @throws \RuntimeException
+     * @return array
+     *
      */
     public function restGet($path, array $vars = array())
     {
@@ -259,13 +263,15 @@ class OneSkyBuild extends AbstractBuild
     }
 
     /**
-     * @param  string            $path
-     * @return array
+     * @param string $path
+     *
      * @throws \RuntimeException
+     * @return array
+     *
      */
     public function restPost($path, array $post_vars = array())
     {
-        $vars = array();
+        $vars              = array();
         $vars['api-key']   = $this->api_key;
         $vars['timestamp'] = time();
         $vars['dev-hash']  = md5($vars['timestamp'].$this->secret_key);
@@ -296,9 +302,11 @@ class OneSkyBuild extends AbstractBuild
     /**
      * Get the OneSky platform ID for the section.
      *
-     * @param  string                    $section
-     * @return string
+     * @param string $section
+     *
      * @throws \InvalidArgumentException
+     * @return string
+     *
      */
     public function getPlatformId($section)
     {

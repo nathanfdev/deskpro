@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -52,7 +51,7 @@ use Orb\Util\WorkHoursSet;
 use Orb\Util\WorkHoursSetAll;
 
 /**
- * Class Ticket
+ * Class Ticket.
  *
  * @property int $id
  * @property string $ref
@@ -158,7 +157,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     protected $id = null;
 
     /**
-     * The original id (eg before a delete was made)
+     * The original id (eg before a delete was made).
      *
      * @var int
      */
@@ -175,14 +174,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     protected $auth;
 
     /**
-     * Parent ticket
+     * Parent ticket.
      *
      * @var \Application\DeskPRO\Entity\Ticket
      */
     protected $parent_ticket = null;
 
     /**
-     * The language the ticket is in
+     * The language the ticket is in.
      *
      * @var \Application\DeskPRO\Entity\Language
      */
@@ -287,7 +286,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     protected $sent_to_address = '';
 
     /**
-     * The gateway this ticket originated from
+     * The gateway this ticket originated from.
      *
      * @var \Application\DeskPRO\Entity\EmailAccount
      */
@@ -470,8 +469,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     protected $participants;
 
     /**
-     * Array cache of user participants
+     * Array cache of user participants.
+     *
      * @var array
+     *
      * @see getUserParticipants
      */
     protected $_user_participants;
@@ -487,7 +488,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     protected $ticket_slas;
 
     /**
-     * An exploded version of sent_to_addresses
+     * An exploded version of sent_to_addresses.
      *
      * @var array
      */
@@ -504,26 +505,29 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     protected $_work_hours_set = null;
 
     /**
-     * The search result highlights
+     * The search result highlights.
      *
      * @var array
      */
     protected $_search_highlights;
 
     /**
-     * linked jira issues
+     * linked jira issues.
+     *
      * @var
      */
     protected $jira_issues;
 
     /**
-     * If the tikcet was created from an email just now, then this is the reader
+     * If the tikcet was created from an email just now, then this is the reader.
+     *
      * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
      */
     public $email_reader;
 
     /**
-     * The action the email reader was used for (reply/note/action)
+     * The action the email reader was used for (reply/note/action).
+     *
      * @var string
      */
     public $email_reader_action;
@@ -606,7 +610,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Enable auto ticket processing
+     * Enable auto ticket processing.
+     *
      * @see disableAutoTicketProcess
      */
     public function enableAutoTicketProcess()
@@ -631,7 +636,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Returns ticket unique ref
+     * Returns ticket unique ref.
      *
      * @return string
      */
@@ -642,11 +647,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     /**
      * @param string $ref
+     *
      * @return $this
      */
     public function setRef($ref)
     {
         $this->setModelField('ref', $ref);
+
         return $this;
     }
 
@@ -676,7 +683,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Get an array of addresses the ticket was sent To or CC's
+     * Get an array of addresses the ticket was sent To or CC's.
      *
      * @return array
      */
@@ -697,9 +704,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Check if an address was in To or CC
+     * Check if an address was in To or CC.
      *
      * @param $address
+     *
      * @return bool
      */
     public function hasSentToAddress($address)
@@ -727,6 +735,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     /**
      * @param string $subject
+     *
      * @return $this
      */
     public function setSubject($subject)
@@ -753,7 +762,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Parse off common prefixes on subjects and then set the original subject
+     * Parse off common prefixes on subjects and then set the original subject.
      *
      * @param $subject
      */
@@ -800,10 +809,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     /**
      * Given an array of agents, sync the current parts with those in the array.
-     * So remove ones that aren't in it, or add new ones
+     * So remove ones that aren't in it, or add new ones.
      *
-     * @param  array $parts
-     * @return void
+     * @param array $parts
      */
     public function setAgentParticipants(array $agents)
     {
@@ -831,7 +839,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     /**
      * Try to find a user that is a part of this tikcet based on
      * their email address.
-     * @param  string $email_address
+     *
+     * @param string $email_address
+     *
      * @return Person
      */
     public function findUserByEmail($email_address)
@@ -851,13 +861,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Try to find an agent that is part of this ticket based on an email addres
+     * Try to find an agent that is part of this ticket based on an email addres.
      *
-     * @param  string      $email_address
+     * @param string $email_address
+     *
      * @return Person|null
      */
     public function findAgentByEmail($email_address)
@@ -872,7 +883,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -893,7 +904,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Set the urgency to a specific value
+     * Set the urgency to a specific value.
      *
      * @param int $set
      */
@@ -932,7 +943,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Reset the participants collection
+     * Reset the participants collection.
      *
      * @return $this
      */
@@ -962,7 +973,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     /**
      * Check if there exists a person on this ticket with a particular email address.
      *
-     * @param  string      $email_address
+     * @param string $email_address
+     *
      * @return Person|bool
      */
     public function hasParticipantEmailAddress($email_address)
@@ -988,6 +1000,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * Check if a person ID or a person object is current a participant.
      *
      * @param  $person_or_id
+     *
      * @return bool
      */
     public function hasParticipantPerson($person_or_id)
@@ -1012,9 +1025,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Add a participant
+     * Add a participant.
      *
      * @param $person_or_id
+     *
      * @return TicketParticipant
      */
     public function addParticipantPerson($person_or_id)
@@ -1025,11 +1039,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
 
         if (!$person) {
-            return null;
+            return;
         }
 
         if ($this->person && $person->getId() == $this->person->getId() && ((defined('DP_INTERFACE') && DP_INTERFACE != 'agent') || !defined('DP_INTERFACE'))) {
-            return null;
+            return;
         }
 
         if ($ticket_part = $this->hasParticipantPerson($person)) {
@@ -1051,10 +1065,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Remove a participant
+     * Remove a participant.
      *
      * @param  $person_or_id
-     * @return null
      */
     public function removeParticipantPerson($person_or_id)
     {
@@ -1064,7 +1077,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
 
         if (!$person) {
-            return null;
+            return;
         }
 
         foreach ($this->participants as $k => $p) {
@@ -1076,7 +1089,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -1093,8 +1106,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * Set agent participants. Agents are added/removed so that
      * all participants on the ticket are in the array.
      *
-     * @param  array $set_agent_ids
-     * @return void
+     * @param array $set_agent_ids
      */
     public function setParticipantAgentIds(array $set_agent_ids)
     {
@@ -1147,8 +1159,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * If item in $set_user_ids is an array, its expected to be
      * array(person_id, person_email_id)
      *
-     * @param  array $set_agent_ids
-     * @return void
+     * @param array $set_agent_ids
      */
     public function setParticipantUserIds(array $set_user_ids)
     {
@@ -1211,10 +1222,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * @param  Person            $agent
-     * @param  int               $time
-     * @param  int               $amount
-     * @param  string            $comment
+     * @param Person $agent
+     * @param int    $time
+     * @param int    $amount
+     * @param string $comment
+     *
      * @return TicketCharge|null
      */
     public function addCharge(Person $agent, $time, $amount = null, $comment = '')
@@ -1233,7 +1245,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
 
         if ($time === null && $amount === null) {
-            return null;
+            return;
         }
 
         $charge               = new TicketCharge();
@@ -1253,7 +1265,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * @param  Sla       $sla
+     * @param Sla $sla
+     *
      * @return TicketSla
      */
     public function addSla(Sla $sla)
@@ -1275,7 +1288,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * @param  Sla            $sla
+     * @param Sla $sla
+     *
      * @return TicketSla|null
      */
     public function removeSla(Sla $sla)
@@ -1290,11 +1304,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Remove all SLAs from ticket
+     * Remove all SLAs from ticket.
      */
     public function removeAllSlas()
     {
@@ -1305,7 +1319,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * @param  Sla  $sla
+     * @param Sla $sla
+     *
      * @return bool
      */
     public function hasSla(Sla $sla)
@@ -1321,7 +1336,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     /**
      * @param $sla_id
-     * @return null
      */
     public function getSlaById($sla_id)
     {
@@ -1331,7 +1345,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -1348,7 +1362,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Reset the message collection
+     * Reset the message collection.
      *
      * @return $this
      */
@@ -1421,10 +1435,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Add a ticket attachment
+     * Add a ticket attachment.
      *
-     * @param  TicketAttachment $attach
-     * @return void
+     * @param TicketAttachment $attach
      */
     public function addAttachment(TicketAttachment $attach)
     {
@@ -1443,7 +1456,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     /**
      * Find an existing data record for a field id.
      *
-     * @param  int              $field_id
+     * @param int $field_id
+     *
      * @return CustomDataTicket
      */
     public function getCustomDataForField($field_id)
@@ -1458,19 +1472,21 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Gets a display array for a specific field
+     * Gets a display array for a specific field.
+     *
      * @param $field_id
+     *
      * @return array|mixed|null
      */
     public function getCustomFieldDisplayArray($field_id)
     {
         $data = $this->getCustomDataForField($field_id);
         if (!$data) {
-            return null;
+            return;
         }
 
         $ticket_field_defs      = App::getApi('custom_fields.tickets')->getEnabledFields();
@@ -1489,8 +1505,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     /**
      * Set custom field data for a particular field.
      *
-     * @param  int   $field_id
-     * @param  mixed $value
+     * @param int   $field_id
+     * @param mixed $value
+     *
      * @return mixed
      */
     public function setCustomData($field_id, $value_type, $value)
@@ -1500,7 +1517,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
         if (!$custom_data) {
             if ($value === null) {
-                return null;
+                return;
             }
 
             $is_new = true;
@@ -1527,7 +1544,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         if ($value === null) {
             $this->custom_data->removeElement($custom_data);
 
-            return null;
+            return;
         }
 
         if ($field->getTypeName() == 'choice') {
@@ -1575,7 +1592,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Add a custom data item to this ticket
+     * Add a custom data item to this ticket.
      *
      * @param CustomDataTicket $data
      */
@@ -1584,9 +1601,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $this->custom_data->add($data);
         $data['ticket'] = $this;
 
-        $field = $data->field;
+        $field     = $data->field;
         $parent_id = null;
-        $field_id = $field['id'];
+        $field_id  = $field['id'];
         if ($field->parent) {
             $parent_id = $field->parent['id'];
         }
@@ -1604,6 +1621,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * Check if this ticket has a custom field.
      *
      * @param $field_id
+     *
      * @return bool
      */
     public function hasCustomField($field_id)
@@ -1624,7 +1642,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Render a custom field
+     * Render a custom field.
      *
      * !depreciated
      */
@@ -1641,7 +1659,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Reset labels
+     * Reset labels.
      *
      * @return $this
      */
@@ -1654,9 +1672,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Add a label
+     * Add a label.
      *
      * @param LabelTicket $label
+     *
      * @return LabelTicket
      */
     public function addLabel(LabelTicket $label)
@@ -1673,7 +1692,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * @param  string      $l
+     * @param string $l
+     *
      * @return LabelTicket
      */
     public function addLabelByString($l)
@@ -1692,7 +1712,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * @param  string           $l
+     * @param string $l
+     *
      * @return LabelTicket|null
      */
     public function removeLabelByString($l)
@@ -1709,11 +1730,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * @param  string           $l
+     * @param string $l
+     *
      * @return LabelTicket|null
      */
     public function findLabelByString($l)
@@ -1727,7 +1749,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             }
         }
 
-        return null;
+        return;
     }
 
     public function getPersonId()
@@ -1743,6 +1765,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     /**
      * @param Person $person
+     *
      * @return $this
      */
     public function setPerson(Person $person)
@@ -1765,19 +1788,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Set ticket organization
+     * Set ticket organization.
      *
      * @param Organization $organization
+     *
      * @return $this
      */
     public function setOrganization(Organization $organization = null)
     {
         $this->setModelField('organization', $organization);
+
         return $this;
     }
 
     /**
      * @deprecated
+     *
      * @return PersonEmail
      */
     public function getPersonEmail()
@@ -1829,14 +1855,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Set the ticket department
+     * Set the ticket department.
      *
      * @param Department $department
+     *
      * @return $this
      */
     public function setDepartment(Department $department = null)
     {
         $this->setModelField('department', $department);
+
         return $this;
     }
 
@@ -1870,7 +1898,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             return $this->person->getRealLanguage();
         }
 
-        return null;
+        return;
     }
 
     public function getLanguageId()
@@ -1902,14 +1930,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Set ticket category
+     * Set ticket category.
      *
      * @param TicketCategory $category
+     *
      * @return $this
      */
     public function setCategory(TicketCategory $category = null)
     {
         $this->setModelField('category', $category);
+
         return $this;
     }
 
@@ -1954,14 +1984,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Set ticket priority
+     * Set ticket priority.
      *
      * @param TicketPriority $priority
+     *
      * @return $this
      */
     public function setPriority(TicketPriority $priority = null)
     {
         $this->setModelField('priority', $priority);
+
         return $this;
     }
 
@@ -2056,7 +2088,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         } elseif ($this->agent_team) {
             return $this->agent_team['name'];
         } else {
-            return null;
+            return;
         }
     }
 
@@ -2139,9 +2171,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * Set a flag color for this ticket for a particular perosn.
      * $color of null or 'none' removes the flag.
      *
-     * @param  Person $person
-     * @param  string $color
-     * @return void
+     * @param Person $person
+     * @param string $color
      */
     public function setFlagForPerson($person, $color = null)
     {
@@ -2164,7 +2195,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Get the deletion record if there is one
+     * Get the deletion record if there is one.
      *
      * @return \Application\DeskPRO\Entity\TicketDeleted
      */
@@ -2263,7 +2294,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             return time() - $this->date_user_waiting->getTimestamp();
         }
 
-        return null;
+        return;
     }
 
     public function getCurrentUserWaitingWorkTime()
@@ -2272,7 +2303,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             return $this->getWorkHoursSet()->getWorkTimeBetween($this->date_user_waiting);
         }
 
-        return null;
+        return;
     }
 
     public function getWorkTimeToFirstReply()
@@ -2281,7 +2312,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             return $this->getWorkHoursSet()->getWorkTimeBetween($this->date_created, $this->date_first_agent_reply);
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -2293,7 +2324,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     public function getTimeUntilResolution()
     {
         if (!$this->date_resolved && !$this->date_archived) {
-            return null;
+            return;
         }
 
         $date = $this->date_resolved;
@@ -2309,7 +2340,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     public function getWorkTimeUntilResolution()
     {
         if (!$this->date_resolved && !$this->date_archived) {
-            return null;
+            return;
         }
 
         $date = $this->date_resolved;
@@ -2349,6 +2380,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     /**
      * @param string $status
+     *
      * @return $this
      */
     public function setStatus($status)
@@ -2442,38 +2474,44 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Set date created
+     * Set date created.
      *
      * @param \DateTime $date_created
+     *
      * @return $this
      */
     public function setDateCreated(\DateTime $date_created)
     {
         $this->setModelField('date_created', $date_created);
+
         return $this;
     }
 
     /**
-     * Set date created
+     * Set date created.
      *
      * @param \DateTime $date_resolved
+     *
      * @return $this
      */
     public function setDateResolved(\DateTime $date_resolved = null)
     {
         $this->setModelField('date_resolved', $date_resolved);
+
         return $this;
     }
 
     /**
-     * Set date archived
+     * Set date archived.
      *
      * @param \DateTime $date_archived
+     *
      * @return $this
      */
     public function setDateArchived(\DateTime $date_archived = null)
     {
         $this->setModelField('date_archived', $date_archived);
+
         return $this;
     }
 
@@ -2532,11 +2570,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Soft-delete a ticket
+     * Soft-delete a ticket.
      *
-     * @param  null   $person
-     * @param  string $reason
-     * @return void
+     * @param null   $person
+     * @param string $reason
      */
     public function deleteTicket($person = null, $reason = '')
     {
@@ -2569,7 +2606,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     public function getWorstSlaStatus()
     {
         if (!count($this->ticket_slas)) {
-            return null;
+            return;
         }
 
         $status = null;
@@ -2627,7 +2664,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Add an access code for a person
+     * Add an access code for a person.
      *
      * @param PersonEmail $email
      */
@@ -2644,7 +2681,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Find the access code for a person if it exists
+     * Find the access code for a person if it exists.
      *
      * @return TicketAccessCode
      */
@@ -2656,11 +2693,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Find an access code
+     * Find an access code.
      *
      * @return TicketAccessCode
      */
@@ -2672,7 +2709,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -2682,7 +2719,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * Returns null if the person isn't on the ticket or if they don't have any email
      * addresses.
      *
-     * @param  Person           $person
+     * @param Person $person
+     *
      * @return PersonEmail|null
      */
     public function findEmailForPerson(Person $person)
@@ -2707,7 +2745,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -2782,6 +2820,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * Decodes an access code into a ticket id and the standalone auth.
      *
      * @param  $access_code
+     *
      * @return array
      */
     public static function decodeAccessCode($access_code)
@@ -2816,7 +2855,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Resets the ticket hash
+     * Resets the ticket hash.
      */
     public function recomputeHash()
     {
@@ -2988,10 +3027,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * @param  string      $string
-     * @param  Person|null $performer
-     * @param  bool        $escape
-     * @param  bool        $to_user
+     * @param string      $string
+     * @param Person|null $performer
+     * @param bool        $escape
+     * @param bool        $to_user
+     *
      * @return mixed
      */
     public function replaceVarsInString($string, Person $performer = null, $escape = false, $to_user = true)
@@ -3150,10 +3190,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Get property from properties array
+     * Get property from properties array.
      *
-     * @param  string $key
-     * @param  mixed  $default
+     * @param string $key
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getProperty($key, $default = null)
@@ -3162,11 +3203,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Set properties
+     * Set properties.
      *
      * @param  $key
      * @param  $value
-     * @return void
      */
     public function setProperty($key, $value)
     {
@@ -3190,7 +3230,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Returns the data as it would be returned from the database
+     * Returns the data as it would be returned from the database.
      *
      * @return array
      */
@@ -3288,9 +3328,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * Get Elasticsearch highlight data
+     * Get Elasticsearch highlight data.
      *
-     * @param  null       $field
+     * @param null $field
+     *
      * @return array|null
      */
     public function getElasticHighlights($field = null)
@@ -3301,7 +3342,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             if (isset($this->_search_highlights[$field])) {
                 return $this->_search_highlights[$field];
             } else {
-                return null;
+                return;
             }
         }
     }
@@ -3870,7 +3911,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'set null',
-                'columnDefinition'     => NULL,
+                'columnDefinition'     => null,
             )),
         ));
         $metadata->mapOneToMany(array(

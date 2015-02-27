@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Reader\ZenDesk;
 use Exception;
 
 /**
- * ZenDesk reader config
+ * ZenDesk reader config.
  *
  * Class ZenDeskConfig
- * @package Application\ImportBundle\Reader\ZenDesk
  */
 class ZenDeskConfig
 {
@@ -69,7 +68,7 @@ class ZenDeskConfig
 
     /**
      * The number of seconds between try attempts
-     * when the attempts are errors;
+     * when the attempts are errors;.
      *
      * @var int
      */
@@ -93,7 +92,7 @@ class ZenDeskConfig
     private $try_time_inc = 15;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string $subdomain
      * @param string $username
@@ -105,7 +104,7 @@ class ZenDeskConfig
     }
 
     /**
-     * Returns the subdomain
+     * Returns the subdomain.
      *
      * @return string
      */
@@ -115,7 +114,7 @@ class ZenDeskConfig
     }
 
     /**
-     * Returns the username or email
+     * Returns the username or email.
      *
      * @return int
      */
@@ -125,19 +124,21 @@ class ZenDeskConfig
     }
 
     /**
-     * Set the auth api token
+     * Set the auth api token.
      *
      * @param string $api_token
+     *
      * @return $this
      */
     public function setApiToken($api_token)
     {
         $this->api_token = $api_token;
+
         return $this;
     }
 
     /**
-     * Returns the api token if it's defined
+     * Returns the api token if it's defined.
      *
      * @return string
      */
@@ -147,19 +148,21 @@ class ZenDeskConfig
     }
 
     /**
-     * Set the auth password
+     * Set the auth password.
      *
      * @param string $password
+     *
      * @return $this
      */
     public function setPassword($password)
     {
         $this->password = $password;
+
         return $this;
     }
 
     /**
-     * Returns the api password if it's defined
+     * Returns the api password if it's defined.
      *
      * @return string
      */
@@ -169,10 +172,11 @@ class ZenDeskConfig
     }
 
     /**
-     * Returns a text value indicating the type of authorization configured
+     * Returns a text value indicating the type of authorization configured.
      *
-     * @return string
      * @throws Exception
+     * @return string
+     *
      */
     public function getAuthType()
     {
@@ -187,10 +191,11 @@ class ZenDeskConfig
     }
 
     /**
-     * Returns auth password or token by auth type
+     * Returns auth password or token by auth type.
      *
-     * @return string
      * @throws Exception
+     * @return string
+     *
      */
     public function getAuthValue()
     {

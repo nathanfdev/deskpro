@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Languages\Build;
@@ -88,9 +86,11 @@ class TransifexBuild extends AbstractBuild
     }
 
     /**
-     * @param  string            $path
-     * @return array
+     * @param string $path
+     *
      * @throws \RuntimeException
+     * @return array
+     *
      */
     public function restGet($path, $silent = false)
     {
@@ -117,10 +117,12 @@ class TransifexBuild extends AbstractBuild
     }
 
     /**
-     * @param  string            $path
-     * @param  array             $data
-     * @return array
+     * @param string $path
+     * @param array  $data
+     *
      * @throws \RuntimeException
+     * @return array
+     *
      */
     public function restPostJson($path, array $data)
     {
@@ -146,10 +148,12 @@ class TransifexBuild extends AbstractBuild
     }
 
     /**
-     * @param  string            $path
-     * @param  array             $data
-     * @return array
+     * @param string $path
+     * @param array  $data
+     *
      * @throws \RuntimeException
+     * @return array
+     *
      */
     public function restPutJson($path, array $data)
     {
@@ -175,7 +179,8 @@ class TransifexBuild extends AbstractBuild
     }
 
     /**
-     * @param  string $id
+     * @param string $id
+     *
      * @return array
      */
     public function getCategoryWords($id, $section, $category)
@@ -223,13 +228,15 @@ class TransifexBuild extends AbstractBuild
     }
 
     /**
-     * Update a source phrase with the PO file from $source_file
+     * Update a source phrase with the PO file from $source_file.
      *
-     * @param  string                    $section
-     * @param  string                    $category
-     * @param  string                    $source_file If not specified, the default file from the default export dir will be used
-     * @return array
+     * @param string $section
+     * @param string $category
+     * @param string $source_file If not specified, the default file from the default export dir will be used
+     *
      * @throws \InvalidArgumentException
+     * @return array
+     *
      */
     public function updateSourcePhrases($section, $category, $source_file = null)
     {
@@ -279,11 +286,13 @@ class TransifexBuild extends AbstractBuild
     }
 
     /**
-     * Gets the project name used in transifex
+     * Gets the project name used in transifex.
      *
-     * @param  string                    $section
-     * @return string
+     * @param string $section
+     *
      * @throws \InvalidArgumentException
+     * @return string
+     *
      */
     public function getProjectName($section)
     {

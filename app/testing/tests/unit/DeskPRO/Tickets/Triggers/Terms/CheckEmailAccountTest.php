@@ -44,7 +44,7 @@ class CheckEmailAccountTest extends AbstractTicketEntityCheckTest
     {
         $ent_class = $this->getEntityClass();
 
-        $object = new $ent_class('tickets');
+        $object     = new $ent_class('tickets');
         $object->id = $id;
 
         return $object;

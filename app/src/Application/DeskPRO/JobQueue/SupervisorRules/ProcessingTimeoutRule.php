@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\JobQueue\SupervisorRules;
@@ -58,11 +55,11 @@ class ProcessingTimeoutRule extends AbstractSupervisorRule
             ',
             array(
                 'processing_state' => Job::STATUS_PROCESSING,
-                'five_mins_ago' => $date,
+                'five_mins_ago'    => $date,
             ),
             array(
                 'processing_state' => 'string',
-                'five_mins_ago' => 'datetime',
+                'five_mins_ago'    => 'datetime',
             )
         );
         $result = $query->fetch();

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -54,7 +53,8 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
     }
 
     /**
-     * @param  AgentRequestContext                        $context
+     * @param AgentRequestContext $context
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     private function callApiAction(AgentRequestContext $context)

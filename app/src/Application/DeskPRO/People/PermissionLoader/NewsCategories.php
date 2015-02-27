@@ -26,16 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
 namespace Application\DeskPRO\People\PermissionLoader;
 
 /**
- * Loads news category permissions
+ * Loads news category permissions.
  */
 class NewsCategories extends BasicCategoryPermission
 {

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,8 +39,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Twitter Status Tag
- *
+ * Twitter Status Tag.
  */
 class TwitterStatusTag extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -95,15 +93,16 @@ class TwitterStatusTag extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param  object                                       $status
+     * @param object $status
+     *
      * @return \Application\DeskPRO\Entity\TwitterStatusTag
      */
     public static function createFromJson($tag)
     {
-        $entity = new self();
-        $entity['hash'] = $tag->text;
+        $entity           = new self();
+        $entity['hash']   = $tag->text;
         $entity['starts'] = $tag->indices[0];
-        $entity['ends'] = $tag->indices[1];
+        $entity['ends']   = $tag->indices[1];
 
         return $entity;
     }
@@ -124,6 +123,6 @@ class TwitterStatusTag extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'starts', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'starts'));
         $metadata->mapField(array( 'fieldName' => 'ends', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ends'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'status_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'status_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

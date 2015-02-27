@@ -26,24 +26,21 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
+use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use Symfony\Component\HttpFoundation\Request;
 
 class DownloadsController extends AbstractController
 {
@@ -67,7 +64,7 @@ class DownloadsController extends AbstractController
             );
 
             return $this->render('PortalBundle:Downloads:feed.rss.twig', array(
-                'pager' => $pager,
+                'pager'    => $pager,
                 'category' => null,
             ));
         }
@@ -78,7 +75,7 @@ class DownloadsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Downloads:index.html.twig',
             array(
-                'page' => $page,
+                'page'  => $page,
                 'count' => $this->getBrandSetting('portal.per_page_content'),
             )
         );
@@ -105,7 +102,7 @@ class DownloadsController extends AbstractController
             );
 
             return $this->render('PortalBundle:Downloads:feed.rss.twig', array(
-                'pager' => $pager,
+                'pager'    => $pager,
                 'category' => $category,
             ));
         }
@@ -116,9 +113,9 @@ class DownloadsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Downloads:browse.html.twig',
             array(
-                'category' => $category,
-                'page' => $page,
-                'count' => $this->getBrandSetting('portal.per_page_content'),
+                'category'        => $category,
+                'page'            => $page,
+                'count'           => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination' => true,
             )
         );
@@ -163,9 +160,9 @@ class DownloadsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Downloads:view.html.twig',
             array(
-                'file' => $file,
-                'content_type' => Download::CONTENT_TYPE,
-                'content_id' => $file->getId(),
+                'file'             => $file,
+                'content_type'     => Download::CONTENT_TYPE,
+                'content_id'       => $file->getId(),
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null,
             )
         );
@@ -192,8 +189,8 @@ class DownloadsController extends AbstractController
 
         return $this->redirectToRoute('serve_blob', array(
             'blob_auth_id' => $file->blob->auth_id,
-            'filename' => $file->getFilenameSafe(),
-            'dl' => 1,
+            'filename'     => $file->getFilenameSafe(),
+            'dl'           => 1,
         ));
     }
 
@@ -223,7 +220,7 @@ class DownloadsController extends AbstractController
      */
     public function downloadsSubscriptionAction(Download $file)
     {
-        $person = $this->getUser();
+        $person               = $this->getUser();
         $subscriptions_helper = $this->getSubscriptionsHelper();
 
         if ($subscriptions_helper->isSubscribedContent($file, $person)) {
@@ -244,7 +241,7 @@ class DownloadsController extends AbstractController
      */
     public function downloadsCategorySubscriptionAction(DownloadCategory $category)
     {
-        $person = $this->getUser();
+        $person               = $this->getUser();
         $subscriptions_helper = $this->getSubscriptionsHelper();
 
         if ($subscriptions_helper->isSubscribedCategory($category, $person)) {

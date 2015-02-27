@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security;
@@ -82,6 +79,6 @@ class AgentImpersonateToken extends AbstractToken
 
     public function getCredentials()
     {
-        return null;
+        return;
     }
 }

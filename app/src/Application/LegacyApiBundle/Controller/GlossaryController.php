@@ -26,21 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
 /**
-* @SWG\Resource(
-* 	resourcePath="/glossary",
-* 	description="Operations about Glossary Words",
-* 	basePath="/api"
-* )
-*/
+ * @SWG\Resource(
+ * 	resourcePath="/glossary",
+ * 	description="Operations about Glossary Words",
+ * 	basePath="/api"
+ * )
+ */
 class GlossaryController extends AbstractController
 {
     /**
@@ -313,9 +310,11 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @return \Application\DeskPRO\Entity\GlossaryWord
+     * @param integer $id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return \Application\DeskPRO\Entity\GlossaryWord
+     *
      */
     protected function _getWordOr404($id)
     {
@@ -329,9 +328,11 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @return \Application\DeskPRO\Entity\GlossaryWordDefinition
+     * @param integer $id
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return \Application\DeskPRO\Entity\GlossaryWordDefinition
+     *
      */
     protected function _getDefinitionOr404($id)
     {

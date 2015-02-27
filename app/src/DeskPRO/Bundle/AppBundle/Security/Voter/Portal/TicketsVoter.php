@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
-use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 
 class TicketsVoter extends AbstractVoter
@@ -50,9 +47,10 @@ class TicketsVoter extends AbstractVoter
     }
 
     /**
-     * @param  string                                                                          $attribute
-     * @param  object                                                                          $ticket
-     * @param  \Application\DeskPRO\Entity\Person|\Application\DeskPRO\People\PersonGuest|null $user
+     * @param string                                                                          $attribute
+     * @param object                                                                          $ticket
+     * @param \Application\DeskPRO\Entity\Person|\Application\DeskPRO\People\PersonGuest|null $user
+     *
      * @return bool
      */
     protected function isGranted($attribute, $ticket, $user = null)
@@ -87,7 +85,7 @@ class TicketsVoter extends AbstractVoter
     }
 
     /**
-     * Return an array of supported classes. This will be called by supportsClass
+     * Return an array of supported classes. This will be called by supportsClass.
      *
      * @return array an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
      */

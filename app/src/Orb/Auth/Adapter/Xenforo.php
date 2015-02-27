@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Orb\Auth\Adapter;
@@ -57,12 +54,12 @@ class Xenforo extends DbTable
         ";
 
         if (!$this->getDb()) {
-            return null;
+            return;
         }
 
         $result = $this->db->fetchAssoc($sql, array($param));
         if (!$result) {
-            return null;
+            return;
         }
 
         return $result;

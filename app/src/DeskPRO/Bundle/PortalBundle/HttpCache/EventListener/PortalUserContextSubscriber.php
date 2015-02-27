@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\HttpCache\EventListener;
@@ -37,13 +34,13 @@ namespace DeskPRO\Bundle\PortalBundle\HttpCache\EventListener;
 use DeskPRO\Bundle\PortalBundle\HttpCache\PortalCacheHelper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestMatcherInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Ensure that cache headers are ONLY sent in the event of a GUEST user-context-hash request
+ * Ensure that cache headers are ONLY sent in the event of a GUEST user-context-hash request.
  */
 class PortalUserContextSubscriber implements EventSubscriberInterface
 {
@@ -68,12 +65,12 @@ class PortalUserContextSubscriber implements EventSubscriberInterface
         $hashHeader = "X-User-Context-Hash"
     ) {
         $this->requestMatcher = $requestMatcher;
-        $this->hashHeader = $hashHeader;
-        $this->cache_helper = $cache_helper;
+        $this->hashHeader     = $hashHeader;
+        $this->cache_helper   = $cache_helper;
     }
 
     /**
-     * Turn off cache headers if the hash is NOT a guest hash
+     * Turn off cache headers if the hash is NOT a guest hash.
      *
      * @param FilterResponseEvent $event
      */

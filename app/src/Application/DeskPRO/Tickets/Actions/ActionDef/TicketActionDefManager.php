@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -55,7 +54,7 @@ class TicketActionDefManager
     public function __construct(array $ticket_action_defs)
     {
         $this->ticket_action_defs = Arrays::keyFromData($ticket_action_defs, 'id');
-        $this->names_to_def = Arrays::keyFromData($ticket_action_defs, 'action_name');
+        $this->names_to_def       = Arrays::keyFromData($ticket_action_defs, 'action_name');
     }
 
     /**
@@ -67,7 +66,8 @@ class TicketActionDefManager
     }
 
     /**
-     * @param  int  $id
+     * @param int $id
+     *
      * @return bool
      */
     public function hasDef($id)
@@ -76,9 +76,11 @@ class TicketActionDefManager
     }
 
     /**
-     * @param  int                       $id
-     * @return TicketActionDef
+     * @param int $id
+     *
      * @throws \InvalidArgumentException
+     * @return TicketActionDef
+     *
      */
     public function getDef($id)
     {
@@ -90,7 +92,8 @@ class TicketActionDefManager
     }
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return bool
      */
     public function hasNamedDef($name)
@@ -99,9 +102,11 @@ class TicketActionDefManager
     }
 
     /**
-     * @param  string                    $name
-     * @return TicketActionDef
+     * @param string $name
+     *
      * @throws \InvalidArgumentException
+     * @return TicketActionDef
+     *
      */
     public function getNamedDef($name)
     {

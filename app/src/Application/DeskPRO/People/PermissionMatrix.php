@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\People;
@@ -87,14 +85,14 @@ class PermissionMatrix
         foreach ($groups as $g) {
             if ($g->is_agent_group) {
                 $this->agentgroup_to_agents[$g->id] = array();
-                $this->agent_groups[$g->id] = $g;
+                $this->agent_groups[$g->id]         = $g;
             } else {
                 $this->user_groups[$g->id] = $g;
             }
         }
 
         foreach ($agents as $a) {
-            $this->agents[$a->id] = $a;
+            $this->agents[$a->id]          = $a;
             $this->agent_to_groups[$a->id] = array();
 
             foreach ($this->agent_groups as $g) {
@@ -107,7 +105,7 @@ class PermissionMatrix
     }
 
     /**
-     * Set permissions from a "permission" array (eg including raw department_permissions records from the db)
+     * Set permissions from a "permission" array (eg including raw department_permissions records from the db).
      *
      * <code>
      * array('usergroup_id' => 1, 'name' => 'use', 'value' => 1),
@@ -159,7 +157,7 @@ class PermissionMatrix
     }
 
     /**
-     * Set permission from an array of permission objects (e.g., DepartmentPermission)
+     * Set permission from an array of permission objects (e.g., DepartmentPermission).
      *
      * @param $records
      */

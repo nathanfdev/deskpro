@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Apps
  */
 
@@ -41,9 +40,11 @@ use Orb\Util\Strings;
 class AppOptionsMapper
 {
     /**
-     * @param  array|AppInstance         $app_or_settings
-     * @return array
+     * @param array|AppInstance $app_or_settings
+     *
      * @throws \InvalidArgumentException
+     * @return array
+     *
      */
     public static function getOptions($app_or_settings)
     {

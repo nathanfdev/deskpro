@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -55,7 +52,7 @@ class DisplayHtmlType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'html' => '',
+                'html'  => '',
                 'label' => false,
             )
         );

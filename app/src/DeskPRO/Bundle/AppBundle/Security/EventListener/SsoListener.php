@@ -26,17 +26,14 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security\EventListener;
 
-use DeskPRO\Bundle\AppBundle\Security\Handler\LogoutHandler;
-use Application\DeskPRO\Auth\AuthInterfaceSettings;
 use Application\DeskPRO\Auth\AuthenticationManager;
+use Application\DeskPRO\Auth\AuthInterfaceSettings;
+use DeskPRO\Bundle\AppBundle\Security\Handler\LogoutHandler;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -65,18 +62,18 @@ class SsoListener implements EventSubscriberInterface
     public function __construct(AuthorizationCheckerInterface $authorization_checker, AuthenticationManager $auth_manager, LoggerInterface $logger)
     {
         $this->authorization_checker = $authorization_checker;
-        $this->auth_manager     = $auth_manager;
-        $this->logger           = $logger;
+        $this->auth_manager          = $auth_manager;
+        $this->logger                = $logger;
     }
 
     public function onKernelRequest(GetResponseEvent $event)
     {
         if (!$event->isMasterRequest()) {
-            return null;
+            return;
         }
 
         if ($this->authorization_checker->isGranted('ROLE_USER')) {
-            return null;
+            return;
         }
 
         // if we need to return a redirect from the auth system, do so now
@@ -87,10 +84,11 @@ class SsoListener implements EventSubscriberInterface
     }
 
     /**
-     * Returns a RedirectResponse if SSO says it needs to redirect
+     * Returns a RedirectResponse if SSO says it needs to redirect.
      *
-     * @param  AuthInterfaceSettings                              $authInterfaceSettings
-     * @param  Request                                            $request
+     * @param AuthInterfaceSettings $authInterfaceSettings
+     * @param Request               $request
+     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     protected function checkAuthSystemForResponse(
@@ -120,7 +118,8 @@ class SsoListener implements EventSubscriberInterface
     }
 
     /**
-     * @param  AuthInterfaceSettings $authInterfaceSettings
+     * @param AuthInterfaceSettings $authInterfaceSettings
+     *
      * @return null|\Orb\Auth\Result an auth result is returned if the sso redirect is enabled
      */
     protected function handleAutomaticSso(AuthInterfaceSettings $authInterfaceSettings)
@@ -129,7 +128,7 @@ class SsoListener implements EventSubscriberInterface
             return $authInterfaceSettings->getSsoAuthAdapter()->authenticate();
         }
 
-        return null;
+        return;
     }
 
     public static function getSubscribedEvents()

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -53,8 +52,8 @@ class RoundRobin extends AbstractEntityRepository
 
         $nextIsPresented = false;
         foreach ($agents as $agentData) {
-            $agentRef = new RoundRobinAgent();
-            $agentRef->robin = $robin;
+            $agentRef         = new RoundRobinAgent();
+            $agentRef->robin  = $robin;
             $agentRef->agent  = $this->_em->getReference('DeskPRO:Person', $agentData['id']);
             $this->_em->persist($agentRef);
             $agentRef['sort'] = ++$sort;
@@ -73,8 +72,10 @@ class RoundRobin extends AbstractEntityRepository
     }
 
     /**
-     * check current agents queue for availability and return them
-     * @param  \Application\DeskPRO\Entity\RoundRobin $robin
+     * check current agents queue for availability and return them.
+     *
+     * @param \Application\DeskPRO\Entity\RoundRobin $robin
+     *
      * @return array|null
      */
     protected function getAvailableAgents(\Application\DeskPRO\Entity\RoundRobin $robin)
@@ -98,17 +99,19 @@ class RoundRobin extends AbstractEntityRepository
     }
 
     /**
-     * get next available agent from queue
-     * @param  \Application\DeskPRO\Entity\RoundRobin $robin
+     * get next available agent from queue.
+     *
+     * @param \Application\DeskPRO\Entity\RoundRobin $robin
+     *
      * @return mixed|null
      */
     public function getNextAgent(\Application\DeskPRO\Entity\RoundRobin $robin)
     {
-        $next = null;
+        $next            = null;
         $availableAgents = $this->getAvailableAgents($robin);
 
         if (count($availableAgents)) {
-            $idx = array_search($robin->next, $availableAgents, true);
+            $idx  = array_search($robin->next, $availableAgents, true);
             $next = false === $idx ? reset($availableAgents) : $availableAgents[$idx];
         }
 
@@ -116,16 +119,17 @@ class RoundRobin extends AbstractEntityRepository
     }
 
     /**
-     * set new agent as next
+     * set new agent as next.
+     *
      * @param \Application\DeskPRO\Entity\RoundRobin $robin
      */
     public function updateNextAgent(\Application\DeskPRO\Entity\RoundRobin $robin)
     {
-        $next = $this->getNextAgent($robin);
+        $next            = $this->getNextAgent($robin);
         $availableAgents = $this->getAvailableAgents($robin);
 
         if ($next && count($availableAgents)) {
-            $current = array_search($next, $availableAgents, true);
+            $current     = array_search($next, $availableAgents, true);
             $robin->next = $next === end($availableAgents)
                 ? reset($availableAgents)
                 : $availableAgents[$current+1];

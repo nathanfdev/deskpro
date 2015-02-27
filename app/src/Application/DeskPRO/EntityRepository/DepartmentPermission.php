@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -42,13 +41,15 @@ use Orb\Util\Arrays;
 class DepartmentPermission extends AbstractEntityRepository
 {
     /**
-     * array(agent_id => array(name => array(...), any => array(...))
+     * array(agent_id => array(name => array(...), any => array(...)).
+     *
      * @var array
      */
     private $cache_by_agent = null;
 
     /**
-     * array(group_id => array(name => array(...), any => array(...))
+     * array(group_id => array(name => array(...), any => array(...)).
+     *
      * @var null
      */
     private $cache_by_group = null;
@@ -128,8 +129,10 @@ class DepartmentPermission extends AbstractEntityRepository
     }
 
     /**
-     * Get an array of department IDs this user has permission to see
-     * @param  \Application\DeskPRO\Entity\Person $person
+     * Get an array of department IDs this user has permission to see.
+     *
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return int[]
      */
     public function getDepartmentIdsForPerson(PersonEntity $person)
@@ -144,7 +147,7 @@ class DepartmentPermission extends AbstractEntityRepository
         $wheres[] = "value = 1";
 
         $wheres = implode(' AND ', $wheres);
-        $sql = "
+        $sql    = "
             SELECT department_id
             FROM department_permissions
             WHERE $wheres
@@ -167,8 +170,9 @@ class DepartmentPermission extends AbstractEntityRepository
     }
 
     /**
-     * @param  DepartmentEntity $dep
+     * @param DepartmentEntity $dep
      * @param $app
+     *
      * @return mixed
      */
     public function getRecordsForDepartment(DepartmentEntity $dep, $app)

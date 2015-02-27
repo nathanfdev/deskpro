@@ -26,17 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
 namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\PermissionCache;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\PermissionCache;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PermissionLoader\Usergroups;
 use Application\DeskPRO\People\PersonContextInterface;
@@ -53,38 +52,43 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
     protected $person;
 
     /**
-     * All the users usergroups
+     * All the users usergroups.
+     *
      * @string array
      */
     protected $usergroup_ids;
 
     /**
-     * Groups we got inherited from an org
+     * Groups we got inherited from an org.
      *
      * @string array
      */
     protected $org_usergroup_ids;
 
     /**
-     * The usergroups key for all the users groups
+     * The usergroups key for all the users groups.
+     *
      * @var string
      */
     protected $usergroups_key;
 
     /**
-     * Types that we know we want, but havent been loaded yet
+     * Types that we know we want, but havent been loaded yet.
+     *
      * @param array
      */
     protected $queued_types = array();
 
     /**
-     * Initialized loaders
+     * Initialized loaders.
+     *
      * @var \Application\DeskPRO\People\PermissionLoader\AbstractLoader[]
      */
     protected $loaders = array();
 
     /**
-     * Initialized checkers
+     * Initialized checkers.
+     *
      * @var \Application\DeskPRO\People\PermissionChecker\AbstractChecker[]
      */
     protected $checkers = array();
@@ -101,6 +105,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
     /**
      * Permission records loaded?
+     *
      * @var bool
      */
     protected $is_loaded = false;
@@ -175,7 +180,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
     }
 
     /**
-     * Get an array of usergroups this user has applied to them
+     * Get an array of usergroups this user has applied to them.
      *
      * @return array
      */
@@ -195,7 +200,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
     }
 
     /**
-     * Get the usergroups set key
+     * Get the usergroups set key.
      *
      * @return string
      */
@@ -230,8 +235,6 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
      * This loads up the queued permission types. The reason they're queued is so we
      * can fetch multiple records from the cache at once, which is helpful when
      * the cache is a slow-cache such as the db.
-     *
-     * @return void
      */
     public function _loadQueued()
     {
@@ -267,7 +270,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         # Load the rest for the first time
         #-------------------------
 
-        $queued_types = $this->queued_types;
+        $queued_types       = $this->queued_types;
         $this->queued_types = array();
 
         foreach ($queued_types as $name) {
@@ -275,7 +278,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
                 continue;
             }
 
-            $class = $this->getLoaderClass($name);
+            $class  = $this->getLoaderClass($name);
             $loader = new $class($this->usergroup_ids);
 
             if ($loader instanceof PersonContextInterface) {
@@ -294,6 +297,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
      * Using property overloading to give direct access to individual loaders.
      *
      * @param  $name
+     *
      * @return \Application\DeskPRO\People\PermissionLoader\AbstractLoader
      */
     public function __get($name)
@@ -302,9 +306,10 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
     }
 
     /**
-     * Get a loader
+     * Get a loader.
      *
      * @param  $name
+     *
      * @return \Application\DeskPRO\People\PermissionLoader\AbstractLoader
      */
     public function get($name)
@@ -337,6 +342,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
      * This is a shortcut for the usergroups loader.
      *
      * @param $name
+     *
      * @return bool
      */
     public function hasPerm($name)
@@ -382,7 +388,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
     }
 
     /**
-     * Flush any pending permission group caches that need to be written
+     * Flush any pending permission group caches that need to be written.
      */
     public function flushCache()
     {
@@ -413,6 +419,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
      * Get the full name of the loader for a given permission type name.
      *
      * @param  $name
+     *
      * @return string
      */
     public function getLoaderClass($name)
@@ -423,17 +430,20 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
     public function getShortCallableNames()
     {
         return array(
-            'getPermissionsManager' => '_getthis',
-            'getPermsLoader'        => 'get',
-            'hasPerm'               => 'hasPerm',
+            'getPermissionsManager'  => '_getthis',
+            'getPermsLoader'         => 'get',
+            'hasPerm'                => 'hasPerm',
             'has_perm'               => 'hasPerm',
         );
     }
 
-    public function _getthis() { return $this; }
+    public function _getthis()
+    {
+        return $this;
+    }
 
-	public function clear()
-	{
-		$this->person = null;
-	}
+    public function clear()
+    {
+        $this->person = null;
+    }
 }

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
@@ -50,7 +47,8 @@ class LanguageDataService extends BaseRepositoryService
     protected $default_lang_id = 1;
 
     /**
-     * Loaded langs
+     * Loaded langs.
+     *
      * @var array
      */
     protected $languages = array();
@@ -102,9 +100,10 @@ class LanguageDataService extends BaseRepositoryService
     }
 
     /**
-     * Find a language by a lang code
+     * Find a language by a lang code.
      *
-     * @param  string                                    $code
+     * @param string $code
+     *
      * @return \Application\DeskPRO\Entity\Language|null
      */
     public function findLangCode($code)
@@ -116,11 +115,11 @@ class LanguageDataService extends BaseRepositoryService
             }
         }
 
-        return null;
+        return;
     }
 
     /**
-     * Get an array of lang codes
+     * Get an array of lang codes.
      *
      * @return string[]
      */
@@ -156,6 +155,7 @@ class LanguageDataService extends BaseRepositoryService
 
     /**
      * @param $id
+     *
      * @return \Application\DeskPRO\Entity\Language
      */
     public function get($id)
@@ -176,7 +176,8 @@ class LanguageDataService extends BaseRepositoryService
     }
 
     /**
-     * @param  int  $id
+     * @param int $id
+     *
      * @return bool
      */
     public function has($id)
@@ -187,7 +188,7 @@ class LanguageDataService extends BaseRepositoryService
     }
 
     /**
-     * Loads the required data
+     * Loads the required data.
      *
      * @return mixed
      */
@@ -208,10 +209,11 @@ class LanguageDataService extends BaseRepositoryService
     }
 
     /**
-     * Get languages by ID
+     * Get languages by ID.
      *
-     * @param  array                                  $ids
-     * @param  bool                                   $keep_order
+     * @param array $ids
+     * @param bool  $keep_order
+     *
      * @return \Application\DeskPRO\Entity\Language[]
      */
     public function getByIds(array $ids, $keep_order = false)
@@ -243,9 +245,10 @@ class LanguageDataService extends BaseRepositoryService
     }
 
     /**
-     * Get names of langs
+     * Get names of langs.
      *
-     * @param  array|null $for_ids
+     * @param array|null $for_ids
+     *
      * @return string[]
      */
     public function getTitles(array $for_ids = null)

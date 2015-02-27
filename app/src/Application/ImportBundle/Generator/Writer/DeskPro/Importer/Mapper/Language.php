@@ -31,10 +31,9 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Language record mapper
+ * Language record mapper.
  *
  * Class Language
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class Language implements MapperInterface, MapperByTitleInterface
 {
@@ -44,7 +43,7 @@ final class Language implements MapperInterface, MapperByTitleInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\Language $repository
      */

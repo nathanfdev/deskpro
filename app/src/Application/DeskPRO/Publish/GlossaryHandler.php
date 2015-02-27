@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Addons
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Publish;
@@ -39,24 +36,27 @@ use Application\DeskPRO\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 
 /**
- * Handles linking glossary words in texts
+ * Handles linking glossary words in texts.
  */
 class GlossaryHandler
 {
     /**
-     * Entity manager
+     * Entity manager.
+     *
      * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
 
     /**
-     * Plain database connection for raw queries
+     * Plain database connection for raw queries.
+     *
      * @var \Application\DeskPRO\DBAL\Connection
      */
     protected $db;
 
     /**
-     * All words defined
+     * All words defined.
+     *
      * @var array
      */
     protected $_words = null;
@@ -117,6 +117,7 @@ class GlossaryHandler
 
     /**
      * @param $text
+     *
      * @return array
      */
     public function findWords($text)
@@ -135,6 +136,7 @@ class GlossaryHandler
 
     /**
      * @param $text
+     *
      * @return mixed
      */
     public function processText($text)

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -41,7 +40,7 @@ use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
- * Active user sessions
+ * Active user sessions.
  */
 class Session extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -56,14 +55,14 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
     protected $id;
 
     /**
-     * The authcode for the session to verify an id
+     * The authcode for the session to verify an id.
      *
      * @var string
      */
     protected $auth;
 
     /**
-     * The Interface the session is for
+     * The Interface the session is for.
      *
      * @var string
      */
@@ -75,14 +74,14 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
     protected $person = null;
 
     /**
-     * The users user agent string
+     * The users user agent string.
      *
      * @var string
      */
     protected $user_agent = null;
 
     /**
-     * The users IP address
+     * The users IP address.
      *
      * @var string
      */
@@ -109,13 +108,15 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
     protected $is_helpdesk = false;
 
     /**
-     * (Agents) Status (available or away)
+     * (Agents) Status (available or away).
+     *
      * @var string
      */
     protected $active_status = 'available';
 
     /**
-     * (Agents) Wehn status is available, if they are available for chat
+     * (Agents) Wehn status is available, if they are available for chat.
+     *
      * @var bool
      */
     protected $is_chat_available = true;
@@ -151,7 +152,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 
     public function getVisitor()
     {
-        return null;
+        return;
     }
 
     /**
@@ -227,8 +228,9 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
      *
      * Most notably used as the "proxy key"
      *
-     * @param  string $secret  Another component to add to the hash
-     * @param  bool   $not_vis True for do not use visitor secret. Default is to use visitor if it exists.
+     * @param string $secret  Another component to add to the hash
+     * @param bool   $not_vis True for do not use visitor secret. Default is to use visitor if it exists.
+     *
      * @return string
      */
     public function getSessionSecret($name = '', $not_vis = false)
@@ -237,10 +239,11 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Generate a security token based off of this session
+     * Generate a security token based off of this session.
      *
      * @param $name
-     * @param  int    $timeout
+     * @param int $timeout
+     *
      * @return string
      */
     public function generateSecurityToken($name = '', $timeout = 43200)
@@ -249,9 +252,10 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Check a security token to see if its valid
+     * Check a security token to see if its valid.
      *
      * @param $name
+     *
      * @return bool
      */
     public function checkSecurityToken($name = '', $token)
@@ -267,10 +271,10 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
     public static function getIdFromCode($sess_code)
     {
         if (!is_string($sess_code) || !strpos($sess_code, '-')) {
-            return null;
+            return;
         }
 
-        list($session_id,) = explode('-', $sess_code, 2);
+        list($session_id, ) = explode('-', $sess_code, 2);
 
         $session_id = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
 
@@ -302,6 +306,6 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'date_last', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_last'));
         $metadata->mapField(array( 'fieldName' => 'date_last_page', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_last_page'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

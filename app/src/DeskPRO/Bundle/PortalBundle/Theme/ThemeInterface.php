@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 /**
- * Representation of a DeskPRO Theme
+ * Representation of a DeskPRO Theme.
  */
 interface ThemeInterface
 {
@@ -47,7 +44,7 @@ interface ThemeInterface
     public function getId();
 
     /**
-     * A human readable name of the theme (used in dropdown, reporting, etc)
+     * A human readable name of the theme (used in dropdown, reporting, etc).
      *
      * @return string
      */
@@ -62,7 +59,7 @@ interface ThemeInterface
     public function getParent();
 
     /**
-     * The theme ID of the parent theme
+     * The theme ID of the parent theme.
      *
      * @return string|null
      */
@@ -87,20 +84,22 @@ interface ThemeInterface
      * Get the tag for the given tag name.
      *
      * @param $tag_name
+     *
      * @return Tag|null
      */
     public function getTag($tag_name);
 
     /**
-     * Similar to getTag() but it also recursivley climbs the tree until it finds the tag
+     * Similar to getTag() but it also recursivley climbs the tree until it finds the tag.
      *
      * @param $tag_name
+     *
      * @return Tag|null
      */
     public function resolveTag($tag_name);
 
     /**
-     * Return a list of all tag objects
+     * Return a list of all tag objects.
      *
      * @return Tag[]
      */
@@ -122,18 +121,16 @@ interface ThemeInterface
     public static function getHardCodedTags();
 
     /**
-     * Sets the parent of the theme
+     * Sets the parent of the theme.
      *
-     * @param  ThemeInterface $parent
-     * @return null
+     * @param ThemeInterface $parent
      */
     public function setParent(ThemeInterface $parent);
 
     /**
-     * Sets an array of tag objects, replaces previously set tags with new array
+     * Sets an array of tag objects, replaces previously set tags with new array.
      *
-     * @param  Tag[] $tags
-     * @return null
+     * @param Tag[] $tags
      */
     public function setTags(array $tags);
 }

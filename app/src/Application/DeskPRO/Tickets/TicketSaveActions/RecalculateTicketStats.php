@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -57,7 +56,7 @@ class RecalculateTicketStats implements TicketSaveActionInterface
     public function __construct(array $agent_ids, Connection $db)
     {
         $this->agent_ids = $agent_ids;
-        $this->db = $db;
+        $this->db        = $db;
     }
 
     /**

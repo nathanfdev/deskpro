@@ -34,20 +34,20 @@ use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 
 /**
- * Class TicketValueImporter
- * @package Application\ImportBundle\ValueImporter
+ * Class TicketValueImporter.
  */
 class TicketValueImporter extends AbstractValueImporter
 {
     /**
      * @param mixed $tval
      *
-     * @return bool
      * @throws BadDataException
+     * @return bool
+     *
      */
     public function importValue($tval)
     {
-//        if (!($tval instanceof TicketValue)) {
+        //        if (!($tval instanceof TicketValue)) {
 //            throw new \InvalidArgumentException("This importer can only import TicketValue");
 //        }
 //

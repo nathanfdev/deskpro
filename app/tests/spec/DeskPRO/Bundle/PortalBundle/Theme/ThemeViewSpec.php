@@ -26,33 +26,29 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
+use PhpSpec\ObjectBehavior;
 
 /**
  * @mixin \DeskPRO\Bundle\PortalBundle\Theme\ThemeView
  */
 class ThemeViewSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         BrandStack $brand_stack,
         BrandContainer $brand_container,
         ThemeInterface $theme,
         Tag $tag
-    )
-    {
+    ) {
         $brand_stack->getActive()->willReturn($brand_container);
         $brand_container->getTheme()->willReturn($theme);
         $theme->resolveTag('tag_name')->willReturn($tag);
@@ -60,18 +56,17 @@ class ThemeViewSpec extends ObjectBehavior
 
         $this->beConstructedWith($brand_stack, array(
             'a' => 'default',
-            'd' => 'the controller sets these page defaults'
+            'd' => 'the controller sets these page defaults',
         ));
     }
 
-    function it_will_call_a_tag_using_the_constructed_default_options(
+    public function it_will_call_a_tag_using_the_constructed_default_options(
         BrandContainer $brand_container,
         $default_options
-    )
-    {
+    ) {
         $brand_container->renderTag('tag_name', array(
             'a' => 'default',
-            'd' => 'the controller sets these page defaults'
+            'd' => 'the controller sets these page defaults',
         ))->shouldBeCalled();
 
         $no_explicit_options = array(array()); // uses first arg in the array (because twig, see commnets in class)
@@ -79,20 +74,19 @@ class ThemeViewSpec extends ObjectBehavior
         $this->__call('tag_name', $no_explicit_options);
     }
 
-    function it_allows_tags_to_be_called_with_explicit_options_that_will_override_default_options(
+    public function it_allows_tags_to_be_called_with_explicit_options_that_will_override_default_options(
         BrandContainer $brand_container,
         $default_options
-    )
-    {
+    ) {
         $brand_container->renderTag('tag_name', array(
             'a' => 'NEW VAL',
             'b' => 'something',
-            'd' => 'the controller sets these page defaults'
+            'd' => 'the controller sets these page defaults',
         ))->shouldBeCalled();
 
         $this->__call('tag_name', array(array( // uses first arg in the array (because twig, see commnets in class)
             'a' => 'NEW VAL',
-            'b' => 'something'
+            'b' => 'something',
         )));
     }
 }

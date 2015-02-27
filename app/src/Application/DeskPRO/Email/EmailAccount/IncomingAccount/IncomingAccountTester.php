@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
@@ -80,7 +78,7 @@ class IncomingAccountTester
     }
 
     /**
-     * Run the test
+     * Run the test.
      *
      * @return bool
      */
@@ -138,7 +136,7 @@ class IncomingAccountTester
     }
 
     /**
-     * Tests Pop3
+     * Tests Pop3.
      */
     private function _testPop3()
     {
@@ -255,7 +253,7 @@ class IncomingAccountTester
     }
 
     /**
-     * Tests Gmail
+     * Tests Gmail.
      */
     private function _testGmail()
     {
@@ -288,7 +286,7 @@ class IncomingAccountTester
     }
 
     /**
-     * Tests Office365
+     * Tests Office365.
      */
     private function _testOffice365()
     {
@@ -299,12 +297,12 @@ class IncomingAccountTester
 
         try {
             $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3(array(
-                'host'     => 'outlook.office365.com',
-                'user'     => $config->user,
-                'password' => $config->password,
-                'port'     => 995,
-                'ssl'      => 'ssl',
-                'logger'   => $this->logger,
+                'host'      => 'outlook.office365.com',
+                'user'      => $config->user,
+                'password'  => $config->password,
+                'port'      => 995,
+                'ssl'       => 'ssl',
+                'logger'    => $this->logger,
                 'test_mode' => true,
             ));
 

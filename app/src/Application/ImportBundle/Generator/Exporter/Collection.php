@@ -31,32 +31,34 @@ use Application\ImportBundle\AbstractCollection;
 use Exception;
 
 /**
- * Collection of exporters
+ * Collection of exporters.
  *
  * Class Collection
- * @package Application\ImportBundle\Generator\Exporter
  */
 class Collection extends AbstractCollection
 {
     /**
-     * Add a validator
+     * Add a validator.
      *
      * @param ExporterInterface $exporter
+     *
      * @return $this
      */
     public function attach(ExporterInterface $exporter)
     {
         $this->collection[$exporter->getType()] = $exporter;
+
         return $this;
     }
 
     /**
-     * Returns an exporter by type
+     * Returns an exporter by type.
      *
      * @param string $type
      *
-     * @return ExporterInterface
      * @throws Exception
+     * @return ExporterInterface
+     *
      */
     public function getByType($type)
     {

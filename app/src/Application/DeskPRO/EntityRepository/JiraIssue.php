@@ -3,7 +3,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 /**
- * JIRA issues entity repository
+ * JIRA issues entity repository.
  *
  * @author Abhinav Kumar <work@abhinavkumar.in>
  */

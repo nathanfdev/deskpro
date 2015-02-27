@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -37,8 +36,9 @@ namespace Application\DeskPRO\EntityRepository;
 class TwitterAccountFriend extends AbstractEntityRepository
 {
     /**
-     * @param  integer                                               $accountId
-     * @param  integer                                               $userId
+     * @param integer $accountId
+     * @param integer $userId
+     *
      * @return null|\Application\DeskPRO\Entity\TwitterAccountFriend
      */
     public function findOneByAccountIdAndUserId($accountId, $userId)
@@ -59,7 +59,7 @@ class TwitterAccountFriend extends AbstractEntityRepository
             return array();
         }
 
-        $output = array();
+        $output  = array();
         $results = $this->getEntityManager()->createQuery("
             SELECT f
             FROM   DeskPRO:TwitterAccountFriend f

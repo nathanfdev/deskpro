@@ -2,8 +2,8 @@
 namespace DpUnitTests\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Organization;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckUserOrgManager;
 
@@ -17,10 +17,10 @@ class CheckUserOrgManagerTest extends \DpUnitTestCase
 
         $org = new Organization();
 
-        $person = new Person();
-        $person->organization = $org;
+        $person                       = new Person();
+        $person->organization         = $org;
         $person->organization_manager = true;
-        $ticket->person = $person;
+        $ticket->person               = $person;
 
         $exec = new ExecutorContext();
 
@@ -32,7 +32,7 @@ class CheckUserOrgManagerTest extends \DpUnitTestCase
     {
         $ticket = new Ticket();
 
-        $person = new Person();
+        $person         = new Person();
         $ticket->person = $person;
 
         $exec = new ExecutorContext();

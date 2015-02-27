@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -43,7 +42,7 @@ class Session extends AbstractEntityRepository
 {
     /**
      * Checks for active sessions (with standard chat timeout) for agents
-     * that have their status to available
+     * that have their status to available.
      */
     public function hasAvailableAgents($for_chat = false)
     {
@@ -60,7 +59,7 @@ class Session extends AbstractEntityRepository
     }
 
     /**
-     * Get an array of agent IDs
+     * Get an array of agent IDs.
      *
      * @return array
      */
@@ -89,12 +88,12 @@ class Session extends AbstractEntityRepository
     {
         $session_id = SessionEntity::getIdFromCode($sess_code);
         if (!$session_id) {
-            return null;
+            return;
         }
 
         $session = $this->find($session_id);
         if (!$session or !$session->checkSessionCode($sess_code)) {
-            return null;
+            return;
         }
 
         return $session;
@@ -104,6 +103,7 @@ class Session extends AbstractEntityRepository
      * Find an active session that is tied to a visitor.
      *
      * @param  $visitor
+     *
      * @return Session
      */
     public function getSessionFromVisitor(VisitorEntity $visitor)
@@ -116,14 +116,14 @@ class Session extends AbstractEntityRepository
         ")->setParameter(1, $visitor)->setMaxResults(1)->execute();
 
         if (!count($session)) {
-            return null;
+            return;
         }
 
         return $session[0];
     }
 
     /**
-     * Get the latest active session for a particular user
+     * Get the latest active session for a particular user.
      *
      * @param \Application\DeskPRO\Entity\Person $person
      * @param integer|null                       $offset Max number of seconds old the session's last page can be (null for session lifetime)
@@ -147,7 +147,7 @@ class Session extends AbstractEntityRepository
     }
 
     /**
-     * Count online users
+     * Count online users.
      *
      * @return int
      */

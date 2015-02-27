@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ServerFileUploads;
@@ -188,6 +186,7 @@ class ServerFileUploads
 
     /**
      * @param $file
+     *
      * @return array
      */
     public function getUploadResults($file)
@@ -220,7 +219,8 @@ class ServerFileUploads
     }
 
     /**
-     * @param  array                        $options
+     * @param array $options
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
@@ -229,7 +229,7 @@ class ServerFileUploads
         $options = new OptionsArray($options);
 
         $settings = App::$container->getSettingsHandler();
-        $db = App::$container->getDb();
+        $db       = App::$container->getDb();
 
         $method = $options->get('method', 'db');
 

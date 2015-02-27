@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage InstallBundle
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\DependencyInjection;
@@ -77,7 +74,7 @@ class InstallExtension extends Extension
     }
 
     /**
-     * Sets up the input reader
+     * Sets up the input reader.
      */
     protected function loadInputReader(ContainerBuilder $container)
     {
@@ -110,12 +107,12 @@ class InstallExtension extends Extension
 
     public function getXsdValidationBasePath()
     {
-        return null;
+        return;
     }
 
     public function getNamespace()
     {
-        return null;
+        return;
     }
 
     public function getAlias()

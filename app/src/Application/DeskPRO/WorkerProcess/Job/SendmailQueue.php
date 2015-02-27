@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -38,7 +35,7 @@ use Application\DeskPRO\App;
 use Application\EmailBundle\SourceMapper\ExternalPendingQueue;
 
 /**
- * Goes through queued messages
+ * Goes through queued messages.
  */
 class SendmailQueue extends AbstractJob
 {
@@ -46,9 +43,9 @@ class SendmailQueue extends AbstractJob
 
     public function run()
     {
-        $runner = App::getContainer()->get('email.queue_runner');
+        $runner         = App::getContainer()->get('email.queue_runner');
         $count_problems = $runner->detectProblems();
-        $count = 0;
+        $count          = 0;
 
         $source_mapper = App::getContainer()->get('email.source_mapper');
 

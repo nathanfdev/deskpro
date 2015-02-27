@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -37,7 +34,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 use Application\DeskPRO\App;
 
 /**
- * Updates the sitemap file
+ * Updates the sitemap file.
  */
 class SitemapFile extends AbstractJob
 {
@@ -57,7 +54,7 @@ class SitemapFile extends AbstractJob
             }
         }
 
-        $gen = new \Application\DeskPRO\Portal\SitemapGenerator(App::getSetting('core.deskpro_url'), App::getOrm(), App::getRouter());
+        $gen  = new \Application\DeskPRO\Portal\SitemapGenerator(App::getSetting('core.deskpro_url'), App::getOrm(), App::getRouter());
         $file = $gen->getXml();
 
         App::getContainer()->getBlobStorage()->createBlobRecordFromString(

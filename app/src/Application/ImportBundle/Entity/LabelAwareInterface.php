@@ -28,24 +28,24 @@
 namespace Application\ImportBundle\Entity;
 
 /**
- * Entity label interface
+ * Entity label interface.
  *
  * Interface LabelAwareInterface
- * @package Application\ImportBundle\Entity
  */
 interface LabelAwareInterface
 {
     /**
-     * Returns a collection of labels
+     * Returns a collection of labels.
      *
      * @return string[]
      */
     public function getLabels();
 
     /**
-     * Add a new label
+     * Add a new label.
      *
      * @param string $label
+     *
      * @return $this
      */
     public function addLabel($label);

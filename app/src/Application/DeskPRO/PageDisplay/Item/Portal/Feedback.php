@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Item\Portal;
@@ -80,7 +77,7 @@ class Feedback extends PortalItemAbstract implements CacheableItem
     {
         $html = $this->renderForward(
             'UserBundle:Feedback:filter',
-            array('status' => $this->getOption('status', 'new'), 'slug' => ''),
+            array('status'   => $this->getOption('status', 'new'), 'slug' => ''),
             array('_partial' => 'portal')
         );
 
@@ -101,7 +98,7 @@ class Feedback extends PortalItemAbstract implements CacheableItem
         );
 
         $html = $this->renderView('UserBundle:Portal:feedback-sidebar.html.twig', array(
-            'feedback' => $feedback,
+            'feedback'    => $feedback,
             'block_title' => $this->getOption('block_title'),
         ));
 

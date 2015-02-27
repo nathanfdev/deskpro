@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
-use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Application\DeskPRO\EntityRepository\Template;
+use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Twig_Error_Loader;
 
 class PortalLoader implements \Twig_LoaderInterface
@@ -52,16 +49,18 @@ class PortalLoader implements \Twig_LoaderInterface
 
     public function __construct(BrandStack $brand_stack, Template $template_repo)
     {
-        $this->brand_stack = $brand_stack;
+        $this->brand_stack   = $brand_stack;
         $this->template_repo = $template_repo;
     }
 
     /**
      * Gets the source code of a template, given its name.
      *
-     * @param  string            $name The name of the template to load
-     * @return string            The template source code
+     * @param string $name The name of the template to load
+     *
      * @throws Twig_Error_Loader When $name is not found
+     * @return string The template source code
+     *
      */
     public function getSource($name)
     {
@@ -79,9 +78,11 @@ class PortalLoader implements \Twig_LoaderInterface
     /**
      * Gets the cache key to use for the cache for a given template name.
      *
-     * @param  string            $name The name of the template to load
-     * @return string            The cache key
+     * @param string $name The name of the template to load
+     *
      * @throws Twig_Error_Loader When $name is not found
+     * @return string The cache key
+     *
      */
     public function getCacheKey($name)
     {
@@ -93,10 +94,12 @@ class PortalLoader implements \Twig_LoaderInterface
     /**
      * Returns true if the template is still fresh.
      *
-     * @param  string            $name The template name
-     * @param  timestamp         $time The last modification time of the cached template
-     * @return bool              true if the template is fresh, false otherwise
+     * @param string    $name The template name
+     * @param timestamp $time The last modification time of the cached template
+     *
      * @throws Twig_Error_Loader When $name is not found
+     * @return bool true if the template is fresh, false otherwise
+     *
      */
     public function isFresh($name, $time)
     {
@@ -112,8 +115,9 @@ class PortalLoader implements \Twig_LoaderInterface
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\Brand\BrandContainer
      * @throws \RuntimeException
+     * @return \DeskPRO\Bundle\AppBundle\Brand\BrandContainer
+     *
      */
     protected function getBrandContainer()
     {
@@ -130,6 +134,7 @@ class PortalLoader implements \Twig_LoaderInterface
 
     /**
      * @param $name
+     *
      * @return \Application\DeskPRO\Entity\Template|null
      */
     protected function getDbTemplate($name)
@@ -139,7 +144,7 @@ class PortalLoader implements \Twig_LoaderInterface
                 $name, $this->getBrandContainer()->getBrand(), $this->getBrandContainer()->getTheme()
             );
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 }

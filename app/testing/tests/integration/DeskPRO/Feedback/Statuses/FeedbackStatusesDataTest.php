@@ -7,7 +7,6 @@ class FeedbackStatusesDataTest extends \DpIntegrationTestCase
     /**
      * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
      */
-
     private $feedback_statuses;
 
     public function runBefore()

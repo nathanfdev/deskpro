@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -92,7 +91,7 @@ class CheckWorkingHours extends AbstractTriggerTerm
         $working_hours = Arrays::removeEmptyString($working_hours);
 
         $working_hours = new OptionsArray($working_hours);
-        $wh = new WorkHoursSet(
+        $wh            = new WorkHoursSet(
             $working_hours->get('start_hour', 9) * 3600 + $working_hours->get('start_min', 0) * 60,
             $working_hours->get('end_hour', 18) * 3600 + $working_hours->get('end_min', 0) * 60,
             $working_hours->get('work_days', array(1, 2, 3, 4, 5)),

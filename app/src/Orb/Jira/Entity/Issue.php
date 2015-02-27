@@ -6,70 +6,70 @@ use Orb\Jira\Entity;
 
 /**
  * The Issue Class
- * Emulates a Jira Issue
+ * Emulates a Jira Issue.
  *
  * @author Abhinav Kumar <work@abhinavkumar.in>
  */
 class Issue extends Entity
 {
     /**
-     * Issue type
+     * Issue type.
      *
      * @var IssueType The issue type
      */
     protected $_issueType;
 
     /**
-     * Project under which the issue is logged
+     * Project under which the issue is logged.
      *
      * @var Project Jira Project
      */
     protected $_project;
 
     /**
-     * Issue priority
+     * Issue priority.
      *
      * @var Priority The issue priority
      */
     protected $_priority;
 
     /**
-     * The issue due date
+     * The issue due date.
      *
      * @var int The issue due date
      */
     protected $_dueDate;
 
     /**
-     * The issue assignee
+     * The issue assignee.
      *
      * @var String The issue assignee
      */
     protected $_assignee;
 
     /**
-     * Issue Creation Date/time
+     * Issue Creation Date/time.
      *
      * @var String Issue creation date/time in UTC
      */
     protected $_created;
 
     /**
-     * Issue Updation Date/time
+     * Issue Updation Date/time.
      *
      * @var String Issue updation date/time in UTC
      */
     protected $_updated;
 
     /**
-     * Issue labels
+     * Issue labels.
      *
      * @var array An array of labels
      */
     protected $_labels;
 
     /**
-     * Issue Status
+     * Issue Status.
      *
      * @var String
      */
@@ -154,9 +154,10 @@ class Issue extends Entity
     }
 
     /**
-     * Sets the description
+     * Sets the description.
      *
-     * @param  String          $summary The new Description to set
+     * @param String $summary The new Description to set
+     *
      * @return \Orb\Jira\Issue
      */
     public function setSummary($summary)
@@ -165,7 +166,7 @@ class Issue extends Entity
     }
 
     /**
-     * Get the issue type
+     * Get the issue type.
      *
      * @return IssueType The issue type
      */
@@ -175,9 +176,10 @@ class Issue extends Entity
     }
 
     /**
-     * Sets the issue type
+     * Sets the issue type.
      *
-     * @param  \Orb\Jira\Entity\IssueType $type The issue type to set
+     * @param \Orb\Jira\Entity\IssueType $type The issue type to set
+     *
      * @return \Orb\Jira\Entity\Issue
      */
     public function setType(IssueType $type)
@@ -188,7 +190,7 @@ class Issue extends Entity
     }
 
     /**
-     * Gets the issue project
+     * Gets the issue project.
      *
      * @return Project
      */
@@ -198,9 +200,10 @@ class Issue extends Entity
     }
 
     /**
-     * Sets the issue project
+     * Sets the issue project.
      *
-     * @param  \Orb\Jira\Entity\Project $project The project to set
+     * @param \Orb\Jira\Entity\Project $project The project to set
+     *
      * @return \Orb\Jira\Entity\Issue
      */
     public function setProject(Project $project)
@@ -211,7 +214,7 @@ class Issue extends Entity
     }
 
     /**
-     * Gets the issue priority
+     * Gets the issue priority.
      *
      * @return Priority Issue Priority
      */
@@ -221,9 +224,10 @@ class Issue extends Entity
     }
 
     /**
-     * Sets the issue priority
+     * Sets the issue priority.
      *
-     * @param  \Orb\Jira\Entity\Priority $priority The issue priority to set
+     * @param \Orb\Jira\Entity\Priority $priority The issue priority to set
+     *
      * @return \Orb\Jira\Entity\Issue
      */
     public function setPriority(Priority $priority)
@@ -234,7 +238,7 @@ class Issue extends Entity
     }
 
     /**
-     * Gets the due date
+     * Gets the due date.
      *
      * @return String
      */
@@ -244,9 +248,10 @@ class Issue extends Entity
     }
 
     /**
-     * Sets the due date
+     * Sets the due date.
      *
-     * @param  String                 $dueDate The new due date
+     * @param String $dueDate The new due date
+     *
      * @return \Orb\Jira\Entity\Issue
      */
     public function setDueDate($dueDate)
@@ -257,7 +262,7 @@ class Issue extends Entity
     }
 
     /**
-     * Gets the created time
+     * Gets the created time.
      *
      * @return String The created time
      */
@@ -267,7 +272,7 @@ class Issue extends Entity
     }
 
     /**
-     * Gets the updated time
+     * Gets the updated time.
      *
      * @return String The updated time
      */
@@ -277,9 +282,10 @@ class Issue extends Entity
     }
 
     /**
-     * Adds an issue label
+     * Adds an issue label.
      *
-     * @param  String                 $label label to add
+     * @param String $label label to add
+     *
      * @return \Orb\Jira\Entity\Issue
      */
     public function addLabel($label)
@@ -290,9 +296,10 @@ class Issue extends Entity
     }
 
     /**
-     * Sets the issue labels
+     * Sets the issue labels.
      *
-     * @param  array                  $labels
+     * @param array $labels
+     *
      * @return \Orb\Jira\Entity\Issue
      */
     public function setLabels(array $labels)
@@ -303,7 +310,7 @@ class Issue extends Entity
     }
 
     /**
-     * Get Labels
+     * Get Labels.
      *
      * @return array An array of labels
      */
@@ -313,7 +320,7 @@ class Issue extends Entity
     }
 
     /**
-     * Get the issue status
+     * Get the issue status.
      *
      * @return String issue status
      */
@@ -323,9 +330,10 @@ class Issue extends Entity
     }
 
     /**
-     * Sets the status
+     * Sets the status.
      *
-     * @param  String                 $status The new staus
+     * @param String $status The new staus
+     *
      * @return \Orb\Jira\Entity\Issue
      */
     public function setStatus($status)
@@ -336,7 +344,7 @@ class Issue extends Entity
     }
 
     /**
-     * Gets the assignee
+     * Gets the assignee.
      *
      * @return String the assignee
      */
@@ -346,9 +354,10 @@ class Issue extends Entity
     }
 
     /**
-     * Sets the assignee
+     * Sets the assignee.
      *
-     * @param  String                 $assignee
+     * @param String $assignee
+     *
      * @return \Orb\Jira\Entity\Issue
      */
     public function setAssignee($assignee)

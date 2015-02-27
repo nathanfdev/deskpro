@@ -2,28 +2,25 @@
 
 namespace spec\DeskPRO\Bundle\PortalBundle\EventListener;
 
-use League\Url\Components\Port;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class PortalModeListenerSpec extends ObjectBehavior
 {
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('DeskPRO\Bundle\PortalBundle\EventListener\PortalModeListener');
         $this->shouldImplement('Symfony\Component\EventDispatcher\EventSubscriberInterface');
     }
 
-    function let(PortalModeFactory $factory, PortalModeStorage $store, LoggerInterface $logger)
+    public function let(PortalModeFactory $factory, PortalModeStorage $store, LoggerInterface $logger)
     {
         $this->beConstructedWith($factory, $store, $logger);
     }
@@ -32,7 +29,7 @@ class PortalModeListenerSpec extends ObjectBehavior
     {
         $this->getSubscribedEvents()->shouldBeLike(
             array(
-                KernelEvents::REQUEST => array('onKernelRequest', 256)
+                KernelEvents::REQUEST => array('onKernelRequest', 256),
             )
         );
     }
@@ -43,8 +40,7 @@ class PortalModeListenerSpec extends ObjectBehavior
         PortalModeFactory $factory,
         Request $request,
         PortalModeStorage $store
-    )
-    {
+    ) {
         $request->getPathInfo()->willReturn($path = '/admin-mode/en/tickets');
 
         $event->isMasterRequest()->willReturn(true);
@@ -62,8 +58,7 @@ class PortalModeListenerSpec extends ObjectBehavior
         GetResponseEvent $event,
         PortalModeFactory $factory,
         PortalModeStorage $store
-    )
-    {
+    ) {
         $event->isMasterRequest()->willReturn(false);
 
         $factory->createMode(Argument::any())->shouldNotBeCalled();

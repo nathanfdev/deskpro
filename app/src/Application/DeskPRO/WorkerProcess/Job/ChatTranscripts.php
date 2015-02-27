@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -64,7 +61,7 @@ class ChatTranscripts extends AbstractJob
             $chat = App::getOrm()->find('DeskPRO:ChatConversation', $chat_id);
 
             $email = '';
-            $name = '';
+            $name  = '';
             if ($chat->person && $chat->person->getPrimaryEmailAddress()) {
                 $email = $chat->person->getPrimaryEmailAddress();
             } elseif ($chat->person_email) {
@@ -85,7 +82,7 @@ class ChatTranscripts extends AbstractJob
                 ")->setParameter(1, $chat)->execute();
 
                 $vars = array(
-                    'convo' => $chat,
+                    'convo'          => $chat,
                     'convo_messages' => $convo_messages,
                 );
 

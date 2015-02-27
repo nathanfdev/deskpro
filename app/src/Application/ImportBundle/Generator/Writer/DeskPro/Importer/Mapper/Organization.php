@@ -31,10 +31,9 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Organization record mapper
+ * Organization record mapper.
  *
  * Class Organization
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class Organization implements MapperInterface, MapperByTitleInterface
 {
@@ -44,7 +43,7 @@ final class Organization implements MapperInterface, MapperByTitleInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\Organization $repository
      */

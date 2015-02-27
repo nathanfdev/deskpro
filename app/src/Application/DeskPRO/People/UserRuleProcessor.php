@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\People;
@@ -82,9 +80,9 @@ class UserRuleProcessor
      */
     public function newEmail(Person $person, PersonEmail $email)
     {
-        $change = false;
+        $change        = false;
         $email_address = $email->email;
-        $domain = $email->getEmailDomain();
+        $domain        = $email->getEmailDomain();
 
         $rules = $this->em->getRepository('DeskPRO:UserRule')->getMatching($email_address);
         if ($rules) {

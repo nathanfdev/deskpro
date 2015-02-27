@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO;
@@ -52,36 +50,36 @@ class ErrorHandler
 
         switch ($errno) {
             case E_ERROR:
-                $die = true;
-                $pri = Logger::ERR;
+                $die     = true;
+                $pri     = Logger::ERR;
                 $errname = "E_ERROR";
                 break;
 
             case E_WARNING:
             case E_USER_WARNING:
-                $pri = Logger::WARN;
+                $pri     = Logger::WARN;
                 $errname = "E_WARNING";
                 break;
 
             case E_NOTICE:
             case E_USER_NOTICE:
-                $pri = Logger::NOTICE;
+                $pri     = Logger::NOTICE;
                 $errname = "E_NOTICE";
                 break;
 
             case E_STRICT:
-                $pri = Logger::NOTICE;
+                $pri     = Logger::NOTICE;
                 $errname = "E_STRICT";
                 break;
 
             case E_RECOVERABLE_ERROR:
-                $pri = Logger::ERR;
+                $pri     = Logger::ERR;
                 $errname = "E_RECOVERABLE_ERROR";
                 break;
 
             case E_DEPRECATED:
             case E_USER_DEPRECATED:
-                $pri = Logger::NOTICE;
+                $pri     = Logger::NOTICE;
                 $errname = "E_DEPRECATED";
                 break;
         }

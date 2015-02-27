@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Cloud\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\Controller\SettingsController as BaseSettingsController;
 use Application\DeskPRO\Entity\TmpData;
+use Application\LegacyApiBundle\Controller\SettingsController as BaseSettingsController;
 use Orb\Util\OptionsArray;
 
 class SettingsController extends BaseSettingsController
@@ -71,7 +68,7 @@ class SettingsController extends BaseSettingsController
 
     public function saveUrlSettingsAction()
     {
-        $in_settings = new OptionsArray($this->in->getArrayValue('settings'));
+        $in_settings  = new OptionsArray($this->in->getArrayValue('settings'));
         $set_settings = array();
 
         if ($in_settings->get('domain_choice') == 'custom') {

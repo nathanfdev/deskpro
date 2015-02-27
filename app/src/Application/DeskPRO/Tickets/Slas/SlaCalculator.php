@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\Slas;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketSla;
-use Orb\Util\WorkHoursInterface;
 use Orb\Util\TimeUnit;
+use Orb\Util\WorkHoursInterface;
 use Orb\Util\WorkHoursSetAll;
 
 class SlaCalculator
@@ -83,8 +80,9 @@ class SlaCalculator
     /**
      * Calculates a date in the future where a SLA fail/warn status is breached.
      *
-     * @param  Ticket         $ticket
-     * @param  int            $delay
+     * @param Ticket $ticket
+     * @param int    $delay
+     *
      * @return \DateTime|null
      */
     private function _calculateDate(Ticket $ticket, $delay)
@@ -97,7 +95,7 @@ class SlaCalculator
             case self::TYPE_WAITING_TIME:
                 if ($ticket->status != 'awaiting_agent') {
                     // can't know when it will expire
-                    return null;
+                    return;
                 }
 
                 if ($this->work_hours instanceof WorkHoursSetAll) {
@@ -127,13 +125,14 @@ class SlaCalculator
                 break;
         }
 
-        return null;
+        return;
     }
 
     /**
      * Calculate the date the ticket will reach warning status.
      *
-     * @param  Ticket         $ticket
+     * @param Ticket $ticket
+     *
      * @return \DateTime|null
      */
     public function calculateWarnDate(Ticket $ticket)
@@ -144,7 +143,8 @@ class SlaCalculator
     /**
      * Calculate the date the ticket will reach failing status.
      *
-     * @param  Ticket         $ticket
+     * @param Ticket $ticket
+     *
      * @return \DateTime|null
      */
     public function calculateFailDate(Ticket $ticket)
@@ -155,7 +155,8 @@ class SlaCalculator
     /**
      * Calculate the date that the SLA completed, or null if it is not completed.
      *
-     * @param  Ticket         $ticket
+     * @param Ticket $ticket
+     *
      * @return \DateTime|null
      */
     public function calculateCompletedDate(Ticket $ticket)
@@ -196,14 +197,15 @@ class SlaCalculator
             return new \DateTime('@'.min($dates));
         }
 
-        return null;
+        return;
     }
 
     /**
      * Calculate SLA countable time (in seconds) that happened in ticket between start and $ate.
      *
-     * @param  Ticket    $ticket
-     * @param  \DateTime $date
+     * @param Ticket    $ticket
+     * @param \DateTime $date
+     *
      * @return int
      */
     public function calculateTimeUntil(Ticket $ticket, \DateTime $date)
@@ -227,7 +229,8 @@ class SlaCalculator
     /**
      * Gets the appropriate Date to compare against warn/fail dates.
      *
-     * @param  Ticket    $ticket
+     * @param Ticket $ticket
+     *
      * @return \DateTime
      */
     public function getTestTime(Ticket $ticket)
@@ -255,8 +258,9 @@ class SlaCalculator
     }
 
     /**
-     * @param  Ticket    $ticket
-     * @param  TicketSla $ticket_sla
+     * @param Ticket    $ticket
+     * @param TicketSla $ticket_sla
+     *
      * @return bool
      */
     public function isTicketSlaWarning(Ticket $ticket, TicketSla $ticket_sla)
@@ -271,8 +275,9 @@ class SlaCalculator
     }
 
     /**
-     * @param  Ticket    $ticket
-     * @param  TicketSla $ticket_sla
+     * @param Ticket    $ticket
+     * @param TicketSla $ticket_sla
+     *
      * @return bool
      */
     public function isTicketSlaFailed(Ticket $ticket, TicketSla $ticket_sla)

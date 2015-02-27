@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
@@ -74,8 +71,9 @@ class TicketPriorityDataService extends BaseRepositoryService
     protected $default_id;
 
     /**
-     * @param  \Application\DeskPRO\DependencyInjection\DeskproContainer $container
-     * @param  array                                                     $options
+     * @param \Application\DeskPRO\DependencyInjection\DeskproContainer $container
+     * @param array                                                     $options
+     *
      * @return BaseRepositoryService|TicketPriorityDataService
      */
     public static function create(DeskproContainer $container, array $options = null)
@@ -95,7 +93,7 @@ class TicketPriorityDataService extends BaseRepositoryService
     }
 
     /**
-     * Sets some useful objects from options
+     * Sets some useful objects from options.
      */
     protected function init()
     {
@@ -105,7 +103,8 @@ class TicketPriorityDataService extends BaseRepositoryService
     }
 
     /**
-     * @param  int                                        $pri_id
+     * @param int $pri_id
+     *
      * @return \Application\DeskPRO\Entity\TicketPriority
      */
     public function get($pri_id)
@@ -126,7 +125,7 @@ class TicketPriorityDataService extends BaseRepositoryService
     }
 
     /**
-     * Loads all tikcet priorities into this object
+     * Loads all tikcet priorities into this object.
      */
     protected function preload()
     {
@@ -154,7 +153,8 @@ class TicketPriorityDataService extends BaseRepositoryService
     }
 
     /**
-     * @param  int[]    $for_ids
+     * @param int[] $for_ids
+     *
      * @return string[]
      */
     public function getNames($for_ids = null)
@@ -177,7 +177,7 @@ class TicketPriorityDataService extends BaseRepositoryService
     }
 
     /**
-     * Gets a map of id=>priority
+     * Gets a map of id=>priority.
      *
      * @return array
      */
@@ -189,7 +189,8 @@ class TicketPriorityDataService extends BaseRepositoryService
     }
 
     /**
-     * @param  array                                        $ids
+     * @param array $ids
+     *
      * @return \Application\DeskPRO\Entity\TicketPriority[]
      */
     public function getByIds(array $ids)
@@ -210,7 +211,8 @@ class TicketPriorityDataService extends BaseRepositoryService
      * Calls a method on the repository class and caches the result.
      *
      * @param $method
-     * @param  array $args
+     * @param array $args
+     *
      * @return mixed
      */
     public function __call($method, array $args = array())

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Search
  */
 
@@ -44,18 +43,20 @@ use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
 /**
- * This finds sticky results for a search term
+ * This finds sticky results for a search term.
  */
 class StickyWordSearch implements PersonContextInterface
 {
     /**
-     * Entity manager
+     * Entity manager.
+     *
      * @var \Doctrine\ORM\EntityManager
      */
     public $em;
 
     /**
-     * Plain database connection for raw queries
+     * Plain database connection for raw queries.
+     *
      * @var \Application\DeskPRO\DBAL\Connection
      */
     public $db;
@@ -194,7 +195,7 @@ class StickyWordSearch implements PersonContextInterface
             }
             $k = "{$r['object_type']}-{$r['object_id']}";
             if (!isset($results_ranked[$k])) {
-                $results_ranked[$k] = $r;
+                $results_ranked[$k]          = $r;
                 $results_ranked[$k]['count'] = 0;
             }
 
@@ -257,14 +258,14 @@ class StickyWordSearch implements PersonContextInterface
         // type => typename, object => entity
         $typed_results = array();
         foreach ($real_results as $r) {
-            $class = get_class($r);
+            $class       = get_class($r);
             $entity_name = $class::getEntityName();
-            $type = strtolower(str_replace('DeskPRO:', '', $entity_name));
+            $type        = strtolower(str_replace('DeskPRO:', '', $entity_name));
 
             $key = $type.'.'.$r->getId();
 
             $typed_results[$key] = array(
-                'type' => $type,
+                'type'   => $type,
                 'object' => $r,
             );
         }

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,10 +39,11 @@ use Application\DeskPRO\Entity\Person as PersonEntity;
 class TextSnippet extends AbstractEntityRepository
 {
     /**
-     * Get snippets for agent grouped by category (@see groupSnippetCollection)
+     * Get snippets for agent grouped by category (@see groupSnippetCollection).
      *
      * @param $typename
-     * @param  PersonEntity $agent
+     * @param PersonEntity $agent
+     *
      * @return array
      */
     public function getSnippetsForAgent($typename, PersonEntity $agent)
@@ -72,13 +72,14 @@ class TextSnippet extends AbstractEntityRepository
     }
 
     /**
-     * Get all snippets for an agent with limits
+     * Get all snippets for an agent with limits.
      *
      * @param $typename
-     * @param  PersonEntity $agent
-     * @param  int          $page
-     * @param  int          $per_page
-     * @param  int          $in_category
+     * @param PersonEntity $agent
+     * @param int          $page
+     * @param int          $per_page
+     * @param int          $in_category
+     *
      * @return mixed
      */
     public function getAllSnippetsForAgent($typename, PersonEntity $agent, $page = 1, $per_page = 250, $in_category = null)
@@ -112,10 +113,11 @@ class TextSnippet extends AbstractEntityRepository
     }
 
     /**
-     * Count all of an agents snippets
+     * Count all of an agents snippets.
      *
      * @param $typename
-     * @param  PersonEntity $agent
+     * @param PersonEntity $agent
+     *
      * @return mixed
      */
     public function countSnippetsForAgent($typename, PersonEntity $agent)
@@ -131,9 +133,10 @@ class TextSnippet extends AbstractEntityRepository
     }
 
     /**
-     * Group a collection of snippets
+     * Group a collection of snippets.
      *
      * @param $collection
+     *
      * @return array
      */
     public function groupSnippetCollection($collection)

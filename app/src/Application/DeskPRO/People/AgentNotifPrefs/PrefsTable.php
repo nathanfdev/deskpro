@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -116,7 +115,8 @@ class PrefsTable
     }
 
     /**
-     * @param  string $app_name
+     * @param string $app_name
+     *
      * @return array
      */
     private function buildAppTable($app_name)
@@ -139,7 +139,7 @@ class PrefsTable
 
         $combined_types = array();
         foreach ($email_types as $type_name) {
-            $base_type_name = preg_replace('#_email$#', '', $type_name);
+            $base_type_name                  = preg_replace('#_email$#', '', $type_name);
             $combined_types[$base_type_name] = array('email');
 
             foreach ($this->prefs->getAppSubs('email', $app_name) as $k => $v) {
@@ -176,7 +176,7 @@ class PrefsTable
             );
 
             foreach ($types as $t) {
-                $name = "{$base_name}_$t";
+                $name          = "{$base_name}_$t";
                 $row['cols'][] = array(
                     'name'  => $name,
                     'value' => (isset($values[$name]) && $values[$name]) ? true : false,
@@ -194,9 +194,10 @@ class PrefsTable
     }
 
     /**
-     * @param         $type
-     * @param  array  $sys_filters
-     * @param  Person $person_context
+     * @param        $type
+     * @param array  $sys_filters
+     * @param Person $person_context
+     *
      * @return array
      */
     public function buildSystemFiltersTable($type, array $sys_filters, Person $person_context = null)
@@ -279,8 +280,9 @@ class PrefsTable
     }
 
     /**
-     * @param  string                                     $type
-     * @param  \Application\DeskPRO\Entity\TicketFilter[] $custom_filters
+     * @param string                                     $type
+     * @param \Application\DeskPRO\Entity\TicketFilter[] $custom_filters
+     *
      * @return array
      */
     public function buildCustomFiltersTable($type, array $custom_filters)

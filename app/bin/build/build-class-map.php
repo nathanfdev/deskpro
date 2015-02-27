@@ -33,7 +33,7 @@ foreach ($dirs as $d) {
     $is_no_ns = in_array($d, $no_ns);
 
     foreach ($finder as $file) {
-        /** @var \SplFileInfo $file */
+        /* @var \SplFileInfo $file */
 
         $path = $file->getRealPath();
         $path = str_replace('\\', '/', $path);

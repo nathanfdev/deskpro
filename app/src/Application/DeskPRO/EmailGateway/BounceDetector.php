@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway;
@@ -152,7 +150,7 @@ class BounceDetector
     }
 
     /**
-     * Try to find possible addresses to match on
+     * Try to find possible addresses to match on.
      *
      * @return string[]
      */

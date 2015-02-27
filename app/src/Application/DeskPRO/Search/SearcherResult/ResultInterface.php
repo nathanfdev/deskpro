@@ -26,28 +26,27 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Search
  */
 
 namespace Application\DeskPRO\Search\SearcherResult;
 
 /**
- * Search adapter
+ * Search adapter.
  */
 interface ResultInterface
 {
     /**
-     * Get the result ID
+     * Get the result ID.
      *
      * @return mixed
      */
     public function getId();
 
     /**
-     * Get the type of result this is
+     * Get the type of result this is.
      *
      * @return string
      */

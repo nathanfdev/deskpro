@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
@@ -41,7 +40,8 @@ namespace Orb\Util;
 class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
 {
     /**
-     * An array of classname => file
+     * An array of classname => file.
+     *
      * @var array
      */
     protected $class_map = array();
@@ -65,11 +65,10 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
     }
 
     /**
-     * Register a new namespace callback loader
+     * Register a new namespace callback loader.
      *
-     * @param  string   $namespace
-     * @param  callback $callback
-     * @return void
+     * @param string   $namespace
+     * @param callback $callback
      */
     public function registerNamespaceCallback($namespace, $callback)
     {
@@ -109,13 +108,13 @@ class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
         $file = parent::findFile($class_name);
 
         if (!$file) {
-            $m = null;
+            $m        = null;
             $ns_parts = explode('\\', $class_name, 2);
             if (count($ns_parts) == 2) {
                 $ns = $ns_parts[0];
                 if (isset($this->namespace_callback[$ns])) {
                     $callback = $this->namespace_callback[$ns];
-                    $file = call_user_func($callback, $class_name);
+                    $file     = call_user_func($callback, $class_name);
                 }
             }
         }

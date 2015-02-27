@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Usersource
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usersource\Adapter;
@@ -41,9 +38,7 @@ use Doctrine\ORM\EntityManager;
 use Orb\Auth\Identity;
 
 /**
- * The local DeskPRO login usersource
- *
- * @package Application\DeskPRO\Usersource\Adapter
+ * The local DeskPRO login usersource.
  */
 class DeskPRO extends AbstractAdapter implements IdentityFinderInterface, EntityManagerAwareInterface
 {
@@ -78,7 +73,7 @@ class DeskPRO extends AbstractAdapter implements IdentityFinderInterface, Entity
             return $person;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -101,7 +96,8 @@ class DeskPRO extends AbstractAdapter implements IdentityFinderInterface, Entity
     }
 
     /**
-     * @param  mixed $capability
+     * @param mixed $capability
+     *
      * @return bool
      */
     public function isCapable($capability)

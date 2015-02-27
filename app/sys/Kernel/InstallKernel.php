@@ -26,20 +26,17 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DeskPRO\Kernel;
 
+use Application\DeskPRO\App;
+use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
-
-use Application\DeskPRO\App;
 
 class InstallKernel extends BaseKernel
 {
@@ -51,8 +48,8 @@ class InstallKernel extends BaseKernel
     {
         parent::__construct($environment, $debug);
 
-        $name = explode("\\", get_class($this));
-        $name = array_pop($name);
+        $name       = explode("\\", get_class($this));
+        $name       = array_pop($name);
         $this->name = $name;
 
         if (!defined('DP_DEBUG')) {
@@ -67,7 +64,6 @@ class InstallKernel extends BaseKernel
         set_exception_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleException');
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -76,9 +72,8 @@ class InstallKernel extends BaseKernel
         parent::boot();
 
         $this->container->kernel = $this;
-        App::$container = $this->container;
+        App::$container          = $this->container;
     }
-
 
     /**
      * {@inheritDoc}
@@ -99,43 +94,42 @@ class InstallKernel extends BaseKernel
         return $bundles;
     }
 
-
     /**
      * {@inheritDoc}
      */
     protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
     {
         // Make sure the cache dirs exist
-        $env_dir = realpath($this->getCacheDir() . '/../');
+        $env_dir = realpath($this->getCacheDir().'/../');
         if (!is_dir($this->getCacheDir())) {
             mkdir($this->getCacheDir(), 0777, true);
         }
-        if (!file_exists($env_dir . '/doctrine-proxies')) {
-            mkdir($env_dir . '/doctrine-proxies', 0777, true);
+        if (!file_exists($env_dir.'/doctrine-proxies')) {
+            mkdir($env_dir.'/doctrine-proxies', 0777, true);
         }
-        if (!file_exists($env_dir . '/twig-compiled')) {
-            @mkdir($env_dir . '/twig-compiled', 0777, true);
+        if (!file_exists($env_dir.'/twig-compiled')) {
+            @mkdir($env_dir.'/twig-compiled', 0777, true);
         }
 
         @chmod($this->getCacheDir(), 0777);
-        @chmod($env_dir . '/doctrine-proxies', 0777);
-        @chmod($env_dir . '/twig-compiled', 0777);
+        @chmod($env_dir.'/doctrine-proxies', 0777);
+        @chmod($env_dir.'/twig-compiled', 0777);
 
         // Clear the dql cache when the container is regenerated as well
-        $dql_cache = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'dql.cache';
+        $dql_cache = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'dql.cache';
         if (file_exists($dql_cache)) {
             @unlink($dql_cache);
         }
 
         // cache the container
-        $dumper = new PhpDumper($container);
+        $dumper  = new PhpDumper($container);
         $content = $dumper->dump(array('class' => $class, 'base_class' => $baseClass));
         if (!$this->debug) {
             $content = self::stripComments($content);
         }
 
         // Re-write absolute paths to use DP_ROOT instead
-        $content = str_replace("'" . DP_ROOT, 'DP_ROOT.\'', $content);
+        $content = str_replace("'".DP_ROOT, 'DP_ROOT.\'', $content);
         // Correct double slash paths
         $content = str_replace('prod//', 'prod/', $content);
         // Empty logs dir that isn't used (we get it from conf)
@@ -188,7 +182,7 @@ class InstallKernel extends BaseKernel
     public function getLogDir()
     {
         if (!function_exists('dp_get_log_dir')) {
-            require_once DP_ROOT . '/sys/load_config.php';
+            require_once DP_ROOT.'/sys/load_config.php';
         }
 
         return dp_get_log_dir();
@@ -199,7 +193,7 @@ class InstallKernel extends BaseKernel
      */
     protected function getKernelParameters()
     {
-        $params = parent::getKernelParameters();
+        $params            = parent::getKernelParameters();
         $params['DP_ROOT'] = DP_ROOT;
 
         return $params;
@@ -229,7 +223,6 @@ class InstallKernel extends BaseKernel
      */
     public function loadClassCache($name = 'classes', $extension = '.php')
     {
-
     }
 
     /**

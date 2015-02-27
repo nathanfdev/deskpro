@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage PageDisplay
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\PageDisplay\Item;
@@ -38,24 +35,24 @@ abstract class TicketItemAbstract extends ItemAbstract
 {
     public function compileJsCheck()
     {
-        $js = array();
+        $js   = array();
         $js[] = "function (t) {";
 
         if ($this->conds_all or $this->conds_any) {
             if ($this->conds_all) {
                 $ticket_terms = new \Application\DeskPRO\Tickets\TicketTerms($this->conds_all);
-                $js[] = "var all_check = function (ticket) {";
-                $js[] = $ticket_terms->compileTermsToJavascript('all');
-                $js[] = "};";
+                $js[]         = "var all_check = function (ticket) {";
+                $js[]         = $ticket_terms->compileTermsToJavascript('all');
+                $js[]         = "};";
             } else {
                 $js[] = "var all_check = function (ticket) {return true;};";
             }
 
             if ($this->conds_any) {
                 $ticket_terms = new \Application\DeskPRO\Tickets\TicketTerms($this->conds_any);
-                $js[] = "var any_check = function (ticket) {";
-                $js[] = $ticket_terms->compileTermsToJavascript('any');
-                $js[] = "};";
+                $js[]         = "var any_check = function (ticket) {";
+                $js[]         = $ticket_terms->compileTermsToJavascript('any');
+                $js[]         = "};";
             } else {
                 $js[] = "var any_check = function (ticket) {return true;};";
             }

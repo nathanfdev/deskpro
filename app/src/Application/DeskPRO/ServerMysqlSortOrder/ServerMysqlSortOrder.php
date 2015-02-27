@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ServerMysqlSortOrder;
@@ -40,7 +38,6 @@ class ServerMysqlSortOrder
     /**
      * @var \Application\DeskPRO\Settings\Settings
      */
-
     private $settings;
 
     /** @var string */
@@ -51,7 +48,6 @@ class ServerMysqlSortOrder
     /**
      * @param \Application\DeskPRO\Settings\Settings $settings
      */
-
     public function __construct(Settings $settings)
     {
         $this->settings = $settings;
@@ -61,7 +57,6 @@ class ServerMysqlSortOrder
     /**
      * Resets based on stored values.
      */
-
     public function reset()
     {
         $this->db_collation           = $this->settings->get('core.db_collation');
@@ -71,7 +66,6 @@ class ServerMysqlSortOrder
     /**
      * @return array
      */
-
     public function toArray()
     {
         $export_settings = array();
@@ -89,7 +83,6 @@ class ServerMysqlSortOrder
     /**
      * @param array $new_values
      */
-
     public function setArray(array $new_values)
     {
         foreach ($new_values as $v => $val) {
@@ -100,9 +93,8 @@ class ServerMysqlSortOrder
     }
 
     /**
-     * Persists new values
+     * Persists new values.
      */
-
     public function save()
     {
         if ($this->isCollationValid($this->db_collation)) {
@@ -115,7 +107,6 @@ class ServerMysqlSortOrder
     /**
      * @return array
      */
-
     public function getCollationsTable()
     {
         $collations = array(
@@ -153,7 +144,6 @@ class ServerMysqlSortOrder
      *
      * @return bool
      */
-
     public function isCollationValid($collation)
     {
         $collations = $this->getCollationsTable();
@@ -164,7 +154,6 @@ class ServerMysqlSortOrder
     /**
      * @return array
      */
-
     public function getUpdateStatus()
     {
         $status    = 'completed';

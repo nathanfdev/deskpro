@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ChatSetup;
@@ -41,13 +39,11 @@ class ChatSetup
     /**
      * @var \Application\DeskPRO\Settings\Settings
      */
-
     private $settings;
 
     /**
      * @param \Application\DeskPRO\Settings\Settings $settings
      */
-
     public function __construct(Settings $settings)
     {
         $this->settings = $settings;
@@ -56,7 +52,6 @@ class ChatSetup
     /**
      * @return array
      */
-
     public function getChatInfo()
     {
         $chat_online = ChatAvailableCheck::getAvailableTime();
@@ -73,7 +68,6 @@ class ChatSetup
     /**
      * @param int $is_enabled
      */
-
     public function setChatEnabled($is_enabled = 1)
     {
         $this->settings->setSetting('core.apps_chat', (int) $is_enabled);

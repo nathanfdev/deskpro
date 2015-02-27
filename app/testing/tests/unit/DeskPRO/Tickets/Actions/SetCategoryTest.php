@@ -1,10 +1,10 @@
 <?php
 namespace DpUnitTests\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Tickets\Actions\SetCategory;
-use DpTestingMocks\ContainerMock;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\Actions\SetCategory;
 use Application\DeskPRO\Tickets\ExecutorContext;
+use DpTestingMocks\ContainerMock;
 
 class SetCategoryTest extends \DpUnitTestCase
 {
@@ -18,7 +18,9 @@ class SetCategoryTest extends \DpUnitTestCase
      */
     private function getMockContainer()
     {
-        if ($this->container) return $this->container;
+        if ($this->container) {
+            return $this->container;
+        }
         $this->container = ContainerMock::create()->withTicketCategories()->get();
 
         return $this->container;
@@ -26,9 +28,9 @@ class SetCategoryTest extends \DpUnitTestCase
 
     public function testSet()
     {
-        $ticket = new Ticket();
+        $ticket           = new Ticket();
         $ticket->category = $this->getMockContainer()->getTicketCategories()->getById(1);
-        $exec   = new ExecutorContext();
+        $exec             = new ExecutorContext();
 
         $action = new SetCategory(array('category_id' => 55));
         $action->setContainer($this->getMockContainer());
@@ -41,9 +43,9 @@ class SetCategoryTest extends \DpUnitTestCase
 
     public function testSetNull()
     {
-        $ticket = new Ticket();
+        $ticket           = new Ticket();
         $ticket->category = $this->getMockContainer()->getTicketCategories()->getById(1);
-        $exec   = new ExecutorContext();
+        $exec             = new ExecutorContext();
 
         $action = new SetCategory(array('category_id' => 0));
         $action->setContainer($this->getMockContainer());
@@ -55,7 +57,7 @@ class SetCategoryTest extends \DpUnitTestCase
 
     public function testNoop()
     {
-        $ticket = new Ticket();
+        $ticket           = new Ticket();
         $ticket->category = $this->getMockContainer()->getTicketCategories()->getById(55);
 
         $exec = new ExecutorContext();
@@ -69,7 +71,7 @@ class SetCategoryTest extends \DpUnitTestCase
     public function testInvalid()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
         $action = new SetCategory(array('category_id' => 200));
         $action->setContainer($this->getMockContainer());

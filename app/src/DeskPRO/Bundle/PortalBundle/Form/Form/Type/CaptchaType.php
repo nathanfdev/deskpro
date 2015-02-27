@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -57,7 +54,7 @@ class CaptchaType extends AbstractType
 
     public function __construct(BrandStack $brand_stack)
     {
-        $this->public_key = $brand_stack->getActive()->getSetting('core.recaptcha_public_key');
+        $this->public_key  = $brand_stack->getActive()->getSetting('core.recaptcha_public_key');
         $this->private_key = $brand_stack->getActive()->getSetting('core.recaptcha_private_key');
     }
 

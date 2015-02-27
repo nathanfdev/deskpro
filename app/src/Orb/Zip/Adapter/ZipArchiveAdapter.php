@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Zip
+ * Orb.
  */
 
 namespace Orb\Zip\Adapter;
@@ -39,17 +36,16 @@ use Orb\Zip\ZipException;
 class ZipArchiveAdapter implements ZipAdapterInterface
 {
     /**
-     * Compress a file or directory of files
+     * Compress a file or directory of files.
      *
-     * @param  string $path The file or directory to ZIP
-     * @param  string $to   Where to write the zip file to
-     * @return void
+     * @param string $path The file or directory to ZIP
+     * @param string $to   Where to write the zip file to
      */
     public function compressPath($path, $to)
     {
-        $pathInfo = pathInfo($path);
+        $pathInfo   = pathInfo($path);
         $parentPath = $pathInfo['dirname'];
-        $dirName = $pathInfo['basename'];
+        $dirName    = $pathInfo['basename'];
 
         $z = new \ZipArchive();
         $z->open($to, \ZipArchive::CREATE);
@@ -61,9 +57,8 @@ class ZipArchiveAdapter implements ZipAdapterInterface
     /**
      * Decompress a ZIP.
      *
-     * @param  string $path The ZIP file to unzip
-     * @param  string $to   The path to unzip to
-     * @return void
+     * @param string $path The ZIP file to unzip
+     * @param string $to   The path to unzip to
      */
     public function decompressZip($path, $to)
     {

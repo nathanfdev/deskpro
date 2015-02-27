@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AgentBundle
+ * DeskPRO.
  */
 
 namespace Application\AgentBundle\Controller;
@@ -44,7 +41,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 /**
- * Handles listing and editing of news
+ * Handles listing and editing of news.
  */
 class NewsController extends AbstractController
 {
@@ -298,7 +295,7 @@ class NewsController extends AbstractController
     ############################################################################
 
     /**
-     * View a list of feedback
+     * View a list of feedback.
      */
     public function listAction($category_id = 0)
     {

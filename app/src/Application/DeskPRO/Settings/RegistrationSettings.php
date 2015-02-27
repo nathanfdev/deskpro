@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Settings;
@@ -169,7 +167,7 @@ class RegistrationSettings
     }
 
     /**
-     * Persists settings
+     * Persists settings.
      */
     public function saveSettings()
     {
@@ -201,7 +199,7 @@ class RegistrationSettings
             }
 
             $this->email_validation_trigger->is_enabled = true;
-            $mode = array();
+            $mode                                       = array();
             if ($this->email_validation_ticket_web) {
                 $mode[] = 'form';
                 $mode[] = 'portal';
@@ -225,12 +223,13 @@ class RegistrationSettings
     }
 
     /**
-     * @return TicketTrigger
      * @throws \InvalidArgumentException
+     * @return TicketTrigger
+     *
      */
     private function _createTrigger()
     {
-        $trigger = new TicketTrigger();
+        $trigger                = new TicketTrigger();
         $trigger->event_trigger = 'newticket';
         $trigger->run_order     = -1000;
         $trigger->by_user_mode  = array('email', 'form', 'portal', 'widget');

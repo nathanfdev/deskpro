@@ -31,10 +31,9 @@ use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Base exporting entity
+ * Base exporting entity.
  *
  * Class AbstractEntity
- * @package Application\ImportBundle\Entity
  */
 abstract class AbstractEntity implements EntityInterface
 {
@@ -58,11 +57,13 @@ abstract class AbstractEntity implements EntityInterface
 
     /**
      * @param int $oid
+     *
      * @return $this
      */
     public function setOid($oid)
     {
-        $this->oid = (int)$oid;
+        $this->oid = (int) $oid;
+
         return $this;
     }
 
@@ -76,19 +77,21 @@ abstract class AbstractEntity implements EntityInterface
 
     /**
      * Set entity destination
-     * It could be a file name or db name
+     * It could be a file name or db name.
      *
      * @param string $destination
+     *
      * @return $this
      */
     public function setDestination($destination)
     {
         $this->destination = $destination;
+
         return $this;
     }
 
     /**
-     * Validator class metadata
+     * Validator class metadata.
      *
      * @param ClassMetadata $metadata
      */

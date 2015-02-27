@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Tickets;
@@ -43,7 +40,7 @@ class NewReply extends \ArrayObject
 {
     /** @var array */
     protected static $prop_names = array(
-        'message' => 1, 'new_upload' => 1, 'attach_ids' => 1,
+        'message'           => 1, 'new_upload' => 1, 'attach_ids' => 1,
         'attach_ids_authed' => 1,
     );
 
@@ -78,10 +75,10 @@ class NewReply extends \ArrayObject
     {
         $ticket_message = new TicketMessage();
         $ticket_message->setMessageText($this->message);
-        $ticket_message->ticket = $this->ticket;
-        $ticket_message->person = $this->person;
+        $ticket_message->ticket          = $this->ticket;
+        $ticket_message->person          = $this->person;
         $ticket_message->creation_system = TicketMessage::CREATED_WEB_PERSON_PORTAL;
-        $ticket_message->ip_address = dp_get_user_ip_address();
+        $ticket_message->ip_address      = dp_get_user_ip_address();
 
         if ($this->new_upload) {
             $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
@@ -89,8 +86,8 @@ class NewReply extends \ArrayObject
                 $this->new_upload->getClientOriginalName(),
                 $this->new_upload->getClientMimeType()
             );
-            $attach = new \Application\DeskPRO\Entity\TicketAttachment();
-            $attach['blob'] = $blob;
+            $attach           = new \Application\DeskPRO\Entity\TicketAttachment();
+            $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
             $ticket_message->addAttachment($attach);
@@ -104,8 +101,8 @@ class NewReply extends \ArrayObject
                     $blob = App::findEntity('DeskPRO:Blob', $blob_id);
                 }
                 if ($blob) {
-                    $attach = new \Application\DeskPRO\Entity\TicketAttachment();
-                    $attach['blob'] = $blob;
+                    $attach           = new \Application\DeskPRO\Entity\TicketAttachment();
+                    $attach['blob']   = $blob;
                     $attach['person'] = $this->person;
 
                     $ticket_message->addAttachment($attach);
@@ -118,7 +115,7 @@ class NewReply extends \ArrayObject
         }
 
         if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
-            return null;
+            return;
         }
 
         $this->ticket->addMessage($ticket_message);

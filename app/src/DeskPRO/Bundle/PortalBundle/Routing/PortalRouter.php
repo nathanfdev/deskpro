@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package    DeskPRO
- * @subpackage Portal
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Routing;
@@ -86,9 +83,9 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
 
     public function __construct(BaseRouter $router, LanguageManager $language_manager, PortalModeStorage $mode_store)
     {
-        $this->router = $router;
+        $this->router           = $router;
         $this->language_manager = $language_manager;
-        $this->mode_store = $mode_store;
+        $this->mode_store       = $mode_store;
         $this->router->setOption('matcher_cache_class', 'ProjectUrlMatcher');
     }
 
@@ -102,7 +99,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
 
         if (self::ABSOLUTE_URL === $referenceType) {
             // deal with an absolute URL by isolating just the path
-            $url = Url::createFromUrl($generated);
+            $url  = Url::createFromUrl($generated);
             $path = (string) ($url->getPath());
 
             // build with just the path
@@ -128,7 +125,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         // if its not safe, or its a special url, just match it immediately
         if (!$request->isMethodSafe() || $request_info->isSpecialPath()) {
             $routable_path = $request_info->getRoutablePath();
-            $params = $this->router->match($routable_path);
+            $params        = $this->router->match($routable_path);
 
             return $params;
         }
@@ -144,7 +141,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         }
 
         $routable_path = $request_info->getRoutablePath();
-        $params = $this->router->match($routable_path);
+        $params        = $this->router->match($routable_path);
 
         return $params;
     }

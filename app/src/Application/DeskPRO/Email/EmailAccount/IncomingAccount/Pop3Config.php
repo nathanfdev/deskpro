@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -46,7 +45,8 @@ class Pop3Config implements AccountConfigInterface
     public $host;
 
     /**
-     * Pop3 default is 110, secure 995
+     * Pop3 default is 110, secure 995.
+     *
      * @var int
      */
     public $port = 110;
@@ -62,7 +62,8 @@ class Pop3Config implements AccountConfigInterface
     public $password;
 
     /**
-     * 'ssl' or 'tls'
+     * 'ssl' or 'tls'.
+     *
      * @var null|string
      */
     public $secure_mode = null;

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Doctrine
+ * Orb.
  */
 
 namespace Orb\Doctrine\Common\Cache;
@@ -46,9 +43,9 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
     protected $version_id = null;
 
     /**
-     * Data is array(key => array(time => timestamp, data => data, deleted => true, updated => true)
+     * Data is array(key => array(time => timestamp, data => data, deleted => true, updated => true).
      *
-     * @var array $data
+     * @var array
      */
     protected $data = null;
 
@@ -65,7 +62,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
     protected $cache_file;
 
     /**
-     * Automatically write after each update
+     * Automatically write after each update.
      *
      * @var bool
      */
@@ -125,7 +122,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
     }
 
     /**
-     * Maximum number of entries to add
+     * Maximum number of entries to add.
      *
      * @param $limit
      */
@@ -135,7 +132,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
     }
 
     /**
-     * Dont load anything new and dont commit
+     * Dont load anything new and dont commit.
      */
     public function disable()
     {
@@ -143,7 +140,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
     }
 
     /**
-     * Disable caching and updating
+     * Disable caching and updating.
      */
     public function enable()
     {
@@ -151,7 +148,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
     }
 
     /**
-     * Register a shutdown function to save the cache on exit if there are changes
+     * Register a shutdown function to save the cache on exit if there are changes.
      *
      * @return mixed
      */
@@ -168,7 +165,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
     }
 
     /**
-     * Reload all data
+     * Reload all data.
      */
     public function reloadData()
     {
@@ -283,19 +280,19 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
 
         if (is_scalar($data)) {
             $this->data[$id] = array(
-                'time' => time(),
-                'die' => ($lifeTime ? time() + $lifeTime : 0),
-                'data' => $data,
+                'time'    => time(),
+                'die'     => ($lifeTime ? time() + $lifeTime : 0),
+                'data'    => $data,
                 'updated' => true,
             );
         } else {
             $this->data[$id] = array(
-                'time' => time(),
-                'die' => ($lifeTime ? time() + $lifeTime : 0),
-                'data' => serialize($data),
-                'data_u' => $data,
+                'time'       => time(),
+                'die'        => ($lifeTime ? time() + $lifeTime : 0),
+                'data'       => serialize($data),
+                'data_u'     => $data,
                 'serialized' => true,
-                'updated' => true,
+                'updated'    => true,
             );
         }
 
@@ -318,9 +315,9 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         }
 
         $this->data[$id] = array(
-            'time' => time(),
-            'die' => 0,
-            'data' => 0,
+            'time'    => time(),
+            'die'     => 0,
+            'data'    => 0,
             'deleted' => true,
         );
 
@@ -334,7 +331,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
     }
 
     /**
-     * Save the current cache to disk
+     * Save the current cache to disk.
      *
      * @return int
      */
@@ -364,7 +361,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         $this->data = $result;
 
         $contents = serialize($result);
-        $size = strlen($contents);
+        $size     = strlen($contents);
 
         $this->dirty = false;
 
@@ -393,7 +390,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
     }
 
     /**
-     * Commit if there have been changes to the cache
+     * Commit if there have been changes to the cache.
      */
     public function commitIfDirty($quiet = false)
     {
@@ -416,7 +413,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
         $this->dirty = false;
 
         $this->data = array();
-        $php = "<?php return array(); ";
+        $php        = "<?php return array(); ";
 
         return file_put_contents($this->cache_file, $php);
     }
@@ -426,7 +423,7 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
      */
     protected function doGetStats()
     {
-        return null;
+        return;
     }
 
     /**
@@ -473,7 +470,6 @@ class ArrayFileCache extends \Doctrine\Common\Cache\CacheProvider
     }
 
     /**
-     * @return void
      */
     public function releaseSlam()
     {

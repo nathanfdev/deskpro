@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Validator;
 use Application\ImportBundle\Entity;
 
 /**
- * News entities validator
+ * News entities validator.
  *
  * Class News
- * @package Application\ImportBundle\Generator\Validator
  */
 final class News extends AbstractConstraintValidator
 {
@@ -48,10 +47,9 @@ final class News extends AbstractConstraintValidator
     /**
      * {@inheritdoc}
      *
-     * @var Entity\News $entity
+     * @var Entity\News
      */
     public function validate(Entity\EntityInterface $entity)
     {
-
     }
 }

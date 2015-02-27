@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -58,9 +57,10 @@ class TicketMessage extends AbstractEntityRepository
     }
 
     /**
-     * Gets the last reply on the ticket (last non-note by either agent or user)
+     * Gets the last reply on the ticket (last non-note by either agent or user).
      *
      * @param $ticket
+     *
      * @return mixed
      */
     public function getLastReply($ticket)
@@ -83,9 +83,11 @@ class TicketMessage extends AbstractEntityRepository
     /**
      * Fetch the first message of a ticket.
      *
+     *
+     * @param int|Ticket $ticket A ticket ID or the ID of a ticket
      * @throws NoResultException If there is no message. This shouldn't happen
-     *                                  because a ticket should always have a message. So it's quite exceptional indeed!
-     * @param  int|Ticket        $ticket A ticket ID or the ID of a ticket
+     *                           because a ticket should always have a message. So it's quite exceptional indeed!
+     *
      * @return TicketMessage
      */
     public function getFirstTicketMessage($ticket)
@@ -104,23 +106,24 @@ class TicketMessage extends AbstractEntityRepository
 
             return $message;
         } catch (\Doctrine\ORM\NoResultException $e) {
-            return null;
+            return;
         }
     }
 
     /**
-     * Get all messages in a ticket
+     * Get all messages in a ticket.
      *
      * @param  $ticket
+     *
      * @return array
      */
     public function getTicketMessages($ticket, array $set_options = array())
     {
         $options = array_merge(array(
-            'order' => 'ASC',
-            'limit' => null,
+            'order'      => 'ASC',
+            'limit'      => null,
             'with_notes' => false,
-            'since_id' => 0,
+            'since_id'   => 0,
         ), $set_options);
 
         $order = strtoupper($options['order']);
@@ -135,7 +138,7 @@ class TicketMessage extends AbstractEntityRepository
         $q->where('m.ticket = :ticket');
         $q->addOrderBy('m.date_created', $order);
 
-        $params = array();
+        $params           = array();
         $params['ticket'] = $ticket;
 
         if (isset($options['since_id']) && $options['since_id']) {
@@ -163,8 +166,9 @@ class TicketMessage extends AbstractEntityRepository
      *
      * Returns the TicketMessage if there was one found, or false if none found.
      *
-     * @param  \Application\DeskPRO\Entity\TicketMessage $message
-     * @param  int                                       $secs_ago
+     * @param \Application\DeskPRO\Entity\TicketMessage $message
+     * @param int                                       $secs_ago
+     *
      * @return bool|mixed
      */
     public function checkDupeMessage(Entity\TicketMessage $message, $ticket = null, $secs_ago = 10800 /* 3 hours */, \Orb\Log\Logger $logger = null)
@@ -286,6 +290,6 @@ class TicketMessage extends AbstractEntityRepository
             return reset($old);
         }
 
-        return null;
+        return;
     }
 }

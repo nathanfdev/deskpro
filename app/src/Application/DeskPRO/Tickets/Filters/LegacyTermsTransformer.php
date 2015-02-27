@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -37,8 +36,8 @@ namespace Application\DeskPRO\Tickets\Filters;
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermComposite;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermInterface;
-use Orb\Util\Util;
 use Application\DeskPRO\Util as DeskPROUtil;
+use Orb\Util\Util;
 
 /**
  * This converts between 'new' and 'old' style term definitions.
@@ -57,9 +56,11 @@ class LegacyTermsTransformer
     /**
      * Convert FilterTerms into legacy-style terms array.
      *
-     * @param  FilterTerms               $terms
-     * @return array
+     * @param FilterTerms $terms
+     *
      * @throws \InvalidArgumentException
+     * @return array
+     *
      */
     public function toLegacyTerms(FilterTerms $terms)
     {
@@ -85,8 +86,9 @@ class LegacyTermsTransformer
     }
 
     /**
-     * @param  CriteriaTermInterface $term
-     * @return array                 Returns an array of replacement terms (usually only one, but possibly multiple if there is a non-exact match)
+     * @param CriteriaTermInterface $term
+     *
+     * @return array Returns an array of replacement terms (usually only one, but possibly multiple if there is a non-exact match)
      */
     private function _termToLegacyTerms($term)
     {
@@ -369,7 +371,7 @@ class LegacyTermsTransformer
                 return array(
                     'type'    => 'creation_system',
                     'op'      => $term->getTermOperator(),
-                    'options' => $options->all()
+                    'options' => $options->all(),
                 );
 
             case 'FilterOrgName':
@@ -413,7 +415,7 @@ class LegacyTermsTransformer
                 );
 
             case 'FilterTicketField':
-                $t = $term->getTermOptions();
+                $t   = $term->getTermOptions();
                 $fid = $t['field_id'];
 
                 return array(
@@ -427,7 +429,7 @@ class LegacyTermsTransformer
                 );
 
             case 'FilterUserField':
-                $t = $term->getTermOptions();
+                $t   = $term->getTermOptions();
                 $fid = $t['field_id'];
 
                 return array(
@@ -441,7 +443,7 @@ class LegacyTermsTransformer
                 );
 
             case 'FilterOrgField':
-                $t = $term->getTermOptions();
+                $t   = $term->getTermOptions();
                 $fid = $t['field_id'];
 
                 return array(
@@ -461,9 +463,11 @@ class LegacyTermsTransformer
     /**
      * Convert legacy-style terms array into FilterTerms.
      *
-     * @param  array                     $legacy_terms
-     * @return FilterTerms               Returns an array of replacement terms (usually only one, but possibly multiple if there is a non-exact match)
+     * @param array $legacy_terms
+     *
      * @throws \InvalidArgumentException
+     * @return FilterTerms Returns an array of replacement terms (usually only one, but possibly multiple if there is a non-exact match)
+     *
      */
     public function toFilterTerms(array $legacy_terms)
     {
@@ -483,20 +487,21 @@ class LegacyTermsTransformer
     }
 
     /**
-     * @param  array               $legacy_term
+     * @param array $legacy_term
+     *
      * @return FilterTermInterface
      */
     private function _legacyTermToFilterTerm(array $legacy_term)
     {
         if (empty($legacy_term['op'])) {
-            return null;
+            return;
         }
 
-        $op = $legacy_term['op'];
+        $op      = $legacy_term['op'];
         $options = $legacy_term['options'];
 
         $type_name = $legacy_term['type'];
-        $type_id = null;
+        $type_id   = null;
         if (preg_match('#^(.*?)\[(\d+)\]$#', $type_name, $m)) {
             $type_name = $m[1];
             $type_id   = $m[2];
@@ -806,27 +811,27 @@ class LegacyTermsTransformer
                 return new Terms\FilterOrgContactIm($op, $options);
 
             case 'ticket_field':
-                $new_opts = array();
+                $new_opts             = array();
                 $new_opts['field_id'] = $type_id;
-                $new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
+                $new_opts['value']    = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
 
                 return new Terms\FilterTicketField($op, $new_opts);
 
             case 'person_field':
-                $new_opts = array();
+                $new_opts             = array();
                 $new_opts['field_id'] = $type_id;
-                $new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
+                $new_opts['value']    = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
 
                 return new Terms\FilterUserField($op, $new_opts);
 
             case 'org_field':
-                $new_opts = array();
+                $new_opts             = array();
                 $new_opts['field_id'] = $type_id;
-                $new_opts['value'] = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
+                $new_opts['value']    = isset($options['custom_fields']["field_{$type_id}"]) ? $options['custom_fields']["field_{$type_id}"] : null;
 
                 return new Terms\FilterOrgField($op, $new_opts);
         }
 
-        return null;
+        return;
     }
 }

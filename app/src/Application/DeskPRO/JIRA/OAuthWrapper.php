@@ -1,6 +1,6 @@
 <?php
 /**
- * https://bitbucket.org/atlassian_tutorial/atlassian-oauth-examples/src/d625161454d1ca97b4515c6147b093fac9a68f7e/php/?at=default
+ * https://bitbucket.org/atlassian_tutorial/atlassian-oauth-examples/src/d625161454d1ca97b4515c6147b093fac9a68f7e/php/?at=default.
  */
 
 namespace Application\DeskPRO\JIRA;
@@ -42,7 +42,7 @@ class OAuthWrapper
             throw new \Exception('JIRA consumer key is required', 1002);
         }
 
-        $this->tokens = $this->service->getTokens();
+        $this->tokens       = $this->service->getTokens();
         $this->callback_url = $callbackUrl;
     }
 
@@ -64,9 +64,11 @@ class OAuthWrapper
      * @param $token
      * @param $tokenSecret
      * @param $verifier
-     * @return array
+     *
      * @throws Exception
      * @throws \Exception
+     * @return array
+     *
      */
     public function requestAuthCredentials($token, $tokenSecret, $verifier)
     {
@@ -86,11 +88,13 @@ class OAuthWrapper
 
     /**
      * @param $url
-     * @param  bool       $token
-     * @param  bool       $tokenSecret
-     * @return array
+     * @param bool $token
+     * @param bool $tokenSecret
+     *
      * @throws Exception
      * @throws \Exception
+     * @return array
+     *
      */
     protected function requestCredentials($url, $token = false, $tokenSecret = false)
     {
@@ -122,10 +126,12 @@ class OAuthWrapper
     }
 
     /**
-     * @param  null       $token
-     * @param  null       $tokenSecret
-     * @return Client
+     * @param null $token
+     * @param null $tokenSecret
+     *
      * @throws \Exception
+     * @return Client
+     *
      */
     public function getClient($token = null, $tokenSecret = null)
     {
@@ -133,19 +139,19 @@ class OAuthWrapper
             return $this->client;
         }
 
-        $token = $token ?: (isset($this->tokens['oauth_token']) ? $this->tokens['oauth_token'] : null);
+        $token  = $token ?: (isset($this->tokens['oauth_token']) ? $this->tokens['oauth_token'] : null);
         $secret = $tokenSecret ?: (isset($this->tokens['oauth_token_secret']) ? $this->tokens['oauth_token_secret'] : null);
 
         $this->client = new Client($this->base_url);
-        $privateKey = $this->private_key;
+        $privateKey   = $this->private_key;
 
         $plugin = new OauthPlugin(array(
             'consumer_key'        => $this->consumer_key,
-            'consumer_secret'    => $this->consumer_secret,
-            'token'            => $token,
+            'consumer_secret'     => $this->consumer_secret,
+            'token'               => $token,
             'token_secret'        => $secret,
-            'signature_method' => 'RSA-SHA1',
-            'signature_callback' => function ($stringToSign, $key) use ($privateKey) {
+            'signature_method'    => 'RSA-SHA1',
+            'signature_callback'  => function ($stringToSign, $key) use ($privateKey) {
 
                 $certificate = openssl_pkey_get_private($privateKey);
                 $privateKeyId = openssl_get_privatekey($certificate);

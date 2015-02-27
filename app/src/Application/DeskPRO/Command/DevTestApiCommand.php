@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Command;
@@ -109,7 +107,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         #------------------------------
 
         if ($input->getOption('url')) {
-            $base_url = trim($input->getOption('url'), '/') . '/';
+            $base_url = trim($input->getOption('url'), '/').'/';
             if (strpos($base_url, '/api/') === false) {
                 if (strpos($base_url, '/index.php/') === false) {
                     $base_url .= 'index.php/';
@@ -117,10 +115,10 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 $base_url .= 'api/';
             }
             if (!preg_match('#^https?://#', $base_url)) {
-                $base_url = "http://" . $base_url;
+                $base_url = "http://".$base_url;
             }
         } else {
-            $base_url = trim(App::getSetting('core.deskpro_url'), '/') . '/index.php/api/';
+            $base_url = trim(App::getSetting('core.deskpro_url'), '/').'/index.php/api/';
         }
         $path = trim($input->getArgument('path'), '/');
 
@@ -258,7 +256,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             }
             $result .= $json[$p];
             if (strchr(',{[', $json[$p]) && !$q) {
-                $i += strchr('{[', $json[$p]) === FALSE ? 0 : 1;
+                $i += strchr('{[', $json[$p]) === false ? 0 : 1;
                 strchr('}]', $json[$p+1]) || $result .= "\n".str_repeat($istr, $i);
             }
         }

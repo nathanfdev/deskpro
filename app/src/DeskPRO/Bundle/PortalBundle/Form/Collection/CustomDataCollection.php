@@ -26,20 +26,17 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Collection;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Application\DeskPRO\Entity\CustomDataAbstract;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 /**
- * Exactly the same as a doctrine ArrayCollection, except the offsets are always the
+ * Exactly the same as a doctrine ArrayCollection, except the offsets are always the.
  */
 class CustomDataCollection implements \ArrayAccess
 {
@@ -60,7 +57,7 @@ class CustomDataCollection implements \ArrayAccess
     public function __construct(Collection $custom_datas, $data_holder)
     {
         $this->custom_datas = $custom_datas;
-        $this->data_holder = $data_holder;
+        $this->data_holder  = $data_holder;
     }
 
     public function offsetSet($id, $value)
@@ -71,12 +68,12 @@ class CustomDataCollection implements \ArrayAccess
                 $this->custom_datas->set($real_offset, $value);
                 $this->data_holder->addCustomData($value);
 
-                return null;
+                return;
             }
         }
 
         if (!$value) {
-            return null;
+            return;
         }
 
         // can't update, so adding it as new

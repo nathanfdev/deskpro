@@ -26,15 +26,12 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Log
+ * Orb.
  */
 
 namespace Orb\Log\Filter;
 
-use \Orb\Log\LogItem;
+use Orb\Log\LogItem;
 
 /**
  * This formats the 'line' value of an item with other properties. This gives
@@ -42,7 +39,7 @@ use \Orb\Log\LogItem;
  */
 class SimpleLineFormatter extends \Orb\Filter\AbstractFilter
 {
-    const DEFAULT_FORMAT = '[%datetime% %priority_name%] %message%';
+    const DEFAULT_FORMAT      = '[%datetime% %priority_name%] %message%';
     const DEFAULT_TIME_FORMAT = 'Y-m-d H:i:s';
 
     /**
@@ -57,14 +54,14 @@ class SimpleLineFormatter extends \Orb\Filter\AbstractFilter
 
     public function __construct($format = self::DEFAULT_FORMAT, $time_format = self::DEFAULT_TIME_FORMAT)
     {
-        $this->_format = $format;
+        $this->_format      = $format;
         $this->_time_format = $time_format;
     }
 
     public function filter($log_item)
     {
         if (!$log_item) {
-            return null;
+            return;
         }
 
         $message_line = $this->_format;

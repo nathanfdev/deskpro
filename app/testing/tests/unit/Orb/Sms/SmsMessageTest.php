@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Sms
+ * DeskPRO.
  */
 
 namespace DpUnitTests\Sms;
@@ -64,7 +61,6 @@ class SmsMessageTest extends \DpUnitTestCase
         $this->assertEquals(trim(str_repeat($msg, 16)), $chunks[0]);
     }
 
-
     public function testMessageChunkOrder()
     {
         $msg = '
@@ -88,14 +84,13 @@ class SmsMessageTest extends \DpUnitTestCase
         );
     }
 
-
     public function testMessageIsSentIfAllChunksSent()
     {
         $message = new SmsMessage(str_repeat('ten chars ', 34));
-        $chunks = $message->getChunks();
-        $chunk1 = $chunks[0];
-        $chunk2 = $chunks[1];
-        $chunk3 = $chunks[2];
+        $chunks  = $message->getChunks();
+        $chunk1  = $chunks[0];
+        $chunk2  = $chunks[1];
+        $chunk3  = $chunks[2];
 
         $chunk1->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', array()));
         $chunk2->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', array()));
@@ -104,14 +99,13 @@ class SmsMessageTest extends \DpUnitTestCase
         $this->assertTrue($message->isSent());
     }
 
-
     public function testMessageIsNotSentIfAnyChunkIsNotSent()
     {
         $message = new SmsMessage(str_repeat('ten chars ', 34));
-        $chunks = $message->getChunks();
-        $chunk1 = $chunks[0];
-        $chunk2 = $chunks[1];
-        $chunk3 = $chunks[2];
+        $chunks  = $message->getChunks();
+        $chunk1  = $chunks[0];
+        $chunk2  = $chunks[1];
+        $chunk3  = $chunks[2];
 
         $chunk1->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', array()));
         $chunk2->setResult(new SmsResult(SmsResult::SMS_FAIL, '90293029', '9020290', 'text', 'twilio', array()));

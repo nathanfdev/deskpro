@@ -4,7 +4,7 @@ namespace DpUnitTests\DeskPRO\ApiResult\Tickets;
 
 use DpUnitTests\DeskPRO\ApiResult\AbstractApiResultTest;
 
-require_once __DIR__ . '/../AbstractApiResultTest.php';
+require_once __DIR__.'/../AbstractApiResultTest.php';
 
 class DeleteTicketTest extends AbstractApiResultTest
 {

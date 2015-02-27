@@ -30,8 +30,7 @@ namespace Application\ImportBundle\Generator\Writer\Json;
 use Application\ImportBundle\Generator\Writer\AbstractFactory;
 
 /**
- * Class JsonWriterFactory
- * @package Application\ImportBundle\Generator\Writer\Json
+ * Class JsonWriterFactory.
  */
 class JsonWriterFactory extends AbstractFactory
 {

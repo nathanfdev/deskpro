@@ -26,13 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Settings;
-
 
 class LoginRateLimitSettings
 {
@@ -55,8 +52,9 @@ class LoginRateLimitSettings
     public $lock_time;
 
     /**
-     * @param  Settings   $settings
-     * @param  string     $context
+     * @param Settings $settings
+     * @param string   $context
+     *
      * @throws \Exception
      */
     public function __construct(Settings $settings, $context = 'user')
@@ -65,7 +63,7 @@ class LoginRateLimitSettings
             throw new \Exception(sprintf('Wrong context "%s"', $context));
         }
         $this->settings = $settings;
-        $this->context = $context;
+        $this->context  = $context;
 
         $this->resetSettings();
     }
@@ -75,10 +73,10 @@ class LoginRateLimitSettings
      */
     public function resetSettings()
     {
-        $this->enabled = (bool) $this->settings->get($this->context.'.'.self::KEY.'.enabled');
-        $this->attempts = (int) $this->settings->get($this->context.'.'.self::KEY.'.attempts');
+        $this->enabled       = (bool) $this->settings->get($this->context.'.'.self::KEY.'.enabled');
+        $this->attempts      = (int) $this->settings->get($this->context.'.'.self::KEY.'.attempts');
         $this->attempts_time = (int) $this->settings->get($this->context.'.'.self::KEY.'.attempts_time');
-        $this->lock_time = (int) $this->settings->get($this->context.'.'.self::KEY.'.lock_time');
+        $this->lock_time     = (int) $this->settings->get($this->context.'.'.self::KEY.'.lock_time');
     }
 
     /**
@@ -112,7 +110,7 @@ class LoginRateLimitSettings
     }
 
     /**
-     * Persists settings
+     * Persists settings.
      */
     public function saveSettings()
     {

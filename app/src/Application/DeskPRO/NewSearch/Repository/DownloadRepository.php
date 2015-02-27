@@ -3,12 +3,12 @@
 namespace Application\DeskPRO\NewSearch\Repository;
 
 /**
- * Download Repository
+ * Download Repository.
  */
 class DownloadRepository extends AbstractRepository
 {
     /**
-     * Fields to be highlighted
+     * Fields to be highlighted.
      *
      * @var array
      */

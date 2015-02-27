@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Publish
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Publish;
@@ -87,15 +84,16 @@ class LatestContent
     public function useSelections(array $use_selections)
     {
         $this->use_selections = $use_selections;
-        $this->max_article = 100;
-        $this->max_download = 100;
-        $this->max_news = 100;
-        $this->max_feedback = 100;
-        $this->count = 100;
+        $this->max_article    = 100;
+        $this->max_download   = 100;
+        $this->max_news       = 100;
+        $this->max_feedback   = 100;
+        $this->count          = 100;
     }
 
     /**
      * @param $x
+     *
      * @return LatestContent
      */
     public function setMaxCount($x)
@@ -110,6 +108,7 @@ class LatestContent
 
     /**
      * @param $x
+     *
      * @return LatestContent
      */
     public function setMaxArticles($x)
@@ -121,6 +120,7 @@ class LatestContent
 
     /**
      * @param $x
+     *
      * @return LatestContent
      */
     public function setMaxFeedback($x)
@@ -132,6 +132,7 @@ class LatestContent
 
     /**
      * @param $x
+     *
      * @return LatestContent
      */
     public function setMaxDownloads($x)
@@ -143,6 +144,7 @@ class LatestContent
 
     /**
      * @param $x
+     *
      * @return LatestContent
      */
     public function setMaxNews($x)
@@ -215,7 +217,7 @@ class LatestContent
             $final_results = $results;
         } else {
             $final_results = array();
-            $counts = array();
+            $counts        = array();
 
             foreach ($results as $r) {
                 if (!isset($counts[$r['type']])) {

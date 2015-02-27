@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Validator
+ * Orb.
  */
 
 namespace Application\DeskPRO\Validator;
@@ -40,6 +37,7 @@ class TicketPriority extends AbstractPersonContextValidator
 {
     /**
      * Allow a non-selection?
+     *
      * @var bool
      */
     protected $allow_none = true;

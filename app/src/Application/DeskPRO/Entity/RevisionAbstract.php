@@ -26,17 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
 namespace Application\DeskPRO\Entity;
 
 /**
- * Base reivisons
- *
+ * Base reivisons.
  */
 abstract class RevisionAbstract extends \Application\DeskPRO\Domain\DomainObject
 {

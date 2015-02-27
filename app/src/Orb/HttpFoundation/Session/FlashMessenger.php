@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Usersources
  */
 
@@ -49,19 +48,21 @@ class FlashMessenger
     /**
      * Messages we read from the session for the current request. They
      * will be deleted now.
+     *
      * @var array
      */
     protected $messages = array();
 
     /**
-     * The messages that we'll save for the next request
+     * The messages that we'll save for the next request.
+     *
      * @var ArrayObject
      */
     protected $current_messages;
 
     public function __construct(SessionInterface $session)
     {
-        $this->session = $session;
+        $this->session  = $session;
         $this->messages = $session->get('flash_messages')->getArrayCopy();
 
         $this->current_messages = new \ArrayObject();
@@ -69,7 +70,7 @@ class FlashMessenger
     }
 
     /**
-     * Get the messages for this request
+     * Get the messages for this request.
      *
      * @return array
      */
@@ -80,6 +81,7 @@ class FlashMessenger
 
     /**
      * Gets the messages added during this request, but won't be displayed until the next.
+     *
      * @return array
      */
     public function getCurrentMessages()
@@ -89,6 +91,7 @@ class FlashMessenger
 
     /**
      * Get messages for this request, as well as messages we just added.
+     *
      * @return array
      */
     public function getAllMessages()
@@ -97,7 +100,7 @@ class FlashMessenger
     }
 
     /**
-     * Remove the messages for this request
+     * Remove the messages for this request.
      */
     public function clearMessages()
     {
@@ -105,7 +108,7 @@ class FlashMessenger
     }
 
     /**
-     * Remove the messages we added during this request
+     * Remove the messages we added during this request.
      */
     public function clearCurrentMessages()
     {

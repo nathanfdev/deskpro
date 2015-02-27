@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Queue
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Queue;
@@ -74,10 +71,10 @@ class Queue extends ZendQueue
 
         $db = $this->getOption('em')->getConnection();
 
-        $item = array();
-        $item['created_at'] = date('Y-m-d H:i:s');
+        $item                = array();
+        $item['created_at']  = date('Y-m-d H:i:s');
         $item['is_dataonly'] = true;
-        $item['data'] = $message;
+        $item['data']        = $message;
 
         try {
             $db->insert('queue_items', $item);
@@ -86,7 +83,7 @@ class Queue extends ZendQueue
             $message = '<QueueItem:'.$item['id'].'>';
 
             $success = $this->getAdapter()->send($message);
-            $e = null;
+            $e       = null;
         } catch (\Exception $e) {
             $success = false;
         }

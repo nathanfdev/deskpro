@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Validator
+ * Orb.
  */
 
 namespace Orb\Validator;
 
 /**
- * Validates a value
+ * Validates a value.
  */
 interface ValidatorInterface
 {
@@ -47,7 +44,7 @@ interface ValidatorInterface
     public function isValid($value);
 
     /**
-     * Get an array of errors
+     * Get an array of errors.
      *
      * @return array
      */

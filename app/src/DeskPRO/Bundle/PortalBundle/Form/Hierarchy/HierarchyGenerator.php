@@ -26,19 +26,11 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Hierarchy;
 
-use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
-use DeskPRO\Bundle\AppBundle\DataService\FeedbackDataService;
-use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
-use DeskPRO\Component\Hierarchy\Formatter\FlatListFormatter;
-use DeskPRO\Component\Hierarchy\Formatter\ParentListFormatter;
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\CustomDefAbstract;
@@ -47,6 +39,11 @@ use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\TicketCategory;
+use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
+use DeskPRO\Bundle\AppBundle\DataService\FeedbackDataService;
+use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
+use DeskPRO\Component\Hierarchy\Formatter\FlatListFormatter;
+use DeskPRO\Component\Hierarchy\Formatter\ParentListFormatter;
 use Doctrine\ORM\EntityManager;
 
 //
@@ -82,9 +79,9 @@ class HierarchyGenerator
 
     public function __construct(EntityManager $em, DepartmentDataService $department_data_service, FeedbackDataService $feedback_data_service)
     {
-        $this->em = $em;
+        $this->em                      = $em;
         $this->department_data_service = $department_data_service;
-        $this->feedback_data_service = $feedback_data_service;
+        $this->feedback_data_service   = $feedback_data_service;
     }
 
     public function generateForCustomFormField(CustomDefAbstract $field)
@@ -278,8 +275,9 @@ class HierarchyGenerator
     }
 
     /**
-     * @param  mixed      $params   the "ArbitraryHasher" input to create cache key for this callable
-     * @param  mixed      $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable
+     * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     *
      * @return mixed|null
      */
     protected function generateAndCache($params, $callable)
@@ -300,7 +298,8 @@ class HierarchyGenerator
     }
 
     /**
-     * @param  mixed  $input
+     * @param mixed $input
+     *
      * @return string
      */
     protected function generateHash($input)

@@ -7,7 +7,7 @@ class JsonObjectSerializableTest extends \DpUnitTestCase
 {
     public function runBefore()
     {
-        require(__DIR__.'/JsonObjectSerializableData.php');
+        require __DIR__.'/JsonObjectSerializableData.php';
     }
 
     public function testObjectSerialize()

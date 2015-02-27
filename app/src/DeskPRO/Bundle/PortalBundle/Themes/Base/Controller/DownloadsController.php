@@ -26,24 +26,21 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
+use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Response;
-use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
 
 class DownloadsController extends AbstractController
 {
@@ -77,7 +74,7 @@ class DownloadsController extends AbstractController
         return $this->renderThemeView(
             sprintf('Theme:Downloads:Tag/%s.html.twig', $options['style']),
             array(
-                'category' => $category,
+                'category'          => $category,
                 'category_children' => $category_children,
             )
         );
@@ -118,7 +115,7 @@ class DownloadsController extends AbstractController
             sprintf('Theme:Downloads:Tag/files_%s.html.twig', $options['style']),
             array(
                 'category' => $category,
-                'pager' => $pager,
+                'pager'    => $pager,
             )
         );
     }
@@ -146,7 +143,7 @@ class DownloadsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Downloads:Tag/download.html.twig',
             array(
-                'file' => $file,
+                'file'          => $file,
                 'is_subscribed' => $is_subscribed,
             )
         );
@@ -180,7 +177,7 @@ class DownloadsController extends AbstractController
         return $this->renderThemeView(
             sprintf('Theme:Downloads:Tag/download_subscription_%s.html.twig', $options['style']),
             array(
-                'file' => $file,
+                'file'          => $file,
                 'is_subscribed' => $is_subscribed,
             )
         );
@@ -213,7 +210,7 @@ class DownloadsController extends AbstractController
 
         return $this->renderThemeView(
             'Theme:Downloads:Tag/subscription_category.html.twig', array(
-                'category' => $category,
+                'category'      => $category,
                 'is_subscribed' => $is_subscribed,
             )
         );
@@ -241,7 +238,7 @@ class DownloadsController extends AbstractController
         $comments = $this->getDownloadsDataService()->getDownloadComments($file, $this->getUser());
 
         return $this->renderThemeView('Theme:Downloads:Tag/comments.html.twig', array(
-            'file' => $file,
+            'file'     => $file,
             'comments' => $comments,
         ));
     }
@@ -273,7 +270,7 @@ class DownloadsController extends AbstractController
         }
 
         $category = $this->getDownloadsDataService()->getCategory($options['category']);
-        $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $options['page'], $options['count']);
+        $pager    = $this->getDownloadsDataService()->getDownloadsPager($category, $options['page'], $options['count']);
 
         return $this->renderThemeView(
             'Theme:Common:pager.html.twig',
@@ -306,7 +303,7 @@ class DownloadsController extends AbstractController
             'Theme:Downloads:Tag/breadcrumbs.html.twig',
             array(
                 'category' => $category,
-                'file' => $file,
+                'file'     => $file,
             )
         );
     }
@@ -334,7 +331,7 @@ class DownloadsController extends AbstractController
             'Theme:Downloads:Tag/ratings.html.twig',
             array(
                 'rating' => $rating,
-                'file' => $file,
+                'file'   => $file,
             )
         );
     }

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -40,11 +39,11 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Twitter Account Search
+ * Twitter Account Search.
  */
 class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 {
-    const CACHE_LENGTH = 60;
+    const CACHE_LENGTH   = 60;
     const SEARCH_RESULTS = 100;
 
     /**
@@ -116,12 +115,12 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
         $em = App::getOrm();
 
         try {
-            $api = $this->account->getTwitterApi();
+            $api     = $this->account->getTwitterApi();
             $results = $api->get_searchTweets(array(
-                'q' => $this->term,
-                'result_type' => 'recent',
-                'count' => self::SEARCH_RESULTS,
-                'since_id' => $since_id,
+                'q'                => $this->term,
+                'result_type'      => 'recent',
+                'count'            => self::SEARCH_RESULTS,
+                'since_id'         => $since_id,
                 'include_entities' => true,
             ));
         } catch (\EpiTwitterException $e) {
@@ -148,9 +147,9 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
                 if (isset($account_statuses[$tweet_id])) {
                     $account_status = $account_statuses[$tweet_id];
                 } else {
-                    $account_status = new TwitterAccountStatus();
-                    $account_status->status = $status;
-                    $account_status->account = $this->account;
+                    $account_status              = new TwitterAccountStatus();
+                    $account_status->status      = $status;
+                    $account_status->account     = $this->account;
                     $account_status->status_type = null; // this ensures it only appears by search
 
                     if ($do_write) {
@@ -162,8 +161,8 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
                 $new_statuses[] = $account_status;
 
                 if (!App::getOrm()->getRepository('DeskPRO:TwitterAccountSearch')->getExistingSearchStatus($this, $account_status)) {
-                    $search_status = new TwitterAccountSearchStatus();
-                    $search_status->search = $this;
+                    $search_status                 = new TwitterAccountSearchStatus();
+                    $search_status->search         = $this;
                     $search_status->account_status = $account_status;
 
                     if ($do_write) {
@@ -199,10 +198,10 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
             }
         }
 
-        $page = max(1, intval($page));
+        $page   = max(1, intval($page));
         $offset = ($page - 1) * $per_page;
 
-        $output = array();
+        $output  = array();
         $results = App::getOrm()->createQuery("
             SELECT s,
                 a, account, action_agent, agent, agent_team, retweeted,
@@ -268,7 +267,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'max_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'max_id'));
         $metadata->mapField(array( 'fieldName' => 'min_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'min_id'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => NULL, 'inversedBy' => 'searches', 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => null, 'inversedBy' => 'searches', 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null))));
         $metadata->mapOneToMany(array( 'fieldName' => 'search_statuses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountSearchStatus', 'mappedBy' => 'search'));
     }
 }

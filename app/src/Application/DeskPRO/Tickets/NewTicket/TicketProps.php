@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\NewTicket;
@@ -37,17 +34,17 @@ namespace Application\DeskPRO\Tickets\NewTicket;
 use Application\DeskPRO\App;
 
 /**
- * This wraps up the 'ticket' data of a newticket
+ * This wraps up the 'ticket' data of a newticket.
  */
 class TicketProps implements \ArrayAccess
 {
     /** @var array */
     protected static $prop_names = array(
-        'subject' => 1, 'message_is_html' => 1, 'message' => 1,
-        'message_raw' => 1, 'notify_email' => 1, 'cc_emails' => 1,
-        'new_upload' => 1, 'attach_ids' => 1, 'attach_ids_authed' => 1,
+        'subject'       => 1, 'message_is_html' => 1, 'message' => 1,
+        'message_raw'   => 1, 'notify_email' => 1, 'cc_emails' => 1,
+        'new_upload'    => 1, 'attach_ids' => 1, 'attach_ids_authed' => 1,
         'department_id' => 1, 'category_id' => 1, 'priority_id' => 1, 'product_id' => 1,
-        'workflow_id' => 1,
+        'workflow_id'   => 1,
     );
 
     /** @var string */

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package    Orb
- * @subpackage Sms
+ * Orb.
  */
 
 namespace Orb\Sms;
@@ -57,7 +54,7 @@ class SmsMessageChunk
             );
         }
 
-        $this->text = $text;
+        $this->text   = $text;
         $this->result = $result;
     }
 

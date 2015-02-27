@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -69,14 +66,14 @@ class CleanupHourly extends AbstractJob
     private function _cleanupDrafts()
     {
         $datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.drafts_lifetime'));
-        $num = App::getDb()->executeUpdate("DELETE FROM drafts WHERE date_created < ?", array($datetime));
+        $num      = App::getDb()->executeUpdate("DELETE FROM drafts WHERE date_created < ?", array($datetime));
 
         if ($num) {
             $this->logStatus("Cleaned up $num drafts");
         }
 
         $datetime = date('Y-m-d H:i:s', time() - 28800);
-        $num = App::getDb()->executeUpdate("DELETE FROM article_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
+        $num      = App::getDb()->executeUpdate("DELETE FROM article_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
         if ($num) {
             $this->logStatus("Cleaned up $num temp article comments");
         }
@@ -102,7 +99,7 @@ class CleanupHourly extends AbstractJob
     private function _cleanupSessions()
     {
         $datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'));
-        $num = App::getDb()->executeUpdate("DELETE FROM sessions WHERE date_last < ?", array($datetime));
+        $num      = App::getDb()->executeUpdate("DELETE FROM sessions WHERE date_last < ?", array($datetime));
 
         if ($num) {
             $this->logStatus("Cleaned up $num stale sessions");
@@ -113,7 +110,7 @@ class CleanupHourly extends AbstractJob
 
     private function _cleanupVisitors()
     {
-        $datesnip = date('Y-m-d H:i:s', time() - App::getSetting('core.visitor_cleanup_time'));
+        $datesnip  = date('Y-m-d H:i:s', time() - App::getSetting('core.visitor_cleanup_time'));
         $datesnip2 = date('Y-m-d H:i:s', time() - App::getSetting('core.visitor_cleanup_bogus_time'));
 
         // old
@@ -341,7 +338,7 @@ class CleanupHourly extends AbstractJob
 
             // gather the http_cache dirs from dev and prod
             $environment_dirs = array();
-            $environments = array('dev', 'prod');
+            $environments     = array('dev', 'prod');
             foreach ($environments as $env) {
                 $dir = $cache_dir.'/portal/'.$env.'/http_cache';
                 if (is_dir($dir)) {
@@ -362,7 +359,7 @@ class CleanupHourly extends AbstractJob
                 $dir_finder = new Finder();
                 $dir_finder->directories()->in($environment_dirs);
 
-                /** @var \Symfony\Component\Finder\SplFileInfo $dir_name */
+                /* @var \Symfony\Component\Finder\SplFileInfo $dir_name */
                 $maybe_delete_dirs = array();
                 foreach ($dir_finder as $dir_name) {
                     // cannot delete here, as it might mess up the $finder iterator
@@ -389,7 +386,7 @@ class CleanupHourly extends AbstractJob
         }
 
         $timesnip = date('Y-m-d H:i:s', time() - $storetime);
-        $count = 0;
+        $count    = 0;
 
         for ($i = 0; $i < 10; $i++) {
             $blob_ids = App::getDb()->fetchAllCol("
@@ -424,7 +421,7 @@ class CleanupHourly extends AbstractJob
         }
 
         $timesnip = date('Y-m-d H:i:s', time() - $storetime);
-        $count = 0;
+        $count    = 0;
 
         for ($i = 0; $i < 10; $i++) {
             $blob_ids = App::getDb()->fetchAllCol("
@@ -450,7 +447,8 @@ class CleanupHourly extends AbstractJob
     ####################################################################################################################
 
     /**
-     * @param  array $blob_ids
+     * @param array $blob_ids
+     *
      * @return int
      */
     private function _deleteBlobsBatch(array $blob_ids)
@@ -470,7 +468,7 @@ class CleanupHourly extends AbstractJob
         }
 
         $count = 0;
-        $bs = App::getContainer()->getBlobStorage();
+        $bs    = App::getContainer()->getBlobStorage();
         foreach ($blobs_info as $b) {
             try {
                 $bs->deleteBlobRow($b);

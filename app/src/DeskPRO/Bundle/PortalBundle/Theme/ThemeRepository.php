@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Theme;
@@ -50,8 +47,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * A reporistory of themes.
  * I can see this someday being a service, but we hardcode for now since we have so few.
- *
- * @package DeskPRO\Bundle\PortalBundle\Theme
  */
 class ThemeRepository
 {
@@ -78,15 +73,16 @@ class ThemeRepository
     public function __construct(ConfigCache $config_cache, FileCacheReader $reader, LoggerInterface $logger)
     {
         $this->config_cache = $config_cache;
-        $this->logger = $logger;
-        $this->reader = $reader;
-        $this->theme_map = array();
+        $this->logger       = $logger;
+        $this->reader       = $reader;
+        $this->theme_map    = array();
     }
 
     /**
-     * Get a theme by its ID. ie. $repo->find('standard')
+     * Get a theme by its ID. ie. $repo->find('standard').
      *
      * @param $id
+     *
      * @return ThemeInterface
      */
     public function find($id)
@@ -105,7 +101,7 @@ class ThemeRepository
     }
 
     /**
-     * A list of all themes in the order they are registered
+     * A list of all themes in the order they are registered.
      *
      * @return ThemeInterface[]
      */
@@ -149,7 +145,8 @@ class ThemeRepository
     /**
      * Finds and adds all of the tags a theme can use to it. Static method calls and annotations supported.
      *
-     * @param  ThemeInterface $theme
+     * @param ThemeInterface $theme
+     *
      * @return Tag[]
      */
     private function resolveTags(ThemeInterface $theme)
@@ -188,19 +185,19 @@ class ThemeRepository
 
                     foreach ($annotations as $annotation) {
                         if ($annotation instanceof TagAnnotation) {
-                            $name = $annotation->name;
+                            $name                = $annotation->name;
                             $always_inline_guest = $annotation->always_guest_inline;
-                            $allow_route_params = $annotation->allow_route_params;
-                            $default_options = $annotation->default_options;
-                            $esi = $annotation->esi;
-                            $class_name = str_replace($refl->getNamespaceName().'\\', '', $refl->getName());
-                            $class_name = str_replace('Controller', '', $class_name);
-                            $method_name = str_replace('Action', '', $method->getName());
-                            $callable = sprintf('%s:%s:%s', 'Theme', $class_name, $method_name);
+                            $allow_route_params  = $annotation->allow_route_params;
+                            $default_options     = $annotation->default_options;
+                            $esi                 = $annotation->esi;
+                            $class_name          = str_replace($refl->getNamespaceName().'\\', '', $refl->getName());
+                            $class_name          = str_replace('Controller', '', $class_name);
+                            $method_name         = str_replace('Action', '', $method->getName());
+                            $callable            = sprintf('%s:%s:%s', 'Theme', $class_name, $method_name);
 
                             $defined_options = $this->findTagOptions($refl->getName(), $method->getName());
 
-                            $tag = new Tag($name, $callable, $defined_options, $default_options, $esi, $always_inline_guest, $allow_route_params);
+                            $tag                   = new Tag($name, $callable, $defined_options, $default_options, $esi, $always_inline_guest, $allow_route_params);
                             $tags[$tag->getName()] = $tag;
                         }
                     }
@@ -266,9 +263,9 @@ class ThemeRepository
      */
     protected function findClass($file)
     {
-        $class = false;
+        $class     = false;
         $namespace = false;
-        $tokens = token_get_all(file_get_contents($file));
+        $tokens    = token_get_all(file_get_contents($file));
         for ($i = 0, $count = count($tokens); $i < $count; $i++) {
             $token = $tokens[$i];
 

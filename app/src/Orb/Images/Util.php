@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Input
  */
 
@@ -39,22 +38,23 @@ use Orb\Util\Numbers;
 class Util
 {
     /**
-     * Create a gradient image useful for repeating backgrounds
+     * Create a gradient image useful for repeating backgrounds.
      *
      * @param $size
      * @param $start_color
      * @param $end_color
-     * @param  string   $direction
-     * @param  int      $step
+     * @param string $direction
+     * @param int    $step
+     *
      * @return resource
      */
     public static function getGradientImage($size, $start_color, $end_color, $direction = 'vertical', $step = 1, $other_size = 1)
     {
         if ($direction == 'vertical') {
-            $width = $other_size;
+            $width  = $other_size;
             $height = $size;
         } else {
-            $width = $size;
+            $width  = $size;
             $height = $other_size;
         }
 
@@ -85,7 +85,7 @@ class Util
             $line_width    = imagesx($im);
         }
 
-        $r = $g = $b = '';
+        $r    = $g    = $b    = '';
         $fill = null;
         for ($i = 0; $i < $line_numbers; $i = $i + $step) {
             $old_r = $r;

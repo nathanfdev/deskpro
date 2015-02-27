@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -41,10 +39,9 @@ class ReportsOverviewController extends AbstractController
 
     public function getDataAction($type)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Overview $reports_overview
+        /*
+         * @var \Application\DeskPRO\Reports\Overview
          */
-
         $reports_overview = $this->container->getSystemService('reports_overview');
         $reports_overview->setPerson($this->person);
 
@@ -57,10 +54,9 @@ class ReportsOverviewController extends AbstractController
 
     public function getStatsAction($type)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\Overview $reports_overview
+        /*
+         * @var \Application\DeskPRO\Reports\Overview
          */
-
         $reports_overview = $this->container->getSystemService('reports_overview');
         $reports_overview->setPerson($this->person);
 

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Orb\Auth\Adapter;
@@ -40,9 +37,9 @@ class DbTablePhpPasswordCheck extends DbTable
 
     protected function isValidPassword(array $userinfo, $password_input)
     {
-        $field_id       = $this->options->get(self::OPT_FIELD_ID);
-        $field_username = $this->options->get(self::OPT_FIELD_USERNAME);
-        $field_email    = $this->options->get(self::OPT_FIELD_EMAIL);
+        $field_id        = $this->options->get(self::OPT_FIELD_ID);
+        $field_username  = $this->options->get(self::OPT_FIELD_USERNAME);
+        $field_email     = $this->options->get(self::OPT_FIELD_EMAIL);
         $field_password  = $this->options->get(self::OPT_FIELD_PASSWORD);
 
         $user_id       = $field_id && isset($userinfo[$field_id]) ? $userinfo[$field_id] : null;

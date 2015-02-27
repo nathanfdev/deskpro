@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage EmailBundle
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\Mail\RawTransport;
@@ -80,9 +77,10 @@ class RawSmtpTransport implements RawTransportInterface
 
     /**
      * @param $from
-     * @param  array $to
+     * @param array $to
      * @param $raw_fp
-     * @param  array $failed
+     * @param array $failed
+     *
      * @return int
      */
     private function _doMail($from, array $to, $raw_fp, array &$failed)

@@ -26,21 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\NewSettings\Loader;
 
 use Application\DeskPRO\Cache\CacheAdapterInterface;
 use Application\DeskPRO\Cache\ConvenientCache;
-use Application\DeskPRO\NewSettings\SettingsLoaderInterface;
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\NewSettings\SettingsLoaderInterface;
 
 /**
- * Creates and returns an array of k=>V settings from the `settings` mysql table
+ * Creates and returns an array of k=>V settings from the `settings` mysql table.
  */
 class BrandSettingsLoader implements SettingsLoaderInterface
 {
@@ -59,7 +56,7 @@ class BrandSettingsLoader implements SettingsLoaderInterface
     public function __construct(Connection $db, CacheAdapterInterface $cache)
     {
         $this->cache = new ConvenientCache($cache);
-        $this->db = $db;
+        $this->db    = $db;
     }
 
     /**

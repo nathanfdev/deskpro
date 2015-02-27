@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -70,7 +69,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  DeskproContainer   $container
+     * @param DeskproContainer $container
+     *
      * @return TicketEmailBuilder
      */
     public static function createFromContainer(DeskproContainer $container)
@@ -97,7 +97,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  Settings $settings
+     * @param Settings $settings
+     *
      * @return $this
      */
     public function setSettings(Settings $settings)
@@ -108,7 +109,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  Swift_Mailer       $mailer
+     * @param Swift_Mailer $mailer
+     *
      * @return TicketEmailBuilder
      */
     public function setMailer(Swift_Mailer $mailer)
@@ -119,7 +121,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  EmailAccountManager $email_accounts
+     * @param EmailAccountManager $email_accounts
+     *
      * @return $this
      */
     public function setEmailAccountManager(EmailAccountManager $email_accounts)
@@ -130,7 +133,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  Translate          $tr
+     * @param Translate $tr
+     *
      * @return TicketEmailBuilder
      */
     public function setTranslate(Translate $tr)
@@ -141,7 +145,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  EntityManager      $em
+     * @param EntityManager $em
+     *
      * @return TicketEmailBuilder
      */
     public function setEm(EntityManager $em)
@@ -152,7 +157,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  TicketFieldManager $field_manager
+     * @param TicketFieldManager $field_manager
+     *
      * @return TicketEmailBuilder
      */
     public function setTicketFieldManager(TicketFieldManager $field_manager)
@@ -163,7 +169,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  PersonFieldManager $field_manager
+     * @param PersonFieldManager $field_manager
+     *
      * @return TicketEmailBuilder
      */
     public function setUserFieldManager(PersonFieldManager $field_manager)
@@ -174,7 +181,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  TicketLayoutManager $ticket_layout_manager
+     * @param TicketLayoutManager $ticket_layout_manager
+     *
      * @return TicketEmailBuilder
      */
     public function setTicketLayoutManager(TicketLayoutManager $ticket_layout_manager)
@@ -185,7 +193,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  Ticket             $ticket
+     * @param Ticket $ticket
+     *
      * @return TicketEmailBuilder
      */
     public function setTicket(Ticket $ticket)
@@ -196,7 +205,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  Person             $person
+     * @param Person $person
+     *
      * @return TicketEmailBuilder
      */
     public function setToPerson(Person $person)
@@ -207,7 +217,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  Person[] $people
+     * @param Person[] $people
+     *
      * @return $this
      */
     public function setToPeople(array $people)
@@ -231,6 +242,7 @@ class TicketEmailBuilder
 
     /**
      * @see setUserMode
+     *
      * @return TicketEmailBuilder
      */
     public function setAgentMode()
@@ -241,7 +253,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  string             $template_name
+     * @param string $template_name
+     *
      * @return TicketEmailBuilder
      */
     public function setTemplateName($template_name)
@@ -253,6 +266,7 @@ class TicketEmailBuilder
 
     /**
      * @param $from_name
+     *
      * @return TicketEmailBuilder
      */
     public function setFromName($from_name)
@@ -263,7 +277,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  EmailAccount       $account
+     * @param EmailAccount $account
+     *
      * @return TicketEmailBuilder
      */
     public function setFromEmailAccount(EmailAccount $account = null)
@@ -287,6 +302,7 @@ class TicketEmailBuilder
 
     /**
      * @see enableUserCc
+     *
      * @return TicketEmailBuilder
      */
     public function disableUserCc()
@@ -310,6 +326,7 @@ class TicketEmailBuilder
 
     /**
      * @see setIsAuto
+     *
      * @return TicketEmailBuilder
      */
     public function setIsNotAuto()
@@ -322,7 +339,8 @@ class TicketEmailBuilder
     /**
      * Sets the maximum size of attachments that will be sent with the message.
      *
-     * @param  int                $size
+     * @param int $size
+     *
      * @return TicketEmailBuilder
      */
     public function setMaxAttachSize($size)
@@ -333,7 +351,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  Logger             $logger
+     * @param Logger $logger
+     *
      * @return TicketEmailBuilder
      */
     public function setLogger(Logger $logger)
@@ -344,7 +363,8 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param  array              $headers
+     * @param array $headers
+     *
      * @return TicketEmailBuilder
      */
     public function setHeaders($headers = array())

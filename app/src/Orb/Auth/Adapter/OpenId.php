@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -44,7 +43,7 @@ class OpenId extends AbstractCallbackAdatper
     protected $openid_identifier = '';
 
     /**
-     * Sets the data got from a form
+     * Sets the data got from a form.
      *
      * @param string $url The URL
      */
@@ -62,10 +61,10 @@ class OpenId extends AbstractCallbackAdatper
      */
     protected function authenticateInitialize(StateHandlerInterface $state)
     {
-        $openid = new \LightOpenID();
-        $openid->identity = $this->openid_identifier;
+        $openid            = new \LightOpenID();
+        $openid->identity  = $this->openid_identifier;
         $openid->returnUrl = $this->getCallbackUrl();
-        $openid->optional = array(
+        $openid->optional  = array(
             'namePerson/friendly', 'contact/email', 'namePerson',
             'birthDate', 'person/gender', 'contact/country/home',
             'pref/language', 'pref/timezone',
@@ -91,7 +90,7 @@ class OpenId extends AbstractCallbackAdatper
         }
 
         $attributes = $openid->getAttributes();
-        $userinfo = array(
+        $userinfo   = array(
             'nickname'  => !empty($attributes['namePerson/friendly'])   ? $attributes['namePerson/friendly']    : null,
             'email'     => !empty($attributes['email'])                 ? $attributes['email']                  : null,
             'fullname'  => !empty($attributes['namePerson'])            ? $attributes['namePerson']             : null,

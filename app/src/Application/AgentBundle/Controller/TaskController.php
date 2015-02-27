@@ -26,27 +26,25 @@
 \**************************************************************************/
 
 /**
- * DeskPRO AgentBubdle's Task Controller
+ * DeskPRO AgentBubdle's Task Controller.
  *
- * @package DeskPRO
- * @subpackage AgentBundle
  * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
  */
 
 namespace Application\AgentBundle\Controller;
 
-use Application\LegacyApiBundle\Controller\TasksController;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\TaskComment;
 use Application\DeskPRO\Form\Type\TaskType;
+use Application\LegacyApiBundle\Controller\TasksController;
 use Orb\Util\Arrays;
 use Orb\Util\Dates;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Handles viewing and editing tasks
+ * Handles viewing and editing tasks.
  */
 class TaskController extends AbstractController
 {
@@ -67,41 +65,41 @@ class TaskController extends AbstractController
     {
         /** @var \Application\DeskPRO\EntityRepository\Task $task_repository */
         $task_repository = $this->em->getRepository('DeskPRO:Task');
-        $person = $this->person;
+        $person          = $this->person;
 
         $all_tasks = array(
-            'total' => $task_repository->countPendingTasks($person),
-            'overdue' => $task_repository->countOverdueTasks($person),
-            'due_today' => $task_repository->countDueTodayTasks($person),
+            'total'      => $task_repository->countPendingTasks($person),
+            'overdue'    => $task_repository->countOverdueTasks($person),
+            'due_today'  => $task_repository->countDueTodayTasks($person),
             'due_future' => $task_repository->countDueFutureTasks($person),
         );
 
         $person_tasks = array(
-            'total' => $task_repository->countPendingTasksForPerson($person),
-            'overdue' => $task_repository->countOverdueTasksForPerson($person),
-            'due_today' => $task_repository->countDueTodayTasksForPerson($person),
+            'total'      => $task_repository->countPendingTasksForPerson($person),
+            'overdue'    => $task_repository->countOverdueTasksForPerson($person),
+            'due_today'  => $task_repository->countDueTodayTasksForPerson($person),
             'due_future' => $task_repository->countDueFutureTasksForPerson($person),
         );
 
         $teams_tasks = array(
-            'total' => $task_repository->countPendingTaksForPersonTeams($person),
-            'overdue' => $task_repository->countOverdueTasksForPersonTeams($person),
-            'due_today' => $task_repository->countDueTodayTasksForPersonTeams($person),
+            'total'      => $task_repository->countPendingTaksForPersonTeams($person),
+            'overdue'    => $task_repository->countOverdueTasksForPersonTeams($person),
+            'due_today'  => $task_repository->countDueTodayTasksForPersonTeams($person),
             'due_future' => $task_repository->countDueFutureTasksForPersonTeams($person),
         );
 
         $delegated_tasks = array(
-            'total' => $task_repository->countPendingDelegatedTasksForPerson($person),
-            'overdue' => $task_repository->countOverdueDelegatedTasksForPerson($person),
-            'due_today' => $task_repository->countDueTodayDelegatedTasksForPerson($person),
+            'total'      => $task_repository->countPendingDelegatedTasksForPerson($person),
+            'overdue'    => $task_repository->countOverdueDelegatedTasksForPerson($person),
+            'due_today'  => $task_repository->countDueTodayDelegatedTasksForPerson($person),
             'due_future' => $task_repository->countDueFutureDelegatedTasksForPerson($person),
         );
 
         $section_html = $this->renderView('AgentBundle:Task:window-section.html.twig', array(
             'counts' => array(
-                'all' => $all_tasks,
-                'person' => $person_tasks,
-                'teams' => $teams_tasks,
+                'all'       => $all_tasks,
+                'person'    => $person_tasks,
+                'teams'     => $teams_tasks,
                 'delegated' => $delegated_tasks,
             ),
         ));
@@ -113,31 +111,33 @@ class TaskController extends AbstractController
 
     /**
      * Render the new task form.
+     *
      * @return html
      */
     public function newAction()
     {
-        $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+        $agents      = $this->em->getRepository('DeskPRO:Person')->getAgents();
         $agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
         return $this->render('AgentBundle:Task:newtask.html.twig', array(
-            'agents' => $agents,
+            'agents'      => $agents,
             'agent_teams' => $agent_teams,
         ));
     }
 
     /**
      * Create action for the new task. Which pass the data and the from to the _process method to save it in DB.
+     *
      * @return json formated data
      */
     public function createAction()
     {
         $all_task_data = $this->in->getCleanValueArray('newtask', 'raw', 'discard');
-        $tasks = array();
+        $tasks         = array();
 
         foreach ($all_task_data as $task_data) {
-            $task = new Task();
-            $form = $this->createForm(new TaskType(), $task);
+            $task                = new Task();
+            $form                = $this->createForm(new TaskType(), $task);
             $task_data['person'] = $this->person['id'];
 
             if (!empty($task_data['ticket_id'])) {
@@ -178,8 +178,8 @@ class TaskController extends AbstractController
                 $d = $d->format($this->container->getSetting('core.date_day'));
             }
             $task_data[] = array(
-                'id' => $t->getId(),
-                'title' => $t->title,
+                'id'       => $t->getId(),
+                'title'    => $t->title,
                 'date_due' => $d,
                 'row_html' => $this->renderView('AgentBundle:Task:task-list-row.html.twig', array('task' => $t, 'noShowLinked' => true)),
             );
@@ -187,15 +187,16 @@ class TaskController extends AbstractController
 
         return $this->createJsonResponse(array(
             'success' => true,
-            'tasks' => $task_data,
+            'tasks'   => $task_data,
         ));
     }
 
     /**
-     * render the task list
+     * render the task list.
      *
-     * @param  string $search_type
-     * @param  string $search_category
+     * @param string $search_type
+     * @param string $search_category
+     *
      * @return string view of the task list
      */
     public function taskListAction($search_type = null, $search_category = null)
@@ -246,22 +247,22 @@ class TaskController extends AbstractController
             $has_next_completed = true;
         }
 
-        $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+        $agents      = $this->em->getRepository('DeskPRO:Person')->getAgents();
         $agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
         $tasks_grouped = null;
-        $group_by = $this->in->getString('group_by');
+        $group_by      = $this->in->getString('group_by');
         if ($group_by == 'assigned') {
             $tasks_grouped = array();
             foreach ($tasks as $t) {
                 if ($t->assigned_agent) {
-                    $key = 'agent:'.$t->assigned_agent->id;
+                    $key   = 'agent:'.$t->assigned_agent->id;
                     $title = $t->assigned_agent->getDisplayName();
                 } elseif ($t->assigned_agent_team) {
-                    $key = 'agent_team:'.$t->assigned_agent_team->id;
+                    $key   = 'agent_team:'.$t->assigned_agent_team->id;
                     $title = $t->assigned_agent_team->getName();
                 } else {
-                    $key = 'agent:'.$t->person->id;
+                    $key   = 'agent:'.$t->person->id;
                     $title = $t->person->getDisplayName();
                 }
 
@@ -274,7 +275,7 @@ class TaskController extends AbstractController
 
             $key = 'agent:'.$this->person->id;
             if (isset($tasks_grouped[$key])) {
-                $tmp = $tasks_grouped[$key];
+                $tmp          = $tasks_grouped[$key];
                 $tmp['title'] = 'Me';
                 unset($tasks_grouped[$key]);
                 Arrays::unshiftAssoc($tasks_grouped, $key, $tmp);
@@ -282,7 +283,7 @@ class TaskController extends AbstractController
         } elseif ($group_by == 'creator') {
             $tasks_grouped = array();
             foreach ($tasks as $t) {
-                $key = 'agent:'.$t->person->id;
+                $key   = 'agent:'.$t->person->id;
                 $title = $t->person->getDisplayName();
 
                 if (!isset($tasks_grouped[$key])) {
@@ -293,7 +294,7 @@ class TaskController extends AbstractController
             }
 
             if (isset($tasks_grouped[$this->person->id])) {
-                $tmp = $tasks_grouped[$this->person->id];
+                $tmp          = $tasks_grouped[$this->person->id];
                 $tmp['title'] = 'Me';
                 unset($tasks_grouped[$this->person->id]);
                 Arrays::unshiftAssoc($tasks_grouped, $this->person->id, $tmp);
@@ -407,12 +408,13 @@ class TaskController extends AbstractController
     /**
      * Save labels for tasks.
      *
-     * @param  intiger $task_id
+     * @param intiger $task_id
+     *
      * @return json
      */
     public function ajaxSaveLabelsAction($task_id)
     {
-        $task = $this->getTaskOr404($task_id);
+        $task   = $this->getTaskOr404($task_id);
         $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
         $task->getLabelManager()->setLabelsArray($labels);
 
@@ -423,9 +425,10 @@ class TaskController extends AbstractController
     }
 
     /**
-     * Save the comment for tasks
+     * Save the comment for tasks.
      *
-     * @param  intiger $task_id
+     * @param intiger $task_id
+     *
      * @return comment list in li format
      */
     public function ajaxSaveCommentAction($task_id)
@@ -436,22 +439,22 @@ class TaskController extends AbstractController
 
         if (!$comment_txt || !$task) {
             return $this->createJsonResponse(array(
-                'error' => true,
+                'error'      => true,
                 'error_code' => 'no_message',
             ));
         }
 
-        $comment = new TaskComment($this->person, $comment_txt);
-        $comment['person'] = $this->person;
-        $comment['task'] = $task;
+        $comment            = new TaskComment($this->person, $comment_txt);
+        $comment['person']  = $this->person;
+        $comment['task']    = $task;
         $comment['content'] = $comment_txt;
 
         $this->em->persist($comment);
         $this->em->flush();
 
         return $this->createJsonResponse(array(
-                'success' => true,
-                'task_id' => $task_id,
+                'success'         => true,
+                'task_id'         => $task_id,
                 'comment_li_html' => $this->renderView('AgentBundle:Task:comment-li.html.twig', array('comment' => $comment)),
         ));
     }
@@ -513,8 +516,8 @@ class TaskController extends AbstractController
                     $time_due = $this->in->getString('value');
                     if (!empty($time_due) && strpos($time_due, ':') !== 0) {
                         list($hour, $min) = explode(':', $time_due);
-                        $hour = (int) $hour;
-                        $min = (int) $min;
+                        $hour             = (int) $hour;
+                        $min              = (int) $min;
                         if (Numbers::inRange($hour, 0, 23) && Numbers::inRange($min, 0, 59)) {
                             $date = clone $task->date_due;
                             $date->setTimezone($this->person->getDateTimezone());
@@ -550,7 +553,7 @@ class TaskController extends AbstractController
             case 'assigned':
                 $val = $this->in->getString('value');
 
-                $task->agent = null;
+                $task->agent      = null;
                 $task->agent_team = null;
 
                 if ($val) {
@@ -611,7 +614,7 @@ class TaskController extends AbstractController
         return $this->createJsonResponse(array('success' => true));
     }
 
-        /**
+    /**
      * @return \Application\DeskPRO\Entity\Task
      */
     protected function getTaskOr404($task_id)

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -66,8 +65,9 @@ class PhraseData
     }
 
     /**
-     * @param  TicketDepartments $ticket_deps
-     * @param  Language          $language
+     * @param TicketDepartments $ticket_deps
+     * @param Language          $language
+     *
      * @return array
      */
     public function getTicketDepartmentPhrases(TicketDepartments $ticket_deps, Language $language = null)
@@ -81,7 +81,7 @@ class PhraseData
         }
 
         $phrase_data = array();
-        $flat_array = $ticket_deps->getFlatArray();
+        $flat_array  = $ticket_deps->getFlatArray();
 
         foreach (array('agent', 'user') as $type) {
             foreach ($flat_array as $dep_row) {
@@ -89,14 +89,14 @@ class PhraseData
                 $dep = $dep_row['object'];
 
                 if ($type == 'user') {
-                    $id = $phrase_group.'.'.$dep->id.'_user';
-                    $id2 = $phrase_group.'.'.$dep->id.'_title';
+                    $id     = $phrase_group.'.'.$dep->id.'_user';
+                    $id2    = $phrase_group.'.'.$dep->id.'_title';
                     $custom = isset($custom_phrases[$id]) ? $custom_phrases[$id] : null;
                     if (!$custom) {
                         $custom = isset($custom_phrases[$id2]) ? $custom_phrases[$id2] : null;
                     }
                 } else {
-                    $id = $phrase_group.'.'.$dep->id.'_title';
+                    $id     = $phrase_group.'.'.$dep->id.'_title';
                     $custom = isset($custom_phrases[$id]) ? $custom_phrases[$id] : null;
                 }
 
@@ -125,8 +125,9 @@ class PhraseData
     }
 
     /**
-     * @param  TicketCategories $ticket_cats
-     * @param  Language         $language
+     * @param TicketCategories $ticket_cats
+     * @param Language         $language
+     *
      * @return array
      */
     public function getTicketCategoryPhrases(TicketCategories $ticket_cats, Language $language = null)
@@ -170,8 +171,9 @@ class PhraseData
     }
 
     /**
-     * @param  TicketWorkflows $ticket_works
-     * @param  Language        $language
+     * @param TicketWorkflows $ticket_works
+     * @param Language        $language
+     *
      * @return array
      */
     public function getTicketWorkflowPhrases(TicketWorkflows $ticket_works, Language $language = null)
@@ -212,8 +214,9 @@ class PhraseData
     }
 
     /**
-     * @param  TicketPriorities $ticket_pris
-     * @param  Language         $language
+     * @param TicketPriorities $ticket_pris
+     * @param Language         $language
+     *
      * @return array
      */
     public function getTicketPriorityPhrases(TicketPriorities $ticket_pris, Language $language = null)
@@ -254,8 +257,9 @@ class PhraseData
     }
 
     /**
-     * @param  ChatDepartments $chat_deps
-     * @param  Language        $language
+     * @param ChatDepartments $chat_deps
+     * @param Language        $language
+     *
      * @return array
      */
     public function getChatDepartmentPhrases(ChatDepartments $chat_deps, Language $language = null)
@@ -299,8 +303,9 @@ class PhraseData
     }
 
     /**
-     * @param  Products $products
-     * @param  Language $language
+     * @param Products $products
+     * @param Language $language
+     *
      * @return array
      */
     public function getProductPhrases(Products $products, Language $language = null)
@@ -344,8 +349,9 @@ class PhraseData
     }
 
     /**
-     * @param  FieldManager $fm
-     * @param  Language     $language
+     * @param FieldManager $fm
+     * @param Language     $language
+     *
      * @return array
      */
     public function getFieldPhrases(FieldManager $fm, Language $language = null)
@@ -386,7 +392,7 @@ class PhraseData
             );
 
             $row['lang_default'] = $row['lang'] ?: $row['default'];
-            $row['set'] = $row['custom'] ?: $row['lang_default'];
+            $row['set']          = $row['custom'] ?: $row['lang_default'];
 
             $phrase_data = array($row);
 
@@ -409,7 +415,8 @@ class PhraseData
     }
 
     /**
-     * @param  Language $language
+     * @param Language $language
+     *
      * @return array
      */
     public function getFeedbackStatusPhrases(Language $language = null)
@@ -447,7 +454,7 @@ class PhraseData
             );
 
             $row['lang_default'] = $row['lang'] ?: $row['default'];
-            $row['set'] = $row['custom'] ?: $row['lang_default'];
+            $row['set']          = $row['custom'] ?: $row['lang_default'];
 
             $phrase_data[] = $row;
         }
@@ -456,7 +463,8 @@ class PhraseData
     }
 
     /**
-     * @param  Language $language
+     * @param Language $language
+     *
      * @return array
      */
     public function getFeedbackTypePhrases(Language $language = null)
@@ -494,7 +502,7 @@ class PhraseData
             );
 
             $row['lang_default'] = $row['lang'] ?: $row['default'];
-            $row['set'] = $row['custom'] ?: $row['lang_default'];
+            $row['set']          = $row['custom'] ?: $row['lang_default'];
 
             $phrase_data[] = $row;
         }
@@ -503,8 +511,9 @@ class PhraseData
     }
 
     /**
-     * @param  ArticleCategoryRepository $repos
-     * @param  Language                  $language
+     * @param ArticleCategoryRepository $repos
+     * @param Language                  $language
+     *
      * @return array
      */
     public function getKbCategoryPhrases(ArticleCategoryRepository $repos, Language $language = null)
@@ -517,7 +526,7 @@ class PhraseData
             $custom_phrases = array();
         }
 
-        $all = $repos->getAllIndexedById();
+        $all  = $repos->getAllIndexedById();
         $flat = $repos->getFlatHierarchy();
 
         $phrase_data = array();
@@ -551,8 +560,9 @@ class PhraseData
     }
 
     /**
-     * @param  Language|null $language
-     * @param  string        $group_id
+     * @param Language|null $language
+     * @param string        $group_id
+     *
      * @return array
      */
     public function loadGroup(Language $language = null, $group_id)
@@ -563,7 +573,7 @@ class PhraseData
             $lang_phrases    = $this->loadSystemPhrases($language->sys_name, $group_id);
             $custom_phrases  = $this->loadCustomPhrases($language, $group_id);
         } else {
-            $lang_phrases = array();
+            $lang_phrases   = array();
             $custom_phrases = array();
         }
 
@@ -597,7 +607,8 @@ class PhraseData
     }
 
     /**
-     * @param  Language $language
+     * @param Language $language
+     *
      * @return array
      */
     public function loadCustom(Language $language)
@@ -631,7 +642,7 @@ class PhraseData
         $phrase_data = array();
 
         foreach ($custom_phrases as $phr) {
-            $id = $phr->name;
+            $id  = $phr->name;
             $row = array(
                 'id'      => $id,
                 'default' => isset($default_phrases[$id]) ? $default_phrases[$id] : null,
@@ -652,10 +663,11 @@ class PhraseData
     }
 
     /**
-     * Returns a k=>v array of phrases from the system lang files
+     * Returns a k=>v array of phrases from the system lang files.
      *
-     * @param  string $lang_name
-     * @param  string $group_id
+     * @param string $lang_name
+     * @param string $group_id
+     *
      * @return array
      */
     private function loadSystemPhrases($lang_name, $group_id)
@@ -687,8 +699,9 @@ class PhraseData
     }
 
     /**
-     * @param  Language $language
-     * @param  string   $group_id
+     * @param Language $language
+     * @param string   $group_id
+     *
      * @return array
      */
     private function loadCustomPhrases(Language $language, $group_id)

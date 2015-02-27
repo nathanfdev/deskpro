@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage HttpKernel
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\HttpKernel;
@@ -118,7 +115,7 @@ class ExceptionListener
             }
         }
 
-        $top = sprintf("[%s] %s: %s", date('Y-m-d H:i:s'), $type, $url);
+        $top   = sprintf("[%s] %s: %s", date('Y-m-d H:i:s'), $type, $url);
         $lines = sprintf("Type: %s\nException: %s %s\n%s", get_class($e), $e->getCode(), $e->getMessage(), KernelErrorHandler::formatBacktrace($e->getTrace()));
         $lines = Strings::modifyLines($lines, "\t");
 

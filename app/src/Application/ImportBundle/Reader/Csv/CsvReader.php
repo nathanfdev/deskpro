@@ -27,17 +27,16 @@
 
 namespace Application\ImportBundle\Reader\Csv;
 
-use Symfony\Component\Translation\Exception\InvalidResourceException;
-use Symfony\Component\Translation\Exception\NotFoundResourceException;
+use LimitIterator;
 use Orb\Util\Arrays;
 use SplFileObject;
-use LimitIterator;
+use Symfony\Component\Translation\Exception\InvalidResourceException;
+use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 /**
- * Csv data parser
+ * Csv data parser.
  *
  * Class CsvReader
- * @package Application\ImportBundle\Reader\Csv
  */
 class CsvReader implements CsvReaderInterface
 {
@@ -46,7 +45,7 @@ class CsvReader implements CsvReaderInterface
      */
     public function getRowsCount(CsvConfig $config)
     {
-        $count = 0;
+        $count    = 0;
         $iterator = $this->getIterator($config);
         foreach ($iterator as $row) {
             if (is_array($row)) {
@@ -99,16 +98,17 @@ class CsvReader implements CsvReaderInterface
     }
 
     /**
-     * Returns spl file object iterator
+     * Returns spl file object iterator.
      *
      * @param CsvConfig $config
      *
-     * @return LimitIterator
      * @throws \Exception
+     * @return LimitIterator
+     *
      */
     private function getIterator(CsvConfig $config)
     {
-        if ( ! stream_is_local($config->getResource())) {
+        if (! stream_is_local($config->getResource())) {
             throw new InvalidResourceException(sprintf('This is not a local file "%s".', $config->getResource()));
         }
 

@@ -27,14 +27,13 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
 
 /**
- * Data generator interface
+ * Data generator interface.
  *
  * Interface ExporterInterface
- * @package Application\ImportBundle\Generator\Exporter
  */
 interface ExporterInterface extends GeneratorConfigAwareInterface
 {
@@ -44,24 +43,26 @@ interface ExporterInterface extends GeneratorConfigAwareInterface
     const TYPE_ZENDESK   = 'zendesk';
 
     /**
-     * Get exporter type
+     * Get exporter type.
      *
      * @return string
      */
     public function getType();
 
     /**
-     * Returns count of records of the current type to be exported
+     * Returns count of records of the current type to be exported.
      *
      * @param string $type
+     *
      * @return int
      */
     public function getCountByType($type);
 
     /**
-     * Returns a collection of records of the current type
+     * Returns a collection of records of the current type.
      *
      * @param string $type
+     *
      * @return Entity\Collection
      */
     public function exportByType($type);

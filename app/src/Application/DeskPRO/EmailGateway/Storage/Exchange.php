@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package    DeskPRO
- * @subpackage EmailGateway
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Storage;
@@ -97,10 +94,11 @@ class Exchange
     }
 
     /**
-     * Creates a folder if it doesnt exist
+     * Creates a folder if it doesnt exist.
      *
-     * @param  string $name
-     * @return bool   True if it was created, false otherwise
+     * @param string $name
+     *
+     * @return bool True if it was created, false otherwise
      */
     public function ensureFolderExists($name)
     {
@@ -114,9 +112,10 @@ class Exchange
     }
 
     /**
-     * @param  int   $limit
-     * @param  bool  $unread_only
-     * @param  null  $folder
+     * @param int  $limit
+     * @param bool $unread_only
+     * @param null $folder
+     *
      * @return mixed
      */
     public function searchIds($limit = 10, $unread_only = false, $folder = null)
@@ -193,7 +192,8 @@ class Exchange
     }
 
     /**
-     * @param  string $message_id
+     * @param string $message_id
+     *
      * @return string
      */
     public function getRawMessage($message_id)
@@ -229,11 +229,12 @@ class Exchange
             return base64_decode($response->ResponseMessages->GetItemResponseMessage->Items->Message->MimeContent->_);
         }
 
-        return null;
+        return;
     }
 
     /**
-     * @param  string $message_id
+     * @param string $message_id
+     *
      * @return string
      */
     public function getRawHeaders($message_id)
@@ -248,7 +249,8 @@ class Exchange
     }
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return mixed
      */
     private function createFolder($name)
@@ -271,8 +273,9 @@ class Exchange
     }
 
     /**
-     * @param  string $name
-     * @param  bool   $force_reload
+     * @param string $name
+     * @param bool   $force_reload
+     *
      * @return mixed
      */
     private function findFolder($name, $force_reload = false)
@@ -287,7 +290,7 @@ class Exchange
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -326,6 +329,7 @@ class Exchange
 
     /**
      * @param $message
+     *
      * @return bool
      */
     public function moveMessage($message_id, $name)
@@ -351,7 +355,8 @@ class Exchange
     }
 
     /**
-     * @param  string $message_id
+     * @param string $message_id
+     *
      * @return bool
      */
     public function deleteMessage($message_id)
@@ -377,6 +382,7 @@ class Exchange
 
     /**
      * @param $message_id
+     *
      * @return bool
      */
     public function markRead($message_id)
@@ -415,9 +421,10 @@ class Exchange
     }
 
     /**
-     * Gets email properties
+     * Gets email properties.
      *
-     * @param  string $message_id
+     * @param string $message_id
+     *
      * @return mixed
      */
     public function getEmailProps($message_id)

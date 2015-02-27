@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 
 /**
- * Email account record mapper
+ * Email account record mapper.
  *
  * Class EmailAccount
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class EmailAccount implements MapperInterface
 {
@@ -43,7 +42,7 @@ final class EmailAccount implements MapperInterface
     private $manager;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EmailAccountManager $manager
      */
@@ -70,7 +69,7 @@ final class EmailAccount implements MapperInterface
         }
 
         $record = $this->manager->findAccountForEmailAddress($criteria['email']);
-        if ( ! $record && $throw_exception) {
+        if (! $record && $throw_exception) {
             throw new MapperException('Email account not found', $criteria);
         }
 
@@ -78,13 +77,14 @@ final class EmailAccount implements MapperInterface
     }
 
     /**
-     * Returns the existing email account by email
+     * Returns the existing email account by email.
      *
      * @param string $email
      * @param bool   $throw_exception
      *
-     * @return \Application\DeskPRO\Entity\EmailAccount|null
      * @throws MapperException
+     * @return \Application\DeskPRO\Entity\EmailAccount|null
+     *
      */
     public function findOneByEmail($email, $throw_exception = true)
     {

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
@@ -37,7 +36,7 @@ namespace Orb\Auth\StateHandler;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
- * A statehandler that wraps a session to provide its own SessionBagInterface (named by the prefix) to work with Auth system
+ * A statehandler that wraps a session to provide its own SessionBagInterface (named by the prefix) to work with Auth system.
  */
 class SessionWrapper implements StateHandlerInterface
 {
@@ -48,12 +47,14 @@ class SessionWrapper implements StateHandlerInterface
 
     /**
      * The method on the state object that we can call to clear state.
+     *
      * @var string
      */
     protected $_clear_state_method = null;
 
     /**
-     * A prefix to prefix all keys with
+     * A prefix to prefix all keys with.
+     *
      * @var string
      */
     protected $_prefix;
@@ -68,10 +69,9 @@ class SessionWrapper implements StateHandlerInterface
     }
 
     /**
-     * Set the key prefix
+     * Set the key prefix.
      *
-     * @param  string $prefix
-     * @return void
+     * @param string $prefix
      */
     public function setPrefix($prefix)
     {
@@ -84,8 +84,7 @@ class SessionWrapper implements StateHandlerInterface
      *
      * Optionally $method can be a callback
      *
-     * @param  string $method The name of the method on the state object to call when clearing state
-     * @return void
+     * @param string $method The name of the method on the state object to call when clearing state
      */
     public function setClearStateMethod($method)
     {
@@ -94,8 +93,6 @@ class SessionWrapper implements StateHandlerInterface
 
     /**
      * Clears all state data, or resets back into its initial state.
-     *
-     * @return void
      */
     public function clearState()
     {

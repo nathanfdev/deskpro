@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Cloud\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\Controller\LicenseController as BaseLicenseController;
 use Application\DeskPRO\Entity\TmpData;
+use Application\LegacyApiBundle\Controller\LicenseController as BaseLicenseController;
 use DeskPRO\Kernel\License;
 use Orb\Util\Dates;
 
@@ -49,14 +46,14 @@ class LicenseController extends BaseLicenseController
     {
         $lic = License::getLicense();
 
-        $is_expired = false;
+        $is_expired     = false;
         $expire_in_days = 0;
 
         if ($lic->getExpireDate()) {
             $is_expired = $lic->getExpireDate()->format('U') < time();
             if (!$is_expired) {
                 $lic_expire_parts = Dates::secsToPartsArray($lic->getExpireDate()->format('U') - time());
-                $expire_in_days = $lic_expire_parts['days'];
+                $expire_in_days   = $lic_expire_parts['days'];
                 $expire_in_days += $lic_expire_parts['years'] * 365;
             }
         }

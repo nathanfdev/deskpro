@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -56,7 +55,7 @@ class RateLimitLog extends AbstractEntityRepository
 
         $params = array(
             'action' => $action,
-            'date' => date('Y-m-d H:i:s', time() - (int) $time),
+            'date'   => date('Y-m-d H:i:s', time() - (int) $time),
         );
 
         return (int) $this->getEntityManager()->getConnection()->executeQuery($q, $params)->fetchColumn();

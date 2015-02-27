@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -40,7 +37,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 
 /**
- * A collection of ticket actions
+ * A collection of ticket actions.
  */
 class ActionsCollection
 {
@@ -68,7 +65,7 @@ class ActionsCollection
     protected $was_stopped = false;
 
     /**
-     * True when actions broke the chain early
+     * True when actions broke the chain early.
      *
      * @return bool
      */
@@ -95,7 +92,7 @@ class ActionsCollection
     }
 
     /**
-     * Add a new action
+     * Add a new action.
      *
      * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $action
      */
@@ -126,15 +123,15 @@ class ActionsCollection
     }
 
     /**
-     * Apply a collection modifier
+     * Apply a collection modifier.
      *
      * @param \Application\DeskPRO\Tickets\TicketActions\CollectionModifierInterface $modifier
      */
     public function applyCollectionModifier(CollectionModifierInterface $modifier)
     {
-        $name = get_class($modifier);
+        $name                                = get_class($modifier);
         $this->applied_modifier_types[$name] = $name;
-        $this->applied_modifiers[] = $modifier;
+        $this->applied_modifiers[]           = $modifier;
     }
 
     /**
@@ -149,7 +146,7 @@ class ActionsCollection
     }
 
     /**
-     * Check if a certain action type is set
+     * Check if a certain action type is set.
      *
      * @return bool
      */
@@ -163,7 +160,7 @@ class ActionsCollection
     }
 
     /**
-     * Check if a certain action type is set
+     * Check if a certain action type is set.
      *
      * @return bool
      */
@@ -177,10 +174,12 @@ class ActionsCollection
     }
 
     /**
-     * Get a set action by name
+     * Get a set action by name.
      *
-     * @throws \InvalidArgumentException                                  When the action doesnt exist
+     *
      * @param  $name
+     * @throws \InvalidArgumentException When the action doesnt exist
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function getActionType($name)
@@ -197,10 +196,12 @@ class ActionsCollection
     }
 
     /**
-     * Remove an action type from the collection, and return it
+     * Remove an action type from the collection, and return it.
      *
-     * @throws \InvalidArgumentException                                 When action doesnt exist
-     * @param  string                                                    $name
+     *
+     * @param string $name
+     * @throws \InvalidArgumentException When action doesnt exist
+     *
      * @return Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function removeActionType($name)
@@ -220,7 +221,7 @@ class ActionsCollection
     }
 
     /**
-     * Get an array of set action types
+     * Get an array of set action types.
      *
      * @return array
      */
@@ -230,7 +231,7 @@ class ActionsCollection
     }
 
     /**
-     * Get an array of ticket actions
+     * Get an array of ticket actions.
      *
      * @return array
      */
@@ -240,12 +241,13 @@ class ActionsCollection
     }
 
     /**
-     * Checks to see if the $person_context person can perform all of the actions in the collection
+     * Checks to see if the $person_context person can perform all of the actions in the collection.
      *
-     * @param  \Application\DeskPRO\Tickets\TicketChangeTracker $ticket_tracker
-     * @param  \Application\DeskPRO\Entity\Ticket               $ticket
-     * @param  \Application\DeskPRO\Entity\Person               $person_context
-     * @param  null                                             $logger
+     * @param \Application\DeskPRO\Tickets\TicketChangeTracker $ticket_tracker
+     * @param \Application\DeskPRO\Entity\Ticket               $ticket
+     * @param \Application\DeskPRO\Entity\Person               $person_context
+     * @param null                                             $logger
+     *
      * @return bool
      */
     public function applyCheckPermission(Ticket $ticket, Person $person_context)
@@ -353,7 +355,7 @@ class ActionsCollection
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      * @param \Application\DeskPRO\Entity\Person $person_context

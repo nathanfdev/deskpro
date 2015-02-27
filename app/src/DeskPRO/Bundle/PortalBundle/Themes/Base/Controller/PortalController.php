@@ -26,18 +26,15 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
-use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
-use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
+use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
+use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 
 class PortalController extends AbstractController
 {
@@ -63,7 +60,7 @@ class PortalController extends AbstractController
             'Theme:Portal:Tag/top_bar.html.twig',
             array(
                 'enabled_languages' => $language_manager->getEnabledLanguages(),
-                'current_language' => $language_manager->getLanguageStack()->getActive(),
+                'current_language'  => $language_manager->getLanguageStack()->getActive(),
                 'is_multi_language' => $language_manager->isMultiLanguagePortal(),
             )
         );
@@ -92,7 +89,7 @@ class PortalController extends AbstractController
             'Theme:Portal:Tag/top_tabs.html.twig',
             array(
                 'url_starts_with' => isset($path_parts[0]) ? $path_parts[0] : null,
-                'tabs' => $tabs,
+                'tabs'            => $tabs,
             )
         );
     }
@@ -118,11 +115,11 @@ class PortalController extends AbstractController
                 'Theme:Portal:Tag/sidebar_login.html.twig',
                 array(
                     'login_text_button_usersources' => $auth_manager->getLoginTextButtonUsersources(),
-                    'login_icon_usersources' => $auth_manager->getLoginIconUsersources(),
-                    'show_forgot_password' => $auth_manager->isForgotPasswordVisible(),
-                    'show_remember_me' => $auth_manager->isRememberMeEnabled(),
-                    'show_login_form' => $auth_manager->isLoginFormVisible(),
-                    'show_auth' => $auth_manager->isAuthVisible(),
+                    'login_icon_usersources'        => $auth_manager->getLoginIconUsersources(),
+                    'show_forgot_password'          => $auth_manager->isForgotPasswordVisible(),
+                    'show_remember_me'              => $auth_manager->isRememberMeEnabled(),
+                    'show_login_form'               => $auth_manager->isLoginFormVisible(),
+                    'show_auth'                     => $auth_manager->isAuthVisible(),
                 )
             );
         }
@@ -130,7 +127,7 @@ class PortalController extends AbstractController
         return $this->renderThemeView(
             'Theme:Portal:Tag/sidebar_user.html.twig',
             array(
-                'user' => $user,
+                'user'         => $user,
                 'ticket_count' => $this->getTicketsDataService()->getTicketCount($user),
             )
         );
@@ -147,8 +144,8 @@ class PortalController extends AbstractController
             'Theme:Portal:Tag/small_user_info.html.twig',
             array(
                 'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
-                'ticket_count' => $user ? $this->getTicketsDataService()->getTicketCount($user) : 0,
-                'user' => $user,
+                'ticket_count'              => $user ? $this->getTicketsDataService()->getTicketCount($user) : 0,
+                'user'                      => $user,
             )
         );
     }

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +37,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Filters based on ticket org id
+ * Filters based on ticket org id.
  *
  * @option string org_ids
  */
@@ -61,7 +60,7 @@ class FilterOrgId extends AbstractFilterTerm
     public function getFilterQuery(ExecutorContextInterface $context = null)
     {
         $options = $this->getTermOptions();
-        $query = $this->getIdMatchQuery('tickets.organization_id', $options->get('org_ids'));
+        $query   = $this->getIdMatchQuery('tickets.organization_id', $options->get('org_ids'));
 
         return $query;
     }

@@ -26,18 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Orb\Html;
 
 use DOMDocument;
-use DOMNode;
-use DOMText;
 use DOMDocumentType;
 use DOMElement;
+use DOMNode;
+use DOMText;
 use Orb\Util\Strings;
 
 /**
@@ -46,13 +44,12 @@ use Orb\Util\Strings;
  * Converts HTML documents into plaintext.
  *
  * Based on html2text by Jeven Wright: https://code.google.com/p/iaml/source/browse/trunk/org.openiaml.model.runtime/src/include/html2text/html2text.php
- *
- * @package Orb\Html
  */
 class Html2Text
 {
     /**
-     * @param  string $html
+     * @param string $html
+     *
      * @return string
      */
     public static function convertHtml($html)
@@ -63,11 +60,13 @@ class Html2Text
     }
 
     /**
-     * Convert an HTML string into plaintext
+     * Convert an HTML string into plaintext.
      *
-     * @param  string                    $html
-     * @return string
+     * @param string $html
+     *
      * @throws \InvalidArgumentException
+     * @return string
+     *
      */
     public function convert($html)
     {
@@ -92,9 +91,10 @@ class Html2Text
     }
 
     /**
-     * Convert a DOMNode/DOMDocument into plaintext
+     * Convert a DOMNode/DOMDocument into plaintext.
      *
-     * @param  DOMNode $node
+     * @param DOMNode $node
+     *
      * @return string
      */
     public function convertNode(DOMNode $node, $_depth = 0)
@@ -238,7 +238,8 @@ class Html2Text
     }
 
     /**
-     * @param  DOMNode     $node
+     * @param DOMNode $node
+     *
      * @return null|string
      */
     protected function getNextChildName(DOMNode $node)
@@ -260,7 +261,8 @@ class Html2Text
     }
 
     /**
-     * @param  DOMNode     $node
+     * @param DOMNode $node
+     *
      * @return null|string
      */
     protected function getPrevChildName(DOMNode $node)

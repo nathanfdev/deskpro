@@ -26,15 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\TwitterSetup\TwitterSetup;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 
 class TwitterSetupController extends AbstractController implements ProtectedControllerInterface
 {

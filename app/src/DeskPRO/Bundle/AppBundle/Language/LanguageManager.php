@@ -26,18 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Language;
 
-use Application\DeskPRO\Translate\Translate;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
-use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
+use Application\DeskPRO\Translate\Translate;
 
 class LanguageManager
 {
@@ -63,9 +59,9 @@ class LanguageManager
 
     public function __construct(Translate $translate, LanguageStack $language_stack, LanguageRepo $language_repo)
     {
-        $this->translate = $translate;
+        $this->translate      = $translate;
         $this->language_stack = $language_stack;
-        $this->language_repo = $language_repo;
+        $this->language_repo  = $language_repo;
         $this->multi_langauge = null;
     }
 
@@ -82,7 +78,8 @@ class LanguageManager
     }
 
     /**
-     * @param  string $lang_code an arbitrary lang string
+     * @param string $lang_code an arbitrary lang string
+     *
      * @return bool
      */
     public function isLanguageSupported($lang_code)
@@ -93,7 +90,8 @@ class LanguageManager
     }
 
     /**
-     * @param  string   $lang_code an arbitrary lang string
+     * @param string $lang_code an arbitrary lang string
+     *
      * @return Language
      */
     public function getLanguage($lang_code)
@@ -104,7 +102,8 @@ class LanguageManager
     }
 
     /**
-     * @param  string   $sys_name the system id for a language (default, french, etc)
+     * @param string $sys_name the system id for a language (default, french, etc)
+     *
      * @return Language
      */
     public function getLanguageBySystemName($sys_name)
@@ -115,7 +114,8 @@ class LanguageManager
     /**
      * Turns an arbitrary lang string into a more normalized lang string that we use internally for URLs.
      *
-     * @param  string $lang_code
+     * @param string $lang_code
+     *
      * @return string
      */
     public function normalizeLanguageCode($lang_code)
@@ -140,9 +140,10 @@ class LanguageManager
     }
 
     /**
-     * TODO this is meant to return a translate object for a specific lang
+     * TODO this is meant to return a translate object for a specific lang.
      *
-     * @param  Language|string|null $lang
+     * @param Language|string|null $lang
+     *
      * @return Translate
      */
     public function getTranslator($lang = null)

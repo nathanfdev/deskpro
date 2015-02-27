@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\EventListener;
@@ -47,7 +44,7 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
         $response->headers->add(
             array(
                 'X-Content-Type-Options' => 'nosniff',
-                'X-FRAME-OPTIONS' => 'DENY',
+                'X-FRAME-OPTIONS'        => 'DENY',
             )
         );
     }

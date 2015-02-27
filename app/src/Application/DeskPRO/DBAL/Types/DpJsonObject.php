@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -57,7 +56,7 @@ class DpJsonObject extends Type
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
         if (null === $value) {
-            return null;
+            return;
         }
 
         if (!is_object($value) || !($value instanceof JsonObjectSerializable)) {
@@ -73,7 +72,7 @@ class DpJsonObject extends Type
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
         if ($value === null) {
-            return null;
+            return;
         }
 
         $value = (is_resource($value)) ? stream_get_contents($value) : $value;

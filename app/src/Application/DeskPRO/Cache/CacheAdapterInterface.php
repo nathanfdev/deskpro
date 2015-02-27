@@ -26,11 +26,9 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Cache
+ * DeskPRO.
  */
+
 namespace Application\DeskPRO\Cache;
 
 /**
@@ -46,34 +44,38 @@ namespace Application\DeskPRO\Cache;
 interface CacheAdapterInterface
 {
     /**
-     * Set a value onto the cache
+     * Set a value onto the cache.
      *
      * @param $key
      * @param $val
+     *
      * @return mixed
      */
     public function set($key, $val);
 
     /**
-     * True if cache appears to have a value for the key
+     * True if cache appears to have a value for the key.
      *
      * @param $key
+     *
      * @return bool
      */
     public function has($key);
 
     /**
-     * Gets the value for a key, in the same form as it was set (returns arrays, objects, scalars, etc)
+     * Gets the value for a key, in the same form as it was set (returns arrays, objects, scalars, etc).
      *
      * @param $key
+     *
      * @return null|mixed
      */
     public function get($key);
 
     /**
-     * Removes the value and unsets the key, should be safe to call even if key doesn't exist
+     * Removes the value and unsets the key, should be safe to call even if key doesn't exist.
      *
      * @param $key
+     *
      * @return mixed
      */
     public function delete($key);

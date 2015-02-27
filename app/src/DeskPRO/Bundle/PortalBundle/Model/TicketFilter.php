@@ -26,29 +26,26 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Model;
 
 class TicketFilter
 {
-    const TYPE_OWN = 'own';
+    const TYPE_OWN          = 'own';
     const TYPE_ORGANIZATION = 'organization';
 
     const CATEGORY_AWAITING_AGENT = 'awaiting_agent';
-    const CATEGORY_AWAITING_USER = 'awaiting_user';
-    const CATEGORY_RESOLVED = 'resolved';
+    const CATEGORY_AWAITING_USER  = 'awaiting_user';
+    const CATEGORY_RESOLVED       = 'resolved';
 
-    const SORT_CREATED = 'created';
-    const SORT_ACTIVITY = 'activity';
+    const SORT_CREATED    = 'created';
+    const SORT_ACTIVITY   = 'activity';
     const SORT_DEPARTMENT = 'department';
 
     const SORT_DIRECTION_DESC = 'desc';
-    const SORT_DIRECTION_ASC = 'asc';
+    const SORT_DIRECTION_ASC  = 'asc';
 
     /**
      * @var string type "own","organization"

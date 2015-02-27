@@ -5,18 +5,18 @@ namespace Application\ImportBundle\Reader\OsTicket;
 use Exception;
 
 /**
- * Os ticket reader factory
+ * Os ticket reader factory.
  *
  * Class OsTicketReaderFactory
- * @package Application\ImportBundle\Reader\OsTicket
  */
 class OsTicketReaderFactory
 {
     /**
-     * Create os ticket reader using deskpro config
+     * Create os ticket reader using deskpro config.
      *
-     * @return OsTicketReader
      * @throws Exception
+     * @return OsTicketReader
+     *
      */
     public function createReaderByDeskproConfig()
     {

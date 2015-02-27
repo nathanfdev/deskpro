@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\EmailBundle\SwiftMailer\Plugins;
@@ -95,11 +92,11 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
             if (!$this->connection_log) {
                 $message = '<< connection >>';
                 $this->logger->debug($message);
-                $this->connection_log[] = '[' . date('Y-m-d H:i:s') . '] ' . trim($message);
+                $this->connection_log[] = '['.date('Y-m-d H:i:s').'] '.trim($message);
             }
         } else {
             $this->logger->debug($message);
-            $this->connection_log[] = '[' . date('Y-m-d H:i:s') . '] ' . trim($message);
+            $this->connection_log[] = '['.date('Y-m-d H:i:s').'] '.trim($message);
         }
     }
 
@@ -113,7 +110,8 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
     }
 
     /**
-     * @param  bool   $with_connection
+     * @param bool $with_connection
+     *
      * @return string
      */
     public function getMessageLogs($with_connection = true)
@@ -128,7 +126,8 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
     }
 
     /**
-     * @param  bool  $with_connection
+     * @param bool $with_connection
+     *
      * @return array
      */
     public function getMessageLogsAsArray($with_connection = true)
@@ -141,7 +140,7 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
     }
 
     /**
-     * Clears message logs
+     * Clears message logs.
      */
     public function resetMessageLogs()
     {
@@ -261,7 +260,7 @@ class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_Re
      */
     public function exceptionThrown(\Swift_Events_TransportExceptionEvent $evt)
     {
-        $e = $evt->getException();
+        $e       = $evt->getException();
         $message = $e->getMessage();
 
         if ($this->is_connected) {

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -110,7 +109,7 @@ class AppInstance extends DomainObject
     }
 
     /**
-     * Set settings
+     * Set settings.
      *
      * @param array $settings
      */
@@ -124,7 +123,7 @@ class AppInstance extends DomainObject
     }
 
     /**
-     * Get settings
+     * Get settings.
      *
      * @return array
      */
@@ -134,8 +133,9 @@ class AppInstance extends DomainObject
     }
 
     /**
-     * @param  string $name
-     * @param  mixed  $default
+     * @param string $name
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getSetting($name, $default = null)
@@ -149,13 +149,13 @@ class AppInstance extends DomainObject
      */
     public function setSetting($name, $value)
     {
-        $settings = $this->settings;
+        $settings        = $this->settings;
         $settings[$name] = $value;
         $this->setModelField('settings', $settings);
     }
 
     /**
-     * Get settings that we will output to JS (eg non-native only)
+     * Get settings that we will output to JS (eg non-native only).
      *
      * @return array
      */
@@ -186,7 +186,8 @@ class AppInstance extends DomainObject
     }
 
     /**
-     * @param  string $type Event type (update, newticket, newreply)
+     * @param string $type Event type (update, newticket, newreply)
+     *
      * @return array
      */
     public function getTriggerEvents($type)

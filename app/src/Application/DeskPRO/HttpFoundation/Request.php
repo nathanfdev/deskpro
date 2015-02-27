@@ -26,13 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\HttpFoundation;
-
 
 use Orb\Util\Strings;
 
@@ -48,7 +45,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     protected $info;
 
     /**
-     * When a client sends _partial in POST/GET data, they're requesting a partial result
+     * When a client sends _partial in POST/GET data, they're requesting a partial result.
      *
      * For example: more search results, or a page being put into an existing page etc. The actual
      * meaning of what "partial" is depends on the page.
@@ -78,7 +75,8 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     }
 
     /**
-     * returns bool only
+     * returns bool only.
+     *
      * @return bool
      */
     public function isPartial()
@@ -224,7 +222,8 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     }
 
     /**
-     * @param  null      $correctHost
+     * @param null $correctHost
+     *
      * @return bool|null
      */
     public function isCorrectHost($correctHost = null)
@@ -241,7 +240,8 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     }
 
     /**
-     * @param  null      $correctHost
+     * @param null $correctHost
+     *
      * @return bool|null
      */
     public function isCorrectScheme($correctHost = null)
@@ -254,7 +254,8 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     }
 
     /**
-     * @param  null       $correctHost
+     * @param null $correctHost
+     *
      * @return bool|mixed
      */
     public function getCorrectInfo($correctHost = null)
@@ -268,9 +269,9 @@ class Request extends \Symfony\Component\HttpFoundation\Request
                 return array();
             }
             $info['scheme'] = strtolower(@$info['scheme']);
-            $info['host'] = strtolower(@$info['host']);
-            $info['port'] = @$info['port'];
-            $this->info = $info;
+            $info['host']   = strtolower(@$info['host']);
+            $info['port']   = @$info['port'];
+            $this->info     = $info;
         }
 
         return $this->info;
@@ -281,22 +282,22 @@ class Request extends \Symfony\Component\HttpFoundation\Request
         if ('application/json' === $this->getContentType()) {
             if ($data = json_decode((string) $this->getContent(), 1)) {
                 if (!$return = @$data['return']) {
-                    return null;
+                    return;
                 }
             }
         }
 
         if (!$return = (string) $this->get('return')) {
-            return null;
+            return;
         }
 
         $return = Strings::removeInvisibleCharacters($return);
         if (!$return) {
-            return null;
+            return;
         }
 
         if ('/' !== $return[0] || '//' === substr($return, 0, 2) || false !== strpos($return, '/validate-email/')) {
-            return null;
+            return;
         }
 
         return $return;

@@ -27,16 +27,15 @@
 
 namespace Application\ImportBundle\Entity;
 
-use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Symfony\Component\Validator\Constraints;
 use DateTime;
 use Exception;
+use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Exporting ticket message entity
+ * Exporting ticket message entity.
  *
  * Class TicketMessage
- * @package Application\ImportBundle\Entity
  */
 final class TicketMessage extends AbstractEntity implements PersonAwareInterface
 {
@@ -71,7 +70,7 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     private $attachments;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -100,6 +99,7 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     public function setPersonEmail($person_email)
     {
         $this->person_email = $person_email;
+
         return $this;
     }
 
@@ -113,11 +113,13 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
 
     /**
      * @param DateTime $date_created
+     *
      * @return $this
      */
     public function setDateCreated(DateTime $date_created)
     {
         $this->date_created = $date_created;
+
         return $this;
     }
 
@@ -131,11 +133,13 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
 
     /**
      * @param string $message_text
+     *
      * @return $this
      */
     public function setMessageText($message_text)
     {
         $this->message_text = $message_text;
+
         return $this;
     }
 
@@ -149,16 +153,18 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
 
     /**
      * @param string $message_html
+     *
      * @return $this
      */
     public function setMessageHtml($message_html)
     {
         $this->message_html = $message_html;
+
         return $this;
     }
 
     /**
-     * If ticket message has content
+     * If ticket message has content.
      *
      * @return bool
      */
@@ -177,16 +183,18 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
 
     /**
      * @param boolean $is_note
+     *
      * @return $this
      */
     public function setAsNote($is_note)
     {
         $this->is_note = $is_note;
+
         return $this;
     }
 
     /**
-     * Returns the collection of the message attachments
+     * Returns the collection of the message attachments.
      *
      * @return Collection
      */
@@ -196,14 +204,16 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * Add a message attachment
+     * Add a message attachment.
      *
      * @param Attachment $attachment
+     *
      * @return $this
      */
     public function addAttachment(Attachment $attachment)
     {
         $this->attachments->attach($attachment);
+
         return $this;
     }
 
@@ -218,7 +228,7 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
 
         $attachments = array();
         foreach ($this->attachments as $attachment) {
-            /** @var Attachment $attachment */
+            /* @var Attachment $attachment */
             $attachments[] = $attachment->toArray();
         }
 
@@ -234,7 +244,7 @@ final class TicketMessage extends AbstractEntity implements PersonAwareInterface
     }
 
     /**
-     * Validator class metadata
+     * Validator class metadata.
      *
      * @param ClassMetadata $metadata
      */

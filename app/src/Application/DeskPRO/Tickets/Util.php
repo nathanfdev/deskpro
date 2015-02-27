@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets;
@@ -53,7 +51,8 @@ class Util
      * here.
      *
      * @param $codes
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return int[]
      */
     public static function resolveAgentCodes(array $codes, Ticket $ticket = null)
@@ -89,7 +88,7 @@ class Util
                 }
             } elseif (strpos($send_to, 'agent_team.') === 0) {
                 list(, $agent_team_id) = explode('.', $send_to, 2);
-                $agent_ids = array_merge(
+                $agent_ids             = array_merge(
                     $agent_ids,
                     App::getEntityRepository('DeskPRO:AgentTeam')->getMemberIds($agent_team_id)
                 );
@@ -106,8 +105,9 @@ class Util
      * Get a TAC for a person on a ticket. If an existing TAC doesn't exist,
      * a new one will be created automatically.
      *
-     * @param  \Application\DeskPRO\Entity\Ticket           $ticket
-     * @param  \Application\DeskPRO\Entity\Person           $person
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return \Application\DeskPRO\Entity\TicketAccessCode
      */
     public static function getTacForPerson(Ticket $ticket, Person $person)
@@ -121,7 +121,7 @@ class Util
 
             return $tac;
         } catch (\Exception $e) {
-            $tac = new TicketAccessCode();
+            $tac           = new TicketAccessCode();
             $tac['ticket'] = $ticket;
             $tac['person'] = $person;
             $ticket->access_codes->add($tac);

@@ -26,18 +26,17 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
 namespace Orb\Auth\Adapter;
 
-use Orb\Log\Logger;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Auth\StateHandler\StateHandlerInterface;
+use Orb\Log\Logger;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -78,9 +77,9 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     {
         $this->options = new \Orb\Util\OptionsArray(
             array(
-                'sso_url' => '',
-                'slo_url' => '',
-                'cert_fingerprint' => '',
+                'sso_url'           => '',
+                'slo_url'           => '',
+                'cert_fingerprint'  => '',
                 'login_custom_text' => '',
             )
         );
@@ -191,9 +190,10 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     }
 
     /**
-     * This is executed when the SAML IdP POSTS back to us after we requested authentication
+     * This is executed when the SAML IdP POSTS back to us after we requested authentication.
      *
-     * @param  array  $callback_data
+     * @param array $callback_data
+     *
      * @return Result
      */
     protected function processAcs(array $callback_data)
@@ -241,15 +241,15 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 
         $user_info = array();
 
-        $user_info['email'] = Arrays::reachForFirstValueInKey($attrs, 'email');
+        $user_info['email']      = Arrays::reachForFirstValueInKey($attrs, 'email');
         $user_info['first_name'] = Arrays::reachForFirstValueInKey($attrs, 'first_name');
-        $user_info['last_name'] = Arrays::reachForFirstValueInKey($attrs, 'last_name');
-        $user_info['name'] = Arrays::reachForFirstValueInKey($attrs, 'name');
+        $user_info['last_name']  = Arrays::reachForFirstValueInKey($attrs, 'last_name');
+        $user_info['name']       = Arrays::reachForFirstValueInKey($attrs, 'name');
 
         $id = new Identity($saml->getNameId(), $user_info);
 
         if ($this->logger) {
-            $user_info_extra = $user_info;
+            $user_info_extra             = $user_info;
             $user_info_extra['identity'] = $id->getIdentity();
             $this->logger->log(
                 "SAML Success: \n".trim(Arrays::implodeTemplate($user_info_extra, "{KEY}: {VAL}\n")),
@@ -268,13 +268,13 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 
     /**
      * URL we send the deskpro user to after they log out of our system
-     * This is to comply with sing sign-off in SAML and our JWT system, but is useful in any SSO implementation
+     * This is to comply with sing sign-off in SAML and our JWT system, but is useful in any SSO implementation.
      */
     public function getLogoutRedirectUrl()
     {
-        $saml = $this->createSamlProcessor();
+        $saml          = $this->createSamlProcessor();
         $saml_settings = $saml->getSettings();
-        $idpData = $saml_settings->getIdPData();
+        $idpData       = $saml_settings->getIdPData();
         if (isset($idpData['singleLogoutService']) && isset($idpData['singleLogoutService']['url'])) {
             $sloUrl = $idpData['singleLogoutService']['url'];
         } else {
@@ -283,8 +283,8 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 
         $logoutRequest = new \OneLogin_Saml2_LogoutRequest($saml_settings);
         $samlRequest   = $logoutRequest->getRequest();
-        $parameters = array('SAMLRequest' => $samlRequest);
-        $url = \OneLogin_Saml2_Utils::redirect($sloUrl, $parameters, true);
+        $parameters    = array('SAMLRequest' => $samlRequest);
+        $url           = \OneLogin_Saml2_Utils::redirect($sloUrl, $parameters, true);
 
         return trim($url) ?: $this->backupLogoutUrl;
     }
@@ -328,7 +328,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     }
 
     /**
-     * Return a response OR do the redirect yourself inside the method
+     * Return a response OR do the redirect yourself inside the method.
      *
      * @return \Application\Deskpro\HttpFoundation\Request
      */
@@ -364,7 +364,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     }
 
     /**
-     * Return a response to send to browser
+     * Return a response to send to browser.
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */

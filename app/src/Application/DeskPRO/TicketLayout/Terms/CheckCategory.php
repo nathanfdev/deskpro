@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -44,7 +43,7 @@ class CheckCategory extends AbstractTicketLayoutTerm
      */
     public function isTicketMatch(Ticket $ticket)
     {
-        $have_id = $ticket->category ? $ticket->category->getId() : 0;
+        $have_id  = $ticket->category ? $ticket->category->getId() : 0;
         $is_match = in_array($have_id, $this->options['category_ids']);
 
         if ($this->op == self::OP_NOT) {
@@ -55,12 +54,13 @@ class CheckCategory extends AbstractTicketLayoutTerm
     }
 
     /**
-     * @param  array $data
+     * @param array $data
+     *
      * @return bool
      */
     public function isSubmittedDataMatch(array $data)
     {
-        $have_id = isset($data[FormFields::CATEGORY]) ? $data[FormFields::CATEGORY] : 0;
+        $have_id  = isset($data[FormFields::CATEGORY]) ? $data[FormFields::CATEGORY] : 0;
         $is_match = in_array($have_id, $this->options['category_ids']);
 
         if ($this->op == self::OP_NOT) {
@@ -80,7 +80,7 @@ class CheckCategory extends AbstractTicketLayoutTerm
             $js_ids[] = (int) $id;
         }
         $js_ids = "[".implode(',', $js_ids)."]";
-        $op = $this->op == self::OP_NOT ? '===' : '!==';
+        $op     = $this->op == self::OP_NOT ? '===' : '!==';
 
         $js = <<<JS
 function (ticket) { return $js_ids.indexOf(ticket.getCategoryId()) $op -1; }

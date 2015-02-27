@@ -26,14 +26,11 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\CacheInvalidator\UserPageCache;
 use Application\DeskPRO\ResourceScanner\AdvancedSettings;
 use Application\DeskPRO\Settings\GeneralPortalSettings;
@@ -45,6 +42,7 @@ use Application\DeskPRO\Settings\RegistrationSettings;
 use Application\DeskPRO\Settings\ServerSettings;
 use Application\DeskPRO\Settings\TicketFwdSettings;
 use Application\DeskPRO\Settings\TicketSettings;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Kernel\License;
 use Orb\Util\Env;
 use Orb\Util\Strings;
@@ -201,7 +199,7 @@ class SettingsController extends AbstractController implements ProtectedControll
         $portal_settings = new GeneralPortalSettings($this->settings);
 
         return $this->createApiResponse(array(
-            'portal_settings' => $portal_settings->toArray()
+            'portal_settings' => $portal_settings->toArray(),
         ));
     }
 
@@ -409,12 +407,12 @@ class SettingsController extends AbstractController implements ProtectedControll
 
     public function registrationSettingsAction()
     {
-        $reg_settings = new RegistrationSettings($this->settings, $this->em);
+        $reg_settings        = new RegistrationSettings($this->settings, $this->em);
         $rate_limit_settings = new LoginRateLimitSettings($this->settings, $this->in->getString('rate_limit_context'));
 
         return $this->createApiResponse(array(
             'registration_settings' => $reg_settings->toArray(),
-            'rate_limit_settings' => $rate_limit_settings->toArray(),
+            'rate_limit_settings'   => $rate_limit_settings->toArray(),
         ));
     }
 
@@ -441,11 +439,11 @@ class SettingsController extends AbstractController implements ProtectedControll
 
     public function passwordSettingsAction()
     {
-        $password_settings = new PasswordSettings($this->settings);
+        $password_settings   = new PasswordSettings($this->settings);
         $rate_limit_settings = new LoginRateLimitSettings($this->settings, $this->in->getString('rate_limit_context'));
 
         return $this->createApiResponse(array(
-            'settings' => $password_settings->toArray(),
+            'settings'            => $password_settings->toArray(),
             'rate_limit_settings' => $rate_limit_settings->toArray(),
         ));
     }

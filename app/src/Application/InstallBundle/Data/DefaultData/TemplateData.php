@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Install
  */
 
@@ -47,7 +46,7 @@ class TemplateData extends AbstractDefaultData
             $this->getEm(),
             $this->getContainer()->get('twig')
         );
-        $template = $set->getCustomTemplate('UserBundle:Portal:welcome-block.html.twig');
+        $template      = $set->getCustomTemplate('UserBundle:Portal:welcome-block.html.twig');
         $template_code = $template->getTemplateCode();
         $template_code->setCode($this->getCode());
         $set->saveTemplate($template);

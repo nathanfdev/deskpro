@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -37,7 +34,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 use Application\DeskPRO\App;
 
 /**
- * Goes through queued messages
+ * Goes through queued messages.
  */
 class EnsureSearchTables extends AbstractJob
 {
@@ -81,7 +78,7 @@ class EnsureSearchTables extends AbstractJob
             $cm = new \Application\DeskPRO\Entity\ClientMessage();
             $cm->fromArray(array(
                 'channel' => 'agent.ui.reload',
-                'data' => array(
+                'data'    => array(
                     'type'        => 'admin',
                     'person_id'   => 0,
                     'person_name' => 'System',

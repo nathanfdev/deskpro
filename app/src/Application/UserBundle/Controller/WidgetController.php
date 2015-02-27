@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Controller;
@@ -113,7 +110,7 @@ class WidgetController extends AbstractController
         $newticket->setPersonContext($this->person);
 
         $newticket_formtype = new NewTicketType($this->person);
-        $ticketform = $this->get('form.factory')->create($newticket_formtype, $newticket);
+        $ticketform         = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
         $departments = $this->em->getRepository('DeskPRO:Department')->findAll();
 
@@ -174,13 +171,13 @@ class WidgetController extends AbstractController
             $website_url = $GLOBALS['DP_WEBSITE_URL'];
         }
 
-        $cf_man = $this->container->getSystemService('FeedbackFieldsManager');
+        $cf_man                = $this->container->getSystemService('FeedbackFieldsManager');
         $newfeedback_cat_field = $cf_man->getSystemField('cat');
 
         if (!$newfeedback_cat_field || !$cf_man->getFieldChildren($newfeedback_cat_field)) {
             $newfeedback_cat_field = null;
         } else {
-            $custom_fields = $cf_man->getDisplayArray();
+            $custom_fields         = $cf_man->getDisplayArray();
             $newfeedback_cat_field = $custom_fields[$newfeedback_cat_field->getId()];
         }
 
@@ -241,11 +238,11 @@ class WidgetController extends AbstractController
         }
 
         $newticket_formtype = new NewTicketType($person_context);
-        $form = $this->get('form.factory')->create($newticket_formtype, $newticket);
+        $form               = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
         $form->handleRequest($this->get('request'));
 
-        $newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
+        $newticket->ticket->attach_ids        = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
         $newticket->ticket->attach_ids_authed = true;
 
         $validator = new \Application\UserBundle\Validator\NewTicketValidator();
@@ -267,14 +264,14 @@ class WidgetController extends AbstractController
 
             return $this->createJsonResponse(array(
                 'ticket_id' => $ticket->id,
-                'email' => $ticket->person->getPrimaryEmailAddress(),
+                'email'     => $ticket->person->getPrimaryEmailAddress(),
             ));
         } else {
             $error_fields = $validator->getErrorGroups(true);
 
             return $this->createJsonResponse(array(
                 'is_error' => true,
-                'errors' => $error_fields,
+                'errors'   => $error_fields,
             ));
         }
     }
@@ -290,7 +287,7 @@ class WidgetController extends AbstractController
         $newfeedback->enableWidgetMode();
 
         $newfeedback->custom_fields = $this->in->getRaw('feedback_custom_fields');
-        $form = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
+        $form                       = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
 
         $form->handleRequest($this->get('request'));
 
@@ -299,10 +296,10 @@ class WidgetController extends AbstractController
         if ($validator->isValid($newfeedback)) {
             $hash = md5($newfeedback->title.$newfeedback->content.$newfeedback->category_id);
 
-            $dupe = false;
+            $dupe              = false;
             $person_from_email = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($newfeedback->person_email);
             if ($person_from_email) {
-                $datecut = new \DateTime('-20 minutes');
+                $datecut        = new \DateTime('-20 minutes');
                 $exist_feedback = $this->container->getEm()->createQuery("
                     SELECT f
                     FROM DeskPRO:Feedback f
@@ -318,7 +315,7 @@ class WidgetController extends AbstractController
             }
 
             if (!$dupe) {
-                $feedback = $newfeedback->save();
+                $feedback    = $newfeedback->save();
                 $feedback_id = $feedback->getId();
 
                 $notify_send = new \Application\DeskPRO\Notifications\NewFeedbackNotification($feedback);
@@ -337,7 +334,7 @@ class WidgetController extends AbstractController
 
             return $this->createJsonResponse(array(
                 'is_error' => true,
-                'errors' => $error_fields,
+                'errors'   => $error_fields,
             ));
         }
     }
@@ -349,7 +346,7 @@ class WidgetController extends AbstractController
     public function chatAction()
     {
         $sessionObj = $this->get('session');
-        $session = $sessionObj->getEntity();
+        $session    = $sessionObj->getEntity();
 
         if (!$sessionObj->getPerson()->hasPerm('chat.use')) {
             return $this->renderLoginOrPermissionError();
@@ -365,7 +362,7 @@ class WidgetController extends AbstractController
         }
 
         $chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $session));
-        $convo = $chat_manager->getChat();
+        $convo        = $chat_manager->getChat();
 
         if ($convo && $convo->status == 'ended') {
             $convo = null;
@@ -411,13 +408,13 @@ class WidgetController extends AbstractController
         $default_page = $chat_display->getDepartmentPage(0);
 
         if ($default_page) {
-            $default_page_data = $default_page->getPageDisplay('default')->data;
+            $default_page_data   = $default_page->getPageDisplay('default')->data;
             $page_data_field_ids = array();
             foreach ($default_page->getPageDisplay('default')->data as $info) {
                 $page_data_field_ids[] = $info['id'];
             }
         } else {
-            $default_page_data = array();
+            $default_page_data   = array();
             $page_data_field_ids = array();
         }
 
@@ -436,7 +433,7 @@ class WidgetController extends AbstractController
             $field_data = $fm->getStrucutredDataFromForm($_POST['newchat']['custom_chat_fields'], 'Application\\DeskPRO\\Entity\\CustomDataChat');
 
             $field_form_data = $fm->createFieldDataFromArray($field_data);
-            $custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
+            $custom_fields   = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
         } else {
             $custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
         }

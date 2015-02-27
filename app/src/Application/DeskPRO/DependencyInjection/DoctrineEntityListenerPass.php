@@ -1,6 +1,6 @@
 <?php
 /**
- * https://gist.github.com/vadim2404/9538227
+ * https://gist.github.com/vadim2404/9538227.
  */
 
 namespace Application\DeskPRO\DependencyInjection;

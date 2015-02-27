@@ -12,9 +12,9 @@ class CheckUrgencyTest extends \DpUnitTestCase
     public function testIntMatch()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
-        $ticket->status = 'awaiting_agent';
+        $ticket->status  = 'awaiting_agent';
         $ticket->urgency = 5;
 
         $check = new CheckUrgency('gt', array('urgency1' => 4));
@@ -30,9 +30,9 @@ class CheckUrgencyTest extends \DpUnitTestCase
     public function testIntRangeMatch()
     {
         $ticket = new Ticket();
-        $exec = new ExecutorContext();
+        $exec   = new ExecutorContext();
 
-        $ticket->status = 'awaiting_agent';
+        $ticket->status  = 'awaiting_agent';
         $ticket->urgency = 5;
 
         $check = new CheckUrgency('between', array('urgency1' => 4, 'urgency2' => 10));

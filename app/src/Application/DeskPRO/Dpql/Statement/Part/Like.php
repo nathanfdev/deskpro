@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
@@ -53,7 +50,7 @@ class Like extends AbstractPart
     public $rhs;
 
     /**
-     * True = LIKE, false = NOT LIKE
+     * True = LIKE, false = NOT LIKE.
      *
      * @var bool
      */

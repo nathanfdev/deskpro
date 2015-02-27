@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ServerTaskQueue;
@@ -40,7 +38,6 @@ class ServerTaskQueue
     /**
      * @var \Application\DeskPRO\ORM\EntityManager
      */
-
     protected $em;
 
     public function __construct(EntityManager $em)
@@ -51,7 +48,6 @@ class ServerTaskQueue
     /**
      * @return array
      */
-
     public function getInfo()
     {
         $tasks            = $this->em->getRepository('DeskPRO:TaskQueue')->getPendingTasks(0);

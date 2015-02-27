@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -88,8 +87,9 @@ class DetectAutoresponders implements TicketSaveActionInterface
     }
 
     /**
-     * @param  Ticket                                     $ticket
-     * @param  ExecutorContextInterface                   $context
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     *
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -112,7 +112,7 @@ class DetectAutoresponders implements TicketSaveActionInterface
                 $context->getLogger()->info("[DetectAutoresponders] --> User is already an auto-responder");
             } else {
                 $date_cut = date('Y-m-d H:i:s', time() - $this->max_tickets_time);
-                $count = $this->db->fetchColumn("
+                $count    = $this->db->fetchColumn("
                     SELECT COUNT(*)
                     FROM tickets
                     WHERE person_id = ? AND date_created >= ?
@@ -147,7 +147,7 @@ class DetectAutoresponders implements TicketSaveActionInterface
                 $context->getLogger()->info("[DetectAutoresponders] --> User is already an auto-responder");
             } else {
                 $date_cut = date('Y-m-d H:i:s', time() - $this->max_replies_time);
-                $count = $this->db->fetchColumn("
+                $count    = $this->db->fetchColumn("
                     SELECT COUNT(*)
                     FROM tickets_messages
                     WHERE person_id = ? AND date_created >= ?

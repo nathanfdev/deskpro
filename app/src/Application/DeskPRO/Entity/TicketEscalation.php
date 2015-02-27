@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -125,7 +124,7 @@ class TicketEscalation extends DomainObject
 
     /**
      * Gets the relevant time field on ticket for a particular ticket trigger.
-     * For example, 'EVENT_TYPE_TIME_USER_WAITING' is dependant on ticket.date_user_waiting
+     * For example, 'EVENT_TYPE_TIME_USER_WAITING' is dependant on ticket.date_user_waiting.
      *
      * @return string
      */
@@ -147,7 +146,7 @@ class TicketEscalation extends DomainObject
                 return 'date_resolved';
         }
 
-        return null;
+        return;
     }
 
     /**

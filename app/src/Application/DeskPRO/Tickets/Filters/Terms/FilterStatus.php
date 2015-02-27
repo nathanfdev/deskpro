@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Filters based on status
+ * Filters based on status.
  *
  * @option string|string[] status
  */
@@ -75,7 +74,7 @@ class FilterStatus extends AbstractFilterTerm
             $query->andWhere("0");
         }
 
-        $statuses = array();
+        $statuses        = array();
         $hidden_statuses = array();
 
         foreach ($opt as $s) {
@@ -85,7 +84,7 @@ class FilterStatus extends AbstractFilterTerm
             if (strpos($s, '.') === false) {
                 $statuses[] = $s;
             } else {
-                list(, $hs) = explode('.', $s, 2);
+                list(, $hs)        = explode('.', $s, 2);
                 $hidden_statuses[] = $hs;
             }
         }

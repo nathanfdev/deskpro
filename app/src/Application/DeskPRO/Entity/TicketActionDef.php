@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -78,7 +77,7 @@ class TicketActionDef extends DomainObject
     private $_def;
 
     /**
-     * Set settings
+     * Set settings.
      *
      * @param array $settings
      */
@@ -105,7 +104,7 @@ class TicketActionDef extends DomainObject
     }
 
     /**
-     * Get settings
+     * Get settings.
      *
      * @return array
      */
@@ -115,8 +114,9 @@ class TicketActionDef extends DomainObject
     }
 
     /**
-     * @param  string $name
-     * @param  mixed  $default
+     * @param string $name
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getSetting($name, $default = null)

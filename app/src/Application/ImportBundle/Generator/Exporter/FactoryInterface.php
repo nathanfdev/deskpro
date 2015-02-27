@@ -28,13 +28,12 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 /**
- * Interface FactoryInterface
- * @package Application\ImportBundle\Generator\Exporter
+ * Interface FactoryInterface.
  */
 interface FactoryInterface
 {
     /**
-     * Creates an exporter instance
+     * Creates an exporter instance.
      *
      * @return ExporterInterface
      */

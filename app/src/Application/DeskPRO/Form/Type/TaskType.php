@@ -56,14 +56,14 @@ class TaskType extends AbstractType implements EventSubscriberInterface
             ))
         // UTC!
         ->add('date_due', 'datetime', array(
-                'widget' => 'single_text',
+                'widget'   => 'single_text',
                 'required' => false,
             ))
         ->add('visibility', 'choice', array(
                 'required' => false,
-                'choices' => array(
+                'choices'  => array(
                     Task::PRIVATE_VISIBILITY => 'private',
-                    Task::PUBLIC_VISIBILITY => 'public',
+                    Task::PUBLIC_VISIBILITY  => 'public',
                 ),
             ))
         ->add('assigned_agent', 'entity', array(
@@ -89,7 +89,8 @@ class TaskType extends AbstractType implements EventSubscriberInterface
     }
 
     /**
-     * just moved some code from controller
+     * just moved some code from controller.
+     *
      * @param FormEvent $event
      */
     public function onPreSubmit(FormEvent $event)
@@ -103,17 +104,18 @@ class TaskType extends AbstractType implements EventSubscriberInterface
             return;
         }
 
-        list($type, $id) = explode(':', $data['assigned_agent']);
+        list($type, $id)        = explode(':', $data['assigned_agent']);
         $data['assigned_agent'] = null;
         'agent' === $type
-            ? $data['assigned_agent'] = $id
+            ? $data['assigned_agent']      = $id
             : $data['assigned_agent_team'] = $id;
 
         $event->setData($data);
     }
 
     /**
-     * additional associations
+     * additional associations.
+     *
      * @param FormEvent $event
      */
     public function onPostSubmit(FormEvent $event)
@@ -131,14 +133,14 @@ class TaskType extends AbstractType implements EventSubscriberInterface
 
         // hardcoded date override
         if ($date = $event->getForm()->get('date_due')->getData()) {
-            /** @var $person Person */
+            /* @var $person Person */
             if (!$person = $event->getForm()->get('person')->getData()) {
                 return;
             }
 
             $date = new \DateTime($date->format('Y-m-d H:i:s'), $person->getDateTimezone());
             $date->setTimezone(new \DateTimeZone('UTC'));
-            $task = $event->getForm()->getData();
+            $task             = $event->getForm()->getData();
             $task['date_due'] = $date;
         }
     }
@@ -158,7 +160,7 @@ class TaskType extends AbstractType implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            FormEvents::PRE_SUBMIT => 'onPreSubmit',
+            FormEvents::PRE_SUBMIT  => 'onPreSubmit',
             FormEvents::POST_SUBMIT => 'onPostSubmit',
         );
     }

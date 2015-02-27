@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -45,10 +44,12 @@ class Usersource extends AbstractEntityRepository
     protected $usersources = null;
 
     /**
-     * Get all defined usersources
+     * Get all defined usersources.
      *
-     * @param  bool                                     $active
+     * @param bool $active
+     *
      * @return \Application\DeskPRO\Entity\Usersource[]
+     *
      * @deprecated use the UsersourceManager->getAll() and then filter with the returned UsersourceCollection instead
      */
     public function getAllUsersources($active = true)
@@ -74,7 +75,8 @@ class Usersource extends AbstractEntityRepository
     }
 
     /**
-     * @param  bool                                     $active
+     * @param bool $active
+     *
      * @return \Application\DeskPRO\Entity\Usersource[]
      */
     public function getAll()
@@ -90,6 +92,7 @@ class Usersource extends AbstractEntityRepository
      * That is, they can handle a username/password combo and can process that in real-time.
      *
      * @return \Application\DeskPRO\Entity\Usersource[]
+     *
      * @deprecated use the UsersourceManager->getAll() and then filter with the returned UsersourceCollection instead
      */
     public function getLocalInputUsersources()
@@ -111,6 +114,7 @@ class Usersource extends AbstractEntityRepository
      * This is generally only suitable for services on the same server (and domain).
      *
      * @return \Application\DeskPRO\Entity\Usersource[]
+     *
      * @deprecated use the UsersourceManager->getAll() and then filter with the returned UsersourceCollection instead
      */
     public function getCookieInputUsersources()
@@ -131,6 +135,7 @@ class Usersource extends AbstractEntityRepository
      * Fetch all usersources that are capable of logging via JS SSO checks.
      *
      * @return \Application\DeskPRO\Entity\Usersource[]
+     *
      * @deprecated use the UsersourceManager->getAll() and then filter with the returned UsersourceCollection instead
      */
     public function getJsSsoUsersources()
@@ -153,6 +158,7 @@ class Usersource extends AbstractEntityRepository
      * raw data back.
      *
      * @return \Application\DeskPRO\Entity\Usersource[]
+     *
      * @deprecated use the UsersourceManager->getAll() and then filter with the returned UsersourceCollection instead
      */
     public function getUserInfoFetchableUsersources()
@@ -171,9 +177,10 @@ class Usersource extends AbstractEntityRepository
     }
 
     /**
-     * Get a usersource of a specific type
+     * Get a usersource of a specific type.
      *
-     * @param  string                                   $type
+     * @param string $type
+     *
      * @return \Application\DeskPRO\Entity\Usersource[]
      */
     public function getByType($type, $multiple = false)
@@ -188,9 +195,10 @@ class Usersource extends AbstractEntityRepository
     }
 
     /**
-     * Get a usersource by its ID
+     * Get a usersource by its ID.
      *
-     * @param  int                                    $id
+     * @param int $id
+     *
      * @return \Application\DeskPRO\Entity\Usersource
      */
     public function getUsersource($id)
@@ -203,7 +211,7 @@ class Usersource extends AbstractEntityRepository
     }
 
     /**
-     * Get an array of all usersource IDs
+     * Get an array of all usersource IDs.
      *
      * @return int[]
      */
@@ -234,6 +242,7 @@ class Usersource extends AbstractEntityRepository
 
     /**
      * @param null|bool $enabled
+     *
      * @return int
      */
     public function count($type = null, $enabled = null)

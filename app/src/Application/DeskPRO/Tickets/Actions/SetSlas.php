@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -64,7 +63,7 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $em = $this->getContainer()->getEm();
+        $em          = $this->getContainer()->getEm();
         $ticket_slas = $this->getContainer()->getSystemService('ticket_slas');
 
         $cm_sender = new SlaClientMessageSender($this->getContainer()->getDb());
@@ -134,7 +133,7 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
             return array('slas');
         }
 
-        return null;
+        return;
     }
 
     /**

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Controller;
@@ -173,7 +170,7 @@ class TicketViewController extends AbstractController
                                 return $this->viewTicket($ticket, $display_data);
                             } else {
                                 return $this->render('UserBundle:TicketView:part-join.html.twig', array(
-                                    'ticket' => $ticket,
+                                    'ticket'      => $ticket,
                                     'request_ref' => $ticket_ref,
                                 ));
                             }
@@ -191,7 +188,7 @@ class TicketViewController extends AbstractController
     ###########################################################################
 
     /**
-     * View a ticket without a user session
+     * View a ticket without a user session.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -199,7 +196,7 @@ class TicketViewController extends AbstractController
     {
         /** @var Request $request */
         $request = $this->get('request');
-        $is_pdf = $this->in->getBool('pdf');
+        $is_pdf  = $this->in->getBool('pdf');
 
         $is_participant = ($this->person->id == $ticket->person->id || $ticket->hasParticipantPerson($this->person->id));
         $is_org_manager = (
@@ -219,19 +216,19 @@ class TicketViewController extends AbstractController
         }
 
         $ticket_display = new TicketDisplay($ticket, $this->person);
-        $vars = $ticket_display->getDisplayArray();
+        $vars           = $ticket_display->getDisplayArray();
 
         $vars['is_participant'] = $is_participant;
         $vars['is_org_manager'] = $is_org_manager;
 
-        $newreply_form = $this->get('form.factory')->create(new NewTicketReplyType());
+        $newreply_form         = $this->get('form.factory')->create(new NewTicketReplyType());
         $vars['newreply_form'] = $newreply_form->createView();
 
         if ($display_data) {
             $vars = array_merge($vars, $display_data);
         }
 
-        $user_participants = $ticket->getUserParticipants();
+        $user_participants         = $ticket->getUserParticipants();
         $vars['user_participants'] = $user_participants;
 
         $layout = $this->container->getTicketLayoutManager()->getUserLayouts()->getLayout($ticket->department ? $ticket->department->id : 0);
@@ -286,9 +283,9 @@ class TicketViewController extends AbstractController
         $field_manager = $this->container->getSystemService('ticket_fields_manager');
         $custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
-        $user_field_manager = $this->container->getSystemService('person_fields_manager');
+        $user_field_manager      = $this->container->getSystemService('person_fields_manager');
         $custom_user_fields_form = $this->get('form.factory')->createNamedBuilder('custom_user_fields', 'form');
-        $custom_user_fields = $user_field_manager->getDisplayArrayForObject($ticket->person, $custom_user_fields_form);
+        $custom_user_fields      = $user_field_manager->getDisplayArrayForObject($ticket->person, $custom_user_fields_form);
 
         // new custom fields, without layout (handled on client side)
         $new_field_manager = $this->container->getCustomFieldManager();
@@ -303,9 +300,9 @@ class TicketViewController extends AbstractController
                 $ticket
             );
             $newticket_formtype = new \Application\UserBundle\Form\EditTicketType($this->person);
-            $form = $this->get('form.factory')->create($newticket_formtype, $newticket);
+            $form               = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
-            $layouts = $this->container->getTicketLayoutManager()->getUserLayouts();
+            $layouts           = $this->container->getTicketLayoutManager()->getUserLayouts();
             $ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = ".$layouts->compileJsObj().";";
 
             $default_page = $this->container->getTicketLayoutManager()->getUserLayouts()->getLayout($ticket->department ? $ticket->department->id : 0);
@@ -322,7 +319,7 @@ class TicketViewController extends AbstractController
 
             $unique_items = $this->container->getTicketLayoutManager()->getUserLayoutItems();
 
-            $errors = array();
+            $errors       = array();
             $error_fields = array();
 
             if ($this->in->getBool('process')) {
@@ -334,7 +331,7 @@ class TicketViewController extends AbstractController
                 $form->handleRequest($request);
 
                 $newticket->custom_ticket_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'string');
-                $newticket->custom_user_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'string');
+                $newticket->custom_user_fields   = $this->in->getCleanValueArray('custom_fields', 'raw', 'string');
 
                 if ($validator->isValid($newticket)) {
                     $newticket->save();
@@ -355,22 +352,22 @@ class TicketViewController extends AbstractController
 
                     return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
                 } else {
-                    $errors = $validator->getErrors(true);
+                    $errors       = $validator->getErrors(true);
                     $error_fields = $validator->getErrorGroups(true);
                 }
             }
 
             $vars = array_merge($vars, array(
                 'page_data_field_ids' => $page_data_field_ids,
-                'all_items' => $unique_items,
+                'all_items'           => $unique_items,
 
-                'form' => $form->createView(),
-                'newticket' => $newticket,
-                'custom_fields' => $custom_fields,
+                'form'               => $form->createView(),
+                'newticket'          => $newticket,
+                'custom_fields'      => $custom_fields,
                 'custom_user_fields' => $custom_user_fields,
-                'errors' => $errors,
-                'error_fields' => $error_fields,
-                'ticket_display_js' => $ticket_display_js,
+                'errors'             => $errors,
+                'error_fields'       => $error_fields,
+                'ticket_display_js'  => $ticket_display_js,
 
                 'new_custom_fields' => $new_custom_fields->createView(),
             ));

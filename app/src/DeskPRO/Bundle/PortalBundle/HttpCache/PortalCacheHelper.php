@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\HttpCache;
@@ -51,7 +48,7 @@ class PortalCacheHelper
     public function __construct(RequestStack $request_stack)
     {
         $this->request_stack = $request_stack;
-        $this->is_guest = null;
+        $this->is_guest      = null;
     }
 
     /**
@@ -77,7 +74,7 @@ class PortalCacheHelper
         $current_request = $this->request_stack->getMasterRequest();
 
         if (!$current_request->headers->has(\DeskPRO\Bundle\PortalBundle\HttpCache\PortalHttpCache::USER_CONTEXT_HASH_HEADER)) {
-            return null;
+            return;
         }
 
         return $current_request->headers->get(\DeskPRO\Bundle\PortalBundle\HttpCache\PortalHttpCache::USER_CONTEXT_HASH_HEADER);

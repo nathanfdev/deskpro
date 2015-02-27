@@ -27,7 +27,7 @@
 
 namespace Application\DeskPRO\Widgets;
 
-/**
+/*
  * DeskPRO
  *
  * @package DeskPRO
@@ -54,7 +54,7 @@ class WidgetHandler implements \ArrayAccess
 
     public function __construct(Entity\Widget $widget, array $options = array())
     {
-        $this->widget = $widget;
+        $this->widget  = $widget;
         $this->options = $options;
 
         if ($this->widget['data']) {
@@ -79,25 +79,25 @@ class WidgetHandler implements \ArrayAccess
     }
 
     /**
-     * Get the options to pass to the JS initiator
+     * Get the options to pass to the JS initiator.
      *
      * @return array
      */
     public function getJsInitObject($element_selector)
     {
         if (!$this->widget['js_widget_class']) {
-            return null;
+            return;
         }
 
         $info = array();
 
         // Info used when creating the JS object
-        $info['class']   = $this->widget['js_widget_class'];
-        $info['prefs']   = $this->getPrefsForCurrentPerson();
+        $info['class']           = $this->widget['js_widget_class'];
+        $info['prefs']           = $this->getPrefsForCurrentPerson();
         $info['wrapperSelector'] = $element_selector;
 
         // Options that are passed to the JS object
-        $info['options'] = array();
+        $info['options']            = array();
         $info['options']['id']      = $this->widget['id'];
         $info['options']['name_id'] = $this->widget['name_id'];
 
@@ -127,7 +127,7 @@ class WidgetHandler implements \ArrayAccess
         if ($session) {
             foreach ($session->getAttributes() as $k => $v) {
                 if (strpos($k, $pref_prefix) === 0) {
-                    $k = str_replace($k, '', $k);
+                    $k         = str_replace($k, '', $k);
                     $prefs[$k] = $v;
                 }
             }

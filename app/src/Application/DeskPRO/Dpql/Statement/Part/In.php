@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
@@ -53,7 +50,7 @@ class In extends AbstractPart
     public $values;
 
     /**
-     * True = IN, false = NOT IN
+     * True = IN, false = NOT IN.
      *
      * @var bool
      */

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -41,7 +38,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 
 /**
- * Sets agent
+ * Sets agent.
  */
 class AgentAction extends AbstractAction implements PersonContextInterface, PermissionableAction
 {
@@ -55,7 +52,7 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
     public function __construct($agent, \Application\DeskPRO\Tickets\TicketChangeTracker $tracker = null)
     {
         $this->agent_id = $agent;
-        $this->tracker = $tracker;
+        $this->tracker  = $tracker;
     }
 
     public function setPersonContext(Person $person)
@@ -81,7 +78,7 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -117,7 +114,7 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -144,7 +141,7 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * Get the agent id
+     * Get the agent id.
      *
      * @return int
      */
@@ -154,7 +151,8 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)

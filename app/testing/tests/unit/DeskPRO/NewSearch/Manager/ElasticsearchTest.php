@@ -18,7 +18,9 @@ class ElasticsearchTest extends \DpUnitTestCase
      */
     private function getMockContainer()
     {
-        if ($this->container) return $this->container;
+        if ($this->container) {
+            return $this->container;
+        }
 
         $this->container = ContainerMock::create()
                                         ->withAgentData()

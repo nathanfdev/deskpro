@@ -26,16 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
 namespace Application\DeskPRO\People\PermissionLoader;
 
 /**
- * Loads download category permissions
+ * Loads download category permissions.
  */
 class DownloadCategories extends BasicTreeCategoryPermission
 {

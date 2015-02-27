@@ -30,10 +30,9 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Person email record mapper
+ * Person email record mapper.
  *
  * Class PersonEmail
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class PersonEmail implements MapperInterface
 {
@@ -43,7 +42,7 @@ final class PersonEmail implements MapperInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\PersonEmail $repository
      */
@@ -74,13 +73,14 @@ final class PersonEmail implements MapperInterface
     }
 
     /**
-     * Returns person email entities
+     * Returns person email entities.
      *
      * @param string $email
      * @param bool   $throw_exception
      *
-     * @return \Application\DeskPRO\Entity\PersonEmail
      * @throws MapperException
+     * @return \Application\DeskPRO\Entity\PersonEmail
+     *
      */
     public function findOneByEmail($email, $throw_exception = true)
     {

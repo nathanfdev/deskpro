@@ -26,24 +26,21 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
-use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
-use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
-use Symfony\Component\OptionsResolver\Options;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
+use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
+use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
+use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\OptionsResolver\Options;
 
 class ArticlesController extends AbstractController
 {
@@ -78,9 +75,9 @@ class ArticlesController extends AbstractController
         return $this->renderThemeView(
             sprintf('Theme:Articles:Tag/%s.html.twig', $options['style']),
             array(
-                'category' => $category,
+                'category'          => $category,
                 'category_children' => $category_children,
-                'articles_options' => $options['articles_options'],
+                'articles_options'  => $options['articles_options'],
             )
         );
     }
@@ -120,8 +117,8 @@ class ArticlesController extends AbstractController
         return $this->renderThemeView(
             sprintf('Theme:Articles:Tag/articles_%s.html.twig', $options['style']),
             array(
-                'pager' => $pager,
-                'category' => $category,
+                'pager'              => $pager,
+                'category'           => $category,
                 'show_category_link' => $options['show_category_link'],
             )
         );
@@ -179,7 +176,7 @@ class ArticlesController extends AbstractController
         return $this->renderThemeView(
             sprintf('Theme:Articles:Tag/article_subscription_%s.html.twig', $options['style']),
             array(
-                'article' => $article,
+                'article'       => $article,
                 'is_subscribed' => $is_subscribed,
             )
         );
@@ -212,7 +209,7 @@ class ArticlesController extends AbstractController
 
         return $this->renderThemeView(
             'Theme:Articles:Tag/subscription_category.html.twig', array(
-                'category' => $category,
+                'category'      => $category,
                 'is_subscribed' => $is_subscribed,
             )
         );
@@ -240,7 +237,7 @@ class ArticlesController extends AbstractController
         $comments = $this->getArticlesDataService()->getArticleComments($article, $this->getUser());
 
         return $this->renderThemeView('Theme:Articles:Tag/comments.html.twig', array(
-            'article' => $article,
+            'article'  => $article,
             'comments' => $comments,
         ));
     }
@@ -269,7 +266,7 @@ class ArticlesController extends AbstractController
         }
 
         $category = $this->getArticlesDataService()->getCategory($options['category']);
-        $pager = $this->getArticlesDataService()->getArticlesPager($category, $options['page'], $options['count']);
+        $pager    = $this->getArticlesDataService()->getArticlesPager($category, $options['page'], $options['count']);
 
         return $this->renderThemeView(
             'Theme:Common:pager.html.twig', array(
@@ -302,7 +299,7 @@ class ArticlesController extends AbstractController
         return $this->renderThemeView(
             'Theme:Articles:Tag/breadcrumbs.html.twig', array(
                 'category' => $category,
-                'article' => $article,
+                'article'  => $article,
             )
         );
     }
@@ -329,7 +326,7 @@ class ArticlesController extends AbstractController
         return $this->renderThemeView(
             'Theme:Articles:Tag/ratings.html.twig',
             array(
-                'rating' => $rating,
+                'rating'  => $rating,
                 'article' => $article,
             )
         );

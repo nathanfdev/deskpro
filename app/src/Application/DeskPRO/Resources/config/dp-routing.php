@@ -48,7 +48,7 @@ $collection->create('serve_blob_app_asset', array(
 $collection->create('serve_person_picture', array(
     'path'          => '/file.php/avatar/{person_id}',
     'controller'    => '(see: serve_file.php)',
-    'defaults'      => array('size' => 0),
+    'defaults'      => array('size'      => 0),
     'requirements'  => array('person_id' => '\\d+'),
 ));
 

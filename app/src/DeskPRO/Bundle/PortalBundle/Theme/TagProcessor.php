@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Theme;
@@ -50,7 +48,7 @@ class TagProcessor
     public function __construct(TagRequestFactory $tag_request_factory, array $tag_handlers)
     {
         $this->tag_request_factory = $tag_request_factory;
-        $this->tag_handlers = $tag_handlers;
+        $this->tag_handlers        = $tag_handlers;
     }
 
     public function process(Tag $tag, array $arguments = array())
@@ -71,8 +69,9 @@ class TagProcessor
     }
 
     /**
-     * @param  Tag                 $tag
-     * @param  TagRequest          $tag_request
+     * @param Tag        $tag
+     * @param TagRequest $tag_request
+     *
      * @return TagHandlerInterface
      */
     private function findHandler(Tag $tag, TagRequest $tag_request)

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
@@ -41,10 +38,10 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
  */
 class ContentRatingsVoter extends AbstractVoter
 {
-    const RATE_ARTICLES = 'RATE_ARTICLES';
-    const RATE_FEEDBACK = 'RATE_FEEDBACK';
+    const RATE_ARTICLES  = 'RATE_ARTICLES';
+    const RATE_FEEDBACK  = 'RATE_FEEDBACK';
     const RATE_DOWNLOADS = 'RATE_DOWNLOADS';
-    const RATE_NEWS = 'RATE_NEWS';
+    const RATE_NEWS      = 'RATE_NEWS';
 
     protected function getSupportedAttributes()
     {
@@ -77,7 +74,7 @@ class ContentRatingsVoter extends AbstractVoter
     }
 
     /**
-     * Return an array of supported classes. This will be called by supportsClass
+     * Return an array of supported classes. This will be called by supportsClass.
      *
      * @return array an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
      */

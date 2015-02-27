@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -42,12 +39,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
-* @SWG\Resource(
-* 	resourcePath="/organization",
-* 	description="Operations about Organization",
-* 	basePath="/api"
-* )
-*/
+ * @SWG\Resource(
+ * 	resourcePath="/organization",
+ * 	description="Operations about Organization",
+ * 	basePath="/api"
+ * )
+ */
 class OrganizationController extends AbstractController
 {
     /**
@@ -130,10 +127,10 @@ class OrganizationController extends AbstractController
     {
         $search_map = array(
             'address' => OrganizationSearch::TERM_CONTACT_ADDRESS,
-            'im' => OrganizationSearch::TERM_CONTACT_IM,
-            'label' => OrganizationSearch::TERM_LABEL,
-            'name' => OrganizationSearch::TERM_NAME,
-            'phone' => OrganizationSearch::TERM_CONTACT_PHONE,
+            'im'      => OrganizationSearch::TERM_CONTACT_IM,
+            'label'   => OrganizationSearch::TERM_LABEL,
+            'name'    => OrganizationSearch::TERM_NAME,
+            'phone'   => OrganizationSearch::TERM_CONTACT_PHONE,
         );
 
         $terms = array();
@@ -180,13 +177,13 @@ class OrganizationController extends AbstractController
         $person_ids = $result_cache->results;
 
         $page_ids = \Orb\Util\Arrays::getPageChunk($person_ids, $page, $per_page);
-        $orgs = App::getEntityRepository('DeskPRO:Organization')->getByIds($page_ids, true);
+        $orgs     = App::getEntityRepository('DeskPRO:Organization')->getByIds($page_ids, true);
 
         return $this->createApiResponse(array(
-            'page' => $page,
-            'per_page' => $per_page,
-            'total' => count($person_ids),
-            'cache_id' => $result_cache->id,
+            'page'          => $page,
+            'per_page'      => $per_page,
+            'total'         => count($person_ids),
+            'cache_id'      => $result_cache->id,
             'organizations' => $this->getApiData($orgs),
         ));
     }
@@ -250,7 +247,7 @@ class OrganizationController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        $org = new Organization();
+        $org    = new Organization();
         $errors = array();
 
         $name = $this->in->getString('name');
@@ -275,7 +272,7 @@ class OrganizationController extends AbstractController
 
         foreach ($this->in->getArrayValue('contact_data') as $contact) {
             $contact_type = isset($contact['type']) ? $contact['type'] : false;
-            $data = (isset($contact['data']) && is_array($contact['data'])) ? $contact['data'] : false;
+            $data         = (isset($contact['data']) && is_array($contact['data'])) ? $contact['data'] : false;
 
             if (!$contact_type || !$data) {
                 continue;
@@ -283,7 +280,7 @@ class OrganizationController extends AbstractController
 
             $data['comment'] = isset($contact['comment']) ? $contact['comment'] : '';
 
-            $contact_data = new \Application\DeskPRO\Entity\OrganizationContactData();
+            $contact_data               = new \Application\DeskPRO\Entity\OrganizationContactData();
             $contact_data->contact_type = $contact_type;
             try {
                 $contact_data->applyFormData($data);
@@ -317,7 +314,7 @@ class OrganizationController extends AbstractController
 
             $this->em->persist($org);
 
-            $field_manager = $this->container->getSystemService('org_fields_manager');
+            $field_manager      = $this->container->getSystemService('org_fields_manager');
             $post_custom_fields = $this->getCustomFieldInput();
             if (!empty($post_custom_fields)) {
                 $field_manager->saveFormToObject($post_custom_fields, $org, true);
@@ -433,7 +430,7 @@ class OrganizationController extends AbstractController
         try {
             $this->em->persist($org);
 
-            $field_manager = $this->container->getSystemService('org_fields_manager');
+            $field_manager      = $this->container->getSystemService('org_fields_manager');
             $post_custom_fields = $this->getCustomFieldInput();
             if (!empty($post_custom_fields)) {
                 $field_manager->saveFormToObject($post_custom_fields, $org, true);
@@ -516,7 +513,7 @@ class OrganizationController extends AbstractController
         return $this->createApiResponse(array(
             'has_picture' => $org->hasPicture(),
             'picture_url' => $org->getPictureUrl($size),
-            'size' => $size,
+            'size'        => $size,
         ));
     }
 
@@ -557,7 +554,7 @@ class OrganizationController extends AbstractController
     {
         $org = $this->_getOrganizationOr404($organization_id, 'edit');
 
-        $file = $this->request->files->get('file');
+        $file   = $this->request->files->get('file');
         $accept = $this->container->getAttachmentAccepter();
 
         if ($file) {
@@ -577,7 +574,7 @@ class OrganizationController extends AbstractController
             $blob = $accept->accept($file);
         } else {
             $blob_id = $this->in->getUint('blob_id');
-            $blob = $this->em->find('DeskPRO:Blob', $blob_id);
+            $blob    = $this->em->find('DeskPRO:Blob', $blob_id);
             if (!$blob) {
                 return $this->createApiErrorResponse('invalid_argument.blob_id', 'blob_id not found');
             }
@@ -656,15 +653,15 @@ class OrganizationController extends AbstractController
         }
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
-        $offset = $per_page * ($page - 1);
+        $offset   = $per_page * ($page - 1);
 
         $activity = $this->em->getRepository('DeskPRO:PersonActivity')->getForOrganization($org, $per_page, $offset);
-        $total = $this->em->getRepository('DeskPRO:PersonActivity')->countForOrganization($org);
+        $total    = $this->em->getRepository('DeskPRO:PersonActivity')->countForOrganization($org);
 
         return $this->createApiResponse(array(
-            'page' => $page,
+            'page'     => $page,
             'per_page' => $per_page,
-            'total' => $total,
+            'total'    => $total,
             'activity' => $this->getApiData($activity),
         ));
     }
@@ -715,8 +712,8 @@ class OrganizationController extends AbstractController
 
         $terms = array(
             array(
-                'type' => \Application\DeskPRO\Searcher\PersonSearch::TERM_ORGANIZATION,
-                'op' => 'contains',
+                'type'    => \Application\DeskPRO\Searcher\PersonSearch::TERM_ORGANIZATION,
+                'op'      => 'contains',
                 'options' => array($org->id),
             ),
         );
@@ -744,14 +741,14 @@ class OrganizationController extends AbstractController
         $person_ids = $result_cache->results;
 
         $page_ids = \Orb\Util\Arrays::getPageChunk($person_ids, $page, $per_page);
-        $people = App::getEntityRepository('DeskPRO:Person')->getByIds($page_ids, true);
+        $people   = App::getEntityRepository('DeskPRO:Person')->getByIds($page_ids, true);
 
         return $this->createApiResponse(array(
-            'page' => $page,
+            'page'     => $page,
             'per_page' => $per_page,
-            'total' => count($person_ids),
+            'total'    => count($person_ids),
             'cache_id' => $result_cache->id,
-            'people' => $this->getApiData($people),
+            'people'   => $this->getApiData($people),
         ));
     }
 
@@ -801,8 +798,8 @@ class OrganizationController extends AbstractController
 
         $terms = array(
             array(
-                'type' => \Application\DeskPRO\Searcher\TicketSearch::TERM_ORGANIZATION,
-                'op' => 'contains',
+                'type'    => \Application\DeskPRO\Searcher\TicketSearch::TERM_ORGANIZATION,
+                'op'      => 'contains',
                 'options' => array($org->id),
             ),
         );
@@ -830,14 +827,14 @@ class OrganizationController extends AbstractController
         $person_ids = $result_cache->results;
 
         $page_ids = \Orb\Util\Arrays::getPageChunk($person_ids, $page, $per_page);
-        $tickets = App::getEntityRepository('DeskPRO:Ticket')->getByIds($page_ids, true);
+        $tickets  = App::getEntityRepository('DeskPRO:Ticket')->getByIds($page_ids, true);
 
         return $this->createApiResponse(array(
-            'page' => $page,
+            'page'     => $page,
             'per_page' => $per_page,
-            'total' => count($person_ids),
+            'total'    => count($person_ids),
             'cache_id' => $result_cache->id,
-            'tickets' => $this->getApiData($tickets),
+            'tickets'  => $this->getApiData($tickets),
         ));
     }
 
@@ -882,8 +879,8 @@ class OrganizationController extends AbstractController
         if ($member_ids) {
             $terms = array(
                 array(
-                    'type' => \Application\DeskPRO\Searcher\ChatConversationSearch::TERM_PERSON_ID,
-                    'op' => 'contains',
+                    'type'    => \Application\DeskPRO\Searcher\ChatConversationSearch::TERM_PERSON_ID,
+                    'op'      => 'contains',
                     'options' => $member_ids,
                 ),
             );
@@ -897,10 +894,10 @@ class OrganizationController extends AbstractController
 
             $result_cache = $this->getApiSearchResult('chat', $terms, $extra, $this->in->getUint('cache_id'), new \Application\DeskPRO\Searcher\ChatConversationSearch());
 
-            $ids = $result_cache->results;
+            $ids      = $result_cache->results;
             $cache_id = $result_cache->id;
         } else {
-            $ids = array();
+            $ids      = array();
             $cache_id = 0;
         }
 
@@ -912,14 +909,14 @@ class OrganizationController extends AbstractController
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
         $page_ids = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
-        $chats = App::getEntityRepository('DeskPRO:ChatConversation')->getByIds($page_ids, true);
+        $chats    = App::getEntityRepository('DeskPRO:ChatConversation')->getByIds($page_ids, true);
 
         return $this->createApiResponse(array(
-            'page' => $page,
+            'page'     => $page,
             'per_page' => $per_page,
-            'total' => count($ids),
+            'total'    => count($ids),
             'cache_id' => $cache_id,
-            'chats' => $this->getApiData($chats),
+            'chats'    => $this->getApiData($chats),
         ));
     }
 
@@ -986,10 +983,10 @@ class OrganizationController extends AbstractController
             return $this->createApiErrorResponse('required_field', 'note field is empty or missing');
         }
 
-        $note = new \Application\DeskPRO\Entity\OrganizationNote();
-        $note['agent'] = $this->person;
+        $note                 = new \Application\DeskPRO\Entity\OrganizationNote();
+        $note['agent']        = $this->person;
         $note['organization'] = $org;
-        $note['note'] = $note_text;
+        $note['note']         = $note_text;
 
         $this->em->persist($note);
         $this->em->flush();
@@ -1077,16 +1074,16 @@ class OrganizationController extends AbstractController
 
         $offset = ($page - 1) * $per_page;
 
-        $charges = $this->em->getRepository('DeskPRO:TicketCharge')->getChargesForOrganization($organization, $per_page, $offset);
+        $charges       = $this->em->getRepository('DeskPRO:TicketCharge')->getChargesForOrganization($organization, $per_page, $offset);
         $charge_totals = $this->em->getRepository('DeskPRO:TicketCharge')->getTotalChargesForOrganization($organization);
 
         return $this->createApiResponse(array(
-            'total_charge_time' => $charge_totals['charge_time'],
+            'total_charge_time'   => $charge_totals['charge_time'],
             'total_charge_amount' => $charge_totals['charge'],
-            'total' => $charge_totals['count'],
-            'per_page' => $per_page,
-            'page' => $page,
-            'charges' => $this->getApiData($charges),
+            'total'               => $charge_totals['count'],
+            'per_page'            => $per_page,
+            'page'                => $page,
+            'charges'             => $this->getApiData($charges),
         ));
     }
 
@@ -1122,9 +1119,9 @@ class OrganizationController extends AbstractController
         $domains = array();
         foreach ($org_email_domains as $domain) {
             $domains[] = array(
-                'domain' => $domain,
-                'members' => isset($org_count_domain_members[$domain]) ? $org_count_domain_members[$domain] : 0,
-                'nonmembers' => isset($org_count_domain_nonmembers[$domain]) ? $org_count_domain_nonmembers[$domain] : 0,
+                'domain'        => $domain,
+                'members'       => isset($org_count_domain_members[$domain]) ? $org_count_domain_members[$domain] : 0,
+                'nonmembers'    => isset($org_count_domain_nonmembers[$domain]) ? $org_count_domain_nonmembers[$domain] : 0,
                 'taken_members' => isset($org_count_domain_takenmembers[$domain]) ? $org_count_domain_takenmembers[$domain] : 0,
             );
         }
@@ -1250,7 +1247,7 @@ class OrganizationController extends AbstractController
      */
     public function postOrganizationEmailDomainMoveUsersAction($organization_id, $domain)
     {
-        $org = $this->_getOrganizationOr404($organization_id, 'edit');
+        $org       = $this->_getOrganizationOr404($organization_id, 'edit');
         $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
 
         if ($orgdomain) {
@@ -1289,7 +1286,7 @@ class OrganizationController extends AbstractController
      */
     public function postOrganizationEmailDomainMoveTakenUsersAction($organization_id, $domain)
     {
-        $org = $this->_getOrganizationOr404($organization_id, 'edit');
+        $org       = $this->_getOrganizationOr404($organization_id, 'edit');
         $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
 
         if ($orgdomain) {
@@ -1328,7 +1325,7 @@ class OrganizationController extends AbstractController
      */
     public function deleteOrganizationEmailDomainAction($organization_id, $domain)
     {
-        $org = $this->_getOrganizationOr404($organization_id, 'edit');
+        $org       = $this->_getOrganizationOr404($organization_id, 'edit');
         $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
 
         if ($orgdomain) {
@@ -1409,8 +1406,8 @@ class OrganizationController extends AbstractController
     {
         $org = $this->_getOrganizationOr404($organization_id, 'edit');
 
-        $type = $this->in->getString('type');
-        $data = $this->in->getArrayValue('data');
+        $type    = $this->in->getString('type');
+        $data    = $this->in->getArrayValue('data');
         $comment = $this->in->getString('comment');
 
         if (!$type) {
@@ -1422,7 +1419,7 @@ class OrganizationController extends AbstractController
 
         $data['comment'] = $comment;
 
-        $contact_data = new \Application\DeskPRO\Entity\OrganizationContactData();
+        $contact_data               = new \Application\DeskPRO\Entity\OrganizationContactData();
         $contact_data->contact_type = $type;
         try {
             $contact_data->applyFormData($data);
@@ -1613,7 +1610,7 @@ class OrganizationController extends AbstractController
         if (!$exists) {
             $this->db->insert('organization2usergroups', array(
                 'organization_id' => $org->id,
-                'usergroup_id' => $group_id,
+                'usergroup_id'    => $group_id,
             ));
         }
 
@@ -1761,7 +1758,7 @@ class OrganizationController extends AbstractController
      */
     public function postOrganizationLabelsAction($organization_id)
     {
-        $org = $this->_getOrganizationOr404($organization_id, 'edit');
+        $org   = $this->_getOrganizationOr404($organization_id, 'edit');
         $label = $this->in->getString('label');
 
         if ($label === '') {
@@ -1864,7 +1861,7 @@ class OrganizationController extends AbstractController
     public function getFieldsAction()
     {
         $field_manager = $this->container->getSystemService('org_fields_manager');
-        $fields = $field_manager->getFields();
+        $fields        = $field_manager->getFields();
 
         return $this->createApiResponse(array('fields' => $this->getApiData($fields)));
     }
@@ -1891,10 +1888,12 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * @param  integer                                                       $id
-     * @param  string                                                        $check_perm
-     * @return \Application\DeskPRO\Entity\Organization
+     * @param integer $id
+     * @param string  $check_perm
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return \Application\DeskPRO\Entity\Organization
+     *
      */
     protected function _getOrganizationOr404($id, $check_perm = '')
     {
@@ -1924,7 +1923,8 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * @param  Request  $request
+     * @param Request $request
+     *
      * @return Response
      */
     public function quickSearchAction(Request $request)

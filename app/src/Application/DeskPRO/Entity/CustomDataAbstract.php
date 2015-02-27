@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -36,7 +35,6 @@ namespace Application\DeskPRO\Entity;
 
 /**
  * Base class used for storing custom field data.
- *
  */
 abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -44,13 +42,12 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      * The unique ID.
      *
      * @var int
-     *
      */
     protected $id = null;
 
     /**
      * IMPLEMENT IN CHILD CLASS
-     * The form field this is attached to
+     * The form field this is attached to.
      *
      * @var \Application\DeskPRO\Entity\CustomDefXXX
      */
@@ -58,28 +55,28 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 
     /**
      * IMPLEMENT IN CHILD CLASS
-     * The root custom field this is attached to
+     * The root custom field this is attached to.
      *
      * @var \Application\DeskPRO\Entity\CustomDefXXX
      */
     //protected $root_field = null;
 
     /**
-     * IMPLEMENT IN CHILD CLASS
+     * IMPLEMENT IN CHILD CLASS.
      *
      * @var \Application\DeskPRO\Entity\Xxx
      */
     //protected $xxx;
 
     /**
-     * User numeric data
+     * User numeric data.
      *
      * @var int
      */
     protected $value = 0;
 
     /**
-     * User string data
+     * User string data.
      *
      * @var string
      */
@@ -118,7 +115,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     }
 
     /**
-     * Set the value or input (use the individual methods if you don't want auto detection)
+     * Set the value or input (use the individual methods if you don't want auto detection).
      *
      * @param mixed $data
      */

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage WorkerProcess
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
@@ -39,7 +36,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Orb\Util\Arrays;
 
 /**
- * Sends article and category notifications to users with subscriptions
+ * Sends article and category notifications to users with subscriptions.
  */
 class DownloadsSubscriptions extends AbstractJob
 {
@@ -92,9 +89,9 @@ class DownloadsSubscriptions extends AbstractJob
         #------------------------------
 
         $structure = App::getContainer()->getSystemService('publish_structure');
-        $helper = $structure->getDownloadCategoryHelper();
+        $helper    = $structure->getDownloadCategoryHelper();
 
-        $category_ids = array();
+        $category_ids   = array();
         $downloads_ids  = array();
 
         foreach ($published as $a) {
@@ -104,7 +101,7 @@ class DownloadsSubscriptions extends AbstractJob
             $downloads_ids[] = $a->id;
         }
 
-        $category_ids = array_unique($category_ids);
+        $category_ids  = array_unique($category_ids);
         $downloads_ids = array_unique($downloads_ids);
 
         $cat_subs     = array();
@@ -147,8 +144,8 @@ class DownloadsSubscriptions extends AbstractJob
 
         foreach ($cat_subs as $person_id => $cids) {
             foreach ($published as $downloads) {
-                $cat = $downloads->category;
-                $path = $helper->getPathIds($cat);
+                $cat    = $downloads->category;
+                $path   = $helper->getPathIds($cat);
                 $path[] = $cat->getId();
 
                 if (Arrays::isIn($path, $cids)) {
@@ -245,7 +242,7 @@ class DownloadsSubscriptions extends AbstractJob
             $message = App::getMailer()->createMessage();
             $message->setToPerson($person);
             $message->setTemplate('DeskPRO:emails_user:download-subscription.html.twig', array(
-                'person'           => $person,
+                'person'            => $person,
                 'new_downloads'     => $new_downloads,
                 'updated_downloads' => $updated_downloads,
             ));

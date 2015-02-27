@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Languages\Build;
@@ -50,15 +48,17 @@ abstract class AbstractBuild
     private $logger;
 
     /**
-     * @param  string $id
+     * @param string $id
+     *
      * @return array
      */
     abstract public function getCategoryWords($id, $section, $category);
 
     /**
-     * @param  string $section
-     * @param  string $category
-     * @param  string $source_file
+     * @param string $section
+     * @param string $category
+     * @param string $source_file
+     *
      * @return array
      */
     abstract public function updateSourcePhrases($section, $category, $source_file = null);
@@ -104,11 +104,12 @@ abstract class AbstractBuild
     }
 
     /**
-     * Returns a diff of changed, added and removed phrase IDs
+     * Returns a diff of changed, added and removed phrase IDs.
      *
-     * @param  string $id
-     * @param  string $section
-     * @param  string $category
+     * @param string $id
+     * @param string $section
+     * @param string $category
+     *
      * @return array
      */
     public function writeLangFile($id, $section, $category, array $phrases)
@@ -167,7 +168,7 @@ abstract class AbstractBuild
     }
 
     /**
-     * Build all languages
+     * Build all languages.
      *
      * @return array The diff of every lang
      */
@@ -187,10 +188,11 @@ abstract class AbstractBuild
     }
 
     /**
-     * Build a language
+     * Build a language.
      *
-     * @param  string $id The standard DeskPRO ID for the language
-     * @return array  The diff
+     * @param string $id The standard DeskPRO ID for the language
+     *
+     * @return array The diff
      */
     public function buildLanguage($id)
     {
@@ -204,7 +206,7 @@ abstract class AbstractBuild
             foreach ($this->getLangPackInfo()->getDefaultCategories($section) as $category) {
                 $words = $this->getCategoryWords($id, $section, $category);
                 if ($words) {
-                    $cat_diff = $this->writeLangFile($id, $section, $category, $words);
+                    $cat_diff        = $this->writeLangFile($id, $section, $category, $words);
                     $diff['changed'] = array_merge($diff['changed'], $cat_diff['changed']);
                     $diff['added']   = array_merge($diff['added'],   $cat_diff['added']);
                     $diff['removed'] = array_merge($diff['removed'], $cat_diff['removed']);
@@ -216,7 +218,7 @@ abstract class AbstractBuild
     }
 
     /**
-     * Updates all sources for all sections and categories
+     * Updates all sources for all sections and categories.
      */
     public function updateAllSources()
     {

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
@@ -42,10 +39,9 @@ class ReportsTicketSatisfactionController extends AbstractController
 
     public function listAction($page)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\TicketSatisfaction $reports_ticket_satisfaction
+        /*
+         * @var \Application\DeskPRO\Reports\TicketSatisfaction
          */
-
         $reports_ticket_satisfaction = $this->container->getSystemService('reports_ticket_satisfaction');
         $html_vars                   = $reports_ticket_satisfaction->getVarsForFeedHtmlView($page);
 
@@ -67,10 +63,9 @@ class ReportsTicketSatisfactionController extends AbstractController
 
     public function summaryAction($date)
     {
-        /**
-         * @var \Application\DeskPRO\Reports\TicketSatisfaction $reports_ticket_satisfaction
+        /*
+         * @var \Application\DeskPRO\Reports\TicketSatisfaction
          */
-
         $reports_ticket_satisfaction = $this->container->getSystemService('reports_ticket_satisfaction');
         $html_vars                   = $reports_ticket_satisfaction->getVarsForSummaryHtmlView($date);
 

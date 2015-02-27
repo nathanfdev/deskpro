@@ -3,12 +3,12 @@
 namespace Application\DeskPRO\NewSearch\Repository;
 
 /**
- * Feedback Repository
+ * Feedback Repository.
  */
 class FeedbackRepository extends AbstractRepository
 {
     /**
-     * Fields to be highlighted
+     * Fields to be highlighted.
      *
      * @var array
      */

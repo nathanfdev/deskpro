@@ -26,15 +26,13 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Doctrine\ORM\EntityManager;
@@ -42,7 +40,6 @@ use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
-use Application\DeskPRO\Entity\CustomDefFeedback;
 
 /**
  * A service responsible for making sense of "Fields". Usually, special strings (see FormFields class), need to be
@@ -127,8 +124,9 @@ class FormFieldManager
     }
 
     /**
-     * @param  CustomDefAbstract $field
-     * @param                    $agent_interface
+     * @param CustomDefAbstract $field
+     * @param                   $agent_interface
+     *
      * @return array
      */
     protected function createCustomField(CustomDefAbstract $field, $agent_interface)
@@ -143,10 +141,12 @@ class FormFieldManager
     }
 
     /**
-     * @param  CustomDefAbstract         $field_type
-     * @param                            $agent_interface
-     * @return array
+     * @param CustomDefAbstract $field_type
+     * @param                   $agent_interface
+     *
      * @throws \InvalidArgumentException
+     * @return array
+     *
      */
     private function getFormType(CustomDefAbstract $field_type, $agent_interface)
     {
@@ -205,7 +205,7 @@ class FormFieldManager
                     'deskpro_date',
                     'input',
                     $this->getGeneralOptionsForField($field_type, array(
-                        'input' => 'string',
+                        'input'  => 'string',
                         'widget' => 'choice',
                         'format' => 'y-M-d',
                     ), $agent_interface), );
@@ -216,7 +216,7 @@ class FormFieldManager
                     'deskpro_datetime',
                     'input',
                     $this->getGeneralOptionsForField($field_type, array(
-                        'input' => 'string',
+                        'input'  => 'string',
                         'widget' => 'choice',
                         'format' => 'Y-m-d H:i',
                     ), $agent_interface), );

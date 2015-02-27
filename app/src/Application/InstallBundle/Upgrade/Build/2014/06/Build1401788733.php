@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -40,7 +37,7 @@ class Build1401788733 extends AbstractBuild
     {
         $this->out("Ensure built-in fields are disabled if they have no options");
         $settings = $this->container->getSettingsHandler();
-        $db = $this->container->getDb();
+        $db       = $this->container->getDb();
 
         if ($settings->get('core.use_product')) {
             $count = $db->count('products');

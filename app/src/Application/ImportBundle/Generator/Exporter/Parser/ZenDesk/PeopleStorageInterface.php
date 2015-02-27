@@ -28,47 +28,49 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 /**
- * People reader storage interface
+ * People reader storage interface.
  *
  * Interface PeopleStorageInterface
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
 interface PeopleStorageInterface
 {
     /**
-     * Set users collection
+     * Set users collection.
      *
      * @param array $people
+     *
      * @return $this
      */
     public function setPeople(array $people);
 
     /**
-     * Add users collection
+     * Add users collection.
      *
      * @param array $people
+     *
      * @return $this
      */
     public function addPeople(array $people);
 
     /**
-     * Get stored users collection
+     * Get stored users collection.
      *
      * @return array
      */
     public function getPeople();
 
     /**
-     * Returns all contained people ids
+     * Returns all contained people ids.
      *
      * @return int[]
      */
     public function getPeopleIds();
 
     /**
-     * Returns the list of ids that not found in the storage
+     * Returns the list of ids that not found in the storage.
      *
      * @param int[] $request_ids
+     *
      * @return int[]
      */
     public function getNotContainsIds(array $request_ids);

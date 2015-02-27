@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\EventListener\Language;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -63,7 +60,7 @@ class LastLanguageListener implements EventSubscriberInterface
     public function __construct(LanguageStack $language_stack, LoggerInterface $logger)
     {
         $this->language_stack = $language_stack;
-        $this->logger = $logger;
+        $this->logger         = $logger;
     }
 
     public static function getSubscribedEvents()

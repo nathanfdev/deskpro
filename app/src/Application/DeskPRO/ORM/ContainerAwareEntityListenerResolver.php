@@ -1,6 +1,6 @@
 <?php
 /**
- * https://github.com/doctrine/DoctrineBundle/issues/223
+ * https://github.com/doctrine/DoctrineBundle/issues/223.
  */
 
 namespace Application\DeskPRO\ORM;

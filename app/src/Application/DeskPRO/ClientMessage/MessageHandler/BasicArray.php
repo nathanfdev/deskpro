@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Controller
  */
 
@@ -43,6 +42,7 @@ class BasicArray extends AbstractMessageHandler
      * Get the message to give the client.
      *
      * @param  $context
+     *
      * @return mixed
      */
     public function getMessage($context)

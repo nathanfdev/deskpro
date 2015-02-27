@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -47,7 +44,7 @@ class Build1419340526 extends AbstractBuild
         }
 
         if ($v && !empty($v['work_days']) && count($v['work_days']) === 7) {
-            $days = $v['work_days'];
+            $days           = $v['work_days'];
             $v['work_days'] = array();
 
             foreach ($days as $dow => $on) {

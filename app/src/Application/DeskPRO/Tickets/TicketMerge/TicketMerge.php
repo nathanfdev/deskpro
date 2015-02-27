@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -43,7 +42,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 use Doctrine\DBAL\Connection;
 
 /**
- * Handles merging of one ticket into the other
+ * Handles merging of one ticket into the other.
  */
 class TicketMerge implements PersonContextInterface
 {
@@ -63,7 +62,8 @@ class TicketMerge implements PersonContextInterface
     private $other_ticket;
 
     /**
-     * The ticket ID (copied because after its deleted, the id would be lost)
+     * The ticket ID (copied because after its deleted, the id would be lost).
+     *
      * @var int
      */
     private $other_ticket_id;
@@ -89,18 +89,19 @@ class TicketMerge implements PersonContextInterface
     private $data_lost = array();
 
     /**
-     * @param  Person                    $person_performer
-     * @param  Ticket                    $ticket
-     * @param  Ticket                    $other_ticket
+     * @param Person $person_performer
+     * @param Ticket $ticket
+     * @param Ticket $other_ticket
+     *
      * @throws \InvalidArgumentException
      */
     public function __construct(Person $person_performer, Ticket $ticket, Ticket $other_ticket)
     {
-        $this->em = App::$container->getEm();
-        $this->db = $this->em->getConnection();
+        $this->em             = App::$container->getEm();
+        $this->db             = $this->em->getConnection();
         $this->ticket_manager = App::$container->getTicketManager();
 
-        $this->ticket = $ticket;
+        $this->ticket       = $ticket;
         $this->other_ticket = $other_ticket;
         $this->setPersonContext($person_performer);
 
@@ -128,7 +129,7 @@ class TicketMerge implements PersonContextInterface
     }
 
     /**
-     * Merge the tickets
+     * Merge the tickets.
      */
     public function merge()
     {
@@ -239,15 +240,15 @@ class TicketMerge implements PersonContextInterface
 
         $ticket_del = $this->em->find('DeskPRO:TicketDeleted', $this->other_ticket['id']);
         if (!$ticket_del) {
-            $ticket_del = new TicketDeleted();
+            $ticket_del            = new TicketDeleted();
             $ticket_del->ticket_id = $this->other_ticket['id'];
-            $ticket_del->old_ptac = $this->other_ticket->auth;
-            $ticket_del->old_ref = $this->other_ticket->ref;
+            $ticket_del->old_ptac  = $this->other_ticket->auth;
+            $ticket_del->old_ref   = $this->other_ticket->ref;
         }
 
         $ticket_del->new_ticket_id = $this->ticket['id'];
-        $ticket_del->by_person = $this->person;
-        $ticket_del->reason = "Merge into ".$this->ticket['id'];
+        $ticket_del->by_person     = $this->person;
+        $ticket_del->reason        = "Merge into ".$this->ticket['id'];
         $this->em->persist($ticket_del);
 
         $context = $this->ticket_manager->createAgentExecutorContext($this->person, 'update', 'web');
@@ -264,7 +265,7 @@ class TicketMerge implements PersonContextInterface
     }
 
     /**
-     * Merges messages
+     * Merges messages.
      */
     private function mergeMessages()
     {
@@ -275,7 +276,7 @@ class TicketMerge implements PersonContextInterface
     }
 
     /**
-     * Merges ticket logs
+     * Merges ticket logs.
      */
     private function mergeLogs()
     {
@@ -287,7 +288,7 @@ class TicketMerge implements PersonContextInterface
     }
 
     /**
-     * Merges attachments
+     * Merges attachments.
      */
     private function mergeAttachments()
     {
@@ -298,7 +299,7 @@ class TicketMerge implements PersonContextInterface
     }
 
     /**
-     * Merges parts
+     * Merges parts.
      */
     private function mergeParticipants()
     {
@@ -308,7 +309,7 @@ class TicketMerge implements PersonContextInterface
     }
 
     /**
-     * Merges the rest
+     * Merges the rest.
      */
     private function mergeMisc()
     {

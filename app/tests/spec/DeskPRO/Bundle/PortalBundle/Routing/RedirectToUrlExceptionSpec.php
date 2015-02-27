@@ -26,23 +26,20 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\PortalBundle\Routing;
 
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
+use PhpSpec\ObjectBehavior;
 
 /**
  * @mixin \DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException
  */
 class RedirectToUrlExceptionSpec extends ObjectBehavior
 {
-    function it_has_the_url_to_redirect_to()
+    public function it_has_the_url_to_redirect_to()
     {
         $this->beConstructedWith('http://google.com');
 

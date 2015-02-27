@@ -26,17 +26,14 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Hierarchy;
 
+use DeskPRO\Bundle\PortalBundle\Form\Form\ChoiceList\HierarchyChoiceList;
 use DeskPRO\Component\Hierarchy\Hierarchy as BaseHierarchy;
 use DeskPRO\Component\Hierarchy\HierarchyFormatterInterface;
-use DeskPRO\Bundle\PortalBundle\Form\Form\ChoiceList\HierarchyChoiceList;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -72,8 +69,9 @@ class Hierarchy extends BaseHierarchy
     }
 
     /**
-     * @param  HierarchyNode                   $node
-     * @param  ArrayCollection                 $append_to_collection
+     * @param HierarchyNode   $node
+     * @param ArrayCollection $append_to_collection
+     *
      * @return ArrayCollection|HierarchyNode[]
      */
     public static function flatten(HierarchyNode $node, ArrayCollection $append_to_collection = null)
@@ -97,16 +95,16 @@ class Hierarchy extends BaseHierarchy
     public function getChoiceList()
     {
         $choices = array();
-        $labels = array();
+        $labels  = array();
 
         if (!$this->leaf_selections_only) {
             /** @var HierarchyNode $node */
             foreach ($this->getFlattened() as $node) {
                 $label = (string) $node;
-                $key = $this->getNodeId($node);
+                $key   = $this->getNodeId($node);
 
                 $choices[$key] = $node;
-                $labels[$key] = $label;
+                $labels[$key]  = $label;
             }
 
             return new HierarchyChoiceList($choices, $labels);
@@ -115,7 +113,7 @@ class Hierarchy extends BaseHierarchy
         /** @var HierarchyNode $node */
         foreach ($this as $node) {
             $choices[$this->getNodeId($node)] = $node;
-            $labels[$this->getNodeId($node)] = (string) $node;
+            $labels[$this->getNodeId($node)]  = (string) $node;
             foreach ($node->getChoices() as $id => $nid) {
                 $choices[$id] = $nid;
             }
@@ -144,7 +142,7 @@ class Hierarchy extends BaseHierarchy
     }
 
     /**
-     * Similar to countSelectable(), this method will return this first slectable (the first that would appear in a slect box, for example)
+     * Similar to countSelectable(), this method will return this first slectable (the first that would appear in a slect box, for example).
      *
      * @return mixed
      */
@@ -156,9 +154,10 @@ class Hierarchy extends BaseHierarchy
     }
 
     /**
-     * Counts all nodes in the tree
+     * Counts all nodes in the tree.
      *
-     * @param  bool $only_count_left_nodes
+     * @param bool $only_count_left_nodes
+     *
      * @return int
      */
     public function countTree($only_count_left_nodes = false)

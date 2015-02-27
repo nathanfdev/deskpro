@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AdminBundle
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Data;
@@ -74,12 +71,12 @@ class AgentGroupPermScanner
             }
         }
 
-        $this->perm_names = $set_perms;
+        $this->perm_names      = $set_perms;
         $this->perm_safe_names = array_values(array_diff($this->perm_names, $unsafe));
     }
 
     /**
-     * Get the names of all the permissions
+     * Get the names of all the permissions.
      *
      * @return array
      */

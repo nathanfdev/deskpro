@@ -31,10 +31,9 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Ticket record mapper
+ * Ticket record mapper.
  *
  * Class Ticket
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
 final class Ticket implements MapperInterface
 {
@@ -44,7 +43,7 @@ final class Ticket implements MapperInterface
     private $repository;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param EntityRepository\Ticket $repository
      */
@@ -76,7 +75,7 @@ final class Ticket implements MapperInterface
     }
 
     /**
-     * Returns the existing DeskPro ticket by ref
+     * Returns the existing DeskPro ticket by ref.
      *
      * @param string $ref
      * @param bool   $throw_exception

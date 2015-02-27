@@ -49,9 +49,9 @@ function deskpro_install_check_reqs()
         $errors['soap_check'] = 'recommended';
     }
 
-    $enabledApc = function_exists('apc_store') && (int) ini_get('apc.enabled');
+    $enabledApc      = function_exists('apc_store') && (int) ini_get('apc.enabled');
     $enabledWincache = extension_loaded('wincache') && (int) ini_get('wincache.ocenabled');
-    $enabledOpcache = (int) ini_get('opcache.enable') && extension_loaded('Zend OPcache');
+    $enabledOpcache  = (int) ini_get('opcache.enable') && extension_loaded('Zend OPcache');
 
     if (!($enabledApc || $enabledWincache || $enabledOpcache)) {
         $errors['apc_check'] = 'recommended';
@@ -205,16 +205,16 @@ function deskpro_install_simple_data_submit($log)
     }
 
     $data = array(
-        'source_type' => 'install.web',
-        'log' => $log,
+        'source_type'   => 'install.web',
+        'log'           => $log,
         'install_token' => isset($GLOBALS['dp_install_token']) ? $GLOBALS['dp_install_token'] : '',
-        'nostats' => 0,
-        'total_time' => 0,
-        'error_type' => 'php',
-        'error_info' => array(
+        'nostats'       => 0,
+        'total_time'    => 0,
+        'error_type'    => 'php',
+        'error_info'    => array(
             'exception_type' => 'Application\\InstallBundle\\Install\\ServerCheckException',
-            'summary' => 'Pre-boot check failures',
-            'errstr' => 'Pre-boot check failures',
+            'summary'        => 'Pre-boot check failures',
+            'errstr'         => 'Pre-boot check failures',
         ),
         'root'              => defined('DP_ROOT')                 ? DP_ROOT : '',
         'server_ip'         => isset($_SERVER['SERVER_ADDR'])     ? $_SERVER['SERVER_ADDR'] : '',
@@ -272,7 +272,7 @@ function deskpro_install_simple_data_submit($log)
             $data['php_has_pdo_mysql'] = 0;
         }
     } else {
-        $data['php_has_pdo'] = 0;
+        $data['php_has_pdo']       = 0;
         $data['php_has_pdo_mysql'] = 0;
     }
 
@@ -374,7 +374,7 @@ function deskpro_install_basic_error($message, $title = 'DeskPRO Installation')
 }
 
 /**
- * This is a copy of Orb\Util\Numbers::parseIniSize() because that class isn't included at the time preboot is called
+ * This is a copy of Orb\Util\Numbers::parseIniSize() because that class isn't included at the time preboot is called.
  */
 function deskpro_install_check_parseinisize($val)
 {
@@ -382,7 +382,7 @@ function deskpro_install_check_parseinisize($val)
         return $val;
     }
 
-    $val = trim($val);
+    $val  = trim($val);
     $last = strtoupper($val[strlen($val)-1]);
 
     // Already in bytes

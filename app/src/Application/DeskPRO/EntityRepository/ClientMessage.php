@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -41,16 +40,17 @@ use Application\DeskPRO\HttpFoundation\Session as HttpSession;
 class ClientMessage extends AbstractEntityRepository
 {
     /**
-     * Get message data suitable to return
+     * Get message data suitable to return.
      *
-     * @param  \Application\DeskPRO\Entity\Person          $person
-     * @param  \Application\DeskPRO\HttpFoundation\Session $session
-     * @param  int                                         $since
+     * @param \Application\DeskPRO\Entity\Person          $person
+     * @param \Application\DeskPRO\HttpFoundation\Session $session
+     * @param int                                         $since
+     *
      * @return array
      */
     public function getMessageData(PersonEntity $person, HttpSession $session, $since = 0, $with_last_since = null, $is_initial = false)
     {
-        $data = array('messages' => array(), 'last_id' => -1);
+        $data         = array('messages' => array(), 'last_id' => -1);
         $all_messages = false;
 
         if (!$since) {
@@ -78,7 +78,7 @@ class ClientMessage extends AbstractEntityRepository
                 // 2 => data
                 // 3 => (optional) flags
 
-                $msg_data = $message['data'];
+                $msg_data                = $message['data'];
                 $msg_data['from_client'] = $message['created_by_client'];
 
                 $info = array(
@@ -107,15 +107,15 @@ class ClientMessage extends AbstractEntityRepository
             foreach ($convos as $c) {
                 $chatdata = array(
                     'conversation_id' => $c->getId(),
-                    'author_id' => $c->person ? $c->person->getId() : 0,
-                    'author_name' => $c->person ? $c->person->getDisplayName() : 0,
-                    'author_email' => $c->person ? $c->person->getEmailAddress() : 0,
-                    'subject_line' => 'Chat '.$c->getId(),
-                    'agent_id' => 0,
-                    'agent_name' => '',
-                    'department_id' => $c->department ? $c->department->getId() : 0,
+                    'author_id'       => $c->person ? $c->person->getId() : 0,
+                    'author_name'     => $c->person ? $c->person->getDisplayName() : 0,
+                    'author_email'    => $c->person ? $c->person->getEmailAddress() : 0,
+                    'subject_line'    => 'Chat '.$c->getId(),
+                    'agent_id'        => 0,
+                    'agent_name'      => '',
+                    'department_id'   => $c->department ? $c->department->getId() : 0,
                     'department_name' => $c->department ? $c->department->getTitle() : '',
-                    'date_created' => $c->date_created->getTimestamp(),
+                    'date_created'    => $c->date_created->getTimestamp(),
                 );
 
                 $data['messages'][] = array(
@@ -134,20 +134,21 @@ class ClientMessage extends AbstractEntityRepository
     }
 
     /**
-     * Get messages for a client for specific channels
+     * Get messages for a client for specific channels.
      *
      * @param  $client_id
-     * @param  null        $person_id
-     * @param  array       $channels
-     * @param  null        $since_id
+     * @param null  $person_id
+     * @param array $channels
+     * @param null  $since_id
+     *
      * @return array|mixed
      */
     public function getMessagesForClientInChannels($client_id, $person_id = null, array $channels, $since_id = null)
     {
-        $names = array();
+        $names      = array();
         $names_like = array();
         foreach ($channels as $ch) {
-            $names[] = "'{$ch}'";
+            $names[]      = "'{$ch}'";
             $names_like[] = "channel LIKE '{$ch}.%'";
         }
 
@@ -155,7 +156,7 @@ class ClientMessage extends AbstractEntityRepository
             return array();
         }
 
-        $names = implode(',', $names);
+        $names      = implode(',', $names);
         $names_like = implode(' OR ', $names_like);
 
         $sql = "
@@ -198,6 +199,7 @@ class ClientMessage extends AbstractEntityRepository
      *
      * @param $person_id
      * @param $since_id
+     *
      * @return array
      */
     public function getInitialMessagesForPerson($person_id, $since_id = null)
@@ -224,11 +226,12 @@ class ClientMessage extends AbstractEntityRepository
     }
 
     /**
-     * Get messages for a client based on their registered subscriptions
+     * Get messages for a client based on their registered subscriptions.
      *
-     * @param  string   $client_id
-     * @param  int|null $person_id
-     * @param  int|null $since_id
+     * @param string   $client_id
+     * @param int|null $person_id
+     * @param int|null $since_id
+     *
      * @return array
      */
     public function getMessagesForClient($client_id, $person_or_id = null, $since_id = null)

@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Cutter\PatternCutter;
@@ -93,7 +91,7 @@ class HtmlMatcher
     }
 
     /**
-     * Given a tokenized pattern, process it against the body to find matching results
+     * Given a tokenized pattern, process it against the body to find matching results.
      *
      * @return array
      */
@@ -128,7 +126,7 @@ class HtmlMatcher
 
                 return 'SIMPLE_MATCH';
             } else {
-                return null;
+                return;
             }
         }
 
@@ -142,7 +140,7 @@ class HtmlMatcher
             // This can happen if the document has no tags
             // (eg they were all stripped out, it was plaintext without a root etc)
             // -> So obviously it's a no match if there are no tags to parse
-            return null;
+            return;
         }
 
         if ($this->reverse) {
@@ -178,7 +176,7 @@ class HtmlMatcher
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -197,10 +195,11 @@ class HtmlMatcher
     }
 
     /**
-     * Process the pattern and if it matches, mark the beginning of the cut areas with self::CUT_MARK
+     * Process the pattern and if it matches, mark the beginning of the cut areas with self::CUT_MARK.
      *
-     * @param  string|HtmlPattern $pattern
-     * @param  string             $mark_string
+     * @param string|HtmlPattern $pattern
+     * @param string             $mark_string
+     *
      * @return string
      */
     public function getMarkedDocument()
@@ -257,9 +256,10 @@ class HtmlMatcher
     }
 
     /**
-     * Cut at the first cut mark
+     * Cut at the first cut mark.
      *
-     * @param  string $mark_string
+     * @param string $mark_string
+     *
      * @return string
      */
     public function getCutBody()
@@ -275,10 +275,11 @@ class HtmlMatcher
     }
 
     /**
-     * Consume  all navigate finds and return a new array of branches that match
+     * Consume  all navigate finds and return a new array of branches that match.
      *
-     * @param  array $results
-     * @param  array $tokens
+     * @param array $results
+     * @param array $tokens
+     *
      * @return array
      */
     public function consumeNavigates($id, $branch, array &$tokens)
@@ -303,13 +304,13 @@ class HtmlMatcher
                 if ($this->root_state[$id]['closed']) {
                     $current->next();
                     if (!$current->length || $current->get(0)->tagName != $sel) {
-                        return null;
+                        return;
                     }
                     $this->root_state[$id]['closed'] = false;
                 } else {
                     $current->find($sel)->first();
                     if (!$current->length) {
-                        return null;
+                        return;
                     }
                 }
             }
@@ -321,8 +322,9 @@ class HtmlMatcher
     /**
      * Process all match requirements on the result set and return a new array of branches that match.
      *
-     * @param  array $results
-     * @param  array $tokens
+     * @param array $results
+     * @param array $tokens
+     *
      * @return array
      */
     public function consumeMatches($id, $branch, array &$tokens)
@@ -348,7 +350,7 @@ class HtmlMatcher
                 $text = trim($text);
 
                 if (!preg_match($token[0], $text, $m)) {
-                    return null;
+                    return;
                 }
             }
 
@@ -368,6 +370,7 @@ class HtmlMatcher
      * from re-creating the doc.
      *
      * @internal
+     *
      * @param \QueryPath\DOMQuery $qp
      */
     public function _setQp(\QueryPath\DOMQuery $qp)

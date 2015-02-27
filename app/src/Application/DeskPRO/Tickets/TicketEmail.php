@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -164,7 +163,8 @@ class TicketEmail
     /**
      * Use TicketEmailBuilder to build the options array easier.
      *
-     * @param  array                     $options
+     * @param array $options
+     *
      * @throws \InvalidArgumentException When there are invalid options
      */
     public function __construct(array $options)
@@ -351,7 +351,7 @@ class TicketEmail
 
         $to_name  = $this->to_person->getDisplayName();
 
-        $state = $this->ticket->getStateChangeRecorder();
+        $state              = $this->ticket->getStateChangeRecorder();
         $ticket_attachments = array();
         if ($state->hasNewReply() && !$this->is_auto) {
             $last_message = Arrays::getFirstItem($vars['messages']);
@@ -389,7 +389,7 @@ class TicketEmail
                 $to_email = $this->ticket->person_email->email;
                 $this->logger->info(sprintf("[TicketEmail] to_email(1): %s", $to_email));
             } elseif ($this->ticket->person_email_validating) {
-                $to_email = $this->ticket->person_email_validating->email;
+                $to_email                 = $this->ticket->person_email_validating->email;
                 $vars['validating_email'] = $this->ticket->person_email_validating;
                 $this->logger->info(sprintf("[TicketEmail] to_email(2): %s -- validating", $to_email));
             } elseif ($this->to_person->primary_email) {
@@ -422,7 +422,7 @@ class TicketEmail
         }
         $vars['tac'] = $tac;
 
-        $this->sent_to_name = $to_name;
+        $this->sent_to_name  = $to_name;
         $this->sent_to_email = $to_email;
         $this->sent_with_ccs = array();
 
@@ -473,7 +473,7 @@ class TicketEmail
         }
 
         $from_email = $this->from_email_account->getUseEmailAddress();
-        $from_name = $this->from_name;
+        $from_name  = $this->from_name;
 
         $this->logger->info(sprintf("[TicketEmail] From: %s -- Name: %s", $from_email, $from_name));
         $message->setFrom($from_email, $from_name);

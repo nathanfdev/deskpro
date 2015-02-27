@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -60,7 +59,8 @@ class PersonEmail extends AbstractEntityRepository
     /**
      * Count the number of email addresses at one or more arrays.
      *
-     * @param  array|string $domains
+     * @param array|string $domains
+     *
      * @return array|int
      */
     public function countDomains($domains)
@@ -68,7 +68,7 @@ class PersonEmail extends AbstractEntityRepository
         $single = false;
         if (!is_array($domains)) {
             $domains = array($domains);
-            $single = true;
+            $single  = true;
         }
 
         // Init all to zero
@@ -100,7 +100,8 @@ class PersonEmail extends AbstractEntityRepository
      * Count the number of email addresses at one or more emails where the user belongs to a company
      * that isnt this one.
      *
-     * @param  array|string $domains
+     * @param array|string $domains
+     *
      * @return array|int
      */
     public function countDomainsWithOtherCompany($domains, $org)
@@ -117,12 +118,12 @@ class PersonEmail extends AbstractEntityRepository
 
         if (!is_array($domains)) {
             $domains = array($domains);
-            $single = true;
+            $single  = true;
         }
 
         // Init all to zero
         $results = array_combine($domains, array_fill(0, count($domains), 0));
-        $org = is_object($org) ? $org->id : $org;
+        $org     = is_object($org) ? $org->id : $org;
 
         $results = array_merge($results, $this->getEntityManager()->getConnection()->fetchAllKeyValue('
             SELECT people_emails.email_domain, COUNT(DISTINCT people.id) as count
@@ -143,7 +144,8 @@ class PersonEmail extends AbstractEntityRepository
      * Count the number of email addresses at one or more emails where the user does not
      * belong to any company.
      *
-     * @param  array|string $domains
+     * @param array|string $domains
+     *
      * @return array|int
      */
     public function countDomainsWithNoCompany($domains)
@@ -159,7 +161,7 @@ class PersonEmail extends AbstractEntityRepository
         $single = false;
         if (!is_array($domains)) {
             $domains = array($domains);
-            $single = true;
+            $single  = true;
         }
 
         // Init all to zero

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -40,7 +39,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Set hold status of a ticket
+ * Set hold status of a ticket.
  *
  * @option bool is_hold
  */
@@ -80,7 +79,7 @@ class SetHold extends AbstractContainerAwareAction implements ActionInterface, M
      */
     public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
-        return null;
+        return;
     }
 
     /**

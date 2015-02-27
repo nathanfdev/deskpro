@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Dpql
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Dpql;
@@ -67,7 +64,7 @@ class Compiler
     }
 
     /**
-     * Compiles the given DPQL string to a statement object
+     * Compiles the given DPQL string to a statement object.
      *
      * @param string $input
      * @param array  $placeholders

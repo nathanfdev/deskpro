@@ -26,24 +26,21 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
-use Symfony\Component\HttpFoundation\Cookie;
 use DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Ensures an accurate visitor identifier is always present in the VisitorIdentificationProvider by hooking into the HttpKernel lifecycle
+ * Ensures an accurate visitor identifier is always present in the VisitorIdentificationProvider by hooking into the HttpKernel lifecycle.
  */
 class VisitorIdentificationListener implements EventSubscriberInterface
 {
@@ -58,7 +55,7 @@ class VisitorIdentificationListener implements EventSubscriberInterface
 
     public function __construct(VisitorIdentificationProvider $visitor_provider, LoggerInterface $logger)
     {
-        $this->logger = $logger;
+        $this->logger           = $logger;
         $this->visitor_provider = $visitor_provider;
     }
 
@@ -83,7 +80,7 @@ class VisitorIdentificationListener implements EventSubscriberInterface
             return;
         }
 
-        $response = $event->getResponse();
+        $response   = $event->getResponse();
         $identifier = $this->visitor_provider->getVisitorIdentifier();
 
         // always set a non-expiring cookie during the response with the visitor identifier

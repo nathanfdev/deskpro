@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Controller;
@@ -44,7 +42,7 @@ class Deskpro3RedirectController extends AbstractController
 
     /**
      * files.php
-     * files.php?id=123
+     * files.php?id=123.
      */
     public function downloadCatAction()
     {
@@ -64,7 +62,7 @@ class Deskpro3RedirectController extends AbstractController
     }
 
     /**
-     * attachment_files.php?id=123
+     * attachment_files.php?id=123.
      */
     public function downloadViewAction()
     {
@@ -90,7 +88,7 @@ class Deskpro3RedirectController extends AbstractController
     /**
      * ideas.php
      * ideas.php?cat=123
-     * ideas.php?123-some-idea
+     * ideas.php?123-some-idea.
      */
     public function feedbackAction()
     {
@@ -119,7 +117,7 @@ class Deskpro3RedirectController extends AbstractController
     ############################################################################
 
     /**
-     * kb_article.php?ref=1790-TMRE-3093
+     * kb_article.php?ref=1790-TMRE-3093.
      */
     public function articleViewAction()
     {
@@ -139,7 +137,7 @@ class Deskpro3RedirectController extends AbstractController
     }
 
     /**
-     * kb_cat.php?id=1
+     * kb_cat.php?id=1.
      */
     public function articleCatAction()
     {
@@ -159,7 +157,7 @@ class Deskpro3RedirectController extends AbstractController
     }
 
     /**
-     * kb.php
+     * kb.php.
      */
     public function articlesHomeAction()
     {
@@ -172,7 +170,7 @@ class Deskpro3RedirectController extends AbstractController
 
     /**
      * news.php?id=2
-     * news_full.php?id=2
+     * news_full.php?id=2.
      */
     public function newsViewAction()
     {
@@ -192,7 +190,7 @@ class Deskpro3RedirectController extends AbstractController
     }
 
     /**
-     * news_archive.php
+     * news_archive.php.
      */
     public function newsArchiveAction()
     {
@@ -204,7 +202,7 @@ class Deskpro3RedirectController extends AbstractController
     ############################################################################
 
     /**
-     * newticket.php
+     * newticket.php.
      */
     public function newTicketAction()
     {
@@ -214,7 +212,7 @@ class Deskpro3RedirectController extends AbstractController
     /**
      * ticketlist.php
      * ticketlist_company.php
-     * ticketlist_participate.php
+     * ticketlist_participate.php.
      */
     public function ticketListAction()
     {
@@ -222,7 +220,7 @@ class Deskpro3RedirectController extends AbstractController
     }
 
     /**
-     * view.php?ticketref=6630-QVNM-6486
+     * view.php?ticketref=6630-QVNM-6486.
      */
     public function ticketViewAction()
     {
@@ -247,7 +245,7 @@ class Deskpro3RedirectController extends AbstractController
     ############################################################################
 
     /**
-     * login.php
+     * login.php.
      */
     public function loginAction()
     {
@@ -255,7 +253,7 @@ class Deskpro3RedirectController extends AbstractController
     }
 
     /**
-     * register.php
+     * register.php.
      */
     public function registerAction()
     {
@@ -265,7 +263,7 @@ class Deskpro3RedirectController extends AbstractController
     /**
      * profile_email.php
      * profile_password.php
-     * profile.php
+     * profile.php.
      */
     public function profileAction()
     {
@@ -298,7 +296,7 @@ class Deskpro3RedirectController extends AbstractController
      * manual.php?m=2
      * manual.php?p=49
      * manual_download.php?m=2&do=single
-     * manual_download.php?m=2&do=zip
+     * manual_download.php?m=2&do=zip.
      */
     public function manualsAction()
     {
@@ -392,7 +390,7 @@ class Deskpro3RedirectController extends AbstractController
 
     /**
      * troubleshooter.php
-     * troubleshooter.php?id=1
+     * troubleshooter.php?id=1.
      */
     public function troublesAction()
     {
@@ -402,7 +400,8 @@ class Deskpro3RedirectController extends AbstractController
     ############################################################################
 
     /**
-     * @param  string $lookup_id
+     * @param string $lookup_id
+     *
      * @return int
      */
     public function getNewId($lookup_id)

@@ -28,8 +28,7 @@
 namespace Application\ImportBundle\Generator;
 
 /**
- * Class GeneratorException
- * @package Application\ImportBundle\Generator
+ * Class GeneratorException.
  */
 class GeneratorException extends \Exception
 {
@@ -39,7 +38,7 @@ class GeneratorException extends \Exception
     private $exceptions;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Validator\ExceptionCollection $exceptions
      */

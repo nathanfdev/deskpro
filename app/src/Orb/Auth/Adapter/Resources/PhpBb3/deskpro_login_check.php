@@ -5,7 +5,7 @@ if (!isset($_REQUEST['key']) || $_REQUEST['key'] != 'dp_login_check') {
 
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
+$phpEx           = substr(strrchr(__FILE__, '.'), 1);
 include $phpbb_root_path.'common.'.$phpEx;
 
 $result = $auth->login(

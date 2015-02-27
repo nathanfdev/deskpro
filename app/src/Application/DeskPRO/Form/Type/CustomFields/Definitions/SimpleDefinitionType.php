@@ -110,13 +110,13 @@ class SimpleDefinitionType extends AbstractType implements EventSubscriberInterf
 
         if ($context = $event->getForm()->getConfig()->getOption('context')) {
             $definition['context_class'] = ClassUtils::getClass($context);
-            $definition['context_id'] = $context['id'];
+            $definition['context_id']    = $context['id'];
         }
 
         if ($parent = $event->getForm()->getConfig()->getOption('parent')) {
             $definition['owner_class'] = $parent['owner_class'];
-            $definition['form_type'] = $parent['form_type'];
-            $definition->parent = $parent;
+            $definition['form_type']   = $parent['form_type'];
+            $definition->parent        = $parent;
         }
     }
 
@@ -126,7 +126,7 @@ class SimpleDefinitionType extends AbstractType implements EventSubscriberInterf
     public static function getSubscribedEvents()
     {
         return array(
-            FormEvents::PRE_SUBMIT => 'onPreSubmit',
+            FormEvents::PRE_SUBMIT  => 'onPreSubmit',
             FormEvents::POST_SUBMIT => 'onPostSubmit',
         );
     }

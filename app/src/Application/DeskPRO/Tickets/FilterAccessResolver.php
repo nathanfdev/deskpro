@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO.
+ */
 
 namespace Application\DeskPRO\Tickets;
 
@@ -39,7 +37,7 @@ use Doctrine\ORM\EntityManager;
 
 /**
  * This just looks at a filter and agents to determine who is able to use a filter,
- * and who is actually using it (based on prefs)
+ * and who is actually using it (based on prefs).
  */
 class FilterAccessResolver
 {
@@ -102,10 +100,11 @@ class FilterAccessResolver
     }
 
     /**
-     * Can a person use a particular filter/
+     * Can a person use a particular filter/.
      *
-     * @param  \Application\DeskPRO\Entity\Person       $person
-     * @param  \Application\DeskPRO\Entity\TicketFilter $filter
+     * @param \Application\DeskPRO\Entity\Person       $person
+     * @param \Application\DeskPRO\Entity\TicketFilter $filter
+     *
      * @return bool
      */
     public function canUse(Person $person, TicketFilter $filter)
@@ -132,8 +131,9 @@ class FilterAccessResolver
     /**
      * Does a person ignore a filter?
      *
-     * @param  \Application\DeskPRO\Entity\Person       $person
-     * @param  \Application\DeskPRO\Entity\TicketFilter $filter
+     * @param \Application\DeskPRO\Entity\Person       $person
+     * @param \Application\DeskPRO\Entity\TicketFilter $filter
+     *
      * @return bool
      */
     public function isIgnored(Person $person, TicketFilter $filter)
@@ -142,9 +142,10 @@ class FilterAccessResolver
     }
 
     /**
-     * Get all users who use a filter
+     * Get all users who use a filter.
      *
-     * @param  \Application\DeskPRO\Entity\TicketFilter $filter
+     * @param \Application\DeskPRO\Entity\TicketFilter $filter
+     *
      * @return array
      */
     public function getUsers(TicketFilter $filter, array $available_agents = null)
@@ -165,9 +166,10 @@ class FilterAccessResolver
     }
 
     /**
-     * Get all users who use ignore filter
+     * Get all users who use ignore filter.
      *
-     * @param  \Application\DeskPRO\Entity\TicketFilter $filter
+     * @param \Application\DeskPRO\Entity\TicketFilter $filter
+     *
      * @return array
      */
     public function getIgnoreUsers(TicketFilter $filter, array $available_agents = null)

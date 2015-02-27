@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -62,7 +61,7 @@ class FilterTermComposite implements FilterTermInterface
     }
 
     /**
-     * Change the logic operator between AND/OR ('all must match' versus 'any match')
+     * Change the logic operator between AND/OR ('all must match' versus 'any match').
      *
      * @param string $op
      */
@@ -107,7 +106,8 @@ class FilterTermComposite implements FilterTermInterface
     }
 
     /**
-     * @param  ExecutorContextInterface $context
+     * @param ExecutorContextInterface $context
+     *
      * @return FilterQuery|null
      */
     public function getFilterQuery(ExecutorContextInterface $context = null)

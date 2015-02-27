@@ -26,17 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Api
  */
 
 namespace Application\LegacyApiBundle\Request;
 
-use Application\LegacyApiBundle\ApiUser;
 use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\ApiKeyLog;
+use Application\LegacyApiBundle\ApiUser;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -134,7 +133,7 @@ class RequestAuth
     {
         $key_str = $this->getRequestValue('X-DeskPRO-API-Key', 'API-KEY', true);
         if (!$key_str) {
-            return null;
+            return;
         }
 
         return $this->em->getRepository('DeskPRO:ApiKey')->findByKeyString($key_str);
@@ -147,7 +146,7 @@ class RequestAuth
     {
         $token_str = $this->getRequestValue('X-DeskPRO-API-Token', 'API-TOKEN', true);
         if (!$token_str) {
-            return null;
+            return;
         }
 
         return $this->em->getRepository('DeskPRO:ApiToken')->findByTokenString($token_str);
@@ -165,7 +164,7 @@ class RequestAuth
             }
         }
         if (!$session_id) {
-            return null;
+            return;
         }
 
         return $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_id);
@@ -178,16 +177,17 @@ class RequestAuth
     {
         $tok = $this->getRequestValue('X-DeskPRO-Request-Token', 'REQUEST-TOKEN', true);
         if (!$tok) {
-            return null;
+            return;
         }
 
         return $tok;
     }
 
     /**
-     * @param  string      $header_name   The name to look for in headers
-     * @param  string      $request_name  The name to look for in request params
-     * @param  bool        $use_http_auth To concat the user/pw is http auth
+     * @param string $header_name   The name to look for in headers
+     * @param string $request_name  The name to look for in request params
+     * @param bool   $use_http_auth To concat the user/pw is http auth
+     *
      * @return string|null
      */
     private function getRequestValue($header_name, $request_name, $use_http_auth = false)
@@ -206,7 +206,7 @@ class RequestAuth
             return $headers['PHP_AUTH_USER'].':'.$headers['PHP_AUTH_PW'];
         }
 
-        return null;
+        return;
     }
 
     /**

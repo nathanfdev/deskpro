@@ -26,10 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
+ *
  * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
  */
 
@@ -41,7 +41,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * TaskComment entity definition
+ * TaskComment entity definition.
  *
  * @SWG\Model
  */
@@ -52,12 +52,11 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var int
      * @SWG\Property(name="id",type="integer")
-     *
      */
     protected $id = null;
 
     /**
-     * The comment's content
+     * The comment's content.
      *
      * @var string
      * @SWG\Property(name="content",type="string")
@@ -66,26 +65,26 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var Application\DeskPRO\Entity\Task
-     * 	targetEntity="Task",
-     * 	inversedBy="comments",
-     * 	cascade={"persist", "remove", "merge"}
-     * )
+     *                                      targetEntity="Task",
+     *                                      inversedBy="comments",
+     *                                      cascade={"persist", "remove", "merge"}
+     *                                      )
      * @SWG\Property(name="task", type="Task")
      */
     protected $task;
 
     /**
      * @var Application\DeskPRO\Entity\Person
-     * 	targetEntity="Person",
-     * 	inversedBy="task_comments",
-     * 	cascade={"persist", "remove", "merge"}
-     * )
+     *                                        targetEntity="Person",
+     *                                        inversedBy="task_comments",
+     *                                        cascade={"persist", "remove", "merge"}
+     *                                        )
      * @SWG\Property(name="person",type="Person")
      */
     protected $person;
 
     /**
-     * The date the comment was inserted into the system
+     * The date the comment was inserted into the system.
      *
      * @var \DateTime
      * @SWG\Property(name="date_created",type="integer")
@@ -128,6 +127,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
      * Sets the task comment's creator id.
      *
      * @param int id The person's id.
+     *
      * @throws \InvalidArgumentException Thrown when there's no preson with the
      *                                   id is not in the databse.
      */
@@ -199,7 +199,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content'));
         $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'task', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Task', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => NULL, 'inversedBy' => 'comments', 'joinColumns' => array( 0 => array( 'name' => 'task_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'task_comments', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'task', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Task', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => null, 'inversedBy' => 'comments', 'joinColumns' => array( 0 => array( 'name' => 'task_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => 'task_comments', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true  ));
     }
 }

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build;
@@ -43,11 +40,11 @@ class Build1340907258 extends AbstractBuild
         $bad = $this->container->getDb()->fetchAll("SELECT id, actions FROM ticket_triggers WHERE actions LIKE '%ticket_send_email%'");
         foreach ($bad as $tr) {
             $tr['actions'] = unserialize($tr['actions']);
-            $change = false;
+            $change        = false;
             foreach ($tr['actions'] as &$act) {
                 if ($act['type'] == 'ticket_send_email') {
                     $act['type'] = 'send_ticket_email';
-                    $change = true;
+                    $change      = true;
                 }
             }
 

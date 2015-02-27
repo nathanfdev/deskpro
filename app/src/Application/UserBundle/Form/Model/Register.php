@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Form\Model;
@@ -42,7 +39,7 @@ class Register implements \ArrayAccess
 {
     /** @var array  */
     protected static $prop_names = array(
-        'name' => 1, 'email' => 1, 'password' => 1, 'password2' => 1,
+        'name'        => 1, 'email' => 1, 'password' => 1, 'password2' => 1,
         'language_id' => 1, 'no_validation' => 1, 'custom_fields' => 1,
     );
 
@@ -100,12 +97,12 @@ class Register implements \ArrayAccess
                 if (!$this->no_validation && App::getSetting('core.email_validation')) {
                     $email_validating = App::getEntityRepository('DeskPRO:PersonEmailValidating')->getEmail($this->email);
                     if (!$email_validating) {
-                        $email_validating = new PersonEmailValidating();
-                        $email_validating->email = $this->email;
+                        $email_validating         = new PersonEmailValidating();
+                        $email_validating->email  = $this->email;
                         $email_validating->person = $person;
                     }
 
-                    $person->is_user = false;
+                    $person->is_user      = false;
                     $person->is_confirmed = false;
                 } else {
                     $person->addEmailAddressString($this->email);

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Twig
  */
 
@@ -66,7 +65,7 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
         $source = file_get_contents($this->findTemplate($name));
 
         if (strpos($name, 'DeskPRO:emails_') !== false) {
-            $proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
+            $proc   = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
             $source = $proc->process($source, $str_name);
         }
 
@@ -97,7 +96,7 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
                     if ($package) {
                         $path_name = preg_replace('#^.*?:(.*?)$#', '$2', $logicalName);
                         $path_name = str_replace(':', '/', $path_name);
-                        $path = DP_ROOT.'/apps/'.$package->native_name.'/native/Resources/views/'.$path_name;
+                        $path      = DP_ROOT.'/apps/'.$package->native_name.'/native/Resources/views/'.$path_name;
 
                         return $path;
                     }

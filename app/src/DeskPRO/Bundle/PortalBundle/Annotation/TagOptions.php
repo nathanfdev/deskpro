@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Annotation;
@@ -40,9 +37,9 @@ namespace DeskPRO\Bundle\PortalBundle\Annotation;
  */
 class TagOptions
 {
-    public $defaults = array();
-    public $required = array();
-    public $allowed_values = array();
-    public $allowed_types = array();
+    public $defaults              = array();
+    public $required              = array();
+    public $allowed_values        = array();
+    public $allowed_types         = array();
     public $attribute_expressions = array();
 }

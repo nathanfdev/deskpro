@@ -26,15 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\Triggers;
 
-use Application\DeskPRO\Tickets\Actions\AppActionInterface;
 use Application\DeskPRO\Tickets\Actions\AbstractAction;
+use Application\DeskPRO\Tickets\Actions\AppActionInterface;
 use Orb\Util\Strings;
 
 class ActionFactory
@@ -58,7 +56,7 @@ class ActionFactory
             $class_name = substr($type, 1);
         } else {
             if (preg_match('#^Set(User|Ticket|Org)(Contextual)?Field(\d+)$#', $type, $m)) {
-                $class_type = 'Set'.$m[1].$m[2].'Field';
+                $class_type          = 'Set'.$m[1].$m[2].'Field';
                 $options['field_id'] = $m[3];
             } else {
                 $class_type = $type;

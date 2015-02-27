@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
@@ -38,9 +35,9 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use Doctrine\Common\Collections\ArrayCollection;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class TicketsController extends AbstractController
 {
@@ -50,7 +47,7 @@ class TicketsController extends AbstractController
      */
     public function indexAction(Request $request, $type)
     {
-        $person = $this->getUser();
+        $person   = $this->getUser();
         $per_page = $this->getBrandSetting('portal.per_page_tickets');
 
         // access to organization list?
@@ -79,32 +76,32 @@ class TicketsController extends AbstractController
         );
 
         // page
-        $awaiting_user_pg_param = 'user_page';
-        $awaiting_user_pg = $request->query->get($awaiting_user_pg_param, 1);
+        $awaiting_user_pg_param  = 'user_page';
+        $awaiting_user_pg        = $request->query->get($awaiting_user_pg_param, 1);
         $awaiting_agent_pg_param = 'agent_page';
-        $awaiting_agent_pg = $request->query->get($awaiting_agent_pg_param, 1);
-        $resolved_pg_param = 'resolved_page';
-        $resolved_pg = $request->query->get($resolved_pg_param, 1);
+        $awaiting_agent_pg       = $request->query->get($awaiting_agent_pg_param, 1);
+        $resolved_pg_param       = 'resolved_page';
+        $resolved_pg             = $request->query->get($resolved_pg_param, 1);
 
         // fetch data
-        $tds = $this->getTicketsDataService();
-        $awaiting_user_pager = $tds->getPager($person, $awaiting_user_filter, $awaiting_user_pg, $per_page);
+        $tds                  = $this->getTicketsDataService();
+        $awaiting_user_pager  = $tds->getPager($person, $awaiting_user_filter, $awaiting_user_pg, $per_page);
         $awaiting_agent_pager = $tds->getPager($person, $awaiting_agent_filter, $awaiting_agent_pg, $per_page, $awaiting_agent_pg_param);
-        $resolved_pager = $tds->getPager($person, $resolved_filter, $resolved_pg, $per_page, $resolved_pg_param);
+        $resolved_pager       = $tds->getPager($person, $resolved_filter, $resolved_pg, $per_page, $resolved_pg_param);
 
         return $this->renderThemeView(
             'Theme:Tickets:index.html.twig',
             array(
-                'awaiting_user_tickets' => $awaiting_user_pager,
+                'awaiting_user_tickets'          => $awaiting_user_pager,
                 'awaiting_user_tickets_pg_param' => $awaiting_user_pg_param,
 
-                'awaiting_agent_tickets' => $awaiting_agent_pager,
+                'awaiting_agent_tickets'          => $awaiting_agent_pager,
                 'awaiting_agent_tickets_pg_param' => $awaiting_agent_pg_param,
 
-                'resolved_tickets' => $resolved_pager,
+                'resolved_tickets'          => $resolved_pager,
                 'resolved_tickets_pg_param' => $resolved_pg_param,
 
-                'type' => $type,
+                'type'   => $type,
                 'person' => $person,
             )
         );
@@ -118,14 +115,14 @@ class TicketsController extends AbstractController
     {
         $form_data = array(
             'ticket_message' => $message = new TicketMessage(),
-            'attachments' => new ArrayCollection(),
+            'attachments'    => new ArrayCollection(),
         );
 
         $form = $this->createForm('ticket_reply', $form_data, array(
-            'ticket' => $ticket,
+            'ticket'         => $ticket,
             'ticket_message' => $message,
-            'person' => $this->getUser(),
-            'settings' => $this->getBrandContainer()->getSettings(),
+            'person'         => $this->getUser(),
+            'settings'       => $this->getBrandContainer()->getSettings(),
         ));
 
         $form->handleRequest($request);
@@ -149,7 +146,7 @@ class TicketsController extends AbstractController
             'Theme:Tickets:view.html.twig',
             array(
                 'ticket_view' => $ticket_view,
-                'form' => $form->createView(),
+                'form'        => $form->createView(),
             )
         );
     }
@@ -161,9 +158,9 @@ class TicketsController extends AbstractController
     public function editAction(Ticket $ticket, Request $request)
     {
         $form = $this->createForm('ticket', $ticket, array(
-            'person' => $this->getUser(),
+            'person'            => $this->getUser(),
             'ticket_visibility' => 'edit',
-            'settings' => $this->getBrandContainer()->getSettings(),
+            'settings'          => $this->getBrandContainer()->getSettings(),
         ));
 
         $rerendering = false;
@@ -188,8 +185,8 @@ class TicketsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Tickets:edit.html.twig',
             array(
-                'ticket' => $ticket,
-                'form' => $form->createView(),
+                'ticket'      => $ticket,
+                'form'        => $form->createView(),
                 'rerendering' => $rerendering,
             )
         );

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -55,8 +54,9 @@ class AgentDelete
     private $db;
 
     /**
-     * @param  Person                    $agent
-     * @param  EntityManager             $em
+     * @param Person        $agent
+     * @param EntityManager $em
+     *
      * @throws \InvalidArgumentException
      */
     public function __construct(Person $agent, EntityManager $em)
@@ -71,7 +71,7 @@ class AgentDelete
     }
 
     /**
-     * Makes the agent account a user account instead
+     * Makes the agent account a user account instead.
      */
     public function deleteToUser()
     {
@@ -147,7 +147,7 @@ class AgentDelete
     }
 
     /**
-     * Marks the agent account as deleted
+     * Marks the agent account as deleted.
      */
     public function softDelete()
     {

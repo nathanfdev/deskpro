@@ -26,14 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpUnitTests\DeskPRO\Application\NewSettings\Loader;
-
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\NewSettings\Loader\ConfigPhpFileLoader;
@@ -52,14 +48,14 @@ class ConfigPhpFileLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadingWorksAndStoresInCache()
     {
-        $config_file_path = __DIR__ . '/fixtures/configs_file.php';
+        $config_file_path = __DIR__.'/fixtures/configs_file.php';
 
         $expectedSettings = array(
             'key'       => 'val',
-            'extra_key' => 'extra_val'
+            'extra_key' => 'extra_val',
         );
 
-        $cache_key = 'settings.loader.config_php_file.' . $config_file_path;
+        $cache_key = 'settings.loader.config_php_file.'.$config_file_path;
 
         $mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
         $mockCache->shouldReceive('has')->with($cache_key)->andReturn(false)->once();
@@ -77,14 +73,14 @@ class ConfigPhpFileLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadingUsesCacheIfExists()
     {
-        $config_file_path = __DIR__ . '/fixtures/configs_file.php';
+        $config_file_path = __DIR__.'/fixtures/configs_file.php';
 
         $expectedSettings = array(
             'key'       => 'val',
-            'extra_key' => 'extra_val'
+            'extra_key' => 'extra_val',
         );
 
-        $cache_key = 'settings.loader.config_php_file.' . $config_file_path;
+        $cache_key = 'settings.loader.config_php_file.'.$config_file_path;
 
         $mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
         $mockCache->shouldReceive('has')->with($cache_key)->andReturn(true)->once();
@@ -102,14 +98,14 @@ class ConfigPhpFileLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testForceReload()
     {
-        $config_file_path = __DIR__ . '/fixtures/configs_file.php';
+        $config_file_path = __DIR__.'/fixtures/configs_file.php';
 
         $expectedSettings = array(
             'key'       => 'val',
-            'extra_key' => 'extra_val'
+            'extra_key' => 'extra_val',
         );
 
-        $cache_key = 'settings.loader.config_php_file.' . $config_file_path;
+        $cache_key = 'settings.loader.config_php_file.'.$config_file_path;
 
         $mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
         $mockCache->shouldReceive('delete')->with($cache_key)->once();

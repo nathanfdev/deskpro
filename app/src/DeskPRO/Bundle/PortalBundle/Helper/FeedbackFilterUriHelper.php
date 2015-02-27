@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Helper;
@@ -40,6 +37,7 @@ class FeedbackFilterUriHelper
 {
     /**
      * @param $filter_uri
+     *
      * @return FeedbackFilter
      */
     public function extractFeedbackFilter($filter_uri)
@@ -104,6 +102,7 @@ class FeedbackFilterUriHelper
 
     /**
      * @param $segment
+     *
      * @return string
      */
     private function filterSegment($segment)
@@ -117,6 +116,7 @@ class FeedbackFilterUriHelper
 
     /**
      * @param $parts
+     *
      * @return array
      */
     private function getIntArrayFromCsv($parts)
@@ -159,6 +159,7 @@ class FeedbackFilterUriHelper
 
     /**
      * @param $segment
+     *
      * @return array
      */
     private function getSortParts($segment)

@@ -2,8 +2,8 @@
 
 namespace Application\DeskPRO\NewSearch\Filter;
 
-use Orb\Util\Arrays;
 use Elastica\Filter;
+use Orb\Util\Arrays;
 
 class DepartmentFilter extends AbstractFilter
 {

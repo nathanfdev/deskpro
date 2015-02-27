@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpUnitTests\PortalBundle\Helper;
@@ -68,8 +65,8 @@ class FeedbackFilterUriHelperTest extends \PHPUnit_Framework_TestCase
         $filter = $helper->extractFeedbackFilter('active-2,3');
 
         $expected = array_merge(FeedbackFilter::getDefaultValues(), array(
-            'status' => 'active',
-            'status_categories' => array(2,3)
+            'status'            => 'active',
+            'status_categories' => array(2, 3),
         ));
 
         $this->assertEquals($expected, $filter->toArray());
@@ -82,7 +79,7 @@ class FeedbackFilterUriHelperTest extends \PHPUnit_Framework_TestCase
         $filter = $helper->extractFeedbackFilter('type-5,8,10,100');
 
         $expected = array_merge(FeedbackFilter::getDefaultValues(), array(
-            'types' => array(5, 8, 10, 100)
+            'types' => array(5, 8, 10, 100),
         ));
 
         $this->assertEquals($expected, $filter->toArray());
@@ -95,8 +92,8 @@ class FeedbackFilterUriHelperTest extends \PHPUnit_Framework_TestCase
         $filter = $helper->extractFeedbackFilter('most-discussed-asc');
 
         $expected = array_merge(FeedbackFilter::getDefaultValues(), array(
-            'sort' => 'most-discussed',
-            'sort_direction' => 'asc'
+            'sort'           => 'most-discussed',
+            'sort_direction' => 'asc',
         ));
 
         $this->assertEquals($expected, $filter->toArray());
@@ -109,9 +106,9 @@ class FeedbackFilterUriHelperTest extends \PHPUnit_Framework_TestCase
         $filter = $helper->extractFeedbackFilter('closed-7,8/highest-rating');
 
         $expected = array_merge(FeedbackFilter::getDefaultValues(), array(
-            'status' => 'closed',
-            'status_categories' => array(7,8),
-            'sort' => 'highest-rating'
+            'status'            => 'closed',
+            'status_categories' => array(7, 8),
+            'sort'              => 'highest-rating',
         ));
 
         $this->assertEquals($expected, $filter->toArray());
@@ -124,7 +121,7 @@ class FeedbackFilterUriHelperTest extends \PHPUnit_Framework_TestCase
         $filter = $helper->extractFeedbackFilter('/type-8/date');
 
         $expected = array_merge(FeedbackFilter::getDefaultValues(), array(
-            'types' => array(8)
+            'types' => array(8),
         ));
 
         $this->assertEquals($expected, $filter->toArray());
@@ -137,11 +134,11 @@ class FeedbackFilterUriHelperTest extends \PHPUnit_Framework_TestCase
         $filter = $helper->extractFeedbackFilter('closed-7,8/type-8/most-popular-asc');
 
         $expected = array_merge(FeedbackFilter::getDefaultValues(), array(
-            'types' => array(8),
-            'status' => 'closed',
-            'status_categories' => array(7,8),
-            'sort' => 'most-popular',
-            'sort_direction' => 'asc'
+            'types'             => array(8),
+            'status'            => 'closed',
+            'status_categories' => array(7, 8),
+            'sort'              => 'most-popular',
+            'sort_direction'    => 'asc',
         ));
 
         $this->assertEquals($expected, $filter->toArray());
@@ -154,11 +151,11 @@ class FeedbackFilterUriHelperTest extends \PHPUnit_Framework_TestCase
         $filter = $helper->extractFeedbackFilter('/type-8/most-popular-asc/closed-7,8');
 
         $expected = array_merge(FeedbackFilter::getDefaultValues(), array(
-            'types' => array(8),
-            'status' => 'closed',
-            'status_categories' => array(7,8),
-            'sort' => 'most-popular',
-            'sort_direction' => 'asc'
+            'types'             => array(8),
+            'status'            => 'closed',
+            'status_categories' => array(7, 8),
+            'sort'              => 'most-popular',
+            'sort_direction'    => 'asc',
         ));
 
         $this->assertEquals($expected, $filter->toArray());
@@ -172,8 +169,6 @@ class FeedbackFilterUriHelperTest extends \PHPUnit_Framework_TestCase
 
         $filter = $helper->extractFeedbackFilter('/doesnt-make-sense');
     }
-
-
 
     //
     // generating uri segments
@@ -211,7 +206,7 @@ class FeedbackFilterUriHelperTest extends \PHPUnit_Framework_TestCase
     {
         $filter = new FeedbackFilter();
         $filter->setStatus('active');
-        $filter->setStatusCategories(array(5,6));
+        $filter->setStatusCategories(array(5, 6));
 
         $helper = new FeedbackFilterUriHelper();
 
@@ -222,7 +217,7 @@ class FeedbackFilterUriHelperTest extends \PHPUnit_Framework_TestCase
     {
         $filter = new FeedbackFilter();
         $filter->setStatus('active');
-        $filter->setStatusCategories(array(5,6));
+        $filter->setStatusCategories(array(5, 6));
         $filter->setTypes(array(15));
         $filter->setSort('most-views');
         $filter->setSortDirection('asc');

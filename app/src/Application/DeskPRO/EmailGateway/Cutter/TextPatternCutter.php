@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Cutter;
@@ -136,7 +134,7 @@ class TextPatternCutter implements QuoteDef
     }
 
     /**
-     * Add an array of patterns
+     * Add an array of patterns.
      *
      * @param array $patterns
      */
@@ -148,10 +146,11 @@ class TextPatternCutter implements QuoteDef
     }
 
     /**
-     * Cut out the quote block
+     * Cut out the quote block.
      *
-     * @param  string $body
-     * @param  bool   $is_html
+     * @param string $body
+     * @param bool   $is_html
+     *
      * @return string
      */
     public function cutQuoteBlock($body, $is_html = false)
@@ -212,6 +211,7 @@ class TextPatternCutter implements QuoteDef
 
     /**
      * @param $body
+     *
      * @return TextPatternCutter\TextPattern|null
      */
     public function findMatchingMatcher($body)
@@ -226,7 +226,7 @@ class TextPatternCutter implements QuoteDef
             }
         }
 
-        return null;
+        return;
     }
 
     /**

@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Service;
@@ -79,7 +76,7 @@ class LicenseService
     }
 
     /**
-     * Get version notice info
+     * Get version notice info.
      *
      * Data returned:
      * - link: <url>
@@ -104,7 +101,7 @@ class LicenseService
     }
 
     /**
-     * Gets news from RSS feed
+     * Gets news from RSS feed.
      *
      * @return array|null
      */
@@ -116,11 +113,11 @@ class LicenseService
             $client = new HttpClient(\DeskPRO\Kernel\License::getSupportUrl(), array(
                 'ssl.certificate_authority' => false,
             ));
-            $request = $client->get('/news/2-product.rss');
+            $request  = $client->get('/news/2-product.rss');
             $response = $request->send();
 
             if (!$response->isSuccessful()) {
-                return null;
+                return;
             }
 
             $rss = simplexml_load_string($response->getBody(true));
@@ -137,15 +134,16 @@ class LicenseService
                 }
             }
         } catch (\Exception $e) {
-            return null;
+            return;
         }
 
         return $news;
     }
 
     /**
-     * @param  string $endpoint
-     * @param  array  $post_data
+     * @param string $endpoint
+     * @param array  $post_data
+     *
      * @return array
      */
     public static function fetchServiceResult($endpoint, array $post_data = array())
@@ -157,7 +155,7 @@ class LicenseService
             $client->setMethod(\Zend\Http\Request::METHOD_POST);
             $client->setUri(\DeskPRO\Kernel\License::getLicServer().'/api/'.ltrim($endpoint, '/'));
             $client->getRequest()->getPost()->fromArray($post_data);
-            $r = $client->send();
+            $r      = $client->send();
             $result = $r->getBody();
         } catch (\Exception $e) {
             $result = '';

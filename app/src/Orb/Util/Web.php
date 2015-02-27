@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Util
  */
 
@@ -41,12 +40,12 @@ namespace Orb\Util;
  */
 class Web
 {
-    const HTTP_STATUS_OK = 200;
+    const HTTP_STATUS_OK          = 200;
     const HTTP_STATUS_BAD_REQUEST = 400;
-    const HTTP_STATUS_NOT_FOUND = 404;
-    const HTTP_STATUS_FORBIDDEN = 403;
-    const HTTP_STATUS_MOVED_PERM = 301;
-    const HTTP_STATUS_SERVER_ERR = 500;
+    const HTTP_STATUS_NOT_FOUND   = 404;
+    const HTTP_STATUS_FORBIDDEN   = 403;
+    const HTTP_STATUS_MOVED_PERM  = 301;
+    const HTTP_STATUS_SERVER_ERR  = 500;
 
     /**
      * Redirect to a given URL and then halt the script. Will send the location
@@ -75,7 +74,8 @@ class Web
     /**
      * Send an HTTP status code.
      *
-     * @param  int  $type One of the HTTP_STATUS_* constants.
+     * @param int $type One of the HTTP_STATUS_* constants.
+     *
      * @return bool True if sent, false if it couldnt be sent
      */
     public static function sendHttpStatus($type)
@@ -100,10 +100,11 @@ class Web
     /**
      * Get some default headers for serving an attachment.
      *
-     * @param  string $filename  The filename
-     * @param  bool   $is_inline Should the file be served inline
-     * @param  string $mimetype  The mimetype
-     * @param  int    $filesize  The filesize
+     * @param string $filename  The filename
+     * @param bool   $is_inline Should the file be served inline
+     * @param string $mimetype  The mimetype
+     * @param int    $filesize  The filesize
+     *
      * @return array
      */
     public function getAttachmentHeaders($filename, $is_inline = false, $mimetype = null, $filesize = null)
@@ -204,13 +205,13 @@ class Web
 
         if ($content_type) {
             if (strpos($content_type, ';')) {
-                list($content_type,) = explode(';', $content_type, 2);
+                list($content_type, ) = explode(';', $content_type, 2);
             }
 
             return strtolower(trim($content_type));
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -320,7 +321,7 @@ class Web
         $quest_pos = strpos($script_path, '?');
 
         if ($quest_pos !== false) {
-            $script = urldecode(substr($script_path, 0, $quest_pos));
+            $script      = urldecode(substr($script_path, 0, $quest_pos));
             $script_path = $script.substr($script_path, $quest_pos);
         } else {
             $script_path = urldecode($script_path);
@@ -342,7 +343,8 @@ class Web
     /**
      * Look up a users country based off of their IP address. Returns null if no country could be found.
      *
-     * @param  string $ip The IP address. Use null if you want to use the current users IP address.
+     * @param string $ip The IP address. Use null if you want to use the current users IP address.
+     *
      * @return string
      */
     public static function getCountryFromIp($ip = null)
@@ -357,7 +359,7 @@ class Web
         }
 
         if (!$country) {
-            return null;
+            return;
         }
 
         return strtoupper($country);
@@ -366,7 +368,8 @@ class Web
     /**
      * Checks a URL to see if it exists (that it returns a 200 OK, not a 404 etc).
      *
-     * @param  string $url The URL to check
+     * @param string $url The URL to check
+     *
      * @return bool
      */
     public static function urlExists($url)
@@ -391,7 +394,7 @@ class Web
             $url_parts['port'] = '80';
         }
 
-        $errno = $errstr = null;
+        $errno  = $errstr  = null;
         $socket = @fsockopen(
             $url_parts['host'],
             $url_parts['port'],
@@ -421,7 +424,8 @@ class Web
      * Get the filesize of a file at a URL. Note: Requires remote file server to return
      * proper Content-Length header.
      *
-     * @param  string   $url
+     * @param string $url
+     *
      * @return bool|int Filesize or false on failure
      */
     public static function getUrlFileSize($url)
@@ -442,7 +446,7 @@ class Web
 
         if ($full_result) {
             $full_result = Strings::standardEol($full_result);
-            $parts = explode("\n\n", $full_result);
+            $parts       = explode("\n\n", $full_result);
 
             foreach ($parts as $res) {
                 $matches = null;
@@ -482,7 +486,7 @@ class Web
 
         if ($full_result) {
             $full_result = Strings::standardEol($full_result);
-            $parts = explode("\n\n", $full_result);
+            $parts       = explode("\n\n", $full_result);
 
             foreach ($parts as $res) {
                 $matches = null;
@@ -509,9 +513,10 @@ class Web
     }
 
     /**
-     * Check if a useragent is a known bot
+     * Check if a useragent is a known bot.
      *
-     * @param  string $useragent The user agent to check or null to use the current request
+     * @param string $useragent The user agent to check or null to use the current request
+     *
      * @return bool
      */
     public static function isBotUseragent($useragent = null)

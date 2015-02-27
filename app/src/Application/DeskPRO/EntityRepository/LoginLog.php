@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -39,7 +38,7 @@ use Application\DeskPRO\Entity\Person as PersonEntity;
 class LoginLog extends AbstractEntityRepository
 {
     /**
-     * Gets the last successful login
+     * Gets the last successful login.
      *
      * @return \Application\DeskPRO\Entity\LoginLog
      */
@@ -59,17 +58,19 @@ class LoginLog extends AbstractEntityRepository
     }
 
     /**
-     * @param  PersonEntity                 $person
+     * @param PersonEntity $person
      * @param $maxAttempts
      * @param $time
      * @param $maxLockTime
-     * @return int|mixed
+     *
      * @throws \Doctrine\DBAL\DBALException
+     * @return int|mixed
+     *
      */
     public function getLoginLockoutTime(PersonEntity $person, $maxAttempts, $time, $maxLockTime)
     {
         $time = (int) $time;
-        $q = sprintf('
+        $q    = sprintf('
             select date_created from %1$s where
             person_id = :pid and date_created > :date and id >
             (select ifnull(max(id), 0) from %1$s where person_id = :pid and date_created > :date and is_success = 1)
@@ -78,7 +79,7 @@ class LoginLog extends AbstractEntityRepository
         ', $this->getTableName(), $maxAttempts);
 
         $res = $this->getEntityManager()->getConnection()->executeQuery($q, array(
-            'pid' => $person['id'],
+            'pid'  => $person['id'],
             'date' => date('Y-m-d H:i:s', $time),
         ))->fetchAll();
 
@@ -89,8 +90,8 @@ class LoginLog extends AbstractEntityRepository
 
         // find last lockout
         $lastAttemptTime = time();
-        $maxRowTime = null;
-        $attempts = 0;
+        $maxRowTime      = null;
+        $attempts        = 0;
         foreach ($res as $row) {
             $rowTime = strtotime($row['date_created']);
 

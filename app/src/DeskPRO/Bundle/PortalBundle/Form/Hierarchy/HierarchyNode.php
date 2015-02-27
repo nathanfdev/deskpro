@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Hierarchy;
@@ -42,7 +39,7 @@ use DeskPRO\Component\Hierarchy\HierarchyNode as BaseNode;
 class HierarchyNode extends BaseNode
 {
     /**
-     * Recursively get a choices array for a form ChoiceList (only leaf values can be selected, the others are opt groups)
+     * Recursively get a choices array for a form ChoiceList (only leaf values can be selected, the others are opt groups).
      *
      * @return array
      */
@@ -52,7 +49,7 @@ class HierarchyNode extends BaseNode
 
         /** @var HierarchyNode $node */
         foreach ($this as $node) {
-            $nodeId = $this->hierarchy->getNodeId($node);
+            $nodeId           = $this->hierarchy->getNodeId($node);
             $choices[$nodeId] = $node;
             foreach ($node->getChoices() as $id => $nid) {
                 $choices[$id] = $nid;
@@ -63,7 +60,7 @@ class HierarchyNode extends BaseNode
     }
 
     /**
-     * Recursively get a labels array for a form ChoiceList (only leaf values can be selected, the others are opt groups)
+     * Recursively get a labels array for a form ChoiceList (only leaf values can be selected, the others are opt groups).
      *
      * @return array
      */
@@ -73,7 +70,7 @@ class HierarchyNode extends BaseNode
 
         /** @var HierarchyNode $node */
         foreach ($this as $node) {
-            $nodeId = $this->hierarchy->getNodeId($node);
+            $nodeId          = $this->hierarchy->getNodeId($node);
             $labels[$nodeId] = (string) $node;
             foreach ($node->getLabels() as $id => $nl) {
                 $labels[$id] = $nl;

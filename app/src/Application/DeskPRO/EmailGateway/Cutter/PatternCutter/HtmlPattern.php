@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\EmailGateway\Cutter\PatternCutter;
@@ -46,7 +44,7 @@ class HtmlPattern
     protected $tokens;
 
     /**
-     * Example pattern: div p ?a b span #from:#i /span /b span #.*# br /br b #sent:#i /b #.*# br /br b #to:#i /b #.*# br /br /span /p /div
+     * Example pattern: div p ?a b span #from:#i /span /b span #.*# br /br b #sent:#i /b #.*# br /br b #to:#i /b #.*# br /br /span /p /div.
      *
      * @param $pattern
      */
@@ -64,7 +62,7 @@ class HtmlPattern
     }
 
     /**
-     * Get tokens for the pattern
+     * Get tokens for the pattern.
      *
      * @return array
      */

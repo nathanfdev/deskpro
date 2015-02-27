@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Scraper
+ * Orb.
  */
 
 namespace Orb\Scraper;
@@ -51,7 +48,8 @@ namespace Orb\Scraper;
 class OrbResource extends AbstractScraper
 {
     /**
-     * HTTP client
+     * HTTP client.
+     *
      * @var \Zend\Http\Client
      */
     protected $http;
@@ -60,7 +58,7 @@ class OrbResource extends AbstractScraper
      * The following options are required:
      * - consumer_key: A key/password that identifies this consumer. The remote producer should
      * verify the key to ensure authorized access.
-     * - service_url: The URL to the remote service
+     * - service_url: The URL to the remote service.
      */
     public function __construct(array $options = array())
     {
@@ -77,9 +75,10 @@ class OrbResource extends AbstractScraper
     }
 
     /**
-     * Get data from the resource
+     * Get data from the resource.
      *
-     * @param  mixed         $identity A string or array of k=>v pairs to be sent as posted 'data'
+     * @param mixed $identity A string or array of k=>v pairs to be sent as posted 'data'
+     *
      * @return ItemInterface
      */
     public function getData($identity = null)

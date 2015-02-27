@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category People
  */
 
@@ -38,9 +37,10 @@ class NewCommentArticle extends NewCommentAbstract
 {
     public function getDetails()
     {
-        $details = parent::getDetails();
-        $details['article_id'] = $this->comment->article['id'];
+        $details                  = parent::getDetails();
+        $details['article_id']    = $this->comment->article['id'];
         $details['article_title'] = $this->comment->article['title'];
-	    return $details;
+
+        return $details;
     }
 }

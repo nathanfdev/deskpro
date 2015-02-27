@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DpUnitTests\FormBundle\TicketLayout;
 
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
-use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer;
+use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 
 class TicketLayoutDifferTest extends \DpUnitTestCase
 {
@@ -57,15 +54,15 @@ class TicketLayoutDifferTest extends \DpUnitTestCase
             $field2,
             $field3,
             $field4,
-            $field5
+            $field5,
         ));
 
         $layout2->setAll(array(
             $field2,
-            $field5
+            $field5,
         ));
 
-        $differ = new TicketLayoutDiffer();
+        $differ     = new TicketLayoutDiffer();
         $removables = $differ->findFieldsToRemove($layout1, $layout2);
 
         $this->assertEquals(array($field1, $field3, $field4), $removables, 'returns the correct fields to remove');
@@ -85,7 +82,7 @@ class TicketLayoutDifferTest extends \DpUnitTestCase
         $layout1->setAll(array(
             $field1,
             $field3,
-            $field4
+            $field4,
         ));
 
         $layout2->setAll(array(
@@ -93,10 +90,10 @@ class TicketLayoutDifferTest extends \DpUnitTestCase
             $field2,
             $field3,
             $field4,
-            $field5
+            $field5,
         ));
 
-        $differ = new TicketLayoutDiffer();
+        $differ     = new TicketLayoutDiffer();
         $removables = $differ->findFieldsToRemove($layout1, $layout2);
 
         $this->assertEquals(array(), $removables, 'returns the correct fields to remove');
@@ -118,15 +115,15 @@ class TicketLayoutDifferTest extends \DpUnitTestCase
             $field2,
             $field3,
             $field4,
-            $field5
+            $field5,
         ));
 
         $layout2->setAll(array(
             $field2,
-            $field5
+            $field5,
         ));
 
-        $differ = new TicketLayoutDiffer();
+        $differ     = new TicketLayoutDiffer();
         $additional = $differ->findFieldsToAdd($layout1, $layout2);
 
         $this->assertEquals(array(), $additional, 'returns the correct fields to add');
@@ -146,7 +143,7 @@ class TicketLayoutDifferTest extends \DpUnitTestCase
         $layout1->setAll(array(
             $field1,
             $field3,
-            $field4
+            $field4,
         ));
 
         $layout2->setAll(array(
@@ -154,13 +151,12 @@ class TicketLayoutDifferTest extends \DpUnitTestCase
             $field2,
             $field3,
             $field4,
-            $field5
+            $field5,
         ));
 
-        $differ = new TicketLayoutDiffer();
+        $differ     = new TicketLayoutDiffer();
         $removables = $differ->findFieldsToAdd($layout1, $layout2);
 
         $this->assertEquals(array($field2, $field5), $removables, 'returns the correct fields to add');
     }
 }
- 

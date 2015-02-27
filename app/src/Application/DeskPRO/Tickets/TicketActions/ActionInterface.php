@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -44,10 +41,9 @@ use Application\DeskPRO\Entity\Ticket;
 interface ActionInterface
 {
     /**
-     * Apply the action to the ticket
+     * Apply the action to the ticket.
      *
-     * @param  \Application\DeskPRO\Entity\Ticket $ticket
-     * @return void
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
     public function apply(Ticket $ticket);
 
@@ -60,20 +56,22 @@ interface ActionInterface
      * But if you were adding a value to a collection, then you could merge the two collections
      * together so the new action had new items from both actions.
      *
-     * @param  ActionInterface $action
+     * @param ActionInterface $action
+     *
      * @return ActionInterface
      */
     public function merge(ActionInterface $other_action);
 
     /**
-     * Get a text description of the action
+     * Get a text description of the action.
      *
      * @return string
      */
     public function getDescription($as_html = true);
 
     /**
-     * @param  array $metadata
+     * @param array $metadata
+     *
      * @return mixed
      */
     public function setMetaData(array $metadata);

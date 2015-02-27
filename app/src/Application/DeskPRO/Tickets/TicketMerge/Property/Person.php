@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Tickets
  */
 
@@ -45,7 +44,7 @@ class Person extends PropertyAbstract
         if ($this->strategy == self::STRATEGY_RIGHT and $this->ticket->person != $this->other_ticket->person) {
             $old_person = $this->ticket->person;
 
-            $this->ticket->person = $this->other_ticket->person;
+            $this->ticket->person       = $this->other_ticket->person;
             $this->ticket->person_email = $this->other_ticket->person_email;
             $this->ticket->organization = $this->other_ticket->organization;
 

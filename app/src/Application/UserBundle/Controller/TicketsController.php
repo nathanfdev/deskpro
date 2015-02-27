@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage UserBundle
+ * DeskPRO.
  */
 
 namespace Application\UserBundle\Controller;
@@ -55,7 +52,7 @@ class TicketsController extends AbstractController
         parent::init();
 
         if ($this->session->get('ticket_access')) {
-            $this->session_allowed = $this->session->get('ticket_access');
+            $this->session_allowed        = $this->session->get('ticket_access');
             $GLOBALS['DP_SET_SKIP_CACHE'] = true;
         }
     }
@@ -65,23 +62,23 @@ class TicketsController extends AbstractController
     ################################################################################
 
     /**
-     * View a list of all tickets
+     * View a list of all tickets.
      */
     public function listAction()
     {
         if (!$this->person['id']) {
-            $return = $this->request->getRequestUri();
+            $return       = $this->request->getRequestUri();
             $redirect_url = $this->get('router')->generate('user_login', array('return' => $return));
 
             return $this->redirect($redirect_url);
         }
 
-        $page = max($this->in->getUint('p'), 1);
+        $page     = max($this->in->getUint('p'), 1);
         $per_page = 100;
-        $limit = ($page - 1) * $per_page;
+        $limit    = ($page - 1) * $per_page;
 
         $dql_join = '';
-        $sort = $this->in->getString('sort');
+        $sort     = $this->in->getString('sort');
         switch ($sort) {
             case 'department':
                 $dql_join = 'LEFT JOIN ticket.department d'
@@ -95,7 +92,7 @@ class TicketsController extends AbstractController
 
             case 'date_created':
             default:
-                $sort = 'date_created';
+                $sort     = 'date_created';
                 $sort_dql = 'ticket.id DESC';
         }
 
@@ -122,7 +119,6 @@ class TicketsController extends AbstractController
                     ORDER BY $sort_dql
                 ")->setMaxResults($per_page)->setFirstResult($limit)->execute(array('person' => $this->person, 'org' => $this->person->organization));
             } else {
-
                 $tickets = $this->em->createQuery("
                     SELECT ticket
                     FROM DeskPRO:Ticket ticket
@@ -143,7 +139,7 @@ class TicketsController extends AbstractController
         $ticket_ids = array();
 
         foreach ($tickets as $t) {
-            $ticket_ids[] = $t['id'];
+            $ticket_ids[]  = $t['id'];
             $all_tickets[] = $t;
             if ($t['status'] == 'awaiting_agent' or $t['status'] == 'awaiting_user') {
                 $active_tickets[] = $t;
@@ -192,7 +188,7 @@ class TicketsController extends AbstractController
     }
 
     /**
-     * View a list of all organization tickets
+     * View a list of all organization tickets.
      */
     public function listOrganizationAction()
     {
@@ -206,7 +202,7 @@ class TicketsController extends AbstractController
         }
 
         $dql_join = '';
-        $sort = $this->in->getString('sort');
+        $sort     = $this->in->getString('sort');
         switch ($sort) {
             case 'creator':
                 $dql_join = 'INNER JOIN ticket.person p';
@@ -225,13 +221,13 @@ class TicketsController extends AbstractController
 
             case 'date_created':
             default:
-                $sort = 'date_created';
+                $sort     = 'date_created';
                 $sort_dql = 'ticket.id DESC';
         }
 
-        $page = max($this->in->getUint('p'), 1);
+        $page     = max($this->in->getUint('p'), 1);
         $per_page = 100;
-        $limit = ($page - 1) * $per_page;
+        $limit    = ($page - 1) * $per_page;
 
         $count = $this->db->fetchColumn("
             SELECT COUNT(*)
@@ -254,7 +250,7 @@ class TicketsController extends AbstractController
         $ticket_ids = array();
 
         foreach ($tickets as $t) {
-            $ticket_ids[] = $t['id'];
+            $ticket_ids[]  = $t['id'];
             $all_tickets[] = $t;
             if ($t['status'] == 'awaiting_agent' or $t['status'] == 'awaiting_user') {
                 $active_tickets[] = $t;
@@ -327,13 +323,13 @@ class TicketsController extends AbstractController
             return $this->renderLoginOrPermissionError();
         }
 
-        $newreply = new \Application\UserBundle\Tickets\NewReply($ticket, $this->person);
-        $form = $this->get('form.factory')->create(new NewTicketReplyType(), $newreply);
+        $newreply  = new \Application\UserBundle\Tickets\NewReply($ticket, $this->person);
+        $form      = $this->get('form.factory')->create(new NewTicketReplyType(), $newreply);
         $validator = new \Application\UserBundle\Validator\NewTicketReplyValidator();
 
         $form->handleRequest($this->get('request'));
 
-        $newreply->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
+        $newreply->attach_ids        = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
         $newreply->attach_ids_authed = true;
 
         if ($validator->isValid($newreply)) {
@@ -341,15 +337,15 @@ class TicketsController extends AbstractController
 
             $GLOBALS['DP_SET_SKIP_CACHE'] = true;
         } else {
-            $errors = $validator->getErrors(true);
+            $errors       = $validator->getErrors(true);
             $error_fields = $validator->getErrorGroups(true);
 
             return $this->forward('UserBundle:TicketView:load', array(
-                'ticket_ref' => $ticket->getPublicId(),
+                'ticket_ref'   => $ticket->getPublicId(),
                 'display_data' => array(
-                    'errors' => $errors,
-                    'error_fields' => $error_fields,
-                    'newreply' => $newreply,
+                    'errors'        => $errors,
+                    'error_fields'  => $error_fields,
+                    'newreply'      => $newreply,
                     'newreply_form' => $form,
                 ),
             ));
@@ -369,7 +365,7 @@ class TicketsController extends AbstractController
         $newpart_form = $this->get('form.factory')->create(new NewTicketParticipantType());
 
         return $this->render('UserBundle:Tickets:manage-participants.html.twig', array(
-            'ticket' => $ticket,
+            'ticket'       => $ticket,
             'newpart_form' => $newpart_form->createView(),
         ));
     }
@@ -448,12 +444,12 @@ class TicketsController extends AbstractController
 
         $feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $person, true);
 
-        $rating = null;
+        $rating    = null;
         $setrating = false;
         if ($this->container->getIn()->checkIsset('rating')) {
             $rating = $this->in->getInt('rating');
         } elseif ($this->container->getIn()->checkIsset('setrating')) {
-            $rating = $this->in->getInt('setrating');
+            $rating    = $this->in->getInt('setrating');
             $setrating = true;
         }
 
@@ -509,7 +505,7 @@ class TicketsController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
         }
 
-        $feedback = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $person, true);
+        $feedback          = $this->em->getRepository('DeskPRO:TicketFeedback')->getFeedback($message, $person, true);
         $feedback->message = $this->in->getString('message');
         $feedback->setRating($this->in->getInt('rating'));
         $this->em->persist($feedback);
@@ -533,8 +529,8 @@ class TicketsController extends AbstractController
         $GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
         return $this->render('UserBundle:Tickets:feedback-thank.html.twig', array(
-            'ticket' => $ticket,
-            'message' => $message,
+            'ticket'   => $ticket,
+            'message'  => $message,
             'feedback' => $feedback,
         ));
     }
@@ -575,9 +571,9 @@ class TicketsController extends AbstractController
         $GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
         return $this->render('UserBundle:Tickets:feedback-close.html.twig', array(
-            'ticket' => $ticket,
-            'message' => $message,
-            'feedback' => $feedback,
+            'ticket'       => $ticket,
+            'message'      => $message,
+            'feedback'     => $feedback,
             'close_window' => $this->in->getBool('close_win'),
         ));
     }
@@ -616,7 +612,7 @@ class TicketsController extends AbstractController
         }
 
         return $this->render('UserBundle:Tickets:resolve.html.twig', array(
-            'ticket' => $ticket,
+            'ticket'  => $ticket,
             'message' => $message,
         ));
     }
@@ -654,7 +650,7 @@ class TicketsController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_ref");
         }
 
-        /** @var $ticket \Application\DeskPRO\Entity\Ticket */
+        /* @var $ticket \Application\DeskPRO\Entity\Ticket */
 
         $is_participant = ($this->person->id == $ticket->person->id || $ticket->hasParticipantPerson($this->person->id));
         $is_org_manager = (

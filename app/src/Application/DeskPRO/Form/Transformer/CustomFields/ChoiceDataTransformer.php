@@ -36,9 +36,7 @@ use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 /**
- * Class ChoiceDataTransformer
- * @package Application\DeskPRO\Form\Transformer\CustomFields
- *
+ * Class ChoiceDataTransformer.
  */
 class ChoiceDataTransformer  implements DataTransformerInterface
 {
@@ -60,15 +58,17 @@ class ChoiceDataTransformer  implements DataTransformerInterface
     public function __construct(CustomDataPersister $persister, DomainObject $owner)
     {
         $this->persister = $persister;
-        $this->owner = $owner;
+        $this->owner     = $owner;
     }
 
     /**
-     * CustomFieldData to CustomFieldDefinition, CustomFieldData[] to CustomFieldDefinition[]
+     * CustomFieldData to CustomFieldDefinition, CustomFieldData[] to CustomFieldDefinition[].
      *
-     * @param  mixed                                                           $value
-     * @return array|mixed
+     * @param mixed $value
+     *
      * @throws \Symfony\Component\Form\Exception\TransformationFailedException
+     * @return array|mixed
+     *
      */
     public function transform($value)
     {
@@ -101,11 +101,13 @@ class ChoiceDataTransformer  implements DataTransformerInterface
 
     /**
      * CustomFieldDefinition to CustomFieldData, CustomFieldDefinition[] to CustomFieldData[]
-     * persisting/removing entities with EntityManager (flush is required somewhere outside)
+     * persisting/removing entities with EntityManager (flush is required somewhere outside).
      *
-     * @param  mixed                                                           $value
-     * @return CustomFieldData|ArrayCollection|mixed|null
+     * @param mixed $value
+     *
      * @throws \Symfony\Component\Form\Exception\TransformationFailedException
+     * @return CustomFieldData|ArrayCollection|mixed|null
+     *
      */
     public function reverseTransform($value)
     {
@@ -113,14 +115,14 @@ class ChoiceDataTransformer  implements DataTransformerInterface
         if (!$value) {
             $this->persister->removeArray($this->previous);
 
-            return null;
+            return;
         }
 
         // single choice
         if ($value instanceof CustomFieldDefinition) {
             $data = null;
             foreach ($this->previous as $previous) {
-                /** @var $previous CustomFieldData */
+                /* @var $previous CustomFieldData */
                 // mark to delete
                 if ($previous->definition['id'] != $value['id']) {
                     $this->persister->remove($previous);
@@ -141,7 +143,7 @@ class ChoiceDataTransformer  implements DataTransformerInterface
             $ret = array();
 
             foreach ($value as $definition) {
-                /** @var $definition CustomFieldDefinition */
+                /* @var $definition CustomFieldDefinition */
                 if (!isset($this->previous[$definition['id']])) {
                     $ret[] = $this->createNewData($definition);
                 } else {
@@ -159,16 +161,17 @@ class ChoiceDataTransformer  implements DataTransformerInterface
     }
 
     /**
-     * @param  CustomFieldDefinition $definition
+     * @param CustomFieldDefinition $definition
+     *
      * @return CustomFieldData
      */
     protected function createNewData(CustomFieldDefinition $definition)
     {
-        $data = new CustomFieldData();
-        $data['value'] = 1;
-        $data->definition = $definition;
+        $data                  = new CustomFieldData();
+        $data['value']         = 1;
+        $data->definition      = $definition;
         $data->root_definition = $definition->parent ?: $definition;
-        $data->owner = $this->owner;
+        $data->owner           = $this->owner;
         $this->persister->add($data);
 
         return $data;

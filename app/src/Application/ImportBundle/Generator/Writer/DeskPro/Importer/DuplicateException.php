@@ -28,12 +28,10 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
 /**
- * Duplicate exception
+ * Duplicate exception.
  *
  * Class DuplicateException
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 final class DuplicateException extends \Exception
 {
-
 }

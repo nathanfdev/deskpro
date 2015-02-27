@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Twig\PostRenderFilter;
@@ -48,7 +46,7 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
 
         // Separate out subject
         $parts = explode('___DP___SUBJECT___SEP___', $code, 2);
-        $subj = null;
+        $subj  = null;
         if (count($parts) == 2) {
             $subj = trim($parts[0]);
             $code = trim($parts[1]);
@@ -57,7 +55,7 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
         // Dont run emog on messages, only on the email template
         // This takes out email messages and replaces them with tokens until we're done
         $save_blocks = array();
-        $code = preg_replace_callback('#<!-- DP_MESSAGE_BEGIN -->(.*?)<!-- DP_MESSAGE_END -->#', function ($m) use (&$save_blocks) {
+        $code        = preg_replace_callback('#<!-- DP_MESSAGE_BEGIN -->(.*?)<!-- DP_MESSAGE_END -->#', function ($m) use (&$save_blocks) {
             $rand = uniqid('DPBLOCK', true);
             $save_blocks[$rand] = $m[0];
 

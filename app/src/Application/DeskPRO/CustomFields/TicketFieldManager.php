@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\CustomFields;
@@ -51,7 +48,7 @@ class TicketFieldManager extends FieldManager
     }
 
     /**
-     * Get a collection of all top-level (parent) fields
+     * Get a collection of all top-level (parent) fields.
      *
      * @return array
      */
@@ -210,8 +207,9 @@ class TicketFieldManager extends FieldManager
     }
 
     /**
-     * @param  string                                          $id
-     * @param  bool                                            $enabled
+     * @param string $id
+     * @param bool   $enabled
+     *
      * @throws \Zend\Loader\Exception\InvalidArgumentException
      */
     public function setFieldEnabledById($id, $enabled = true)

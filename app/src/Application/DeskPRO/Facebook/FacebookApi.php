@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Facebook
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Facebook;
@@ -70,10 +67,10 @@ class FacebookApi
     public function __construct(FacebookApp $app = null, $app_id = null, $app_secret = null)
     {
         if ($app) {
-            $this->app_id = $app->app_id;
+            $this->app_id     = $app->app_id;
             $this->app_secret = $app->app_secret;
         } else {
-            $this->app_id = $app_id;
+            $this->app_id     = $app_id;
             $this->app_secret = $app_secret;
         }
     }
@@ -89,9 +86,9 @@ class FacebookApi
         if (!$this->app_token) {
             $output = $this->sendGetRequest(
                 '/oauth/access_token', array(
-                    'client_id' => $this->app_id,
+                    'client_id'     => $this->app_id,
                     'client_secret' => $this->app_secret,
-                    'grant_type' => 'client_credentials',
+                    'grant_type'    => 'client_credentials',
                 )
             );
 
@@ -102,12 +99,13 @@ class FacebookApi
     }
 
     /**
-     * The short-term token needs to be extended here for use/storage on server
+     * The short-term token needs to be extended here for use/storage on server.
      *
      * If the token received is not used for 60 days, it expires and user must re-setup their channel
      *
-     * @param  FacebookPage $page
-     * @return bool         true if valid user token is now in $page
+     * @param FacebookPage $page
+     *
+     * @return bool true if valid user token is now in $page
      */
     public function extendUserToken(FacebookPage $page, $extend_page_token = true)
     {
@@ -121,7 +119,7 @@ class FacebookApi
         );
 
         if ($output) {
-            $page->user_token         = $output['access_token'];
+            $page->user_token               = $output['access_token'];
             $page->date_user_token_received = new \DateTime('now');
         }
 
@@ -133,10 +131,11 @@ class FacebookApi
     }
 
     /**
-     * The short-term page token needs to be extended here for use/storage on server
+     * The short-term page token needs to be extended here for use/storage on server.
      *
-     * @param  FacebookPage $page
-     * @return bool         true if valid user token is now in $page
+     * @param FacebookPage $page
+     *
+     * @return bool true if valid user token is now in $page
      */
     public function extendPageToken(FacebookPage $page, $extend_user_token = true)
     {
@@ -167,9 +166,9 @@ class FacebookApi
         $output = $this->sendPostRequest(
             sprintf('/%s/comments', $graph_id),
             array(
-                'app_id' => $this->app_id,
+                'app_id'       => $this->app_id,
                 'access_token' => $token,
-                'message' => $message,
+                'message'      => $message,
             )
         );
 
@@ -181,7 +180,7 @@ class FacebookApi
         $output = $this->sendPostRequest(
             sprintf('/%s/tabs', $page->graph_id),
             array(
-                'app_id' => $page->app->app_id,
+                'app_id'       => $page->app->app_id,
                 'access_token' => $page->page_token,
             )
         );
@@ -208,7 +207,7 @@ class FacebookApi
     private function sendGetRequest($uri, array $params)
     {
         // TODO: wrap in try/catch ?
-        $fb = $this->getClient();
+        $fb      = $this->getClient();
         $request = $fb->get($uri);
 
         foreach ($params as $key => $val) {
@@ -231,7 +230,7 @@ class FacebookApi
     private function sendPostRequest($uri, array $params)
     {
         // TODO: wrap in try/catch ?
-        $fb = $this->getClient();
+        $fb      = $this->getClient();
         $request = $fb->post($uri, array(), $params);
 
         $res = $request->send();

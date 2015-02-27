@@ -31,15 +31,14 @@ use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 
 /**
- * Blob storage adapter interface
+ * Blob storage adapter interface.
  *
  * Interface BlobAdapterInterface
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 interface BlobAdapterInterface
 {
     /**
-     * Creates a blob object
+     * Creates a blob object.
      *
      * @param string $source_data
      * @param string $filename
@@ -50,9 +49,10 @@ interface BlobAdapterInterface
     public function createBySourceData($source_data, $filename, $content_type);
 
     /**
-     * Creates a blob object by an importer attachment entity
+     * Creates a blob object by an importer attachment entity.
      *
      * @param Entity\Attachment $attachment
+     *
      * @return DeskPROEntity\Blob
      */
     public function createByAttachment(Entity\Attachment $attachment);

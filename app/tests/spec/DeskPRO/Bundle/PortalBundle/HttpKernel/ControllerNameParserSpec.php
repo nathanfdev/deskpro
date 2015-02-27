@@ -26,19 +26,16 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace spec\DeskPRO\Bundle\PortalBundle\HttpKernel;
 
+use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
-use Application\DeskPRO\Entity\Brand;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use DeskPRO\Bundle\PortalBundle\HttpKernel\ControllerNameParser;
+use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
@@ -46,20 +43,18 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 class ControllerNameParserSpec extends ObjectBehavior
 {
-    function let(
+    public function let(
         KernelInterface $kernel,
         BrandStack $brand_stack
-    )
-    {
+    ) {
         $this->beConstructedWith($kernel, $brand_stack);
     }
 
-    function it_parses_theme_controller_names_into_actual_controllers(
+    public function it_parses_theme_controller_names_into_actual_controllers(
         BrandStack $brand_stack,
         BrandContainer $brand_container,
         Brand $brand
-    )
-    {
+    ) {
         $brand_stack->getActive()->willReturn($brand_container);
         $brand_container->getBrand()->willReturn($brand);
 

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,17 +37,16 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Ticket macro permissions
+ * Ticket macro permissions.
  */
 class TicketMacroPerm extends \Application\DeskPRO\Domain\DomainObject
 {
     const TYPE_DEPARTMENT = 'department';
-    const TYPE_USERGROUP = 'usergroup';
-    const TYPE_PERSON = 'person';
+    const TYPE_USERGROUP  = 'usergroup';
+    const TYPE_PERSON     = 'person';
 
     /**
      * @var int
-     *
      */
     protected $id = null;
 
@@ -93,6 +91,6 @@ class TicketMacroPerm extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type'));
         $metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'macro', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMacro', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'macro_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'macro', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMacro', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'macro_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

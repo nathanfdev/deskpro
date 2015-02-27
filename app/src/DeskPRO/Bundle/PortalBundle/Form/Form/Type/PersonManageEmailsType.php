@@ -26,10 +26,7 @@
  * \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
@@ -58,15 +55,15 @@ class PersonManageEmailsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('emails', 'collection', array(
-            'type' => 'deskpro_person_email',
-            'allow_add' => true,
+            'type'         => 'deskpro_person_email',
+            'allow_add'    => true,
             'allow_delete' => true,
             'delete_empty' => true,
-            'label' => false,
+            'label'        => false,
             'by_reference' => false,
-            'options' => array(
-                'label' => false,
-                'required' => false,
+            'options'      => array(
+                'label'             => false,
+                'required'          => false,
                 'email_constraints' => array(
                     new Email(array('message' => 'This email adddress is not valid')),
                 ),

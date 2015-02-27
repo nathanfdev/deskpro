@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package Orb
- * @subpackage Console
+ * DeskPRO.
  */
 
 namespace Orb\Console\Formatter;

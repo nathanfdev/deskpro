@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category DependencyInjection
  */
 
@@ -42,7 +41,7 @@ class LogoBlobService
     {
         $blob_id = $container->getSetting('core.deskpro_logo_blob');
         if (!$blob_id) {
-            return null;
+            return;
         }
 
         $blob = $container->getEm()->find('DeskPRO:Blob', $blob_id);
@@ -51,7 +50,7 @@ class LogoBlobService
         if (!$blob) {
             $container->getEm()->getRepository('DeskPRO:Setting')->updateSetting('core.deskpro_logo_blob', null);
 
-            return null;
+            return;
         }
 
         return $blob;

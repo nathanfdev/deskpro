@@ -26,16 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Translate
  */
 
 namespace Application\DeskPRO\Translate;
 
 /**
- * A fake language in the translate class etc
+ * A fake language in the translate class etc.
  */
 class SystemLanguage extends \Application\DeskPRO\Entity\Language
 {

@@ -4,7 +4,7 @@ namespace DpUnitTests\DeskPRO\ApiResult\Tickets;
 
 use DpUnitTests\DeskPRO\ApiResult\AbstractApiResultTest;
 
-require_once __DIR__ . '/../AbstractApiResultTest.php';
+require_once __DIR__.'/../AbstractApiResultTest.php';
 
 class GetTicketTest extends AbstractApiResultTest
 {
@@ -51,13 +51,13 @@ class GetTicketTest extends AbstractApiResultTest
             $this->assertIsValidTimestamp($retrievedTicketArray['person_email'][$field]);
         }
 
-        foreach($this->_getIgnoreKeys('person') as $key) {
+        foreach ($this->_getIgnoreKeys('person') as $key) {
             $this->assertArrayHasKey($key, $retrievedTicketArray['person']);
             unset($retrievedTicketArray['person'][$key]);
             unset($expectedTicketArray['person'][$key]);
         }
 
-        foreach($this->_getIgnoreKeys('person_email') as $key) {
+        foreach ($this->_getIgnoreKeys('person_email') as $key) {
             $this->assertArrayHasKey($key, $retrievedTicketArray['person_email']);
             unset($retrievedTicketArray['person_email'][$key]);
             unset($expectedTicketArray['person_email'][$key]);

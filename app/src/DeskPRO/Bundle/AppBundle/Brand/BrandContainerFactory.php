@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Brand
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Brand;
@@ -39,7 +36,7 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 
 /**
- * The BrandContainerFactory creates BrandContainers for us
+ * The BrandContainerFactory creates BrandContainers for us.
  */
 class BrandContainerFactory
 {

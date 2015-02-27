@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Hierarchy;
@@ -57,7 +55,7 @@ class HierarchyStructureProcessor
     private $properties;
 
     /**
-     * False to disable any hierarchy handling
+     * False to disable any hierarchy handling.
      *
      * @var bool
      */
@@ -76,7 +74,7 @@ class HierarchyStructureProcessor
     }
 
     /**
-     * Disables hierarchy handling
+     * Disables hierarchy handling.
      */
     public function disableHierarchy()
     {
@@ -84,9 +82,10 @@ class HierarchyStructureProcessor
     }
 
     /**
-     * Returns an array of entities that are ready to be saved or validated
+     * Returns an array of entities that are ready to be saved or validated.
      *
-     * @param  array $structure
+     * @param array $structure
+     *
      * @return array
      */
     public function getRecords(array $structure)
@@ -101,13 +100,13 @@ class HierarchyStructureProcessor
         # - Maps children to their parents
         #------------------------------
 
-        $cat_ids = array();
+        $cat_ids   = array();
         $classname = $this->em->getRepository($this->entity_name)->getClassName();
         foreach ($structure as $cat) {
             if (empty($cat['@is_new'])) {
                 $cat_ids[] = $cat['id'];
             } else {
-                $obj = new $classname();
+                $obj              = new $classname();
                 $recs[$cat['id']] = $obj;
             }
 
@@ -150,8 +149,9 @@ class HierarchyStructureProcessor
     }
 
     /**
-     * @param  array $records
-     * @param  bool  $remove_missing True to delete records that are not in the record array (e.g., they were deleted from the structure)
+     * @param array $records
+     * @param bool  $remove_missing True to delete records that are not in the record array (e.g., they were deleted from the structure)
+     *
      * @return array
      */
     public function saveRecords(array $records, $remove_missing = false)
@@ -197,8 +197,10 @@ class HierarchyStructureProcessor
     }
 
     /**
-     * This is the same as calling getRecords followed by saveRecords
-     * @param  array $structure
+     * This is the same as calling getRecords followed by saveRecords.
+     *
+     * @param array $structure
+     *
      * @return array
      */
     public function save(array $structure)
@@ -210,7 +212,7 @@ class HierarchyStructureProcessor
     }
 
     /**
-     * Apply properties to the category object
+     * Apply properties to the category object.
      *
      * @param mixed $object
      * @param array $values

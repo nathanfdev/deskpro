@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ORM;
@@ -45,7 +42,7 @@ class UnitOfWork extends DoctrineUnitOfWork
     private $_persisters;
 
     /**
-     * Sets that have already been loaded in full
+     * Sets that have already been loaded in full.
      *
      * @var array
      */
@@ -75,39 +72,39 @@ class UnitOfWork extends DoctrineUnitOfWork
     );
 
     /**
-     * Add a type of entity that sholud be pre-fetched
+     * Add a type of entity that sholud be pre-fetched.
      *
      * @param $entity_class
      */
     public function addPreloadedEntity($entityName)
     {
-        $class = $this->em->getClassMetadata($entityName);
+        $class     = $this->em->getClassMetadata($entityName);
         $classname = $class->getName();
 
         $this->enable_preload_set[$classname] = 1;
     }
 
     /**
-     * Marks a repository as prelaoded
+     * Marks a repository as prelaoded.
      *
      * @param $entityName
      */
     public function markAsPreloaded($entityName)
     {
-        $class = $this->em->getClassMetadata($entityName);
+        $class     = $this->em->getClassMetadata($entityName);
         $classname = $class->getName();
 
         $this->loaded_sets[$classname] = true;
     }
 
     /**
-     * Load the full set of a particular entity
+     * Load the full set of a particular entity.
      *
      * @param $entity_name
      */
     public function preloadEntitySet($entityName)
     {
-        $class = $this->em->getClassMetadata($entityName);
+        $class     = $this->em->getClassMetadata($entityName);
         $classname = $class->getName();
 
         if (isset($this->loaded_sets[$classname])) {
@@ -133,14 +130,15 @@ class UnitOfWork extends DoctrineUnitOfWork
     }
 
     /**
-     * Check if an entity is set to be preloaded
+     * Check if an entity is set to be preloaded.
      *
      * @param $entityName
+     *
      * @return bool
      */
     public function isAddedPreloadedEntity($entityName)
     {
-        $class = $this->em->getClassMetadata($entityName);
+        $class     = $this->em->getClassMetadata($entityName);
         $classname = $class->getName();
 
         return isset($this->enable_preload_set[$classname]);
@@ -148,7 +146,7 @@ class UnitOfWork extends DoctrineUnitOfWork
 
     public function getEntityPersister($entityName)
     {
-        $class = $this->em->getClassMetadata($entityName);
+        $class     = $this->em->getClassMetadata($entityName);
         $classname = $class->getName();
 
         if (isset($this->_persisters[$classname])) {
@@ -156,7 +154,7 @@ class UnitOfWork extends DoctrineUnitOfWork
         }
 
         if ($class->isInheritanceTypeNone()) {
-            $persister = new Persisters\LookupBasicEntityPersister($this->em, $class);
+            $persister                     = new Persisters\LookupBasicEntityPersister($this->em, $class);
             $this->_persisters[$classname] = $persister;
 
             return $persister;

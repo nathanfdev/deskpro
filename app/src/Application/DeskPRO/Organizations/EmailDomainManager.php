@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Mail
  */
 
@@ -63,6 +62,7 @@ class EmailDomainManager
      * Check to see if a domain is currently being used by soem other company.
      *
      * @param $domain
+     *
      * @return bool
      */
     public function isInUse($domain)
@@ -76,14 +76,14 @@ class EmailDomainManager
     }
 
     /**
-     * Assign a domain to an org
+     * Assign a domain to an org.
      */
     public function assignDomain($domain, Organization $org)
     {
         $domain = ltrim($domain, '@');
 
-        $orgdomain = new OrganizationEmailDomain();
-        $orgdomain->domain = $domain;
+        $orgdomain               = new OrganizationEmailDomain();
+        $orgdomain->domain       = $domain;
         $orgdomain->organization = $org;
 
         $this->em->beginTransaction();

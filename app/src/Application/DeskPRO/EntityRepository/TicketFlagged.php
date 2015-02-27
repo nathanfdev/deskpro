@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -85,7 +84,7 @@ class TicketFlagged extends AbstractEntityRepository
         }
 
         if (!$person->hasPerm('agent_tickets.view_others')) {
-            $part = array();
+            $part   = array();
             $part[] = "tickets.agent_id = {$person['id']}";
             if ($person->getAgentTeamIds()) {
                 $part[] = "tickets.agent_team_id IN (".implode(',', $person->getAgentTeamIds()).")";

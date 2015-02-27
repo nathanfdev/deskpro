@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Input
  */
 
@@ -40,7 +39,6 @@ namespace Orb\Input\Reader\Source;
 interface ResetSourceInterface
 {
     /**
-     * @return void
      */
     public function resetSource();
 }

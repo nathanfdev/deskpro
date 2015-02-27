@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -38,7 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 /**
- * This helps working with agent preferences
+ * This helps working with agent preferences.
  */
 class AgentPrefs implements \Orb\Helper\ShortCallableInterface
 {
@@ -65,7 +64,7 @@ class AgentPrefs implements \Orb\Helper\ShortCallableInterface
     public function getShortCallableNames()
     {
         return array(
-            'getAgentPref' => 'getAgentPref',
+            'getAgentPref'       => 'getAgentPref',
             'getAgentNamedPrefs' => 'getNamedPrefs',
         );
     }
@@ -77,7 +76,7 @@ class AgentPrefs implements \Orb\Helper\ShortCallableInterface
         }
 
         $params = array('p' => $this->person);
-        $sql = "SELECT pref FROM DeskPRO:PersonPref pref INDEX BY pref.name WHERE pref.person = :p AND (";
+        $sql    = "SELECT pref FROM DeskPRO:PersonPref pref INDEX BY pref.name WHERE pref.person = :p AND (";
 
         if ($this->preload_ids) {
             $sql .= "pref.name IN (:ids)";
@@ -91,12 +90,12 @@ class AgentPrefs implements \Orb\Helper\ShortCallableInterface
                 $sql .= ' OR ';
             }
 
-            $x = 0;
+            $x     = 0;
             $parts = array();
             foreach ($this->preload_prefixes as $prefix) {
-                $qname = 'p'.$x;
-                $parts[] = 'pref.name LIKE :'.$qname;
-                $params[$qname] = $prefix.'%';
+                $qname                        = 'p'.$x;
+                $parts[]                      = 'pref.name LIKE :'.$qname;
+                $params[$qname]               = $prefix.'%';
                 $this->loaded_pref_prefixes[] = $prefix;
             }
 
@@ -105,7 +104,7 @@ class AgentPrefs implements \Orb\Helper\ShortCallableInterface
 
         $sql .= ')';
 
-        $results = App::getOrm()->createQuery($sql)->execute($params);
+        $results     = App::getOrm()->createQuery($sql)->execute($params);
         $this->prefs = array_merge($this->prefs, $results);
 
         $this->preload_ids = $this->preload_prefixes = array();
@@ -130,13 +129,13 @@ class AgentPrefs implements \Orb\Helper\ShortCallableInterface
     {
         $this->preload();
         if (!isset($this->prefs[$name]) && !$this->isPrefLoaded($name)) {
-            $sql = "SELECT pref FROM DeskPRO:PersonPref pref WHERE pref.person = ?0 AND pref.name = ?1";
-            $this->prefs[$name] = App::getOrm()->createQuery($sql)->execute(array($this->person, $name));
+            $sql                       = "SELECT pref FROM DeskPRO:PersonPref pref WHERE pref.person = ?0 AND pref.name = ?1";
+            $this->prefs[$name]        = App::getOrm()->createQuery($sql)->execute(array($this->person, $name));
             $this->loaded_prefs[$name] = true;
         }
 
         if (!$this->prefs[$name]) {
-            return null;
+            return;
         }
 
         return $this->prefs[$name]->getValue();
@@ -147,7 +146,7 @@ class AgentPrefs implements \Orb\Helper\ShortCallableInterface
         $this->preload();
 
         if (func_num_args() == 1) {
-            $names = array();
+            $names   = array();
             $names[] = func_get_arg(0);
         } else {
             $names = func_get_args();
@@ -157,14 +156,14 @@ class AgentPrefs implements \Orb\Helper\ShortCallableInterface
 
         foreach ($names as $n) {
             if (!$this->isPrefLoaded($n)) {
-                $not_found[] = $n;
+                $not_found[]               = $n;
                 $this->loaded_prefs[$name] = true; // loading it in a sec
             }
         }
 
         if ($not_found) {
-            $sql = "SELECT pref FROM DeskPRO:PersonPref pref WHERE pref.person = ?0 AND pref.name IN (?2)";
-            $results = App::getOrm()->createQuery($sql)->execute(array($this->person, $not_found));
+            $sql         = "SELECT pref FROM DeskPRO:PersonPref pref WHERE pref.person = ?0 AND pref.name IN (?2)";
+            $results     = App::getOrm()->createQuery($sql)->execute(array($this->person, $not_found));
             $this->prefs = array_merge($this->prefs, $results);
         }
 

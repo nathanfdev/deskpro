@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Usersource
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Usersource\Adapter;
@@ -54,8 +51,8 @@ class GooglePlus extends AbstractAdapter
      */
     protected function _createAuthAdapterObject()
     {
-        $cid = $this->usersource->getOption('client_id', null);
-        $cs = $this->usersource->getOption('client_secret', null);
+        $cid    = $this->usersource->getOption('client_id', null);
+        $cs     = $this->usersource->getOption('client_secret', null);
         $domain = $this->usersource->getOption('google_apps_domain', null);
 
         return new \Orb\Auth\Adapter\GooglePlus($cid, $cs, $domain);
@@ -71,7 +68,8 @@ class GooglePlus extends AbstractAdapter
     }
 
     /**
-     * @param  mixed $capability
+     * @param mixed $capability
+     *
      * @return bool
      */
     public function isCapable($capability)

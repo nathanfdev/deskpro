@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Log;
@@ -46,7 +43,7 @@ class DbErrorLoggerQueue
     }
 
     /**
-     * Get the single instance of the queue
+     * Get the single instance of the queue.
      *
      * @return DbErrorLoggerQueue
      */
@@ -61,7 +58,7 @@ class DbErrorLoggerQueue
     }
 
     /**
-     * Inits the queue once
+     * Inits the queue once.
      */
     public static function initQueue()
     {
@@ -74,7 +71,7 @@ class DbErrorLoggerQueue
     }
 
     /**
-     * Adds a queued log
+     * Adds a queued log.
      *
      * @param $logger
      * @param $item
@@ -85,7 +82,7 @@ class DbErrorLoggerQueue
     }
 
     /**
-     * Flushes all waiting logs to be written
+     * Flushes all waiting logs to be written.
      */
     public function flush()
     {
@@ -95,7 +92,7 @@ class DbErrorLoggerQueue
 
         foreach ($this->waiting as $info) {
             $logger = $info[0];
-            $item = $info[1];
+            $item   = $info[1];
 
             $logger->logItem($item);
         }

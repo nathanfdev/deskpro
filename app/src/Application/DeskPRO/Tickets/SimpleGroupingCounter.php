@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets;
@@ -54,7 +51,7 @@ class SimpleGroupingCounter extends GroupingCounter
     public function getCounts()
     {
         $group_by = 'GROUP BY field1';
-        $db = App::getDb();
+        $db       = App::getDb();
 
         $select_fields[] = $db->quoteIdentifier('tickets.'.$this->grouping1).' AS field1';
         if ($this->grouping2) {

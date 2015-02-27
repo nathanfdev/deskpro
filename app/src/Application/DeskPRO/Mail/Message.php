@@ -26,18 +26,15 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Mail;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Html\Html2Text;
 use Orb\Util\Arrays;
@@ -159,7 +156,7 @@ class Message extends \Orb\Mail\Message
                 $this->set_to_person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->template_vars['to_email']);
             }
 
-            $this->template_vars['to_person'] = $this->set_to_person;
+            $this->template_vars['to_person']       = $this->set_to_person;
             $this->template_vars['person_timezone'] = $this->set_to_person ? $this->set_to_person->getDateTimezone() : App::getContainer()->getSettingsHandler()->getDefaultTimezone();
 
             $this->template_vars['site_url']    = App::getSetting('core.site_url');
@@ -182,7 +179,7 @@ class Message extends \Orb\Mail\Message
                 $body = trim($body);
             } else {
                 $subject = '';
-                $body = $content;
+                $body    = $content;
             }
 
             if ($subject) {
@@ -277,7 +274,7 @@ class Message extends \Orb\Mail\Message
             ));
         }
         $this->attach_blobs = null;
-        $this->embed_only = true;
+        $this->embed_only   = true;
 
         $this->getHeaders()->addTextHeader('X-DeskPRO-Build', defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 1);
     }
@@ -300,7 +297,7 @@ class Message extends \Orb\Mail\Message
             }
 
             $regex = '#(<img[^>]+src=")'.preg_quote($src, '#').'(\?s=\d+)?("[^>]*>)#i';
-            $body = preg_replace_callback($regex, function ($match) use ($self, &$embed_map, $src, $blob) {
+            $body  = preg_replace_callback($regex, function ($match) use ($self, &$embed_map, $src, $blob) {
                 if (!isset($embed_map[$src])) {
                     // in case the src is referenced twice
                     $embed_map[$src] = $self->embed(\Swift_Image::newInstance(
@@ -345,7 +342,7 @@ class Message extends \Orb\Mail\Message
     }
 
     /**
-     * Brings in a blob that will be embedded
+     * Brings in a blob that will be embedded.
      *
      * @param string                           $src  The image src attribute that will be replaced
      * @param \Application\DeskPRO\Entity\Blob $blob
@@ -364,19 +361,19 @@ class Message extends \Orb\Mail\Message
     }
 
     /**
-     * Set the template we'll use to fetch the subject and body from
+     * Set the template we'll use to fetch the subject and body from.
      *
      * @param $name
      * @param array $vars
      */
     public function setTemplate($name, array $vars = array())
     {
-        $this->template = $name;
+        $this->template      = $name;
         $this->template_vars = $vars;
     }
 
     /**
-     * A shortcut to set to and name
+     * A shortcut to set to and name.
      *
      * @param Person $person
      */
@@ -387,8 +384,9 @@ class Message extends \Orb\Mail\Message
     }
 
     /**
-     * @param  array                          $addresses
-     * @param  null                           $name
+     * @param array $addresses
+     * @param null  $name
+     *
      * @return \Swift_Mime_SimpleMessage|void
      */
     public function setTo($addresses, $name = null)
@@ -397,7 +395,7 @@ class Message extends \Orb\Mail\Message
             reset($addresses);
             $this->set_to = array(
                 'email'  => \Orb\Util\Arrays::getFirstKey($addresses),
-                'name' => \Orb\Util\Arrays::getFirstItem($addresses),
+                'name'   => \Orb\Util\Arrays::getFirstItem($addresses),
             );
         } else {
             $this->set_to = array(
@@ -411,10 +409,12 @@ class Message extends \Orb\Mail\Message
 
     /**
      * @static
-     * @param  null                              $subject
-     * @param  null                              $body
-     * @param  null                              $contentType
-     * @param  null                              $charset
+     *
+     * @param null $subject
+     * @param null $body
+     * @param null $contentType
+     * @param null $charset
+     *
      * @return \Application\DeskPRO\Mail\Message
      */
     public static function newInstance($subject = null, $body = null, $contentType = null, $charset = null)
@@ -423,8 +423,9 @@ class Message extends \Orb\Mail\Message
     }
 
     /**
-     * @return string
      * @throws \Exception
+     * @return string
+     *
      */
     public function __toString()
     {

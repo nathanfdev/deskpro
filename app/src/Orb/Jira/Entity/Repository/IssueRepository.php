@@ -5,20 +5,19 @@ namespace Orb\Jira\Entity\Repository;
 use Orb\Jira\Repository;
 
 /**
- * IssueRepository
+ * IssueRepository.
  *
  * @author Abhinav Kumar <work@abhinavkumar.in>
  */
 class IssueRepository extends Repository
 {
     /**
-     *
      * @var String Entity Class
      */
     protected $_entityClass = 'Issue';
 
     /**
-     * Entity REST endpoint
+     * Entity REST endpoint.
      *
      * @var String the REST endpoint
      */

@@ -26,16 +26,11 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
@@ -50,6 +45,8 @@ use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPers
 use Application\DeskPRO\People\Agents\AgentDelete;
 use Application\DeskPRO\People\Agents\EditAgent;
 use Application\DeskPRO\People\Agents\Type\EditAgentType;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Kernel\License;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -104,8 +101,8 @@ class AgentsController extends AbstractController implements ProtectedController
             $agent_data['is_available_chat'] = isset($online_agents_userchat[$agent->id]);
 
             if ($this->in->getBool('with_perms')) {
-                $perm_loader         = new AgentPermsPersonDbLoader($agent, $this->em);
-                $agent_data['perms'] = $perm_loader->getEffectivePermissions()->toArray();
+                $perm_loader                  = new AgentPermsPersonDbLoader($agent, $this->em);
+                $agent_data['perms']          = $perm_loader->getEffectivePermissions()->toArray();
                 $agent_data['perm_overrides'] = $perm_loader->getOverridePermissions()->toArray();
             }
 
@@ -161,8 +158,8 @@ class AgentsController extends AbstractController implements ProtectedController
         $perm_loader = new AgentPermsPersonDbLoader($agent, $this->em);
 
         $data = array(
-            'agent' => $agent_data,
-            'perms' => $perm_loader->getEffectivePermissions()->toArray(),
+            'agent'          => $agent_data,
+            'perms'          => $perm_loader->getEffectivePermissions()->toArray(),
             'perm_overrides' => $perm_loader->getOverridePermissions()->toArray(),
         );
 
@@ -501,7 +498,8 @@ class AgentsController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @param  int           $num
+     * @param int $num
+     *
      * @return Response|null
      */
     protected function preNewAgent($num)
@@ -517,7 +515,7 @@ class AgentsController extends AbstractController implements ProtectedController
             return $this->createApiErrorResponse('license_agents_reached', "Your license allows $max_agents. You cannot create $num more agents until you upgrade your license.");
         }
 
-        return null;
+        return;
     }
 
     ####################################################################################################################
@@ -953,8 +951,10 @@ class AgentsController extends AbstractController implements ProtectedController
     }
 
     /**
-     * todo external mapper file-to-form
+     * todo external mapper file-to-form.
+     *
      * @param $blobId
+     *
      * @return Response
      */
     protected function bulkCreateAgentsFromFile($blobId)
@@ -1016,8 +1016,8 @@ class AgentsController extends AbstractController implements ProtectedController
                 'email'        => $email,
                 'name'         => $row[1],
                 'agent_groups' => array(),
-                'teams' => array(),
-                'zones' => array(),
+                'teams'        => array(),
+                'zones'        => array(),
             );
             $filterSubs = $otherSubs = array();
             $profile    = array(

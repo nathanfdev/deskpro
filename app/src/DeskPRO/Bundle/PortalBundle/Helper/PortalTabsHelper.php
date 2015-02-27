@@ -26,16 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
 use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 class PortalTabsHelper
@@ -52,7 +49,7 @@ class PortalTabsHelper
 
     public function __construct(BrandStack $brand_stack, AuthorizationChecker $auth_checker)
     {
-        $this->brand_stack = $brand_stack;
+        $this->brand_stack  = $brand_stack;
         $this->auth_checker = $auth_checker;
     }
 

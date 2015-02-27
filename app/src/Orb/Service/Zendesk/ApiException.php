@@ -26,10 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
- * @subpackage Service
  * @category Highrise
  */
 
@@ -49,7 +47,7 @@ class ApiException extends \Exception
     public function __construct($message = "", $code = 0, $api_error_code = null, $output = null, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
-        $this->output = $output;
+        $this->output         = $output;
         $this->api_error_code = $api_error_code;
     }
 }

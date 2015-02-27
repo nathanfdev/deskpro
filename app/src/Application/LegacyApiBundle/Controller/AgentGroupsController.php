@@ -26,21 +26,18 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage LegacyApiBundle
+ * DeskPRO.
  */
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\People\AgentPermissions\AgentPermissions;
 use Application\DeskPRO\People\AgentPermissions\GroupDbPersister;
 use Application\DeskPRO\People\AgentPermissions\GroupsDbLoader;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use Orb\Util\Arrays;
 
 class AgentGroupsController extends AbstractController implements ProtectedControllerInterface
@@ -302,7 +299,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
             $perms = $loader->getGroupPermissions($ug->id)->toArray();
             $this->enablePermsForGroupOnArray($ug, $perms);
             $group_data[] = array(
-                'group' => array('id' => $ug->id, 'title' => $ug->title),
+                'group'               => array('id' => $ug->id, 'title' => $ug->title),
                 'perms'               => $perms,
             );
         }

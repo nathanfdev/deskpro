@@ -11,17 +11,17 @@ class SimpleSettingsData extends AbstractFixture
 {
     public function load(ObjectManager $manager)
     {
-        $setting = new Setting();
-        $setting->name = '123key';
+        $setting        = new Setting();
+        $setting->name  = '123key';
         $setting->value = 'val';
         $manager->persist($setting);
 
-        $setting = new Setting();
-        $setting->name = '456key';
+        $setting        = new Setting();
+        $setting->name  = '456key';
         $setting->value = 'val2';
         $manager->persist($setting);
 
-        $brand = new Brand();
+        $brand       = new Brand();
         $brand->name = 'some_name';
         $manager->persist($brand);
 
@@ -31,12 +31,12 @@ class SimpleSettingsData extends AbstractFixture
         $setting->brand = $brand;
         $manager->persist($setting);
 
-        $brand2 = new Brand();
+        $brand2       = new Brand();
         $brand2->name = 'Another Brand';
         $manager->persist($brand2);
 
-        $setting = new BrandSetting();
-        $setting->name = '456key';
+        $setting        = new BrandSetting();
+        $setting->name  = '456key';
         $setting->value = 'second brand';
         $setting->brand = $brand2;
         $manager->persist($setting);

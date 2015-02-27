@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO;
@@ -41,6 +39,7 @@ use Orb\Util\Arrays;
  * A global singleton that facilitates fetching well known objects and values.
  *
  * @static
+ *
  * @deprecated The real container should be used
  */
 class App
@@ -54,12 +53,14 @@ class App
 
     /**
      * An array of loaded config files.
+     *
      * @var array
      */
     protected static $_fileconfig = array();
 
     /**
-     * Array of instantiated API handlers
+     * Array of instantiated API handlers.
+     *
      * @var array
      */
     protected static $_api_handlers = null;
@@ -108,6 +109,7 @@ class App
 
     /**
      * @param $service_name
+     *
      * @return object
      */
     public static function get($service_name)
@@ -117,6 +119,7 @@ class App
 
     /**
      * @param $service_name
+     *
      * @return mixed
      */
     public static function getSystemService($service_name)
@@ -125,7 +128,8 @@ class App
     }
 
     /**
-     * @param  string                                                                        $id
+     * @param string $id
+     *
      * @return \Application\DeskPRO\DependencyInjection\SystemServices\BaseRepositoryService
      */
     public static function getDataService($id)
@@ -135,7 +139,8 @@ class App
 
     /**
      * @param $service_name
-     * @param  array $options
+     * @param array $options
+     *
      * @return mixed
      */
     public static function getSystemObject($service_name, array $options = array())
@@ -145,6 +150,7 @@ class App
 
     /**
      * @param $service_name
+     *
      * @return bool
      */
     public static function has($service_name)
@@ -169,7 +175,8 @@ class App
     }
 
     /**
-     * @param  string          $type
+     * @param string $type
+     *
      * @return DBAL\Connection
      */
     public static function getDbRead($type = 'default', array $context = null)
@@ -202,7 +209,7 @@ class App
     }
 
     /**
-     * Get the session
+     * Get the session.
      *
      * @return \Application\DeskPRO\HttpFoundation\Session
      */
@@ -260,7 +267,7 @@ class App
     }
 
     /**
-     * Get the form factory
+     * Get the form factory.
      *
      * @return \Symfony\Component\Form\FormFactory
      */
@@ -270,7 +277,7 @@ class App
     }
 
     /**
-     * Get the person activity logger
+     * Get the person activity logger.
      *
      * @return \Application\DeskPRO\People\ActivityLogger\ActivityLogger
      */
@@ -299,6 +306,7 @@ class App
 
     /**
      * @param $entity
+     *
      * @return \Doctrine\ORM\EntityRepository
      */
     public static function getEntityRepository($entity)
@@ -309,6 +317,7 @@ class App
     /**
      * @param $entity
      * @param $id
+     *
      * @return null|object
      */
     public static function findEntity($entity, $id)
@@ -318,6 +327,7 @@ class App
 
     /**
      * @param $entity
+     *
      * @return string
      */
     public static function getEntityClass($entity)
@@ -345,7 +355,7 @@ class App
     }
 
     /**
-     * Get the reference generator
+     * Get the reference generator.
      *
      * @return \Application\DeskPRO\RefGenerator\RefGeneratorInterface
      */
@@ -357,7 +367,8 @@ class App
     /**
      * Get the value of a setting.
      *
-     * @param  string $name The name of the setting to get
+     * @param string $name The name of the setting to get
+     *
      * @return string
      */
     public static function getSetting($name)
@@ -395,7 +406,9 @@ class App
      * them in here.
      *
      * @deprecated All of these should be services, or created as "system services"
-     * @param  string                $name Name of the API handler
+     *
+     * @param string $name Name of the API handler
+     *
      * @throws \OutOfBoundsException
      */
     public static function getApi($name)
@@ -415,8 +428,10 @@ class App
     }
 
     /**
-     * Loads userconfig from the filesystem
-     * @param  string                    $name The name of the user config
+     * Loads userconfig from the filesystem.
+     *
+     * @param string $name The name of the user config
+     *
      * @throws \UnexpectedValueException
      */
     protected static function _loadConfig($name = null)
@@ -442,8 +457,10 @@ class App
     /**
      * Read a config array from a standardly named config file.
      *
+     *
+     * @param string $name
      * @throws \RuntimeException|\UnexpectedValueException
-     * @param  string                                      $name
+     *
      * @return array
      */
     public static function getConfigFromFile($name)
@@ -475,9 +492,10 @@ class App
      * If $config_name is null, then entire config array from the file will be returned.
      * $config_name can use dot notation to denote deep array keys.
      *
-     * @param  string $config_name The config value to get
-     * @param  mixed  $default     The value to return if no such key exists
-     * @param  string $file_name   The file to fetch it form
+     * @param string $config_name The config value to get
+     * @param mixed  $default     The value to return if no such key exists
+     * @param string $file_name   The file to fetch it form
+     *
      * @return array
      */
     public static function getConfig($config_name, $default = null, $file_name = self::DEFAULT_NAME)
@@ -499,10 +517,11 @@ class App
     }
 
     /**
-     * Get a new logger for some kind of thing/session
+     * Get a new logger for some kind of thing/session.
      *
-     * @param  string                          $log_name
-     * @param  string                          $session_name
+     * @param string $log_name
+     * @param string $session_name
+     *
      * @return \Application\DeskPRO\Log\Logger
      */
     public static function createNewLogger($log_name, $session_name)

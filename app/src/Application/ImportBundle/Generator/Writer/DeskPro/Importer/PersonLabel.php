@@ -32,10 +32,9 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * DeskPro person labels importer
+ * DeskPro person labels importer.
  *
  * Class PersonLabel
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
 final class PersonLabel extends AbstractImporter
 {
@@ -50,7 +49,7 @@ final class PersonLabel extends AbstractImporter
     /**
      * {@inheritdoc}
      *
-     * @var Entity\Person $entity
+     * @var Entity\Person
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
@@ -78,9 +77,10 @@ final class PersonLabel extends AbstractImporter
     }
 
     /**
-     * Returns a new person label entity
+     * Returns a new person label entity.
      *
      * @param string $label
+     *
      * @return DeskPROEntity\LabelPerson
      */
     private function createPersonLabel($label)
@@ -89,16 +89,18 @@ final class PersonLabel extends AbstractImporter
         $entity->setLabel($label);
 
         $this->records->add($entity);
+
         return $entity;
     }
 
     /**
-     * Returns a collection of existing person label names
+     * Returns a collection of existing person label names.
      *
      * @param int $id
      *
-     * @return array
      * @throws Mapper\MapperException
+     * @return array
+     *
      */
     private function getExistingLabelsNames($id)
     {
@@ -113,10 +115,11 @@ final class PersonLabel extends AbstractImporter
     }
 
     /**
-     * Returns the person label mapper
+     * Returns the person label mapper.
      *
-     * @return Mapper\PersonLabel
      * @throws \Exception
+     * @return Mapper\PersonLabel
+     *
      */
     private function getPersonLabelMapper()
     {

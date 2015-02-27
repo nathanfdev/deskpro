@@ -26,9 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\ORM\Proxy;
@@ -250,7 +248,7 @@ class <proxyShortClassName> extends \<className> implements \<baseProxyInterface
     private function generateNamespace(ClassMetadata $class)
     {
         $proxyClassName = ClassUtils::generateProxyClassName($class->getName(), $this->proxyNamespace);
-        $parts = explode('\\', strrev($proxyClassName), 2);
+        $parts          = explode('\\', strrev($proxyClassName), 2);
 
         return strrev($parts[1]);
     }
@@ -633,14 +631,14 @@ EOT;
             '__set'     => true,
             '__isset'   => true,
 
-            '__getpropvalue__' => true,
-            '__setpropvalue__' => true,
-            '__hasrunload__' => true,
-            'addcustomcallable' => true,
-            'getobjecttranslatable' => true,
+            '__getpropvalue__'                     => true,
+            '__setpropvalue__'                     => true,
+            '__hasrunload__'                       => true,
+            'addcustomcallable'                    => true,
+            'getobjecttranslatable'                => true,
             'ensuredefaultpropertychangedlistener' => true,
-            'addpropertychangedlistener' => true,
-            'removepropertychangedlistener' => true,
+            'addpropertychangedlistener'           => true,
+            'removepropertychangedlistener'        => true,
         );
 
         foreach ($reflectionMethods as $method) {
@@ -771,8 +769,8 @@ EOT;
     private function isShortIdentifierGetter($method, ClassMetadata $class)
     {
         $identifier = lcfirst(substr($method->getName(), 3));
-        $startLine = $method->getStartLine();
-        $endLine = $method->getEndLine();
+        $startLine  = $method->getStartLine();
+        $endLine    = $method->getEndLine();
         $cheapCheck = (
             $method->getNumberOfParameters() == 0
             && substr($method->getName(), 0, 3) == 'get'
@@ -805,7 +803,7 @@ EOT;
     private function getLazyLoadedPublicProperties(ClassMetadata $class)
     {
         $defaultProperties = $class->getReflectionClass()->getDefaultProperties();
-        $properties = array();
+        $properties        = array();
 
         foreach ($class->getReflectionClass()->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
             $name = $property->getName();

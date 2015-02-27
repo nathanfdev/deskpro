@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Logger
  */
 
@@ -79,12 +78,12 @@ class ArrayHandler extends AbstractHandler
     }
 
     /**
-     * Resets messages to empty
+     * Resets messages to empty.
      */
     public function reset()
     {
         $this->messages = array();
-        $this->count = 0;
+        $this->count    = 0;
     }
 
     /**

@@ -26,11 +26,9 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage People
+ * DeskPRO.
  */
+
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
@@ -103,15 +101,15 @@ class PeopleResultsDisplay
      */
     public function __construct(array $people)
     {
-        $this->people = $people;
+        $this->people       = $people;
         $this->people_count = count($people);
-        $this->people_ids = array();
+        $this->people_ids   = array();
         foreach ($this->people as $p) {
             $this->people_ids[] = $p->id;
         }
 
-        $this->em = App::getOrm();
-        $this->db = $this->em->getConnection();
+        $this->em            = App::getOrm();
+        $this->db            = $this->em->getConnection();
         $this->field_manager = App::getSystemService('person_fields_manager');
     }
 
@@ -189,7 +187,7 @@ class PeopleResultsDisplay
     public function getEmail(Person $person)
     {
         if (!$person->primary_email) {
-            return null;
+            return;
         }
 
         if ($this->primary_emails === null) {
@@ -233,7 +231,8 @@ class PeopleResultsDisplay
     }
 
     /**
-     * @param  Person $person
+     * @param Person $person
+     *
      * @return array
      */
     public function getUserFieldData(Person $person)
@@ -279,9 +278,10 @@ class PeopleResultsDisplay
     }
 
     /**
-     * Get an array of labels applied to a person
+     * Get an array of labels applied to a person.
      *
-     * @param  \Application\DeskPRO\Entity\Person $person
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return array
      */
     public function getPersonLabels(Person $person)
@@ -292,9 +292,10 @@ class PeopleResultsDisplay
     }
 
     /**
-     * Get an array of usernames from usersources applied to a person
+     * Get an array of usernames from usersources applied to a person.
      *
-     * @param  \Application\DeskPRO\Entity\Person $person
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return array
      */
     public function getPersonUsernames(Person $person)
@@ -305,9 +306,10 @@ class PeopleResultsDisplay
     }
 
     /**
-     * Check if a person has labels
+     * Check if a person has labels.
      *
-     * @param  \Application\DeskPRO\Entity\Person $person
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return bool
      */
     public function hasPersonLabels(Person $person)
@@ -334,7 +336,8 @@ class PeopleResultsDisplay
     /**
      * Get the number of tickets submitted by a user.
      *
-     * @param  \Application\DeskPRO\Entity\Person $person
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
      * @return int
      */
     public function getPersonTicketCount(Person $person)

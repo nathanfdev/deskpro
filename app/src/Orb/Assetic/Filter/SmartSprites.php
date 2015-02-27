@@ -26,16 +26,15 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * Orb.
  *
- * @package Orb
  * @category Auth
  */
 
 namespace Orb\Assetic\Filter;
 
-use Assetic\Filter\FilterInterface;
 use Assetic\Asset\AssetInterface;
+use Assetic\Filter\FilterInterface;
 use Symfony\Component\Process\ProcessBuilder;
 
 class SmartSprites implements FilterInterface
@@ -51,7 +50,7 @@ class SmartSprites implements FilterInterface
     public function __construct($smartsprites_bin, array $options = array())
     {
         $this->smartsprites_bin = $smartsprites_bin;
-        $this->options = new \Orb\Util\OptionsArray($options);
+        $this->options          = new \Orb\Util\OptionsArray($options);
     }
 
     public function setOptions(array $options)
@@ -73,8 +72,8 @@ class SmartSprites implements FilterInterface
 
         $pb->setWorkingDirectory(dirname($this->smartsprites_bin));
 
-        $prefix = preg_replace('#[^0-9a-zA-Z\-_]#', '-', $asset->getSourcePath());
-        $tmpfile = $asset->getSourceRoot().'/'.$prefix.'-'.substr(sha1(time().rand(11111, 99999)), 0, 7).'.css';
+        $prefix         = preg_replace('#[^0-9a-zA-Z\-_]#', '-', $asset->getSourcePath());
+        $tmpfile        = $asset->getSourceRoot().'/'.$prefix.'-'.substr(sha1(time().rand(11111, 99999)), 0, 7).'.css';
         $expect_outfile = str_replace('.css', '-sprite.css', $tmpfile);
 
         if (file_put_contents($tmpfile, $asset->getContent()) === false) {

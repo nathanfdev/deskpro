@@ -26,20 +26,17 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Security\Firewall;
 
-use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
-use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
-use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
+use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
+use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
+use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Orb\Auth\Result;
 use Orb\Log\Loggable;
@@ -82,9 +79,9 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
      *
      * @param Request $request A Request instance
      *
+     * @throws AuthenticationException if the authentication fails
      * @return TokenInterface|Response|null The authenticated token, null if full authentication is not possible, or a Response
      *
-     * @throws AuthenticationException if the authentication fails
      */
     protected function attemptAuthentication(Request $request)
     {
@@ -328,6 +325,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
      * @param $usersource
      * @param $result
      * @param $em
+     *
      * @return DpFormLoginToken
      */
     protected function createTokenFromUsersourceResult(Usersource $usersource, Result $result)
@@ -345,6 +343,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
     /**
      * @param $person
+     *
      * @return DpFormLoginToken
      */
     protected function createTokenFromPerson(Person $person)

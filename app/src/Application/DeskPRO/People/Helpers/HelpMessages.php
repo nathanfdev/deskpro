@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -53,7 +52,7 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
 
     public function __construct(Entity\Person $person)
     {
-        $this->person = $person;
+        $this->person    = $person;
         $this->pref_name = 'ui.dismissed-help-messages';
     }
 
@@ -70,9 +69,9 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
 
         $this->pref = $this->person->getPref($this->pref_name);
         if (!$this->pref) {
-            $this->pref = $this->person->addPreference($this->pref_name);
+            $this->pref          = $this->person->addPreference($this->pref_name);
             $this->pref['value'] = array();
-            $person = $this->person;
+            $person              = $this->person;
 
             App::getOrm()->transactional(function ($em) use ($person) {
                 $em->persist($person);
@@ -89,7 +88,7 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
     public function getShortCallableNames()
     {
         return array(
-            'getHelpMessages' => '_getThis',
+            'getHelpMessages'   => '_getThis',
             'shouldShowMessage' => 'shouldShowMessage',
         );
     }
@@ -123,7 +122,7 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
 
         $this->_initPref();
 
-        $val = $this->pref['value'];
+        $val   = $this->pref['value'];
         $val[] = $id;
 
         $this->pref['value'] = $val;

@@ -26,17 +26,13 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Templating\Templates;
 
 /**
- * Represents any template code
- *
- * @package Application\DeskPRO\Templating\Templates
+ * Represents any template code.
  */
 class TemplateCode
 {

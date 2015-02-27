@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage RefGenerator
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\RefGenerator;
@@ -78,7 +75,7 @@ class CustomRef implements RefGeneratorInterface
     protected $max_tries = 100;
 
     /**
-     * How many digits to append to the end
+     * How many digits to append to the end.
      *
      * @var int
      */
@@ -86,16 +83,16 @@ class CustomRef implements RefGeneratorInterface
 
     /**
      * $format_string shold encase keywords in brakcets. For example:
-     *     <A><A><A><A>-<#><#><#><#>-<A><A><A><A>
+     *     <A><A><A><A>-<#><#><#><#>-<A><A><A><A>.
      *
      * @param \Doctrine\ORM\EntityManager $em
      * @param $format_string
      */
     public function __construct(\Doctrine\ORM\EntityManager $em, $format_string, $append_count = 0)
     {
-        $this->em = $em;
-        $this->db = $em->getConnection();
-        $this->append_count = $append_count;
+        $this->em            = $em;
+        $this->db            = $em->getConnection();
+        $this->append_count  = $append_count;
         $this->format_string = $format_string;
 
         #------------------------------
@@ -103,14 +100,14 @@ class CustomRef implements RefGeneratorInterface
         #------------------------------
 
         $format = array();
-        $tok = strtok($format_string, '<>');
-        $parts = array();
+        $tok    = strtok($format_string, '<>');
+        $parts  = array();
         while ($tok !== false) {
             $parts[] = $tok;
-            $tok = strtok("<>");
+            $tok     = strtok("<>");
         }
 
-        $last = null;
+        $last   = null;
         $repeat = 0;
         foreach ($parts as $p) {
             if ($last === null) {
@@ -121,8 +118,8 @@ class CustomRef implements RefGeneratorInterface
                 $repeat++;
             } else {
                 $format[] = array($last, $repeat);
-                $last = $p;
-                $repeat = 1;
+                $last     = $p;
+                $repeat   = 1;
             }
         }
 
@@ -136,7 +133,8 @@ class CustomRef implements RefGeneratorInterface
     /**
      * Is a word a keyword?
      *
-     * @param  string $word
+     * @param string $word
+     *
      * @return bool
      */
     public function isKeyword($word)
@@ -145,7 +143,8 @@ class CustomRef implements RefGeneratorInterface
     }
 
     /**
-     * @param  string $entity_name
+     * @param string $entity_name
+     *
      * @return string
      */
     public function generateReference($entity_name)
@@ -153,10 +152,10 @@ class CustomRef implements RefGeneratorInterface
         $table = $this->em->getClassMetadata(App::getEntityClass($entity_name))->getTableName();
         $field = 'ref';
 
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM `$table` WHERE `$field` = ? LIMIT 1");
+        $stmt  = $this->db->prepare("SELECT COUNT(*) FROM `$table` WHERE `$field` = ? LIMIT 1");
         $stmt2 = $this->db->prepare("SELECT COUNT(*) FROM `ref_reserve` WHERE `obj_type` = ? AND `ref` = ?");
 
-        $attempt = 0;
+        $attempt      = 0;
         $append_count = 0;
 
         // Get the last count used for this series of pattern,
@@ -164,7 +163,7 @@ class CustomRef implements RefGeneratorInterface
         // nums to get the last number used, and the inc
         if ($this->append_count) {
             $ref_check = $this->generateRefString(null);
-            $last = $this->db->fetchColumn("
+            $last      = $this->db->fetchColumn("
                 SELECT `$field` AS ref
                 FROM `$table`
                 WHERE `$field` LIKE ?
@@ -222,7 +221,7 @@ class CustomRef implements RefGeneratorInterface
     }
 
     /**
-     * Generate a new ref string
+     * Generate a new ref string.
      *
      * @param int $count
      */
@@ -278,7 +277,7 @@ class CustomRef implements RefGeneratorInterface
 
         if ($count && $this->append_count) {
             $length = $this->append_count;
-            $ref[] = sprintf("%0{$length}d", $count);
+            $ref[]  = sprintf("%0{$length}d", $count);
         }
 
         $ref = implode('', $ref);
@@ -353,7 +352,8 @@ class CustomRef implements RefGeneratorInterface
      * Check if a string is a valid ref format. This only checks
      * the format, no checking if it exists or anything like that.
      *
-     * @param  string $ref
+     * @param string $ref
+     *
      * @return bool
      */
     public function isRefMatch($ref, &$m = null)
@@ -370,6 +370,7 @@ class CustomRef implements RefGeneratorInterface
      * the first one should be the most likely match.
      *
      * @param $string
+     *
      * @return string[]
      */
     public function extractRefs($string, $ldelim = '\b', $rdelim = '\b')

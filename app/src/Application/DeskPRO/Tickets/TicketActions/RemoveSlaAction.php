@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Tickets
+ * DeskPRO.
  */
 
 namespace Application\DeskPRO\Tickets\TicketActions;
@@ -38,7 +35,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 
 /**
- * Remove SLA
+ * Remove SLA.
  */
 class RemoveSlaAction extends AbstractAction
 {
@@ -57,7 +54,7 @@ class RemoveSlaAction extends AbstractAction
     }
 
     /**
-     * Apply the property to the ticket
+     * Apply the property to the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -76,7 +73,7 @@ class RemoveSlaAction extends AbstractAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket
+     * Get an array of actions that would be performed on the ticket.
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      */
@@ -104,7 +101,8 @@ class RemoveSlaAction extends AbstractAction
     }
 
     /**
-     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     *
      * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function merge(ActionInterface $other_action)
@@ -128,7 +126,7 @@ class RemoveSlaAction extends AbstractAction
         if ($this->remove_all) {
             return $tr->phrase('agent.tickets.remove_all_slas_action');
         } else {
-            $slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($this->sla_ids);
+            $slas   = App::getEntityRepository('DeskPRO:Sla')->getByIds($this->sla_ids);
             $titles = array();
             foreach ($slas as $sla) {
                 $titles[$sla->id] = $as_html ? htmlspecialchars($sla->title) : $sla->title;

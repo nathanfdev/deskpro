@@ -26,10 +26,7 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage
+ * DeskPRO.
  */
 
 namespace Application\InstallBundle\Upgrade\Build\Helper201405;
@@ -58,9 +55,9 @@ class LayoutGenerator
      */
     public function getTicketLayout()
     {
-        $ticket_layout = new TicketLayoutEntity();
-        $ticket_layout->is_enabled = true;
-        $ticket_layout->user_layout = $this->getLayout('user');
+        $ticket_layout               = new TicketLayoutEntity();
+        $ticket_layout->is_enabled   = true;
+        $ticket_layout->user_layout  = $this->getLayout('user');
         $ticket_layout->agent_layout = $this->getLayout('agent');
 
         return $ticket_layout;

@@ -26,9 +26,8 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * DeskPRO.
  *
- * @package DeskPRO
  * @category Entities
  */
 
@@ -80,7 +79,7 @@ class FeedbackCategory extends AbstractCategoryRepository
     }
 
     /**
-     * Get an array of categories
+     * Get an array of categories.
      *
      * @return array
      */
@@ -114,7 +113,7 @@ class FeedbackCategory extends AbstractCategoryRepository
     {
         $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
         if (!$id) {
-            return null;
+            return;
         }
 
         return $this->find($id);
@@ -135,7 +134,6 @@ class FeedbackCategory extends AbstractCategoryRepository
      *
      * @return array
      */
-
     public function getUserGroups($id, $agent_only = false)
     {
         return
