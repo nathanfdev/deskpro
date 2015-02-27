@@ -32,19 +32,28 @@
  * @subpackage
  */
 
-namespace Application\PersonBundle\DependencyInjection;
+namespace DeskPRO\Bundle\AppBundle\Person\EventListener;
 
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\Extension;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Person\Events\PersonCreateEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class PersonExtension extends Extension
+/**
+ * Responsible for making sure the creation_system is set on a person correctly for every NEW person.
+ *
+ * Current implementation is that it is generated elsewhere and passed with the context
+ */
+class CreationSystemListener implements EventSubscriberInterface
 {
-    public function load(array $config, ContainerBuilder $container)
+    public function onPreCreate(PersonCreateEvent $event)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('person_services.yml');
-        $loader->load('person_events.yml');
+        $event->getPerson()->creation_system = $event->getContext()->getCreationSystem();
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            Person::EVENT_PRE_CREATE => 'onPreCreate',
+        );
     }
 }

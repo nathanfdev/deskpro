@@ -32,15 +32,15 @@
  * @subpackage
  */
 
-namespace Application\PersonBundle\Person;
+namespace DeskPRO\Bundle\AppBundle\Person;
 
 use DeskPRO\Bundle\AppBundle\Brand\BrandStack;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\People\PersonGuest;
-use Application\PersonBundle\Events\PersonCreateEvent;
-use Application\PersonBundle\Person\Context\CreatePersonContext;
+use DeskPRO\Bundle\AppBundle\Person\Events\PersonCreateEvent;
+use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

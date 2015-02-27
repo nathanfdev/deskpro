@@ -35,7 +35,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
-use Application\PersonBundle\Person\Context\CreatePersonContext;
+use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;

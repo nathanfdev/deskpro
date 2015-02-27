@@ -32,59 +32,30 @@
  * @subpackage
  */
 
-namespace Application\PersonBundle\Events;
+namespace DeskPRO\Bundle\AppBundle\Person\Context;
 
-use Application\DeskPRO\Entity\Person;
-use Application\PersonBundle\Person\Context\CreatePersonContext;
-use Symfony\Component\EventDispatcher\Event;
-
-class PersonCreateEvent extends Event
+class CreatePersonContext
 {
-    /**
-     * @var \Application\DeskPRO\Entity\Person
-     */
-    private $person;
+    protected $creation_system;
 
-    /**
-     * @var \Application\PersonBundle\Person\Context\CreatePersonContext
-     */
-    private $context;
-
-    public function __construct(Person $person, CreatePersonContext $context)
+    public function __construct($creation_system)
     {
-        $this->person = $person;
-        $this->context = $context;
+        $this->creation_system = $creation_system;
     }
 
     /**
-     * @return Person
+     * @return mixed
      */
-    public function getPerson()
+    public function getCreationSystem()
     {
-        return $this->person;
+        return $this->creation_system;
     }
 
     /**
-     * @param Person $person
+     * @param mixed $creation_system
      */
-    public function setPerson($person)
+    public function setCreationSystem($creation_system)
     {
-        $this->person = $person;
-    }
-
-    /**
-     * @return CreatePersonContext
-     */
-    public function getContext()
-    {
-        return $this->context;
-    }
-
-    /**
-     * @param CreatePersonContext $context
-     */
-    public function setContext($context)
-    {
-        $this->context = $context;
+        $this->creation_system = $creation_system;
     }
 }

@@ -1,5 +1,0 @@
-services:
-  person.creation_system.listener:
-    class: Application\PersonBundle\EventListener\CreationSystemListener
-    tags:
-      - { name: kernel.event_subscriber }

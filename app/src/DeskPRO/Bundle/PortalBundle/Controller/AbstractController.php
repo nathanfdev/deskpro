@@ -292,7 +292,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \Application\PersonBundle\Person\PersonFactory
+     * @return \DeskPRO\Bundle\AppBundle\Person\PersonFactory
      */
     protected function getPersonFactory()
     {

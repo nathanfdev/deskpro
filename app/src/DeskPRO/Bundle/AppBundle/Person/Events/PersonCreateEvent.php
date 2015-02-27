@@ -32,28 +32,59 @@
  * @subpackage
  */
 
-namespace Application\PersonBundle\EventListener;
+namespace DeskPRO\Bundle\AppBundle\Person\Events;
 
 use Application\DeskPRO\Entity\Person;
-use Application\PersonBundle\Events\PersonCreateEvent;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
+use Symfony\Component\EventDispatcher\Event;
 
-/**
- * Responsible for making sure the creation_system is set on a person correctly for every NEW person.
- *
- * Current implementation is that it is generated elsewhere and passed with the context
- */
-class CreationSystemListener implements EventSubscriberInterface
+class PersonCreateEvent extends Event
 {
-    public function onPreCreate(PersonCreateEvent $event)
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    private $person;
+
+    /**
+     * @var \DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext
+     */
+    private $context;
+
+    public function __construct(Person $person, CreatePersonContext $context)
     {
-        $event->getPerson()->creation_system = $event->getContext()->getCreationSystem();
+        $this->person = $person;
+        $this->context = $context;
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return Person
+     */
+    public function getPerson()
     {
-        return array(
-            Person::EVENT_PRE_CREATE => 'onPreCreate',
-        );
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     */
+    public function setPerson($person)
+    {
+        $this->person = $person;
+    }
+
+    /**
+     * @return CreatePersonContext
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
+     * @param CreatePersonContext $context
+     */
+    public function setContext($context)
+    {
+        $this->context = $context;
     }
 }

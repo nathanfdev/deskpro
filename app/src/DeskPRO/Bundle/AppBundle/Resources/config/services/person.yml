@@ -1,0 +1,10 @@
+services:
+
+  person_factory:
+    class: DeskPRO\Bundle\AppBundle\Person\PersonFactory
+    arguments: [@doctrine.orm.default_entity_manager, @event_dispatcher, @brand_stack]
+
+  person.creation_system.listener:
+    class: DeskPRO\Bundle\AppBundle\Person\EventListener\CreationSystemListener
+    tags:
+      - { name: kernel.event_subscriber }
